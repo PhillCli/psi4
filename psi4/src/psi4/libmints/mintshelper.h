@@ -100,6 +100,7 @@ class PSI_API MintsHelper {
      * @param[in] symm Use symmetry flag
     */
     void one_body_ao_computer(std::vector<std::shared_ptr<OneBodyAOInt>> ints, SharedMatrix out, bool symm);
+    void two_body_ao_computer(std::vector<std::shared_ptr<TwoBodyAOInt>> ints, SharedMatrix out);
     void grad_two_center_computer(std::vector<std::shared_ptr<OneBodyAOInt>> ints, SharedMatrix D, SharedMatrix out);
     /// Helper function to convert ao integrals to so and cache them
     void cache_ao_to_so_ints(SharedMatrix ao_ints, const std::string& label, bool include_perturbation);
@@ -197,7 +198,7 @@ class PSI_API MintsHelper {
     std::vector<SharedMatrix> mo_oei_deriv1(const std::string& oei_type, int atom, SharedMatrix C1, SharedMatrix C2);
     std::vector<SharedMatrix> mo_oei_deriv2(const std::string& oei_type, int atom1, int atom2, SharedMatrix C1,
                                             SharedMatrix C2);
-    std::vector<SharedMatrix> mo_overlap_half_deriv1(const std::string& half_der_side, int atom, SharedMatrix C1, 
+    std::vector<SharedMatrix> mo_overlap_half_deriv1(const std::string& half_der_side, int atom, SharedMatrix C1,
                                                      SharedMatrix C2);
 
     // Derivatives of electric dipole moment integrals in AO and MO basis

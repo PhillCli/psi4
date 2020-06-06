@@ -828,6 +828,64 @@ SharedMatrix MintsHelper::ao_helper(const std::string &label, std::shared_ptr<Tw
     return I;
 }
 
+void MintsHelper::two_body_ao_computer(std::vector<std::shared_ptr<TwoBodyAOInt>> ints, SharedMatrix out) {
+    // Grab basis infos
+    std::shared_ptr<BasisSet> bs1 = ints[0]->basis1();
+    std::shared_ptr<BasisSet> bs2 = ints[0]->basis2();
+    std::shared_ptr<BasisSet> bs3 = ints[0]->basis3();
+    std::shared_ptr<BasisSet> bs4 = ints[0]->basis4();
+
+    int nbf1 = bs1->nbf();
+    int nbf2 = bs2->nbf();
+    int nbf3 = bs3->nbf();
+    int nbf4 = bs4->nbf();
+
+    // Limit to the number of incoming twobody ints
+    size_t nthread = nthread_;
+    if (nthread > ints.size()) {
+        nthread = ints.size();
+    }
+
+    // Grab the buffers
+    std::vector<const double *> ints_buff(nthread);
+    for (size_t thread = 0; thread < nthread; thread++) {
+        ints_buff[thread] = ints[thread]->buffer();
+    }
+
+    double **outp = out->pointer();
+
+#pragma omp parallel for schedule(guided) num_threads(nthread)
+    for (int M = 0; M < bs1->nshell(); M++) {
+        size_t rank = 0;
+#ifdef _OPENMP
+        rank = omp_get_thread_num();
+#endif
+        for (int N = 0; N < bs2->nshell(); N++) {
+            for (int P = 0; P < bs3->nshell(); P++) {
+                for (int Q = 0; Q < bs4->nshell(); Q++) {
+                    ints[rank]->compute_shell(M, N, P, Q);
+
+                    for (int m = 0, index = 0; m < bs1->shell(M).nfunction(); m++) {
+                        for (int n = 0; n < bs2->shell(N).nfunction(); n++) {
+                            for (int p = 0; p < bs3->shell(P).nfunction(); p++) {
+                                for (int q = 0; q < bs4->shell(Q).nfunction(); q++, index++) {
+                                    outp[(bs1->shell(M).function_index() + m) * nbf2 + bs2->shell(N).function_index() +
+                                         n][(bs3->shell(P).function_index() + p) * nbf4 +
+                                            bs4->shell(Q).function_index() + q] = ints_buff[rank][index];
+                                }
+                            }
+                        }
+                    }
+                }  // end Q
+            }      // end P
+        }          // end N
+    }              // end M
+
+    // Build numpy and final matrix shape
+    std::vector<int> nshape{nbf1, nbf2, nbf3, nbf4};
+    out->set_numpy_shape(nshape);
+}
+
 SharedMatrix MintsHelper::ao_shell_getter(const std::string &label, std::shared_ptr<TwoBodyAOInt> ints, int M, int N,
                                           int P, int Q) {
     int mfxn = basisset_->shell(M).nfunction();
@@ -880,9 +938,14 @@ SharedMatrix MintsHelper::ao_eri(std::shared_ptr<IntegralFactory> input_factory)
 
 SharedMatrix MintsHelper::ao_eri(std::shared_ptr<BasisSet> bs1, std::shared_ptr<BasisSet> bs2,
                                  std::shared_ptr<BasisSet> bs3, std::shared_ptr<BasisSet> bs4) {
-    IntegralFactory intf(bs1, bs2, bs3, bs4);
-    std::shared_ptr<TwoBodyAOInt> ints(intf.eri());
-    return ao_helper("AO ERI Tensor", ints);
+    IntegralFactory factory(bs1, bs2, bs3, bs4);
+    std::vector<std::shared_ptr<TwoBodyAOInt>> ints_vec;
+    for (size_t i = 0; i < nthread_; i++) {
+        ints_vec.push_back(std::shared_ptr<TwoBodyAOInt>(factory.eri()));
+    }
+    auto eri_mat = std::make_shared<Matrix>("AO ERI Tensor", bs1->nbf() * bs2->nbf(), bs3->nbf() * bs4->nbf());
+    two_body_ao_computer(ints_vec, eri_mat);
+    return eri_mat;
 }
 
 SharedMatrix MintsHelper::ao_eri_shell(int M, int N, int P, int Q) {
@@ -2570,7 +2633,7 @@ void MintsHelper::play() {}
 /* 1st and 2nd derivatives of OEI in AO basis  */
 
 std::vector<SharedMatrix> MintsHelper::ao_overlap_kinetic_deriv1_helper(const std::string &type, int atom) {
-    std::array<std::string, 3> cartcomp{ {"X", "Y", "Z"} };
+    std::array<std::string, 3> cartcomp{{"X", "Y", "Z"}};
 
     std::shared_ptr<OneBodyAOInt> GInt;
 
@@ -2675,7 +2738,7 @@ std::vector<SharedMatrix> MintsHelper::ao_overlap_kinetic_deriv1_helper(const st
 }
 
 std::vector<SharedMatrix> MintsHelper::ao_potential_deriv1_helper(int atom) {
-    std::array<std::string, 3> cartcomp{ {"X", "Y", "Z"} };
+    std::array<std::string, 3> cartcomp{{"X", "Y", "Z"}};
 
     std::shared_ptr<OneBodyAOInt> Vint(integral_->ao_potential(1));
 
@@ -2723,7 +2786,7 @@ std::vector<SharedMatrix> MintsHelper::ao_potential_deriv1_helper(int atom) {
 }
 
 std::vector<SharedMatrix> MintsHelper::ao_overlap_half_deriv1_helper(const std::string &half_der_side, int atom) {
-    std::array<std::string, 3> cartcomp{ {"X", "Y", "Z"} };
+    std::array<std::string, 3> cartcomp{{"X", "Y", "Z"}};
 
     std::shared_ptr<OneBodyAOInt> GInt(integral_->ao_overlap(1));
 
@@ -2821,7 +2884,7 @@ std::vector<SharedMatrix> MintsHelper::ao_overlap_half_deriv1_helper(const std::
 
 std::vector<SharedMatrix> MintsHelper::ao_potential_deriv2_helper(int atom1, int atom2) {
     /* NOTE: the x, y, and z in this vector must remain lowercase for this function */
-    std::array<std::string, 3> cartcomp{ {"x", "y", "z"} };
+    std::array<std::string, 3> cartcomp{{"x", "y", "z"}};
 
     std::shared_ptr<OneBodyAOInt> Vint(integral_->ao_potential(2));
 
@@ -3052,7 +3115,7 @@ std::vector<SharedMatrix> MintsHelper::ao_potential_deriv2_helper(int atom1, int
 }
 
 std::vector<SharedMatrix> MintsHelper::ao_overlap_kinetic_deriv2_helper(const std::string &type, int atom1, int atom2) {
-    std::array<std::string, 3> cartcomp{ {"X", "Y", "Z"} };
+    std::array<std::string, 3> cartcomp{{"X", "Y", "Z"}};
 
     std::shared_ptr<OneBodyAOInt> GInt;
 
@@ -3161,7 +3224,7 @@ std::vector<SharedMatrix> MintsHelper::ao_overlap_kinetic_deriv2_helper(const st
 
 /* 1st derivatives of electric dipole integrals in the AO basis */
 std::vector<SharedMatrix> MintsHelper::ao_elec_dip_deriv1_helper(int atom) {
-    std::array<std::string, 3> cartcomp{ {"X", "Y", "Z"} };
+    std::array<std::string, 3> cartcomp{{"X", "Y", "Z"}};
 
     std::shared_ptr<OneBodyAOInt> Dint(integral_->ao_dipole(1));
 
@@ -3202,7 +3265,9 @@ std::vector<SharedMatrix> MintsHelper::ao_elec_dip_deriv1_helper(int atom) {
                     int offset = (6 * mu_cart * nP * nQ) + (atom_cart * nP * nQ) + (3 * (atom == aQ) * nP * nQ);
                     for (int p = 0; p < nP; p++) {
                         for (int q = 0; q < nQ; q++) {
-                            if (aP == aQ) grad[3 * mu_cart + atom_cart]->add(p + oP, q + oQ, buffer[p * nQ + q + offset - (3 * nP * nQ)]);
+                            if (aP == aQ)
+                                grad[3 * mu_cart + atom_cart]->add(p + oP, q + oQ,
+                                                                   buffer[p * nQ + q + offset - (3 * nP * nQ)]);
                             grad[3 * mu_cart + atom_cart]->add(p + oP, q + oQ, buffer[p * nQ + q + offset]);
                         }
                     }
@@ -3218,7 +3283,7 @@ std::vector<SharedMatrix> MintsHelper::ao_elec_dip_deriv1_helper(int atom) {
 
 std::vector<SharedMatrix> MintsHelper::ao_tei_deriv1(int atom, double omega,
                                                      std::shared_ptr<IntegralFactory> input_factory) {
-    std::array<std::string, 3> cartcomp{ {"X", "Y", "Z"} };
+    std::array<std::string, 3> cartcomp{{"X", "Y", "Z"}};
 
     std::shared_ptr<IntegralFactory> factory;
     if (input_factory) {
@@ -3556,7 +3621,7 @@ std::vector<SharedMatrix> MintsHelper::ao_3center_deriv1(int atom, const std::st
 
 std::vector<SharedMatrix> MintsHelper::ao_tei_deriv2(int atom1, int atom2) {
     /* NOTE: the x, y, and z in this vector must remain lowercase for this function */
-    std::array<std::string, 3> cartcomp{ {"x", "y", "z"} };
+    std::array<std::string, 3> cartcomp{{"x", "y", "z"}};
 
     int nthreads = 1;
 #ifdef _OPENMP
@@ -3876,7 +3941,7 @@ std::vector<SharedMatrix> MintsHelper::ao_oei_deriv2(const std::string &oei_type
 
 std::vector<SharedMatrix> MintsHelper::mo_oei_deriv1(const std::string &oei_type, int atom, SharedMatrix C1,
                                                      SharedMatrix C2) {
-    std::array<std::string, 3> cartcomp{ {"X", "Y", "Z"} };
+    std::array<std::string, 3> cartcomp{{"X", "Y", "Z"}};
 
     std::vector<SharedMatrix> ao_grad;
     ao_grad = ao_oei_deriv1(oei_type, atom);
@@ -3898,7 +3963,7 @@ std::vector<SharedMatrix> MintsHelper::mo_oei_deriv1(const std::string &oei_type
 
 std::vector<SharedMatrix> MintsHelper::mo_oei_deriv2(const std::string &oei_type, int atom1, int atom2, SharedMatrix C1,
                                                      SharedMatrix C2) {
-    std::array<std::string, 3> cartcomp{ {"X", "Y", "Z"} };
+    std::array<std::string, 3> cartcomp{{"X", "Y", "Z"}};
 
     std::vector<SharedMatrix> ao_grad;
     ao_grad = ao_oei_deriv2(oei_type, atom1, atom2);
@@ -3919,8 +3984,9 @@ std::vector<SharedMatrix> MintsHelper::mo_oei_deriv2(const std::string &oei_type
     return mo_grad;
 }
 
-std::vector<SharedMatrix> MintsHelper::mo_overlap_half_deriv1(const std::string &half_der_side, int atom, SharedMatrix C1, SharedMatrix C2) {
-    std::array<std::string, 3> cartcomp{ {"X", "Y", "Z"} };
+std::vector<SharedMatrix> MintsHelper::mo_overlap_half_deriv1(const std::string &half_der_side, int atom,
+                                                              SharedMatrix C1, SharedMatrix C2) {
+    std::array<std::string, 3> cartcomp{{"X", "Y", "Z"}};
 
     std::vector<SharedMatrix> ao_grad;
     ao_grad = ao_overlap_half_deriv1(half_der_side, atom);
@@ -3949,7 +4015,7 @@ std::vector<SharedMatrix> MintsHelper::ao_elec_dip_deriv1(int atom) {
 }
 
 std::vector<SharedMatrix> MintsHelper::mo_elec_dip_deriv1(int atom, SharedMatrix C1, SharedMatrix C2) {
-    std::array<std::string, 3> cartcomp{ {"X", "Y", "Z"} };
+    std::array<std::string, 3> cartcomp{{"X", "Y", "Z"}};
 
     std::vector<SharedMatrix> ao_grad = ao_elec_dip_deriv1(atom);
 
@@ -3973,7 +4039,7 @@ std::vector<SharedMatrix> MintsHelper::mo_elec_dip_deriv1(int atom, SharedMatrix
 
 std::vector<SharedMatrix> MintsHelper::mo_tei_deriv1(int atom, SharedMatrix C1, SharedMatrix C2, SharedMatrix C3,
                                                      SharedMatrix C4) {
-    std::array<std::string, 3> cartcomp{ {"X", "Y", "Z"} };
+    std::array<std::string, 3> cartcomp{{"X", "Y", "Z"}};
 
     std::vector<SharedMatrix> ao_grad = ao_tei_deriv1(atom);
 
@@ -3990,7 +4056,7 @@ std::vector<SharedMatrix> MintsHelper::mo_tei_deriv1(int atom, SharedMatrix C1, 
 
 std::vector<SharedMatrix> MintsHelper::mo_tei_deriv2(int atom1, int atom2, SharedMatrix C1, SharedMatrix C2,
                                                      SharedMatrix C3, SharedMatrix C4) {
-    std::array<std::string, 3> cartcomp{ {"X", "Y", "Z"} };
+    std::array<std::string, 3> cartcomp{{"X", "Y", "Z"}};
 
     std::vector<SharedMatrix> ao_grad = ao_tei_deriv2(atom1, atom2);
     std::vector<SharedMatrix> mo_grad;
