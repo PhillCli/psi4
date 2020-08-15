@@ -1,0 +1,51 @@
+#! sapt0(rohf/uhf) equivalence when there is no docc orbitals
+
+memory 1024 MB
+
+molecule dimer {
+0 3
+He 0.000 0.000 +1.9315
+--
+0 3
+He 0.000 0.000 -1.9315
+
+no_reorient
+no_com
+units angstrom
+symmetry c1
+}
+
+set {
+    basis d-aug-cc-pvdz
+    reference uhf
+    basis_guess 3-21g
+    guess sad
+    scf_type direct
+    e_convergence 1e-12,
+    d_convergence 1e-12,
+    # CPROHF not yet implemented,
+    coupled_induction False
+
+}
+
+ene, wfn = psi4.energy("sapt0", return_wfn=True, molecule=dimer)
+
+sapt0_elst = variable("SAPT ELST ENERGY")
+sapt0_exch = variable("SAPT EXCH ENERGY")
+sapt0_ind20 = variable("SAPT IND20,u ENERGY")
+sapt0_exch_ind20 = variable("SAPT EXCH-IND20,u ENERGY")
+sapt0_disp20 = variable("SAPT DISP20 ENERGY")
+sapt0_exch_disp20 = variable("SAPT EXCH-DISP20 ENERGY")
+
+# for this system ROHF is equivalent to UHF
+set {
+    reference rohf
+}
+
+ene, wfn = psi4.energy("sapt0", return_wfn=True, molecule=dimer)
+compare_values(sapt0_elst, variable("SAPT ELST ENERGY"), 6, "SAPT0(ROHF) elst")
+compare_values(sapt0_exch, variable("SAPT EXCH ENERGY"), 6, "SAPT0(ROHF) exch")
+compare_values(sapt0_ind20, variable("SAPT IND20,u ENERGY"), 6, "SAPT0(ROHF) ind20,u")
+compare_values(sapt0_exch_ind20, variable("SAPT EXCH-IND20,u ENERGY"), 6, "SAPT0(ROHF) exch-ind20,u")
+compare_values(sapt0_disp20, variable("SAPT DISP20 ENERGY"), 6, "SAPT0(ROHF) disp20")
+compare_values(sapt0_exch_disp20, variable("SAPT EXCH-DISP20 ENERGY"), 6, "SAPT0(ROHF) exch-disp20")
