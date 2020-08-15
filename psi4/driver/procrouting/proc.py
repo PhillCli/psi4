@@ -4554,6 +4554,8 @@ def run_sapt(name, **kwargs):
 
     core.timer_on("SAPT: Monomer A SCF")
     monomerA_wfn = scf_helper('RHF', molecule=monomerA, **kwargs)
+    if core.get_option('SCF', 'REFERENCE') == 'ROHF':
+        monomerA_wfn.semicanonicalize()
     core.timer_off("SAPT: Monomer A SCF")
 
     if do_delta_mp2:
@@ -4570,6 +4572,8 @@ def run_sapt(name, **kwargs):
 
     core.timer_on("SAPT: Monomer B SCF")
     monomerB_wfn = scf_helper('RHF', molecule=monomerB, **kwargs)
+    if core.get_option('SCF', 'REFERENCE') == 'ROHF':
+        monomerB_wfn.semicanonicalize()
     core.timer_off("SAPT: Monomer B SCF")
 
     # Delta MP2
