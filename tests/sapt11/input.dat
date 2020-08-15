@@ -35,4 +35,3 @@ compare_values( 0.01152246, variable("SAPT EXCH ENERGY"), 6, "SAPT0 exch")
 compare_values(-0.00973470, variable("SAPT IND ENERGY"), 6, "SAPT0 ind")
 compare_values(-0.00142653, variable("SAPT DISP ENERGY"), 6, "SAPT0 disp")
 compare_values(-0.0373654, variable("SAPT TOTAL ENERGY"), 6, "SAPT total")
-
