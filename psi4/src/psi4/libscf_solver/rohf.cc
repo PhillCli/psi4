@@ -528,10 +528,17 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
     // Passing these guys is annoying, pretty cheap to rebuild
     auto dim_zero = Dimension(nirrep_, "Zero Dim");
 
+    SharedMatrix F_ao;
     auto Cocc = Ca_->get_block({dim_zero, nsopi_}, {dim_zero, ret->rowspi()});
     Cocc->set_name("Cocc");
     auto Cvir = Ca_->get_block({dim_zero, nsopi_}, {docc, docc + ret->colspi()});
     Cvir->set_name("Cvir");
+
+    // NOTE: SAVE_JK needs to be used, otherwise seg-faults here (after SCF):
+    auto moFa = SharedMatrix(factory_->create_matrix("MO alpha Fock Matrix (MO basis)"));
+    auto moFb = SharedMatrix(factory_->create_matrix("MO beta  Fock Matrix (MO basis)"));
+    moFa->transform(Fa_, Ca_);
+    moFb->transform(Fb_, Cb_);
 
     for (size_t h = 0; h < nirrep_; h++) {
         if (!occpi[h] || !virpi[h]) continue;
@@ -539,8 +546,8 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
         auto leftp = Hx_left->pointer(h);
         auto rightp = Hx_right->pointer(h);
         auto xp = x->pointer(h);
-        auto Fap = moFa_->pointer(h);
-        auto Fbp = moFb_->pointer(h);
+        auto Fap = moFa->pointer(h);
+        auto Fbp = moFb->pointer(h);
 
         // left_ov += 0.5 * x_op Fa_pv
         C_DGEMM('N', 'N', occpi[h], virpi[h], pvir[h], 0.5, (xp[0] + socc[h]), virpi[h],
@@ -569,11 +576,13 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
         }
     }
 
+    // outfile->Printf("Hx:: entering J&K section\n");
     // => Two electron part <= //
     auto& Cl = jk_->C_left();
     auto& Cr = jk_->C_right();
     Cl.clear();
     Cr.clear();
+    // outfile->Printf("Hx::JK cleared Cl & Cr\n");
 
     // If scf_type is DF we can do some extra JK voodo
     if ((options_.get_str("SCF_TYPE").find("DF") != std::string::npos) || (options_.get_str("SCF_TYPE") == "CD")) {
@@ -736,6 +745,7 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
 
         half_trans.reset();
     }
+    // outfile->Printf("Hx:: exiting J&K section\n");
 
     // Zero out socc-socc terms
     for (size_t h = 0; h < nirrep_; h++) {
@@ -748,9 +758,15 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
             for (size_t j = 0; j < occpi[h]; j++) {
                 leftp[j][i] = 0.0;
             }
+            // for (size_t j = 0; j < soccpi_[h]; j++) {
+            //    leftp[doccpi_[h] + j][i] = 0.0;
+            //}
             for (size_t j = 0; j < virpi[h]; j++) {
                 rightp[docc[h] + i][j] = 0.0;
             }
+            // for (size_t j = 0; j < soccpi_[h]; j++) {
+            //    rightp[doccpi_[h] + i][j] = 0.0;
+            //}
         }
     }
 
@@ -763,6 +779,44 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
     Hx_right.reset();
     Cocc.reset();
     Cvir.reset();
+    // outfile->Printf("Hx:: exiting\n");
+}
+std::vector<SharedMatrix> ROHF::onel_Hx(std::vector<SharedMatrix> x_vec) {
+    std::vector<SharedMatrix> ret_vect;
+    if (functional_->needs_xc()) {
+        throw PSIEXCEPTION("psi4::ROKS: Cannot yet compute DFT Hessian-vector prodcuts.\n");
+    }
+    throw PSIEXCEPTION("psi::ROHF: onel_Hx not yet implemented\n");
+    return ret_vect;
+}
+
+std::vector<SharedMatrix> ROHF::twoel_Hx(std::vector<SharedMatrix> x_vec, bool combine, std::string return_basis) {
+    std::vector<SharedMatrix> ret_vect;
+    if (functional_->needs_xc()) {
+        throw PSIEXCEPTION("psi4::ROKS: Cannot yet compute DFT Hessian-vector prodcuts.\n");
+    }
+    throw PSIEXCEPTION("psi::ROHF: twoel_Hx not yet implemented\n");
+    return ret_vect;
+}
+
+std::vector<SharedMatrix> ROHF::cphf_Hx(std::vector<SharedMatrix> x_vec) {
+    // outfile->Printf("entered cphf_Hx\n");
+    std::vector<SharedMatrix> ret_vect;
+    auto ret = x_vec[0]->clone();
+    for (size_t i = 0; i < x_vec.size(); i++) {
+        Hx(x_vec[i], ret);
+        ret_vect.push_back(ret);
+    }
+    // outfile->Printf("exited cphf_Hx\n");
+    return ret_vect;
+}
+
+std::vector<SharedMatrix> ROHF::cphf_solve(std::vector<SharedMatrix> x_vec, double conv_tol, int max_iter,
+                                           int print_lvl) {
+    throw PSIEXCEPTION("psi4::ROHF: Cannot yet compute cphf_solve.\n");
+    if (functional_->needs_xc()) {
+        throw PSIEXCEPTION("psi4::ROKS: Cannot yet compute DFT Hessian-vector prodcuts.\n");
+    }
 }
 
 void ROHF::damping_update(double damping_percentage) {

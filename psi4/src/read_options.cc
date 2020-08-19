@@ -1077,6 +1077,9 @@ int read_options(const std::string &name, Options &options, bool suppress_printi
         /*- For SAPT2+3, compute the non-approximated third-order exchange-induction term. !expert -*/
         options.add_bool("DO_IND30_EXCH_SINF", false);
 
+        /*- For SF-SAPT computes only coupled induction (CPROHF) correction !expert -*/
+        options.add_bool("SF_SAPT_DO_ONLY_CPHF", false);
+
         /*- Do use asynchronous disk I/O in the solution of the CPHF equations?
         Use may speed up the computation slightly at the cost of spawning an
         additional thread. -*/
