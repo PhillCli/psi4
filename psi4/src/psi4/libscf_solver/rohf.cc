@@ -502,6 +502,7 @@ double ROHF::compute_E() {
 }
 
 void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
+    // outfile->Printf("WESZLEM\n");
     if (functional_->needs_xc()) {
         throw PSIEXCEPTION("SCF: Cannot yet compute DFT Hessian-vector prodcuts.\n");
     }
@@ -529,10 +530,22 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
     // Passing these guys is annoying, pretty cheap to rebuild
     Dimension dim_zero = Dimension(nirrep_, "Zero Dim");
 
+    // NEW
+    SharedMatrix F_ao;
+
     SharedMatrix Cocc = Ca_->get_block({dim_zero, nsopi_}, {dim_zero, ret->rowspi()});
     Cocc->set_name("Cocc");
     SharedMatrix Cvir = Ca_->get_block({dim_zero, nsopi_}, {doccpi_, doccpi_ + ret->colspi()});
     Cvir->set_name("Cvir");
+
+    // outfile->Printf("ORBITALE ZLAPAN\n");
+    // FIXME:
+    // These are not avaible after scf ??
+    auto moFa = SharedMatrix(factory_->create_matrix("MO alpha Fock Matrix (MO basis)"));
+    auto moFb = SharedMatrix(factory_->create_matrix("MO beta  Fock Matrix (MO basis)"));
+    moFa->transform(Fa_, Ca_);
+    moFb->transform(Fb_, Cb_);
+    // outfile->Printf("FOCK MO POLICZON\n");
 
     for (size_t h = 0; h < nirrep_; h++) {
         if (!occpi[h] || !virpi[h]) continue;
@@ -540,8 +553,17 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
         double** leftp = Hx_left->pointer(h);
         double** rightp = Hx_right->pointer(h);
         double** xp = x->pointer(h);
-        double** Fap = moFa_->pointer(h);
-        double** Fbp = moFb_->pointer(h);
+        // OLD
+        // double** Fap = moFa_->pointer(h);
+        // double** Fbp = moFb_->pointer(h);
+        // NEW - (wrong?), Fa_ is AO
+        // double** Fap = Fa_->pointer(h);
+        // double** Fbp = Fb_->pointer(h);
+        // NEW - correct, moFa_ is MO
+        double** Fap = moFa->pointer(h);
+        double** Fbp = moFb->pointer(h);
+
+        // outfile->Printf("FOCK MO\n");
 
         // left_ov += 0.5 * x_op Fa_pv
         C_DGEMM('N', 'N', occpi[h], virpi[h], pvir[h], 0.5, (xp[0] + soccpi_[h]), virpi[h],
@@ -568,8 +590,10 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
             C_DGEMM('N', 'T', occpi[h], soccpi_[h], pvir[h], 0.5, (Fbp[0] + occpi[h]), nmopi_[h],
                     (xp[doccpi_[h]] + soccpi_[h]), virpi[h], 1.0, rightp[0], virpi[h]);
         }
+        // outfile->Printf("FOCK MO WYLADOWAL\n");
     }
 
+    // outfile->Printf("J & K STARTUJE\n");
     // => Two electron part <= //
     std::vector<SharedMatrix>& Cl = jk_->C_left();
     std::vector<SharedMatrix>& Cr = jk_->C_right();
@@ -737,6 +761,7 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
 
         half_trans.reset();
     }
+    // outfile->Printf("J & K WYLADOWAL\n");
 
     // Zero out socc-socc terms
     for (size_t h = 0; h < nirrep_; h++) {
@@ -764,6 +789,288 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
     Hx_right.reset();
     Cocc.reset();
     Cvir.reset();
+    // outfile->Printf("Hx WYLADOWAL\n");
+}
+std::vector<SharedMatrix> ROHF::onel_Hx(std::vector<SharedMatrix> x_vec) {
+    std::vector<SharedMatrix> ret_vect;
+    if (functional_->needs_xc()) {
+        throw PSIEXCEPTION("psi4::ROKS: Cannot yet compute DFT Hessian-vector prodcuts.\n");
+    }
+    throw PSIEXCEPTION("psi::ROHF: onel_Hx not yet implemented\n");
+    return ret_vect;
+}
+
+std::vector<SharedMatrix> ROHF::twoel_Hx(std::vector<SharedMatrix> x_vec, bool combine, std::string return_basis) {
+    std::vector<SharedMatrix> ret_vect;
+    if (functional_->needs_xc()) {
+        throw PSIEXCEPTION("psi4::ROKS: Cannot yet compute DFT Hessian-vector prodcuts.\n");
+    }
+    throw PSIEXCEPTION("psi::ROHF: twoel_Hx not yet implemented\n");
+    return ret_vect;
+}
+
+std::vector<SharedMatrix> ROHF::cphf_Hx(std::vector<SharedMatrix> x_vec) {
+    // outfile->Printf("NIE WESZŁEŚ\n");
+    std::vector<SharedMatrix> ret_vect;
+    auto ret = x_vec[0]->clone();
+    for (size_t i = 0; i < x_vec.size(); i++) {
+        Hx(x_vec[i], ret);
+        ret_vect.push_back(ret);
+    }
+    // outfile->Printf("cphf_Hx WYLADOWAL\n");
+    return ret_vect;
+}
+
+std::vector<SharedMatrix> ROHF::cphf_solve(std::vector<SharedMatrix> x_vec, double conv_tol, int max_iter,
+                                           int print_lvl) {
+    if (functional_->needs_xc()) {
+        throw PSIEXCEPTION("psi4::ROKS: Cannot yet compute DFT Hessian-vector prodcuts.\n");
+    }
+    std::time_t start, stop;
+    start = std::time(nullptr);
+    cphf_converged_ = false;
+    cphf_nfock_builds_ = 0;
+
+    // => Figure out the type of perturbation tensor <= //
+    // This helps get around difficulties with non-totally symmetric perturbations
+    std::vector<bool> c1_input_;
+
+    bool needs_ao = false;
+    bool needs_so = false;
+    outfile->Printf("nirrep_: %d \n", nirrep_);
+    for (size_t i = 0; i < x_vec.size(); i++) {
+        outfile->Printf("x_vect[i_]: %d \n", x_vec[i]->nirrep());
+        if ((x_vec[i]->nirrep() == 1) && (nirrep_ != 1)) {
+            c1_input_.push_back(true);
+            needs_ao = true;
+        } else {
+            c1_input_.push_back(false);
+            needs_so = true;
+        }
+    }
+
+    // => Build preconditioner <= //
+    SharedMatrix Precon_ao, Precon_so;
+
+    /*     if (needs_ao) {
+            throw PSIEXCEPTION("psi4::ROKS only MO implemented.\n");
+            // MO (C1) Fock Matrix (Inactive Fock in Helgaker's language)
+            SharedMatrix Cocc_ao = Ca_subset("AO", "ALL");
+            SharedMatrix F_ao = matrix_subset_helper(Fa_, Ca_, "AO", "Fock");
+            SharedMatrix IFock_ao = linalg::triplet(Cocc_ao, F_ao, Cocc_ao, true, false, false);
+            Precon_ao = std::make_shared<Matrix>("Precon", nalpha_, nmo_ - nalpha_);
+
+            double* denomp = Precon_ao->pointer()[0];
+            double** fp = IFock_ao->pointer();
+
+            for (size_t i = 0, target = 0; i < nalpha_; i++) {
+                for (size_t a = nalpha_; a < nmo_; a++) {
+                    denomp[target++] = -fp[i][i] + fp[a][a];
+                }
+            }
+        } */
+
+    /*     if (needs_so) {
+            // MO Fock Matrix (Inactive Fock in Helgaker's language)
+            Dimension virpi = nmopi_ - nalphapi_;
+            SharedMatrix IFock_so = linalg::triplet(Ca_, Fa_, Ca_, true, false, false);
+            Precon_so = std::make_shared<Matrix>("Precon", nirrep_, doccpi_, virpi);
+
+            for (size_t h = 0; h < nirrep_; h++) {
+                if (!doccpi_[h] || !virpi[h]) continue;
+                double* denomp = Precon_so->pointer(h)[0];
+                double** fp = IFock_so->pointer(h);
+
+                for (size_t i = 0, target = 0; i < doccpi_[h]; i++) {
+                    for (size_t a = doccpi_[h]; a < nmopi_[h]; a++) {
+                        denomp[target++] = -fp[i][i] + fp[a][a];
+                    }
+                }
+            }
+        } */
+
+    // => Header <= //
+    if (print_lvl) {
+        outfile->Printf("\n");
+        outfile->Printf("   ==> Coupled-Perturbed %s Solver <==\n\n", options_.get_str("REFERENCE").c_str());
+        outfile->Printf("    Maxiter             = %11d\n", max_iter);
+        outfile->Printf("    Convergence         = %11.3E\n", conv_tol);
+        outfile->Printf("    Number of equations = %11ld\n", x_vec.size());
+        outfile->Printf("   -----------------------------------------------------\n");
+        outfile->Printf("     %4s %14s %12s  %6s  %6s\n", "Iter", "Residual RMS", "Max RMS", "Remain", "Time [s]");
+        outfile->Printf("   -----------------------------------------------------\n");
+    }
+
+    // => Initial state <= //
+
+    // What vectors do we need?
+    int nvecs = x_vec.size();
+    std::vector<SharedMatrix> ret_vec, r_vec, z_vec, p_vec;
+    std::vector<double> resid(nvecs), resid_denom(nvecs), rms(nvecs), rzpre(nvecs);
+    std::vector<bool> active(nvecs);
+    std::vector<int> active_map(nvecs);
+
+    // => Initial CG guess <= //
+    for (size_t i = 0; i < nvecs; i++) {
+        ret_vec.push_back(x_vec[i]->clone());
+        /*         if (c1_input_[i]) {
+                    ret_vec[i]->apply_denominator(Precon_ao);
+                } else {
+                    throw PSIEXCEPTION("psi4::ROKS only C1 symmetry supported.\n");
+                    ret_vec[i]->apply_denominator(Precon_so);
+                } */
+        r_vec.push_back(x_vec[i]->clone());
+    }
+
+    // Calc hessian vector product, find residual and conditioned residual
+    std::vector<SharedMatrix> Ax_vec = cphf_Hx(ret_vec);
+
+    double max_rms = 0.0;
+    double mean_rms = 0.0;
+    int nremain = 0;
+    for (size_t i = 0; i < nvecs; i++) {
+        r_vec[i]->subtract(Ax_vec[i]);
+        resid[i] = r_vec[i]->sum_of_squares();
+        resid_denom[i] = x_vec[i]->sum_of_squares();
+
+        // Compute residuals
+        if (resid_denom[i] < 1.e-14) {
+            resid_denom[i] = 1.e-14;  // Prevent rel denom from being too small
+        }
+        rms[i] = std::sqrt(resid[i] / resid_denom[i]);
+        mean_rms += rms[i];
+        if (rms[i] > max_rms) {
+            max_rms = rms[i];
+        }
+        active[i] = true;
+        active_map[i] = nremain;
+
+        // p and z vectors
+        z_vec.push_back(r_vec[i]->clone());
+        /*         if (c1_input_[i]) {
+                    z_vec[i]->apply_denominator(Precon_ao);
+                } else {
+                    z_vec[i]->apply_denominator(Precon_so);
+                } */
+        p_vec.push_back(z_vec[i]->clone());
+        nremain++;
+    }
+    mean_rms /= (double)nvecs;
+    cphf_nfock_builds_ += nremain;
+
+    stop = std::time(nullptr);
+    if (print_lvl > 1) {
+        outfile->Printf("    %5s %14.3e %12.3e %7d %9ld\n", "Guess", mean_rms, max_rms, nremain, stop - start);
+    }
+
+    // => CG iterations <= //
+    for (int cg_iter = 1; cg_iter < max_iter; cg_iter++) {
+        // Build an active vector
+        std::vector<SharedMatrix> active_p_vec;
+        for (size_t i = 0; i < nremain; i++) {
+            // outfile->Printf("Giving vec %d", active_map[i]);
+            active_p_vec.push_back(p_vec[active_map[i]]);
+        }
+
+        // Calc hessian vector product
+        std::vector<SharedMatrix> Ap_vec = cphf_Hx(active_p_vec);
+
+        max_rms = 0.0;
+        mean_rms = 0.0;
+        nremain = 0;
+        int new_remain = 0;
+        // Find factors and scale
+        for (size_t i = 0; i < nvecs; i++) {
+            if (!active[i]) {
+                mean_rms += rms[i];
+                continue;
+            }
+
+            // Compute update
+            rzpre[i] = r_vec[i]->vector_dot(z_vec[i]);
+            double alpha = rzpre[i] / p_vec[i]->vector_dot(Ap_vec[nremain]);
+
+            if (std::isnan(alpha)) {
+                outfile->Printf("RHF::CPHF Warning CG alpha is zero/nan for vec %lu. Stopping vec.\n", i);
+                active[i] = false;
+                alpha = 0.0;
+            }
+
+            // Update vectors
+            ret_vec[i]->axpy(alpha, p_vec[i]);
+            r_vec[i]->axpy(-alpha, Ap_vec[nremain]);
+
+            // Get residual
+            resid[i] = r_vec[i]->sum_of_squares();
+            rms[i] = std::sqrt(resid[i] / resid_denom[i]);
+            if (rms[i] > max_rms) {
+                max_rms = rms[i];
+            }
+            mean_rms += rms[i];
+
+            // Figure out what we need to do.
+            if (rms[i] < conv_tol) {
+                active[i] = false;
+            } else {
+                active_map[new_remain] = i;
+                new_remain++;
+            }
+            nremain++;
+        }
+        cphf_nfock_builds_ += nremain;
+        nremain = new_remain;
+        mean_rms /= (double)nvecs;
+
+        stop = std::time(nullptr);
+        if (print_lvl) {
+            outfile->Printf("    %5d %14.3e %12.3e %7d %9ld\n", cg_iter, mean_rms, max_rms, nremain, stop - start);
+        }
+
+        // Check convergence
+        if ((max_rms < conv_tol) && (!nremain)) {
+            break;
+        }
+
+        // Update p and z
+        for (size_t i = 0; i < nvecs; i++) {
+            if (!active[i]) continue;
+            z_vec[i]->copy(r_vec[i]);
+            // z_vec[i]->apply_denominator(Precon);
+            /*             if (c1_input_[i]) {
+                            z_vec[i]->apply_denominator(Precon_ao);
+                        } else {
+                            z_vec[i]->apply_denominator(Precon_so);
+                        } */
+
+            double beta = r_vec[i]->vector_dot(z_vec[i]) / rzpre[i];
+
+            p_vec[i]->scale(beta);
+            p_vec[i]->add(z_vec[i]);
+        }
+    }
+
+    // Convergence
+    if (!nremain) {
+        cphf_converged_ = true;
+    }
+
+    // Print out tail
+    if (print_lvl > 1) {
+        outfile->Printf("   -----------------------------------------------------\n");
+        outfile->Printf("\n");
+        if (nremain) {
+            outfile->Printf("    Warning! %d equations did not converge!\n\n", nremain);
+        } else {
+            outfile->Printf("    Solver has converged.\n\n");
+        }
+    }
+
+    // => Cleanup <= //
+    // Precon_ao.reset();
+    // Precon_so.reset();
+
+    outfile->Printf("    ELON PIZMO: %d\n", ret_vec.size());
+    return ret_vec;
 }
 
 void ROHF::damping_update(double damping_percentage) {

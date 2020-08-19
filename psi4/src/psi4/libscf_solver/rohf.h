@@ -93,6 +93,14 @@ class ROHF : public HF {
     int soscf_update(double soscf_conv, int soscf_min_iter, int soscf_max_iter, int soscf_print) override;
     bool stability_analysis() override;
 
+    // Hessian-vector computers and solvers
+    std::vector<SharedMatrix> onel_Hx(std::vector<SharedMatrix> x) override;
+    std::vector<SharedMatrix> twoel_Hx(std::vector<SharedMatrix> x, bool combine = true,
+                                       std::string return_basis = "MO") override;
+    std::vector<SharedMatrix> cphf_Hx(std::vector<SharedMatrix> x) override;
+    std::vector<SharedMatrix> cphf_solve(std::vector<SharedMatrix> x_vec, double conv_tol = 1.e-4, int max_iter = 10,
+                                         int print_lvl = 1) override;
+
     std::shared_ptr<ROHF> c1_deep_copy(std::shared_ptr<BasisSet> basis);
 };
 }  // namespace scf

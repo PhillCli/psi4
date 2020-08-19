@@ -54,6 +54,76 @@ USAPT0::USAPT0(SharedWavefunction d, SharedWavefunction mA, SharedWavefunction m
     debug_ = options_.get_int("DEBUG");
     bench_ = options_.get_int("BENCH");
     coupled_ind_ = options_.get_bool("COUPLED_INDUCTION");
+    reference_ = options_.get_str("REFERENCE");
+
+    // set coupled equation type
+    if (coupled_ind_) {
+        if (reference_ == "ROHF") {
+            coupled_ind_type_ = "RESTRICTED";
+        } else {
+            coupled_ind_type_ = "UNRESTRICTED";
+        }
+    }
+
+    // Get memory and convert it into words.
+    memory_ = (size_t)(Process::environment.get_memory() * options_.get_double("SAPT_MEM_FACTOR") * 0.125);
+
+    cpks_maxiter_ = options_.get_int("MAXITER");
+    cpks_delta_ = options_.get_double("D_CONVERGENCE");
+
+    dimer_ = d->molecule();
+    monomer_A_ = mA->molecule();
+    monomer_B_ = mB->molecule();
+
+    E_dimer_ = d->energy();
+    E_monomer_A_ = mA->energy();
+    E_monomer_B_ = mB->energy();
+
+    primary_ = d->basisset();
+    primary_A_ = mA->basisset();
+    primary_B_ = mB->basisset();
+
+    dimer_field_ = d->get_dipole_field_strength();
+    monomer_A_field_ = mA->get_dipole_field_strength();
+    monomer_B_field_ = mB->get_dipole_field_strength();
+
+    mp2fit_ = d->get_basisset("DF_BASIS_SAPT");
+    jkfit_ = d->get_basisset("DF_BASIS_SCF");
+
+    if (options_.get_str("EXCH_SCALE_ALPHA") == "FALSE") {
+        exch_scale_alpha_ = 0.0;
+    } else if (options_.get_str("EXCH_SCALE_ALPHA") == "TRUE") {
+        exch_scale_alpha_ = 1.0;  // Default value for alpha
+    } else {
+        exch_scale_alpha_ = std::atof(options_.get_str("EXCH_SCALE_ALPHA").c_str());
+    }
+    Process::environment.globals["SAPT ALPHA"] = exch_scale_alpha_;
+
+    // TODO: Modify this if all formulae are finally adapted for all bases.
+    if (primary_A_->nbf() != primary_B_->nbf() || primary_->nbf() != primary_A_->nbf()) {
+        throw PSIEXCEPTION("Monomer-centered bases not allowed in open-shell SAPT0");
+    }
+
+    initialize(mA, mB);
+}
+USAPT0::USAPT0(std::shared_ptr<scf::ROHF> d, std::shared_ptr<scf::ROHF> mA, std::shared_ptr<scf::ROHF> mB,
+               Options& options, std::shared_ptr<PSIO> psio)
+    : options_(options), wfn_A_(mA), wfn_B_(mB) {
+    print_ = options_.get_int("PRINT");
+    debug_ = options_.get_int("DEBUG");
+    bench_ = options_.get_int("BENCH");
+    coupled_ind_ = options_.get_bool("COUPLED_INDUCTION");
+    reference_ = options_.get_str("REFERENCE");
+
+    // set coupled equation type
+    if (coupled_ind_) {
+        if (reference_ == "ROHF") {
+            coupled_ind_type_ = "RESTRICTED";
+        } else {
+            coupled_ind_type_ = "UNRESTRICTED";
+        }
+    }
+
     // Get memory and convert it into words.
     memory_ = (size_t)(Process::environment.get_memory() * options_.get_double("SAPT_MEM_FACTOR") * 0.125);
 
@@ -160,6 +230,7 @@ void USAPT0::initialize(SharedWavefunction mA, SharedWavefunction mB) {
     alpha_exchange_ = (Cocca_A_->ncol() > 0) && (Cocca_B_->ncol() > 0);
     beta_exchange_ = (Coccb_A_->ncol() > 0) && (Coccb_B_->ncol() > 0);
 }
+
 USAPT0::~USAPT0() {}
 
 double USAPT0::compute_energy() {
@@ -976,7 +1047,6 @@ void USAPT0::fock_terms() {
         J_Pb_A = J[jk_id];
     }
 
-
     // ==> Generalized ESP (Flat and Exchange) <== //
 
     std::map<std::string, std::shared_ptr<Matrix> > mapA;
@@ -1171,7 +1241,7 @@ void USAPT0::fock_terms() {
     if (coupled_ind_) {
         // => Coupled Induction <= //
         // TODO: Write an RO CPHF solver for ROHF reference orbitals
-
+        // FIXME(filip): HERE WE INJECT THE ROHF::cphf_solve()
         // Compute CPKS for both alpha and beta electrons.
         std::map<std::string, std::shared_ptr<Matrix> > x_sol = compute_x(jk, waB, wbB, waA, wbA);
         std::shared_ptr<Matrix> xaA = x_sol["Aa"];
@@ -1480,7 +1550,12 @@ std::map<std::string, std::shared_ptr<Matrix> > USAPT0::compute_x(std::shared_pt
     // Effective constructor
     cpks->delta_ = cpks_delta_;
     cpks->maxiter_ = cpks_maxiter_;
+    cpks->cpks_type_ = coupled_ind_type_;
     cpks->jk_ = jk;
+
+    // fibrz dev
+    cpks->wfn_A_ = std::dynamic_pointer_cast<scf::ROHF>(wfn_A_);
+    cpks->wfn_B_ = std::dynamic_pointer_cast<scf::ROHF>(wfn_B_);
 
     cpks->wa_A_ = wa_A;  // I don't like convention reversal.
     cpks->wb_A_ = wb_A;
@@ -1598,7 +1673,16 @@ void CPKS_USAPT0::compute_cpks() {
             b["Bb"] = pb_B;
         }
 
-        std::map<std::string, std::shared_ptr<Matrix> > s = product(b);
+        std::map<std::string, std::shared_ptr<Matrix> > s;
+        // CPUHF/CPUKS
+        if (cpks_type_ == "UNRESTRICTED") {
+            s = product(b);
+        } else {
+            // CPROHF/CPROKS
+            if (cpks_type_ == "RESTRICTED") {
+                s = product_restricted(b);
+            }
+        }
 
         if (r2A > delta_) {
             std::shared_ptr<Matrix> sa_A = s["Aa"];
@@ -1635,6 +1719,8 @@ void CPKS_USAPT0::compute_cpks() {
             r2A = sqrt(r2A) / b2A;
         }
 
+        outfile->Printf("MON A DONE BBY\n");
+
         if (r2B > delta_) {
             std::shared_ptr<Matrix> sa_B = s["Ba"];
             std::shared_ptr<Matrix> sb_B = s["Bb"];
@@ -1669,6 +1755,7 @@ void CPKS_USAPT0::compute_cpks() {
             }
             r2B = sqrt(r2B) / b2B;
         }
+        outfile->Printf("MON B DONE BBY\n");
 
         stop = std::time(nullptr);
         outfile->Printf("    %-4d %11.3E%1s %11.3E%1s %10ld\n", iter + 1, r2A, (r2A < delta_ ? "*" : " "), r2B,
@@ -1756,7 +1843,6 @@ void CPKS_USAPT0::preconditioner(std::shared_ptr<Matrix> r, std::shared_ptr<Matr
 
 std::map<std::string, std::shared_ptr<Matrix> > CPKS_USAPT0::product(
     std::map<std::string, std::shared_ptr<Matrix> >& b) {
-
     std::map<std::string, std::shared_ptr<Matrix> > s;
 
     bool do_A = b.count("Aa") || b.count("Ab");
@@ -2010,6 +2096,193 @@ std::map<std::string, std::shared_ptr<Matrix> > CPKS_USAPT0::product(
     return s;
 }
 
+// restricted open-shell mat-vect product of the H^{(1)} hessian
+std::map<std::string, std::shared_ptr<Matrix> > CPKS_USAPT0::product_restricted(
+    std::map<std::string, std::shared_ptr<Matrix> >& b) {
+    std::map<std::string, std::shared_ptr<Matrix> > s;
+
+    //
+    // we must map spin-blocks to docc,socc,virt blocks
+    // and do the product in docc,socc,virt blocks
+    //
+    // a -> doubly occupied
+    // i -> singly occupied
+    // r -> virtual
+    // t^{\alpha} = ( t_ar )
+    //              ( t_ir )
+    // t^{\beta}  = ( t_ar )
+    //              ( t_ai )
+    // n_{ov}_alpha = (a + i)(r)
+    // n_{ov}_beta  = (a)(i+r)
+    // n_o_alpha = a + i
+    // n_v_alpha = r
+    // n_o_beta  = a
+    // n_v_beta  = i + r
+    //
+    // n_a = n_o_beta
+    // n_i = n_o_alpha - n_o_beta
+    // n_r = n_v_alpha
+
+    bool do_A = b.count("Aa") || b.count("Ab");
+    bool do_B = b.count("Ba") || b.count("Bb");
+    bool alpha_A, alpha_B, beta_A, beta_B;
+    // check if there is anything to compute
+    if (do_A) {
+        alpha_A = (b["Aa"]->nrow() > 0) && (b["Aa"]->ncol() > 0);
+        beta_A = (b["Ab"]->nrow() > 0) && (b["Ab"]->ncol() > 0);
+    }
+    if (do_B) {
+        alpha_B = (b["Ba"]->nrow() > 0) && (b["Ba"]->ncol() > 0);
+        beta_B = (b["Bb"]->nrow() > 0) && (b["Bb"]->ncol() > 0);
+    }
+    if (do_A) {
+        // occupied -> nrow
+        // virtual  -> ncol
+        auto s_Aa = b["Aa"]->clone();
+        auto s_Ab = b["Ab"]->clone();
+
+        auto docc = b["Ab"]->nrow();
+        auto socc = b["Aa"]->nrow() - b["Ab"]->nrow();
+        auto virt = b["Aa"]->ncol();
+
+        // outfile->Printf(" PROSZE PANSTWA DEBUG\n");
+
+        outfile->Printf(" MONA:\n");
+        outfile->Printf(" docc: %d \n", docc);
+        outfile->Printf(" socc: %d \n", socc);
+        outfile->Printf(" virt: %d \n", virt);
+        // pack spin blocks to docc,socc,virt blocks
+        // fragment A
+        Dimension dim_zero(1), doccpi_A(1), soccpi_A(1), virtpi_A(1);  // C1 is already checked?
+        doccpi_A.fill(docc);
+        soccpi_A.fill(socc);
+        virtpi_A.fill(virt);
+
+        // (docc, socc, virt)
+        Slice docc_slice_A(dim_zero, doccpi_A);
+        // outfile->Printf(" docc slice DONE\n");
+        Slice socc_slice_A(doccpi_A, soccpi_A + doccpi_A);
+        // outfile->Printf(" socc slice DONE\n");
+        Slice rvirt_slice_A(dim_zero, virtpi_A);
+        // outfile->Printf(" rvirt slice DONE\n");
+        Slice ivirt_slice_A(virtpi_A, virtpi_A + soccpi_A);
+        // outfile->Printf(" ivirt slice DONE\n");
+
+        auto t_ar_A = b["Aa"]->get_block(docc_slice_A, rvirt_slice_A);
+        auto t_ir_A = b["Aa"]->get_block(socc_slice_A, rvirt_slice_A);
+        auto t_ai_A = b["Ab"]->get_block(docc_slice_A, ivirt_slice_A);
+
+        // ROHF::Hx expected strucutre
+        // docc x socc | docc x virt
+        // socc x socc | socc x virt
+        // NOTE: socc x socc is always zero
+        Slice pvir_slice_A(soccpi_A, soccpi_A + virtpi_A);
+        auto t_A = std::make_shared<Matrix>("", doccpi_A + soccpi_A, soccpi_A + virtpi_A);
+
+        // docc x socc -> t_ai
+        t_A->set_block(docc_slice_A, socc_slice_A, t_ai_A);
+        // docc x virt -> t_ar
+        t_A->set_block(docc_slice_A, pvir_slice_A, t_ar_A);
+        // socc x virt -> t_ir
+        t_A->set_block(socc_slice_A, pvir_slice_A, t_ir_A);
+
+        auto test = t_A->sum_of_squares();
+        outfile->Printf(" %f\n", test);
+        std::vector<SharedMatrix> x_A;
+        x_A.push_back(t_A);
+        // outfile->Printf(" PROSZE PANSTWA RAKIETA STARTUJE\n");
+        // call cphf_Hx
+        auto ret_A = wfn_A_->cphf_Hx(x_A);
+        test = ret_A[0]->sum_of_squares();
+        outfile->Printf(" %f\n", test);
+
+        // outfile->Printf(" PROSZE PANSTWA RAKIETA WYLADOWALA\n");
+        // re-pack back to spin-blocks
+        // alpha ar
+        s_Aa->set_block(docc_slice_A, rvirt_slice_A, ret_A[0]->get_block(docc_slice_A, pvir_slice_A));
+        // alpha ir
+        s_Aa->set_block(socc_slice_A, rvirt_slice_A, ret_A[0]->get_block(socc_slice_A, pvir_slice_A));
+        // beta ar
+        s_Ab->set_block(docc_slice_A, rvirt_slice_A, ret_A[0]->get_block(docc_slice_A, pvir_slice_A));
+        // beta ai
+        s_Ab->set_block(docc_slice_A, ivirt_slice_A, ret_A[0]->get_block(docc_slice_A, socc_slice_A));
+        s["Aa"] = s_Aa;
+        s["Ab"] = s_Ab;
+    }
+
+    if (do_B) {
+        auto s_Ba = b["Ba"]->clone();
+        auto s_Bb = b["Bb"]->clone();
+
+        auto docc = b["Bb"]->nrow();
+        auto socc = b["Ba"]->nrow() - b["Bb"]->nrow();
+        auto virt = b["Ba"]->ncol();
+        outfile->Printf(" MONB:\n");
+        outfile->Printf(" docc: %d \n", docc);
+        outfile->Printf(" socc: %d \n", socc);
+        outfile->Printf(" virt: %d \n", virt);
+        // pack spin blocks to docc,socc,virt blocks
+        // fragment B
+        Dimension dim_zero(1), doccpi_B(1), soccpi_B(1), virtpi_B(1);  // C1 is already checked
+        doccpi_B.fill(docc);
+        soccpi_B.fill(socc);
+        virtpi_B.fill(virt);
+
+        // (docc, socc, virt)
+        Slice docc_slice_B(dim_zero, doccpi_B);
+        // outfile->Printf(" docc slice DONE\n");
+        Slice socc_slice_B(doccpi_B, soccpi_B + doccpi_B);
+        // outfile->Printf(" socc slice DONE\n");
+        Slice rvirt_slice_B(dim_zero, virtpi_B);
+        // outfile->Printf(" rvirt slice DONE\n");
+        Slice ivirt_slice_B(virtpi_B, virtpi_B + soccpi_B);
+        // outfile->Printf(" ivirt slice DONE\n");
+
+        auto t_ar_B = b["Ba"]->get_block(docc_slice_B, rvirt_slice_B);
+        auto t_ir_B = b["Ba"]->get_block(socc_slice_B, rvirt_slice_B);
+        auto t_ai_B = b["Bb"]->get_block(docc_slice_B, ivirt_slice_B);
+
+        // ROHF::Hx expected strucutre
+        // docc x socc | docc x virt
+        // socc x socc | socc x virt
+        // NOTE: socc x socc is always zero
+        Slice pvir_slice_B(soccpi_B, soccpi_B + virtpi_B);
+        auto t_B = std::make_shared<Matrix>("", doccpi_B + soccpi_B, soccpi_B + virtpi_B);
+
+        // docc x socc -> t_ai
+        t_B->set_block(docc_slice_B, socc_slice_B, t_ai_B);
+        // docc x virt -> t_ar
+        t_B->set_block(docc_slice_B, pvir_slice_B, t_ar_B);
+        // socc x virt -> t_ir
+        t_B->set_block(socc_slice_B, pvir_slice_B, t_ir_B);
+
+        auto test = t_B->sum_of_squares();
+        outfile->Printf(" %f\n", test);
+        std::vector<SharedMatrix> x_B;
+        x_B.push_back(t_B);
+        // outfile->Printf(" PROSZE PANSTWA RAKIETA STARTUJE\n");
+        // call cphf_Hx
+        auto ret_B = wfn_B_->cphf_Hx(x_B);
+        test = ret_B[0]->sum_of_squares();
+        outfile->Printf(" %f\n", test);
+
+        // outfile->Printf(" PROSZE PANSTWA RAKIETA WYLADOWALA\n");
+        // re-pack back to spin-blocks
+        // alpha ar
+        s_Ba->set_block(docc_slice_B, rvirt_slice_B, ret_B[0]->get_block(docc_slice_B, pvir_slice_B));
+        // alpha ir
+        s_Ba->set_block(socc_slice_B, rvirt_slice_B, ret_B[0]->get_block(socc_slice_B, pvir_slice_B));
+        // beta ar
+        s_Bb->set_block(docc_slice_B, rvirt_slice_B, ret_B[0]->get_block(docc_slice_B, pvir_slice_B));
+        // beta ai
+        s_Bb->set_block(docc_slice_B, ivirt_slice_B, ret_B[0]->get_block(docc_slice_B, socc_slice_B));
+        s["Ba"] = s_Ba;
+        s["Bb"] = s_Bb;
+    }
+    // outfile->Printf("SAPT(ROHF) product_restricted exiting!\n");
+    return s;
+}
+
 void USAPT0::mp2_terms() {
     // Note: the unrestricted version implements the second-quantized formula, which was also the one
     // implemented for induction. The restricted code apparently implements the density matrix
@@ -2247,10 +2520,18 @@ void USAPT0::mp2_terms() {
     std::shared_ptr<Matrix> Qa_bs;
     std::shared_ptr<Matrix> Qb_bs;
 
-    if (naa > 0) { Qa_ar = linalg::triplet(Caocca_A_, El_pot_B, Cavira_A_, true, false, false); }
-    if (nba > 0) { Qb_ar = linalg::triplet(Caoccb_A_, El_pot_B, Cavirb_A_, true, false, false); }
-    if (nab > 0) { Qa_bs = linalg::triplet(Caocca_B_, El_pot_A, Cavira_B_, true, false, false); }
-    if (nbb > 0) { Qb_bs = linalg::triplet(Caoccb_B_, El_pot_A, Cavirb_B_, true, false, false); }
+    if (naa > 0) {
+        Qa_ar = linalg::triplet(Caocca_A_, El_pot_B, Cavira_A_, true, false, false);
+    }
+    if (nba > 0) {
+        Qb_ar = linalg::triplet(Caoccb_A_, El_pot_B, Cavirb_A_, true, false, false);
+    }
+    if (nab > 0) {
+        Qa_bs = linalg::triplet(Caocca_B_, El_pot_A, Cavira_B_, true, false, false);
+    }
+    if (nbb > 0) {
+        Qb_bs = linalg::triplet(Caoccb_B_, El_pot_A, Cavirb_B_, true, false, false);
+    }
 
     Ta_as.reset();
     Tb_as.reset();
@@ -2281,16 +2562,16 @@ void USAPT0::mp2_terms() {
     // transformation for necessary quantities
     std::vector<std::shared_ptr<Matrix> > Cs;
     if (naa > 0) {
-        Cs.push_back(Caocca_A_); // a_a
-        Cs.push_back(Cavira_A_); // a_r
-        Cs.push_back(Ca_r3); // a_r3
-        Cs.push_back(Ca_a4); // a_a4
+        Cs.push_back(Caocca_A_);  // a_a
+        Cs.push_back(Cavira_A_);  // a_r
+        Cs.push_back(Ca_r3);      // a_r3
+        Cs.push_back(Ca_a4);      // a_a4
     }
     if (nab > 0) {
-        Cs.push_back(Caocca_B_); // a_b
-        Cs.push_back(Cavira_B_); // a_s
-        Cs.push_back(Ca_s3); // a_s3
-        Cs.push_back(Ca_b4); // a_b4
+        Cs.push_back(Caocca_B_);  // a_b
+        Cs.push_back(Cavira_B_);  // a_s
+        Cs.push_back(Ca_s3);      // a_s3
+        Cs.push_back(Ca_b4);      // a_b4
     }
 
     if (alpha_exchange_) {
@@ -2305,16 +2586,16 @@ void USAPT0::mp2_terms() {
     }
 
     if (nba > 0) {
-        Cs.push_back(Caoccb_A_); // b_a
-        Cs.push_back(Cavirb_A_); // b_r
-        Cs.push_back(Cb_r3); // b_r3
-        Cs.push_back(Cb_a4); // b_a4
+        Cs.push_back(Caoccb_A_);  // b_a
+        Cs.push_back(Cavirb_A_);  // b_r
+        Cs.push_back(Cb_r3);      // b_r3
+        Cs.push_back(Cb_a4);      // b_a4
     }
     if (nbb > 0) {
-        Cs.push_back(Caoccb_B_); // b_b
-        Cs.push_back(Cavirb_B_); // b_s
-        Cs.push_back(Cb_s3); // b_s3
-        Cs.push_back(Cb_b4); // b_b4
+        Cs.push_back(Caoccb_B_);  // b_b
+        Cs.push_back(Cavirb_B_);  // b_s
+        Cs.push_back(Cb_s3);      // b_s3
+        Cs.push_back(Cb_b4);      // b_b4
     }
     if (beta_exchange_) {
         if (nba > 0) {
@@ -2479,7 +2760,7 @@ void USAPT0::mp2_terms() {
     maxa_b = (maxa_b > nab ? nab : maxa_b);
     maxb_a = (maxb_a > nba ? nba : maxb_a);
     maxb_b = (maxb_b > nbb ? nbb : maxb_b);
-    if ( (naa > 0 && maxa_a < 1L) || (nab > 0 && maxa_b < 1L) || (nba > 0 && maxb_a < 1L) || (nbb > 0 && maxb_b < 1L) ) {
+    if ((naa > 0 && maxa_a < 1L) || (nab > 0 && maxa_b < 1L) || (nba > 0 && maxb_a < 1L) || (nbb > 0 && maxb_b < 1L)) {
         throw PSIEXCEPTION("Too little dynamic memory for USAPT0::mp2_terms");
     }
 

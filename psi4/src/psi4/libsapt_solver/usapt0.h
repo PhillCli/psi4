@@ -32,6 +32,7 @@
 #define USAPT_H
 
 #include "psi4/libmints/wavefunction.h"
+#include "psi4/libscf_solver/rohf.h"  // wfn with cphf_Hx?
 #include "psi4/libmints/typedefs.h"
 #include "psi4/libqt/qt.h"
 #include <map>
@@ -60,6 +61,8 @@ class USAPT0 {
    protected:
     // SAPT type (until properly subclassed)
     std::string type_;
+    std::string reference_;
+    std::string coupled_ind_type_;
 
     // Print flag
     int print_;
@@ -109,6 +112,12 @@ class USAPT0 {
     std::shared_ptr<Molecule> monomer_A_;
     // Monomer B geometry
     std::shared_ptr<Molecule> monomer_B_;
+
+    // wfns with cphf_Hx
+    // Monomer A wfn
+    std::shared_ptr<scf::ROHF> wfn_A_;
+    // Monomer B wfn
+    std::shared_ptr<scf::ROHF> wfn_B_;
 
     // Dimer dipole field
     std::array<double, 3> dimer_field_;
@@ -326,6 +335,8 @@ class USAPT0 {
     // Constructor, call this with 3 converged SCF jobs (dimer, monomer A, monomer B)
     USAPT0(SharedWavefunction d, SharedWavefunction mA, SharedWavefunction mB, Options& options,
            std::shared_ptr<PSIO> psio);
+    USAPT0(std::shared_ptr<scf::ROHF> d, std::shared_ptr<scf::ROHF> mA, std::shared_ptr<scf::ROHF> mB, Options& options,
+           std::shared_ptr<PSIO> psio);
     virtual ~USAPT0();
 
     // Compute the USAPT0 analysis
@@ -345,6 +356,9 @@ class CPKS_USAPT0 {
     double delta_;
     // Maximum allowed iterations
     int maxiter_;
+    // Type of CPKS, restricted or unrestricted
+    std::string cpks_type_;
+
     // JK Object
     std::shared_ptr<JK> jk_;
 
@@ -390,8 +404,23 @@ class CPKS_USAPT0 {
     std::shared_ptr<Vector> eps_vira_B_;
     std::shared_ptr<Vector> eps_virb_B_;
 
+    // computes mat-vect product of orbital hessians with trial vectors
     // Form the s = Ab product for the provided vectors b (may or may not need more iterations)
     std::map<std::string, std::shared_ptr<Matrix> > product(std::map<std::string, std::shared_ptr<Matrix> >& b);
+
+    // Form the s = Ab product for the provided vectors b (may or may not need more iterations)
+    // ROHF/ROKS hessians have different elements, here we follow elements definition of
+    // http://dx.doi.org/10.1063/1.2968556
+    // Note that our A matrix, is actually sum of A & B from the paper(eq .25 & 26)
+    // sometimes this sum is marked as H^{(1)} part of the hessian
+    std::map<std::string, std::shared_ptr<Matrix> > product_restricted(
+        std::map<std::string, std::shared_ptr<Matrix> >& b);
+
+    // Monomer A wfn
+    std::shared_ptr<scf::ROHF> wfn_A_;
+    // Monomer B wfn
+    std::shared_ptr<scf::ROHF> wfn_B_;
+
     // Apply the denominator from r into zs
     void preconditioner(std::shared_ptr<Matrix> r, std::shared_ptr<Matrix> z, std::shared_ptr<Vector> o,
                         std::shared_ptr<Vector> v);
