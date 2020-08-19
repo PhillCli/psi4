@@ -1,0 +1,29 @@
+#! SAPT0(ROHF) open-shell computation of CN - Ne interaction energy
+
+memory 1 GB
+
+molecule {
+     0 2
+     C 0.000000  0.000000  0.000000
+     N 0.000000 0.000000  2.21
+     --
+     0 1
+     Ne 0.000000 0.000000 -6.410228688
+     units bohr
+     symmetry c1
+     no_reorient
+     no_com
+}
+
+set {
+reference rohf
+scf_type     df
+guess        sad
+basis         jun-cc-pVDZ
+df_basis_scf  aug-cc-pVDZ-jkfit
+df_basis_sapt aug-cc-pVDZ-ri
+SAVE_JK True
+MAXITER 200
+}
+
+energy('sapt0')

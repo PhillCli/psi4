@@ -92,6 +92,7 @@ def select_scf_gradient(name, **kwargs):
         return func(name, **kwargs)
 
 
+
 def select_mp2(name, **kwargs):
     """Function selecting the algorithm for a MP2 energy call
     and directing to specified or best-performance default modules.
@@ -4817,13 +4818,6 @@ def run_sapt(name, **kwargs):
         core.set_local_option('SAPT', 'DO_THIRD_ORDER', True)
         core.set_local_option('SAPT', 'DO_CCD_DISP', True)
 
-    # Make sure we are not going to run CPHF on ROHF, since its MO Hessian
-    # is not SPD
-    if core.get_option('SCF', 'REFERENCE') == 'ROHF':
-        core.set_local_option('SAPT', 'COUPLED_INDUCTION', False)
-        core.print_out('  Coupled induction not available for ROHF.\n')
-        core.print_out('  Proceeding with uncoupled induction only.\n')
-
     core.print_out("  Constructing Basis Sets for SAPT...\n\n")
     aux_basis = core.BasisSet.build(dimer_wfn.molecule(), "DF_BASIS_SAPT", core.get_global_option("DF_BASIS_SAPT"),
                                     "RIFIT", core.get_global_option("BASIS"))
@@ -4852,15 +4846,14 @@ def run_sapt(name, **kwargs):
     # Make sure we got induction, otherwise replace it with uncoupled induction
     which_ind = 'IND'
     target_ind = 'IND'
-    if not core.has_variable(' '.join((sapt_name.upper(), which_ind, 'ENERGY'))):
+    if not core.has_variable(' '.join([name.upper(), which_ind, 'ENERGY'])):
         which_ind = 'IND,U'
 
     for term in ['ELST', 'EXCH', 'DISP', 'TOTAL']:
-        core.set_variable(' '.join(['SAPT', term, 'ENERGY']),
-                          core.variable(' '.join([sapt_name.upper(), term, 'ENERGY'])))
+        core.set_variable(' '.join(['SAPT', term, 'ENERGY']), core.variable(' '.join([name.upper(), term, 'ENERGY'])))
     # Special induction case
     core.set_variable(' '.join(['SAPT', target_ind, 'ENERGY']),
-                      core.variable(' '.join([sapt_name.upper(), which_ind, 'ENERGY'])))
+                      core.variable(' '.join([name.upper(), which_ind, 'ENERGY'])))
     core.set_variable('CURRENT ENERGY', core.variable('SAPT TOTAL ENERGY'))
 
     # Empirical dispersion

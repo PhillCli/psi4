@@ -71,15 +71,15 @@ PsiReturnType sapt(SharedWavefunction Dimer, SharedWavefunction MonomerA, Shared
             }
 
         } else {
-            // This is added to make sure the default for COUPLED_INDUCTION is properly
-            // set even if the user bypasses the driver to run.
             if (options.get_str("REFERENCE") == "ROHF") {
-                if (!(options["COUPLED_INDUCTION"].has_changed()) && options.get_bool("COUPLED_INDUCTION")) {
-                    options.set_bool("SAPT", "COUPLED_INDUCTION", false);
-                }
+                // JUST FOR DEV-DEBUG FOR PR THIS SHOULD BE THE DEFAULT CONSTRUCTOR
+                USAPT0 sapt(std::dynamic_pointer_cast<scf::ROHF>(Dimer), std::dynamic_pointer_cast<scf::ROHF>(MonomerA),
+                            std::dynamic_pointer_cast<scf::ROHF>(MonomerB), options, psio);
+                sapt.compute_energy();
+            } else {
+                USAPT0 sapt(Dimer, MonomerA, MonomerB, options, psio);
+                sapt.compute_energy();
             }
-            USAPT0 sapt(Dimer, MonomerA, MonomerB, options, psio);
-            sapt.compute_energy();
         }
     } else if (options.get_str("SAPT_LEVEL") == "SAPT2") {
         SAPT2 sapt(Dimer, MonomerA, MonomerB, options, psio);
