@@ -545,12 +545,27 @@ def run_sf_sapt(name, **kwargs):
         core.set_global_option('DF_INTS_IO', 'SAVE')
 
     # Compute dimer wavefunction
-    wfn_A = scf_helper("SCF", molecule=monomerA, banner="SF-SAPT: HF Monomer A", **kwargs)
+    if "wfn_A" not in kwargs.keys():
+        core.print_out(" WFN A not found in the kwargs, recomputing ...")
+        wfn_A = scf_helper("SCF", molecule=monomerA, banner="SF-SAPT: HF Monomer A", **kwargs)
+        core.set_global_option("SAVE_JK", True)
+    else:
+        wfn_A = kwargs.pop("wfn_A")
 
-    core.set_global_option("SAVE_JK", True)
-    wfn_B = scf_helper("SCF", molecule=monomerB, banner="SF-SAPT: HF Monomer B", **kwargs)
-    sapt_jk = wfn_B.jk()
-    core.set_global_option("SAVE_JK", False)
+    if "wfn_B" not in kwargs.keys():
+        core.print_out(" WFN B not found in the kwargs, recomputing ...")
+        wfn_B = scf_helper("SCF", molecule=monomerB, banner="SF-SAPT: HF Monomer B", **kwargs)
+        core.set_global_option("SAVE_JK", False)
+    else:
+        wfn_B = kwargs.pop("wfn_B")
+
+    if "jk" not in kwargs.keys():
+        sapt_jk = wfn_B.jk()
+        if sapt_jk is None:
+            raise RuntimeError("Could not initialize JK object properly, wfn injection failed")
+    else:
+        sapt_jk = kwargs.pop("jk")
+
     core.print_out("\n")
     core.print_out("         ---------------------------------------------------------\n")
     core.print_out("         " + "Spin-Flip SAPT Exchange and Electrostatics".center(58) + "\n")
@@ -559,7 +574,119 @@ def run_sf_sapt(name, **kwargs):
     core.print_out("         ---------------------------------------------------------\n")
     core.print_out("\n")
 
-    sf_data = sapt_sf_terms.compute_sapt_sf(sapt_dimer, sapt_jk, wfn_A, wfn_B)
+    sf_data = {}
+    if not core.get_option("SAPT", "SF_SAPT_DO_ONLY_CPHF"):
+        sf_first_order = sapt_sf_terms.compute_first_order_sapt_sf(sapt_dimer, sapt_jk, wfn_A, wfn_B)
+        sf_data.update(sf_first_order)
+
+    def form_omega_potentials(cache: Dict[str, str], sapt_jk: core.JK) -> Tuple[core.Matrix, core.Matrix]:
+        """
+        Forms un-perturbed electric potentials (atomic nuclei + electrons) of both monomers
+        """
+        core.print_out("SAPT FF IND,RESP\n")
+        core.print_out("FORMING ELECTRIC AO POTENTIALS OF MONOMERS\n")
+        sapt_jk.print_header()
+        sapt_jk.C_clear()
+
+        wfn_A = cache["wfn_A"]
+        wfn_B = cache["wfn_B"]
+        # compute J[D_A_alpha] + J[D_A_beta]
+        # alpha
+        sapt_jk.C_left_add(wfn_A.Ca_subset("AO", "OCC"))
+        sapt_jk.C_right_add(wfn_A.Ca_subset("AO", "OCC"))
+        # beta
+        sapt_jk.C_left_add(wfn_A.Cb_subset("AO", "OCC"))
+        sapt_jk.C_right_add(wfn_A.Cb_subset("AO", "OCC"))
+
+        # compute J[D_B_alpha] + J[D_B_beta]
+        # alpha
+        sapt_jk.C_left_add(wfn_B.Ca_subset("AO", "OCC"))
+        sapt_jk.C_right_add(wfn_B.Ca_subset("AO", "OCC"))
+        # beta
+        sapt_jk.C_left_add(wfn_B.Cb_subset("AO", "OCC"))
+        sapt_jk.C_right_add(wfn_B.Cb_subset("AO", "OCC"))
+
+        # disable K build
+        sapt_jk.set_do_K(False)
+
+        # compute JK
+        sapt_jk.compute()
+        core.print_out("FORMING ELECTRIC AO POTENTIALS OF MONOMERS\n")
+
+        J_A_a = sapt_jk.J()[0].clone()
+        J_A_b = sapt_jk.J()[1].clone()
+        J_B_a = sapt_jk.J()[2].clone()
+        J_B_b = sapt_jk.J()[3].clone()
+
+        # compute final AO omega_A
+        mints = core.MintsHelper(wfn_A.basisset())
+        omega_A = mints.ao_potential()
+        omega_A.add(J_A_a)
+        omega_A.add(J_A_b)
+
+        # compute final AO omega_B
+        mints = core.MintsHelper(wfn_B.basisset())
+        omega_B = mints.ao_potential()
+        omega_B.add(J_B_a)
+        omega_B.add(J_B_b)
+
+        # NOTE: revert changes to jk K compute, otherwise rohf.Hx calls will seg-fault
+        sapt_jk.set_do_K(True)
+
+        core.print_out("... Done\n")
+        return omega_A, omega_B
+
+    def build_cache(cache: dict = None) -> dict:
+        """build cache object for cphf_induction"""
+        if cache is None:
+            cache = {}
+
+        ndocc_A = wfn_A.doccpi().sum()
+        nsocc_A = wfn_A.soccpi().sum()
+
+        ndocc_B = wfn_B.doccpi().sum()
+        nsocc_B = wfn_B.soccpi().sum()
+
+        # grab virtual orbitals
+        nbf, nvir_A = wfn_A.Ca_subset("AO", "VIR").np.shape
+        nbf, nvir_B = wfn_B.Ca_subset("AO", "VIR").np.shape
+        print(f"{ndocc_A=}")
+        print(f"{nsocc_A=}")
+        print(f"{ndocc_B=}")
+        print(f"{nsocc_B=}")
+        cache.update({
+            "wfn_A": wfn_A,
+            "wfn_B": wfn_B,
+            "ndocc_A": ndocc_A,
+            "nsocc_A": nsocc_A,
+            "nvir_A": nvir_A,
+            "ndocc_B": ndocc_B,
+            "nsocc_B": nsocc_B,
+            "nvir_B": nvir_B,
+            # NOTE: need to triple check those
+            "eps_docc_A": core.Vector.from_array(wfn_A.epsilon_b_subset("AO", "OCC").np),
+            "eps_socc_A": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "OCC").np[ndocc_A:]),
+            "eps_vir_A": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "VIR").np),
+            "eps_docc_B": core.Vector.from_array(wfn_B.epsilon_b_subset("AO", "OCC").np),
+            "eps_socc_B": core.Vector.from_array(wfn_B.epsilon_a_subset("AO", "OCC").np[ndocc_B:]),
+            "eps_vir_B": core.Vector.from_array(wfn_B.epsilon_a_subset("AO", "VIR").np),
+        })
+        return cache
+
+    core.timer_on("SF-SAPT:SAPT(CP-ROHF):ind")
+    # NOTE: fold it to build cphf_rohf cache
+    # wfn_A.epsilon_a_subset("AO", "OCC")
+    cache = build_cache()
+    omega_A_ao, omega_B_ao = form_omega_potentials(cache, sapt_jk)
+    cache.update({"omega_A_ao": omega_A_ao, "omega_B_ao": omega_B_ao})
+    data_ind, amplitudes_ind = sapt_sf_terms.compute_cphf_induction(cache,
+                                                                    sapt_jk,
+                                                                    maxiter=core.get_option("SAPT", "MAXITER"),
+                                                                    conv=core.get_option("SAPT", "D_CONVERGENCE"))
+    core.set_variable("SAPT IND20,R ENERGY", data_ind["Ind20,r"])
+    return data_ind, amplitudes_ind
+    sf_data.update(data_ind)
+    core.timer_off("SF-SAPT:SAPT(CP-ROHF):ind")
 
     # Print the results
     core.print_out("   Spin-Flip SAPT Results\n")
@@ -567,29 +694,38 @@ def run_sf_sapt(name, **kwargs):
 
     for key, value in sf_data.items():
         value = sf_data[key]
-        print_vals = (key, value * 1000, value * constants.hartree2kcalmol, value * constants.hartree2kJmol)
-        string = "    %-26s % 15.8f [mEh] % 15.8f [kcal/mol] % 15.8f [kJ/mol]\n" % print_vals
+        print_vals = (key, value * 1000, value * constants.hartree2kcalmol, value * constants.hartree2kJmol,
+                      value * constants.hartree2wavenumbers)
+        string = "    %-26s % 15.8f [mEh] % 15.8f [kcal/mol] % 15.8f [kJ/mol] % 15.8f [cm^-1]\n" % print_vals
         core.print_out(string)
     core.print_out("  " + "-" * 103 + "\n\n")
 
     dimer_wfn = core.Wavefunction.build(sapt_dimer, wfn_A.basisset())
 
-    # Set variables
+    # core variables mapping
     psivar_tanslator = {
+        # first order
         "Elst10": "SAPT ELST ENERGY",
         "Exch10(S^2) [diagonal]": "SAPT EXCH10(S^2),DIAGONAL ENERGY",
         "Exch10(S^2) [off-diagonal]": "SAPT EXCH10(S^2),OFF-DIAGONAL ENERGY",
         "Exch10(S^2) [highspin]": "SAPT EXCH10(S^2),HIGHSPIN ENERGY",
+        # second order
+        "Ind20,r": "SAPT IND20,R ENERGY",
     }
 
     for k, v in sf_data.items():
-        psi_k = psivar_tanslator[k]
+        if k in psivar_tanslator.keys():
+            psi_k = psivar_tanslator[k]
+            dimer_wfn.set_variable(psi_k, v)
+            core.set_variable(psi_k, v)
 
-        dimer_wfn.set_variable(psi_k, v)
-        core.set_variable(psi_k, v)
+    # set ind,resp amplitudes on output wfn
+    for k, v in amplitudes_ind.items():
+        dimer_wfn.set_array_variable(k, core.Matrix.from_array(v))
 
     # Copy over highspin
-    core.set_variable("SAPT EXCH ENERGY", sf_data["Exch10(S^2) [highspin]"])
+    if "Exch10(S^2) [highspin]" in sf_data.keys():
+        core.set_variable("SAPT EXCH ENERGY", sf_data["Exch10(S^2) [highspin]"])
 
     core.tstop()
 

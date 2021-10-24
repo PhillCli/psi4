@@ -25,6 +25,9 @@
 #
 # @END LICENSE
 #
+import time
+from pprint import pformat
+from typing import Tuple
 
 import numpy as np
 from collections import OrderedDict
@@ -35,7 +38,7 @@ from psi4.driver.p4util import solvers
 
 from .sapt_util import print_sapt_var
 
-__all__ = ["compute_sapt_sf"]
+__all__ = ["compute_first_order_sapt_sf", "compute_cphf_induction"]
 
 
 def _sf_compute_JK(jk, Cleft, Cright, rotation=None):
@@ -127,7 +130,7 @@ def _chain_dot(*dot_list):
     return result
 
 
-def compute_sapt_sf(dimer, jk, wfn_A, wfn_B, do_print=True):
+def compute_first_order_sapt_sf(dimer, jk, wfn_A, wfn_B, do_print=True):
     """
     Computes Elst and Spin-Flip SAPT0 for ROHF wavefunctions
     """
@@ -298,3 +301,455 @@ def compute_sapt_sf(dimer, jk, wfn_A, wfn_B, do_print=True):
     })
 
     return ret_values
+
+
+def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) -> Tuple[OrderedDict, OrderedDict]:
+    """
+    Solve the CP-ROHF for SAPT induction amplitudes.
+    """
+    # out of omega_A_ao & omega_B_ao
+    # rhs_A -> should be MO transformation of omega_B (electrostatic potential of B monomer felt by mon A)
+    # rhs_B -> should be MO transformation of omega_A (electrostatic potential of A monomer felt by mon B)
+
+    # indexing convention
+    # A,B
+    # i,j - core    (docc)
+    # a,b - active  (socc)
+    # r,s - virtual (virt)
+
+    ndocc_A = cache["ndocc_A"]
+    nsocc_A = cache["nsocc_A"]
+
+    # Pull out Wavefunction B quantities
+    ndocc_B = cache["ndocc_B"]
+    nsocc_B = cache["nsocc_B"]
+
+    wfn_A = cache["wfn_A"]
+    wfn_B = cache["wfn_B"]
+
+    # grab alfa & beta orbitals
+    C_alpha_A = wfn_A.Ca_subset("AO", "OCC")
+    C_beta_A = wfn_A.Cb_subset("AO", "OCC")
+
+    C_alpha_B = wfn_B.Ca_subset("AO", "OCC")
+    C_beta_B = wfn_B.Cb_subset("AO", "OCC")
+
+    # grab virtual orbitals
+    C_alpha_vir_A = wfn_A.Ca_subset("AO", "VIR")
+    C_beta_vir_A = wfn_A.Cb_subset("AO", "VIR")
+    C_alpha_vir_B = wfn_B.Ca_subset("AO", "VIR")
+    C_beta_vir_B = wfn_B.Cb_subset("AO", "VIR")
+
+    nbf, nvirt_A = C_alpha_vir_A.np.shape
+    nbf, nvirt_B = C_alpha_vir_B.np.shape
+
+    print(f"{ndocc_A=}")
+    print(f"{nsocc_A=}")
+    print(f"{nvirt_A=}")
+
+    print(f"{ndocc_B=}")
+    print(f"{nsocc_B=}")
+    print(f"{nvirt_B=}")
+
+    print("")
+    print(f"{wfn_A.Cb_subset('AO', 'ACTIVE').np.shape= }")
+    print(f"{wfn_A.Cb_subset('AO', 'FROZEN').np.shape=}")
+    print(f"{wfn_A.Cb_subset('AO', 'OCC').np.shape=}")
+    print(f"{wfn_A.Cb_subset('AO', 'VIR').np.shape=}")
+    print("")
+    print(f"{C_alpha_A.np.shape=}")
+    print(f"{C_alpha_vir_A.np.shape=}")
+    print(f"{cache['omega_B_ao'].np.shape=}")
+    print("")
+    print(f"{C_beta_A.np.shape=}")
+    print(f"{C_beta_vir_A.np.shape=}")
+    print(f"{cache['omega_B_ao'].np.shape=}")
+
+    # first transfrom into MO in spin-blocks
+    rhs_A_alpha = core.triplet(C_alpha_A, cache["omega_B_ao"], C_alpha_vir_A, True, False, False)
+    rhs_A_beta = core.triplet(C_beta_A, cache["omega_B_ao"], C_beta_vir_A, True, False, False)
+
+    # then retrive spin_blocks
+    # omega_alpha = |omega_ar|
+    #               |--------|
+    #               |omega_ir|
+    # omega_beta  = |omega_ar|
+    #               |--------|
+    #               |omega_ai|
+
+    # NOTE: sanity check, if we got the ordering within spin-blocks right
+    omega_ar_alpha = rhs_A_alpha.np[:ndocc_A, :]
+    omega_ar_beta = rhs_A_beta.np[:, nsocc_A:]
+    if not np.allclose(omega_ar_beta, omega_ar_alpha):
+        print(f"{rhs_A_alpha.np=}")
+        print(f"{rhs_A_beta.np=}")
+        raise RuntimeError("omega_ar derived from spin alpha/beta should match!")
+
+    rhs_A = core.Matrix(nsocc_A + ndocc_A, nsocc_A + nvirt_A)
+    omega_ai = rhs_A_beta.np[:, :nsocc_A]
+    omega_ar = rhs_A_beta.np[:, nsocc_A:]
+    omega_ir = rhs_A_alpha.np[ndocc_A:, :]
+    omega_ii = np.zeros((nsocc_A, nsocc_A))
+    assert omega_ai.shape == (ndocc_A, nsocc_A)
+    assert omega_ar.shape == (ndocc_A, nvirt_A)
+    assert omega_ir.shape == (nsocc_A, nvirt_A)
+
+    # NOTE
+    # ROHF::Hx expected structure (only other use-case is ROHF::soscf_update)
+    # docc x socc | docc x virt
+    # socc x socc | socc x virt
+    # this translates into
+    # omega_ai | omega_ar
+    # -------------------
+    # omega_ii | omega_ir
+    #
+    # and
+    #
+    # omega_bj | omega_bs
+    # -------------------
+    # omega_jj | omega_js
+    # NOTE: output socc x socc (omega_ii) is always set to zero by ROHF.Hx
+    # omega_ai
+    rhs_A.np[:ndocc_A, :nsocc_A] = omega_ai
+    # omega_ar
+    rhs_A.np[:ndocc_A, nsocc_A:] = omega_ar
+    # omega_ir
+    rhs_A.np[ndocc_A:, nsocc_A:] = omega_ir
+    # omega_ii
+    rhs_A.np[ndocc_A:, :nsocc_A] = omega_ii
+
+    # take care of rhs_B
+    rhs_B_alpha = core.triplet(C_alpha_B, cache["omega_A_ao"], C_alpha_vir_B, True, False, False)
+    rhs_B_beta = core.triplet(C_beta_B, cache["omega_A_ao"], C_beta_vir_B, True, False, False)
+    # NOTE: sanity check, if we got the ordering within spin-blocks right
+    omega_bs_alpha = rhs_B_alpha.np[:ndocc_B, :]
+    omega_bs_beta = rhs_B_beta.np[:, nsocc_B:]
+    if not np.allclose(omega_bs_beta, omega_bs_alpha):
+        print(f"{rhs_B_alpha.np=}")
+        print(f"{rhs_B_beta.np=}")
+        raise RuntimeError("omega_bs derived from spin alpha/beta should match!")
+
+    rhs_B = core.Matrix(nsocc_B + ndocc_B, nsocc_B + nvirt_B)
+    omega_bj = rhs_B_beta.np[:, :nsocc_B]
+    omega_bs = rhs_B_beta.np[:, nsocc_B:]
+    omega_js = rhs_B_alpha.np[ndocc_B:, :]
+    omega_jj = np.zeros((nsocc_B, nsocc_B))
+    assert omega_bj.shape == (ndocc_B, nsocc_B)
+    assert omega_bs.shape == (ndocc_B, nvirt_B)
+    assert omega_js.shape == (nsocc_B, nvirt_B)
+
+    # pack to Hx matrix form
+    # omega_bj
+    rhs_B.np[:ndocc_B, :nsocc_B] = omega_bj
+    # omega_bs
+    rhs_B.np[:ndocc_B, nsocc_B:] = omega_bs
+    # omega_js
+    rhs_B.np[ndocc_B:, nsocc_B:] = omega_js
+    # omega_jj
+    rhs_B.np[ndocc_B:, :nsocc_B] = omega_jj
+
+    # call the actual solver
+    t_A, t_B = _sapt_cpscf_solve(cache, jk, rhs_A, rhs_B, maxiter, conv)
+
+    # re-pack it to alpha & beta spin-blocks and compute 20ind,resp for quick check
+    # A part
+    t_alpha_A = rhs_A_alpha.clone()
+    t_beta_A = rhs_A_beta.clone()
+    t_alpha_A.zero()
+    t_beta_A.zero()
+    t_ar = t_A.np[:ndocc_A, nsocc_A:].copy()
+    t_ir = t_A.np[ndocc_A:, nsocc_A:].copy()
+    t_ai = t_A.np[:ndocc_A, :nsocc_A].copy()
+
+    # NOTE: correction coefficients
+    # '-' comes from H (-t) = omega
+    C_DOCC_SOCC = -2
+    C_DOCC_VIRT = -4  # pure closed-shell case
+    C_SOCC_VIRT = -2  # no docc open-shell case
+    # A
+    t_ai *= C_DOCC_SOCC
+    t_ar *= C_DOCC_VIRT
+    t_ir *= C_SOCC_VIRT
+
+    # sanity checks
+    assert t_ar.shape == (ndocc_A, nvirt_A)
+    assert t_ir.shape == (nsocc_A, nvirt_A)
+    assert t_ai.shape == (ndocc_A, nsocc_A)
+
+    # t_alpha = (t_ar, t_ir) -> common dimension r
+    # t_beta =  (t_ar, t_ai) -> common dimension a
+    t_alpha_A.np[:ndocc_A, :] = t_ar
+    t_alpha_A.np[ndocc_A:, :] = t_ir
+    t_beta_A.np[:, :nvirt_A] = t_ar
+    t_beta_A.np[:, nvirt_A:] = t_ai
+
+    # B part
+    t_alpha_B = rhs_B_alpha.clone()
+    t_beta_B = rhs_B_beta.clone()
+    t_alpha_B.zero()
+    t_beta_B.zero()
+
+    # t_alpha = (t_bs, t_js)
+    t_bs = t_B.np[:ndocc_B, nsocc_B:].copy()
+    t_js = t_B.np[ndocc_B:, nsocc_B:].copy()
+    t_bj = t_B.np[:ndocc_B, :nsocc_B].copy()
+
+    # NOTE: correction coefficients
+    t_bj *= C_DOCC_SOCC
+    t_bs *= C_DOCC_VIRT
+    t_js *= C_SOCC_VIRT
+
+    # sanity checks
+    assert t_bs.shape == (ndocc_B, nvirt_B)
+    assert t_js.shape == (nsocc_B, nvirt_B)
+    assert t_bj.shape == (ndocc_B, nsocc_B)
+    # t_alpha = (t_bs, t_js) -> common dimension s
+    # t_beta =  (t_bs, t_bj) -> common dimension b
+    t_alpha_B.np[:ndocc_B, :] = t_bs
+    t_alpha_B.np[ndocc_B:, :] = t_js
+    t_beta_B.np[:, :nvirt_B] = t_bs
+    t_beta_B.np[:, nvirt_B:] = t_bj
+
+    # DEBUG PRINTS
+    #print(f"{t_beta_A.np=}")
+    #print(f"{t_beta_B.np=}")
+    #print(f"{rhs_A_beta.np=}")
+    #print(f"{rhs_B_beta.np=}")
+    #print(f"{omega_bj=}")
+    #print(f"{omega_ai=}")
+    #print(f"{omega_bs=}")
+    #print(f"{omega_ar=}")
+    #print(f"{omega_js=}")
+    #print(f"{omega_ir=}")
+
+    #print(f"{t_bj=}")
+    #print(f"{t_ai=}")
+    #print(f"{t_bs=}")
+    #print(f"{t_ar=}")
+    #print(f"{t_js=}")
+    #print(f"{t_ir=}")
+    # loop over docc-virt
+    #inner_loop, outer_loop = t_bs.shape
+    #for i in range(inner_loop):
+    #    for j in range(outer_loop):
+    #        value_A = omega_ar[i][j] * t_ar[i][j]
+    #        value_B = omega_bs[i][j] * t_bs[i][j]
+    #        if not np.allclose(value_A, value_B):
+    #            print(f"omega/t: {i=} {j=} {value_A=} {value_B=}")
+
+    ## loop over docc-socc
+    #inner_loop, outer_loop = t_bj.shape
+    #for i in range(inner_loop):
+    #    for j in range(outer_loop):
+    #        value_A = omega_ai[i][j] * t_ai[i][j]
+    #        value_B = omega_bj[i][j] * t_bj[i][j]
+    #        if not np.allclose(value_A, value_B):
+    #            print(f"omega/t: {i=} {j=} {value_A=} {value_B=}")
+
+    ## loop over beta
+    #inner_loop, outer_loop = t_beta_A.np.shape
+    #for i in range(inner_loop):
+    #    for j in range(outer_loop):
+    #        value_A = rhs_A_beta.np[i][j] * t_beta_A.np[i][j]
+    #        value_B = rhs_B_beta.np[i][j] * t_beta_B.np[i][j]
+    #        if not np.allclose(value_A, value_B):
+    #            print(f"rhs/t: {i=} {j=} {value_A=} {value_B=}")
+
+    # DEBUG PRINTS END
+
+    # A<-B, in spin blocks
+    E20ind_resp_A_B = 0
+    _alpha = np.einsum("ij,ij", t_ar, omega_ar)
+    _alpha += np.einsum("ij,ij", t_ir, omega_ir)
+    _beta = np.einsum("ij,ij", t_ar, omega_ar)
+    _beta += np.einsum("ij,ij", t_ai, omega_ai)
+    print(f"E20ind,resp(A<-B)_a: {_alpha}")
+    print(f"E20ind,resp(A<-B)_b: {_beta}")
+    E20ind_resp_A_B = _alpha + _beta
+
+    # B<-A, in spin blocks
+    E20ind_resp_B_A = 0
+    _alpha = np.einsum("ij,ij", t_bs, omega_bs)
+    _alpha += np.einsum("ij,ij", t_js, omega_js)
+    _beta = np.einsum("ij,ij", t_bs, omega_bs)
+    _beta += np.einsum("ij,ij", t_bj, omega_bj)
+    E20ind_resp_B_A += _alpha + _beta
+    print(f"E20ind,resp(B<-A)_a: {_alpha}")
+    print(f"E20ind,resp(B<-A)_b: {_beta}")
+
+    # total 20ind,resp
+    E20ind_resp = E20ind_resp_A_B + E20ind_resp_B_A
+
+    # debug print
+    print(f"E20ind,resp(A<-B): {E20ind_resp_A_B}")
+    print(f"E20ind,resp(B<-A): {E20ind_resp_B_A}")
+    print(f"E20ind,resp      : {E20ind_resp}")
+
+    ret_values = OrderedDict({
+        "Ind20,r(A<-B)": E20ind_resp_A_B,
+        "Ind20,r(A->B)": E20ind_resp_B_A,
+        "Ind20,r": E20ind_resp
+    })
+
+    ret_arrays = OrderedDict({"t_ai": t_ai, "t_ar": t_ar, "t_ir": t_ir, "t_bj": t_bj, "t_bs": t_bs, "t_js": t_js})
+    return ret_values, ret_arrays
+
+
+def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
+    """
+    Solve the CP-ROHF for SAPT induction amplitudes.
+    """
+
+    cache["wfn_A"].set_jk(jk)
+    cache["wfn_B"].set_jk(jk)
+
+    # NOTE: in ROHF:Hx
+    # both X and RHS
+    # have sizes:
+    # (docc, socc) | (docc, virt)
+    # (socc, socc) | (socc, virt)
+    # in turn our pre-conditioner should be
+    # (eps_socc - eps_docc) | (eps_virt - eps_docc)
+    # (1,)*(socc, socc)     | (eps_virt - eps_socc)
+    # this way apply_denominator should not be singular (eps_socc - eps_socc) -> 0
+
+    ndocc_A = cache["ndocc_A"]
+    nsocc_A = cache["nsocc_A"]
+    ndocc_B = cache["ndocc_B"]
+    nsocc_B = cache["nsocc_B"]
+
+    # Make a preconditioner function
+    P_A = core.Matrix(cache["eps_docc_A"].shape[0] + cache["eps_socc_A"].shape[0],
+                      cache["eps_socc_A"].shape[0] + cache["eps_vir_A"].shape[0])
+    # where does this go?
+    eps_ai_A = (cache["eps_docc_A"].np.reshape(-1, 1) - cache["eps_socc_A"].np)
+    eps_ar_A = (cache["eps_docc_A"].np.reshape(-1, 1) - cache["eps_vir_A"].np)
+    eps_ir_A = (cache["eps_socc_A"].np.reshape(-1, 1) - cache["eps_vir_A"].np)
+    eps_ii_A = np.ones((cache["nsocc_A"], cache["nsocc_A"]))
+
+    print(f"{eps_ai_A.shape=}")
+    print(f"{eps_ar_A.shape=}")
+    print(f"{eps_ir_A.shape=}")
+    print(f"{eps_ii_A.shape=}")
+    print(f"{P_A.np.shape=}")
+    # ai
+    P_A.np[:ndocc_A, :nsocc_A] = eps_ai_A
+    # ar
+    P_A.np[:ndocc_A, nsocc_A:] = eps_ar_A
+    # ir
+    P_A.np[ndocc_A:, nsocc_A:] = eps_ir_A
+    # ii
+    P_A.np[ndocc_A:, :nsocc_A] = eps_ii_A
+
+    print(f"{cache['eps_docc_B'].shape[0]=}")
+    print(f"{cache['eps_socc_B'].shape[0]=}")
+    print(f"{cache['eps_vir_B'].shape[0]=}")
+    print(f"{cache['ndocc_B']=}")
+    print(f"{cache['nsocc_B']=}")
+    print(f"{cache['nvir_B']=}")
+    P_B = core.Matrix(cache["eps_docc_B"].shape[0] + cache["eps_socc_B"].shape[0],
+                      cache["eps_socc_B"].shape[0] + cache["eps_vir_B"].shape[0])
+    eps_ai_B = (cache["eps_docc_B"].np.reshape(-1, 1) - cache["eps_socc_B"].np)
+    eps_ar_B = (cache["eps_docc_B"].np.reshape(-1, 1) - cache["eps_vir_B"].np)
+    eps_ir_B = (cache["eps_socc_B"].np.reshape(-1, 1) - cache["eps_vir_B"].np)
+    eps_ii_B = np.ones((nsocc_B, nsocc_B))
+
+    print(f"{eps_ai_B.shape=}")
+    print(f"{eps_ar_B.shape=}")
+    print(f"{eps_ir_B.shape=}")
+    print(f"{eps_ii_B.shape=}")
+    print(f"{P_B.np.shape=}")
+    # ai
+    P_B.np[:ndocc_B, :nsocc_B] = eps_ai_B
+    # ar
+    P_B.np[:ndocc_B, nsocc_B:] = eps_ar_B
+    # ir
+    P_B.np[ndocc_B:, nsocc_B:] = eps_ir_B
+    # ii
+    P_B.np[ndocc_B:, :nsocc_B] = eps_ii_B
+
+    # Preconditioner function
+    def apply_precon(x_vec, act_mask):
+        # NOTE: A.apply_denominator(B) does
+        # element-wise A_ij = A_ij/B_ij
+        if act_mask[0]:
+            pA = x_vec[0].clone()
+            pA.apply_denominator(P_A)
+        else:
+            pA = False
+
+        if act_mask[1]:
+            pB = x_vec[1].clone()
+            pB.apply_denominator(P_B)
+        else:
+            pB = False
+
+        # NOTE: short-circut the logic for now
+        #pA, pB = (x_vec[0].clone(), x_vec[1].clone())
+        return [pA, pB]
+
+    # Hx function
+    def hessian_vec(x_vec, act_mask):
+        if act_mask[0]:
+            xA = cache["wfn_A"].cphf_Hx([x_vec[0]])[0]
+        else:
+            xA = False
+
+        if act_mask[1]:
+            xB = cache["wfn_B"].cphf_Hx([x_vec[1]])[0]
+        else:
+            xB = False
+
+        return [xA, xB]
+
+    # Manipulate the printing
+    sep_size = 51
+    core.print_out("   " + ("-" * sep_size) + "\n")
+    core.print_out("   " + "SAPT Coupled Induction (ROHF) Solver".center(sep_size) + "\n")
+    core.print_out("   " + ("-" * sep_size) + "\n")
+    core.print_out("    Maxiter             = %11d\n" % maxiter)
+    core.print_out("    Convergence         = %11.3E\n" % conv)
+    core.print_out("   " + ("-" * sep_size) + "\n")
+
+    tstart = time.time()
+    core.print_out("     %4s %12s     %12s     %9s\n" % ("Iter", "(A<-B)", "(B->A)", "Time [s]"))
+    core.print_out("   " + ("-" * sep_size) + "\n")
+
+    start_resid = [rhsA.sum_of_squares(), rhsB.sum_of_squares()]
+
+    # print function
+    def pfunc(niter, x_vec, r_vec):
+        if niter == 0:
+            niter = "Guess"
+        else:
+            niter = ("%5d" % niter)
+
+        # Compute IndAB
+        valA = (r_vec[0].sum_of_squares() / start_resid[0])**0.5
+        if valA < conv:
+            cA = "*"
+        else:
+            cA = " "
+
+        # Compute IndBA
+        valB = (r_vec[1].sum_of_squares() / start_resid[1])**0.5
+        if valB < conv:
+            cB = "*"
+        else:
+            cB = " "
+
+        core.print_out("    %5s %15.6e%1s %15.6e%1s %9d\n" % (niter, valA, cA, valB, cB, time.time() - tstart))
+        return [valA, valB]
+
+    # Compute the solver
+    vecs, resid = solvers.cg_solver([rhsA, rhsB],
+                                    hessian_vec,
+                                    apply_precon,
+                                    guess=None,
+                                    maxiter=maxiter,
+                                    rcond=conv,
+                                    printlvl=0,
+                                    printer=pfunc)
+    core.print_out("   " + ("-" * sep_size) + "\n")
+
+    return vecs
