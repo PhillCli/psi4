@@ -153,3 +153,6 @@ GTAGS
 GPATH
 GRTAGS
 Pipfile.lock
+
+# venv
+venv
