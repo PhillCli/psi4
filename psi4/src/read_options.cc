@@ -933,6 +933,9 @@ int read_options(const std::string &name, Options &options, bool suppress_printi
         /*- For SAPT(DFT) computes the $S^{inf}$ Exchange-Dispersion terms. !expert -*/
         options.add_bool("DO_DISP_EXCH_SINF", false);
 
+        /*- For SF-SAPT computes only coupled induction (CPROHF) correction !expert -*/
+        options.add_bool("DO_ONLY_CPHF", false);
+
         /*- Do use asynchronous disk I/O in the solution of the CPHF equations?
         Use may speed up the computation slightly at the cost of spawning an
         additional thread. -*/
