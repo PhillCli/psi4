@@ -25,6 +25,7 @@
 #
 # @END LICENSE
 #
+import time
 
 import numpy as np
 from collections import OrderedDict
@@ -35,7 +36,7 @@ from psi4.driver.p4util import solvers
 
 from .sapt_util import print_sapt_var
 
-__all__ = ["compute_sapt_sf"]
+__all__ = ["compute_first_order_sapt_sf", "compute_cphf_induction"]
 
 
 def _sf_compute_JK(jk, Cleft, Cright, rotation=None):
@@ -80,7 +81,7 @@ def _sf_compute_JK(jk, Cleft, Cright, rotation=None):
 
             if (rotation[num].shape[0] != mol) or (rotation[num].shape[1] != mor):
                 raise ValidationError("_sf_compute_JK: Tensor size does not match Cl (%d) /Cr (%d) : %s" %
-                                (mol, mor, str(rotation[num].shape)))
+                                      (mol, mor, str(rotation[num].shape)))
 
             # Figure out the small MO index to contract to
             if mol < mor:
@@ -127,7 +128,7 @@ def _chain_dot(*dot_list):
     return result
 
 
-def compute_sapt_sf(dimer, jk, wfn_A, wfn_B, do_print=True):
+def compute_first_order_sapt_sf(dimer, jk, wfn_A, wfn_B, do_print=True):
     """
     Computes Elst and Spin-Flip SAPT0 for ROHF wavefunctions
     """
@@ -179,13 +180,8 @@ def compute_sapt_sf(dimer, jk, wfn_A, wfn_B, do_print=True):
         core.print_out("\n  ==> Computing required JK matrices <== \n\n")
 
     # Writen so that we can reorganize order to save on DF-JK cost.
-    pairs = [("ii", Ci, None, Ci),
-             ("ij", Ci, _chain_dot(Ci.T, S, Cj), Cj),
-             ("jj", Cj, None, Cj),
-             ("aa", Ca, None, Ca),
-             ("aj", Ca, _chain_dot(Ca.T, S, Cj), Cj),
-             ("ib", Ci, _chain_dot(Ci.T, S, Cb), Cb),
-             ("bb", Cb, None, Cb),
+    pairs = [("ii", Ci, None, Ci), ("ij", Ci, _chain_dot(Ci.T, S, Cj), Cj), ("jj", Cj, None, Cj), ("aa", Ca, None, Ca),
+             ("aj", Ca, _chain_dot(Ca.T, S, Cj), Cj), ("ib", Ci, _chain_dot(Ci.T, S, Cb), Cb), ("bb", Cb, None, Cb),
              ("ab", Ca, _chain_dot(Ca.T, S, Cb), Cb)]
 
     # Reorganize
@@ -303,3 +299,110 @@ def compute_sapt_sf(dimer, jk, wfn_A, wfn_B, do_print=True):
     })
 
     return ret_values
+
+
+def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
+    """
+    Solve the CP-ROHF for SAPT induction amplitudes.
+    """
+    # TODO: form rhs_A & rhs_B
+    rhs_A = None
+    rhs_B = None
+    _sapt_cpscf_solve(cache, jk, rhs_A, rhs_B, maxiter, conv)
+
+
+def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
+    """
+    Solve the CP-ROHF for SAPT induction amplitudes.
+    """
+
+    cache["wfn_A"].set_jk(jk)
+    cache["wfn_B"].set_jk(jk)
+
+    # Make a preconditioner function
+    P_A = core.Matrix(cache["eps_occ_A"].shape[0], cache["eps_vir_A"].shape[0])
+    P_A.np[:] = (cache["eps_occ_A"].np.reshape(-1, 1) - cache["eps_vir_A"].np)
+
+    P_B = core.Matrix(cache["eps_occ_B"].shape[0], cache["eps_vir_B"].shape[0])
+    P_B.np[:] = (cache["eps_occ_B"].np.reshape(-1, 1) - cache["eps_vir_B"].np)
+
+    # Preconditioner function
+    def apply_precon(x_vec, act_mask):
+        if act_mask[0]:
+            pA = x_vec[0].clone()
+            pA.apply_denominator(P_A)
+        else:
+            pA = False
+
+        if act_mask[1]:
+            pB = x_vec[1].clone()
+            pB.apply_denominator(P_B)
+        else:
+            pB = False
+
+        return [pA, pB]
+
+    # Hx function
+    def hessian_vec(x_vec, act_mask):
+        if act_mask[0]:
+            xA = cache["wfn_A"].cphf_Hx([x_vec[0]])[0]
+        else:
+            xA = False
+
+        if act_mask[1]:
+            xB = cache["wfn_B"].cphf_Hx([x_vec[1]])[0]
+        else:
+            xB = False
+
+        return [xA, xB]
+
+    # Manipulate the printing
+    sep_size = 51
+    core.print_out("   " + ("-" * sep_size) + "\n")
+    core.print_out("   " + "SAPT Coupled Induction (ROHF) Solver".center(sep_size) + "\n")
+    core.print_out("   " + ("-" * sep_size) + "\n")
+    core.print_out("    Maxiter             = %11d\n" % maxiter)
+    core.print_out("    Convergence         = %11.3E\n" % conv)
+    core.print_out("   " + ("-" * sep_size) + "\n")
+
+    tstart = time.time()
+    core.print_out("     %4s %12s     %12s     %9s\n" % ("Iter", "(A<-B)", "(B->A)", "Time [s]"))
+    core.print_out("   " + ("-" * sep_size) + "\n")
+
+    start_resid = [rhsA.sum_of_squares(), rhsB.sum_of_squares()]
+
+    # print function
+    def pfunc(niter, x_vec, r_vec):
+        if niter == 0:
+            niter = "Guess"
+        else:
+            niter = ("%5d" % niter)
+
+        # Compute IndAB
+        valA = (r_vec[0].sum_of_squares() / start_resid[0])**0.5
+        if valA < conv:
+            cA = "*"
+        else:
+            cA = " "
+
+        # Compute IndBA
+        valB = (r_vec[1].sum_of_squares() / start_resid[1])**0.5
+        if valB < conv:
+            cB = "*"
+        else:
+            cB = " "
+
+        core.print_out("    %5s %15.6e%1s %15.6e%1s %9d\n" % (niter, valA, cA, valB, cB, time.time() - tstart))
+        return [valA, valB]
+
+    # Compute the solver
+    vecs, resid = solvers.cg_solver([rhsA, rhsB],
+                                    hessian_vec,
+                                    apply_precon,
+                                    maxiter=maxiter,
+                                    rcond=conv,
+                                    printlvl=0,
+                                    printer=pfunc)
+    core.print_out("   " + ("-" * sep_size) + "\n")
+
+    return vecs

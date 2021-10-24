@@ -265,10 +265,7 @@ def run_sapt_dft(name, **kwargs):
     return dimer_wfn
 
 
-def sapt_dft_header(sapt_dft_functional="unknown",
-                    mon_a_shift=None,
-                    mon_b_shift=None,
-                    do_delta_hf="N/A",
+def sapt_dft_header(sapt_dft_functional="unknown", mon_a_shift=None, mon_b_shift=None, do_delta_hf="N/A",
                     jk_alg="N/A"):
     # Print out the title and some information
     core.print_out("\n")
@@ -504,7 +501,19 @@ def run_sf_sapt(name, **kwargs):
     core.print_out("         ---------------------------------------------------------\n")
     core.print_out("\n")
 
-    sf_data = sapt_sf_terms.compute_sapt_sf(sapt_dimer, sapt_jk, wfn_A, wfn_B)
+    if not core.get_option("SAPT", "DO_ONLY_CPHF"):
+        sf_data = sapt_sf_terms.compute_first_order_sapt_sf(sapt_dimer, sapt_jk, wfn_A, wfn_B)
+
+    core.timer_on("SAPT-SF:SAPT(CP-ROHF):ind")
+    cache = {
+        "wfn_A": wfn_A,
+        "wfn_B": wfn_B,
+    }
+    ind = sapt_jk_terms.compute_cphf_induction(cache,
+                                               sapt_jk,
+                                               maxiter=core.get_option("SAPT", "MAXITER"),
+                                               conv=core.get_option("SAPT", "D_CONVERGENCE"))
+    core.timer_off("SAPT-SF:SAPT(CP-ROHF):ind")
 
     # Print the results
     core.print_out("   Spin-Flip SAPT Results\n")
