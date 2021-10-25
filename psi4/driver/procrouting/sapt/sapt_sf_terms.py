@@ -319,6 +319,7 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
     cache["wfn_A"].set_jk(jk)
     cache["wfn_B"].set_jk(jk)
 
+    # TODO: how to exctract preconditioner properly
     # Make a preconditioner function
     P_A = core.Matrix(cache["eps_occ_A"].shape[0], cache["eps_vir_A"].shape[0])
     P_A.np[:] = (cache["eps_occ_A"].np.reshape(-1, 1) - cache["eps_vir_A"].np)
@@ -396,13 +397,15 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
         return [valA, valB]
 
     # Compute the solver
-    vecs, resid = solvers.cg_solver([rhsA, rhsB],
-                                    hessian_vec,
-                                    apply_precon,
-                                    maxiter=maxiter,
-                                    rcond=conv,
-                                    printlvl=0,
-                                    printer=pfunc)
+    vecs, resid = solvers.cg_solver(
+        [rhsA, rhsB],
+        hessian_vec,
+        apply_precon,
+        guess=[rhsA, rhsB],  # NOTE: temporary to switch off pre-conditioner
+        maxiter=maxiter,
+        rcond=conv,
+        printlvl=0,
+        printer=pfunc)
     core.print_out("   " + ("-" * sep_size) + "\n")
 
     return vecs

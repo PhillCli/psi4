@@ -504,16 +504,16 @@ def run_sf_sapt(name, **kwargs):
     if not core.get_option("SAPT", "DO_ONLY_CPHF"):
         sf_data = sapt_sf_terms.compute_first_order_sapt_sf(sapt_dimer, sapt_jk, wfn_A, wfn_B)
 
-    core.timer_on("SAPT-SF:SAPT(CP-ROHF):ind")
+    core.timer_on("SF-SAPT:SAPT(CP-ROHF):ind")
     cache = {
         "wfn_A": wfn_A,
         "wfn_B": wfn_B,
     }
-    ind = sapt_jk_terms.compute_cphf_induction(cache,
+    ind = sapt_sf_terms.compute_cphf_induction(cache,
                                                sapt_jk,
                                                maxiter=core.get_option("SAPT", "MAXITER"),
                                                conv=core.get_option("SAPT", "D_CONVERGENCE"))
-    core.timer_off("SAPT-SF:SAPT(CP-ROHF):ind")
+    core.timer_off("SF-SAPT:SAPT(CP-ROHF):ind")
 
     # Print the results
     core.print_out("   Spin-Flip SAPT Results\n")
