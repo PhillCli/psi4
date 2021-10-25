@@ -504,11 +504,70 @@ def run_sf_sapt(name, **kwargs):
     if not core.get_option("SAPT", "DO_ONLY_CPHF"):
         sf_data = sapt_sf_terms.compute_first_order_sapt_sf(sapt_dimer, sapt_jk, wfn_A, wfn_B)
 
+    def form_omega_potentials(cache: Dict[str, str], sapt_jk: core.JK) -> Tuple[core.Matrix, core.Matrix]:
+        """
+        Forms un-perturbed electric potentials (atomic nuclei + electrons) of both monomers
+        """
+        core.print_out("SAPT FF IND,RESP\n")
+        core.print_out("FORMING ELECTRIC AO POTENTIALS OF MONOMERS\n")
+        sapt_jk.print_header()
+        sapt_jk.C_clear()
+
+        wfn_A = cache["wfn_A"]
+        wfn_B = cache["wfn_B"]
+        # compute J[D_A_alpha] + J[D_A_beta]
+        # alpha
+        sapt_jk.C_left_add(wfn_A.Ca_subset("AO", "OCC"))
+        sapt_jk.C_right_add(wfn_A.Ca_subset("AO", "OCC"))
+        # beta
+        sapt_jk.C_left_add(wfn_A.Cb_subset("AO", "OCC"))
+        sapt_jk.C_right_add(wfn_A.Cb_subset("AO", "OCC"))
+
+        # compute J[D_B_alpha] + J[D_B_beta]
+        # alpha
+        sapt_jk.C_left_add(wfn_B.Ca_subset("AO", "OCC"))
+        sapt_jk.C_right_add(wfn_B.Ca_subset("AO", "OCC"))
+        # beta
+        sapt_jk.C_left_add(wfn_B.Cb_subset("AO", "OCC"))
+        sapt_jk.C_right_add(wfn_B.Cb_subset("AO", "OCC"))
+
+        # disable K build
+        sapt_jk.set_do_K(False)
+
+        # compute JK
+        sapt_jk.compute()
+        core.print_out("FORMING ELECTRIC AO POTENTIALS OF MONOMERS\n")
+
+        J_A_a = sapt_jk.J()[0].clone()
+        J_A_b = sapt_jk.J()[1].clone()
+        J_B_a = sapt_jk.J()[2].clone()
+        J_B_b = sapt_jk.J()[3].clone()
+
+        # compute final AO omega_A
+        mints = core.MintsHelper(wfn_A.basisset())
+        omega_A = mints.ao_potential()
+        omega_A.add(J_A_a)
+        omega_A.add(J_A_b)
+
+        # compute final AO omega_B
+        mints = core.MintsHelper(wfn_B.basisset())
+        omega_B = mints.ao_potential()
+        omega_B.add(J_B_a)
+        omega_B.add(J_B_b)
+        core.print_out("... Done\n")
+        return omega_A, omega_B
+
     core.timer_on("SF-SAPT:SAPT(CP-ROHF):ind")
     cache = {
         "wfn_A": wfn_A,
         "wfn_B": wfn_B,
+        # TODO: fill-out orbital energies
+        # cache["eps_socc_A"].shape[0]
+        # cache["eps_docc_A"].shape[0]
+        # cache["eps_active_A"].shape[0]
     }
+    omega_A_ao, omega_B_ao = form_omega_potentials(cache, sapt_jk)
+    cache.update({"omega_A_ao": omega_A_ao, "omega_B_ao": omega_B_ao})
     ind = sapt_sf_terms.compute_cphf_induction(cache,
                                                sapt_jk,
                                                maxiter=core.get_option("SAPT", "MAXITER"),

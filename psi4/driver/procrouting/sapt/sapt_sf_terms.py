@@ -305,9 +305,66 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     """
     Solve the CP-ROHF for SAPT induction amplitudes.
     """
-    # TODO: form rhs_A & rhs_B
-    rhs_A = None
+    # TODO: construct rhs_A & rhs_B
+    # out of omega_A_ao & omega_B_ao
+    # rhs_A -> should be MO transformation of omega_B (electrostatic potential of B monomer felt by mon A)
+    # rhs_B -> should be MO transformation of omega_A (electrostatic potential of A monomer felt by mon B)
+    #
+    #rhs_A = None
+    wfn_A = cache["wfn_A"]
+    wfn_B = cache["wfn_B"]
+    # Pull out Wavefunction A quantities
+    ndocc_A = wfn_A.doccpi().sum()
+    nsocc_A = wfn_A.soccpi().sum()
+
+    nbf, nvirt_A = wfn_A.Ca_subset("AO", "VIR").np.shape
+    nbf, nvirt_B = wfn_B.Ca_subset("AO", "VIR").np.shape
+
+    # i,j - core    (docc)
+    # a,b - active  (socc)
+    # r,s - virtual (virt)
+
+    Cocc_A = np.asarray(wfn_A.Ca_subset("AO", "OCC"))
+    Ci = Cocc_A[:, :ndocc_A]
+    Ca = Cocc_A[:, ndocc_A:]
+
+    mints = core.MintsHelper(wfn_A.basisset())
+    V_A = mints.ao_potential()
+
+    # Pull out Wavefunction B quantities
+    ndocc_B = wfn_B.doccpi().sum()
+    nsocc_B = wfn_B.soccpi().sum()
+
+    Cocc_B = np.asarray(wfn_B.Ca_subset("AO", "OCC"))
+    Cj = Cocc_B[:, :ndocc_B]
+    Cb = Cocc_B[:, ndocc_B:]
+
+    C_alpha_A = wfn_A.Ca_subset("AO", "OCC")
+    C_beta_A = wfn_A.Cb_subset("AO", "OCC")
+    C_alpha_B = wfn_B.Ca_subset("AO", "OCC")
+    C_beta_B = wfn_B.Cb_subset("AO", "OCC")
+
+    # first transfrom into MO in spin-blocks
+    rhs_A_alpha = core.Matrix.triplet(C_alpha_A, cache["omega_B_ao"], C_alpha_A, True, False, True)
+    rhs_A_beta = core.Matrix.triplet(C_alpha_B, cache["omega_B_ao"], C_alpha_B, True, False, True)
+
+    # then retrive spin_blocks
+    # omega_alpha = |omega_ar|
+    #               |--------|
+    #               |omega_ir|
+    #
+    # omega_beta  = |omega_ar|
+    #               |--------|
+    #               |omega_ai|
+
+    rhs_A = core.Matrix(nsocc_A + ndocc_A, nsocc_A + nvirt_A)
+
     rhs_B = None
+    # NOTE::
+    # ROHF::Hx expected structure
+    # docc x socc | docc x virt
+    # socc x socc | socc x virt
+    # NOTE: socc x socc is always zero
     _sapt_cpscf_solve(cache, jk, rhs_A, rhs_B, maxiter, conv)
 
 
