@@ -364,8 +364,8 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     print(f"{cache['omega_B_ao'].np.shape=}")
 
     # first transfrom into MO in spin-blocks
-    rhs_A_alpha = core.Matrix.triplet(C_alpha_A, cache["omega_B_ao"], C_alpha_vir_A, True, False, False)
-    rhs_A_beta = core.Matrix.triplet(C_beta_A, cache["omega_B_ao"], C_beta_vir_A, True, False, False)
+    rhs_A_alpha = core.triplet(C_alpha_A, cache["omega_B_ao"], C_alpha_vir_A, True, False, False)
+    rhs_A_beta = core.triplet(C_beta_A, cache["omega_B_ao"], C_beta_vir_A, True, False, False)
 
     # then retrive spin_blocks
     # omega_alpha = |omega_ar|
@@ -402,7 +402,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     # omega_ai | omega_ar
     # -------------------
     # omega_ii | omega_ir
-    # NOTE: socc x socc (omega_ii) is always set to zero by ROHF.Hx
+    # NOTE: output socc x socc (omega_ii) is always set to zero by ROHF.Hx
     _sapt_cpscf_solve(cache, jk, rhs_A, rhs_B, maxiter, conv)
 
 
