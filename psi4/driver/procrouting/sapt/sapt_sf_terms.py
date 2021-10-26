@@ -345,8 +345,13 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     C_beta_B = wfn_B.Cb_subset("AO", "OCC")
 
     # first transfrom into MO in spin-blocks
+    core.print_out(f"{C_alpha_A.np.shape=}")
+    core.print_out(f"{cache['omega_B_ao'].np.shape=}")
+    core.print_out("")
+    core.print_out(f"{C_beta_B.np.shape=}")
+    core.print_out(f"{cache['omega_B_ao'].np.shape=}")
     rhs_A_alpha = core.Matrix.triplet(C_alpha_A, cache["omega_B_ao"], C_alpha_A, True, False, True)
-    rhs_A_beta = core.Matrix.triplet(C_alpha_B, cache["omega_B_ao"], C_alpha_B, True, False, True)
+    rhs_A_beta = core.Matrix.triplet(C_beta_B, cache["omega_B_ao"], C_beta_B, True, False, True)
 
     # then retrive spin_blocks
     # omega_alpha = |omega_ar|
