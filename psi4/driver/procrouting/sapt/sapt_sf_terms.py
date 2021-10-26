@@ -387,6 +387,8 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
 
     rhs_A = core.Matrix(nsocc_A + ndocc_A, nsocc_A + nvirt_A)
     # omega_ai
+    print(f"{rhs_A.np[:ndocc_A, :nsocc_A].shape=}")
+    print(f"{rhs_A_beta.np[:, nvirt_A:].shape=}")
     rhs_A.np[:ndocc_A, :nsocc_A] = rhs_A_beta.np[:, nvirt_A:]
     # omega_ar
     rhs_A.np[:ndocc_A, nsocc_A:] = rhs_A_beta.np[:, :nvirt_A]
