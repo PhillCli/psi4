@@ -317,9 +317,6 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     ndocc_A = wfn_A.doccpi().sum()
     nsocc_A = wfn_A.soccpi().sum()
 
-    nbf, nvirt_A = wfn_A.Ca_subset("AO", "VIR").np.shape
-    nbf, nvirt_B = wfn_B.Ca_subset("AO", "VIR").np.shape
-
     # i,j - core    (docc)
     # a,b - active  (socc)
     # r,s - virtual (virt)
@@ -339,37 +336,61 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     Cj = Cocc_B[:, :ndocc_B]
     Cb = Cocc_B[:, ndocc_B:]
 
+    # grab alfa & beta orbitals
     C_alpha_A = wfn_A.Ca_subset("AO", "OCC")
     C_beta_A = wfn_A.Cb_subset("AO", "OCC")
     C_alpha_B = wfn_B.Ca_subset("AO", "OCC")
     C_beta_B = wfn_B.Cb_subset("AO", "OCC")
 
-    # first transfrom into MO in spin-blocks
+    C_alpha_vir_A = wfn_A.Ca_subset("AO", "VIR")
+    C_beta_vir_A = wfn_A.Ca_subset("AO", "VIR")
+    nbf, nvirt_A = C_alpha_vir_A.np.shape
+    nbf, nvirt_B = wfn_B.Ca_subset("AO", "VIR").np.shape
+
     print(f"{C_alpha_A.np.shape=}")
+    print(f"{C_alpha_vir_A.np.shape=}")
     print(f"{cache['omega_B_ao'].np.shape=}")
     print("")
-    print(f"{C_beta_B.np.shape=}")
+    print(f"{C_beta_A.np.shape=}")
+    print(f"{C_beta_vir_A.np.shape=}")
     print(f"{cache['omega_B_ao'].np.shape=}")
-    rhs_A_alpha = core.Matrix.triplet(C_alpha_A, cache["omega_B_ao"], C_alpha_A, True, False, True)
-    rhs_A_beta = core.Matrix.triplet(C_beta_B, cache["omega_B_ao"], C_beta_B, True, False, True)
+
+    # first transfrom into MO in spin-blocks
+    rhs_A_alpha = core.Matrix.triplet(C_alpha_A, cache["omega_B_ao"], C_alpha_vir_A, True, False, False)
+    rhs_A_beta = core.Matrix.triplet(C_beta_A, cache["omega_B_ao"], C_beta_vir_A, True, False, False)
 
     # then retrive spin_blocks
     # omega_alpha = |omega_ar|
     #               |--------|
     #               |omega_ir|
-    #
+    # NOTE: (ar, ai) or (ai, ar) for beta blocks?
     # omega_beta  = |omega_ar|
     #               |--------|
     #               |omega_ai|
 
+    # NOTE: sanity check, if we got the ordering within spin-blocks right
+    omega_ar_1 = rhs_A_beta.np[:, :nvirt_A]
+    omega_ar_2 = rhs_A_alpha.np[:, :nvirt_A]
+    np.allclose(omega_ar_1, omega_ar_2)
+
     rhs_A = core.Matrix(nsocc_A + ndocc_A, nsocc_A + nvirt_A)
+    # omega_ai
+    rhs_A.np[:ndocc_A, :nsocc_A] = rhs_A_beta.np[:, nvirt_A:]
+    # omega_ar
+    rhs_A.np[:ndocc_A, nsocc_A:] = rhs_A_beta.np[:, :nvirt_A]
+    # omega_ir
+    rhs_A.np[ndocc_A:, nsocc_A:] = rhs_A_alpha.np[ndocc_A:, :]
 
     rhs_B = None
     # NOTE::
     # ROHF::Hx expected structure
     # docc x socc | docc x virt
     # socc x socc | socc x virt
-    # NOTE: socc x socc is always zero
+    # this translates into
+    # omega_ai | omega_ar
+    # -------------------
+    # omega_ii | omega_ir
+    # NOTE: socc x socc (omega_ii) is always set to zero by ROHF.Hx
     _sapt_cpscf_solve(cache, jk, rhs_A, rhs_B, maxiter, conv)
 
 
