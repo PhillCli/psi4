@@ -371,7 +371,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     # NOTE: sanity check, if we got the ordering within spin-blocks right
     omega_ar_1 = rhs_A_beta.np[:, :nvirt_A]
     omega_ar_2 = rhs_A_alpha.np[:, :nvirt_A]
-    np.allclose(omega_ar_1, omega_ar_2)
+    print(f"{np.allclose(omega_ar_1, omega_ar_2)=}")
 
     rhs_A = core.Matrix(nsocc_A + ndocc_A, nsocc_A + nvirt_A)
     # omega_ai
