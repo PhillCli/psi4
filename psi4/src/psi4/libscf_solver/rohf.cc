@@ -502,7 +502,7 @@ double ROHF::compute_E() {
 }
 
 void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
-    // outfile->Printf("WESZLEM\n");
+    outfile->Printf("entered Hx\n");
     if (functional_->needs_xc()) {
         throw PSIEXCEPTION("SCF: Cannot yet compute DFT Hessian-vector prodcuts.\n");
     }
@@ -538,14 +538,14 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
     SharedMatrix Cvir = Ca_->get_block({dim_zero, nsopi_}, {doccpi_, doccpi_ + ret->colspi()});
     Cvir->set_name("Cvir");
 
-    // outfile->Printf("ORBITALE ZLAPAN\n");
+    outfile->Printf("Hx:: grabbed the orbital spaces\n");
     // FIXME:
     // These are not avaible after scf ??
     auto moFa = SharedMatrix(factory_->create_matrix("MO alpha Fock Matrix (MO basis)"));
     auto moFb = SharedMatrix(factory_->create_matrix("MO beta  Fock Matrix (MO basis)"));
     moFa->transform(Fa_, Ca_);
     moFb->transform(Fb_, Cb_);
-    // outfile->Printf("FOCK MO POLICZON\n");
+    outfile->Printf("HXx:: MO Fock operator computed\n");
 
     for (size_t h = 0; h < nirrep_; h++) {
         if (!occpi[h] || !virpi[h]) continue;
@@ -593,7 +593,7 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
         // outfile->Printf("FOCK MO WYLADOWAL\n");
     }
 
-    // outfile->Printf("J & K STARTUJE\n");
+    outfile->Printf("Hx:: entering J&K section\n");
     // => Two electron part <= //
     std::vector<SharedMatrix>& Cl = jk_->C_left();
     std::vector<SharedMatrix>& Cr = jk_->C_right();
@@ -761,7 +761,7 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
 
         half_trans.reset();
     }
-    // outfile->Printf("J & K WYLADOWAL\n");
+    outfile->Printf("Hx:: exiting J&K section\n");
 
     // Zero out socc-socc terms
     for (size_t h = 0; h < nirrep_; h++) {
@@ -789,7 +789,7 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
     Hx_right.reset();
     Cocc.reset();
     Cvir.reset();
-    // outfile->Printf("Hx WYLADOWAL\n");
+    outfile->Printf("Hx:: exiting\n");
 }
 std::vector<SharedMatrix> ROHF::onel_Hx(std::vector<SharedMatrix> x_vec) {
     std::vector<SharedMatrix> ret_vect;
@@ -810,14 +810,14 @@ std::vector<SharedMatrix> ROHF::twoel_Hx(std::vector<SharedMatrix> x_vec, bool c
 }
 
 std::vector<SharedMatrix> ROHF::cphf_Hx(std::vector<SharedMatrix> x_vec) {
-    // outfile->Printf("NIE WESZŁEŚ\n");
+    outfile->Printf("entered cphf_Hx\n");
     std::vector<SharedMatrix> ret_vect;
     auto ret = x_vec[0]->clone();
     for (size_t i = 0; i < x_vec.size(); i++) {
         Hx(x_vec[i], ret);
         ret_vect.push_back(ret);
     }
-    // outfile->Printf("cphf_Hx WYLADOWAL\n");
+    outfile->Printf("exited cphf_Hx\n");
     return ret_vect;
 }
 
