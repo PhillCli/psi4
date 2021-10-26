@@ -597,8 +597,10 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
     // => Two electron part <= //
     std::vector<SharedMatrix>& Cl = jk_->C_left();
     std::vector<SharedMatrix>& Cr = jk_->C_right();
+    outfile->Printf("Hx::JK took Cl & Cr references\n");
     Cl.clear();
     Cr.clear();
+    outfile->Printf("Hx::JK cleared Cl & Cr\n");
 
     // If scf_type is DF we can do some extra JK voodo
     if ((options_.get_str("SCF_TYPE").find("DF") != std::string::npos) || (options_.get_str("SCF_TYPE") == "CD")) {

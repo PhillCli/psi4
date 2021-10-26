@@ -554,6 +554,10 @@ def run_sf_sapt(name, **kwargs):
         omega_B = mints.ao_potential()
         omega_B.add(J_B_a)
         omega_B.add(J_B_b)
+
+        # DEBUG::segfaults in rohf.Hx revert changes to jk
+        sapt_jk.set_do_K(True)
+
         core.print_out("... Done\n")
         return omega_A, omega_B
 
