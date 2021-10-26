@@ -576,8 +576,6 @@ def run_sf_sapt(name, **kwargs):
                                                sapt_jk,
                                                maxiter=core.get_option("SAPT", "MAXITER"),
                                                conv=core.get_option("SAPT", "D_CONVERGENCE"))
-    print(f"{ind[0].np=}")
-    print(f"{ind[1].np=}")
     core.timer_off("SF-SAPT:SAPT(CP-ROHF):ind")
 
     # Print the results
