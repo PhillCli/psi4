@@ -542,7 +542,7 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
         guess=[rhsA, rhsB],  # NOTE: temporary to switch off pre-conditioner
         maxiter=maxiter,
         rcond=conv,
-        printlvl=0,
+        printlvl=1,
         printer=pfunc)
     core.print_out("   " + ("-" * sep_size) + "\n")
 
