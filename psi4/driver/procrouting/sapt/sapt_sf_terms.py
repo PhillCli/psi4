@@ -450,6 +450,40 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     print(f"{t_A.np.shape=}")
     print(f"{t_B.np.shape=}")
 
+    # re-pack it to alpha & beta spin-blocks and compute 20ind,resp for quick check
+    t_alpha_A = rhs_A_alpha.clone()
+    t_beta_A = rhs_A_beta.clone()
+    t_alpha_A.zero()
+    t_beta_A.zero()
+    # t_alpha = (t_ar, t_ir)
+    t_alpha_A.np[:ndocc_A, :nvirt_A] = t_A.np[:ndocc_A, :nsocc_A]
+    t_alpha_A.np[ndocc_A:, :] = t_A.np[ndocc_A:, nsocc_A:]
+    # t_beta =  (t_ar, t_ai)
+    t_beta_A.np[:, nvirt_A:] = t_A.np[:ndocc_A, :nsocc_A]
+    t_beta_A.np[:, :nvirt_A] = t_A.np[:ndocc_A, nsocc_A:]
+
+    t_alpha_B = rhs_B_alpha.clone()
+    t_beta_B = rhs_B_beta.clone()
+    t_alpha_B.zero()
+    t_beta_B.zero()
+    # t_alpha = (t_bs, t_js)
+    t_alpha_B.np[:ndocc_B, :nvirt_B] = t_B.np[:ndocc_B, :nsocc_B]
+    t_alpha_B.np[ndocc_B:, :] = t_B.np[ndocc_B:, nsocc_B:]
+    # t_beta =  (t_bs, t_bj)
+    t_beta_B.np[:, nvirt_B:] = t_B.np[:ndocc_B, :nsocc_B]
+    t_beta_B.np[:, :nvirt_B] = t_B.np[:ndocc_B, nsocc_B:]
+
+    E20ind_resp_A_B = 0
+    E20ind_resp_A_B += np.einsum("ij,ij", t_alpha_A.np, rhs_A_alpha.np)
+    E20ind_resp_A_B += np.einsum("ij,ij", t_beta_A.np, rhs_A_beta.np)
+    E20ind_resp_B_A = 0
+    E20ind_resp_B_A += np.einsum("ij,ij", t_alpha_B.np, rhs_B_alpha.np)
+    E20ind_resp_B_A += np.einsum("ij,ij", t_beta_B.np, rhs_B_beta.np)
+    E20ind_resp = E20ind_resp_A_B + E20ind_resp_B_A
+    print(f"E20ind,resp(A<-B): {E20ind_resp_A_B}")
+    print(f"E20ind,resp(B<-A): {E20ind_resp_B_A}")
+    print(f"E20ind,resp      : {E20ind_resp}")
+
 
 def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
     """
