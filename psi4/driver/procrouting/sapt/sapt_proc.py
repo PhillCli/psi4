@@ -492,7 +492,7 @@ def run_sf_sapt(name, **kwargs):
     core.set_global_option("SAVE_JK", True)
     wfn_B = scf_helper("SCF", molecule=monomerB, banner="SF-SAPT: HF Monomer B", **kwargs)
     sapt_jk = wfn_B.jk()
-    core.set_global_option("SAVE_JK", False)
+    core.set_global_option("SAVE_JK", True)
     core.print_out("\n")
     core.print_out("         ---------------------------------------------------------\n")
     core.print_out("         " + "Spin-Flip SAPT Exchange and Electrostatics".center(58) + "\n")
