@@ -478,7 +478,7 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
         #else:
         #    pB = False
         # NOTE: short-circut the logic for now
-        pA, pB = (False, False)
+        pA, pB = (x_vec[0].clone(), x_vec[1].clone())
         return [pA, pB]
 
     # Hx function
