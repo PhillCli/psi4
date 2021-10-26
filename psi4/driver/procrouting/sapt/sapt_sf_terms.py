@@ -347,6 +347,14 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     nbf, nvirt_A = C_alpha_vir_A.np.shape
     nbf, nvirt_B = wfn_B.Ca_subset("AO", "VIR").np.shape
 
+    print(f"{ndocc_A=}")
+    print(f"{nsocc_A=}")
+    print(f"{nvirt_A=}")
+
+    print(f"{ndocc_B=}")
+    print(f"{nsocc_B=}")
+    print(f"{nvirt_B=}")
+
     print(f"{C_alpha_A.np.shape=}")
     print(f"{C_alpha_vir_A.np.shape=}")
     print(f"{cache['omega_B_ao'].np.shape=}")
@@ -370,7 +378,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
 
     # NOTE: sanity check, if we got the ordering within spin-blocks right
     omega_ar_1 = rhs_A_beta.np[:, :nvirt_A]
-    omega_ar_2 = rhs_A_alpha.np[:, :nvirt_A]
+    omega_ar_2 = rhs_A_alpha.np[:ndocc_A, :nvirt_A]
     print(f"{omega_ar_1.shape=}")
     print(f"{omega_ar_2.shape=}")
     print(f"{omega_ar_1[1:,:]=}")
