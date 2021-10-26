@@ -342,10 +342,14 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     C_alpha_B = wfn_B.Ca_subset("AO", "OCC")
     C_beta_B = wfn_B.Cb_subset("AO", "OCC")
 
+    # grab virtual orbitals
     C_alpha_vir_A = wfn_A.Ca_subset("AO", "VIR")
     C_beta_vir_A = wfn_A.Cb_subset("AO", "VIR")
+    C_alpha_vir_B = wfn_B.Ca_subset("AO", "VIR")
+    C_beta_vir_B = wfn_B.Cb_subset("AO", "VIR")
+
     nbf, nvirt_A = C_alpha_vir_A.np.shape
-    nbf, nvirt_B = wfn_B.Ca_subset("AO", "VIR").np.shape
+    nbf, nvirt_B = C_alpha_vir_B.np.shape
 
     print(f"{ndocc_A=}")
     print(f"{nsocc_A=}")
@@ -390,10 +394,6 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     # NOTE: sanity check, if we got the ordering within spin-blocks right
     omega_ar_1 = rhs_A_beta.np[:, :nvirt_A]
     omega_ar_2 = rhs_A_alpha.np[:ndocc_A, :nvirt_A]
-    print(f"{omega_ar_1.shape=}")
-    print(f"{omega_ar_2.shape=}")
-    print(f"{omega_ar_1=}")
-    print(f"{omega_ar_2=}")
     print(f"{np.allclose(omega_ar_1, omega_ar_2)=}")
 
     rhs_A = core.Matrix(nsocc_A + ndocc_A, nsocc_A + nvirt_A)
@@ -406,8 +406,30 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     rhs_A.np[:ndocc_A, nsocc_A:] = rhs_A_beta.np[:, :nvirt_A]
     # omega_ir
     rhs_A.np[ndocc_A:, nsocc_A:] = rhs_A_alpha.np[ndocc_A:, :]
+    # omega_ii
+    rhs_A.np[ndocc_A:, nsocc_A:] = np.zeros((nsocc_A, nsocc_A))
 
-    rhs_B = None
+    # take care of rhs_B
+    rhs_B_alpha = core.triplet(C_alpha_B, cache["omega_A_ao"], C_alpha_vir_B, True, False, False)
+    rhs_B_beta = core.triplet(C_beta_B, cache["omega_A_ao"], C_beta_vir_B, True, False, False)
+    # NOTE: sanity check, if we got the ordering within spin-blocks right
+    omega_bs_1 = rhs_B_beta.np[:, :nvirt_B]
+    omega_bs_2 = rhs_B_alpha.np[:ndocc_B, :nvirt_B]
+    print(f"{np.allclose(omega_bs_1, omega_bs_2)=}")
+
+    rhs_B = core.Matrix(nsocc_B + ndocc_B, nsocc_B + nvirt_B)
+    # omega_bj
+    print(f"{rhs_B.np[:ndocc_B, :nsocc_B].shape=}")
+    print(f"{rhs_B_beta.np.shape=}")
+    print(f"{rhs_B_beta.np[:, nvirt_A:].shape=}")
+    rhs_B.np[:ndocc_B, :nsocc_B] = rhs_B_beta.np[:, nvirt_B:]
+    # omega_bs
+    rhs_B.np[:ndocc_B, nsocc_B:] = rhs_B_beta.np[:, :nvirt_B]
+    # omega_js
+    rhs_B.np[ndocc_B:, nsocc_B:] = rhs_B_alpha.np[ndocc_B:, :]
+    # omega_jj
+    rhs_B.np[ndocc_B:, nsocc_B:] = np.zeros((nsocc_B, nsocc_B))
+
     # NOTE::
     # ROHF::Hx expected structure
     # docc x socc | docc x virt
@@ -416,6 +438,12 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     # omega_ai | omega_ar
     # -------------------
     # omega_ii | omega_ir
+    #
+    # and
+    #
+    # omega_bj | omega_bs
+    # -------------------
+    # omega_jj | omega_js
     # NOTE: output socc x socc (omega_ii) is always set to zero by ROHF.Hx
     _sapt_cpscf_solve(cache, jk, rhs_A, rhs_B, maxiter, conv)
 
@@ -430,26 +458,27 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
 
     # TODO: how to exctract preconditioner properly
     # Make a preconditioner function
-    P_A = core.Matrix(cache["eps_occ_A"].shape[0], cache["eps_vir_A"].shape[0])
-    P_A.np[:] = (cache["eps_occ_A"].np.reshape(-1, 1) - cache["eps_vir_A"].np)
+    #P_A = core.Matrix(cache["eps_occ_A"].shape[0], cache["eps_vir_A"].shape[0])
+    #P_A.np[:] = (cache["eps_occ_A"].np.reshape(-1, 1) - cache["eps_vir_A"].np)
 
-    P_B = core.Matrix(cache["eps_occ_B"].shape[0], cache["eps_vir_B"].shape[0])
-    P_B.np[:] = (cache["eps_occ_B"].np.reshape(-1, 1) - cache["eps_vir_B"].np)
+    #P_B = core.Matrix(cache["eps_occ_B"].shape[0], cache["eps_vir_B"].shape[0])
+    #P_B.np[:] = (cache["eps_occ_B"].np.reshape(-1, 1) - cache["eps_vir_B"].np)
 
     # Preconditioner function
     def apply_precon(x_vec, act_mask):
-        if act_mask[0]:
-            pA = x_vec[0].clone()
-            pA.apply_denominator(P_A)
-        else:
-            pA = False
+        #if act_mask[0]:
+        #    pA = x_vec[0].clone()
+        #    pA.apply_denominator(P_A)
+        #else:
+        #    pA = False
 
-        if act_mask[1]:
-            pB = x_vec[1].clone()
-            pB.apply_denominator(P_B)
-        else:
-            pB = False
-
+        #if act_mask[1]:
+        #    pB = x_vec[1].clone()
+        #    pB.apply_denominator(P_B)
+        #else:
+        #    pB = False
+        # NOTE: short-circut the logic for now
+        pA, pB = (False, False)
         return [pA, pB]
 
     # Hx function
