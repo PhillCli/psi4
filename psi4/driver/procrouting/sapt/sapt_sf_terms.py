@@ -355,9 +355,10 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     print(f"{nsocc_B=}")
     print(f"{nvirt_B=}")
 
+    C_beta_active_A = wfn_A.Cb_subset('AO', 'ACTIVE')
     print(f"{C_alpha_A.np.shape=}")
     print(f"{C_alpha_vir_A.np.shape=}")
-    print(f"{wfn_A.Cb_subset('AO', 'ACTIVE').np.shape=}")
+    print(f"{C_beta_active_A.np.shape=}")
     print(f"{cache['omega_B_ao'].np.shape=}")
     print("")
     print(f"{C_beta_A.np.shape=}")
