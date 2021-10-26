@@ -445,7 +445,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     # -------------------
     # omega_jj | omega_js
     # NOTE: output socc x socc (omega_ii) is always set to zero by ROHF.Hx
-    _sapt_cpscf_solve(cache, jk, rhs_A, rhs_B, maxiter, conv)
+    return _sapt_cpscf_solve(cache, jk, rhs_A, rhs_B, maxiter, conv)
 
 
 def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
