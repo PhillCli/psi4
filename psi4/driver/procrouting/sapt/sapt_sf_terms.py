@@ -343,7 +343,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     C_beta_B = wfn_B.Cb_subset("AO", "OCC")
 
     C_alpha_vir_A = wfn_A.Ca_subset("AO", "VIR")
-    C_beta_vir_A = wfn_A.Ca_subset("AO", "VIR")
+    C_beta_vir_A = wfn_A.Cb_subset("AO", "VIR")
     nbf, nvirt_A = C_alpha_vir_A.np.shape
     nbf, nvirt_B = wfn_B.Ca_subset("AO", "VIR").np.shape
 
@@ -368,7 +368,6 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     print("")
     print(f"{C_alpha_A.np.shape=}")
     print(f"{C_alpha_vir_A.np.shape=}")
-    print(f"{C_beta_active_A.np.shape=}")
     print(f"{cache['omega_B_ao'].np.shape=}")
     print("")
     print(f"{C_beta_A.np.shape=}")
