@@ -381,8 +381,8 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     omega_ar_2 = rhs_A_alpha.np[:ndocc_A, :nvirt_A]
     print(f"{omega_ar_1.shape=}")
     print(f"{omega_ar_2.shape=}")
-    print(f"{omega_ar_1[1:,:]=}")
-    print(f"{omega_ar_2[1:,:]=}")
+    print(f"{omega_ar_1=}")
+    print(f"{omega_ar_2=}")
     print(f"{np.allclose(omega_ar_1, omega_ar_2)=}")
 
     rhs_A = core.Matrix(nsocc_A + ndocc_A, nsocc_A + nvirt_A)
