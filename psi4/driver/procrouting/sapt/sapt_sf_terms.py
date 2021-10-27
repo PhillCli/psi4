@@ -480,9 +480,11 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     E20ind_resp_B_A += np.einsum("ij,ij", t_alpha_B.np, rhs_B_alpha.np)
     E20ind_resp_B_A += np.einsum("ij,ij", t_beta_B.np, rhs_B_beta.np)
     E20ind_resp = E20ind_resp_A_B + E20ind_resp_B_A
-    print(f"E20ind,resp(A<-B): {E20ind_resp_A_B}")
-    print(f"E20ind,resp(B<-A): {E20ind_resp_B_A}")
-    print(f"E20ind,resp      : {E20ind_resp}")
+    # "-" because V
+    # H (-t) = omega
+    print(f"E20ind,resp(A<-B): {-E20ind_resp_A_B}")
+    print(f"E20ind,resp(B<-A): {-E20ind_resp_B_A}")
+    print(f"E20ind,resp      : {-E20ind_resp}")
 
 
 def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
@@ -579,7 +581,7 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
         guess=[rhsA, rhsB],  # NOTE: temporary to switch off pre-conditioner
         maxiter=maxiter,
         rcond=conv,
-        printlvl=1,
+        printlvl=0,
         printer=pfunc)
     core.print_out("   " + ("-" * sep_size) + "\n")
 
