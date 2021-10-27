@@ -797,14 +797,14 @@ std::vector<SharedMatrix> ROHF::twoel_Hx(std::vector<SharedMatrix> x_vec, bool c
 }
 
 std::vector<SharedMatrix> ROHF::cphf_Hx(std::vector<SharedMatrix> x_vec) {
-    outfile->Printf("entered cphf_Hx\n");
+    // outfile->Printf("entered cphf_Hx\n");
     std::vector<SharedMatrix> ret_vect;
     auto ret = x_vec[0]->clone();
     for (size_t i = 0; i < x_vec.size(); i++) {
         Hx(x_vec[i], ret);
         ret_vect.push_back(ret);
     }
-    outfile->Printf("exited cphf_Hx\n");
+    // outfile->Printf("exited cphf_Hx\n");
     return ret_vect;
 }
 
