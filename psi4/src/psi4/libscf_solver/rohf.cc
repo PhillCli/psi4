@@ -502,7 +502,7 @@ double ROHF::compute_E() {
 }
 
 void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
-    outfile->Printf("entered Hx\n");
+    // outfile->Printf("entered Hx\n");
     if (functional_->needs_xc()) {
         throw PSIEXCEPTION("SCF: Cannot yet compute DFT Hessian-vector prodcuts.\n");
     }
@@ -530,22 +530,17 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
     // Passing these guys is annoying, pretty cheap to rebuild
     Dimension dim_zero = Dimension(nirrep_, "Zero Dim");
 
-    // NEW
-    SharedMatrix F_ao;
-
     SharedMatrix Cocc = Ca_->get_block({dim_zero, nsopi_}, {dim_zero, ret->rowspi()});
     Cocc->set_name("Cocc");
     SharedMatrix Cvir = Ca_->get_block({dim_zero, nsopi_}, {doccpi_, doccpi_ + ret->colspi()});
     Cvir->set_name("Cvir");
 
-    outfile->Printf("Hx:: grabbed the orbital spaces\n");
-    // FIXME:
-    // These are not avaible after scf ??
+    // outfile->Printf("Hx:: grabbed the orbital spaces\n");
     auto moFa = SharedMatrix(factory_->create_matrix("MO alpha Fock Matrix (MO basis)"));
     auto moFb = SharedMatrix(factory_->create_matrix("MO beta  Fock Matrix (MO basis)"));
     moFa->transform(Fa_, Ca_);
     moFb->transform(Fb_, Cb_);
-    outfile->Printf("HXx:: MO Fock operator computed\n");
+    // outfile->Printf("HXx:: MO Fock operator computed\n");
 
     for (size_t h = 0; h < nirrep_; h++) {
         if (!occpi[h] || !virpi[h]) continue;
@@ -553,17 +548,8 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
         double** leftp = Hx_left->pointer(h);
         double** rightp = Hx_right->pointer(h);
         double** xp = x->pointer(h);
-        // OLD
-        // double** Fap = moFa_->pointer(h);
-        // double** Fbp = moFb_->pointer(h);
-        // NEW - (wrong?), Fa_ is AO
-        // double** Fap = Fa_->pointer(h);
-        // double** Fbp = Fb_->pointer(h);
-        // NEW - correct, moFa_ is MO
         double** Fap = moFa->pointer(h);
         double** Fbp = moFb->pointer(h);
-
-        // outfile->Printf("FOCK MO\n");
 
         // left_ov += 0.5 * x_op Fa_pv
         C_DGEMM('N', 'N', occpi[h], virpi[h], pvir[h], 0.5, (xp[0] + soccpi_[h]), virpi[h],
@@ -590,17 +576,16 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
             C_DGEMM('N', 'T', occpi[h], soccpi_[h], pvir[h], 0.5, (Fbp[0] + occpi[h]), nmopi_[h],
                     (xp[doccpi_[h]] + soccpi_[h]), virpi[h], 1.0, rightp[0], virpi[h]);
         }
-        // outfile->Printf("FOCK MO WYLADOWAL\n");
     }
 
-    outfile->Printf("Hx:: entering J&K section\n");
+    // outfile->Printf("Hx:: entering J&K section\n");
     // => Two electron part <= //
     std::vector<SharedMatrix>& Cl = jk_->C_left();
     std::vector<SharedMatrix>& Cr = jk_->C_right();
-    outfile->Printf("Hx::JK took Cl & Cr references\n");
+    // outfile->Printf("Hx::JK took Cl & Cr references\n");
     Cl.clear();
     Cr.clear();
-    outfile->Printf("Hx::JK cleared Cl & Cr\n");
+    // outfile->Printf("Hx::JK cleared Cl & Cr\n");
 
     // If scf_type is DF we can do some extra JK voodo
     if ((options_.get_str("SCF_TYPE").find("DF") != std::string::npos) || (options_.get_str("SCF_TYPE") == "CD")) {
@@ -763,7 +748,7 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
 
         half_trans.reset();
     }
-    outfile->Printf("Hx:: exiting J&K section\n");
+    // outfile->Printf("Hx:: exiting J&K section\n");
 
     // Zero out socc-socc terms
     for (size_t h = 0; h < nirrep_; h++) {
@@ -791,7 +776,7 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
     Hx_right.reset();
     Cocc.reset();
     Cvir.reset();
-    outfile->Printf("Hx:: exiting\n");
+    // outfile->Printf("Hx:: exiting\n");
 }
 std::vector<SharedMatrix> ROHF::onel_Hx(std::vector<SharedMatrix> x_vec) {
     std::vector<SharedMatrix> ret_vect;
