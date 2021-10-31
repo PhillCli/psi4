@@ -485,7 +485,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     E20ind_resp_B_A = 0
     E20ind_resp_B_A += np.einsum("ij,ij", t_alpha_B.np, rhs_B_alpha.np)
     E20ind_resp_B_A += np.einsum("ij,ij", t_beta_B.np, rhs_B_beta.np)
-    E20ind_resp = E20ind_resp_A_B + E20ind_resp_B_A
+    E20ind_resp = 2 * (E20ind_resp_A_B + E20ind_resp_B_A)
     # "-" because V
     # H (-t) = omega
     print(f"E20ind,resp(A<-B): {-E20ind_resp_A_B}")
