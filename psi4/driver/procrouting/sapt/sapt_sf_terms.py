@@ -486,6 +486,11 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     print(f"E20ind,resp(B<-A): {-E20ind_resp_B_A}")
     print(f"E20ind,resp      : {-E20ind_resp}")
 
+    # NOTE: what should be the output ???
+    # (t_ar, t_ir, t_ai)
+    # (t_bs, t_js, t_bj)
+    return ()
+
 
 def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
     """
