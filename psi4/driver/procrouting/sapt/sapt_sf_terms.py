@@ -407,7 +407,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     # omega_ir
     rhs_A.np[ndocc_A:, nsocc_A:] = rhs_A_alpha.np[ndocc_A:, :]
     # omega_ii
-    rhs_A.np[ndocc_A:, nsocc_A:] = np.zeros((nsocc_A, nsocc_A))
+    rhs_A.np[ndocc_A:, :nsocc_A] = np.zeros((nsocc_A, nsocc_A))
 
     # take care of rhs_B
     rhs_B_alpha = core.triplet(C_alpha_B, cache["omega_A_ao"], C_alpha_vir_B, True, False, False)
@@ -428,7 +428,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     # omega_js
     rhs_B.np[ndocc_B:, nsocc_B:] = rhs_B_alpha.np[ndocc_B:, :]
     # omega_jj
-    rhs_B.np[ndocc_B:, nsocc_B:] = np.zeros((nsocc_B, nsocc_B))
+    rhs_B.np[ndocc_B:, :nsocc_B] = np.zeros((nsocc_B, nsocc_B))
 
     # NOTE::
     # ROHF::Hx expected structure
