@@ -6,10 +6,10 @@ import psi4
 # NOTE: results verified with finite-field custom code
 li_na_simple = """
 0 2
-Li 0.000 0.000 -2.000
+Li 0.000 0.000 -1.000
 --
 0 2
-Na 0.000 0.000 +2.000
+Na 0.000 0.000 +1.000
 
 no_reorient
 no_com
