@@ -501,8 +501,10 @@ def run_sf_sapt(name, **kwargs):
     core.print_out("         ---------------------------------------------------------\n")
     core.print_out("\n")
 
+    sf_data = {}
     if not core.get_option("SAPT", "SF_SAPT_DO_ONLY_CPHF"):
-        sf_data = sapt_sf_terms.compute_first_order_sapt_sf(sapt_dimer, sapt_jk, wfn_A, wfn_B)
+        sf_first_order = sapt_sf_terms.compute_first_order_sapt_sf(sapt_dimer, sapt_jk, wfn_A, wfn_B)
+        sf_data.update(sf_first_order)
 
     def form_omega_potentials(cache: Dict[str, str], sapt_jk: core.JK) -> Tuple[core.Matrix, core.Matrix]:
         """
@@ -565,17 +567,18 @@ def run_sf_sapt(name, **kwargs):
     cache = {
         "wfn_A": wfn_A,
         "wfn_B": wfn_B,
-        # TODO: fill-out orbital energies
+        # TODO: fill-out orbital energies (required by preconditioner)
         # cache["eps_socc_A"].shape[0]
         # cache["eps_docc_A"].shape[0]
         # cache["eps_active_A"].shape[0]
     }
     omega_A_ao, omega_B_ao = form_omega_potentials(cache, sapt_jk)
     cache.update({"omega_A_ao": omega_A_ao, "omega_B_ao": omega_B_ao})
-    ind = sapt_sf_terms.compute_cphf_induction(cache,
-                                               sapt_jk,
-                                               maxiter=core.get_option("SAPT", "MAXITER"),
-                                               conv=core.get_option("SAPT", "D_CONVERGENCE"))
+    data_ind, amplitudes_ind = sapt_sf_terms.compute_cphf_induction(cache,
+                                                                    sapt_jk,
+                                                                    maxiter=core.get_option("SAPT", "MAXITER"),
+                                                                    conv=core.get_option("SAPT", "D_CONVERGENCE"))
+    sf_data.update(data_ind)
     core.timer_off("SF-SAPT:SAPT(CP-ROHF):ind")
 
     # Print the results
@@ -591,22 +594,26 @@ def run_sf_sapt(name, **kwargs):
 
     dimer_wfn = core.Wavefunction.build(sapt_dimer, wfn_A.basisset())
 
-    # Set variables
+    # core variables mapping
     psivar_tanslator = {
+        # first order
         "Elst10": "SAPT ELST ENERGY",
         "Exch10(S^2) [diagonal]": "SAPT EXCH10(S^2),DIAGONAL ENERGY",
         "Exch10(S^2) [off-diagonal]": "SAPT EXCH10(S^2),OFF-DIAGONAL ENERGY",
         "Exch10(S^2) [highspin]": "SAPT EXCH10(S^2),HIGHSPIN ENERGY",
+        # second order
+        "Ind20,r": "SAPT IND20,R ENERGY",
     }
 
     for k, v in sf_data.items():
-        psi_k = psivar_tanslator[k]
-
-        dimer_wfn.set_variable(psi_k, v)
-        core.set_variable(psi_k, v)
+        if k in psivar_tanslator.keys():
+            psi_k = psivar_tanslator[k]
+            dimer_wfn.set_variable(psi_k, v)
+            core.set_variable(psi_k, v)
 
     # Copy over highspin
-    core.set_variable("SAPT EXCH ENERGY", sf_data["Exch10(S^2) [highspin]"])
+    if "Exch10(S^2) [highspin]" in sf_data.keys():
+        core.set_variable("SAPT EXCH ENERGY", sf_data["Exch10(S^2) [highspin]"])
 
     core.tstop()
 

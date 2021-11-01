@@ -26,6 +26,7 @@
 # @END LICENSE
 #
 import time
+from typing import Tuple
 
 import numpy as np
 from collections import OrderedDict
@@ -301,16 +302,14 @@ def compute_first_order_sapt_sf(dimer, jk, wfn_A, wfn_B, do_print=True):
     return ret_values
 
 
-def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
+def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) -> Tuple[OrderedDict, OrderedDict]:
     """
     Solve the CP-ROHF for SAPT induction amplitudes.
     """
-    # TODO: construct rhs_A & rhs_B
     # out of omega_A_ao & omega_B_ao
     # rhs_A -> should be MO transformation of omega_B (electrostatic potential of B monomer felt by mon A)
     # rhs_B -> should be MO transformation of omega_A (electrostatic potential of A monomer felt by mon B)
-    #
-    #rhs_A = None
+
     wfn_A = cache["wfn_A"]
     wfn_B = cache["wfn_B"]
     # Pull out Wavefunction A quantities
@@ -321,20 +320,9 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     # a,b - active  (socc)
     # r,s - virtual (virt)
 
-    Cocc_A = np.asarray(wfn_A.Ca_subset("AO", "OCC"))
-    Ci = Cocc_A[:, :ndocc_A]
-    Ca = Cocc_A[:, ndocc_A:]
-
-    mints = core.MintsHelper(wfn_A.basisset())
-    V_A = mints.ao_potential()
-
     # Pull out Wavefunction B quantities
     ndocc_B = wfn_B.doccpi().sum()
     nsocc_B = wfn_B.soccpi().sum()
-
-    Cocc_B = np.asarray(wfn_B.Ca_subset("AO", "OCC"))
-    Cj = Cocc_B[:, :ndocc_B]
-    Cb = Cocc_B[:, ndocc_B:]
 
     # grab alfa & beta orbitals
     C_alpha_A = wfn_A.Ca_subset("AO", "OCC")
