@@ -501,7 +501,7 @@ def run_sf_sapt(name, **kwargs):
     core.print_out("         ---------------------------------------------------------\n")
     core.print_out("\n")
 
-    if not core.get_option("SAPT", "DO_ONLY_CPHF"):
+    if not core.get_option("SAPT", "SF_SAPT_DO_ONLY_CPHF"):
         sf_data = sapt_sf_terms.compute_first_order_sapt_sf(sapt_dimer, sapt_jk, wfn_A, wfn_B)
 
     def form_omega_potentials(cache: Dict[str, str], sapt_jk: core.JK) -> Tuple[core.Matrix, core.Matrix]:
