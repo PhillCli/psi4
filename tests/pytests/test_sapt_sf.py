@@ -33,7 +33,7 @@ no_reorient
 no_com
 """
 
-reference_data = [(li_na_simple, -0.2807338409357377)]
+reference_data = [(li_na_simple, -0.2807338409357377), (cn_ne_zuchowski2008, 0.0)]
 
 
 @pytest.mark.parametrize("geometry,reference", reference_data)
