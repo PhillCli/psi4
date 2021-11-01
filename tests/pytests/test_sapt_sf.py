@@ -1,5 +1,5 @@
 import pytest
-from .utils import *
+from .utils import compare_values
 
 import psi4
 
@@ -33,18 +33,17 @@ no_reorient
 no_com
 """
 
-reference_data = [
-    (
+reference_data = [("", -0.2807338409357377)]
 
-    )
-]
-def test_sapt_sf_rohf_cphf():
+
+@pytest.mark.parametrize("geometry,reference", reference_data)
+def test_sapt_sf_rohf_cphf(geometry, reference):
     """test cp-rohf solver for SAPT-SF"""
 
     psi4.geometry(li_na_simple)
 
     psi4.set_options({
-        'scf_type': 'direct',
+        'scf_type': 'pk',
         'reference': 'rohf',
         'guess': 'sad',
         'basis': 'aug-cc-pvdz',
@@ -54,4 +53,5 @@ def test_sapt_sf_rohf_cphf():
         'SF_SAPT_DO_ONLY_CPHF': True,
     })
 
-    energy = psi4.energy('SF-SAPT')
+    wfn = psi4.energy('SF-SAPT')
+    assert compare_values(wfn.get_variable("SAPT IND20,R ENERGY"), reference, 6, "SAPT(ROHF) IND20,resp energy")
