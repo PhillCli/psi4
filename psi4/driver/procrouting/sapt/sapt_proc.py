@@ -587,8 +587,9 @@ def run_sf_sapt(name, **kwargs):
 
     for key, value in sf_data.items():
         value = sf_data[key]
-        print_vals = (key, value * 1000, value * constants.hartree2kcalmol, value * constants.hartree2kJmol)
-        string = "    %-26s % 15.8f [mEh] % 15.8f [kcal/mol] % 15.8f [kJ/mol]\n" % print_vals
+        print_vals = (key, value * 1000, value * constants.hartree2kcalmol, value * constants.hartree2kJmol,
+                      value * constants.hartree2wavenumbers)
+        string = "    %-26s % 15.8f [mEh] % 15.8f [kcal/mol] % 15.8f [kJ/mol] % 15.8f [cm^-1]\n" % print_vals
         core.print_out(string)
     core.print_out("  " + "-" * 103 + "\n\n")
 
