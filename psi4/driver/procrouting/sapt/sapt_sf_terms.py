@@ -462,9 +462,12 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     t_alpha_A.zero()
     t_beta_A.zero()
     # t_alpha = (t_ar, t_ir)
+    t_ar = t_A.np[:ndocc_A, :nsocc_A].copy()
+    t_ir = t_A.np[ndocc_A:, nsocc_A:].copy()
     t_alpha_A.np[:ndocc_A, :nvirt_A] = t_A.np[:ndocc_A, :nsocc_A]
     t_alpha_A.np[ndocc_A:, :] = t_A.np[ndocc_A:, nsocc_A:]
     # t_beta =  (t_ar, t_ai)
+    t_ai = t_A.np[:ndocc_A, nsocc_A:].copy()
     t_beta_A.np[:, nvirt_A:] = t_A.np[:ndocc_A, :nsocc_A]
     t_beta_A.np[:, :nvirt_A] = t_A.np[:ndocc_A, nsocc_A:]
 
@@ -473,29 +476,40 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6):
     t_alpha_B.zero()
     t_beta_B.zero()
     # t_alpha = (t_bs, t_js)
+    t_bs = t_B.np[:ndocc_B, :nsocc_B].copy()
+    t_js = t_B.np[ndocc_B:, nsocc_B:].copy()
     t_alpha_B.np[:ndocc_B, :nvirt_B] = t_B.np[:ndocc_B, :nsocc_B]
     t_alpha_B.np[ndocc_B:, :] = t_B.np[ndocc_B:, nsocc_B:]
     # t_beta =  (t_bs, t_bj)
+    t_bj = t_B.np[:ndocc_B, nsocc_B:].copy()
     t_beta_B.np[:, nvirt_B:] = t_B.np[:ndocc_B, :nsocc_B]
     t_beta_B.np[:, :nvirt_B] = t_B.np[:ndocc_B, nsocc_B:]
 
     E20ind_resp_A_B = 0
+    # spin alpha
     E20ind_resp_A_B += np.einsum("ij,ij", t_alpha_A.np, rhs_A_alpha.np)
+    # spin beta
     E20ind_resp_A_B += np.einsum("ij,ij", t_beta_A.np, rhs_A_beta.np)
     E20ind_resp_B_A = 0
+    # spin alpha
     E20ind_resp_B_A += np.einsum("ij,ij", t_alpha_B.np, rhs_B_alpha.np)
+    # spin beta
     E20ind_resp_B_A += np.einsum("ij,ij", t_beta_B.np, rhs_B_beta.np)
     E20ind_resp = 2 * (E20ind_resp_A_B + E20ind_resp_B_A)
+    # NOTE: this has to be included in the t's
     # "-" because V
     # H (-t) = omega
     print(f"E20ind,resp(A<-B): {-E20ind_resp_A_B}")
     print(f"E20ind,resp(B<-A): {-E20ind_resp_B_A}")
     print(f"E20ind,resp      : {-E20ind_resp}")
 
-    # NOTE: what should be the output ???
-    # (t_ar, t_ir, t_ai)
-    # (t_bs, t_js, t_bj)
-    return ()
+    ret_values = OrderedDict({
+        "Ind20,r(A<-B)": -E20ind_resp_A_B,
+        "Ind20,r(A->B)": -E20ind_resp_B_A,
+        "Ind20,r": -E20ind_resp
+    })
+    ret_arrays = OrderedDict({"t_ai": t_ai, "t_ar": t_ar, "t_ir": t_ir, "t_bj": t_bj, "t_bs": t_bs, "t_js": t_js})
+    return ret_values, ret_arrays
 
 
 def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
