@@ -452,11 +452,13 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     # t_alpha = (t_ar, t_ir)
     t_ar = t_A.np[:ndocc_A, :nsocc_A].copy()
     t_ir = t_A.np[ndocc_A:, nsocc_A:].copy()
-    t_alpha_A.np[:ndocc_A, :nvirt_A] = t_A.np[:ndocc_A, :nsocc_A]
+    if nsocc_A:
+        t_alpha_A.np[:ndocc_A, :nvirt_A] = t_A.np[:ndocc_A, :nsocc_A]
     t_alpha_A.np[ndocc_A:, :] = t_A.np[ndocc_A:, nsocc_A:]
     # t_beta =  (t_ar, t_ai)
     t_ai = t_A.np[:ndocc_A, nsocc_A:].copy()
-    t_beta_A.np[:, nvirt_A:] = t_A.np[:ndocc_A, :nsocc_A]
+    if nsocc_A:
+        t_beta_A.np[:, nvirt_A:] = t_A.np[:ndocc_A, :nsocc_A]
     t_beta_A.np[:, :nvirt_A] = t_A.np[:ndocc_A, nsocc_A:]
 
     t_alpha_B = rhs_B_alpha.clone()
