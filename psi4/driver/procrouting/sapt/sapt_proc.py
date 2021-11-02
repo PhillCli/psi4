@@ -557,7 +557,7 @@ def run_sf_sapt(name, **kwargs):
         omega_B.add(J_B_a)
         omega_B.add(J_B_b)
 
-        # DEBUG::segfaults in rohf.Hx revert changes to jk
+        # NOTE: revert changes to jk K compute, otherwise rohf.Hx calls will seg-fault
         sapt_jk.set_do_K(True)
 
         core.print_out("... Done\n")
@@ -611,6 +611,10 @@ def run_sf_sapt(name, **kwargs):
             psi_k = psivar_tanslator[k]
             dimer_wfn.set_variable(psi_k, v)
             core.set_variable(psi_k, v)
+
+    # set ind,resp amplitudes on output wfn
+    for k, v in amplitudes_ind.items():
+        dimer_wfn.set_array_variable(k, core.Matrix.from_array(v))
 
     # Copy over highspin
     if "Exch10(S^2) [highspin]" in sf_data.keys():
