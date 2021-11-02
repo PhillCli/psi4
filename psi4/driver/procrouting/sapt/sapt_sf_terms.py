@@ -484,20 +484,18 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     # sanity checks
     assert t_bs.shape == (ndocc_B, nvirt_B)
     assert t_js.shape == (nsocc_B, nvirt_B)
-    # t_bs
+    t_alpha_B.np[:ndocc_B, nsocc_B:] = t_bs
     if nsocc_B:
-        print(f"{t_alpha_B.np[:ndocc_B, :nvirt_B].shape=}")
-        t_alpha_B.np[:ndocc_B, :] = t_bs
+        t_alpha_B.np[ndocc_B:, :] = t_js
     # t_js
-    t_alpha_B.np[ndocc_B:, :] = t_B.np[ndocc_B:, nsocc_B:]
     # t_beta =  (t_bs, t_bj)
     t_bj = t_B.np[:ndocc_B, :nsocc_B].copy()
     print(f"{t_bj.shape=}")
     print(f"{t_beta_B.np.shape=}")
     assert t_bj.shape == (ndocc_B, nsocc_B)
+    t_beta_B.np[:, :nvirt_B] = t_bs
     if nsocc_B:
-        t_beta_B.np[:, nvirt_B:] = t_bs
-    t_beta_B.np[:, :nvirt_B] = t_B.np[:ndocc_B, nsocc_B:]
+        t_beta_B.np[:, nvirt_B:] = t_bj
 
     E20ind_resp_A_B = 0
     # spin alpha
