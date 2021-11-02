@@ -458,7 +458,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     # sanity checks
     assert t_ar.shape == (ndocc_A, nvirt_A)
     assert t_ir.shape == (nsocc_A, nvirt_A)
-    t_alpha_A.np[:ndocc_A, nsocc_A:] = t_ar
+    t_alpha_A.np[:ndocc_A, :] = t_ar
     if nsocc_A:
         t_alpha_A.np[ndocc_A:, :] = t_ir
     # t_beta =  (t_ar, t_ai)
@@ -484,7 +484,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     # sanity checks
     assert t_bs.shape == (ndocc_B, nvirt_B)
     assert t_js.shape == (nsocc_B, nvirt_B)
-    t_alpha_B.np[:ndocc_B, nsocc_B:] = t_bs
+    t_alpha_B.np[:ndocc_B, :] = t_bs
     if nsocc_B:
         t_alpha_B.np[ndocc_B:, :] = t_js
     # t_js
