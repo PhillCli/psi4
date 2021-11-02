@@ -469,7 +469,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     assert t_ai.shape == (ndocc_A, nsocc_A)
     t_beta_A.np[:, :nvirt_A] = t_ar
     if nsocc_A:
-        t_beta_A.np[:, nvirt_A:] = t_ir
+        t_beta_A.np[:, nvirt_A:] = t_ai
 
     t_alpha_B = rhs_B_alpha.clone()
     t_beta_B = rhs_B_beta.clone()
