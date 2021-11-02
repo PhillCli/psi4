@@ -450,34 +450,53 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     t_alpha_A.zero()
     t_beta_A.zero()
     # t_alpha = (t_ar, t_ir)
-    t_ar = t_A.np[:ndocc_A, :nsocc_A].copy()
+    t_ar = t_A.np[:ndocc_A, nsocc_A:].copy()
     t_ir = t_A.np[ndocc_A:, nsocc_A:].copy()
+    print(f"{t_ar.shape=}")
+    print(f"{t_ir.shape=}")
+    print(f"{t_alpha_A.np.shape=}")
+    # sanity checks
+    assert t_ar.shape == (ndocc_A, nvirt_A)
+    assert t_ir.shape == (nsocc_A, nvirt_A)
     if nsocc_A:
-        t_alpha_A.np[:ndocc_A, :nvirt_A] = t_A.np[:ndocc_A, :nsocc_A]
-    t_alpha_A.np[ndocc_A:, :] = t_A.np[ndocc_A:, nsocc_A:]
+        t_alpha_A.np[:ndocc_A, :nvirt_A] = t_ar
+    t_alpha_A.np[ndocc_A:, :] = t_ir
     # t_beta =  (t_ar, t_ai)
     t_ai = t_A.np[:ndocc_A, nsocc_A:].copy()
+    print(f"{t_ai.shape=}")
+    print(f"{t_beta_A.np.shape=}")
+    # sanity checks
+    assert t_ai.shape == (ndocc_A, nsocc_A)
     if nsocc_A:
-        t_beta_A.np[:, nvirt_A:] = t_A.np[:ndocc_A, :nsocc_A]
-    t_beta_A.np[:, :nvirt_A] = t_A.np[:ndocc_A, nsocc_A:]
+        t_beta_A.np[:, nvirt_A:] = t_ar
+    t_beta_A.np[:, :nvirt_A] = t_ir
 
     t_alpha_B = rhs_B_alpha.clone()
     t_beta_B = rhs_B_beta.clone()
     t_alpha_B.zero()
     t_beta_B.zero()
     # t_alpha = (t_bs, t_js)
-    t_bs = t_B.np[:ndocc_B, :nsocc_B].copy()
+    t_bs = t_B.np[:ndocc_B, nsocc_B:].copy()
     t_js = t_B.np[ndocc_B:, nsocc_B:].copy()
     print(f"{t_bs.shape=}")
     print(f"{t_js.shape=}")
+    print(f"{t_alpha_B.np.shape=}")
+    # sanity checks
+    assert t_bs.shape == (ndocc_B, nvirt_B)
+    assert t_js.shape == (nsocc_B, nvirt_B)
+    # t_bs
     if nsocc_B:
-        t_alpha_B.np[:ndocc_B, :nvirt_B] = t_B.np[:ndocc_B, :nsocc_B]
+        print(f"{t_alpha_B.np[:ndocc_B, :nvirt_B].shape=}")
+        t_alpha_B.np[:ndocc_B, :] = t_bs
+    # t_js
     t_alpha_B.np[ndocc_B:, :] = t_B.np[ndocc_B:, nsocc_B:]
     # t_beta =  (t_bs, t_bj)
-    t_bj = t_B.np[:ndocc_B, nsocc_B:].copy()
+    t_bj = t_B.np[:ndocc_B, :nsocc_B].copy()
     print(f"{t_bj.shape=}")
+    print(f"{t_beta_B.np.shape=}")
+    assert t_bj.shape == (ndocc_B, nsocc_B)
     if nsocc_B:
-        t_beta_B.np[:, nvirt_B:] = t_B.np[:ndocc_B, :nsocc_B]
+        t_beta_B.np[:, nvirt_B:] = t_bs
     t_beta_B.np[:, :nvirt_B] = t_B.np[:ndocc_B, nsocc_B:]
 
     E20ind_resp_A_B = 0
