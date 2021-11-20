@@ -563,15 +563,43 @@ def run_sf_sapt(name, **kwargs):
         core.print_out("... Done\n")
         return omega_A, omega_B
 
+    def build_cache(cache: dict = None) -> dict:
+        """build cache object for cphf_induction"""
+        if cache is None:
+            cache = {}
+
+        ndocc_A = wfn_A.doccpi().sum()
+        nsocc_A = wfn_A.soccpi().sum()
+
+        ndocc_B = wfn_B.doccpi().sum()
+        nsocc_B = wfn_B.soccpi().sum()
+
+        # grab virtual orbitals
+        nbf, nvirt_A = wfn_A.Ca_subset("AO", "VIR").np.shape
+        nbf, nvirt_B = wfn_B.Ca_subset("AO", "VIR").np.shape
+        test = wfn_A.epsilon_a_subset("AO", "OCC")
+        print(f"{type(test)}")
+        cache.update({
+            "wfn_A": wfn_A,
+            "wfn_B": wfn_B,
+            "ndocc_A": ndocc_A,
+            "nsocc_A": nsocc_A,
+            "ndocc_B": ndocc_B,
+            "nsocc_B": nsocc_B,
+            # NOTE: need to triple check those
+            "eps_docc_A": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "OCC").np[:ndocc_A]),
+            "eps_socc_A": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "OCC").np[ndocc_A:]),
+            "eps_virt_A": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "VIR").np),
+            "eps_docc_B": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "OCC").np[:ndocc_B]),
+            "eps_socc_B": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "OCC").np[ndocc_B:]),
+            "eps_virt_B": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "VIR").np),
+        })
+        return cache
+
     core.timer_on("SF-SAPT:SAPT(CP-ROHF):ind")
-    cache = {
-        "wfn_A": wfn_A,
-        "wfn_B": wfn_B,
-        # TODO: fill-out orbital energies (required by preconditioner)
-        # cache["eps_socc_A"].shape[0]
-        # cache["eps_docc_A"].shape[0]
-        # cache["eps_active_A"].shape[0]
-    }
+    # NOTE: fold it to build cphf_rohf cache
+    # wfn_A.epsilon_a_subset("AO", "OCC")
+    cache = build_cache()
     omega_A_ao, omega_B_ao = form_omega_potentials(cache, sapt_jk)
     cache.update({"omega_A_ao": omega_A_ao, "omega_B_ao": omega_B_ao})
     data_ind, amplitudes_ind = sapt_sf_terms.compute_cphf_induction(cache,

@@ -26,6 +26,7 @@
 # @END LICENSE
 #
 import time
+from pprint import pformat
 from typing import Tuple
 
 import numpy as np
@@ -521,6 +522,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
         "Ind20,r": -E20ind_resp
     })
     ret_arrays = OrderedDict({"t_ai": t_ai, "t_ar": t_ar, "t_ir": t_ir, "t_bj": t_bj, "t_bs": t_bs, "t_js": t_js})
+    print(pformat(cache))
     return ret_values, ret_arrays
 
 
@@ -532,6 +534,16 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
     cache["wfn_A"].set_jk(jk)
     cache["wfn_B"].set_jk(jk)
 
+    # NOTE: in ROHF:Hx
+    # both X and RHS
+    # have sizes:
+    # (docc, socc) | (docc, virt)
+    # (socc, socc) | (socc, virt)
+    # in order our pre-conditioner should be
+    # (eps_socc - eps_docc) | (eps_virt - eps_docc)
+    # (1)*(socc, socc)      | (eps_virt - eps_socc)
+    # this way apply_denominator should not be singular (eps_socc - eps_socc) -> 0
+
     # TODO: how to exctract preconditioner properly
     # Make a preconditioner function
     #P_A = core.Matrix(cache["eps_occ_A"].shape[0], cache["eps_vir_A"].shape[0])
@@ -542,6 +554,8 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
 
     # Preconditioner function
     def apply_precon(x_vec, act_mask):
+        # NOTE: A.apply_denominator(B) does
+        # element-wise A_ij = A_ij/B_ij
         #if act_mask[0]:
         #    pA = x_vec[0].clone()
         #    pA.apply_denominator(P_A)
