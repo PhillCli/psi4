@@ -589,10 +589,10 @@ def run_sf_sapt(name, **kwargs):
             # NOTE: need to triple check those
             "eps_docc_A": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "OCC").np[:ndocc_A]),
             "eps_socc_A": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "OCC").np[ndocc_A:]),
-            "eps_virt_A": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "VIR").np),
+            "eps_vir_A": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "VIR").np),
             "eps_docc_B": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "OCC").np[:ndocc_B]),
             "eps_socc_B": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "OCC").np[ndocc_B:]),
-            "eps_virt_B": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "VIR").np),
+            "eps_vir_B": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "VIR").np),
         })
         return cache
 

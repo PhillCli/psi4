@@ -544,10 +544,34 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
     # (1)*(socc, socc)      | (eps_virt - eps_socc)
     # this way apply_denominator should not be singular (eps_socc - eps_socc) -> 0
 
+    ndocc_A = cache["ndocc_A"]
+    nsocc_A = cache["nsocc_A"]
+    ndocc_B = cache["ndocc_B"]
+    nsocc_B = cache["nsocc_B"]
+
     # TODO: how to exctract preconditioner properly
     # Make a preconditioner function
-    #P_A = core.Matrix(cache["eps_occ_A"].shape[0], cache["eps_vir_A"].shape[0])
-    #P_A.np[:] = (cache["eps_occ_A"].np.reshape(-1, 1) - cache["eps_vir_A"].np)
+    P_A = core.Matrix(cache["eps_docc_A"].shape[0] + cache["eps_socc_A"].shape[0],
+                      cache["eps_socc_A"].shape[0] + cache["eps_vir_A"].shape[0])
+    # where does this go?
+    eps_ai = (cache["eps_socc_A"].np.reshape(-1, 1) - cache["eps_docc_A"].np)
+    eps_ar = (cache["eps_docc_A"].np.reshape(-1, 1) - cache["eps_vir_A"].np)
+    eps_ir = (cache["eps_socc_A"].np.reshape(-1, 1) - cache["eps_vir_A"].np)
+    eps_ii = np.ones((cache["nsocc_A"], cache["nsocc_A"]))
+
+    print(f"{eps_ai.shape=}")
+    print(f"{eps_ar.shape=}")
+    print(f"{eps_ir.shape=}")
+    print(f"{eps_ii.shape=}")
+    print(f"{P_A.np.shape=}")
+    # ai
+    P_A.np[:ndocc_A, :nsocc_A] = eps_ai
+    # ar
+    P_A.np[:ndocc_A, nsocc_A:] = eps_ar
+    # ir
+    P_A.np[ndocc_A:, nsocc_A:] = eps_ir
+    # ii
+    P_A.np[ndocc_A:, :nsocc_A] = eps_ii
 
     #P_B = core.Matrix(cache["eps_occ_B"].shape[0], cache["eps_vir_B"].shape[0])
     #P_B.np[:] = (cache["eps_occ_B"].np.reshape(-1, 1) - cache["eps_vir_B"].np)
@@ -556,11 +580,11 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
     def apply_precon(x_vec, act_mask):
         # NOTE: A.apply_denominator(B) does
         # element-wise A_ij = A_ij/B_ij
-        #if act_mask[0]:
-        #    pA = x_vec[0].clone()
-        #    pA.apply_denominator(P_A)
-        #else:
-        #    pA = False
+        if act_mask[0]:
+            pA = x_vec[0].clone()
+            pA.apply_denominator(P_A)
+        else:
+            pA = False
 
         #if act_mask[1]:
         #    pB = x_vec[1].clone()
@@ -569,6 +593,7 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
         #    pB = False
         # NOTE: short-circut the logic for now
         pA, pB = (x_vec[0].clone(), x_vec[1].clone())
+        #pB = x_vec[1].clone()
         return [pA, pB]
 
     # Hx function
