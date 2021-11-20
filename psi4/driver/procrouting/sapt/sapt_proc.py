@@ -575,24 +575,29 @@ def run_sf_sapt(name, **kwargs):
         nsocc_B = wfn_B.soccpi().sum()
 
         # grab virtual orbitals
-        nbf, nvirt_A = wfn_A.Ca_subset("AO", "VIR").np.shape
-        nbf, nvirt_B = wfn_B.Ca_subset("AO", "VIR").np.shape
+        nbf, nvir_A = wfn_A.Ca_subset("AO", "VIR").np.shape
+        nbf, nvir_B = wfn_B.Ca_subset("AO", "VIR").np.shape
         test = wfn_A.epsilon_a_subset("AO", "OCC")
-        print(f"{type(test)}")
+        print(f"{ndocc_A=}")
+        print(f"{nsocc_A=}")
+        print(f"{ndocc_B=}")
+        print(f"{nsocc_B=}")
         cache.update({
             "wfn_A": wfn_A,
             "wfn_B": wfn_B,
             "ndocc_A": ndocc_A,
             "nsocc_A": nsocc_A,
+            "nvir_A": nvir_A,
             "ndocc_B": ndocc_B,
             "nsocc_B": nsocc_B,
+            "nvir_B": nvir_B,
             # NOTE: need to triple check those
-            "eps_docc_A": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "OCC").np[:ndocc_A]),
+            "eps_docc_A": core.Vector.from_array(wfn_A.epsilon_b_subset("AO", "OCC").np),
             "eps_socc_A": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "OCC").np[ndocc_A:]),
             "eps_vir_A": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "VIR").np),
-            "eps_docc_B": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "OCC").np[:ndocc_B]),
-            "eps_socc_B": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "OCC").np[ndocc_B:]),
-            "eps_vir_B": core.Vector.from_array(wfn_A.epsilon_a_subset("AO", "VIR").np),
+            "eps_docc_B": core.Vector.from_array(wfn_B.epsilon_b_subset("AO", "OCC").np),
+            "eps_socc_B": core.Vector.from_array(wfn_B.epsilon_a_subset("AO", "OCC").np[ndocc_B:]),
+            "eps_vir_B": core.Vector.from_array(wfn_B.epsilon_a_subset("AO", "VIR").np),
         })
         return cache
 

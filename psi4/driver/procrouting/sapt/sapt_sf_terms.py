@@ -539,9 +539,9 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
     # have sizes:
     # (docc, socc) | (docc, virt)
     # (socc, socc) | (socc, virt)
-    # in order our pre-conditioner should be
+    # in turn our pre-conditioner should be
     # (eps_socc - eps_docc) | (eps_virt - eps_docc)
-    # (1)*(socc, socc)      | (eps_virt - eps_socc)
+    # (1,)*(socc, socc)     | (eps_virt - eps_socc)
     # this way apply_denominator should not be singular (eps_socc - eps_socc) -> 0
 
     ndocc_A = cache["ndocc_A"]
@@ -549,32 +549,55 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
     ndocc_B = cache["ndocc_B"]
     nsocc_B = cache["nsocc_B"]
 
-    # TODO: how to exctract preconditioner properly
     # Make a preconditioner function
     P_A = core.Matrix(cache["eps_docc_A"].shape[0] + cache["eps_socc_A"].shape[0],
                       cache["eps_socc_A"].shape[0] + cache["eps_vir_A"].shape[0])
     # where does this go?
-    eps_ai = (cache["eps_socc_A"].np.reshape(-1, 1) - cache["eps_docc_A"].np)
-    eps_ar = (cache["eps_docc_A"].np.reshape(-1, 1) - cache["eps_vir_A"].np)
-    eps_ir = (cache["eps_socc_A"].np.reshape(-1, 1) - cache["eps_vir_A"].np)
-    eps_ii = np.ones((cache["nsocc_A"], cache["nsocc_A"]))
+    eps_ai_A = (cache["eps_docc_A"].np.reshape(-1, 1) - cache["eps_socc_A"].np)
+    eps_ar_A = (cache["eps_docc_A"].np.reshape(-1, 1) - cache["eps_vir_A"].np)
+    eps_ir_A = (cache["eps_socc_A"].np.reshape(-1, 1) - cache["eps_vir_A"].np)
+    eps_ii_A = np.ones((cache["nsocc_A"], cache["nsocc_A"]))
 
-    print(f"{eps_ai.shape=}")
-    print(f"{eps_ar.shape=}")
-    print(f"{eps_ir.shape=}")
-    print(f"{eps_ii.shape=}")
+    print(f"{eps_ai_A.shape=}")
+    print(f"{eps_ar_A.shape=}")
+    print(f"{eps_ir_A.shape=}")
+    print(f"{eps_ii_A.shape=}")
     print(f"{P_A.np.shape=}")
     # ai
-    P_A.np[:ndocc_A, :nsocc_A] = eps_ai
+    P_A.np[:ndocc_A, :nsocc_A] = eps_ai_A
     # ar
-    P_A.np[:ndocc_A, nsocc_A:] = eps_ar
+    P_A.np[:ndocc_A, nsocc_A:] = eps_ar_A
     # ir
-    P_A.np[ndocc_A:, nsocc_A:] = eps_ir
+    P_A.np[ndocc_A:, nsocc_A:] = eps_ir_A
     # ii
-    P_A.np[ndocc_A:, :nsocc_A] = eps_ii
+    P_A.np[ndocc_A:, :nsocc_A] = eps_ii_A
 
-    #P_B = core.Matrix(cache["eps_occ_B"].shape[0], cache["eps_vir_B"].shape[0])
-    #P_B.np[:] = (cache["eps_occ_B"].np.reshape(-1, 1) - cache["eps_vir_B"].np)
+    print(f"{cache['eps_docc_B'].shape[0]=}")
+    print(f"{cache['eps_socc_B'].shape[0]=}")
+    print(f"{cache['eps_vir_B'].shape[0]=}")
+    print(f"{cache['ndocc_B']=}")
+    print(f"{cache['nsocc_B']=}")
+    print(f"{cache['nvir_B']=}")
+    P_B = core.Matrix(cache["eps_docc_B"].shape[0] + cache["eps_socc_B"].shape[0],
+                      cache["eps_socc_B"].shape[0] + cache["eps_vir_B"].shape[0])
+    eps_ai_B = (cache["eps_docc_B"].np.reshape(-1, 1) - cache["eps_socc_B"].np)
+    eps_ar_B = (cache["eps_docc_B"].np.reshape(-1, 1) - cache["eps_vir_B"].np)
+    eps_ir_B = (cache["eps_socc_B"].np.reshape(-1, 1) - cache["eps_vir_B"].np)
+    eps_ii_B = np.ones((nsocc_B, nsocc_B))
+
+    print(f"{eps_ai_B.shape=}")
+    print(f"{eps_ar_B.shape=}")
+    print(f"{eps_ir_B.shape=}")
+    print(f"{eps_ii_B.shape=}")
+    print(f"{P_B.np.shape=}")
+    # ai
+    P_B.np[:ndocc_B, :nsocc_B] = eps_ai_B
+    # ar
+    P_B.np[:ndocc_B, nsocc_B:] = eps_ar_B
+    # ir
+    P_B.np[ndocc_B:, nsocc_B:] = eps_ir_B
+    # ii
+    P_B.np[ndocc_B:, :nsocc_B] = eps_ii_B
 
     # Preconditioner function
     def apply_precon(x_vec, act_mask):
@@ -586,14 +609,14 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
         else:
             pA = False
 
-        #if act_mask[1]:
-        #    pB = x_vec[1].clone()
-        #    pB.apply_denominator(P_B)
-        #else:
-        #    pB = False
+        if act_mask[1]:
+            pB = x_vec[1].clone()
+            pB.apply_denominator(P_B)
+        else:
+            pB = False
+
         # NOTE: short-circut the logic for now
-        pA, pB = (x_vec[0].clone(), x_vec[1].clone())
-        #pB = x_vec[1].clone()
+        #pA, pB = (x_vec[0].clone(), x_vec[1].clone())
         return [pA, pB]
 
     # Hx function
