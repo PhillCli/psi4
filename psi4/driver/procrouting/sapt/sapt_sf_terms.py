@@ -402,11 +402,11 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     rhs_A.np[ndocc_A:, :nsocc_A] = omega_ii
 
     # take care of rhs_B
-    rhs_B_alpha = core.triplet(C_alpha_B, cache["omega_A_ao"], C_alpha_vir_B, True, False, False)
-    rhs_B_beta = core.triplet(C_beta_B, cache["omega_A_ao"], C_beta_vir_B, True, False, False)
+    rhs_B_alpha = core.triplet(C_alpha_B, cache["omega_B_ao"], C_alpha_vir_B, True, False, False)
+    rhs_B_beta = core.triplet(C_beta_B, cache["omega_B_ao"], C_beta_vir_B, True, False, False)
     # NOTE: sanity check, if we got the ordering within spin-blocks right
-    omega_bs_beta = rhs_B_beta.np[:, :nvirt_B]
     omega_bs_alpha = rhs_B_alpha.np[:ndocc_B, :nvirt_B]
+    omega_bs_beta = rhs_B_beta.np[:, :nvirt_B]
     print(f"{np.allclose(omega_bs_beta, omega_bs_alpha)=}")
 
     rhs_B = core.Matrix(nsocc_B + ndocc_B, nsocc_B + nvirt_B)
@@ -461,7 +461,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     # '-' comes from H (-t) = omega
     C_DOCC_SOCC = 0
     C_DOCC_VIRT = -4  # pure closed-shell case
-    C_SOCC_VIRT = 0  # no docc open-shell case
+    C_SOCC_VIRT = -2  # no docc open-shell case
     # A
     t_ai *= C_DOCC_SOCC
     t_ar *= C_DOCC_VIRT
