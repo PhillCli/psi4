@@ -461,7 +461,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     # '-' comes from H (-t) = omega
     C_DOCC_SOCC = 0
     C_DOCC_VIRT = -4  # pure closed-shell case
-    C_SOCC_VIRT = -2  # no docc open-shell case
+    C_SOCC_VIRT = 0  # no docc open-shell case
     # A
     t_ai *= C_DOCC_SOCC
     t_ar *= C_DOCC_VIRT
@@ -508,13 +508,13 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
 
     # A<-B, in spin blocks
     E20ind_resp_A_B = 0
-    E20ind_resp_A_B += np.einsum("ij,ij", t_alpha_A.np, rhs_A_alpha.np)
-    E20ind_resp_A_B += np.einsum("ij,ij", t_beta_A.np, rhs_A_beta.np)
+    E20ind_resp_A_B += np.einsum("ij,ji", t_alpha_A.np, rhs_A_alpha.np)
+    E20ind_resp_A_B += np.einsum("ij,ji", t_beta_A.np, rhs_A_beta.np)
 
     # B<-A, in spin blocks
     E20ind_resp_B_A = 0
-    E20ind_resp_B_A += np.einsum("ij,ij", t_alpha_B.np, rhs_B_alpha.np)
-    E20ind_resp_B_A += np.einsum("ij,ij", t_beta_B.np, rhs_B_beta.np)
+    E20ind_resp_B_A += np.einsum("ij,ji", t_alpha_B.np, rhs_B_alpha.np)
+    E20ind_resp_B_A += np.einsum("ij,ji", t_beta_B.np, rhs_B_beta.np)
 
     # total 20ind,resp
     E20ind_resp = E20ind_resp_A_B + E20ind_resp_B_A
