@@ -498,31 +498,41 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     if nsocc_B:
         t_beta_B.np[:, nvirt_B:] = t_bj
 
+    # NOTE: correction coefficients
+    # NOTE: WTF this 2 comes from
+    # NOTE: H (-t) = omega
+    # A
+    t_ai *= -2
+    t_ar *= -2
+    t_ir *= -2
+    # B
+    t_bj *= -2
+    t_bs *= -2
+    t_js *= -2
+
     E20ind_resp_A_B = 0
-    # spin alpha
+    # spin alpha & beta
     E20ind_resp_A_B += np.einsum("ij,ij", t_alpha_A.np, rhs_A_alpha.np)
-    # spin beta
     E20ind_resp_A_B += np.einsum("ij,ij", t_beta_A.np, rhs_A_beta.np)
+
     E20ind_resp_B_A = 0
-    # spin alpha
+    # spin alpha & beta
     E20ind_resp_B_A += np.einsum("ij,ij", t_alpha_B.np, rhs_B_alpha.np)
-    # spin beta
     E20ind_resp_B_A += np.einsum("ij,ij", t_beta_B.np, rhs_B_beta.np)
-    E20ind_resp = 2 * (E20ind_resp_A_B + E20ind_resp_B_A)
-    # NOTE: this has to be included in the t's
-    # "-" because V
-    # H (-t) = omega
-    print(f"E20ind,resp(A<-B): {-E20ind_resp_A_B}")
-    print(f"E20ind,resp(B<-A): {-E20ind_resp_B_A}")
-    print(f"E20ind,resp      : {-E20ind_resp}")
+    E20ind_resp = E20ind_resp_A_B + E20ind_resp_B_A
+
+    # debug print
+    print(f"E20ind,resp(A<-B): {E20ind_resp_A_B}")
+    print(f"E20ind,resp(B<-A): {E20ind_resp_B_A}")
+    print(f"E20ind,resp      : {E20ind_resp}")
 
     ret_values = OrderedDict({
-        "Ind20,r(A<-B)": -E20ind_resp_A_B,
-        "Ind20,r(A->B)": -E20ind_resp_B_A,
-        "Ind20,r": -E20ind_resp
+        "Ind20,r(A<-B)": E20ind_resp_A_B,
+        "Ind20,r(A->B)": E20ind_resp_B_A,
+        "Ind20,r": E20ind_resp
     })
+
     ret_arrays = OrderedDict({"t_ai": t_ai, "t_ar": t_ar, "t_ir": t_ir, "t_bj": t_bj, "t_bs": t_bs, "t_js": t_js})
-    print(pformat(cache))
     return ret_values, ret_arrays
 
 
