@@ -452,7 +452,6 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     t_beta_A = rhs_A_beta.clone()
     t_alpha_A.zero()
     t_beta_A.zero()
-    # t_alpha = (t_ar, t_ir)
     t_ar = t_A.np[:ndocc_A, nsocc_A:].copy()
     t_ir = t_A.np[ndocc_A:, nsocc_A:].copy()
     t_ai = t_A.np[:ndocc_A, :nsocc_A].copy()
@@ -468,16 +467,14 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     # sanity checks
     assert t_ar.shape == (ndocc_A, nvirt_A)
     assert t_ir.shape == (nsocc_A, nvirt_A)
-    t_alpha_A.np[:ndocc_A, :] = t_ar
-    if nsocc_A:
-        t_alpha_A.np[ndocc_A:, :] = t_ir
-    # t_beta =  (t_ar, t_ai)
-
-    # sanity checks
     assert t_ai.shape == (ndocc_A, nsocc_A)
+    # t_alpha = (t_ar, t_ir) -> common dimension r
+    # t_beta =  (t_ar, t_ai) -> common dimension a
+    t_alpha_A.np[:ndocc_A, :] = t_ar
     t_beta_A.np[:, :nvirt_A] = t_ar
-    if nsocc_A:
-        t_beta_A.np[:, nvirt_A:] = t_ai
+
+    t_alpha_A.np[ndocc_A:, :] = t_ir
+    t_beta_A.np[:, nvirt_A:] = t_ai
 
     # B part
     t_alpha_B = rhs_B_alpha.clone()
@@ -500,14 +497,16 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     # sanity checks
     assert t_bs.shape == (ndocc_B, nvirt_B)
     assert t_js.shape == (nsocc_B, nvirt_B)
-    t_alpha_B.np[:ndocc_B, :] = t_bs
-    if nsocc_B:
-        t_alpha_B.np[ndocc_B:, :] = t_js
-    # t_beta =  (t_bs, t_bj)
     assert t_bj.shape == (ndocc_B, nsocc_B)
-    t_beta_B.np[:, :nvirt_B] = t_bs
-    if nsocc_B:
-        t_beta_B.np[:, nvirt_B:] = t_bj
+    # t_alpha = (t_bs, t_js) -> common dimension s
+    # t_beta =  (t_bs, t_bj) -> common dimension b
+    t_alpha_B.np[:ndocc_B, :] = t_bs
+    #t_beta_B.np[:, :nvirt_B] = t_bs
+    t_beta_B.np[:, nsocc_B:] = t_bs
+
+    t_alpha_B.np[ndocc_B:, :] = t_js
+    #t_beta_B.np[:, nvirt_B:] = t_bj
+    t_beta_B.np[:, :nsocc_B] = t_bj
 
     # A<-B, in spin blocks
     E20ind_resp_A_B = 0
