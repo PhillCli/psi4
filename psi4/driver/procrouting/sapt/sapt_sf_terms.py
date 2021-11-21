@@ -375,51 +375,65 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     # omega_alpha = |omega_ar|
     #               |--------|
     #               |omega_ir|
-    # NOTE: (ar, ai) or (ai, ar) for beta blocks?
     # omega_beta  = |omega_ar|
     #               |--------|
     #               |omega_ai|
 
     # NOTE: sanity check, if we got the ordering within spin-blocks right
-    omega_ar_1 = rhs_A_beta.np[:, :nvirt_A]
-    omega_ar_2 = rhs_A_alpha.np[:ndocc_A, :nvirt_A]
-    print(f"{np.allclose(omega_ar_1, omega_ar_2)=}")
+    omega_ar_beta = rhs_A_beta.np[:, :nvirt_A]
+    omega_ar_alpha = rhs_A_alpha.np[:ndocc_A, :nvirt_A]
+    print(f"{np.allclose(omega_ar_beta, omega_ar_alpha)=}")
 
     rhs_A = core.Matrix(nsocc_A + ndocc_A, nsocc_A + nvirt_A)
+    omega_ai = rhs_A_beta.np[:, nvirt_A:]
+    omega_ar = rhs_A_beta.np[:, :nvirt_A]
+    omega_ir = rhs_A_alpha.np[ndocc_A:, :]
+    omega_ii = np.zeros((nsocc_A, nsocc_A))
+    assert omega_ai.shape == (ndocc_A, nsocc_A)
+    assert omega_ar.shape == (ndocc_A, nvirt_A)
+    assert omega_ir.shape == (nsocc_A, nvirt_A)
     # omega_ai
-    print(f"{rhs_A.np[:ndocc_A, :nsocc_A].shape=}")
-    print(f"{rhs_A_beta.np.shape=}")
-    print(f"{rhs_A_beta.np[:, nvirt_A:].shape=}")
-    rhs_A.np[:ndocc_A, :nsocc_A] = rhs_A_beta.np[:, nvirt_A:]
+    rhs_A.np[:ndocc_A, :nsocc_A] = omega_ai
     # omega_ar
-    rhs_A.np[:ndocc_A, nsocc_A:] = rhs_A_beta.np[:, :nvirt_A]
+    rhs_A.np[:ndocc_A, nsocc_A:] = omega_ar
     # omega_ir
-    rhs_A.np[ndocc_A:, nsocc_A:] = rhs_A_alpha.np[ndocc_A:, :]
+    rhs_A.np[ndocc_A:, nsocc_A:] = omega_ir
     # omega_ii
-    rhs_A.np[ndocc_A:, :nsocc_A] = np.zeros((nsocc_A, nsocc_A))
+    rhs_A.np[ndocc_A:, :nsocc_A] = omega_ii
 
     # take care of rhs_B
     rhs_B_alpha = core.triplet(C_alpha_B, cache["omega_A_ao"], C_alpha_vir_B, True, False, False)
     rhs_B_beta = core.triplet(C_beta_B, cache["omega_A_ao"], C_beta_vir_B, True, False, False)
     # NOTE: sanity check, if we got the ordering within spin-blocks right
-    omega_bs_1 = rhs_B_beta.np[:, :nvirt_B]
-    omega_bs_2 = rhs_B_alpha.np[:ndocc_B, :nvirt_B]
-    print(f"{np.allclose(omega_bs_1, omega_bs_2)=}")
+    omega_bs_beta = rhs_B_beta.np[:, :nvirt_B]
+    omega_bs_alpha = rhs_B_alpha.np[:ndocc_B, :nvirt_B]
+    print(f"{np.allclose(omega_bs_beta, omega_bs_alpha)=}")
 
     rhs_B = core.Matrix(nsocc_B + ndocc_B, nsocc_B + nvirt_B)
-    # omega_bj
-    print(f"{rhs_B.np[:ndocc_B, :nsocc_B].shape=}")
-    print(f"{rhs_B_beta.np.shape=}")
-    print(f"{rhs_B_beta.np[:, nvirt_A:].shape=}")
-    rhs_B.np[:ndocc_B, :nsocc_B] = rhs_B_beta.np[:, nvirt_B:]
-    # omega_bs
-    rhs_B.np[:ndocc_B, nsocc_B:] = rhs_B_beta.np[:, :nvirt_B]
-    # omega_js
-    rhs_B.np[ndocc_B:, nsocc_B:] = rhs_B_alpha.np[ndocc_B:, :]
-    # omega_jj
-    rhs_B.np[ndocc_B:, :nsocc_B] = np.zeros((nsocc_B, nsocc_B))
+    omega_bj = rhs_B_beta.np[:, nvirt_B:]
+    omega_bs = rhs_B_beta.np[:, :nvirt_B]
+    omega_js = rhs_B_alpha.np[ndocc_B:, :]
+    omega_jj = np.zeros((nsocc_B, nsocc_B))
+    assert omega_bj.shape == (ndocc_B, nsocc_B)
+    assert omega_bs.shape == (ndocc_B, nvirt_B)
+    assert omega_js.shape == (nsocc_B, nvirt_B)
 
-    # NOTE::
+    # pack to Hx matrix form
+    # omega_bj
+    rhs_B.np[:ndocc_B, :nsocc_B] = omega_bj
+    # omega_bs
+    rhs_B.np[:ndocc_B, nsocc_B:] = omega_bs
+    # omega_js
+    rhs_B.np[ndocc_B:, nsocc_B:] = omega_js
+    # omega_jj
+    rhs_B.np[ndocc_B:, :nsocc_B] = omega_jj
+
+    ##t_beta_B.np[:, :nvirt_B] = t_bs
+    #t_beta_B.np[:, nsocc_B:] = t_bs
+    ##t_beta_B.np[:, nvirt_B:] = t_bj
+    #t_beta_B.np[:, :nsocc_B] = t_bj
+
+    # NOTE
     # ROHF::Hx expected structure
     # docc x socc | docc x virt
     # socc x socc | socc x virt
@@ -435,12 +449,6 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     # omega_jj | omega_js
     # NOTE: output socc x socc (omega_ii) is always set to zero by ROHF.Hx
 
-    print(f"{rhs_A.np.shape=}")
-    print(f"{rhs_B.np.shape=}")
-    print(f"{rhs_A.np=}")
-    print(f"{rhs_B.np=}")
-    print(f"{rhs_A_alpha.np=}")
-    print(f"{rhs_A_beta.np=}")
     # call the actual solver
     t_A, t_B = _sapt_cpscf_solve(cache, jk, rhs_A, rhs_B, maxiter, conv)
     print(f"{t_A.np.shape=}")
@@ -500,13 +508,11 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     assert t_bj.shape == (ndocc_B, nsocc_B)
     # t_alpha = (t_bs, t_js) -> common dimension s
     # t_beta =  (t_bs, t_bj) -> common dimension b
-    t_alpha_B.np[:ndocc_B, :] = t_bs
-    #t_beta_B.np[:, :nvirt_B] = t_bs
+    t_beta_B.np[:, :nvirt_B] = t_bs
     t_beta_B.np[:, nsocc_B:] = t_bs
 
     t_alpha_B.np[ndocc_B:, :] = t_js
-    #t_beta_B.np[:, nvirt_B:] = t_bj
-    t_beta_B.np[:, :nsocc_B] = t_bj
+    t_beta_B.np[:, nvirt_B:] = t_bj
 
     # A<-B, in spin blocks
     E20ind_resp_A_B = 0
