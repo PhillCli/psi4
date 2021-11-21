@@ -428,11 +428,6 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     # omega_jj
     rhs_B.np[ndocc_B:, :nsocc_B] = omega_jj
 
-    ##t_beta_B.np[:, :nvirt_B] = t_bs
-    #t_beta_B.np[:, nsocc_B:] = t_bs
-    ##t_beta_B.np[:, nvirt_B:] = t_bj
-    #t_beta_B.np[:, :nsocc_B] = t_bj
-
     # NOTE
     # ROHF::Hx expected structure
     # docc x socc | docc x virt
@@ -451,8 +446,6 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
 
     # call the actual solver
     t_A, t_B = _sapt_cpscf_solve(cache, jk, rhs_A, rhs_B, maxiter, conv)
-    print(f"{t_A.np.shape=}")
-    print(f"{t_B.np.shape=}")
 
     # re-pack it to alpha & beta spin-blocks and compute 20ind,resp for quick check
     # A part
@@ -465,23 +458,25 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     t_ai = t_A.np[:ndocc_A, :nsocc_A].copy()
 
     # NOTE: correction coefficients
-    # NOTE: WTF this 2 comes from
-    # NOTE: H (-t) = omega
+    # '-' comes from H (-t) = omega
+    C_DOCC_SOCC = -1
+    C_DOCC_VIRT = -4  # pure closed-shell case
+    C_SOCC_VIRT = -2  # no docc open-shell case
     # A
-    t_ai *= -1
-    t_ar *= -4  ## 4 here so results match for closed-shell
-    t_ir *= -2  ## fuck me where it comes from
+    t_ai *= C_DOCC_SOCC
+    t_ar *= C_DOCC_VIRT
+    t_ir *= C_SOCC_VIRT
 
     # sanity checks
     assert t_ar.shape == (ndocc_A, nvirt_A)
     assert t_ir.shape == (nsocc_A, nvirt_A)
     assert t_ai.shape == (ndocc_A, nsocc_A)
+
     # t_alpha = (t_ar, t_ir) -> common dimension r
     # t_beta =  (t_ar, t_ai) -> common dimension a
     t_alpha_A.np[:ndocc_A, :] = t_ar
-    t_beta_A.np[:, :nvirt_A] = t_ar
-
     t_alpha_A.np[ndocc_A:, :] = t_ir
+    t_beta_A.np[:, :nvirt_A] = t_ar
     t_beta_A.np[:, nvirt_A:] = t_ai
 
     # B part
@@ -496,11 +491,9 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     t_bj = t_B.np[:ndocc_B, :nsocc_B].copy()
 
     # NOTE: correction coefficients
-    # NOTE: WTF this 2 comes from
-    # NOTE: H (-t) = omega
-    t_bj *= -1
-    t_bs *= -4  ## 4 here so results match for closed-shell
-    t_js *= -2  ## fuck me where it comes from
+    t_bj *= C_DOCC_SOCC
+    t_bs *= C_DOCC_VIRT
+    t_js *= C_SOCC_VIRT
 
     # sanity checks
     assert t_bs.shape == (ndocc_B, nvirt_B)
@@ -508,11 +501,10 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     assert t_bj.shape == (ndocc_B, nsocc_B)
     # t_alpha = (t_bs, t_js) -> common dimension s
     # t_beta =  (t_bs, t_bj) -> common dimension b
-    t_beta_B.np[:, :nvirt_B] = t_bs
-    t_beta_B.np[:, nsocc_B:] = t_bs
-
     t_alpha_B.np[ndocc_B:, :] = t_js
     t_beta_B.np[:, nvirt_B:] = t_bj
+    t_beta_B.np[:, :nvirt_B] = t_bs
+    t_beta_B.np[:, nsocc_B:] = t_bs
 
     # A<-B, in spin blocks
     E20ind_resp_A_B = 0
