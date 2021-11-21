@@ -445,6 +445,18 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     print(f"{t_A.np.shape=}")
     print(f"{t_B.np.shape=}")
 
+    # NOTE: correction coefficients
+    # NOTE: WTF this 2 comes from
+    # NOTE: H (-t) = omega
+    # A
+    t_ai *= -2
+    t_ar *= -4  ## 4 here so results match for closed-shell
+    t_ir *= -1
+    # B
+    t_bj *= -2
+    t_bs *= -4  ## 4 here so results match for closed-shell
+    t_js *= -1
+
     # re-pack it to alpha & beta spin-blocks and compute 20ind,resp for quick check
     t_alpha_A = rhs_A_alpha.clone()
     t_beta_A = rhs_A_beta.clone()
@@ -497,22 +509,6 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     t_beta_B.np[:, :nvirt_B] = t_bs
     if nsocc_B:
         t_beta_B.np[:, nvirt_B:] = t_bj
-
-    # NOTE: correction coefficients
-    # NOTE: WTF this 2 comes from
-    # NOTE: H (-t) = omega
-    # A
-    t_ai *= -2
-    t_ar *= -2
-    t_ir *= -2
-    t_alpha_A.scale(-2)
-    t_beta_A.scale(-2)
-    # B
-    t_bj *= -2
-    t_bs *= -2
-    t_js *= -2
-    t_alpha_B.scale(-2)
-    t_beta_B.scale(-2)
 
     E20ind_resp_A_B = 0
     # spin alpha & beta
