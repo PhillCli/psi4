@@ -505,10 +505,14 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     t_ai *= -2
     t_ar *= -2
     t_ir *= -2
+    t_alpha_A.np *= -2
+    t_beta_A.np *= -2
     # B
     t_bj *= -2
     t_bs *= -2
     t_js *= -2
+    t_alpha_B.np *= -2
+    t_beta_B.np *= -2
 
     E20ind_resp_A_B = 0
     # spin alpha & beta
