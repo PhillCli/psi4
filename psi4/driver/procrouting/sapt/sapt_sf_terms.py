@@ -501,10 +501,10 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     assert t_bj.shape == (ndocc_B, nsocc_B)
     # t_alpha = (t_bs, t_js) -> common dimension s
     # t_beta =  (t_bs, t_bj) -> common dimension b
+    t_alpha_B.np[:ndocc_B, :] = t_bs
     t_alpha_B.np[ndocc_B:, :] = t_js
     t_beta_B.np[:, nvirt_B:] = t_bj
     t_beta_B.np[:, :nvirt_B] = t_bs
-    t_beta_B.np[:, nsocc_B:] = t_bs
 
     # A<-B, in spin blocks
     E20ind_resp_A_B = 0
