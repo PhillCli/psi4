@@ -687,15 +687,14 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
         return [valA, valB]
 
     # Compute the solver
-    vecs, resid = solvers.cg_solver(
-        [rhsA, rhsB],
-        hessian_vec,
-        apply_precon,
-        guess=[rhsA, rhsB],  # NOTE: temporary to switch off pre-conditioner
-        maxiter=maxiter,
-        rcond=conv,
-        printlvl=0,
-        printer=pfunc)
+    vecs, resid = solvers.cg_solver([rhsA, rhsB],
+                                    hessian_vec,
+                                    apply_precon,
+                                    guess=None,
+                                    maxiter=maxiter,
+                                    rcond=conv,
+                                    printlvl=0,
+                                    printer=pfunc)
     core.print_out("   " + ("-" * sep_size) + "\n")
 
     return vecs
