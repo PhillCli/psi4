@@ -463,7 +463,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     # A
     t_ai *= -2
     t_ar *= -4  ## 4 here so results match for closed-shell
-    t_ir *= -1
+    t_ir *= -2  ## fuck me where it comes from
 
     # sanity checks
     assert t_ar.shape == (ndocc_A, nvirt_A)
@@ -495,7 +495,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     # NOTE: H (-t) = omega
     t_bj *= -2
     t_bs *= -4  ## 4 here so results match for closed-shell
-    t_js *= -1
+    t_js *= -1  ## fuck me where it comes from
 
     # sanity checks
     assert t_bs.shape == (ndocc_B, nvirt_B)
