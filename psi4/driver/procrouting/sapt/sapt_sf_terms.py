@@ -441,9 +441,21 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     print(f"{rhs_B.np=}")
     print(f"{rhs_A_alpha.np=}")
     print(f"{rhs_A_beta.np=}")
+    # call the actual solver
     t_A, t_B = _sapt_cpscf_solve(cache, jk, rhs_A, rhs_B, maxiter, conv)
     print(f"{t_A.np.shape=}")
     print(f"{t_B.np.shape=}")
+
+    # re-pack it to alpha & beta spin-blocks and compute 20ind,resp for quick check
+    # A part
+    t_alpha_A = rhs_A_alpha.clone()
+    t_beta_A = rhs_A_beta.clone()
+    t_alpha_A.zero()
+    t_beta_A.zero()
+    # t_alpha = (t_ar, t_ir)
+    t_ar = t_A.np[:ndocc_A, nsocc_A:].copy()
+    t_ir = t_A.np[ndocc_A:, nsocc_A:].copy()
+    t_ai = t_A.np[:ndocc_A, :nsocc_A].copy()
 
     # NOTE: correction coefficients
     # NOTE: WTF this 2 comes from
@@ -452,22 +464,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     t_ai *= -2
     t_ar *= -4  ## 4 here so results match for closed-shell
     t_ir *= -1
-    # B
-    t_bj *= -2
-    t_bs *= -4  ## 4 here so results match for closed-shell
-    t_js *= -1
 
-    # re-pack it to alpha & beta spin-blocks and compute 20ind,resp for quick check
-    t_alpha_A = rhs_A_alpha.clone()
-    t_beta_A = rhs_A_beta.clone()
-    t_alpha_A.zero()
-    t_beta_A.zero()
-    # t_alpha = (t_ar, t_ir)
-    t_ar = t_A.np[:ndocc_A, nsocc_A:].copy()
-    t_ir = t_A.np[ndocc_A:, nsocc_A:].copy()
-    print(f"{t_ar.shape=}")
-    print(f"{t_ir.shape=}")
-    print(f"{t_alpha_A.np.shape=}")
     # sanity checks
     assert t_ar.shape == (ndocc_A, nvirt_A)
     assert t_ir.shape == (nsocc_A, nvirt_A)
@@ -475,50 +472,54 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     if nsocc_A:
         t_alpha_A.np[ndocc_A:, :] = t_ir
     # t_beta =  (t_ar, t_ai)
-    t_ai = t_A.np[:ndocc_A, :nsocc_A].copy()
-    print(f"{t_ai.shape=}")
-    print(f"{t_beta_A.np.shape=}")
+
     # sanity checks
     assert t_ai.shape == (ndocc_A, nsocc_A)
     t_beta_A.np[:, :nvirt_A] = t_ar
     if nsocc_A:
         t_beta_A.np[:, nvirt_A:] = t_ai
 
+    # B part
     t_alpha_B = rhs_B_alpha.clone()
     t_beta_B = rhs_B_beta.clone()
     t_alpha_B.zero()
     t_beta_B.zero()
+
     # t_alpha = (t_bs, t_js)
     t_bs = t_B.np[:ndocc_B, nsocc_B:].copy()
     t_js = t_B.np[ndocc_B:, nsocc_B:].copy()
-    print(f"{t_bs.shape=}")
-    print(f"{t_js.shape=}")
-    print(f"{t_alpha_B.np.shape=}")
+    t_bj = t_B.np[:ndocc_B, :nsocc_B].copy()
+
+    # NOTE: correction coefficients
+    # NOTE: WTF this 2 comes from
+    # NOTE: H (-t) = omega
+    t_bj *= -2
+    t_bs *= -4  ## 4 here so results match for closed-shell
+    t_js *= -1
+
     # sanity checks
     assert t_bs.shape == (ndocc_B, nvirt_B)
     assert t_js.shape == (nsocc_B, nvirt_B)
     t_alpha_B.np[:ndocc_B, :] = t_bs
     if nsocc_B:
         t_alpha_B.np[ndocc_B:, :] = t_js
-    # t_js
     # t_beta =  (t_bs, t_bj)
-    t_bj = t_B.np[:ndocc_B, :nsocc_B].copy()
-    print(f"{t_bj.shape=}")
-    print(f"{t_beta_B.np.shape=}")
     assert t_bj.shape == (ndocc_B, nsocc_B)
     t_beta_B.np[:, :nvirt_B] = t_bs
     if nsocc_B:
         t_beta_B.np[:, nvirt_B:] = t_bj
 
+    # A<-B, in spin blocks
     E20ind_resp_A_B = 0
-    # spin alpha & beta
     E20ind_resp_A_B += np.einsum("ij,ij", t_alpha_A.np, rhs_A_alpha.np)
     E20ind_resp_A_B += np.einsum("ij,ij", t_beta_A.np, rhs_A_beta.np)
 
+    # B<-A, in spin blocks
     E20ind_resp_B_A = 0
-    # spin alpha & beta
     E20ind_resp_B_A += np.einsum("ij,ij", t_alpha_B.np, rhs_B_alpha.np)
     E20ind_resp_B_A += np.einsum("ij,ij", t_beta_B.np, rhs_B_beta.np)
+
+    # total 20ind,resp
     E20ind_resp = E20ind_resp_A_B + E20ind_resp_B_A
 
     # debug print
