@@ -508,13 +508,19 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
 
     # A<-B, in spin blocks
     E20ind_resp_A_B = 0
-    E20ind_resp_A_B += np.einsum("ij,ij", t_alpha_A.np, rhs_A_alpha.np)
-    E20ind_resp_A_B += np.einsum("ij,ij", t_beta_A.np, rhs_A_beta.np)
+    _alpha = np.einsum("ij,ij", t_alpha_A.np, rhs_A_alpha.np)
+    _beta = np.einsum("ij,ij", t_beta_A.np, rhs_A_beta.np)
+    print(f"E20ind,resp(A<-B)_a: {_alpha}")
+    print(f"E20ind,resp(A<-B)_b: {_beta}")
+    E20ind_resp_A_B = _alpha + _beta
 
     # B<-A, in spin blocks
     E20ind_resp_B_A = 0
-    E20ind_resp_B_A += np.einsum("ij,ij", t_alpha_B.np, rhs_B_alpha.np)
-    E20ind_resp_B_A += np.einsum("ij,ij", t_beta_B.np, rhs_B_beta.np)
+    _alpha = np.einsum("ij,ij", t_alpha_B.np, rhs_B_alpha.np)
+    _beta = np.einsum("ij,ij", t_beta_B.np, rhs_B_beta.np)
+    E20ind_resp_B_A += _alpha + _beta
+    print(f"E20ind,resp(B<-A)_a: {_alpha}")
+    print(f"E20ind,resp(B<-A)_b: {_beta}")
 
     # total 20ind,resp
     E20ind_resp = E20ind_resp_A_B + E20ind_resp_B_A

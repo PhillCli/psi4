@@ -577,7 +577,6 @@ def run_sf_sapt(name, **kwargs):
         # grab virtual orbitals
         nbf, nvir_A = wfn_A.Ca_subset("AO", "VIR").np.shape
         nbf, nvir_B = wfn_B.Ca_subset("AO", "VIR").np.shape
-        test = wfn_A.epsilon_a_subset("AO", "OCC")
         print(f"{ndocc_A=}")
         print(f"{nsocc_A=}")
         print(f"{ndocc_B=}")
