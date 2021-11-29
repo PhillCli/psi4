@@ -311,23 +311,26 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     # rhs_A -> should be MO transformation of omega_B (electrostatic potential of B monomer felt by mon A)
     # rhs_B -> should be MO transformation of omega_A (electrostatic potential of A monomer felt by mon B)
 
-    wfn_A = cache["wfn_A"]
-    wfn_B = cache["wfn_B"]
-    # Pull out Wavefunction A quantities
-    ndocc_A = wfn_A.doccpi().sum()
-    nsocc_A = wfn_A.soccpi().sum()
-
+    # indexing convention
+    # A,B
     # i,j - core    (docc)
     # a,b - active  (socc)
     # r,s - virtual (virt)
 
+    ndocc_A = cache["ndocc_A"]
+    nsocc_A = cache["nsocc_A"]
+
     # Pull out Wavefunction B quantities
-    ndocc_B = wfn_B.doccpi().sum()
-    nsocc_B = wfn_B.soccpi().sum()
+    ndocc_B = cache["ndocc_B"]
+    nsocc_B = cache["nsocc_B"]
+
+    wfn_A = cache["wfn_A"]
+    wfn_B = cache["wfn_B"]
 
     # grab alfa & beta orbitals
     C_alpha_A = wfn_A.Ca_subset("AO", "OCC")
     C_beta_A = wfn_A.Cb_subset("AO", "OCC")
+
     C_alpha_B = wfn_B.Ca_subset("AO", "OCC")
     C_beta_B = wfn_B.Cb_subset("AO", "OCC")
 
@@ -349,15 +352,10 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     print(f"{nvirt_B=}")
 
     print("")
-    print(f"{wfn_A.Cb_subset('AO', 'ALL').np.shape=}")
     print(f"{wfn_A.Cb_subset('AO', 'ACTIVE').np.shape= }")
     print(f"{wfn_A.Cb_subset('AO', 'FROZEN').np.shape=}")
     print(f"{wfn_A.Cb_subset('AO', 'OCC').np.shape=}")
     print(f"{wfn_A.Cb_subset('AO', 'VIR').np.shape=}")
-    print(f"{wfn_A.Cb_subset('AO', 'FROZEN_OCC').np.shape=}")
-    print(f"{wfn_A.Cb_subset('AO', 'ACTIVE_OCC').np.shape=}")
-    print(f"{wfn_A.Cb_subset('AO', 'ACTIVE_VIR').np.shape=}")
-    print(f"{wfn_A.Cb_subset('AO', 'FROZEN_VIR').np.shape=}")
     print("")
     print(f"{C_alpha_A.np.shape=}")
     print(f"{C_alpha_vir_A.np.shape=}")
@@ -382,7 +380,10 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     # NOTE: sanity check, if we got the ordering within spin-blocks right
     omega_ar_beta = rhs_A_beta.np[:, :nvirt_A]
     omega_ar_alpha = rhs_A_alpha.np[:ndocc_A, :nvirt_A]
-    print(f"{np.allclose(omega_ar_beta, omega_ar_alpha)=}")
+    if not np.allclose(omega_ar_beta, omega_ar_alpha):
+        print(f"{omega_ar_beta=}")
+        print(f"{omega_ar_alpha=}")
+        raise RuntimeError("omega_ar derived from spin alpha/beta should match!")
 
     rhs_A = core.Matrix(nsocc_A + ndocc_A, nsocc_A + nvirt_A)
     omega_ai = rhs_A_beta.np[:, nvirt_A:]
@@ -459,7 +460,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
 
     # NOTE: correction coefficients
     # '-' comes from H (-t) = omega
-    C_DOCC_SOCC = 0
+    C_DOCC_SOCC = -1
     C_DOCC_VIRT = -4  # pure closed-shell case
     C_SOCC_VIRT = -2  # no docc open-shell case
     # A
