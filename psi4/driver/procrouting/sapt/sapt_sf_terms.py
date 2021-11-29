@@ -379,7 +379,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
 
     # NOTE: sanity check, if we got the ordering within spin-blocks right
     omega_ar_alpha = rhs_A_alpha.np[:ndocc_A, :]
-    omega_ar_beta = rhs_A_beta.np[:, :nvirt_A]
+    omega_ar_beta = rhs_A_beta.np[:, nsocc_A:]
     if not np.allclose(omega_ar_beta, omega_ar_alpha):
         print(f"{rhs_A_alpha.np=}")
         print(f"{rhs_A_beta.np=}")
@@ -387,7 +387,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
 
     rhs_A = core.Matrix(nsocc_A + ndocc_A, nsocc_A + nvirt_A)
     omega_ai = rhs_A_beta.np[:, nvirt_A:]
-    omega_ar = rhs_A_beta.np[:, :nvirt_A]
+    omega_ar = rhs_A_beta.np[:, nsocc_A:]
     omega_ir = rhs_A_alpha.np[ndocc_A:, :]
     omega_ii = np.zeros((nsocc_A, nsocc_A))
     assert omega_ai.shape == (ndocc_A, nsocc_A)
@@ -407,15 +407,15 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     rhs_B_beta = core.triplet(C_beta_B, cache["omega_A_ao"], C_beta_vir_B, True, False, False)
     # NOTE: sanity check, if we got the ordering within spin-blocks right
     omega_bs_alpha = rhs_B_alpha.np[:ndocc_B, :]
-    omega_bs_beta = rhs_B_beta.np[:, :nvirt_B]
+    omega_bs_beta = rhs_B_beta.np[:, nsocc_B:]
     if not np.allclose(omega_bs_beta, omega_bs_alpha):
-        print(f"{omega_bs_alpha=}")
-        print(f"{omega_bs_beta=}")
+        print(f"{rhs_B_alpha.np=}")
+        print(f"{rhs_B_beta.np=}")
         raise RuntimeError("omega_bs derived from spin alpha/beta should match!")
 
     rhs_B = core.Matrix(nsocc_B + ndocc_B, nsocc_B + nvirt_B)
     omega_bj = rhs_B_beta.np[:, nvirt_B:]
-    omega_bs = rhs_B_beta.np[:, :nvirt_B]
+    omega_bs = rhs_B_beta.np[:, nsocc_B:]
     omega_js = rhs_B_alpha.np[ndocc_B:, :]
     omega_jj = np.zeros((nsocc_B, nsocc_B))
     assert omega_bj.shape == (ndocc_B, nsocc_B)
