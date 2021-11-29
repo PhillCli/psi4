@@ -386,7 +386,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
         raise RuntimeError("omega_ar derived from spin alpha/beta should match!")
 
     rhs_A = core.Matrix(nsocc_A + ndocc_A, nsocc_A + nvirt_A)
-    omega_ai = rhs_A_beta.np[:, nvirt_A:]
+    omega_ai = rhs_A_beta.np[:, :nsocc_A]
     omega_ar = rhs_A_beta.np[:, nsocc_A:]
     omega_ir = rhs_A_alpha.np[ndocc_A:, :]
     omega_ii = np.zeros((nsocc_A, nsocc_A))
@@ -414,7 +414,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
         raise RuntimeError("omega_bs derived from spin alpha/beta should match!")
 
     rhs_B = core.Matrix(nsocc_B + ndocc_B, nsocc_B + nvirt_B)
-    omega_bj = rhs_B_beta.np[:, nvirt_B:]
+    omega_bj = rhs_B_beta.np[:, :nsocc_B]
     omega_bs = rhs_B_beta.np[:, nsocc_B:]
     omega_js = rhs_B_alpha.np[ndocc_B:, :]
     omega_jj = np.zeros((nsocc_B, nsocc_B))
