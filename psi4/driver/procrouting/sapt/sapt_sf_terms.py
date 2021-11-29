@@ -463,7 +463,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
 
     # NOTE: correction coefficients
     # '-' comes from H (-t) = omega
-    C_DOCC_SOCC = -1
+    C_DOCC_SOCC = -2
     C_DOCC_VIRT = -4  # pure closed-shell case
     C_SOCC_VIRT = -2  # no docc open-shell case
     # A
