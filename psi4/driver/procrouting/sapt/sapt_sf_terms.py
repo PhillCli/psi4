@@ -381,8 +381,8 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     omega_ar_alpha = rhs_A_alpha.np[:ndocc_A, :]
     omega_ar_beta = rhs_A_beta.np[:, :nvirt_A]
     if not np.allclose(omega_ar_beta, omega_ar_alpha):
-        print(f"{rhs_A_alpha=}")
-        print(f"{rhs_A_beta=}")
+        print(f"{rhs_A_alpha.np=}")
+        print(f"{rhs_A_beta.np=}")
         raise RuntimeError("omega_ar derived from spin alpha/beta should match!")
 
     rhs_A = core.Matrix(nsocc_A + ndocc_A, nsocc_A + nvirt_A)
