@@ -759,15 +759,17 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
 
         for (size_t i = 0; i < soccpi_[h]; i++) {
             // for (size_t j = 0; j < occpi[h]; j++) {
-            //    leftp[j][i] = 0.0;
-            //}
-            // for (size_t j = 0; j < virpi[h]; j++) {
-            //    rightp[doccpi_[h] + i][j] = 0.0;
-            //}
+            // leftp[j][i] = 0.0;
+            // }
             for (size_t j = 0; j < soccpi_[h]; j++) {
-                rightp[doccpi_[h] + i][j] = 0.0;
                 leftp[doccpi_[h] + j][i] = 0.0;
             }
+            for (size_t j = 0; j < virpi[h]; j++) {
+                rightp[doccpi_[h] + i][j] = 0.0;
+            }
+            // for (size_t j = 0; j < soccpi_[h]; j++) {
+            //    rightp[doccpi_[h] + i][j] = 0.0;
+            //}
         }
     }
 
