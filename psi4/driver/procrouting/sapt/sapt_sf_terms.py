@@ -393,6 +393,22 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     assert omega_ai.shape == (ndocc_A, nsocc_A)
     assert omega_ar.shape == (ndocc_A, nvirt_A)
     assert omega_ir.shape == (nsocc_A, nvirt_A)
+
+    # NOTE
+    # ROHF::Hx expected structure (only other use-case is ROHF::soscf_update)
+    # docc x socc | docc x virt
+    # socc x socc | socc x virt
+    # this translates into
+    # omega_ai | omega_ar
+    # -------------------
+    # omega_ii | omega_ir
+    #
+    # and
+    #
+    # omega_bj | omega_bs
+    # -------------------
+    # omega_jj | omega_js
+    # NOTE: output socc x socc (omega_ii) is always set to zero by ROHF.Hx
     # omega_ai
     rhs_A.np[:ndocc_A, :nsocc_A] = omega_ai
     # omega_ar
@@ -431,22 +447,6 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     rhs_B.np[ndocc_B:, nsocc_B:] = omega_js
     # omega_jj
     rhs_B.np[ndocc_B:, :nsocc_B] = omega_jj
-
-    # NOTE
-    # ROHF::Hx expected structure
-    # docc x socc | docc x virt
-    # socc x socc | socc x virt
-    # this translates into
-    # omega_ai | omega_ar
-    # -------------------
-    # omega_ii | omega_ir
-    #
-    # and
-    #
-    # omega_bj | omega_bs
-    # -------------------
-    # omega_jj | omega_js
-    # NOTE: output socc x socc (omega_ii) is always set to zero by ROHF.Hx
 
     # call the actual solver
     t_A, t_B = _sapt_cpscf_solve(cache, jk, rhs_A, rhs_B, maxiter, conv)
