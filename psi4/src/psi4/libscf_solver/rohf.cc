@@ -766,6 +766,7 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
             //}
             for (size_t j = 0; j < soccpi_[h]; j++) {
                 rightp[doccpi_[h] + i][j] = 0.0;
+                leftp[doccpi_[h] + j][i] = 0.0;
             }
         }
     }
