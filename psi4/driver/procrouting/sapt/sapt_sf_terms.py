@@ -515,19 +515,19 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     #print(f"{t_beta_B.np=}")
     #print(f"{rhs_A_beta.np=}")
     #print(f"{rhs_B_beta.np=}")
-    print(f"{omega_bj=}")
-    print(f"{omega_ai=}")
-    print(f"{omega_bs=}")
-    print(f"{omega_ar=}")
-    print(f"{omega_js=}")
-    print(f"{omega_ir=}")
+    #print(f"{omega_bj=}")
+    #print(f"{omega_ai=}")
+    #print(f"{omega_bs=}")
+    #print(f"{omega_ar=}")
+    #print(f"{omega_js=}")
+    #print(f"{omega_ir=}")
 
-    print(f"{t_bj=}")
-    print(f"{t_ai=}")
-    print(f"{t_bs=}")
-    print(f"{t_ar=}")
-    print(f"{t_js=}")
-    print(f"{t_ir=}")
+    #print(f"{t_bj=}")
+    #print(f"{t_ai=}")
+    #print(f"{t_bs=}")
+    #print(f"{t_ar=}")
+    #print(f"{t_js=}")
+    #print(f"{t_ir=}")
     # loop over docc-virt
     inner_loop, outer_loop = t_bs.shape
     for i in range(inner_loop):
@@ -535,7 +535,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
             value_A = omega_ar[i][j] * t_ar[i][j]
             value_B = omega_bs[i][j] * t_bs[i][j]
             if not np.allclose(value_A, value_B):
-                print(f"{i=} {j=} {value_A=} {value_B=}")
+                print(f"omega/t: {i=} {j=} {value_A=} {value_B=}")
 
     # loop over docc-socc
     inner_loop, outer_loop = t_bj.shape
@@ -544,7 +544,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
             value_A = omega_ai[i][j] * t_ai[i][j]
             value_B = omega_bj[i][j] * t_bj[i][j]
             if not np.allclose(value_A, value_B):
-                print(f"{i=} {j=} {value_A=} {value_B=}")
+                print(f"omega/t: {i=} {j=} {value_A=} {value_B=}")
 
     # loop over beta
     inner_loop, outer_loop = t_beta_A.np.shape
@@ -553,27 +553,30 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
             value_A = rhs_A_beta.np[i][j] * t_beta_A.np[i][j]
             value_B = rhs_B_beta.np[i][j] * t_beta_B.np[i][j]
             if not np.allclose(value_A, value_B):
-                print(f"{i=} {j=} {value_A=} {value_B=}")
+                print(f"rhs/t: {i=} {j=} {value_A=} {value_B=}")
 
     # DEBUG PRINTS END
 
     # A<-B, in spin blocks
     E20ind_resp_A_B = 0
-    _alpha = np.einsum("ij,ij", t_alpha_A.np, rhs_A_alpha.np)
-    _beta = np.einsum("ij,ij", t_beta_A.np, rhs_A_beta.np)
+    _alpha = np.einsum("ij,ij", t_ar, omega_ar)
+    _alpha += np.einsum("ij,ij", t_ir, omega_ir)
+    _beta = np.einsum("ij,ij", t_ar, omega_ar)
+    _beta += np.einsum("ij,ij", t_ai, omega_ai)
     print(f"E20ind,resp(A<-B)_a: {_alpha}")
     print(f"E20ind,resp(A<-B)_b: {_beta}")
     E20ind_resp_A_B = _alpha + _beta
 
     # B<-A, in spin blocks
     E20ind_resp_B_A = 0
-    _alpha = np.einsum("ij,ij", t_alpha_B.np, rhs_B_alpha.np)
-    _beta = np.einsum("ij,ij", t_beta_B.np, rhs_B_beta.np)
+    _alpha = np.einsum("ij,ij", t_bs, omega_bs)
+    _alpha += np.einsum("ij,ij", t_js, omega_js)
+    _beta = np.einsum("ij,ij", t_bs, omega_bs)
+    _beta += np.einsum("ij,ij", t_bj, omega_bj)
     E20ind_resp_B_A += _alpha + _beta
     print(f"E20ind,resp(B<-A)_a: {_alpha}")
     print(f"E20ind,resp(B<-A)_b: {_beta}")
 
-    raise RuntimeError("Stop right now bitch")
     # total 20ind,resp
     E20ind_resp = E20ind_resp_A_B + E20ind_resp_B_A
 
