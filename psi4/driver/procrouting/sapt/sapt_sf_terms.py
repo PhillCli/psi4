@@ -529,31 +529,31 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     #print(f"{t_js=}")
     #print(f"{t_ir=}")
     # loop over docc-virt
-    inner_loop, outer_loop = t_bs.shape
-    for i in range(inner_loop):
-        for j in range(outer_loop):
-            value_A = omega_ar[i][j] * t_ar[i][j]
-            value_B = omega_bs[i][j] * t_bs[i][j]
-            if not np.allclose(value_A, value_B):
-                print(f"omega/t: {i=} {j=} {value_A=} {value_B=}")
+    #inner_loop, outer_loop = t_bs.shape
+    #for i in range(inner_loop):
+    #    for j in range(outer_loop):
+    #        value_A = omega_ar[i][j] * t_ar[i][j]
+    #        value_B = omega_bs[i][j] * t_bs[i][j]
+    #        if not np.allclose(value_A, value_B):
+    #            print(f"omega/t: {i=} {j=} {value_A=} {value_B=}")
 
-    # loop over docc-socc
-    inner_loop, outer_loop = t_bj.shape
-    for i in range(inner_loop):
-        for j in range(outer_loop):
-            value_A = omega_ai[i][j] * t_ai[i][j]
-            value_B = omega_bj[i][j] * t_bj[i][j]
-            if not np.allclose(value_A, value_B):
-                print(f"omega/t: {i=} {j=} {value_A=} {value_B=}")
+    ## loop over docc-socc
+    #inner_loop, outer_loop = t_bj.shape
+    #for i in range(inner_loop):
+    #    for j in range(outer_loop):
+    #        value_A = omega_ai[i][j] * t_ai[i][j]
+    #        value_B = omega_bj[i][j] * t_bj[i][j]
+    #        if not np.allclose(value_A, value_B):
+    #            print(f"omega/t: {i=} {j=} {value_A=} {value_B=}")
 
-    # loop over beta
-    inner_loop, outer_loop = t_beta_A.np.shape
-    for i in range(inner_loop):
-        for j in range(outer_loop):
-            value_A = rhs_A_beta.np[i][j] * t_beta_A.np[i][j]
-            value_B = rhs_B_beta.np[i][j] * t_beta_B.np[i][j]
-            if not np.allclose(value_A, value_B):
-                print(f"rhs/t: {i=} {j=} {value_A=} {value_B=}")
+    ## loop over beta
+    #inner_loop, outer_loop = t_beta_A.np.shape
+    #for i in range(inner_loop):
+    #    for j in range(outer_loop):
+    #        value_A = rhs_A_beta.np[i][j] * t_beta_A.np[i][j]
+    #        value_B = rhs_B_beta.np[i][j] * t_beta_B.np[i][j]
+    #        if not np.allclose(value_A, value_B):
+    #            print(f"rhs/t: {i=} {j=} {value_A=} {value_B=}")
 
     # DEBUG PRINTS END
 
