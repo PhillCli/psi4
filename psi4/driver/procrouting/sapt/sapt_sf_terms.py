@@ -507,8 +507,55 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     # t_beta =  (t_bs, t_bj) -> common dimension b
     t_alpha_B.np[:ndocc_B, :] = t_bs
     t_alpha_B.np[ndocc_B:, :] = t_js
-    t_beta_B.np[:, nvirt_B:] = t_bj
     t_beta_B.np[:, :nvirt_B] = t_bs
+    t_beta_B.np[:, nvirt_B:] = t_bj
+
+    # DEBUG PRINTS
+    #print(f"{t_beta_A.np=}")
+    #print(f"{t_beta_B.np=}")
+    #print(f"{rhs_A_beta.np=}")
+    #print(f"{rhs_B_beta.np=}")
+    print(f"{omega_bj=}")
+    print(f"{omega_ai=}")
+    print(f"{omega_bs=}")
+    print(f"{omega_ar=}")
+    print(f"{omega_js=}")
+    print(f"{omega_ir=}")
+
+    print(f"{t_bj=}")
+    print(f"{t_ai=}")
+    print(f"{t_bs=}")
+    print(f"{t_ar=}")
+    print(f"{t_js=}")
+    print(f"{t_ir=}")
+    # loop over docc-virt
+    inner_loop, outer_loop = t_bs.shape
+    for i in range(inner_loop):
+        for j in range(outer_loop):
+            value_A = omega_ar[i][j] * t_ar[i][j]
+            value_B = omega_bs[i][j] * t_bs[i][j]
+            if not np.allclose(value_A, value_B):
+                print(f"{i=} {j=} {value_A=} {value_B=}")
+
+    # loop over docc-socc
+    inner_loop, outer_loop = t_bj.shape
+    for i in range(inner_loop):
+        for j in range(outer_loop):
+            value_A = omega_ai[i][j] * t_ai[i][j]
+            value_B = omega_bj[i][j] * t_bj[i][j]
+            if not np.allclose(value_A, value_B):
+                print(f"{i=} {j=} {value_A=} {value_B=}")
+
+    # loop over beta
+    inner_loop, outer_loop = t_beta_A.np.shape
+    for i in range(inner_loop):
+        for j in range(outer_loop):
+            value_A = rhs_A_beta.np[i][j] * t_beta_A.np[i][j]
+            value_B = rhs_B_beta.np[i][j] * t_beta_B.np[i][j]
+            if not np.allclose(value_A, value_B):
+                print(f"{i=} {j=} {value_A=} {value_B=}")
+
+    # DEBUG PRINTS END
 
     # A<-B, in spin blocks
     E20ind_resp_A_B = 0
@@ -526,6 +573,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     print(f"E20ind,resp(B<-A)_a: {_alpha}")
     print(f"E20ind,resp(B<-A)_b: {_beta}")
 
+    raise RuntimeError("Stop right now bitch")
     # total 20ind,resp
     E20ind_resp = E20ind_resp_A_B + E20ind_resp_B_A
 
