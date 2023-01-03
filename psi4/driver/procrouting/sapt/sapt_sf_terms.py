@@ -303,7 +303,11 @@ def compute_first_order_sapt_sf(dimer, jk, wfn_A, wfn_B, do_print=True):
     return ret_values
 
 
-def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) -> Tuple[OrderedDict, OrderedDict]:
+def compute_cphf_induction(cache,
+                           jk,
+                           maxiter: int = 100,
+                           conv: float = 1e-6,
+                           debug: bool = False) -> Tuple[OrderedDict, OrderedDict]:
     """
     Solve the CP-ROHF for SAPT induction amplitudes.
     """
@@ -343,27 +347,28 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     nbf, nvirt_A = C_alpha_vir_A.np.shape
     nbf, nvirt_B = C_alpha_vir_B.np.shape
 
-    print(f"{ndocc_A=}")
-    print(f"{nsocc_A=}")
-    print(f"{nvirt_A=}")
+    if debug:
+        core.print_out(f"{ndocc_A=}")
+        core.print_out(f"{nsocc_A=}")
+        core.print_out(f"{nvirt_A=}")
 
-    print(f"{ndocc_B=}")
-    print(f"{nsocc_B=}")
-    print(f"{nvirt_B=}")
+        core.print_out(f"{ndocc_B=}")
+        core.print_out(f"{nsocc_B=}")
+        core.print_out(f"{nvirt_B=}")
 
-    print("")
-    print(f"{wfn_A.Cb_subset('AO', 'ACTIVE').np.shape= }")
-    print(f"{wfn_A.Cb_subset('AO', 'FROZEN').np.shape=}")
-    print(f"{wfn_A.Cb_subset('AO', 'OCC').np.shape=}")
-    print(f"{wfn_A.Cb_subset('AO', 'VIR').np.shape=}")
-    print("")
-    print(f"{C_alpha_A.np.shape=}")
-    print(f"{C_alpha_vir_A.np.shape=}")
-    print(f"{cache['omega_B_ao'].np.shape=}")
-    print("")
-    print(f"{C_beta_A.np.shape=}")
-    print(f"{C_beta_vir_A.np.shape=}")
-    print(f"{cache['omega_B_ao'].np.shape=}")
+        core.print_out("")
+        core.print_out(f"{wfn_A.Cb_subset('AO', 'ACTIVE').np.shape= }")
+        core.print_out(f"{wfn_A.Cb_subset('AO', 'FROZEN').np.shape=}")
+        core.print_out(f"{wfn_A.Cb_subset('AO', 'OCC').np.shape=}")
+        core.print_out(f"{wfn_A.Cb_subset('AO', 'VIR').np.shape=}")
+        core.print_out("")
+        core.print_out(f"{C_alpha_A.np.shape=}")
+        core.print_out(f"{C_alpha_vir_A.np.shape=}")
+        core.print_out(f"{cache['omega_B_ao'].np.shape=}")
+        core.print_out("")
+        core.print_out(f"{C_beta_A.np.shape=}")
+        core.print_out(f"{C_beta_vir_A.np.shape=}")
+        core.print_out(f"{cache['omega_B_ao'].np.shape=}")
 
     # first transfrom into MO in spin-blocks
     rhs_A_alpha = core.triplet(C_alpha_A, cache["omega_B_ao"], C_alpha_vir_A, True, False, False)
@@ -380,9 +385,11 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     # NOTE: sanity check, if we got the ordering within spin-blocks right
     omega_ar_alpha = rhs_A_alpha.np[:ndocc_A, :]
     omega_ar_beta = rhs_A_beta.np[:, nsocc_A:]
+
     if not np.allclose(omega_ar_beta, omega_ar_alpha):
-        print(f"{rhs_A_alpha.np=}")
-        print(f"{rhs_A_beta.np=}")
+        if debug:
+            core.print_out(f"{rhs_A_alpha.np=}")
+            core.print_out(f"{rhs_A_beta.np=}")
         raise RuntimeError("omega_ar derived from spin alpha/beta should match!")
 
     rhs_A = core.Matrix(nsocc_A + ndocc_A, nsocc_A + nvirt_A)
@@ -390,6 +397,9 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     omega_ar = rhs_A_beta.np[:, nsocc_A:]
     omega_ir = rhs_A_alpha.np[ndocc_A:, :]
     omega_ii = np.zeros((nsocc_A, nsocc_A))
+
+    # TODO: assert can be "optimized" away in python-byte code, change to more strict
+    # or remove
     assert omega_ai.shape == (ndocc_A, nsocc_A)
     assert omega_ar.shape == (ndocc_A, nvirt_A)
     assert omega_ir.shape == (nsocc_A, nvirt_A)
@@ -408,6 +418,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     # omega_bj | omega_bs
     # -------------------
     # omega_jj | omega_js
+
     # NOTE: output socc x socc (omega_ii) is always set to zero by ROHF.Hx
     # omega_ai
     rhs_A.np[:ndocc_A, :nsocc_A] = omega_ai
@@ -425,8 +436,9 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     omega_bs_alpha = rhs_B_alpha.np[:ndocc_B, :]
     omega_bs_beta = rhs_B_beta.np[:, nsocc_B:]
     if not np.allclose(omega_bs_beta, omega_bs_alpha):
-        print(f"{rhs_B_alpha.np=}")
-        print(f"{rhs_B_beta.np=}")
+        if debug:
+            core.print_out(f"{rhs_B_alpha.np=}")
+            core.print_out(f"{rhs_B_beta.np=}")
         raise RuntimeError("omega_bs derived from spin alpha/beta should match!")
 
     rhs_B = core.Matrix(nsocc_B + ndocc_B, nsocc_B + nvirt_B)
@@ -449,7 +461,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     rhs_B.np[ndocc_B:, :nsocc_B] = omega_jj
 
     # call the actual solver
-    t_A, t_B = _sapt_cpscf_solve(cache, jk, rhs_A, rhs_B, maxiter, conv)
+    t_A, t_B = _sapt_cpscf_solve(cache, jk, rhs_A, rhs_B, maxiter, conv, debug=debug)
 
     # re-pack it to alpha & beta spin-blocks and compute 20ind,resp for quick check
     # A part
@@ -463,10 +475,11 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
 
     # NOTE: correction coefficients
     # '-' comes from H (-t) = omega
+    # and even coefficient comes from spin-summation
     C_DOCC_SOCC = -2
     C_DOCC_VIRT = -4  # pure closed-shell case
     C_SOCC_VIRT = -2  # no docc open-shell case
-    # A
+    # mon A part
     t_ai *= C_DOCC_SOCC
     t_ar *= C_DOCC_VIRT
     t_ir *= C_SOCC_VIRT
@@ -483,7 +496,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     t_beta_A.np[:, :nvirt_A] = t_ar
     t_beta_A.np[:, nvirt_A:] = t_ai
 
-    # B part
+    # mon B part
     t_alpha_B = rhs_B_alpha.clone()
     t_beta_B = rhs_B_beta.clone()
     t_alpha_B.zero()
@@ -494,7 +507,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     t_js = t_B.np[ndocc_B:, nsocc_B:].copy()
     t_bj = t_B.np[:ndocc_B, :nsocc_B].copy()
 
-    # NOTE: correction coefficients
+    # NOTE: same as for mon A amplitudes
     t_bj *= C_DOCC_SOCC
     t_bs *= C_DOCC_VIRT
     t_js *= C_SOCC_VIRT
@@ -510,61 +523,15 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     t_beta_B.np[:, :nvirt_B] = t_bs
     t_beta_B.np[:, nvirt_B:] = t_bj
 
-    # DEBUG PRINTS
-    #print(f"{t_beta_A.np=}")
-    #print(f"{t_beta_B.np=}")
-    #print(f"{rhs_A_beta.np=}")
-    #print(f"{rhs_B_beta.np=}")
-    #print(f"{omega_bj=}")
-    #print(f"{omega_ai=}")
-    #print(f"{omega_bs=}")
-    #print(f"{omega_ar=}")
-    #print(f"{omega_js=}")
-    #print(f"{omega_ir=}")
-
-    #print(f"{t_bj=}")
-    #print(f"{t_ai=}")
-    #print(f"{t_bs=}")
-    #print(f"{t_ar=}")
-    #print(f"{t_js=}")
-    #print(f"{t_ir=}")
-    # loop over docc-virt
-    #inner_loop, outer_loop = t_bs.shape
-    #for i in range(inner_loop):
-    #    for j in range(outer_loop):
-    #        value_A = omega_ar[i][j] * t_ar[i][j]
-    #        value_B = omega_bs[i][j] * t_bs[i][j]
-    #        if not np.allclose(value_A, value_B):
-    #            print(f"omega/t: {i=} {j=} {value_A=} {value_B=}")
-
-    ## loop over docc-socc
-    #inner_loop, outer_loop = t_bj.shape
-    #for i in range(inner_loop):
-    #    for j in range(outer_loop):
-    #        value_A = omega_ai[i][j] * t_ai[i][j]
-    #        value_B = omega_bj[i][j] * t_bj[i][j]
-    #        if not np.allclose(value_A, value_B):
-    #            print(f"omega/t: {i=} {j=} {value_A=} {value_B=}")
-
-    ## loop over beta
-    #inner_loop, outer_loop = t_beta_A.np.shape
-    #for i in range(inner_loop):
-    #    for j in range(outer_loop):
-    #        value_A = rhs_A_beta.np[i][j] * t_beta_A.np[i][j]
-    #        value_B = rhs_B_beta.np[i][j] * t_beta_B.np[i][j]
-    #        if not np.allclose(value_A, value_B):
-    #            print(f"rhs/t: {i=} {j=} {value_A=} {value_B=}")
-
-    # DEBUG PRINTS END
-
     # A<-B, in spin blocks
     E20ind_resp_A_B = 0
     _alpha = np.einsum("ij,ij", t_ar, omega_ar)
     _alpha += np.einsum("ij,ij", t_ir, omega_ir)
     _beta = np.einsum("ij,ij", t_ar, omega_ar)
     _beta += np.einsum("ij,ij", t_ai, omega_ai)
-    print(f"E20ind,resp(A<-B)_a: {_alpha}")
-    print(f"E20ind,resp(A<-B)_b: {_beta}")
+    if debug:
+        core.print_out(f"E20ind,resp(A<-B)_a: {_alpha}")
+        core.print_out(f"E20ind,resp(A<-B)_b: {_beta}")
     E20ind_resp_A_B = _alpha + _beta
 
     # B<-A, in spin blocks
@@ -574,16 +541,17 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     _beta = np.einsum("ij,ij", t_bs, omega_bs)
     _beta += np.einsum("ij,ij", t_bj, omega_bj)
     E20ind_resp_B_A += _alpha + _beta
-    print(f"E20ind,resp(B<-A)_a: {_alpha}")
-    print(f"E20ind,resp(B<-A)_b: {_beta}")
+    if debug:
+        core.print_out(f"E20ind,resp(B<-A)_a: {_alpha}")
+        core.print_out(f"E20ind,resp(B<-A)_b: {_beta}")
 
-    # total 20ind,resp
+    # total second order ind,resp
     E20ind_resp = E20ind_resp_A_B + E20ind_resp_B_A
 
     # debug print
-    print(f"E20ind,resp(A<-B): {E20ind_resp_A_B}")
-    print(f"E20ind,resp(B<-A): {E20ind_resp_B_A}")
-    print(f"E20ind,resp      : {E20ind_resp}")
+    core.print_out(f"E20ind,resp(A<-B): {E20ind_resp_A_B}")
+    core.print_out(f"E20ind,resp(B<-A): {E20ind_resp_B_A}")
+    core.print_out(f"E20ind,resp      : {E20ind_resp}")
 
     ret_values = OrderedDict({
         "Ind20,r(A<-B)": E20ind_resp_A_B,
@@ -595,7 +563,7 @@ def compute_cphf_induction(cache, jk, maxiter: int = 100, conv: float = 1e-6) ->
     return ret_values, ret_arrays
 
 
-def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
+def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv, debug: bool = False):
     """
     Solve the CP-ROHF for SAPT induction amplitudes.
     """
@@ -611,7 +579,7 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
     # in turn our pre-conditioner should be
     # (eps_socc - eps_docc) | (eps_virt - eps_docc)
     # (1,)*(socc, socc)     | (eps_virt - eps_socc)
-    # this way apply_denominator should not be singular (eps_socc - eps_socc) -> 0
+    # this way apply_denominator should not be singular; block (eps_socc - eps_socc) would be 0
 
     ndocc_A = cache["ndocc_A"]
     nsocc_A = cache["nsocc_A"]
@@ -625,13 +593,16 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
     eps_ai_A = (cache["eps_docc_A"].np.reshape(-1, 1) - cache["eps_socc_A"].np)
     eps_ar_A = (cache["eps_docc_A"].np.reshape(-1, 1) - cache["eps_vir_A"].np)
     eps_ir_A = (cache["eps_socc_A"].np.reshape(-1, 1) - cache["eps_vir_A"].np)
-    eps_ii_A = np.ones((cache["nsocc_A"], cache["nsocc_A"]))
+    eps_ii_A = np.ones((cache["nsocc_A"], cache["nsocc_A"]))  # socc,socc set to 1, so it doesn't change anything
 
-    print(f"{eps_ai_A.shape=}")
-    print(f"{eps_ar_A.shape=}")
-    print(f"{eps_ir_A.shape=}")
-    print(f"{eps_ii_A.shape=}")
-    print(f"{P_A.np.shape=}")
+    if debug:
+        core.print_out("PRECONDITIONER DEBUG: ")
+        core.print_out(f"{eps_ai_A.shape=}")
+        core.print_out(f"{eps_ar_A.shape=}")
+        core.print_out(f"{eps_ir_A.shape=}")
+        core.print_out(f"{eps_ii_A.shape=}")
+        core.print_out(f"{P_A.np.shape=}")
+
     # ai
     P_A.np[:ndocc_A, :nsocc_A] = eps_ai_A
     # ar
@@ -641,24 +612,29 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
     # ii
     P_A.np[ndocc_A:, :nsocc_A] = eps_ii_A
 
-    print(f"{cache['eps_docc_B'].shape[0]=}")
-    print(f"{cache['eps_socc_B'].shape[0]=}")
-    print(f"{cache['eps_vir_B'].shape[0]=}")
-    print(f"{cache['ndocc_B']=}")
-    print(f"{cache['nsocc_B']=}")
-    print(f"{cache['nvir_B']=}")
+    if debug:
+        core.print_out(f"{cache['eps_docc_B'].shape[0]=}")
+        core.print_out(f"{cache['eps_socc_B'].shape[0]=}")
+        core.print_out(f"{cache['eps_vir_B'].shape[0]=}")
+        core.print_out(f"{cache['ndocc_B']=}")
+        core.print_out(f"{cache['nsocc_B']=}")
+        core.print_out(f"{cache['nvir_B']=}")
+
+    # setup mon B CPHF preconditioner matrix
     P_B = core.Matrix(cache["eps_docc_B"].shape[0] + cache["eps_socc_B"].shape[0],
                       cache["eps_socc_B"].shape[0] + cache["eps_vir_B"].shape[0])
+
     eps_ai_B = (cache["eps_docc_B"].np.reshape(-1, 1) - cache["eps_socc_B"].np)
     eps_ar_B = (cache["eps_docc_B"].np.reshape(-1, 1) - cache["eps_vir_B"].np)
     eps_ir_B = (cache["eps_socc_B"].np.reshape(-1, 1) - cache["eps_vir_B"].np)
     eps_ii_B = np.ones((nsocc_B, nsocc_B))
 
-    print(f"{eps_ai_B.shape=}")
-    print(f"{eps_ar_B.shape=}")
-    print(f"{eps_ir_B.shape=}")
-    print(f"{eps_ii_B.shape=}")
-    print(f"{P_B.np.shape=}")
+    if debug:
+        core.print_out(f"{eps_ai_B.shape=}")
+        core.print_out(f"{eps_ar_B.shape=}")
+        core.print_out(f"{eps_ir_B.shape=}")
+        core.print_out(f"{eps_ii_B.shape=}")
+        core.print_out(f"{P_B.np.shape=}")
     # ai
     P_B.np[:ndocc_B, :nsocc_B] = eps_ai_B
     # ar
@@ -668,10 +644,9 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
     # ii
     P_B.np[ndocc_B:, :nsocc_B] = eps_ii_B
 
-    # Preconditioner function
+    # NOTE: adapted from SAPT(DFT) CP-RKS, original code by DGAS
+    # NOTE: A.apply_denominator(B) does element-wise: A_ij = A_ij/B_ij
     def apply_precon(x_vec, act_mask):
-        # NOTE: A.apply_denominator(B) does
-        # element-wise A_ij = A_ij/B_ij
         if act_mask[0]:
             pA = x_vec[0].clone()
             pA.apply_denominator(P_A)
@@ -684,8 +659,6 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv):
         else:
             pB = False
 
-        # NOTE: short-circut the logic for now
-        #pA, pB = (x_vec[0].clone(), x_vec[1].clone())
         return [pA, pB]
 
     # Hx function

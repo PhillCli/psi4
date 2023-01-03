@@ -648,12 +648,8 @@ def run_sf_sapt(name, **kwargs):
         nsocc_B = wfn_B.soccpi().sum()
 
         # grab virtual orbitals
-        nbf, nvir_A = wfn_A.Ca_subset("AO", "VIR").np.shape
-        nbf, nvir_B = wfn_B.Ca_subset("AO", "VIR").np.shape
-        print(f"{ndocc_A=}")
-        print(f"{nsocc_A=}")
-        print(f"{ndocc_B=}")
-        print(f"{nsocc_B=}")
+        _, nvir_A = wfn_A.Ca_subset("AO", "VIR").np.shape
+        _, nvir_B = wfn_B.Ca_subset("AO", "VIR").np.shape
         cache.update({
             "wfn_A": wfn_A,
             "wfn_B": wfn_B,
@@ -675,7 +671,6 @@ def run_sf_sapt(name, **kwargs):
 
     core.timer_on("SF-SAPT:SAPT(CP-ROHF):ind")
     # NOTE: fold it to build cphf_rohf cache
-    # wfn_A.epsilon_a_subset("AO", "OCC")
     cache = build_cache()
     omega_A_ao, omega_B_ao = form_omega_potentials(cache, sapt_jk)
     cache.update({"omega_A_ao": omega_A_ao, "omega_B_ao": omega_B_ao})
@@ -684,6 +679,8 @@ def run_sf_sapt(name, **kwargs):
                                                                     maxiter=core.get_option("SAPT", "MAXITER"),
                                                                     conv=core.get_option("SAPT", "D_CONVERGENCE"))
     core.set_variable("SAPT IND20,R ENERGY", data_ind["Ind20,r"])
+    # TODO: that's just a short-cut to get amplitudes out, for integration with
+    # Psi4NumPy script for exchange part, should be clean-up before final merge happens
     return data_ind, amplitudes_ind
     sf_data.update(data_ind)
     core.timer_off("SF-SAPT:SAPT(CP-ROHF):ind")

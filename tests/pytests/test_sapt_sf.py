@@ -97,7 +97,7 @@ def test_sapt_sf_rohf_cphf(geometry, reference):
 @pytest.mark.slow
 def test_sapt_sf_rohf_cphf_h2o_o2h():
     """H2O -- HO2 (2A) from http://dx.doi.org/10.1063/1.2968556
-    with custom basis set for midbond to fully reflect orbital basis from the reference
+    with custom basis set for midbond to reflect midbond orbital basis from the reference
     auxillary basis set was chosen to minimize density fitting errors, as reference uses exact integrals
     """
     molecule = psi4.geometry("""
@@ -285,7 +285,7 @@ def test_sapt_sf_rohf_cphf_nh_nh():
     with custom basis set for midbond to fully reflect orbital basis from the reference
     auxillary basis set was chosen to minimize density fitting errors, as reference uses exact integrals
     """
-    molecule = psi4.geometry("""
+    psi4.geometry("""
 0 3
 N1 0.000    0.000     1.81585492519
 H1 0.000    0.000     0.779654925192
@@ -454,9 +454,8 @@ assign He ri
         'd_convergence': 1e-11,
         'SF_SAPT_DO_ONLY_CPHF': True,
     })
-    #psi4.energy("sapt0")
     psi4.energy('SF-SAPT')
     e20_ind_resp = psi4.variable('SAPT IND20,R ENERGY')
     hartree2cm = psi4.constants.hartree2wavenumbers
-    # paper ref is −225 cm^-1, we probably lost it due to DF basis set
+    # paper ref is −225 cm^-1, we probably lost 2.5 cm^-1, due to DF basis set but no way to reproduce it
     assert compare_values(e20_ind_resp * hartree2cm, -222.36267436696826, 6, "SAPT(ROHF) IND20,resp energy")
