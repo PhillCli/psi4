@@ -1,5 +1,5 @@
 import pytest
-from .utils import compare_values
+from utils import compare_values
 
 import psi4
 from psi4.driver import constants
