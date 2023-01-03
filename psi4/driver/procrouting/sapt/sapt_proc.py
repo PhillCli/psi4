@@ -82,7 +82,9 @@ def run_sapt_dft(name, **kwargs):
     core.print_out("\n")
 
     # core.print_out("  !!!  WARNING:  SAPT(DFT) capability is in beta. Please use with caution. !!!\n\n")
-    core.print_out("Warning! The default value of SAPT_DFT_EXCH_DISP_SCALE_SCHEME has changed from DISP to FIXED. Please be careful comparing results with earlier versions. \n\n")
+    core.print_out(
+        "Warning! The default value of SAPT_DFT_EXCH_DISP_SCALE_SCHEME has changed from DISP to FIXED. Please be careful comparing results with earlier versions. \n\n"
+    )
 
     core.print_out("  ==> Algorithm <==\n\n")
     core.print_out("   SAPT DFT Functional     %12s\n" % str(sapt_dft_functional))
@@ -144,7 +146,7 @@ def run_sapt_dft(name, **kwargs):
         core.set_global_option("SAVE_JK", False)
         core.timer_off("SAPT(DFT):Monomer B SCF")
 
-        if do_dft: # For SAPT(HF) do the JK terms in sapt_dft()
+        if do_dft:  # For SAPT(HF) do the JK terms in sapt_dft()
             # Grab JK object and set to A (so we do not save many JK objects)
             sapt_jk = hf_wfn_B.jk()
             hf_wfn_A.set_jk(sapt_jk)
@@ -199,10 +201,10 @@ def run_sapt_dft(name, **kwargs):
             del hf_wfn_A, hf_wfn_B, sapt_jk
 
         else:
-            wfn_A = hf_wfn_A 
+            wfn_A = hf_wfn_A
             wfn_B = hf_wfn_B
-            data["DFT MONOMER A"] = hf_data["HF MONOMER A"] 
-            data["DFT MONOMER B"] = hf_data["HF MONOMER B"] 
+            data["DFT MONOMER A"] = hf_data["HF MONOMER A"]
+            data["DFT MONOMER B"] = hf_data["HF MONOMER B"]
             dhf_value = hf_data["HF DIMER"] - hf_data["HF MONOMER A"] - hf_data["HF MONOMER B"]
             data["DHF VALUE"] = dhf_value
 
@@ -306,7 +308,15 @@ def sapt_dft_header(sapt_dft_functional="unknown",
     core.print_out("   JK Algorithm            %12s\n" % jk_alg)
 
 
-def sapt_dft(dimer_wfn, wfn_A, wfn_B, sapt_jk=None, sapt_jk_B=None, data=None, print_header=True, cleanup_jk=True, delta_hf=False):
+def sapt_dft(dimer_wfn,
+             wfn_A,
+             wfn_B,
+             sapt_jk=None,
+             sapt_jk_B=None,
+             data=None,
+             print_header=True,
+             cleanup_jk=True,
+             delta_hf=False):
     """
     The primary SAPT(DFT) algorithm to compute the interaction energy once the wavefunctions have been built.
 

@@ -40,7 +40,7 @@
 #include "psi4/libpsi4util/PsiOutStream.h"
 #include "psi4/libpsio/psio.hpp"
 
-//#include <libsapt_solver/sapt_dft.h>
+// #include <libsapt_solver/sapt_dft.h>
 
 namespace psi {
 namespace sapt {
@@ -101,5 +101,5 @@ PsiReturnType sapt(SharedWavefunction Dimer, SharedWavefunction MonomerA, Shared
 
     return Success;
 }
-}
-}
+}  // namespace sapt
+}  // namespace psi

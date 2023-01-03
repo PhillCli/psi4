@@ -80,7 +80,7 @@ def _sf_compute_JK(jk, Cleft, Cright, rotation=None):
 
             if (rotation[num].shape[0] != mol) or (rotation[num].shape[1] != mor):
                 raise ValidationError("_sf_compute_JK: Tensor size does not match Cl (%d) /Cr (%d) : %s" %
-                                (mol, mor, str(rotation[num].shape)))
+                                      (mol, mor, str(rotation[num].shape)))
 
             # Figure out the small MO index to contract to
             if mol < mor:
@@ -179,13 +179,8 @@ def compute_sapt_sf(dimer, jk, wfn_A, wfn_B, do_print=True):
         core.print_out("\n  ==> Computing required JK matrices <== \n\n")
 
     # Writen so that we can reorganize order to save on DF-JK cost.
-    pairs = [("ii", Ci, None, Ci),
-             ("ij", Ci, _chain_dot(Ci.T, S, Cj), Cj),
-             ("jj", Cj, None, Cj),
-             ("aa", Ca, None, Ca),
-             ("aj", Ca, _chain_dot(Ca.T, S, Cj), Cj),
-             ("ib", Ci, _chain_dot(Ci.T, S, Cb), Cb),
-             ("bb", Cb, None, Cb),
+    pairs = [("ii", Ci, None, Ci), ("ij", Ci, _chain_dot(Ci.T, S, Cj), Cj), ("jj", Cj, None, Cj), ("aa", Ca, None, Ca),
+             ("aj", Ca, _chain_dot(Ca.T, S, Cj), Cj), ("ib", Ci, _chain_dot(Ci.T, S, Cb), Cb), ("bb", Cb, None, Cb),
              ("ab", Ca, _chain_dot(Ca.T, S, Cb), Cb)]
 
     # Reorganize
