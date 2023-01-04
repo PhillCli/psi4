@@ -549,9 +549,9 @@ def compute_cphf_induction(cache,
     E20ind_resp = E20ind_resp_A_B + E20ind_resp_B_A
 
     # debug print
-    core.print_out(f"E20ind,resp(A<-B): {E20ind_resp_A_B}")
-    core.print_out(f"E20ind,resp(B<-A): {E20ind_resp_B_A}")
-    core.print_out(f"E20ind,resp      : {E20ind_resp}")
+    core.print_out(f"E20ind,resp(A<-B): {E20ind_resp_A_B}\n")
+    core.print_out(f"E20ind,resp(B<-A): {E20ind_resp_B_A}\n")
+    core.print_out(f"E20ind,resp      : {E20ind_resp}\n")
 
     ret_values = OrderedDict({
         "Ind20,r(A<-B)": E20ind_resp_A_B,
