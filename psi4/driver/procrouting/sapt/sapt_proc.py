@@ -681,11 +681,11 @@ def run_sf_sapt(name, **kwargs):
                                                                     maxiter=core.get_option("SAPT", "MAXITER"),
                                                                     conv=core.get_option("SAPT", "D_CONVERGENCE"))
     core.set_variable("SAPT IND20,R ENERGY", data_ind["Ind20,r"])
+    core.timer_off("SF-SAPT:SAPT(CP-ROHF):ind")
     # TODO: that's just a short-cut to get amplitudes out, for integration with
     # Psi4NumPy script for exchange part, should be clean-up before final merge happens
     return data_ind, amplitudes_ind
     sf_data.update(data_ind)
-    core.timer_off("SF-SAPT:SAPT(CP-ROHF):ind")
 
     # Print the results
     core.print_out("   Spin-Flip SAPT Results\n")
