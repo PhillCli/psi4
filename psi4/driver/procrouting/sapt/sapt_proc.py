@@ -538,9 +538,9 @@ def run_sf_sapt(name, **kwargs):
         raise ValidationError('Spin-Flip SAPT currently only supports restricted open-shell references.')
 
     # Run the two monomer computations
-    core.IO.set_default_namespace('dimer')
     data = {}
 
+    core.IO.set_default_namespace('dimer')
     if (core.get_global_option('SCF_TYPE') == 'DF'):
         core.set_global_option('DF_INTS_IO', 'SAVE')
 
@@ -560,9 +560,11 @@ def run_sf_sapt(name, **kwargs):
         wfn_B = kwargs.pop("wfn_B")
 
     if "jk" not in kwargs.keys():
-        sapt_jk = wfn_B.jk()
-        if sapt_jk is None:
-            raise RuntimeError("Could not initialize JK object properly, wfn injection failed")
+        sapt_jk = core.JK.build(wfn_A.basisset())
+        sapt_jk.set_do_J(True)
+        sapt_jk.set_do_K(True)
+        sapt_jk.initialize()
+        sapt_jk.print_header()
     else:
         sapt_jk = kwargs.pop("jk")
 
@@ -583,8 +585,8 @@ def run_sf_sapt(name, **kwargs):
         """
         Forms un-perturbed electric potentials (atomic nuclei + electrons) of both monomers
         """
-        core.print_out("SAPT FF IND,RESP\n")
-        core.print_out("FORMING ELECTRIC AO POTENTIALS OF MONOMERS\n")
+        core.print_out("SAPT COUPLED PERTURBED ROHF IND RESP\n")
+        core.print_out("FORMING AO POTENTIALS OF BOTH MONOMERS\n")
         sapt_jk.print_header()
         sapt_jk.C_clear()
 
@@ -611,7 +613,7 @@ def run_sf_sapt(name, **kwargs):
 
         # compute JK
         sapt_jk.compute()
-        core.print_out("FORMING ELECTRIC AO POTENTIALS OF MONOMERS\n")
+        core.print_out("COMPUTING J INTEGRALS FOR ALPHA AND BETA DENSITIES\n")
 
         J_A_a = sapt_jk.J()[0].clone()
         J_A_b = sapt_jk.J()[1].clone()
