@@ -110,7 +110,7 @@ else()
                        -DENABLE_ERI=2
                        -DENABLE_ERI3=2
                        -DENABLE_ERI2=2
-                       -DBOOST_ROOT=${BOOST_ROOT}
+                       -DBOOST_ROOT=/usr/include/boost
                        -DEigen3_DIR=${Eigen3_DIR}
                        -DEigen3_ROOT=${Eigen3_ROOT}
                        -DMPFR_ROOT=${MPFR_ROOT}
@@ -128,10 +128,10 @@ else()
                        -DBUILD_FPIC=${BUILD_FPIC}
             CMAKE_CACHE_ARGS -DCMAKE_CXX_FLAGS:STRING=${CMAKE_CXX_FLAGS}
                              -DCMAKE_C_FLAGS:STRING=${CMAKE_C_FLAGS}
-                             -DWITH_ERI_MAX_AM:STRING=3;2;2
-                             -DWITH_ERI3_MAX_AM:STRING=4;3;3
-                             -DWITH_ERI2_MAX_AM:STRING=4;3;3
-                             -DWITH_MAX_AM:STRING=4;3;3
+                             -DWITH_ERI_MAX_AM:STRING=10;3;3
+                             -DWITH_ERI3_MAX_AM:STRING=11;4;4
+                             -DWITH_ERI2_MAX_AM:STRING=11;4;4
+                             -DWITH_MAX_AM:STRING=11;4;4
         )
     endif()
 
