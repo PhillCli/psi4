@@ -114,7 +114,7 @@ void IWL::write_matrix(int ptr, int qtr, double **mat, int rfirst, int rlast, in
                 if (printflag) printer->Printf(">%d %d %d %d [%d] [%d] = %20.10f\n", ptr, qtr, rtr, str, ij, kl, value);
 
             } /* end if (std::fabs(value) > Buf->cutoff) ... */
-        }     /* end loop over s */
-    }         /* end loop over r */
+        } /* end loop over s */
+    } /* end loop over r */
 }
-}
+}  // namespace psi

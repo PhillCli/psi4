@@ -347,7 +347,7 @@ int DPD::contract424(dpdbuf4 *X, dpdfile2 *Y, dpdbuf4 *Z, int sum_X, int sum_Y, 
             buf4_mat_irrep_wrt(Z, hzbuf);
             buf4_mat_irrep_close(Z, hzbuf);
 
-        }      /* end if(incore) */
+        } /* end if(incore) */
         else { /* out-of-core for "normal" 424 contractions */
                /* Prepare the input buffer for the X factor and the target*/
 #ifdef DPD_DEBUG

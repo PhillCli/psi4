@@ -290,8 +290,8 @@ void b2bgen1(unsigned char **occs, int *Jcnt, int **Jij, int **Joij, int **Jridx
                     cnt++;
 
                 } /* end loop over particles */
-            }     /* end loop over holes */
-        }         /* end loop over RAS subspaces */
+            } /* end loop over holes */
+        } /* end loop over RAS subspaces */
         Jcnt[I] = cnt;
     } /* end loop over strings I */
 }
@@ -393,7 +393,7 @@ void b2bgen2(unsigned char **occs, int *Jcnt, int **Jij, int **Joij, int **Jridx
                 cnt++;
 
             } /* end loop over particles */
-        }     /* end loop over holes */
+        } /* end loop over holes */
 
         Jcnt[I] = cnt;
     } /* end loop over strings I */
@@ -435,9 +435,9 @@ void b2brepl_test(unsigned char ***occs, int *Jcnt, int **Jij, int **Joij, int *
                     }
 
                 } /* end loop over Jcodes */
-            }     /* end loop over Jirrep */
-        }         /* end loop over Icodes */
-    }             /* end loop over Iirrep */
+            } /* end loop over Jirrep */
+        } /* end loop over Icodes */
+    } /* end loop over Iirrep */
 }
-}
+}  // namespace detci
 }  // namespace psi

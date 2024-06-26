@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """Catch NumPy based import errors and suggest solutions.
 Define some prettyprint formats.
 Collect physical constants for py-side from QCElemental at CODATA consistent with c-side header.

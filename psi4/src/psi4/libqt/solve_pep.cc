@@ -146,4 +146,4 @@ void solve_2x2_pep() ;
 
 }
 ***/
-}
+}  // namespace psi

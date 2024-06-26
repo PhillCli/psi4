@@ -224,6 +224,6 @@ class Array3i {
     void set(int h, int i, int j, int value);
     int get(int h, int i, int j);
 };
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi
 #endif  // _psi_src_bin_occ_arrays_h_

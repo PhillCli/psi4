@@ -76,7 +76,7 @@ class PSI_API SOTransformShell {
     int aoshell;
     /// The array of SOTransformFunction objects describing the transform.
     std::vector<SOTransformFunction> func;
-    int nfunc() const {return func.size();};
+    int nfunc() const { return func.size(); };
     SOTransformShell();
     ~SOTransformShell();
     /// Add another function to the transform.

@@ -55,8 +55,7 @@ class FrozenCoreRestrictedFunctor {
      * @param FzD: The frozen core density matrix (stored as a lower triangular array)
      * @param Fz: The frozen core operator (stored as a lower triangular array)
      */
-    FrozenCoreRestrictedFunctor(const double *FzD, double *Fz)
-        : FzD_(FzD), Fz_(Fz) {}
+    FrozenCoreRestrictedFunctor(const double *FzD, double *Fz) : FzD_(FzD), Fz_(Fz) {}
 
     void operator()(int pabs, int qabs, int rabs, int sabs, int psym, int prel, int qsym, int qrel, int rsym, int rrel,
                     int ssym, int srel, double value) {

@@ -523,7 +523,8 @@ void SADGuess::get_uhf_atomic_density(std::shared_ptr<BasisSet> bas, std::shared
     int iteration = 0;
 
     // Setup DIIS
-    DIISManager diis_manager(6, "SAD DIIS", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::InCore);
+    DIISManager diis_manager(6, "SAD DIIS", DIISManager::RemovalPolicy::LargestError,
+                             DIISManager::StoragePolicy::InCore);
     diis_manager.set_error_vector_size(gradient_a.get(), gradient_b.get());
     diis_manager.set_vector_size(Fa.get(), Fb.get());
 

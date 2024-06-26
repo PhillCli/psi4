@@ -68,14 +68,12 @@ void DCTSolver::init() {
     nbvir_ = nbvirpi_.sum();
 
     auto zero = Dimension(nirrep_);
-    slices_ = {
-        {"SO",  Slice(zero, nsopi_)},
-        {"MO",  Slice(zero, nmopi_)},
-        {"ACTIVE_OCC_A",  Slice(frzcpi_, nalphapi_)},
-        {"ACTIVE_OCC_B",  Slice(frzcpi_, nbetapi_)},
-        {"ACTIVE_VIR_A",  Slice(nalphapi_, nalphapi_ + navirpi_)},
-        {"ACTIVE_VIR_B",  Slice(nbetapi_, nbetapi_ + nbvirpi_)}
-    };
+    slices_ = {{"SO", Slice(zero, nsopi_)},
+               {"MO", Slice(zero, nmopi_)},
+               {"ACTIVE_OCC_A", Slice(frzcpi_, nalphapi_)},
+               {"ACTIVE_OCC_B", Slice(frzcpi_, nbetapi_)},
+               {"ACTIVE_VIR_A", Slice(nalphapi_, nalphapi_ + navirpi_)},
+               {"ACTIVE_VIR_B", Slice(nbetapi_, nbetapi_ + nbvirpi_)}};
 
     aocc_c_ = std::make_shared<Matrix>("Alpha Occupied MO Coefficients", nsopi_, naoccpi_);
     bocc_c_ = std::make_shared<Matrix>("Beta Occupied MO Coefficients", nsopi_, nboccpi_);

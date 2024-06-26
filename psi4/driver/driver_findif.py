@@ -169,7 +169,8 @@ logger = logging.getLogger(__name__)
 # h is the index of an irrep.
 
 
-def _displace_cart(mass: np.ndarray, geom: np.ndarray, salc_list: core.CdSalcList, i_m: Iterator[Tuple], step_size: float) -> Tuple[np.ndarray, str]:
+def _displace_cart(mass: np.ndarray, geom: np.ndarray, salc_list: core.CdSalcList, i_m: Iterator[Tuple],
+                   step_size: float) -> Tuple[np.ndarray, str]:
     """Displace a geometry along the specified displacement SALCs.
 
     Parameters
@@ -203,7 +204,8 @@ def _displace_cart(mass: np.ndarray, geom: np.ndarray, salc_list: core.CdSalcLis
         # * Python error if iterate through `salc_list`
         for i in range(len(salc_list[salc_index])):
             component = salc_list[salc_index][i]
-            disp_geom[component.atom, component.xyz] += disp_steps * step_size * component.coef / np.sqrt(mass[component.atom])
+            disp_geom[component.atom, component.xyz] += disp_steps * step_size * component.coef / np.sqrt(
+                mass[component.atom])
         label.append(f"{salc_index}: {disp_steps}")
 
     # salc_index is in descending order. We want the label in ascending order, so...
@@ -391,7 +393,14 @@ def _initialize_findif(mol: Union["qcdb.Molecule", core.Molecule],
     return data
 
 
-def _geom_generator(mol: Union["qcdb.Molecule", core.Molecule], freq_irrep_only: int, mode: str, *, t_project: bool = True, r_project: bool = True, stencil_size: int = 3, step_size: float = 0.005) -> Dict:
+def _geom_generator(mol: Union["qcdb.Molecule", core.Molecule],
+                    freq_irrep_only: int,
+                    mode: str,
+                    *,
+                    t_project: bool = True,
+                    r_project: bool = True,
+                    stencil_size: int = 3,
+                    step_size: float = 0.005) -> Dict:
     """
     Generate geometries for the specified molecule and derivative levels.
     You probably want to instead use one of the convenience functions:
@@ -591,7 +600,6 @@ _der_from_lesser_docstring = """
 
 """
 
-
 gradient_from_energies_geometries = partial(_geom_generator, freq_irrep_only=-1, mode="1_0")
 hessian_from_gradients_geometries = partial(_geom_generator, mode="2_1")
 hessian_from_energies_geometries = partial(_geom_generator, mode="2_0")
@@ -677,7 +685,8 @@ def assemble_gradient_from_energies(findifrec: Dict) -> np.ndarray:
     return g_cart
 
 
-def _process_hessian_symmetry_block(H_block: np.ndarray, B_block: np.ndarray, massweighter: np.ndarray, irrep: str, print_lvl: int) -> np.ndarray:
+def _process_hessian_symmetry_block(H_block: np.ndarray, B_block: np.ndarray, massweighter: np.ndarray, irrep: str,
+                                    print_lvl: int) -> np.ndarray:
     """Perform post-construction processing for a symmetry block of the Hessian.
        Statements need to be printed, and the Hessian must be made orthogonal.
 
@@ -726,7 +735,8 @@ def _process_hessian_symmetry_block(H_block: np.ndarray, B_block: np.ndarray, ma
     return H_block
 
 
-def _process_hessian(H_blocks: List[np.ndarray], B_blocks: List[np.ndarray], massweighter: np.ndarray, print_lvl: int) -> np.ndarray:
+def _process_hessian(H_blocks: List[np.ndarray], B_blocks: List[np.ndarray], massweighter: np.ndarray,
+                     print_lvl: int) -> np.ndarray:
     """Perform post-construction processing for the Hessian.
        Statements need to be printed, and the Hessian must be transformed.
 
@@ -1291,7 +1301,6 @@ class FiniteDifferenceComputer(BaseComputer):
 
             self.task_list[label] = self.computer(**packet, **passalong)
 
-
 #        for n, displacement in enumerate(findif_meta_dict["displacements"].values(), start=2):
 #            _process_displacement(energy, lowername, molecule, displacement, n, ndisp, write_orbitals=False, **kwargs)
 
@@ -1439,6 +1448,7 @@ class FiniteDifferenceComputer(BaseComputer):
             qcvars[f"{self.method.upper()} TOTAL HESSIAN"] = H0
             properties["return_hessian"] = H0
 
+
 #        if isinstance(lowername, str) and lowername in procedures['energy']:
 #            # this correctly filters out cbs fn and "hf/cc-pvtz"
 #            # it probably incorrectly filters out mp5, but reconsider in DDD
@@ -1465,11 +1475,8 @@ class FiniteDifferenceComputer(BaseComputer):
 
         return findif_model
 
-    def get_psi_results(
-        self,
-        client: Optional["qcportal.FractalClient"] = None,
-        *,
-        return_wfn: bool = False) -> EnergyGradientHessianWfnReturn:
+    def get_psi_results(self, client: Optional["qcportal.FractalClient"] = None, *,
+                        return_wfn: bool = False) -> EnergyGradientHessianWfnReturn:
         """Called by driver to assemble results into FiniteDifference-flavored QCSchema,
         then reshape and return them in the customary Psi4 driver interface: ``(e/g/h, wfn)``.
 

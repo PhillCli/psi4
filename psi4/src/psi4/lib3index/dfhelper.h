@@ -155,7 +155,6 @@ class PSI_API DFHelper {
     void set_fitting_condition(double condition) { condition_ = condition; }
     bool get_fitting_condition() { return condition_; }
 
-
     ///
     /// Do we calculate omega exchange and regular hf exchange together?
     /// @param wcombine boolean: all exchange in one matrix
@@ -189,7 +188,7 @@ class PSI_API DFHelper {
     ///
     void set_omega_alpha(double alpha) { omega_alpha_ = alpha; }
     double get_omega_alpha() { return omega_alpha_; }
-    
+
     ///
     /// sets the parameter for the other type of integrals
     /// @param omega double indicating parameter for other type
@@ -314,7 +313,7 @@ class PSI_API DFHelper {
     void clear_spaces();
 
     /// clear transformations
-    void clear_transformations(); 
+    void clear_transformations();
 
     /// clears spaces and transformations
     void clear_all();
@@ -396,11 +395,9 @@ class PSI_API DFHelper {
                                        std::vector<std::shared_ptr<TwoBodyAOInt>> eri);
     void compute_sparse_pQq_blocking_p_symm(const size_t start, const size_t stop, double* Mp,
                                             std::vector<std::shared_ptr<TwoBodyAOInt>> eri);
-    void compute_sparse_pQq_blocking_p_symm_abw(const size_t start, const size_t stop, double* just_Mp, double* param_Mp,
-                                        std::vector<std::shared_ptr<TwoBodyAOInt>> eri,
-                                        std::vector<std::shared_ptr<TwoBodyAOInt>> weri);
-
-
+    void compute_sparse_pQq_blocking_p_symm_abw(const size_t start, const size_t stop, double* just_Mp,
+                                                double* param_Mp, std::vector<std::shared_ptr<TwoBodyAOInt>> eri,
+                                                std::vector<std::shared_ptr<TwoBodyAOInt>> weri);
 
     void contract_metric_AO_core_symm(double* Qpq, double* Ppq, double* metp, size_t begin, size_t end);
     void grab_AO(const size_t start, const size_t stop, double* Mp);
@@ -461,8 +458,9 @@ class PSI_API DFHelper {
     // => Schwarz Screening <=
     // Does shell pair (m, n) have any significant (mn|mn)-type integrals? Size pshells_ ** 2
     std::vector<bool> schwarz_shell_mask_;
-    // What is the index of ij in significant basis function interactions for i? 0 = not significant. 2 means 1 before, 3 means 2 before, ect. Size nbf_ ** 2.
-    // Ordering is based on the natural ordering of basis functions, not ordering of significance.
+    // What is the index of ij in significant basis function interactions for i? 0 = not significant. 2 means 1 before,
+    // 3 means 2 before, ect. Size nbf_ ** 2. Ordering is based on the natural ordering of basis functions, not ordering
+    // of significance.
     std::vector<size_t> schwarz_fun_index_;
 
     // => Coulomb metric handling <=
@@ -580,7 +578,8 @@ class PSI_API DFHelper {
                    std::vector<std::vector<double>>& D_buffers, size_t bcount, size_t block_size);
     void compute_J_symm(std::vector<SharedMatrix> D, std::vector<SharedMatrix> J, double* Mp, double* T1p, double* T2p,
                         std::vector<std::vector<double>>& D_buffers, size_t bcount, size_t block_size);
-    void compute_J_combined(std::vector<SharedMatrix> D, std::vector<SharedMatrix> J, double* Mp, double* T1p, double* T2p, std::vector<std::vector<double>>& D_buffers, size_t bcount, size_t block_size);
+    void compute_J_combined(std::vector<SharedMatrix> D, std::vector<SharedMatrix> J, double* Mp, double* T1p,
+                            double* T2p, std::vector<std::vector<double>>& D_buffers, size_t bcount, size_t block_size);
     void compute_K(std::vector<SharedMatrix> Cleft, std::vector<SharedMatrix> Cright, std::vector<SharedMatrix> K,
                    double* Tp, double* Jtmp, double* Mp, size_t bcount, size_t block_size,
                    std::vector<std::vector<double>>& C_buffers, bool lr_symmetric);
@@ -595,5 +594,5 @@ class PSI_API DFHelper {
     void fill(double* b, size_t count, double value);
 
 };  // End DF Helper class
-}  // psi4 namespace
+}  // namespace psi
 #endif

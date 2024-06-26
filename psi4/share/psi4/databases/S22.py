@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """
 | Database (Hobza) of interaction energies for bimolecular complexes.
 | Geometries from Jurecka et al. PCCP 8 1985 (2006).
@@ -69,239 +68,245 @@ S11 = [1, 2, 3, 4, 8, 9, 10, 16, 17, 18, 19]
 WATER = [2]
 
 # <<< Chemical Systems Involved >>>
-RXNM = {}     # reaction matrix of reagent contributions per reaction
-ACTV = {}     # order of active reagents per reaction
+RXNM = {}  # reaction matrix of reagent contributions per reaction
+ACTV = {}  # order of active reagents per reaction
 ACTV_CP = {}  # order of active reagents per counterpoise-corrected reaction
 ACTV_SA = {}  # order of active reagents for non-supramolecular calculations
 for rxn in HRXN:
 
-    RXNM[   '%s-%s' % (dbse, rxn)] = {'%s-%s-dimer'      % (dbse, rxn) : +1,
-                                      '%s-%s-monoA-CP'   % (dbse, rxn) : -1,
-                                      '%s-%s-monoB-CP'   % (dbse, rxn) : -1,
-                                      '%s-%s-monoA-unCP' % (dbse, rxn) : -1,
-                                      '%s-%s-monoB-unCP' % (dbse, rxn) : -1 }
+    RXNM['%s-%s' % (dbse, rxn)] = {
+        '%s-%s-dimer' % (dbse, rxn): +1,
+        '%s-%s-monoA-CP' % (dbse, rxn): -1,
+        '%s-%s-monoB-CP' % (dbse, rxn): -1,
+        '%s-%s-monoA-unCP' % (dbse, rxn): -1,
+        '%s-%s-monoB-unCP' % (dbse, rxn): -1
+    }
 
-    ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn) ]
+    ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn)]
 
-    ACTV_CP['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),
-                                      '%s-%s-monoA-CP'   % (dbse, rxn),
-                                      '%s-%s-monoB-CP'   % (dbse, rxn) ]
+    ACTV_CP['%s-%s' % (dbse, rxn)] = [
+        '%s-%s-dimer' % (dbse, rxn),
+        '%s-%s-monoA-CP' % (dbse, rxn),
+        '%s-%s-monoB-CP' % (dbse, rxn)
+    ]
 
-    ACTV[   '%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),
-                                      '%s-%s-monoA-unCP' % (dbse, rxn),
-                                      '%s-%s-monoB-unCP' % (dbse, rxn) ]
+    ACTV['%s-%s' % (dbse, rxn)] = [
+        '%s-%s-dimer' % (dbse, rxn),
+        '%s-%s-monoA-unCP' % (dbse, rxn),
+        '%s-%s-monoB-unCP' % (dbse, rxn)
+    ]
 
 # <<< Reference Values >>>
 BIND = {}
 # Original publication
 BIND_S220 = {}
-BIND_S220['%s-%s' % (dbse,  1)] =  -3.17
-BIND_S220['%s-%s' % (dbse,  2)] =  -5.02
-BIND_S220['%s-%s' % (dbse,  3)] = -18.61
-BIND_S220['%s-%s' % (dbse,  4)] = -15.96
-BIND_S220['%s-%s' % (dbse,  5)] = -20.65
-BIND_S220['%s-%s' % (dbse,  6)] = -16.71
-BIND_S220['%s-%s' % (dbse,  7)] = -16.37
-BIND_S220['%s-%s' % (dbse,  8)] =  -0.53
-BIND_S220['%s-%s' % (dbse,  9)] =  -1.51
-BIND_S220['%s-%s' % (dbse, 10)] =  -1.50
-BIND_S220['%s-%s' % (dbse, 11)] =  -2.73
-BIND_S220['%s-%s' % (dbse, 12)] =  -4.42
+BIND_S220['%s-%s' % (dbse, 1)] = -3.17
+BIND_S220['%s-%s' % (dbse, 2)] = -5.02
+BIND_S220['%s-%s' % (dbse, 3)] = -18.61
+BIND_S220['%s-%s' % (dbse, 4)] = -15.96
+BIND_S220['%s-%s' % (dbse, 5)] = -20.65
+BIND_S220['%s-%s' % (dbse, 6)] = -16.71
+BIND_S220['%s-%s' % (dbse, 7)] = -16.37
+BIND_S220['%s-%s' % (dbse, 8)] = -0.53
+BIND_S220['%s-%s' % (dbse, 9)] = -1.51
+BIND_S220['%s-%s' % (dbse, 10)] = -1.50
+BIND_S220['%s-%s' % (dbse, 11)] = -2.73
+BIND_S220['%s-%s' % (dbse, 12)] = -4.42
 BIND_S220['%s-%s' % (dbse, 13)] = -10.12
-BIND_S220['%s-%s' % (dbse, 14)] =  -5.22
+BIND_S220['%s-%s' % (dbse, 14)] = -5.22
 BIND_S220['%s-%s' % (dbse, 15)] = -12.23
-BIND_S220['%s-%s' % (dbse, 16)] =  -1.53
-BIND_S220['%s-%s' % (dbse, 17)] =  -3.28
-BIND_S220['%s-%s' % (dbse, 18)] =  -2.35
-BIND_S220['%s-%s' % (dbse, 19)] =  -4.46
-BIND_S220['%s-%s' % (dbse, 20)] =  -2.74
-BIND_S220['%s-%s' % (dbse, 21)] =  -5.73
-BIND_S220['%s-%s' % (dbse, 22)] =  -7.05
+BIND_S220['%s-%s' % (dbse, 16)] = -1.53
+BIND_S220['%s-%s' % (dbse, 17)] = -3.28
+BIND_S220['%s-%s' % (dbse, 18)] = -2.35
+BIND_S220['%s-%s' % (dbse, 19)] = -4.46
+BIND_S220['%s-%s' % (dbse, 20)] = -2.74
+BIND_S220['%s-%s' % (dbse, 21)] = -5.73
+BIND_S220['%s-%s' % (dbse, 22)] = -7.05
 # Revision
 BIND_S22A = {}
-BIND_S22A['%s-%s' % (dbse,  1)] =  -3.15
-BIND_S22A['%s-%s' % (dbse,  2)] =  -5.07
-BIND_S22A['%s-%s' % (dbse,  3)] = -18.81
-BIND_S22A['%s-%s' % (dbse,  4)] = -16.11
-BIND_S22A['%s-%s' % (dbse,  5)] = -20.69
-BIND_S22A['%s-%s' % (dbse,  6)] = -17.00
-BIND_S22A['%s-%s' % (dbse,  7)] = -16.74
-BIND_S22A['%s-%s' % (dbse,  8)] =  -0.53
-BIND_S22A['%s-%s' % (dbse,  9)] =  -1.48
-BIND_S22A['%s-%s' % (dbse, 10)] =  -1.45
-BIND_S22A['%s-%s' % (dbse, 11)] =  -2.62
-BIND_S22A['%s-%s' % (dbse, 12)] =  -4.20
-BIND_S22A['%s-%s' % (dbse, 13)] =  -9.74
-BIND_S22A['%s-%s' % (dbse, 14)] =  -4.59
+BIND_S22A['%s-%s' % (dbse, 1)] = -3.15
+BIND_S22A['%s-%s' % (dbse, 2)] = -5.07
+BIND_S22A['%s-%s' % (dbse, 3)] = -18.81
+BIND_S22A['%s-%s' % (dbse, 4)] = -16.11
+BIND_S22A['%s-%s' % (dbse, 5)] = -20.69
+BIND_S22A['%s-%s' % (dbse, 6)] = -17.00
+BIND_S22A['%s-%s' % (dbse, 7)] = -16.74
+BIND_S22A['%s-%s' % (dbse, 8)] = -0.53
+BIND_S22A['%s-%s' % (dbse, 9)] = -1.48
+BIND_S22A['%s-%s' % (dbse, 10)] = -1.45
+BIND_S22A['%s-%s' % (dbse, 11)] = -2.62
+BIND_S22A['%s-%s' % (dbse, 12)] = -4.20
+BIND_S22A['%s-%s' % (dbse, 13)] = -9.74
+BIND_S22A['%s-%s' % (dbse, 14)] = -4.59
 BIND_S22A['%s-%s' % (dbse, 15)] = -11.66
-BIND_S22A['%s-%s' % (dbse, 16)] =  -1.50
-BIND_S22A['%s-%s' % (dbse, 17)] =  -3.29
-BIND_S22A['%s-%s' % (dbse, 18)] =  -2.32
-BIND_S22A['%s-%s' % (dbse, 19)] =  -4.55
-BIND_S22A['%s-%s' % (dbse, 20)] =  -2.71
-BIND_S22A['%s-%s' % (dbse, 21)] =  -5.62
-BIND_S22A['%s-%s' % (dbse, 22)] =  -7.09
+BIND_S22A['%s-%s' % (dbse, 16)] = -1.50
+BIND_S22A['%s-%s' % (dbse, 17)] = -3.29
+BIND_S22A['%s-%s' % (dbse, 18)] = -2.32
+BIND_S22A['%s-%s' % (dbse, 19)] = -4.55
+BIND_S22A['%s-%s' % (dbse, 20)] = -2.71
+BIND_S22A['%s-%s' % (dbse, 21)] = -5.62
+BIND_S22A['%s-%s' % (dbse, 22)] = -7.09
 # Current revision
 BIND_S22B = {}
-BIND_S22B['%s-%s' % (dbse,  1)] =  -3.133
-BIND_S22B['%s-%s' % (dbse,  2)] =  -4.989
-BIND_S22B['%s-%s' % (dbse,  3)] = -18.753
-BIND_S22B['%s-%s' % (dbse,  4)] = -16.062
-BIND_S22B['%s-%s' % (dbse,  5)] = -20.641
-BIND_S22B['%s-%s' % (dbse,  6)] = -16.934
-BIND_S22B['%s-%s' % (dbse,  7)] = -16.660
-BIND_S22B['%s-%s' % (dbse,  8)] =  -0.527
-BIND_S22B['%s-%s' % (dbse,  9)] =  -1.472
-BIND_S22B['%s-%s' % (dbse, 10)] =  -1.448
-BIND_S22B['%s-%s' % (dbse, 11)] =  -2.654
-BIND_S22B['%s-%s' % (dbse, 12)] =  -4.255
-BIND_S22B['%s-%s' % (dbse, 13)] =  -9.805
-BIND_S22B['%s-%s' % (dbse, 14)] =  -4.524
+BIND_S22B['%s-%s' % (dbse, 1)] = -3.133
+BIND_S22B['%s-%s' % (dbse, 2)] = -4.989
+BIND_S22B['%s-%s' % (dbse, 3)] = -18.753
+BIND_S22B['%s-%s' % (dbse, 4)] = -16.062
+BIND_S22B['%s-%s' % (dbse, 5)] = -20.641
+BIND_S22B['%s-%s' % (dbse, 6)] = -16.934
+BIND_S22B['%s-%s' % (dbse, 7)] = -16.660
+BIND_S22B['%s-%s' % (dbse, 8)] = -0.527
+BIND_S22B['%s-%s' % (dbse, 9)] = -1.472
+BIND_S22B['%s-%s' % (dbse, 10)] = -1.448
+BIND_S22B['%s-%s' % (dbse, 11)] = -2.654
+BIND_S22B['%s-%s' % (dbse, 12)] = -4.255
+BIND_S22B['%s-%s' % (dbse, 13)] = -9.805
+BIND_S22B['%s-%s' % (dbse, 14)] = -4.524
 BIND_S22B['%s-%s' % (dbse, 15)] = -11.730
-BIND_S22B['%s-%s' % (dbse, 16)] =  -1.496
-BIND_S22B['%s-%s' % (dbse, 17)] =  -3.275
-BIND_S22B['%s-%s' % (dbse, 18)] =  -2.312
-BIND_S22B['%s-%s' % (dbse, 19)] =  -4.541
-BIND_S22B['%s-%s' % (dbse, 20)] =  -2.717
-BIND_S22B['%s-%s' % (dbse, 21)] =  -5.627
-BIND_S22B['%s-%s' % (dbse, 22)] =  -7.097
+BIND_S22B['%s-%s' % (dbse, 16)] = -1.496
+BIND_S22B['%s-%s' % (dbse, 17)] = -3.275
+BIND_S22B['%s-%s' % (dbse, 18)] = -2.312
+BIND_S22B['%s-%s' % (dbse, 19)] = -4.541
+BIND_S22B['%s-%s' % (dbse, 20)] = -2.717
+BIND_S22B['%s-%s' % (dbse, 21)] = -5.627
+BIND_S22B['%s-%s' % (dbse, 22)] = -7.097
 # Set default
 BIND = BIND_S22B
 
 # <<< Comment Lines >>>
 TAGL = {}
-TAGL['%s-%s'            % (dbse,  1)] = 'HB-1 Ammonia Dimer, C2H'
-TAGL['%s-%s-dimer'      % (dbse,  1)] =      'Ammonia Dimer'
-TAGL['%s-%s-monoA-CP'   % (dbse,  1)] =      'Ammonia from Ammonia Dimer'
-TAGL['%s-%s-monoB-CP'   % (dbse,  1)] =      'Ammonia from Ammonia Dimer'
-TAGL['%s-%s-monoA-unCP' % (dbse,  1)] =      'Ammonia from Ammonia Dimer'
-TAGL['%s-%s-monoB-unCP' % (dbse,  1)] =      'Ammonia from Ammonia Dimer'
-TAGL['%s-%s'            % (dbse,  2)] = 'HB-2 Water Dimer, CS'
-TAGL['%s-%s-dimer'      % (dbse,  2)] =      'Water Dimer'
-TAGL['%s-%s-monoA-CP'   % (dbse,  2)] =      'Water from Water Dimer'
-TAGL['%s-%s-monoB-CP'   % (dbse,  2)] =      'Water from Water Dimer'
-TAGL['%s-%s-monoA-unCP' % (dbse,  2)] =      'Water from Water Dimer'
-TAGL['%s-%s-monoB-unCP' % (dbse,  2)] =      'Water from Water Dimer'
-TAGL['%s-%s'            % (dbse,  3)] = 'HB-3 Formic Acid Dimer, C2H'
-TAGL['%s-%s-dimer'      % (dbse,  3)] =      'Formic Acid Dimer'
-TAGL['%s-%s-monoA-CP'   % (dbse,  3)] =      'Formic Acid from Formic Acid Dimer'
-TAGL['%s-%s-monoB-CP'   % (dbse,  3)] =      'Formic Acid from Formic Acid Dimer'
-TAGL['%s-%s-monoA-unCP' % (dbse,  3)] =      'Formic Acid from Formic Acid Dimer'
-TAGL['%s-%s-monoB-unCP' % (dbse,  3)] =      'Formic Acid from Formic Acid Dimer'
-TAGL['%s-%s'            % (dbse,  4)] = 'HB-4 Formamide Dimer, C2H'
-TAGL['%s-%s-dimer'      % (dbse,  4)] =      'Formamide Dimer'
-TAGL['%s-%s-monoA-CP'   % (dbse,  4)] =      'Formamide from Formamide Dimer'
-TAGL['%s-%s-monoB-CP'   % (dbse,  4)] =      'Formamide from Formamide Dimer'
-TAGL['%s-%s-monoA-unCP' % (dbse,  4)] =      'Formamide from Formamide Dimer'
-TAGL['%s-%s-monoB-unCP' % (dbse,  4)] =      'Formamide from Formamide Dimer'
-TAGL['%s-%s'            % (dbse,  5)] = 'HB-5 Uracil Dimer HB, C2H'
-TAGL['%s-%s-dimer'      % (dbse,  5)] =      'Uracil Dimer HB'
-TAGL['%s-%s-monoA-CP'   % (dbse,  5)] =      'Uracil from Uracil Dimer HB'
-TAGL['%s-%s-monoB-CP'   % (dbse,  5)] =      'Uracil from Uracil Dimer HB'
-TAGL['%s-%s-monoA-unCP' % (dbse,  5)] =      'Uracil from Uracil Dimer HB'
-TAGL['%s-%s-monoB-unCP' % (dbse,  5)] =      'Uracil from Uracil Dimer HB'
-TAGL['%s-%s'            % (dbse,  6)] = 'HB-6 2-Pyridone-2-Aminopyridine Complex, C1'
-TAGL['%s-%s-dimer'      % (dbse,  6)] =      '2-Pyridone-2-Aminopyridine Complex'
-TAGL['%s-%s-monoA-CP'   % (dbse,  6)] =      '2-Pyridone from 2-Pyridone-2-Aminopyridine Complex'
-TAGL['%s-%s-monoB-CP'   % (dbse,  6)] =      '2-Aminopyridine from 2-Pyridone-2-Aminopyridine Complex'
-TAGL['%s-%s-monoA-unCP' % (dbse,  6)] =      '2-Pyridone from 2-Pyridone-2-Aminopyridine Complex'
-TAGL['%s-%s-monoB-unCP' % (dbse,  6)] =      '2-Aminopyridine from 2-Pyridone-2-Aminopyridine Complex'
-TAGL['%s-%s'            % (dbse,  7)] = 'HB-7 Adenine-Thymine Complex WC, C1'
-TAGL['%s-%s-dimer'      % (dbse,  7)] =      'Adenine-Thymine Complex WC'
-TAGL['%s-%s-monoA-CP'   % (dbse,  7)] =      'Adenine from Adenine-Thymine Complex WC'
-TAGL['%s-%s-monoB-CP'   % (dbse,  7)] =      'Thymine from Adenine-Thymine Complex WC'
-TAGL['%s-%s-monoA-unCP' % (dbse,  7)] =      'Adenine from Adenine-Thymine Complex WC'
-TAGL['%s-%s-monoB-unCP' % (dbse,  7)] =      'Thymine from Adenine-Thymine Complex WC'
-TAGL['%s-%s'            % (dbse,  8)] = 'DD-1 Methane Dimer, D3D'
-TAGL['%s-%s-dimer'      % (dbse,  8)] =      'Methane Dimer'
-TAGL['%s-%s-monoA-CP'   % (dbse,  8)] =      'Methane from Methane Dimer'
-TAGL['%s-%s-monoB-CP'   % (dbse,  8)] =      'Methane from Methane Dimer'
-TAGL['%s-%s-monoA-unCP' % (dbse,  8)] =      'Methane from Methane Dimer'
-TAGL['%s-%s-monoB-unCP' % (dbse,  8)] =      'Methane from Methane Dimer'
-TAGL['%s-%s'            % (dbse,  9)] = 'DD-2 Ethene Dimer, D2D'
-TAGL['%s-%s-dimer'      % (dbse,  9)] =      'Ethene Dimer'
-TAGL['%s-%s-monoA-CP'   % (dbse,  9)] =      'Ethene from Ethene Dimer'
-TAGL['%s-%s-monoB-CP'   % (dbse,  9)] =      'Ethene from Ethene Dimer'
-TAGL['%s-%s-monoA-unCP' % (dbse,  9)] =      'Ethene from Ethene Dimer'
-TAGL['%s-%s-monoB-unCP' % (dbse,  9)] =      'Ethene from Ethene Dimer'
-TAGL['%s-%s'            % (dbse, 10)] = 'DD-3 Benzene-Methane Complex, C3'
-TAGL['%s-%s-dimer'      % (dbse, 10)] =      'Benzene-Methane Complex'
-TAGL['%s-%s-monoA-CP'   % (dbse, 10)] =      'Benzene from Benzene-Methane Complex'
-TAGL['%s-%s-monoB-CP'   % (dbse, 10)] =      'Methane from Benzene-Methane Complex'
-TAGL['%s-%s-monoA-unCP' % (dbse, 10)] =      'Benzene from Benzene-Methane Complex'
-TAGL['%s-%s-monoB-unCP' % (dbse, 10)] =      'Methane from Benzene-Methane Complex'
-TAGL['%s-%s'            % (dbse, 11)] = 'DD-4 Benzene Dimer Parallel-Disp, C2H'
-TAGL['%s-%s-dimer'      % (dbse, 11)] =      'Benzene Dimer PD'
-TAGL['%s-%s-monoA-CP'   % (dbse, 11)] =      'Benzene from Benzene Dimer PD'
-TAGL['%s-%s-monoB-CP'   % (dbse, 11)] =      'Benzene from Benzene Dimer PD'
-TAGL['%s-%s-monoA-unCP' % (dbse, 11)] =      'Benzene from Benzene Dimer PD'
-TAGL['%s-%s-monoB-unCP' % (dbse, 11)] =      'Benzene from Benzene Dimer PD'
-TAGL['%s-%s'            % (dbse, 12)] = 'DD-6 Pyrazine Dimer, CS'
-TAGL['%s-%s-dimer'      % (dbse, 12)] =      'Pyrazine Dimer'
-TAGL['%s-%s-monoA-CP'   % (dbse, 12)] =      'Pyrazine from Pyrazine Dimer'
-TAGL['%s-%s-monoB-CP'   % (dbse, 12)] =      'Pyrazine from Pyrazine Dimer'
-TAGL['%s-%s-monoA-unCP' % (dbse, 12)] =      'Pyrazine from Pyrazine Dimer'
-TAGL['%s-%s-monoB-unCP' % (dbse, 12)] =      'Pyrazine from Pyrazine Dimer'
-TAGL['%s-%s'            % (dbse, 13)] = 'MX-5 Uracil Dimer Stack, C2'
-TAGL['%s-%s-dimer'      % (dbse, 13)] =      'Uracil Dimer Stack'
-TAGL['%s-%s-monoA-CP'   % (dbse, 13)] =      'Uracil from Uracil Dimer Stack'
-TAGL['%s-%s-monoB-CP'   % (dbse, 13)] =      'Uracil from Uracil Dimer Stack'
-TAGL['%s-%s-monoA-unCP' % (dbse, 13)] =      'Uracil from Uracil Dimer Stack'
-TAGL['%s-%s-monoB-unCP' % (dbse, 13)] =      'Uracil from Uracil Dimer Stack'
-TAGL['%s-%s'            % (dbse, 14)] = 'DD-7 Indole-Benzene Complex Stack, C1'
-TAGL['%s-%s-dimer'      % (dbse, 14)] =      'Indole-Benzene Complex Stack'
-TAGL['%s-%s-monoA-CP'   % (dbse, 14)] =      'Benzene from Indole-Benzene Complex Stack'
-TAGL['%s-%s-monoB-CP'   % (dbse, 14)] =      'Indole from Indole-Benzene Complex Stack'
-TAGL['%s-%s-monoA-unCP' % (dbse, 14)] =      'Benzene from Indole-Benzene Complex Stack'
-TAGL['%s-%s-monoB-unCP' % (dbse, 14)] =      'Indole from Indole-Benzene Complex Stack'
-TAGL['%s-%s'            % (dbse, 15)] = 'MX-8 Adenine-Thymine Complex Stack, C1'
-TAGL['%s-%s-dimer'      % (dbse, 15)] =      'Adenine-Thymine Complex Stack'
-TAGL['%s-%s-monoA-CP'   % (dbse, 15)] =      'Adenine from Adenine-Thymine Complex Stack'
-TAGL['%s-%s-monoB-CP'   % (dbse, 15)] =      'Thymine from Adenine-Thymine Complex Stack'
-TAGL['%s-%s-monoA-unCP' % (dbse, 15)] =      'Adenine from Adenine-Thymine Complex Stack'
-TAGL['%s-%s-monoB-unCP' % (dbse, 15)] =      'Thymine from Adenine-Thymine Complex Stack'
-TAGL['%s-%s'            % (dbse, 16)] = 'MX-1 Ethene-Ethine Complex, C2V'
-TAGL['%s-%s-dimer'      % (dbse, 16)] =      'Ethene-Ethine Complex'
-TAGL['%s-%s-monoA-CP'   % (dbse, 16)] =      'Ethene from Ethene-Ethine Complex'
-TAGL['%s-%s-monoB-CP'   % (dbse, 16)] =      'Ethine from Ethene-Ethine Complex'
-TAGL['%s-%s-monoA-unCP' % (dbse, 16)] =      'Ethene from Ethene-Ethine Complex'
-TAGL['%s-%s-monoB-unCP' % (dbse, 16)] =      'Ethine from Ethene-Ethine Complex'
-TAGL['%s-%s'            % (dbse, 17)] = 'MX-2 Benzene-Water Complex, CS'
-TAGL['%s-%s-dimer'      % (dbse, 17)] =      'Benzene-Water Complex'
-TAGL['%s-%s-monoA-CP'   % (dbse, 17)] =      'Benzene from Benzene-Water Complex'
-TAGL['%s-%s-monoB-CP'   % (dbse, 17)] =      'Water from Benzene-Water Complex'
-TAGL['%s-%s-monoA-unCP' % (dbse, 17)] =      'Benzene from Benzene-Water Complex'
-TAGL['%s-%s-monoB-unCP' % (dbse, 17)] =      'Water from Benzene-Water Complex'
-TAGL['%s-%s'            % (dbse, 18)] = 'MX-3 Benzene-Ammonia Complex, CS'
-TAGL['%s-%s-dimer'      % (dbse, 18)] =      'Benzene-Ammonia Complex'
-TAGL['%s-%s-monoA-CP'   % (dbse, 18)] =      'Benzene from Benzene-Ammonia Complex'
-TAGL['%s-%s-monoB-CP'   % (dbse, 18)] =      'Ammonia from Benzene-Ammonia Complex'
-TAGL['%s-%s-monoA-unCP' % (dbse, 18)] =      'Benzene from Benzene-Ammonia Complex'
-TAGL['%s-%s-monoB-unCP' % (dbse, 18)] =      'Ammonia from Benzene-Ammonia Complex'
-TAGL['%s-%s'            % (dbse, 19)] = 'MX-4 Benzene-HCN Complex, CS'
-TAGL['%s-%s-dimer'      % (dbse, 19)] =      'Benzene-HCN Complex'
-TAGL['%s-%s-monoA-CP'   % (dbse, 19)] =      'Benzene from Benzene-HCN Complex'
-TAGL['%s-%s-monoB-CP'   % (dbse, 19)] =      'HCN from Benzene-HCN Complex'
-TAGL['%s-%s-monoA-unCP' % (dbse, 19)] =      'Benzene from Benzene-HCN Complex'
-TAGL['%s-%s-monoB-unCP' % (dbse, 19)] =      'HCN from Benzene-HCN Complex'
-TAGL['%s-%s'            % (dbse, 20)] = 'DD-5 Benzene Dimer T-Shape, C2V'
-TAGL['%s-%s-dimer'      % (dbse, 20)] =      'Benzene Dimer T-Shape'
-TAGL['%s-%s-monoA-CP'   % (dbse, 20)] =      'Benzene from Benzene Dimer T-Shape'
-TAGL['%s-%s-monoB-CP'   % (dbse, 20)] =      'Benzene from Benzene Dimer T-Shape'
-TAGL['%s-%s-monoA-unCP' % (dbse, 20)] =      'Benzene from Benzene Dimer T-Shape'
-TAGL['%s-%s-monoB-unCP' % (dbse, 20)] =      'Benzene from Benzene Dimer T-Shape'
-TAGL['%s-%s'            % (dbse, 21)] = 'MX-6 Indole-Benzene Complex T-Shape, C1'
-TAGL['%s-%s-dimer'      % (dbse, 21)] =      'Indole-Benzene Complex T-Shape'
-TAGL['%s-%s-monoA-CP'   % (dbse, 21)] =      'Benzene from Indole-Benzene Complex T-Shape'
-TAGL['%s-%s-monoB-CP'   % (dbse, 21)] =      'Indole from Indole-Benzene Complex T-Shape'
-TAGL['%s-%s-monoA-unCP' % (dbse, 21)] =      'Benzene from Indole-Benzene Complex T-Shape'
-TAGL['%s-%s-monoB-unCP' % (dbse, 21)] =      'Indole from Indole-Benzene Complex T-Shape'
-TAGL['%s-%s'            % (dbse, 22)] = 'MX-7 Phenol Dimer, C1'
-TAGL['%s-%s-dimer'      % (dbse, 22)] =      'Phenol Dimer'
-TAGL['%s-%s-monoA-CP'   % (dbse, 22)] =      'Phenol from Phenol Dimer'
-TAGL['%s-%s-monoB-CP'   % (dbse, 22)] =      'Phenol from Phenol Dimer'
-TAGL['%s-%s-monoA-unCP' % (dbse, 22)] =      'Phenol from Phenol Dimer'
-TAGL['%s-%s-monoB-unCP' % (dbse, 22)] =      'Phenol from Phenol Dimer'
+TAGL['%s-%s' % (dbse, 1)] = 'HB-1 Ammonia Dimer, C2H'
+TAGL['%s-%s-dimer' % (dbse, 1)] = 'Ammonia Dimer'
+TAGL['%s-%s-monoA-CP' % (dbse, 1)] = 'Ammonia from Ammonia Dimer'
+TAGL['%s-%s-monoB-CP' % (dbse, 1)] = 'Ammonia from Ammonia Dimer'
+TAGL['%s-%s-monoA-unCP' % (dbse, 1)] = 'Ammonia from Ammonia Dimer'
+TAGL['%s-%s-monoB-unCP' % (dbse, 1)] = 'Ammonia from Ammonia Dimer'
+TAGL['%s-%s' % (dbse, 2)] = 'HB-2 Water Dimer, CS'
+TAGL['%s-%s-dimer' % (dbse, 2)] = 'Water Dimer'
+TAGL['%s-%s-monoA-CP' % (dbse, 2)] = 'Water from Water Dimer'
+TAGL['%s-%s-monoB-CP' % (dbse, 2)] = 'Water from Water Dimer'
+TAGL['%s-%s-monoA-unCP' % (dbse, 2)] = 'Water from Water Dimer'
+TAGL['%s-%s-monoB-unCP' % (dbse, 2)] = 'Water from Water Dimer'
+TAGL['%s-%s' % (dbse, 3)] = 'HB-3 Formic Acid Dimer, C2H'
+TAGL['%s-%s-dimer' % (dbse, 3)] = 'Formic Acid Dimer'
+TAGL['%s-%s-monoA-CP' % (dbse, 3)] = 'Formic Acid from Formic Acid Dimer'
+TAGL['%s-%s-monoB-CP' % (dbse, 3)] = 'Formic Acid from Formic Acid Dimer'
+TAGL['%s-%s-monoA-unCP' % (dbse, 3)] = 'Formic Acid from Formic Acid Dimer'
+TAGL['%s-%s-monoB-unCP' % (dbse, 3)] = 'Formic Acid from Formic Acid Dimer'
+TAGL['%s-%s' % (dbse, 4)] = 'HB-4 Formamide Dimer, C2H'
+TAGL['%s-%s-dimer' % (dbse, 4)] = 'Formamide Dimer'
+TAGL['%s-%s-monoA-CP' % (dbse, 4)] = 'Formamide from Formamide Dimer'
+TAGL['%s-%s-monoB-CP' % (dbse, 4)] = 'Formamide from Formamide Dimer'
+TAGL['%s-%s-monoA-unCP' % (dbse, 4)] = 'Formamide from Formamide Dimer'
+TAGL['%s-%s-monoB-unCP' % (dbse, 4)] = 'Formamide from Formamide Dimer'
+TAGL['%s-%s' % (dbse, 5)] = 'HB-5 Uracil Dimer HB, C2H'
+TAGL['%s-%s-dimer' % (dbse, 5)] = 'Uracil Dimer HB'
+TAGL['%s-%s-monoA-CP' % (dbse, 5)] = 'Uracil from Uracil Dimer HB'
+TAGL['%s-%s-monoB-CP' % (dbse, 5)] = 'Uracil from Uracil Dimer HB'
+TAGL['%s-%s-monoA-unCP' % (dbse, 5)] = 'Uracil from Uracil Dimer HB'
+TAGL['%s-%s-monoB-unCP' % (dbse, 5)] = 'Uracil from Uracil Dimer HB'
+TAGL['%s-%s' % (dbse, 6)] = 'HB-6 2-Pyridone-2-Aminopyridine Complex, C1'
+TAGL['%s-%s-dimer' % (dbse, 6)] = '2-Pyridone-2-Aminopyridine Complex'
+TAGL['%s-%s-monoA-CP' % (dbse, 6)] = '2-Pyridone from 2-Pyridone-2-Aminopyridine Complex'
+TAGL['%s-%s-monoB-CP' % (dbse, 6)] = '2-Aminopyridine from 2-Pyridone-2-Aminopyridine Complex'
+TAGL['%s-%s-monoA-unCP' % (dbse, 6)] = '2-Pyridone from 2-Pyridone-2-Aminopyridine Complex'
+TAGL['%s-%s-monoB-unCP' % (dbse, 6)] = '2-Aminopyridine from 2-Pyridone-2-Aminopyridine Complex'
+TAGL['%s-%s' % (dbse, 7)] = 'HB-7 Adenine-Thymine Complex WC, C1'
+TAGL['%s-%s-dimer' % (dbse, 7)] = 'Adenine-Thymine Complex WC'
+TAGL['%s-%s-monoA-CP' % (dbse, 7)] = 'Adenine from Adenine-Thymine Complex WC'
+TAGL['%s-%s-monoB-CP' % (dbse, 7)] = 'Thymine from Adenine-Thymine Complex WC'
+TAGL['%s-%s-monoA-unCP' % (dbse, 7)] = 'Adenine from Adenine-Thymine Complex WC'
+TAGL['%s-%s-monoB-unCP' % (dbse, 7)] = 'Thymine from Adenine-Thymine Complex WC'
+TAGL['%s-%s' % (dbse, 8)] = 'DD-1 Methane Dimer, D3D'
+TAGL['%s-%s-dimer' % (dbse, 8)] = 'Methane Dimer'
+TAGL['%s-%s-monoA-CP' % (dbse, 8)] = 'Methane from Methane Dimer'
+TAGL['%s-%s-monoB-CP' % (dbse, 8)] = 'Methane from Methane Dimer'
+TAGL['%s-%s-monoA-unCP' % (dbse, 8)] = 'Methane from Methane Dimer'
+TAGL['%s-%s-monoB-unCP' % (dbse, 8)] = 'Methane from Methane Dimer'
+TAGL['%s-%s' % (dbse, 9)] = 'DD-2 Ethene Dimer, D2D'
+TAGL['%s-%s-dimer' % (dbse, 9)] = 'Ethene Dimer'
+TAGL['%s-%s-monoA-CP' % (dbse, 9)] = 'Ethene from Ethene Dimer'
+TAGL['%s-%s-monoB-CP' % (dbse, 9)] = 'Ethene from Ethene Dimer'
+TAGL['%s-%s-monoA-unCP' % (dbse, 9)] = 'Ethene from Ethene Dimer'
+TAGL['%s-%s-monoB-unCP' % (dbse, 9)] = 'Ethene from Ethene Dimer'
+TAGL['%s-%s' % (dbse, 10)] = 'DD-3 Benzene-Methane Complex, C3'
+TAGL['%s-%s-dimer' % (dbse, 10)] = 'Benzene-Methane Complex'
+TAGL['%s-%s-monoA-CP' % (dbse, 10)] = 'Benzene from Benzene-Methane Complex'
+TAGL['%s-%s-monoB-CP' % (dbse, 10)] = 'Methane from Benzene-Methane Complex'
+TAGL['%s-%s-monoA-unCP' % (dbse, 10)] = 'Benzene from Benzene-Methane Complex'
+TAGL['%s-%s-monoB-unCP' % (dbse, 10)] = 'Methane from Benzene-Methane Complex'
+TAGL['%s-%s' % (dbse, 11)] = 'DD-4 Benzene Dimer Parallel-Disp, C2H'
+TAGL['%s-%s-dimer' % (dbse, 11)] = 'Benzene Dimer PD'
+TAGL['%s-%s-monoA-CP' % (dbse, 11)] = 'Benzene from Benzene Dimer PD'
+TAGL['%s-%s-monoB-CP' % (dbse, 11)] = 'Benzene from Benzene Dimer PD'
+TAGL['%s-%s-monoA-unCP' % (dbse, 11)] = 'Benzene from Benzene Dimer PD'
+TAGL['%s-%s-monoB-unCP' % (dbse, 11)] = 'Benzene from Benzene Dimer PD'
+TAGL['%s-%s' % (dbse, 12)] = 'DD-6 Pyrazine Dimer, CS'
+TAGL['%s-%s-dimer' % (dbse, 12)] = 'Pyrazine Dimer'
+TAGL['%s-%s-monoA-CP' % (dbse, 12)] = 'Pyrazine from Pyrazine Dimer'
+TAGL['%s-%s-monoB-CP' % (dbse, 12)] = 'Pyrazine from Pyrazine Dimer'
+TAGL['%s-%s-monoA-unCP' % (dbse, 12)] = 'Pyrazine from Pyrazine Dimer'
+TAGL['%s-%s-monoB-unCP' % (dbse, 12)] = 'Pyrazine from Pyrazine Dimer'
+TAGL['%s-%s' % (dbse, 13)] = 'MX-5 Uracil Dimer Stack, C2'
+TAGL['%s-%s-dimer' % (dbse, 13)] = 'Uracil Dimer Stack'
+TAGL['%s-%s-monoA-CP' % (dbse, 13)] = 'Uracil from Uracil Dimer Stack'
+TAGL['%s-%s-monoB-CP' % (dbse, 13)] = 'Uracil from Uracil Dimer Stack'
+TAGL['%s-%s-monoA-unCP' % (dbse, 13)] = 'Uracil from Uracil Dimer Stack'
+TAGL['%s-%s-monoB-unCP' % (dbse, 13)] = 'Uracil from Uracil Dimer Stack'
+TAGL['%s-%s' % (dbse, 14)] = 'DD-7 Indole-Benzene Complex Stack, C1'
+TAGL['%s-%s-dimer' % (dbse, 14)] = 'Indole-Benzene Complex Stack'
+TAGL['%s-%s-monoA-CP' % (dbse, 14)] = 'Benzene from Indole-Benzene Complex Stack'
+TAGL['%s-%s-monoB-CP' % (dbse, 14)] = 'Indole from Indole-Benzene Complex Stack'
+TAGL['%s-%s-monoA-unCP' % (dbse, 14)] = 'Benzene from Indole-Benzene Complex Stack'
+TAGL['%s-%s-monoB-unCP' % (dbse, 14)] = 'Indole from Indole-Benzene Complex Stack'
+TAGL['%s-%s' % (dbse, 15)] = 'MX-8 Adenine-Thymine Complex Stack, C1'
+TAGL['%s-%s-dimer' % (dbse, 15)] = 'Adenine-Thymine Complex Stack'
+TAGL['%s-%s-monoA-CP' % (dbse, 15)] = 'Adenine from Adenine-Thymine Complex Stack'
+TAGL['%s-%s-monoB-CP' % (dbse, 15)] = 'Thymine from Adenine-Thymine Complex Stack'
+TAGL['%s-%s-monoA-unCP' % (dbse, 15)] = 'Adenine from Adenine-Thymine Complex Stack'
+TAGL['%s-%s-monoB-unCP' % (dbse, 15)] = 'Thymine from Adenine-Thymine Complex Stack'
+TAGL['%s-%s' % (dbse, 16)] = 'MX-1 Ethene-Ethine Complex, C2V'
+TAGL['%s-%s-dimer' % (dbse, 16)] = 'Ethene-Ethine Complex'
+TAGL['%s-%s-monoA-CP' % (dbse, 16)] = 'Ethene from Ethene-Ethine Complex'
+TAGL['%s-%s-monoB-CP' % (dbse, 16)] = 'Ethine from Ethene-Ethine Complex'
+TAGL['%s-%s-monoA-unCP' % (dbse, 16)] = 'Ethene from Ethene-Ethine Complex'
+TAGL['%s-%s-monoB-unCP' % (dbse, 16)] = 'Ethine from Ethene-Ethine Complex'
+TAGL['%s-%s' % (dbse, 17)] = 'MX-2 Benzene-Water Complex, CS'
+TAGL['%s-%s-dimer' % (dbse, 17)] = 'Benzene-Water Complex'
+TAGL['%s-%s-monoA-CP' % (dbse, 17)] = 'Benzene from Benzene-Water Complex'
+TAGL['%s-%s-monoB-CP' % (dbse, 17)] = 'Water from Benzene-Water Complex'
+TAGL['%s-%s-monoA-unCP' % (dbse, 17)] = 'Benzene from Benzene-Water Complex'
+TAGL['%s-%s-monoB-unCP' % (dbse, 17)] = 'Water from Benzene-Water Complex'
+TAGL['%s-%s' % (dbse, 18)] = 'MX-3 Benzene-Ammonia Complex, CS'
+TAGL['%s-%s-dimer' % (dbse, 18)] = 'Benzene-Ammonia Complex'
+TAGL['%s-%s-monoA-CP' % (dbse, 18)] = 'Benzene from Benzene-Ammonia Complex'
+TAGL['%s-%s-monoB-CP' % (dbse, 18)] = 'Ammonia from Benzene-Ammonia Complex'
+TAGL['%s-%s-monoA-unCP' % (dbse, 18)] = 'Benzene from Benzene-Ammonia Complex'
+TAGL['%s-%s-monoB-unCP' % (dbse, 18)] = 'Ammonia from Benzene-Ammonia Complex'
+TAGL['%s-%s' % (dbse, 19)] = 'MX-4 Benzene-HCN Complex, CS'
+TAGL['%s-%s-dimer' % (dbse, 19)] = 'Benzene-HCN Complex'
+TAGL['%s-%s-monoA-CP' % (dbse, 19)] = 'Benzene from Benzene-HCN Complex'
+TAGL['%s-%s-monoB-CP' % (dbse, 19)] = 'HCN from Benzene-HCN Complex'
+TAGL['%s-%s-monoA-unCP' % (dbse, 19)] = 'Benzene from Benzene-HCN Complex'
+TAGL['%s-%s-monoB-unCP' % (dbse, 19)] = 'HCN from Benzene-HCN Complex'
+TAGL['%s-%s' % (dbse, 20)] = 'DD-5 Benzene Dimer T-Shape, C2V'
+TAGL['%s-%s-dimer' % (dbse, 20)] = 'Benzene Dimer T-Shape'
+TAGL['%s-%s-monoA-CP' % (dbse, 20)] = 'Benzene from Benzene Dimer T-Shape'
+TAGL['%s-%s-monoB-CP' % (dbse, 20)] = 'Benzene from Benzene Dimer T-Shape'
+TAGL['%s-%s-monoA-unCP' % (dbse, 20)] = 'Benzene from Benzene Dimer T-Shape'
+TAGL['%s-%s-monoB-unCP' % (dbse, 20)] = 'Benzene from Benzene Dimer T-Shape'
+TAGL['%s-%s' % (dbse, 21)] = 'MX-6 Indole-Benzene Complex T-Shape, C1'
+TAGL['%s-%s-dimer' % (dbse, 21)] = 'Indole-Benzene Complex T-Shape'
+TAGL['%s-%s-monoA-CP' % (dbse, 21)] = 'Benzene from Indole-Benzene Complex T-Shape'
+TAGL['%s-%s-monoB-CP' % (dbse, 21)] = 'Indole from Indole-Benzene Complex T-Shape'
+TAGL['%s-%s-monoA-unCP' % (dbse, 21)] = 'Benzene from Indole-Benzene Complex T-Shape'
+TAGL['%s-%s-monoB-unCP' % (dbse, 21)] = 'Indole from Indole-Benzene Complex T-Shape'
+TAGL['%s-%s' % (dbse, 22)] = 'MX-7 Phenol Dimer, C1'
+TAGL['%s-%s-dimer' % (dbse, 22)] = 'Phenol Dimer'
+TAGL['%s-%s-monoA-CP' % (dbse, 22)] = 'Phenol from Phenol Dimer'
+TAGL['%s-%s-monoB-CP' % (dbse, 22)] = 'Phenol from Phenol Dimer'
+TAGL['%s-%s-monoA-unCP' % (dbse, 22)] = 'Phenol from Phenol Dimer'
+TAGL['%s-%s-monoB-unCP' % (dbse, 22)] = 'Phenol from Phenol Dimer'
 
 # <<< Geometry Specification Strings >>>
 GEOS = {}
@@ -878,8 +883,8 @@ units angstrom
 for rxn in HRXN:
     GEOS['%s-%s-monoA-unCP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(1)
     GEOS['%s-%s-monoB-unCP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(2)
-    GEOS['%s-%s-monoA-CP'   % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(1, 2)
-    GEOS['%s-%s-monoB-CP'   % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(2, 1)
+    GEOS['%s-%s-monoA-CP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(1, 2)
+    GEOS['%s-%s-monoB-CP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(2, 1)
 
 #########################################################################
 

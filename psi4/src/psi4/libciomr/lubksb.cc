@@ -51,4 +51,4 @@ void lubksb(double** a, int n, int* indx, double* b) {
         b[i] = sum / a[i][i];
     }
 }
-}
+}  // namespace psi

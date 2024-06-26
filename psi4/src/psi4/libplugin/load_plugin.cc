@@ -98,4 +98,4 @@ plugin_info plugin_load(std::string& plugin_path) {
 }
 
 #endif
-}
+}  // namespace psi

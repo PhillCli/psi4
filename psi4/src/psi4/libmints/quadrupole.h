@@ -43,7 +43,6 @@ class Molecule;
  *  Use an IntegralFactory to create this object.
  */
 class QuadrupoleInt : public OneBodyAOInt {
-
    public:
     QuadrupoleInt(std::vector<SphericalTransform> &, std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>);
     ~QuadrupoleInt() override;

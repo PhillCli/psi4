@@ -140,10 +140,7 @@ def get_psifile(fileno: int, pidspace: str = str(os.getpid())) -> str:
     return targetfile
 
 
-def format_molecule_for_input(
-    mol: Union[str, core.Molecule],
-    name: str = '',
-    forcexyz: bool = False) -> str:
+def format_molecule_for_input(mol: Union[str, core.Molecule], name: str = '', forcexyz: bool = False) -> str:
     """Old function for input string from molecule.
 
     Function to return a string of the output of
@@ -372,9 +369,10 @@ def hold_options_state() -> Iterator[None]:
     and restore the collected keywords state when exiting the with-statement.
 
     """
-    pofm = prepare_options_for_modules(
-        changedOnly=True, commandsInsteadDict=False, globalsOnly=False, stateInsteadMediated=True
-    )
+    pofm = prepare_options_for_modules(changedOnly=True,
+                                       commandsInsteadDict=False,
+                                       globalsOnly=False,
+                                       stateInsteadMediated=True)
     yield
     _reset_pe_options(pofm)
 
@@ -415,10 +413,10 @@ def _reset_pe_options(pofm: Dict):
 
 
 def prepare_options_for_modules(
-    changedOnly: bool = False,
-    commandsInsteadDict: bool = False,
-    globalsOnly: bool = False,
-    stateInsteadMediated: bool = False,
+        changedOnly: bool = False,
+        commandsInsteadDict: bool = False,
+        globalsOnly: bool = False,
+        stateInsteadMediated: bool = False,
 ) -> Union[Dict, str]:
     """Capture current state of :py:class:`psi4.core.Options` information.
 
@@ -563,13 +561,12 @@ def prepare_options_for_set_options() -> Dict[str, Any]:
     return flat_options
 
 
-def state_to_atomicinput(
-    *,
-    driver: str,
-    method: str,
-    basis: Optional[str] = None,
-    molecule: Optional[core.Molecule] = None,
-    function_kwargs: Optional[Dict[str, Any]] = None) -> AtomicInput:
+def state_to_atomicinput(*,
+                         driver: str,
+                         method: str,
+                         basis: Optional[str] = None,
+                         molecule: Optional[core.Molecule] = None,
+                         function_kwargs: Optional[Dict[str, Any]] = None) -> AtomicInput:
     """Form a QCSchema for job input from the current state of |PSIfour| settings.
 
     Parameters
@@ -604,7 +601,7 @@ def state_to_atomicinput(
     basis = basis or kw_basis
 
     resi = AtomicInput(
-         **{
+        **{
             "driver": driver,
             "extras": {
                 "wfn_qcvars_only": True,
@@ -616,7 +613,7 @@ def state_to_atomicinput(
             "keywords": keywords,
             "molecule": molecule.to_schema(dtype=2),
             "provenance": provenance_stamp(__name__),
-         })
+        })
 
     return resi
 
@@ -651,9 +648,7 @@ def mat2arr(mat: core.Matrix) -> List[List[float]]:
     return arr
 
 
-def expand_psivars(
-    pvdefs: Dict[str, Dict[str, Union[List[str], Callable]]],
-    verbose: Optional[int] = None):
+def expand_psivars(pvdefs: Dict[str, Dict[str, Union[List[str], Callable]]], verbose: Optional[int] = None):
     """From rules on building QCVariables from others, set new variables to
     P::e if all the contributors are available.
 

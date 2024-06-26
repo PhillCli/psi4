@@ -52,8 +52,8 @@ int DPD::file2_mat_rd(dpdfile2 *File) {
         coltot = File->params->coltot[h ^ my_irrep];
 
         if (rowtot && coltot)
-            psio_read(File->filenum, File->label, (char *)File->matrix[h][0], static_cast<size_t>(rowtot) * coltot * sizeof(double),
-                      irrep_ptr, &next_address);
+            psio_read(File->filenum, File->label, (char *)File->matrix[h][0],
+                      static_cast<size_t>(rowtot) * coltot * sizeof(double), irrep_ptr, &next_address);
     }
 
     return 0;

@@ -42,6 +42,7 @@ __all__ = [
     "compare_moldenfiles",
 ]
 
+
 def _consume_fchk_section(input_list, index):
     """compare a float or integer matrix section"""
 
@@ -150,11 +151,10 @@ def compare_fchkfiles(expected: str, computed: str, atol_exponent: Union[int, fl
     return compare_integers(True, all(tests), label)
 
 
-def compare_moldenfiles(
-    expected: str,
-    computed: str,
-    atol_exponent: Union[int, float] = 1.e-7,
-    label: str = "Compare Molden"):
+def compare_moldenfiles(expected: str,
+                        computed: str,
+                        atol_exponent: Union[int, float] = 1.e-7,
+                        label: str = "Compare Molden"):
     """Comparison function for output data in Molden file format.
     Compares many fields including geometry, basis set, occupations, symmetries, energies.
 
@@ -177,6 +177,7 @@ def compare_moldenfiles(
         Label for passed and error messages.
 
     """
+
     def moldenfile_to_string(fname):
         with open(fname, 'r') as fn:
             molden_string = fn.read()
@@ -208,12 +209,14 @@ def compare_moldenfiles(
         if geom_re.match(line):
             c1, c2, c3, c4, c5, c6 = geom_re.match(line).groups()
             r1, r2, r3, r4, r5, r6 = geom_re.match(line).groups()
-            test = compare_strings(r1, c1) and compare_integers(r2, c2) and compare_integers(r3, c3) and compare_values(r4, c4, high_accuracy) and compare_values(r5, c5, high_accuracy) and compare_values(r6, c6, high_accuracy)
+            test = compare_strings(r1, c1) and compare_integers(
+                r2, c2) and compare_integers(r3, c3) and compare_values(r4, c4, high_accuracy) and compare_values(
+                    r5, c5, high_accuracy) and compare_values(r6, c6, high_accuracy)
 
         elif basis_header_re.match(line):
             c1, c2, c3 = basis_header_re.match(line).groups()
             r1, r2, r3 = basis_header_re.match(ref[i]).groups()
-            test = compare_strings(r1,c1) and compare_integers(r2,c2) and compare_values(r3,c3,3)
+            test = compare_strings(r1, c1) and compare_integers(r2, c2) and compare_values(r3, c3, 3)
 
         elif s1_re.match(line):
             c1, c2 = s1_re.match(line).groups()
@@ -243,7 +246,8 @@ def compare_moldenfiles(
         elif s2_re.match(line):
             c1, c2 = s2_re.match(line).groups()
             r1, r2 = s2_re.match(line).groups()
-            test = compare_integers(r1, c1, f'int value: {line}') and compare_values(r2, c2, high_accuracy, f'float value: {line}')
+            test = compare_integers(r1, c1, f'int value: {line}') and compare_values(
+                r2, c2, high_accuracy, f'float value: {line}')
 
         else:
             test = compare_strings(line, ref[i])

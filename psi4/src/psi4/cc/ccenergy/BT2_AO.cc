@@ -442,7 +442,7 @@ void CCEnergyWavefunction::BT2_AO() {
         global_dpd_->buf4_close(&t2);
         global_dpd_->buf4_close(&tau2_AO);
 
-    }                            /** ROHF **/
+    } /** ROHF **/
     else if (params_.ref == 2) { /** UHF **/
 
         /************************************* AA *****************************************/

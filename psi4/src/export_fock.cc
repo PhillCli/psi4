@@ -68,11 +68,12 @@ void export_fock(py::module &m) {
         .def("set_do_wK", &JK::set_do_wK)
         .def("set_omega", &JK::set_omega, "Dampening term for range separated DFT", "omega"_a)
         .def("get_omega", &JK::get_omega, "Dampening term for range separated DFT")
-        .def("set_wcombine", &JK::set_wcombine, "Are Exchange terms in one Matrix", "wcombine"_a )
+        .def("set_wcombine", &JK::set_wcombine, "Are Exchange terms in one Matrix", "wcombine"_a)
         .def("get_wcombine", &JK::get_wcombine, "Are Exchange terms in one Matrix", "wcombine")
         .def("set_omega_alpha", &JK::set_omega_alpha, "Weight for HF exchange term in range-separated DFT", "alpha"_a)
         .def("get_omega_alpha", &JK::get_omega_alpha, "Weight for HF exchange term in range-separated DFT")
-        .def("set_omega_beta", &JK::set_omega_beta, "Weight for dampened exchange term in range-separated DFT", "beta"_a)
+        .def("set_omega_beta", &JK::set_omega_beta, "Weight for dampened exchange term in range-separated DFT",
+             "beta"_a)
         .def("get_omega_beta", &JK::get_omega_beta, "Weight for dampened exchange term in range-separated DFT")
         .def("compute", &JK::compute)
         .def("finalize", &JK::finalize)
@@ -92,19 +93,31 @@ void export_fock(py::module &m) {
         .def("K", &JK::K, py::return_value_policy::reference_internal)
         .def("wK", &JK::wK, py::return_value_policy::reference_internal)
         .def("D", &JK::D, py::return_value_policy::reference_internal)
-        .def("computed_shells_per_iter", py::overload_cast<>(&JK::computed_shells_per_iter), "Array containing the number of ERI shell n-lets (triplets, quartets) computed (not screened out) during each compute call.")
-        .def("computed_shells_per_iter", py::overload_cast<const std::string&>(&JK::computed_shells_per_iter), "Array containing the number of ERI shell n-lets (triplets, quartets) computed (not screened out) during each compute call.")
+        .def("computed_shells_per_iter", py::overload_cast<>(&JK::computed_shells_per_iter),
+             "Array containing the number of ERI shell n-lets (triplets, quartets) computed (not screened out) during "
+             "each compute call.")
+        .def("computed_shells_per_iter", py::overload_cast<const std::string &>(&JK::computed_shells_per_iter),
+             "Array containing the number of ERI shell n-lets (triplets, quartets) computed (not screened out) during "
+             "each compute call.")
         .def("print_header", &JK::print_header, "docstring");
 
-    py::class_<LaplaceDenominator, std::shared_ptr<LaplaceDenominator>>(m, "LaplaceDenominator", "Computer class for a Laplace factorization of the four-index energy denominator in MP2 and coupled-cluster")
+    py::class_<LaplaceDenominator, std::shared_ptr<LaplaceDenominator>>(
+        m, "LaplaceDenominator",
+        "Computer class for a Laplace factorization of the four-index energy denominator in MP2 and coupled-cluster")
         .def(py::init<std::shared_ptr<Vector>, std::shared_ptr<Vector>, double>())
-        .def("denominator_occ", &LaplaceDenominator::denominator_occ, "Returns the occupied orbital Laplace weights of the factorized doubles denominator (nweights * nocc)")
-        .def("denominator_vir", &LaplaceDenominator::denominator_vir, "Returns the virtual orbital Laplace weights of the factorized doubles denominator (nweights * nvirt)");
+        .def("denominator_occ", &LaplaceDenominator::denominator_occ,
+             "Returns the occupied orbital Laplace weights of the factorized doubles denominator (nweights * nocc)")
+        .def("denominator_vir", &LaplaceDenominator::denominator_vir,
+             "Returns the virtual orbital Laplace weights of the factorized doubles denominator (nweights * nvirt)");
 
-    py::class_<TLaplaceDenominator, std::shared_ptr<TLaplaceDenominator>>(m, "TLaplaceDenominator", "Computer class for a Laplace factorization of the six-index energy denominator in coupled-cluster theory")
+    py::class_<TLaplaceDenominator, std::shared_ptr<TLaplaceDenominator>>(
+        m, "TLaplaceDenominator",
+        "Computer class for a Laplace factorization of the six-index energy denominator in coupled-cluster theory")
         .def(py::init<std::shared_ptr<Vector>, std::shared_ptr<Vector>, double>())
-        .def("denominator_occ", &TLaplaceDenominator::denominator_occ, "Returns the occupied orbital Laplace weights of the factorized triples denominator (nweights * nocc)")
-        .def("denominator_vir", &TLaplaceDenominator::denominator_vir, "Returns the virtual orbital Laplace weights of the factorized triples denominator (nweights * nvirt)");
+        .def("denominator_occ", &TLaplaceDenominator::denominator_occ,
+             "Returns the occupied orbital Laplace weights of the factorized triples denominator (nweights * nocc)")
+        .def("denominator_vir", &TLaplaceDenominator::denominator_vir,
+             "Returns the virtual orbital Laplace weights of the factorized triples denominator (nweights * nvirt)");
 
     py::class_<DFTensor, std::shared_ptr<DFTensor>>(m, "DFTensor", "docstring")
         .def(py::init<std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>, std::shared_ptr<Matrix>, int, int>())
@@ -161,7 +174,7 @@ void export_fock(py::module &m) {
                                                      std::vector<size_t>);
 
     py::class_<DFHelper, std::shared_ptr<DFHelper>>(m, "DFHelper", "docstring")
-        .def(py::init<std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet> >())
+        .def(py::init<std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>>())
         .def("set_memory", &DFHelper::set_memory)
         .def("get_memory", &DFHelper::get_memory)
         .def("set_method", &DFHelper::set_method)
@@ -204,7 +217,9 @@ void export_fock(py::module &m) {
 
     py::class_<scf::SADGuess, std::shared_ptr<scf::SADGuess>>(m, "SADGuess", "docstring")
         .def_static("build_SAD",
-                    [](std::shared_ptr<BasisSet> basis, std::vector<std::shared_ptr<BasisSet>> atomic_bases) { return scf::SADGuess(basis, atomic_bases, Process::environment.options); })
+                    [](std::shared_ptr<BasisSet> basis, std::vector<std::shared_ptr<BasisSet>> atomic_bases) {
+                        return scf::SADGuess(basis, atomic_bases, Process::environment.options);
+                    })
         .def("compute_guess", &scf::SADGuess::compute_guess)
         .def("set_print", &scf::SADGuess::set_print)
         .def("set_debug", &scf::SADGuess::set_debug)

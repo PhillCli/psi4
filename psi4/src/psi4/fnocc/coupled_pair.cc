@@ -801,5 +801,5 @@ void CoupledPair::finalize() {
     free(I1p);
     free(diisvec);
 }
-}
-}  // end of namespaces
+}  // namespace fnocc
+}  // namespace psi

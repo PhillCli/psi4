@@ -100,11 +100,11 @@ void restart(double **alpha, int L, int num, int C_irr, int ortho, double **alph
     }
 #ifdef EOM_DEBUG
     outfile->Printf("alpha\n");
-    print_mat(alpha,L,L,"outfile");
+    print_mat(alpha, L, L, "outfile");
     outfile->Printf("alpha_old\n");
-    print_mat(alpha_old,L_old,L_old,"outfile");
+    print_mat(alpha_old, L_old, L_old, "outfile");
     outfile->Printf("alpha_tot\n");
-    print_mat(alpha_tot,L,L_tot,"outfile");
+    print_mat(alpha_tot, L, L_tot, "outfile");
 #endif
 
     /* Orthonormalize alpha[1] through alpha[num] */

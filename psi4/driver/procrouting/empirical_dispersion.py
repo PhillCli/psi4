@@ -51,7 +51,7 @@ _engine_can_do = collections.OrderedDict([
 ]) # yapf: disable
 
 
-def _capable_engines_for_disp()-> Dict[str, List[str]]:
+def _capable_engines_for_disp() -> Dict[str, List[str]]:
     """Invert _engine_can_do dictionary and check program detection.
 
     Returns a dictionary with keys all dispersion levels and values a list of all
@@ -163,7 +163,15 @@ class EmpiricalDispersion():
         Whether to request atomic pairwise analysis.
 
     """
-    def __init__(self, *, name_hint: str = None, level_hint: str = None, param_tweaks: Union[Dict, List] = None, engine: str = None, gcp_engine: str = None, save_pairwise_disp: bool = False):
+
+    def __init__(self,
+                 *,
+                 name_hint: str = None,
+                 level_hint: str = None,
+                 param_tweaks: Union[Dict, List] = None,
+                 engine: str = None,
+                 gcp_engine: str = None,
+                 save_pairwise_disp: bool = False):
         from .dft import dashcoeff_supplement
         self.dashcoeff_supplement = dashcoeff_supplement
         self.save_pairwise_disp = save_pairwise_disp
@@ -261,11 +269,13 @@ class EmpiricalDispersion():
                     'molecule': molecule.to_schema(dtype=2),
                     'provenance': p4util.provenance_stamp(__name__),
                 })
-            jobrec = qcng.compute(
-                resi,
-                self.engine,
-                raise_error=True,
-                task_config={"scratch_directory": core.IOManager.shared_object().get_default_path(), "ncores": core.get_num_threads()})
+            jobrec = qcng.compute(resi,
+                                  self.engine,
+                                  raise_error=True,
+                                  task_config={
+                                      "scratch_directory": core.IOManager.shared_object().get_default_path(),
+                                      "ncores": core.get_num_threads()
+                                  })
 
             dashd_part = float(jobrec.extras['qcvars']['DISPERSION CORRECTION ENERGY'])
             if wfn is not None:
@@ -279,11 +289,13 @@ class EmpiricalDispersion():
                                      jobrec.extras['qcvars']["2-BODY PAIRWISE DISPERSION CORRECTION ANALYSIS"])
 
             if self.fctldash in ['hf3c', 'pbeh3c', 'r2scan3c', 'b973c']:
-                jobrec = qcng.compute(
-                    resi,
-                    self.gcp_engine,
-                    raise_error=True,
-                    task_config={"scratch_directory": core.IOManager.shared_object().get_default_path(), "ncores": core.get_num_threads()})
+                jobrec = qcng.compute(resi,
+                                      self.gcp_engine,
+                                      raise_error=True,
+                                      task_config={
+                                          "scratch_directory": core.IOManager.shared_object().get_default_path(),
+                                          "ncores": core.get_num_threads()
+                                      })
                 gcp_part = jobrec.return_result
                 dashd_part += gcp_part
 
@@ -296,9 +308,7 @@ class EmpiricalDispersion():
                 core.set_variable(f"{self.fctldash} DISPERSION CORRECTION ENERGY", ene)
             return ene
 
-    def compute_gradient(self,
-                         molecule: core.Molecule,
-                         wfn: core.Wavefunction = None) -> core.Matrix:
+    def compute_gradient(self, molecule: core.Molecule, wfn: core.Wavefunction = None) -> core.Matrix:
         """Compute dispersion gradient based on engine, dispersion level, and parameters in `self`.
 
         Parameters
@@ -332,11 +342,13 @@ class EmpiricalDispersion():
                     'molecule': molecule.to_schema(dtype=2),
                     'provenance': p4util.provenance_stamp(__name__),
                 })
-            jobrec = qcng.compute(
-                resi,
-                self.engine,
-                raise_error=True,
-                task_config={"scratch_directory": core.IOManager.shared_object().get_default_path(), "ncores": core.get_num_threads()})
+            jobrec = qcng.compute(resi,
+                                  self.engine,
+                                  raise_error=True,
+                                  task_config={
+                                      "scratch_directory": core.IOManager.shared_object().get_default_path(),
+                                      "ncores": core.get_num_threads()
+                                  })
 
             dashd_part = core.Matrix.from_array(jobrec.extras['qcvars']['DISPERSION CORRECTION GRADIENT'])
             if wfn is not None:
@@ -345,11 +357,13 @@ class EmpiricalDispersion():
                         wfn.set_variable(k, float(qca) if isinstance(qca, str) else qca)
 
             if self.fctldash in ['hf3c', 'pbeh3c', 'r2scan3c', 'b973c']:
-                jobrec = qcng.compute(
-                    resi,
-                    self.gcp_engine,
-                    raise_error=True,
-                    task_config={"scratch_directory": core.IOManager.shared_object().get_default_path(), "ncores": core.get_num_threads()})
+                jobrec = qcng.compute(resi,
+                                      self.gcp_engine,
+                                      raise_error=True,
+                                      task_config={
+                                          "scratch_directory": core.IOManager.shared_object().get_default_path(),
+                                          "ncores": core.get_num_threads()
+                                      })
                 gcp_part = core.Matrix.from_array(jobrec.return_result)
                 dashd_part.add(gcp_part)
 
@@ -357,9 +371,7 @@ class EmpiricalDispersion():
         else:
             return self.disp.compute_gradient(molecule)
 
-    def compute_hessian(self,
-                        molecule: core.Molecule,
-                        wfn: core.Wavefunction = None) -> core.Matrix:
+    def compute_hessian(self, molecule: core.Molecule, wfn: core.Wavefunction = None) -> core.Matrix:
         """Compute dispersion Hessian based on engine, dispersion level, and parameters in `self`.
         Uses finite difference, as no dispersion engine has analytic second derivatives.
 

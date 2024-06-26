@@ -39,7 +39,9 @@ sys.path.append(qcdb_module)
 import qcdb
 from qcdb.libmintsbasissetparser import Gaussian94BasisSetParser
 
-output = subprocess.check_output("ls -1 *cc-*.gbs | grep -v 'autogen' | grep -v 'tight' | grep -v 'polarization' | grep -v 'molpro' | grep -v 'diffuse' | grep -v 'basis' | grep -v 'corevalence' | grep -v 'hold'", shell=True)
+output = subprocess.check_output(
+    "ls -1 *cc-*.gbs | grep -v 'autogen' | grep -v 'tight' | grep -v 'polarization' | grep -v 'molpro' | grep -v 'diffuse' | grep -v 'basis' | grep -v 'corevalence' | grep -v 'hold'",
+    shell=True)
 real_dunnings = output.decode().split('\n')
 
 parser = Gaussian94BasisSetParser()

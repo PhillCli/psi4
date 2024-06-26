@@ -161,7 +161,8 @@ class OptionsState():
 
         if key in self.data:
             raise ValidationError(
-                'Malformed options state, duplicate key adds of "{}". This should not happen, please raise a issue on github.com/psi4/psi4'.format(key))
+                'Malformed options state, duplicate key adds of "{}". This should not happen, please raise a issue on github.com/psi4/psi4'
+                .format(key))
         else:
             self.data[key] = OptionState(*key)
 

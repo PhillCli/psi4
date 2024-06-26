@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """Module containing functions that, when passed a qcdb.WrappedDatabase instance
 *dbinstance*, return an array of reaction names that are a subset of
 dbinstance.hrxn.keys(). Since the full database is passed in, reactions

@@ -2,11 +2,11 @@ import numpy as np
 import pytest
 
 import psi4
-from psi4.driver.procrouting.response.scf_products import (TDRSCFEngine,
-                                                           TDUSCFEngine)
+from psi4.driver.procrouting.response.scf_products import (TDRSCFEngine, TDUSCFEngine)
 from utils import compare_arrays, compare_values
 
 pytestmark = [pytest.mark.psi, pytest.mark.api]
+
 
 def build_RHF_AB_C1_singlet(wfn):
     mints = psi4.core.MintsHelper(wfn.basisset())
@@ -59,7 +59,7 @@ def build_RHF_AB_singlet(wfn):
                 V_iajb = np.einsum("pqrs, pP, qQ, rR, sS -> PQRS", ao_eri, Ci, Ca, Cj, Cb, optimize=True)
                 V_jaib = np.einsum("pqrs, pP, qQ, rR, sS -> PQRS", ao_eri, Cj, Ca, Ci, Cb, optimize=True)
                 V_abij = np.einsum("pqrs, pP, qQ, rR, sS -> PQRS", ao_eri, Ca, Cb, Ci, Cj, optimize=True)
-                A_ref =  2 * V_iajb - np.einsum("abij->iajb", V_abij)
+                A_ref = 2 * V_iajb - np.einsum("abij->iajb", V_abij)
                 if ha == hb and hi == hj:
                     A_ref += np.einsum("ab,ij->iajb", Fab[ha], np.eye(Fij[hi].shape[0]), optimize=True)
                     A_ref -= np.einsum("ij,ab->iajb", Fij[hi], np.eye(Fab[ha].shape[0]), optimize=True)
@@ -146,7 +146,7 @@ def build_RHF_AB_singlet_df(wfn):
                 V_iajb = np.einsum("Pia, Pjb -> iajb", Qia, Qjb, optimize=True)
                 V_jaib = np.einsum("Pia, Pjb -> iajb", Qja, Qib, optimize=True)
                 V_abij = np.einsum("Pij, Pab -> abij", Qij, Qab, optimize=True)
-                A_ref =  2 * V_iajb - np.einsum("abij->iajb", V_abij)
+                A_ref = 2 * V_iajb - np.einsum("abij->iajb", V_abij)
                 if ha == hb and hi == hj:
                     A_ref += np.einsum("ab,ij->iajb", Fab[ha], np.eye(Fij[hi].shape[0]), optimize=True)
                     A_ref -= np.einsum("ij,ab->iajb", Fij[hi], np.eye(Fab[ha].shape[0]), optimize=True)
@@ -249,6 +249,7 @@ def test_restricted_TDA_singlet_c1():
     A_test = np.column_stack([x.to_array().flatten() for x in eng.compute_products(ID)[0]])
     assert compare_arrays(A_ref, A_test, 8, "RHF Ax C1 products")
 
+
 @pytest.mark.unittest
 @pytest.mark.tdscf
 def test_restricted_TDA_singlet():
@@ -274,7 +275,8 @@ def test_restricted_TDA_singlet():
                     ID.append(matrix)
         x = eng.compute_products(ID)[0][0]
         # Assemble the A values as a single (ia, jb) matrix, all possible ia and jb of symmetry hia.
-        A_test = np.column_stack([np.concatenate([y.flatten() for y in x.to_array()]) for x in eng.compute_products(ID)[0]])
+        A_test = np.column_stack(
+            [np.concatenate([y.flatten() for y in x.to_array()]) for x in eng.compute_products(ID)[0]])
         assert compare_arrays(A_block, A_test, 8, "RHF Ax C2v products")
 
 
@@ -327,7 +329,8 @@ def test_restricted_TDA_singlet_df():
                     ID.append(matrix)
         x = eng.compute_products(ID)[0][0]
         # Assemble the A values as a single (ia, jb) matrix, all possible ia and jb of symmetry hia.
-        A_test = np.column_stack([np.concatenate([y.flatten() for y in x.to_array()]) for x in eng.compute_products(ID)[0]])
+        A_test = np.column_stack(
+            [np.concatenate([y.flatten() for y in x.to_array()]) for x in eng.compute_products(ID)[0]])
         assert compare_arrays(A_block, A_test, 8, "DF-RHF Ax C2v products")
 
 

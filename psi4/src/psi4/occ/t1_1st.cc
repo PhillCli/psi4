@@ -203,5 +203,5 @@ void OCCWave::t1_1st_gen() {
 
     // outfile->Printf("\n t1_1st_gen done. \n");
 }  // end t1_1st_gen
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

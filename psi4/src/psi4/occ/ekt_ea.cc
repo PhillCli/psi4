@@ -512,5 +512,5 @@ void OCCWave::ekt_ea() {
     tempA.reset();
 
 }  // end ekt_ip
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

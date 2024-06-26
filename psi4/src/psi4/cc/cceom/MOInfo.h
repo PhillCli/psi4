@@ -91,4 +91,4 @@ struct MOInfo {
 }  // namespace cceom
 }  // namespace psi
 
-#endif // _psi_src_bin_cceom_moinfo_h
+#endif  // _psi_src_bin_cceom_moinfo_h

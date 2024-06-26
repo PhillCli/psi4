@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 r"""Stuff stolen from psi. Should import or not as necessary
 or some better way. Apologies to the coders.
 
@@ -89,6 +88,8 @@ def search_file(filename, search_path):
         return os.path.abspath(os.path.join(path, filename))
     else:
         return None
+
+
 ## end of http://code.activestate.com/recipes/52224/ }}}
 
 
@@ -158,6 +159,7 @@ def import_ignorecase(module):
             break
 
     return modobj
+
 
 def findfile_ignorecase(fil, pre='', post=''):
     """Function to locate a file *pre* + *fil* + *post* in any possible

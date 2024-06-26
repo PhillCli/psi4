@@ -208,13 +208,13 @@ void OCCWave::mp2p5_postprocessing(bool include_singles, bool incomplete_singles
 
     variables_["MP2.5 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp3AB;
     variables_["MP2.5 SAME-SPIN CORRELATION ENERGY"] = Emp3AA + Emp3BB;
-    variables_["MP2.5 SINGLES ENERGY"] = 0.0;  // RHF & UHF only
+    variables_["MP2.5 SINGLES ENERGY"] = 0.0;          // RHF & UHF only
     variables_["MP2.5 DOUBLES ENERGY"] = Emp3 - Escf;  // RHF & UHF only
 
     variables_["MP3 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp2AB + 2.0 * (Emp3AB - Emp2AB);
     variables_["MP3 SAME-SPIN CORRELATION ENERGY"] = Emp2AA + Emp2BB + 2.0 * (Emp3AA + Emp3BB - Emp2AA - Emp2BB);
-    variables_["MP3 SINGLES ENERGY"] = 0.0;  // RHF & UHF only
+    variables_["MP3 SINGLES ENERGY"] = 0.0;                                   // RHF & UHF only
     variables_["MP3 DOUBLES ENERGY"] = variables_["MP3 CORRELATION ENERGY"];  // RHF & UHF only
 }
-}
-}
+}  // namespace occwave
+}  // namespace psi

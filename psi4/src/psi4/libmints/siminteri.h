@@ -40,7 +40,8 @@ class SimintTwoElectronInt : public TwoBodyAOInt {
     typedef std::vector<simint_multi_shellpair> ShellPairVec;
     typedef std::vector<simint_shell> ShellVec;
 
-    SimintTwoElectronInt(const IntegralFactory* integral, int deriv = 0, bool use_shell_pairs = false, bool needs_exchange = false);
+    SimintTwoElectronInt(const IntegralFactory* integral, int deriv = 0, bool use_shell_pairs = false,
+                         bool needs_exchange = false);
     ~SimintTwoElectronInt() override;
 
     size_t compute_shell(const AOShellCombinationsIterator&) override;
@@ -60,7 +61,8 @@ class SimintTwoElectronInt : public TwoBodyAOInt {
    private:
     void create_blocks(void) override;
 
-    size_t compute_shell_for_sieve(const std::shared_ptr<BasisSet> bs, int s1, int s2, int s3, int s4, bool is_bra) override;
+    size_t compute_shell_for_sieve(const std::shared_ptr<BasisSet> bs, int s1, int s2, int s3, int s4,
+                                   bool is_bra) override;
     int maxam_;
     size_t batchsize_;
     size_t allwork_size_;
@@ -69,8 +71,9 @@ class SimintTwoElectronInt : public TwoBodyAOInt {
     double* sharedwork_;
     std::vector<size_t> RSblock_starts_;
 
-
-    virtual size_t first_RS_shell_block(size_t PQpair) const override { return braket_same_ ? RSblock_starts_[PQpair] : 0; }
+    virtual size_t first_RS_shell_block(size_t PQpair) const override {
+        return braket_same_ ? RSblock_starts_[PQpair] : 0;
+    }
 
     virtual int maximum_block_size() const override { return batchsize_; }
 
@@ -97,7 +100,8 @@ class SimintERI : public SimintTwoElectronInt {
    public:
     SimintERI* clone() const override { return new SimintERI(*this); }
 
-    SimintERI(const IntegralFactory* integral, int deriv = 0, bool use_shell_pairs = false, bool needs_exchange = false);
+    SimintERI(const IntegralFactory* integral, int deriv = 0, bool use_shell_pairs = false,
+              bool needs_exchange = false);
 };
 
 }  // namespace psi

@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """Module with matplotlib plotting routines. These are not hooked up to
 any particular qcdb data structures but can be called with basic
 arguments.
@@ -125,9 +124,14 @@ def bars(data, title='', saveas=None, relpath=False, graphicsformat=['pdf'], vie
     plt.xticks([])
 
     # label plot and tiers
-    ax.text(0.4, 4.6, title,
-        verticalalignment='bottom', horizontalalignment='left',
-        family='Times New Roman', weight='bold', fontsize=12)
+    ax.text(0.4,
+            4.6,
+            title,
+            verticalalignment='bottom',
+            horizontalalignment='left',
+            family='Times New Roman',
+            weight='bold',
+            fontsize=12)
 
     widths = [0.15, 0.02, 0.02, 0.02]  # TT, HB, MX, DD
     xval = 0.1  # starting posn along x-axis
@@ -143,13 +147,19 @@ def bars(data, title='', saveas=None, relpath=False, graphicsformat=['pdf'], vie
             rect[2].set_color('green')
             rect[3].set_color('blue')
 
-            ax.text(xval + .08, 4.3, bar['mc'],
-                verticalalignment='center', horizontalalignment='right', rotation='vertical',
-                family='Times New Roman', fontsize=8)
+            ax.text(xval + .08,
+                    4.3,
+                    bar['mc'],
+                    verticalalignment='center',
+                    horizontalalignment='right',
+                    rotation='vertical',
+                    family='Times New Roman',
+                    fontsize=8)
         xval += 0.20
 
     # save and show
-    pltuid = title + '_' + hashlib.sha1((title + repr([bar['mc'] for bar in data if bar is not None])).encode()).hexdigest()
+    pltuid = title + '_' + hashlib.sha1(
+        (title + repr([bar['mc'] for bar in data if bar is not None])).encode()).hexdigest()
     pltfile = expand_saveas(saveas, pltuid, def_prefix='bar_', relpath=relpath)
     files_saved = {}
     for ext in graphicsformat:
@@ -162,8 +172,17 @@ def bars(data, title='', saveas=None, relpath=False, graphicsformat=['pdf'], vie
     return files_saved
 
 
-def flat(data, color=None, title='', xlimit=4.0, xlines=[0.0, 0.3, 1.0], mae=None, mape=None, view=True,
-    saveas=None, relpath=False, graphicsformat=['pdf']):
+def flat(data,
+         color=None,
+         title='',
+         xlimit=4.0,
+         xlines=[0.0, 0.3, 1.0],
+         mae=None,
+         mape=None,
+         view=True,
+         saveas=None,
+         relpath=False,
+         graphicsformat=['pdf']):
     """Generates a slat diagram between model chemistries with errors in
     single-item list *data*, which is supplied as part of the dictionary
     for each participating reaction, along with *dbse* and *rxn* keys in
@@ -185,8 +204,8 @@ def flat(data, color=None, title='', xlimit=4.0, xlines=[0.0, 0.3, 1.0], mae=Non
     plt.ylim([-1 * Nweft - 1, 0])
     plt.yticks([])
     plt.xticks([])
-#    fig.patch.set_visible(False)
-#    ax.patch.set_visible(False)
+    #    fig.patch.set_visible(False)
+    #    ax.patch.set_visible(False)
     ax.axis('off')
 
     for xl in xlines:
@@ -213,8 +232,7 @@ def flat(data, color=None, title='', xlimit=4.0, xlines=[0.0, 0.3, 1.0], mae=Non
     files_saved = {}
     for ext in graphicsformat:
         savefile = pltfile + '.' + ext.lower()
-        plt.savefig(savefile, transparent=True, format=ext, bbox_inches='tight',
-                   frameon=False, pad_inches=0.0)
+        plt.savefig(savefile, transparent=True, format=ext, bbox_inches='tight', frameon=False, pad_inches=0.0)
         files_saved[ext.lower()] = savefile
     if view:
         plt.show()
@@ -284,8 +302,7 @@ def flat(data, color=None, title='', xlimit=4.0, xlines=[0.0, 0.3, 1.0], mae=Non
 #    plt.savefig('scratch/' + pltfile + '_trimd' + '.eps', transparent=True, format='EPS')
 
 
-def valerr(data, color=None, title='', xtitle='', view=True,
-    saveas=None, relpath=False, graphicsformat=['pdf']):
+def valerr(data, color=None, title='', xtitle='', view=True, saveas=None, relpath=False, graphicsformat=['pdf']):
     """
 
     """
@@ -364,9 +381,17 @@ def valerr(data, color=None, title='', xtitle='', view=True,
     return files_saved
 
 
-def disthist(data, title='', xtitle='', xmin=None, xmax=None,
-    me=None, stde=None, view=True,
-    saveas=None, relpath=False, graphicsformat=['pdf']):
+def disthist(data,
+             title='',
+             xtitle='',
+             xmin=None,
+             xmax=None,
+             me=None,
+             stde=None,
+             view=True,
+             saveas=None,
+             relpath=False,
+             graphicsformat=['pdf']):
     """Saves a plot with name *saveas* with a histogram representation
     of the reaction errors in *data*. Also plots a gaussian distribution
     with mean *me* and standard deviation *stde*. Plot has x-range
@@ -508,10 +533,23 @@ def disthist(data, title='', xtitle='', xmin=None, xmax=None,
 #    plt.show()
 
 
-def threads(data, labels, color=None, title='', xlimit=4.0, mae=None, mape=None,
-    mousetext=None, mouselink=None, mouseimag=None, mousetitle=None, mousediv=None,
-    labeled=True, view=True,
-    saveas=None, relpath=False, graphicsformat=['pdf']):
+def threads(data,
+            labels,
+            color=None,
+            title='',
+            xlimit=4.0,
+            mae=None,
+            mape=None,
+            mousetext=None,
+            mouselink=None,
+            mouseimag=None,
+            mousetitle=None,
+            mousediv=None,
+            labeled=True,
+            view=True,
+            saveas=None,
+            relpath=False,
+            graphicsformat=['pdf']):
     """Generates a tiered slat diagram between model chemistries with
     errors (or simply values) in list *data*, which is supplied as part of the
     dictionary for each participating reaction, along with *dbse* and *rxn* keys
@@ -562,13 +600,23 @@ def threads(data, labels, color=None, title='', xlimit=4.0, mae=None, mape=None,
 
     # label plot and tiers
     if labeled:
-        ax.text(-0.9 * xlimit, -0.25, title,
-            verticalalignment='bottom', horizontalalignment='left',
-            family='Times New Roman', weight='bold', fontsize=12)
+        ax.text(-0.9 * xlimit,
+                -0.25,
+                title,
+                verticalalignment='bottom',
+                horizontalalignment='left',
+                family='Times New Roman',
+                weight='bold',
+                fontsize=12)
         for weft in labels:
-            ax.text(-0.9 * xlimit, -(1.2 + labels.index(weft)), weft,
-                verticalalignment='bottom', horizontalalignment='left',
-                family='Times New Roman', weight='bold', fontsize=18)
+            ax.text(-0.9 * xlimit,
+                    -(1.2 + labels.index(weft)),
+                    weft,
+                    verticalalignment='bottom',
+                    horizontalalignment='left',
+                    family='Times New Roman',
+                    weight='bold',
+                    fontsize=18)
 
     # plot reaction errors and threads
     for rxn in data:
@@ -599,7 +647,7 @@ def threads(data, labels, color=None, title='', xlimit=4.0, mae=None, mape=None,
         #    npxvals, [rxn['show']] * Nweft, xscreen, yscreen))
 
         # labeling
-        if not(mousetext or mouselink or mouseimag):
+        if not (mousetext or mouselink or mouseimag):
             if labeled and len(data) < 200:
                 try:
                     toplblposn = next(item for item in xvals if item is not None)
@@ -607,12 +655,20 @@ def threads(data, labels, color=None, title='', xlimit=4.0, mae=None, mape=None,
                 except StopIteration:
                     pass
                 else:
-                    ax.text(toplblposn, -0.75 + 0.6 * random.random(), rxn['sys'],
-                        verticalalignment='bottom', horizontalalignment='center',
-                        family='Times New Roman', fontsize=8)
-                    ax.text(botlblposn, -1 * Nweft - 0.75 + 0.6 * random.random(), rxn['sys'],
-                        verticalalignment='bottom', horizontalalignment='center',
-                        family='Times New Roman', fontsize=8)
+                    ax.text(toplblposn,
+                            -0.75 + 0.6 * random.random(),
+                            rxn['sys'],
+                            verticalalignment='bottom',
+                            horizontalalignment='center',
+                            family='Times New Roman',
+                            fontsize=8)
+                    ax.text(botlblposn,
+                            -1 * Nweft - 0.75 + 0.6 * random.random(),
+                            rxn['sys'],
+                            verticalalignment='bottom',
+                            horizontalalignment='center',
+                            family='Times New Roman',
+                            fontsize=8)
 
     # plot trimmings
     if mae is not None:
@@ -623,7 +679,8 @@ def threads(data, labels, color=None, title='', xlimit=4.0, mae=None, mape=None,
         plt.axvline(0, color='#cccc00')
 
     # save and show
-    pltuid = title + '_' + ('lbld' if labeled else 'bare') + '_' + hashlib.sha1((title + repr(labels) + repr(xlimit)).encode()).hexdigest()
+    pltuid = title + '_' + ('lbld' if labeled else 'bare') + '_' + hashlib.sha1(
+        (title + repr(labels) + repr(xlimit)).encode()).hexdigest()
     pltfile = expand_saveas(saveas, pltuid, def_prefix='thread_', relpath=relpath)
     files_saved = {}
     for ext in graphicsformat:
@@ -698,8 +755,7 @@ def threads(data, labels, color=None, title='', xlimit=4.0, mae=None, mape=None,
         return files_saved, htmlcode
 
 
-def ternary(sapt, title='', labeled=True, view=True,
-            saveas=None, relpath=False, graphicsformat=['pdf']):
+def ternary(sapt, title='', labeled=True, view=True, saveas=None, relpath=False, graphicsformat=['pdf']):
     """Takes array of arrays *sapt* in form [elst, indc, disp] and builds formatted
     two-triangle ternary diagrams. Either fully-readable or dotsonly depending
     on *labeled*. Saves in formats *graphicsformat*.
@@ -735,18 +791,38 @@ def ternary(sapt, title='', labeled=True, view=True,
         ax.plot([-0.167, 0.5], [0.289, 0.866], color='#7ec0ee', lw=0.5)
 
         # label corners
-        ax.text(1.0, -0.15, u'Elst (\u2212)',
-            verticalalignment='bottom', horizontalalignment='center',
-            family='Times New Roman', weight='bold', fontsize=18)
-        ax.text(0.5, 0.9, u'Ind (\u2212)',
-            verticalalignment='bottom', horizontalalignment='center',
-            family='Times New Roman', weight='bold', fontsize=18)
-        ax.text(0.0, -0.15, u'Disp (\u2212)',
-            verticalalignment='bottom', horizontalalignment='center',
-            family='Times New Roman', weight='bold', fontsize=18)
-        ax.text(-0.5, 0.9, u'Elst (+)',
-            verticalalignment='bottom', horizontalalignment='center',
-            family='Times New Roman', weight='bold', fontsize=18)
+        ax.text(1.0,
+                -0.15,
+                u'Elst (\u2212)',
+                verticalalignment='bottom',
+                horizontalalignment='center',
+                family='Times New Roman',
+                weight='bold',
+                fontsize=18)
+        ax.text(0.5,
+                0.9,
+                u'Ind (\u2212)',
+                verticalalignment='bottom',
+                horizontalalignment='center',
+                family='Times New Roman',
+                weight='bold',
+                fontsize=18)
+        ax.text(0.0,
+                -0.15,
+                u'Disp (\u2212)',
+                verticalalignment='bottom',
+                horizontalalignment='center',
+                family='Times New Roman',
+                weight='bold',
+                fontsize=18)
+        ax.text(-0.5,
+                0.9,
+                u'Elst (+)',
+                verticalalignment='bottom',
+                horizontalalignment='center',
+                family='Times New Roman',
+                weight='bold',
+                fontsize=18)
 
     xvals = []
     yvals = []
@@ -769,8 +845,16 @@ def ternary(sapt, title='', labeled=True, view=True,
         yvals.append(ydot)
         cvals.append(cdot)
 
-    sc = ax.scatter(xvals, yvals, c=cvals, s=15, marker="o",
-        cmap=mpl.cm.jet, edgecolor='none', vmin=0, vmax=1, zorder=10)
+    sc = ax.scatter(xvals,
+                    yvals,
+                    c=cvals,
+                    s=15,
+                    marker="o",
+                    cmap=mpl.cm.jet,
+                    edgecolor='none',
+                    vmin=0,
+                    vmax=1,
+                    zorder=10)
 
     # remove figure outline
     ax.spines['top'].set_visible(False)
@@ -779,13 +863,20 @@ def ternary(sapt, title='', labeled=True, view=True,
     ax.spines['left'].set_visible(False)
 
     # save and show
-    pltuid = title + '_' + ('lbld' if labeled else 'bare') + '_' + hashlib.sha1((title + repr(sapt)).encode()).hexdigest()
+    pltuid = title + '_' + ('lbld' if labeled else 'bare') + '_' + hashlib.sha1(
+        (title + repr(sapt)).encode()).hexdigest()
     pltfile = expand_saveas(saveas, pltuid, def_prefix='tern_', relpath=relpath)
     files_saved = {}
     for ext in graphicsformat:
         savefile = pltfile + '.' + ext.lower()
-        plt.savefig(savefile, transparent=True, format=ext, bbox_inches='tight',
-                    frameon=False, dpi=450, edgecolor='none', pad_inches=0.0)
+        plt.savefig(savefile,
+                    transparent=True,
+                    format=ext,
+                    bbox_inches='tight',
+                    frameon=False,
+                    dpi=450,
+                    edgecolor='none',
+                    pad_inches=0.0)
         files_saved[ext.lower()] = savefile
     if view:
         plt.show()
@@ -910,8 +1001,7 @@ def composition_tile(db, aa1, aa2):
     return np.reshape(np.array(tiles), (dim, dim))
 
 
-def iowa(mcdat, mclbl, title='', xtitle='', xlimit=2.0, view=True,
-    saveas=None, relpath=False, graphicsformat=['pdf']):
+def iowa(mcdat, mclbl, title='', xtitle='', xlimit=2.0, view=True, saveas=None, relpath=False, graphicsformat=['pdf']):
     """Saves a plot with (extensionless) name *pltfile* with an Iowa
     representation of the modelchems errors in *mcdat* for BBI/SSI-style
     *labels*.
@@ -922,7 +1012,10 @@ def iowa(mcdat, mclbl, title='', xtitle='', xlimit=2.0, view=True,
     import matplotlib
     import matplotlib.pyplot as plt
 
-    aa = ['ARG', 'HIE', 'LYS', 'ASP', 'GLU', 'SER', 'THR', 'ASN', 'GLN', 'CYS', 'MET', 'GLY', 'ALA', 'VAL', 'ILE', 'LEU', 'PRO', 'PHE', 'TYR', 'TRP']
+    aa = [
+        'ARG', 'HIE', 'LYS', 'ASP', 'GLU', 'SER', 'THR', 'ASN', 'GLN', 'CYS', 'MET', 'GLY', 'ALA', 'VAL', 'ILE', 'LEU',
+        'PRO', 'PHE', 'TYR', 'TRP'
+    ]
     #aa = ['ILE', 'LEU', 'ASP', 'GLU', 'PHE']
     err = dict(zip(mclbl, mcdat))
 
@@ -981,8 +1074,7 @@ def iowa(mcdat, mclbl, title='', xtitle='', xlimit=2.0, view=True,
     return files_saved
 
 
-def liliowa(mcdat, title='', xlimit=2.0, view=True,
-    saveas=None, relpath=False, graphicsformat=['pdf']):
+def liliowa(mcdat, title='', xlimit=2.0, view=True, saveas=None, relpath=False, graphicsformat=['pdf']):
     """Saves a plot with a heatmap representation of *mcdat*.
 
     """
@@ -1021,8 +1113,7 @@ def liliowa(mcdat, title='', xlimit=2.0, view=True,
     files_saved = {}
     for ext in graphicsformat:
         savefile = pltfile + '.' + ext.lower()
-        plt.savefig(savefile, transparent=True, format=ext, bbox_inches='tight',
-                   frameon=False, pad_inches=0.0)
+        plt.savefig(savefile, transparent=True, format=ext, bbox_inches='tight', frameon=False, pad_inches=0.0)
         files_saved[ext.lower()] = savefile
     if view:
         plt.show()
@@ -1033,50 +1124,724 @@ def liliowa(mcdat, title='', xlimit=2.0, view=True,
 if __name__ == "__main__":
 
     merge_dats = [
-    {'show':'a', 'db':'HSG', 'sys':'1', 'data':[0.3508, 0.1234, 0.0364, 0.0731, 0.0388]},
-    {'show':'b', 'db':'HSG', 'sys':'3', 'data':[0.2036, -0.0736, -0.1650, -0.1380, -0.1806]},
-    #{'show':'', 'db':'S22', 'sys':'14', 'data':[np.nan, -3.2144, np.nan, np.nan, np.nan]},
-    {'show':'c', 'db':'S22', 'sys':'14', 'data':[None, -3.2144, None, None, None]},
-    {'show':'d', 'db':'S22', 'sys':'15', 'data':[-1.5090, -2.5263, -2.9452, -2.8633, -3.1059]},
-    {'show':'e', 'db':'S22', 'sys':'22', 'data':[0.3046, -0.2632, -0.5070, -0.4925, -0.6359]}]
+        {
+            'show': 'a',
+            'db': 'HSG',
+            'sys': '1',
+            'data': [0.3508, 0.1234, 0.0364, 0.0731, 0.0388]
+        },
+        {
+            'show': 'b',
+            'db': 'HSG',
+            'sys': '3',
+            'data': [0.2036, -0.0736, -0.1650, -0.1380, -0.1806]
+        },
+        #{'show':'', 'db':'S22', 'sys':'14', 'data':[np.nan, -3.2144, np.nan, np.nan, np.nan]},
+        {
+            'show': 'c',
+            'db': 'S22',
+            'sys': '14',
+            'data': [None, -3.2144, None, None, None]
+        },
+        {
+            'show': 'd',
+            'db': 'S22',
+            'sys': '15',
+            'data': [-1.5090, -2.5263, -2.9452, -2.8633, -3.1059]
+        },
+        {
+            'show': 'e',
+            'db': 'S22',
+            'sys': '22',
+            'data': [0.3046, -0.2632, -0.5070, -0.4925, -0.6359]
+        }
+    ]
 
-    threads(merge_dats, labels=['d', 't', 'dt', 'q', 'tq'], color='sapt',
-        title='MP2-CPa[]z', mae=[0.25, 0.5, 0.5, 0.3, 1.0], mape=[20.1, 25, 15, 5.5, 3.6])
+    threads(merge_dats,
+            labels=['d', 't', 'dt', 'q', 'tq'],
+            color='sapt',
+            title='MP2-CPa[]z',
+            mae=[0.25, 0.5, 0.5, 0.3, 1.0],
+            mape=[20.1, 25, 15, 5.5, 3.6])
 
-    more_dats = [
-    {'mc':'MP2-CP-adz', 'data':[1.0, 0.8, 1.4, 1.6]},
-    {'mc':'MP2-CP-adtz', 'data':[0.6, 0.2, 0.4, 0.6]},
-    None,
-    {'mc':'MP2-CP-adzagain', 'data':[1.0, 0.8, 1.4, 1.6]}]
+    more_dats = [{
+        'mc': 'MP2-CP-adz',
+        'data': [1.0, 0.8, 1.4, 1.6]
+    }, {
+        'mc': 'MP2-CP-adtz',
+        'data': [0.6, 0.2, 0.4, 0.6]
+    }, None, {
+        'mc': 'MP2-CP-adzagain',
+        'data': [1.0, 0.8, 1.4, 1.6]
+    }]
 
     bars(more_dats, title='asdf')
 
-    single_dats = [
-    {'dbse':'HSG', 'sys':'1', 'data':[0.3508]},
-    {'dbse':'HSG', 'sys':'3', 'data':[0.2036]},
-    {'dbse':'S22', 'sys':'14', 'data':[None]},
-    {'dbse':'S22', 'sys':'15', 'data':[-1.5090]},
-    {'dbse':'S22', 'sys':'22', 'data':[0.3046]}]
+    single_dats = [{
+        'dbse': 'HSG',
+        'sys': '1',
+        'data': [0.3508]
+    }, {
+        'dbse': 'HSG',
+        'sys': '3',
+        'data': [0.2036]
+    }, {
+        'dbse': 'S22',
+        'sys': '14',
+        'data': [None]
+    }, {
+        'dbse': 'S22',
+        'sys': '15',
+        'data': [-1.5090]
+    }, {
+        'dbse': 'S22',
+        'sys': '22',
+        'data': [0.3046]
+    }]
 
     #flat(single_dats, color='sapt', title='fg_MP2_adz', mae=0.25, mape=20.1)
 
-    flat([{'sys': '1', 'color': 0.6933450559423702, 'data': [0.45730000000000004]}, {'sys': '2', 'color': 0.7627027688599753, 'data': [0.6231999999999998]}, {'sys': '3', 'color': 0.7579958735528617, 'data': [2.7624999999999993]}, {'sys': '4', 'color': 0.7560883254421639, 'data': [2.108600000000001]}, {'sys': '5', 'color': 0.7515161912065955, 'data': [2.2304999999999993]}, {'sys': '6', 'color': 0.7235223893438876, 'data': [1.3782000000000014]}, {'sys': '7', 'color': 0.7120099024225569, 'data': [1.9519000000000002]}, {'sys': '8', 'color': 0.13721565059144678, 'data': [0.13670000000000004]}, {'sys': '9', 'color': 0.3087395095814767, 'data': [0.2966]}, {'sys': '10', 'color': 0.25493207637105103, 'data': [-0.020199999999999996]}, {'sys': '11', 'color': 0.24093814608979347, 'data': [-1.5949999999999998]}, {'sys': '12', 'color': 0.3304746631959777, 'data': [-1.7422000000000004]}, {'sys': '13', 'color': 0.4156050644764822, 'data': [0.0011999999999989797]}, {'sys': '14', 'color': 0.2667207259626991, 'data': [-2.6083999999999996]}, {'sys': '15', 'color': 0.3767053567641695, 'data': [-1.5090000000000003]}, {'sys': '16', 'color': 0.5572641509433963, 'data': [0.10749999999999993]}, {'sys': '17', 'color': 0.4788598239641578, 'data': [0.29669999999999996]}, {'sys': '18', 'color': 0.3799031371351281, 'data': [0.10209999999999964]}, {'sys': '19', 'color': 0.5053227185999078, 'data': [0.16610000000000014]}, {'sys': '20', 'color': 0.2967660584483015, 'data': [-0.37739999999999974]}, {'sys': '21', 'color': 0.38836460733750316, 'data': [-0.4712000000000005]}, {'sys': '22', 'color': 0.5585849893078809, 'data': [0.30460000000000065]}, {'sys': 'BzBz_PD36-1.8', 'color': 0.1383351040559965, 'data': [-1.1921]}, {'sys': 'BzBz_PD34-2.0', 'color': 0.23086034843049832, 'data': [-1.367]}, {'sys': 'BzBz_T-5.2', 'color': 0.254318060864096, 'data': [-0.32230000000000025]}, {'sys': 'BzBz_T-5.1', 'color': 0.26598486566733337, 'data': [-0.3428]}, {'sys': 'BzBz_T-5.0', 'color': 0.28011258347610224, 'data': [-0.36060000000000025]}, {'sys': 'PyPy_S2-3.9', 'color': 0.14520332101084785, 'data': [-0.9853000000000001]}, {'sys': 'PyPy_S2-3.8', 'color': 0.1690757103699542, 'data': [-1.0932]}, {'sys': 'PyPy_S2-3.5', 'color': 0.25615734567417053, 'data': [-1.4617]}, {'sys': 'PyPy_S2-3.7', 'color': 0.19566550224566906, 'data': [-1.2103999999999995]}, {'sys': 'PyPy_S2-3.6', 'color': 0.22476748600170826, 'data': [-1.3333]}, {'sys': 'BzBz_PD32-2.0', 'color': 0.31605681987208084, 'data': [-1.6637]}, {'sys': 'BzBz_T-4.8', 'color': 0.31533827331543723, 'data': [-0.38759999999999994]}, {'sys': 'BzBz_T-4.9', 'color': 0.2966146678069063, 'data': [-0.3759999999999999]}, {'sys': 'BzH2S-3.6', 'color': 0.38284814928043304, 'data': [-0.1886000000000001]}, {'sys': 'BzBz_PD32-1.7', 'color': 0.3128835191478639, 'data': [-1.8703999999999998]}, {'sys': 'BzMe-3.8', 'color': 0.24117892478245323, 'data': [-0.034399999999999986]}, {'sys': 'BzMe-3.9', 'color': 0.22230903086047088, 'data': [-0.046499999999999986]}, {'sys': 'BzH2S-3.7', 'color': 0.36724255203373696, 'data': [-0.21039999999999992]}, {'sys': 'BzMe-3.6', 'color': 0.284901522674611, 'data': [0.007099999999999884]}, {'sys': 'BzMe-3.7', 'color': 0.2621086166558813, 'data': [-0.01770000000000005]}, {'sys': 'BzBz_PD32-1.9', 'color': 0.314711251903219, 'data': [-1.7353999999999998]}, {'sys': 'BzBz_PD32-1.8', 'color': 0.3136181753200793, 'data': [-1.8039999999999998]}, {'sys': 'BzH2S-3.8', 'color': 0.3542001591399945, 'data': [-0.22230000000000016]}, {'sys': 'BzBz_PD36-1.9', 'color': 0.14128552184232473, 'data': [-1.1517]}, {'sys': 'BzBz_S-3.7', 'color': 0.08862098445220466, 'data': [-1.3414]}, {'sys': 'BzH2S-4.0', 'color': 0.33637540012259076, 'data': [-0.2265999999999999]}, {'sys': 'BzBz_PD36-1.5', 'color': 0.13203548045236127, 'data': [-1.3035]}, {'sys': 'BzBz_S-3.8', 'color': 0.0335358832178858, 'data': [-1.2022]}, {'sys': 'BzBz_S-3.9', 'color': 0.021704594689389095, 'data': [-1.0747]}, {'sys': 'PyPy_T3-5.1', 'color': 0.3207725129126432, 'data': [-0.2958000000000003]}, {'sys': 'PyPy_T3-5.0', 'color': 0.3254925304351165, 'data': [-0.30710000000000015]}, {'sys': 'BzBz_PD36-1.7', 'color': 0.13577087141986593, 'data': [-1.2333000000000003]}, {'sys': 'PyPy_T3-4.8', 'color': 0.3443704059902452, 'data': [-0.32010000000000005]}, {'sys': 'PyPy_T3-4.9', 'color': 0.3333442013628509, 'data': [-0.3158999999999996]}, {'sys': 'PyPy_T3-4.7', 'color': 0.35854000505665756, 'data': [-0.31530000000000014]}, {'sys': 'BzBz_PD36-1.6', 'color': 0.13364651314909243, 'data': [-1.2705000000000002]}, {'sys': 'BzMe-4.0', 'color': 0.20560117919562013, 'data': [-0.05389999999999984]}, {'sys': 'MeMe-3.6', 'color': 0.16934865900383142, 'data': [0.18420000000000003]}, {'sys': 'MeMe-3.7', 'color': 0.1422332591197123, 'data': [0.14680000000000004]}, {'sys': 'MeMe-3.4', 'color': 0.23032794290360467, 'data': [0.29279999999999995]}, {'sys': 'MeMe-3.5', 'color': 0.19879551978386897, 'data': [0.23260000000000003]}, {'sys': 'MeMe-3.8', 'color': 0.11744404936205816, 'data': [0.11680000000000001]}, {'sys': 'BzBz_PD34-1.7', 'color': 0.22537382457222138, 'data': [-1.5286999999999997]}, {'sys': 'BzBz_PD34-1.6', 'color': 0.22434088042760192, 'data': [-1.5754000000000001]}, {'sys': 'BzBz_PD32-2.2', 'color': 0.3189891685300601, 'data': [-1.5093999999999999]}, {'sys': 'BzBz_S-4.1', 'color': 0.10884135031532088, 'data': [-0.8547000000000002]}, {'sys': 'BzBz_S-4.0', 'color': 0.06911476296747143, 'data': [-0.9590000000000001]}, {'sys': 'BzBz_PD34-1.8', 'color': 0.22685419834431494, 'data': [-1.476]}, {'sys': 'BzBz_PD34-1.9', 'color': 0.2287079261672095, 'data': [-1.4223999999999997]}, {'sys': 'BzH2S-3.9', 'color': 0.3439077006047999, 'data': [-0.22739999999999982]}, {'sys': 'FaNNFaNN-4.1', 'color': 0.7512716174974567, 'data': [1.7188999999999997]}, {'sys': 'FaNNFaNN-4.0', 'color': 0.7531388297328865, 'data': [1.9555000000000007]}, {'sys': 'FaNNFaNN-4.3', 'color': 0.7478064149182957, 'data': [1.2514000000000003]}, {'sys': 'FaNNFaNN-4.2', 'color': 0.7493794908838113, 'data': [1.4758000000000013]}, {'sys': 'FaOOFaON-4.0', 'color': 0.7589275618320565, 'data': [2.0586]}, {'sys': 'FaOOFaON-3.7', 'color': 0.7619465815742713, 'data': [3.3492999999999995]}, {'sys': 'FaOOFaON-3.9', 'color': 0.7593958895631474, 'data': [2.4471000000000007]}, {'sys': 'FaOOFaON-3.8', 'color': 0.7605108059280967, 'data': [2.8793999999999986]}, {'sys': 'FaONFaON-4.1', 'color': 0.7577459277014137, 'data': [1.8697999999999997]}, {'sys': 'FaOOFaON-3.6', 'color': 0.7633298028299997, 'data': [3.847599999999998]}, {'sys': 'FaNNFaNN-3.9', 'color': 0.7548200901251662, 'data': [2.2089]}, {'sys': 'FaONFaON-3.8', 'color': 0.7582294603551467, 'data': [2.967699999999999]}, {'sys': 'FaONFaON-3.9', 'color': 0.7575285282217349, 'data': [2.578900000000001]}, {'sys': 'FaONFaON-4.2', 'color': 0.7594549221042256, 'data': [1.5579999999999998]}, {'sys': 'FaOOFaNN-3.6', 'color': 0.7661655616885379, 'data': [3.701599999999999]}, {'sys': 'FaOOFaNN-3.7', 'color': 0.7671068376007428, 'data': [3.156500000000001]}, {'sys': 'FaOOFaNN-3.8', 'color': 0.766947626251711, 'data': [2.720700000000001]}, {'sys': 'FaONFaNN-3.9', 'color': 0.7569836601896789, 'data': [2.4281000000000006]}, {'sys': 'FaONFaNN-3.8', 'color': 0.758024548462959, 'data': [2.7561999999999998]}, {'sys': 'FaOOFaOO-3.6', 'color': 0.7623422640217077, 'data': [3.851800000000001]}, {'sys': 'FaOOFaOO-3.7', 'color': 0.7597430792159379, 'data': [3.2754999999999974]}, {'sys': 'FaOOFaOO-3.4', 'color': 0.7672554950739594, 'data': [5.193299999999999]}, {'sys': 'FaOOFaOO-3.5', 'color': 0.764908813123865, 'data': [4.491900000000001]}, {'sys': 'FaONFaNN-4.2', 'color': 0.7549212942233738, 'data': [1.534699999999999]}, {'sys': 'FaONFaNN-4.0', 'color': 0.7559404310956357, 'data': [2.1133000000000024]}, {'sys': 'FaONFaNN-4.1', 'color': 0.7551574698775625, 'data': [1.813900000000002]}, {'sys': 'FaONFaON-4.0', 'color': 0.7572064604483282, 'data': [2.2113999999999994]}, {'sys': 'FaOOFaOO-3.8', 'color': 0.7573810956831686, 'data': [2.7634000000000007]}, {'sys': '1', 'color': 0.2784121805328983, 'data': [0.3508]}, {'sys': '2', 'color': 0.22013842798900166, 'data': [-0.034600000000000186]}, {'sys': '3', 'color': 0.12832496088281312, 'data': [0.20360000000000023]}, {'sys': '4', 'color': 0.6993695033529733, 'data': [1.9092000000000002]}, {'sys': '5', 'color': 0.7371192790053749, 'data': [1.656600000000001]}, {'sys': '6', 'color': 0.5367033190796172, 'data': [0.27970000000000006]}, {'sys': '7', 'color': 0.3014220615964802, 'data': [0.32289999999999974]}, {'sys': '8', 'color': 0.01605867807629261, 'data': [0.12199999999999994]}, {'sys': '9', 'color': 0.6106300539083558, 'data': [0.3075999999999999]}, {'sys': '10', 'color': 0.6146680031333968, 'data': [0.6436000000000002]}, {'sys': '11', 'color': 0.6139747851721759, 'data': [0.4551999999999996]}, {'sys': '12', 'color': 0.32122739401126593, 'data': [0.44260000000000005]}, {'sys': '13', 'color': 0.24678148099136055, 'data': [-0.11789999999999967]}, {'sys': '14', 'color': 0.23700950710597016, 'data': [0.42689999999999995]}, {'sys': '15', 'color': 0.23103396678138563, 'data': [0.3266]}, {'sys': '16', 'color': 0.1922070769654413, 'data': [0.0696000000000001]}, {'sys': '17', 'color': 0.19082151944747366, 'data': [0.11159999999999992]}, {'sys': '18', 'color': 0.2886200282444196, 'data': [0.4114]}, {'sys': '19', 'color': 0.23560171133945224, 'data': [-0.1392]}, {'sys': '20', 'color': 0.3268270751294533, 'data': [0.5593]}, {'sys': '21', 'color': 0.7324460869158442, 'data': [0.6806000000000001]}],
-    color='sapt', title='MP2-CP-adz', mae=1.21356003247, mape=24.6665886087, xlimit=4.0)
+    flat([{
+        'sys': '1',
+        'color': 0.6933450559423702,
+        'data': [0.45730000000000004]
+    }, {
+        'sys': '2',
+        'color': 0.7627027688599753,
+        'data': [0.6231999999999998]
+    }, {
+        'sys': '3',
+        'color': 0.7579958735528617,
+        'data': [2.7624999999999993]
+    }, {
+        'sys': '4',
+        'color': 0.7560883254421639,
+        'data': [2.108600000000001]
+    }, {
+        'sys': '5',
+        'color': 0.7515161912065955,
+        'data': [2.2304999999999993]
+    }, {
+        'sys': '6',
+        'color': 0.7235223893438876,
+        'data': [1.3782000000000014]
+    }, {
+        'sys': '7',
+        'color': 0.7120099024225569,
+        'data': [1.9519000000000002]
+    }, {
+        'sys': '8',
+        'color': 0.13721565059144678,
+        'data': [0.13670000000000004]
+    }, {
+        'sys': '9',
+        'color': 0.3087395095814767,
+        'data': [0.2966]
+    }, {
+        'sys': '10',
+        'color': 0.25493207637105103,
+        'data': [-0.020199999999999996]
+    }, {
+        'sys': '11',
+        'color': 0.24093814608979347,
+        'data': [-1.5949999999999998]
+    }, {
+        'sys': '12',
+        'color': 0.3304746631959777,
+        'data': [-1.7422000000000004]
+    }, {
+        'sys': '13',
+        'color': 0.4156050644764822,
+        'data': [0.0011999999999989797]
+    }, {
+        'sys': '14',
+        'color': 0.2667207259626991,
+        'data': [-2.6083999999999996]
+    }, {
+        'sys': '15',
+        'color': 0.3767053567641695,
+        'data': [-1.5090000000000003]
+    }, {
+        'sys': '16',
+        'color': 0.5572641509433963,
+        'data': [0.10749999999999993]
+    }, {
+        'sys': '17',
+        'color': 0.4788598239641578,
+        'data': [0.29669999999999996]
+    }, {
+        'sys': '18',
+        'color': 0.3799031371351281,
+        'data': [0.10209999999999964]
+    }, {
+        'sys': '19',
+        'color': 0.5053227185999078,
+        'data': [0.16610000000000014]
+    }, {
+        'sys': '20',
+        'color': 0.2967660584483015,
+        'data': [-0.37739999999999974]
+    }, {
+        'sys': '21',
+        'color': 0.38836460733750316,
+        'data': [-0.4712000000000005]
+    }, {
+        'sys': '22',
+        'color': 0.5585849893078809,
+        'data': [0.30460000000000065]
+    }, {
+        'sys': 'BzBz_PD36-1.8',
+        'color': 0.1383351040559965,
+        'data': [-1.1921]
+    }, {
+        'sys': 'BzBz_PD34-2.0',
+        'color': 0.23086034843049832,
+        'data': [-1.367]
+    }, {
+        'sys': 'BzBz_T-5.2',
+        'color': 0.254318060864096,
+        'data': [-0.32230000000000025]
+    }, {
+        'sys': 'BzBz_T-5.1',
+        'color': 0.26598486566733337,
+        'data': [-0.3428]
+    }, {
+        'sys': 'BzBz_T-5.0',
+        'color': 0.28011258347610224,
+        'data': [-0.36060000000000025]
+    }, {
+        'sys': 'PyPy_S2-3.9',
+        'color': 0.14520332101084785,
+        'data': [-0.9853000000000001]
+    }, {
+        'sys': 'PyPy_S2-3.8',
+        'color': 0.1690757103699542,
+        'data': [-1.0932]
+    }, {
+        'sys': 'PyPy_S2-3.5',
+        'color': 0.25615734567417053,
+        'data': [-1.4617]
+    }, {
+        'sys': 'PyPy_S2-3.7',
+        'color': 0.19566550224566906,
+        'data': [-1.2103999999999995]
+    }, {
+        'sys': 'PyPy_S2-3.6',
+        'color': 0.22476748600170826,
+        'data': [-1.3333]
+    }, {
+        'sys': 'BzBz_PD32-2.0',
+        'color': 0.31605681987208084,
+        'data': [-1.6637]
+    }, {
+        'sys': 'BzBz_T-4.8',
+        'color': 0.31533827331543723,
+        'data': [-0.38759999999999994]
+    }, {
+        'sys': 'BzBz_T-4.9',
+        'color': 0.2966146678069063,
+        'data': [-0.3759999999999999]
+    }, {
+        'sys': 'BzH2S-3.6',
+        'color': 0.38284814928043304,
+        'data': [-0.1886000000000001]
+    }, {
+        'sys': 'BzBz_PD32-1.7',
+        'color': 0.3128835191478639,
+        'data': [-1.8703999999999998]
+    }, {
+        'sys': 'BzMe-3.8',
+        'color': 0.24117892478245323,
+        'data': [-0.034399999999999986]
+    }, {
+        'sys': 'BzMe-3.9',
+        'color': 0.22230903086047088,
+        'data': [-0.046499999999999986]
+    }, {
+        'sys': 'BzH2S-3.7',
+        'color': 0.36724255203373696,
+        'data': [-0.21039999999999992]
+    }, {
+        'sys': 'BzMe-3.6',
+        'color': 0.284901522674611,
+        'data': [0.007099999999999884]
+    }, {
+        'sys': 'BzMe-3.7',
+        'color': 0.2621086166558813,
+        'data': [-0.01770000000000005]
+    }, {
+        'sys': 'BzBz_PD32-1.9',
+        'color': 0.314711251903219,
+        'data': [-1.7353999999999998]
+    }, {
+        'sys': 'BzBz_PD32-1.8',
+        'color': 0.3136181753200793,
+        'data': [-1.8039999999999998]
+    }, {
+        'sys': 'BzH2S-3.8',
+        'color': 0.3542001591399945,
+        'data': [-0.22230000000000016]
+    }, {
+        'sys': 'BzBz_PD36-1.9',
+        'color': 0.14128552184232473,
+        'data': [-1.1517]
+    }, {
+        'sys': 'BzBz_S-3.7',
+        'color': 0.08862098445220466,
+        'data': [-1.3414]
+    }, {
+        'sys': 'BzH2S-4.0',
+        'color': 0.33637540012259076,
+        'data': [-0.2265999999999999]
+    }, {
+        'sys': 'BzBz_PD36-1.5',
+        'color': 0.13203548045236127,
+        'data': [-1.3035]
+    }, {
+        'sys': 'BzBz_S-3.8',
+        'color': 0.0335358832178858,
+        'data': [-1.2022]
+    }, {
+        'sys': 'BzBz_S-3.9',
+        'color': 0.021704594689389095,
+        'data': [-1.0747]
+    }, {
+        'sys': 'PyPy_T3-5.1',
+        'color': 0.3207725129126432,
+        'data': [-0.2958000000000003]
+    }, {
+        'sys': 'PyPy_T3-5.0',
+        'color': 0.3254925304351165,
+        'data': [-0.30710000000000015]
+    }, {
+        'sys': 'BzBz_PD36-1.7',
+        'color': 0.13577087141986593,
+        'data': [-1.2333000000000003]
+    }, {
+        'sys': 'PyPy_T3-4.8',
+        'color': 0.3443704059902452,
+        'data': [-0.32010000000000005]
+    }, {
+        'sys': 'PyPy_T3-4.9',
+        'color': 0.3333442013628509,
+        'data': [-0.3158999999999996]
+    }, {
+        'sys': 'PyPy_T3-4.7',
+        'color': 0.35854000505665756,
+        'data': [-0.31530000000000014]
+    }, {
+        'sys': 'BzBz_PD36-1.6',
+        'color': 0.13364651314909243,
+        'data': [-1.2705000000000002]
+    }, {
+        'sys': 'BzMe-4.0',
+        'color': 0.20560117919562013,
+        'data': [-0.05389999999999984]
+    }, {
+        'sys': 'MeMe-3.6',
+        'color': 0.16934865900383142,
+        'data': [0.18420000000000003]
+    }, {
+        'sys': 'MeMe-3.7',
+        'color': 0.1422332591197123,
+        'data': [0.14680000000000004]
+    }, {
+        'sys': 'MeMe-3.4',
+        'color': 0.23032794290360467,
+        'data': [0.29279999999999995]
+    }, {
+        'sys': 'MeMe-3.5',
+        'color': 0.19879551978386897,
+        'data': [0.23260000000000003]
+    }, {
+        'sys': 'MeMe-3.8',
+        'color': 0.11744404936205816,
+        'data': [0.11680000000000001]
+    }, {
+        'sys': 'BzBz_PD34-1.7',
+        'color': 0.22537382457222138,
+        'data': [-1.5286999999999997]
+    }, {
+        'sys': 'BzBz_PD34-1.6',
+        'color': 0.22434088042760192,
+        'data': [-1.5754000000000001]
+    }, {
+        'sys': 'BzBz_PD32-2.2',
+        'color': 0.3189891685300601,
+        'data': [-1.5093999999999999]
+    }, {
+        'sys': 'BzBz_S-4.1',
+        'color': 0.10884135031532088,
+        'data': [-0.8547000000000002]
+    }, {
+        'sys': 'BzBz_S-4.0',
+        'color': 0.06911476296747143,
+        'data': [-0.9590000000000001]
+    }, {
+        'sys': 'BzBz_PD34-1.8',
+        'color': 0.22685419834431494,
+        'data': [-1.476]
+    }, {
+        'sys': 'BzBz_PD34-1.9',
+        'color': 0.2287079261672095,
+        'data': [-1.4223999999999997]
+    }, {
+        'sys': 'BzH2S-3.9',
+        'color': 0.3439077006047999,
+        'data': [-0.22739999999999982]
+    }, {
+        'sys': 'FaNNFaNN-4.1',
+        'color': 0.7512716174974567,
+        'data': [1.7188999999999997]
+    }, {
+        'sys': 'FaNNFaNN-4.0',
+        'color': 0.7531388297328865,
+        'data': [1.9555000000000007]
+    }, {
+        'sys': 'FaNNFaNN-4.3',
+        'color': 0.7478064149182957,
+        'data': [1.2514000000000003]
+    }, {
+        'sys': 'FaNNFaNN-4.2',
+        'color': 0.7493794908838113,
+        'data': [1.4758000000000013]
+    }, {
+        'sys': 'FaOOFaON-4.0',
+        'color': 0.7589275618320565,
+        'data': [2.0586]
+    }, {
+        'sys': 'FaOOFaON-3.7',
+        'color': 0.7619465815742713,
+        'data': [3.3492999999999995]
+    }, {
+        'sys': 'FaOOFaON-3.9',
+        'color': 0.7593958895631474,
+        'data': [2.4471000000000007]
+    }, {
+        'sys': 'FaOOFaON-3.8',
+        'color': 0.7605108059280967,
+        'data': [2.8793999999999986]
+    }, {
+        'sys': 'FaONFaON-4.1',
+        'color': 0.7577459277014137,
+        'data': [1.8697999999999997]
+    }, {
+        'sys': 'FaOOFaON-3.6',
+        'color': 0.7633298028299997,
+        'data': [3.847599999999998]
+    }, {
+        'sys': 'FaNNFaNN-3.9',
+        'color': 0.7548200901251662,
+        'data': [2.2089]
+    }, {
+        'sys': 'FaONFaON-3.8',
+        'color': 0.7582294603551467,
+        'data': [2.967699999999999]
+    }, {
+        'sys': 'FaONFaON-3.9',
+        'color': 0.7575285282217349,
+        'data': [2.578900000000001]
+    }, {
+        'sys': 'FaONFaON-4.2',
+        'color': 0.7594549221042256,
+        'data': [1.5579999999999998]
+    }, {
+        'sys': 'FaOOFaNN-3.6',
+        'color': 0.7661655616885379,
+        'data': [3.701599999999999]
+    }, {
+        'sys': 'FaOOFaNN-3.7',
+        'color': 0.7671068376007428,
+        'data': [3.156500000000001]
+    }, {
+        'sys': 'FaOOFaNN-3.8',
+        'color': 0.766947626251711,
+        'data': [2.720700000000001]
+    }, {
+        'sys': 'FaONFaNN-3.9',
+        'color': 0.7569836601896789,
+        'data': [2.4281000000000006]
+    }, {
+        'sys': 'FaONFaNN-3.8',
+        'color': 0.758024548462959,
+        'data': [2.7561999999999998]
+    }, {
+        'sys': 'FaOOFaOO-3.6',
+        'color': 0.7623422640217077,
+        'data': [3.851800000000001]
+    }, {
+        'sys': 'FaOOFaOO-3.7',
+        'color': 0.7597430792159379,
+        'data': [3.2754999999999974]
+    }, {
+        'sys': 'FaOOFaOO-3.4',
+        'color': 0.7672554950739594,
+        'data': [5.193299999999999]
+    }, {
+        'sys': 'FaOOFaOO-3.5',
+        'color': 0.764908813123865,
+        'data': [4.491900000000001]
+    }, {
+        'sys': 'FaONFaNN-4.2',
+        'color': 0.7549212942233738,
+        'data': [1.534699999999999]
+    }, {
+        'sys': 'FaONFaNN-4.0',
+        'color': 0.7559404310956357,
+        'data': [2.1133000000000024]
+    }, {
+        'sys': 'FaONFaNN-4.1',
+        'color': 0.7551574698775625,
+        'data': [1.813900000000002]
+    }, {
+        'sys': 'FaONFaON-4.0',
+        'color': 0.7572064604483282,
+        'data': [2.2113999999999994]
+    }, {
+        'sys': 'FaOOFaOO-3.8',
+        'color': 0.7573810956831686,
+        'data': [2.7634000000000007]
+    }, {
+        'sys': '1',
+        'color': 0.2784121805328983,
+        'data': [0.3508]
+    }, {
+        'sys': '2',
+        'color': 0.22013842798900166,
+        'data': [-0.034600000000000186]
+    }, {
+        'sys': '3',
+        'color': 0.12832496088281312,
+        'data': [0.20360000000000023]
+    }, {
+        'sys': '4',
+        'color': 0.6993695033529733,
+        'data': [1.9092000000000002]
+    }, {
+        'sys': '5',
+        'color': 0.7371192790053749,
+        'data': [1.656600000000001]
+    }, {
+        'sys': '6',
+        'color': 0.5367033190796172,
+        'data': [0.27970000000000006]
+    }, {
+        'sys': '7',
+        'color': 0.3014220615964802,
+        'data': [0.32289999999999974]
+    }, {
+        'sys': '8',
+        'color': 0.01605867807629261,
+        'data': [0.12199999999999994]
+    }, {
+        'sys': '9',
+        'color': 0.6106300539083558,
+        'data': [0.3075999999999999]
+    }, {
+        'sys': '10',
+        'color': 0.6146680031333968,
+        'data': [0.6436000000000002]
+    }, {
+        'sys': '11',
+        'color': 0.6139747851721759,
+        'data': [0.4551999999999996]
+    }, {
+        'sys': '12',
+        'color': 0.32122739401126593,
+        'data': [0.44260000000000005]
+    }, {
+        'sys': '13',
+        'color': 0.24678148099136055,
+        'data': [-0.11789999999999967]
+    }, {
+        'sys': '14',
+        'color': 0.23700950710597016,
+        'data': [0.42689999999999995]
+    }, {
+        'sys': '15',
+        'color': 0.23103396678138563,
+        'data': [0.3266]
+    }, {
+        'sys': '16',
+        'color': 0.1922070769654413,
+        'data': [0.0696000000000001]
+    }, {
+        'sys': '17',
+        'color': 0.19082151944747366,
+        'data': [0.11159999999999992]
+    }, {
+        'sys': '18',
+        'color': 0.2886200282444196,
+        'data': [0.4114]
+    }, {
+        'sys': '19',
+        'color': 0.23560171133945224,
+        'data': [-0.1392]
+    }, {
+        'sys': '20',
+        'color': 0.3268270751294533,
+        'data': [0.5593]
+    }, {
+        'sys': '21',
+        'color': 0.7324460869158442,
+        'data': [0.6806000000000001]
+    }],
+         color='sapt',
+         title='MP2-CP-adz',
+         mae=1.21356003247,
+         mape=24.6665886087,
+         xlimit=4.0)
 
     lin_dats = [-0.5, -0.4, -0.3, 0, .5, .8, 5]
-    lin_labs = ['008ILE-012LEU-1', '012LEU-085ASP-1', '004GLU-063LEU-2',
-        '011ILE-014PHE-1', '027GLU-031LEU-1', '038PHE-041ILE-1', '199LEU-202GLU-1']
+    lin_labs = [
+        '008ILE-012LEU-1', '012LEU-085ASP-1', '004GLU-063LEU-2', '011ILE-014PHE-1', '027GLU-031LEU-1',
+        '038PHE-041ILE-1', '199LEU-202GLU-1'
+    ]
     iowa(lin_dats, lin_labs, title='ttl', xlimit=0.5)
 
-    figs = [0.22, 0.41, 0.14, 0.08, 0.47,
-            0, 0.38, 0.22, 0.10, 0.20,
-            0, 0, 0.13, 0.07, 0.25,
-            0, 0, 0, 0.06, 0.22,
-            0, 0, 0, 0, 0.69]
+    figs = [
+        0.22, 0.41, 0.14, 0.08, 0.47, 0, 0.38, 0.22, 0.10, 0.20, 0, 0, 0.13, 0.07, 0.25, 0, 0, 0, 0.06, 0.22, 0, 0, 0,
+        0, 0.69
+    ]
     liliowa(figs, saveas='SSI-default-MP2-CP-aqz', xlimit=1.0)
 
     disthist(lin_dats)
 
-    valerrdata = [{'color': 0.14255710779686612, 'db': 'NBC1', 'sys': 'BzBz_S-3.6', 'error': [0.027999999999999803], 'mcdata': -1.231, 'bmdata': -1.259, 'axis': 3.6}, {'color': 0.08862098445220466, 'db': 'NBC1', 'sys': 'BzBz_S-3.7', 'error': [0.02300000000000013], 'mcdata': -1.535, 'bmdata': -1.558, 'axis': 3.7}, {'color': 0.246634626511043, 'db': 'NBC1', 'sys': 'BzBz_S-3.4', 'error': [0.04200000000000001], 'mcdata': 0.189, 'bmdata': 0.147, 'axis': 3.4}, {'color': 0.19526236766857613, 'db': 'NBC1', 'sys': 'BzBz_S-3.5', 'error': [0.03500000000000003], 'mcdata': -0.689, 'bmdata': -0.724, 'axis': 3.5}, {'color': 0.3443039102164425, 'db': 'NBC1', 'sys': 'BzBz_S-3.2', 'error': [0.05999999999999961], 'mcdata': 3.522, 'bmdata': 3.462, 'axis': 3.2}, {'color': 0.29638827303466814, 'db': 'NBC1', 'sys': 'BzBz_S-3.3', 'error': [0.050999999999999934], 'mcdata': 1.535, 'bmdata': 1.484, 'axis': 3.3}, {'color': 0.42859228971962615, 'db': 'NBC1', 'sys': 'BzBz_S-6.0', 'error': [0.0020000000000000018], 'mcdata': -0.099, 'bmdata': -0.101, 'axis': 6.0}, {'color': 0.30970751839224836, 'db': 'NBC1', 'sys': 'BzBz_S-5.0', 'error': [0.0040000000000000036], 'mcdata': -0.542, 'bmdata': -0.546, 'axis': 5.0}, {'color': 0.3750832778147902, 'db': 'NBC1', 'sys': 'BzBz_S-5.5', 'error': [0.0030000000000000027], 'mcdata': -0.248, 'bmdata': -0.251, 'axis': 5.5}, {'color': 0.0335358832178858, 'db': 'NBC1', 'sys': 'BzBz_S-3.8', 'error': [0.019000000000000128], 'mcdata': -1.674, 'bmdata': -1.693, 'axis': 3.8}, {'color': 0.021704594689389095, 'db': 'NBC1', 'sys': 'BzBz_S-3.9', 'error': [0.016000000000000014], 'mcdata': -1.701, 'bmdata': -1.717, 'axis': 3.9}, {'color': 0.22096255119953187, 'db': 'NBC1', 'sys': 'BzBz_S-4.5', 'error': [0.008000000000000007], 'mcdata': -1.058, 'bmdata': -1.066, 'axis': 4.5}, {'color': 0.10884135031532088, 'db': 'NBC1', 'sys': 'BzBz_S-4.1', 'error': [0.01200000000000001], 'mcdata': -1.565, 'bmdata': -1.577, 'axis': 4.1}, {'color': 0.06911476296747143, 'db': 'NBC1', 'sys': 'BzBz_S-4.0', 'error': [0.014000000000000012], 'mcdata': -1.655, 'bmdata': -1.669, 'axis': 4.0}, {'color': 0.14275218373289067, 'db': 'NBC1', 'sys': 'BzBz_S-4.2', 'error': [0.01100000000000012], 'mcdata': -1.448, 'bmdata': -1.459, 'axis': 4.2}, {'color': 0.4740372133275638, 'db': 'NBC1', 'sys': 'BzBz_S-6.5', 'error': [0.0010000000000000009], 'mcdata': -0.028, 'bmdata': -0.029, 'axis': 6.5}, {'color': 0.6672504378283713, 'db': 'NBC1', 'sys': 'BzBz_S-10.0', 'error': [0.0], 'mcdata': 0.018, 'bmdata': 0.018, 'axis': 10.0}]
-    valerr({'cat': valerrdata},
-        color='sapt', xtitle='Rang', title='aggh', graphicsformat=['png'])
+    valerrdata = [{
+        'color': 0.14255710779686612,
+        'db': 'NBC1',
+        'sys': 'BzBz_S-3.6',
+        'error': [0.027999999999999803],
+        'mcdata': -1.231,
+        'bmdata': -1.259,
+        'axis': 3.6
+    }, {
+        'color': 0.08862098445220466,
+        'db': 'NBC1',
+        'sys': 'BzBz_S-3.7',
+        'error': [0.02300000000000013],
+        'mcdata': -1.535,
+        'bmdata': -1.558,
+        'axis': 3.7
+    }, {
+        'color': 0.246634626511043,
+        'db': 'NBC1',
+        'sys': 'BzBz_S-3.4',
+        'error': [0.04200000000000001],
+        'mcdata': 0.189,
+        'bmdata': 0.147,
+        'axis': 3.4
+    }, {
+        'color': 0.19526236766857613,
+        'db': 'NBC1',
+        'sys': 'BzBz_S-3.5',
+        'error': [0.03500000000000003],
+        'mcdata': -0.689,
+        'bmdata': -0.724,
+        'axis': 3.5
+    }, {
+        'color': 0.3443039102164425,
+        'db': 'NBC1',
+        'sys': 'BzBz_S-3.2',
+        'error': [0.05999999999999961],
+        'mcdata': 3.522,
+        'bmdata': 3.462,
+        'axis': 3.2
+    }, {
+        'color': 0.29638827303466814,
+        'db': 'NBC1',
+        'sys': 'BzBz_S-3.3',
+        'error': [0.050999999999999934],
+        'mcdata': 1.535,
+        'bmdata': 1.484,
+        'axis': 3.3
+    }, {
+        'color': 0.42859228971962615,
+        'db': 'NBC1',
+        'sys': 'BzBz_S-6.0',
+        'error': [0.0020000000000000018],
+        'mcdata': -0.099,
+        'bmdata': -0.101,
+        'axis': 6.0
+    }, {
+        'color': 0.30970751839224836,
+        'db': 'NBC1',
+        'sys': 'BzBz_S-5.0',
+        'error': [0.0040000000000000036],
+        'mcdata': -0.542,
+        'bmdata': -0.546,
+        'axis': 5.0
+    }, {
+        'color': 0.3750832778147902,
+        'db': 'NBC1',
+        'sys': 'BzBz_S-5.5',
+        'error': [0.0030000000000000027],
+        'mcdata': -0.248,
+        'bmdata': -0.251,
+        'axis': 5.5
+    }, {
+        'color': 0.0335358832178858,
+        'db': 'NBC1',
+        'sys': 'BzBz_S-3.8',
+        'error': [0.019000000000000128],
+        'mcdata': -1.674,
+        'bmdata': -1.693,
+        'axis': 3.8
+    }, {
+        'color': 0.021704594689389095,
+        'db': 'NBC1',
+        'sys': 'BzBz_S-3.9',
+        'error': [0.016000000000000014],
+        'mcdata': -1.701,
+        'bmdata': -1.717,
+        'axis': 3.9
+    }, {
+        'color': 0.22096255119953187,
+        'db': 'NBC1',
+        'sys': 'BzBz_S-4.5',
+        'error': [0.008000000000000007],
+        'mcdata': -1.058,
+        'bmdata': -1.066,
+        'axis': 4.5
+    }, {
+        'color': 0.10884135031532088,
+        'db': 'NBC1',
+        'sys': 'BzBz_S-4.1',
+        'error': [0.01200000000000001],
+        'mcdata': -1.565,
+        'bmdata': -1.577,
+        'axis': 4.1
+    }, {
+        'color': 0.06911476296747143,
+        'db': 'NBC1',
+        'sys': 'BzBz_S-4.0',
+        'error': [0.014000000000000012],
+        'mcdata': -1.655,
+        'bmdata': -1.669,
+        'axis': 4.0
+    }, {
+        'color': 0.14275218373289067,
+        'db': 'NBC1',
+        'sys': 'BzBz_S-4.2',
+        'error': [0.01100000000000012],
+        'mcdata': -1.448,
+        'bmdata': -1.459,
+        'axis': 4.2
+    }, {
+        'color': 0.4740372133275638,
+        'db': 'NBC1',
+        'sys': 'BzBz_S-6.5',
+        'error': [0.0010000000000000009],
+        'mcdata': -0.028,
+        'bmdata': -0.029,
+        'axis': 6.5
+    }, {
+        'color': 0.6672504378283713,
+        'db': 'NBC1',
+        'sys': 'BzBz_S-10.0',
+        'error': [0.0],
+        'mcdata': 0.018,
+        'bmdata': 0.018,
+        'axis': 10.0
+    }]
+    valerr({'cat': valerrdata}, color='sapt', xtitle='Rang', title='aggh', graphicsformat=['png'])

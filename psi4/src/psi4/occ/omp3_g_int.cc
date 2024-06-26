@@ -290,5 +290,5 @@ void OCCWave::omp3_g_int() {
     // outfile->Printf("\n G_int done... \n");
 
 }  // end of G_int
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

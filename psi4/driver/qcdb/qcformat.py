@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """Parent classes for quantum chemistry program input and output file
 formats.
 """
@@ -33,7 +32,6 @@ import re
 
 
 class InputFormat(object):
-
     def __init__(self, mem, mtd, bas, mol, sys, cast):
 
         # total job memory in MB
@@ -76,7 +74,6 @@ class InputFormat(object):
 
 
 class InputFormat2(object):
-
     def __init__(self, mem, mol, mtd, der, opt):
 
         # total job memory in MB

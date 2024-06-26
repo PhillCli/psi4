@@ -25,13 +25,14 @@
 #
 # @END LICENSE
 #
-
 """sphinx-psi-theme.ext.relbar_toc - adds TOC entry and icons to relbar.
 Modeled from cloud_sptheme.ext.relbar_toc
 
 """
 import os.path
-import logging; log = logging.getLogger(__name__)
+import logging
+log = logging.getLogger(__name__)
+
 
 def insert_toc(app, pagename, templatename, ctx, event_arg):
     links = ctx['rellinks']

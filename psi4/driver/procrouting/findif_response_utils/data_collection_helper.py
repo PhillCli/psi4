@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """
 Module of helper functions for distributed ccresponse computations.
 
@@ -90,7 +89,7 @@ def parse_geometry_matrix_data(outfile, matrix_name, row_tot):
                 n_tries += 1
                 if n_tries > (row_tot + 13):
                     raise p4util.ParsingError('{} Matrix was unreadable. Scanned {}'
-                                    'lines.'.format(matrix_name, n_tries))
+                                              'lines.'.format(matrix_name, n_tries))
                 else:
                     (index, x, y, z) = line.split()
                     matrix_data.append(float(x))
@@ -101,13 +100,13 @@ def parse_geometry_matrix_data(outfile, matrix_name, row_tot):
                 pass
         if (n_rows == row_tot) and (len(matrix_data) != 3 * row_tot):
             raise p4util.ParsingError('Collecting {} data failed!'
-                            '\nExpected {} elements but only captured {}'.format(
-                                matrix_name, 3 * row_tot, len(matrix_data)))
+                                      '\nExpected {} elements but only captured {}'.format(
+                                          matrix_name, 3 * row_tot, len(matrix_data)))
         if len(matrix_data) == 3 * row_tot:
             return matrix_data
 
     raise p4util.ParsingError('data for {}  was not found in the output file, '
-                    'but it was marked for collection. Check output files '
-                    'in displacement sub-dirs!'.format(matrix_name))
+                              'but it was marked for collection. Check output files '
+                              'in displacement sub-dirs!'.format(matrix_name))
 
     # END parse_geometry_matrix_data()

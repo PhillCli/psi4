@@ -55,7 +55,8 @@ PsiException::PsiException(std::string msg, const char *_file, int _line) noexce
     int size = backtrace(Stack.data(), stacksize);
     int status = -1;
 
-    message << "The most recent " << (size < stacksize ? size : stacksize) << " function calls were:" << std::endl << std::endl;
+    message << "The most recent " << (size < stacksize ? size : stacksize) << " function calls were:" << std::endl
+            << std::endl;
     strings = backtrace_symbols(Stack.data(), size);
 
     for (int i = 0; i < size; i++) {
@@ -128,7 +129,8 @@ SystemError::SystemError(int eno, const char *_file, int _line) noexcept : PsiEx
 
 SystemError::~SystemError() noexcept {}
 
-InputException::InputException(std::string msg, std::string param_name, int value, const char *_file, int _line) noexcept
+InputException::InputException(std::string msg, std::string param_name, int value, const char *_file,
+                               int _line) noexcept
     : PsiException(msg, _file, _line) {
     write_input_msg<int>(msg, param_name, value);
 }
@@ -184,4 +186,4 @@ FeatureNotImplemented::FeatureNotImplemented(std::string module_name, std::strin
 }
 
 FeatureNotImplemented::~FeatureNotImplemented() throw() {}
-}
+}  // namespace psi

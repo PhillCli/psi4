@@ -5272,5 +5272,5 @@ double R_0_AB_[] = {
     8.3792340078249000
 };
 // clang-format on
-}
+}  // namespace psi
 #endif

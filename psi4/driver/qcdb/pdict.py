@@ -54,10 +54,10 @@ class PreservingDict(dict):
             existing_exp = self[key].as_tuple().exponent  # 0.1111 --> -4
             candidate_exp = value.as_tuple().exponent
             if existing_exp > candidate_exp:  # candidate has more digits
-                places = Decimal(10) ** (existing_exp + 1)  # exp+1 permits slack in rounding
+                places = Decimal(10)**(existing_exp + 1)  # exp+1 permits slack in rounding
                 best_value = value
-            else:                             # existing has more digits
-                places = Decimal(10) ** (candidate_exp + 1)
+            else:  # existing has more digits
+                places = Decimal(10)**(candidate_exp + 1)
                 best_value = self[key]
             # Validate values are the same
             places = max(places, Decimal('1E-11'))  # for computed psivars
@@ -65,9 +65,8 @@ class PreservingDict(dict):
             #print('CEIL:  ', self[key].quantize(places, rounding=ROUND_CEILING) - value.quantize(places, rounding=ROUND_CEILING))
             if (self[key].quantize(places, rounding=ROUND_CEILING).compare(value.quantize(places, rounding=ROUND_CEILING)) != 0) and \
                (self[key].quantize(places, rounding=ROUND_FLOOR).compare(value.quantize(places, rounding=ROUND_FLOOR)) != 0):
-                raise ParsingValidationError(
-                    """Output file yielded both %s and %s as values for quantity %s.""" %
-                    (self[key].to_eng_string(), value.to_eng_string(), key))
+                raise ParsingValidationError("""Output file yielded both %s and %s as values for quantity %s.""" %
+                                             (self[key].to_eng_string(), value.to_eng_string(), key))
             #print 'Resetting variable %s to %s' % (key, best_value.to_eng_string())
         else:
             best_value = value
@@ -77,8 +76,7 @@ class PreservingDict(dict):
     def update(self, *args, **kwargs):
         if args:
             if len(args) > 1:
-                raise TypeError("update expected at most 1 arguments, "
-                                "got %d" % len(args))
+                raise TypeError("update expected at most 1 arguments, " "got %d" % len(args))
             other = dict(args[0])
             for key in other:
                 self[key] = other[key]

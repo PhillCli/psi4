@@ -31,7 +31,6 @@ import numpy as np
 from psi4 import core
 
 from ...p4util.exceptions import *
-
 """
 This module provides ``engine`` objects that can be used by the :func:`~psi4.driver.p4util.solvers.davidson_solver` and
 :func:`~psi4.driver.p4util.solvers.hamiltonian_solver`
@@ -608,6 +607,7 @@ class TDUSCFEngine(PairedMatPerVector):
                 H1X.append(self.vector_axpy(1.0, Fxi, self._so_to_mo(H1X_so)))
 
         return H1X
+
     def _combine_H1_H2(self, Fx, Jx, Kx=None):
         """Build the combinations:
             H1 X =  [(Ea - Ei) + 2J - K - K^T]X

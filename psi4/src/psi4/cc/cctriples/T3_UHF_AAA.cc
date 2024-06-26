@@ -741,8 +741,8 @@ void T3_UHF_AAA(double ***W, double ***V, int disc, int nirreps, int I, int Gi, 
                     }
 
                 } /* c */
-            }     /* ab */
-        }         /* Gab */
+            } /* ab */
+        } /* Gab */
 
     } /**** Disconnected T3 complete ****/
 
@@ -766,8 +766,8 @@ void T3_UHF_AAA(double ***W, double ***V, int disc, int nirreps, int I, int Gi, 
                 if (disc) V[Gab][ab][c] /= (omega + denom);
 
             } /* c */
-        }     /* ab */
-    }         /* Gab */
+        } /* ab */
+    } /* Gab */
 
     for (Gab = 0; Gab < nirreps; Gab++) {
         Gc = Gab ^ Gijk ^ GX3; /* changed */

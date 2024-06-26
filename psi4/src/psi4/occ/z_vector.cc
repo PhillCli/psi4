@@ -484,5 +484,5 @@ void OCCWave::z_vector() {
     }  // end if (reference_ == "UNRESTRICTED")
        // outfile->Printf("\n zvector_orb_resp done. \n");
 }  // end z_vector
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

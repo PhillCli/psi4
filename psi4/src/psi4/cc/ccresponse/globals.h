@@ -53,7 +53,7 @@ EXTERN struct Params params;
 EXTERN struct Local local;
 
 #define MIN0(a, b) (((a) < (b)) ? (a) : (b))
-}
+}  // namespace ccresponse
 }  // namespace psi
 
 #endif

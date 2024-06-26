@@ -62,6 +62,6 @@ class PSIMRCCWfn : public Wavefunction {
     // Methods
     void active_space_warning() const;
 };
-}
-}
+}  // namespace psimrcc
+}  // namespace psi
 #endif  // _psi_src_bin_psimrcc_wfn_h_

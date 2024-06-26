@@ -63,7 +63,7 @@ CIWavefunction::~CIWavefunction() {
 }
 
 void CIWavefunction::common_init() {
-    psio_ = _default_psio_lib_; // We can't assume the incoming ref_wfn had its own psio
+    psio_ = _default_psio_lib_;  // We can't assume the incoming ref_wfn had its own psio
 
     title((options_.get_str("WFN") == "CASSCF") || (options_.get_str("WFN") == "RASSCF"));
 

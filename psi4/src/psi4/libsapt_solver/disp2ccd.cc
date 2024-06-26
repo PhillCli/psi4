@@ -426,7 +426,8 @@ double SAPT2p::r_ccd_iterate(const char *TARBS, const char *TARBSerr, const char
 double SAPT2p::r_ccd_amplitudes(const char *TARBS, const char *TARBSerr, const char *CA_RBS,  //!
                                 const char *GARRA, const char *GBSSB, const char *XARAR, const char *XAA,
                                 const char *XRR, const char *XBSBS, const char *XBB, const char *XSS, double *evalsA_,
-                                double *evalsB_, size_t noccA_, size_t virA, size_t foccA_, size_t noccB_, size_t virB, size_t foccB_) {
+                                double *evalsB_, size_t noccA_, size_t virA, size_t foccA_, size_t noccB_, size_t virB,
+                                size_t foccB_) {
     size_t occA = noccA_ - foccA_;
     size_t occB = noccB_ - foccB_;
 
@@ -539,8 +540,8 @@ double SAPT2p::r_ccd_amplitudes(const char *TARBS, const char *TARBSerr, const c
 }
 
 void SAPT2p::s_ccd_prep(const char *SARAR, const char *CA_RAR, const char *TARAR, const char *ThetaARAR,  //!
-                        const char *TARBS, const char *GBSBS, const char *ARBS, double *evalsA_, size_t noccA_, size_t virA,
-                        size_t foccA_, size_t noccB_, size_t virB, size_t foccB_) {
+                        const char *TARBS, const char *GBSBS, const char *ARBS, double *evalsA_, size_t noccA_,
+                        size_t virA, size_t foccA_, size_t noccB_, size_t virB, size_t foccB_) {
     size_t occA = noccA_ - foccA_;
     size_t occB = noccB_ - foccB_;
 
@@ -1059,8 +1060,8 @@ double SAPT2p::s_ccd_amplitudes(const char *SARAR, const char *SARARerr, const c
 
 void SAPT2p::disp_s_prep(const char *TAR, const char *TpAR, const char *ThetaARAR,  //!
                          const char *TARBS, int AAfile, const char *AAints, const char *ARints, const char *RRints,
-                         int BBfile, const char *BSints, double *evalsA_, size_t noccA_, size_t virA, size_t foccA_, size_t noccB_,
-                         size_t virB, size_t foccB_) {
+                         int BBfile, const char *BSints, double *evalsA_, size_t noccA_, size_t virA, size_t foccA_,
+                         size_t noccB_, size_t virB, size_t foccB_) {
     size_t occA = noccA_ - foccA_;
     size_t occB = noccB_ - foccB_;
 
@@ -1361,7 +1362,7 @@ double **SAPT2p::vvvv_ccd(const char *TARAR, const char *RRRRp, const char *RRRR
 
     for (int a1 = 0; a1 < occA; a1++) {
         size_t a1a1 = a1 * occA + a1;
-        size_t b1b1 = INDEX(a1, a1); // lgtm [cpp/comparison-of-identical-expressions]
+        size_t b1b1 = INDEX(a1, a1);  // lgtm [cpp/comparison-of-identical-expressions]
         for (int r3 = 0; r3 < virA2; r3++) {
             for (int r4 = 0; r4 < r3; r4++) {
                 int r3r4 = r3 * virA2 + r4;
@@ -1398,8 +1399,8 @@ double **SAPT2p::vvvv_ccd(const char *TARAR, const char *RRRRp, const char *RRRR
 
 void SAPT2p::ccd_prep(const char *TARAR, const char *ThetaARAR, const char *GARAR, const char *GARRA,  //!
                       const char *AAAA, const char *ARAR, const char *AARR, const char *RRRRp, const char *RRRRm,
-                      int DFfile, const char *AAints, const char *ARints, const char *RRints, double *evals, size_t noccA,
-                      size_t virA, size_t foccA, std::shared_ptr<Matrix> mo2no, const char *T2ARAR) {
+                      int DFfile, const char *AAints, const char *ARints, const char *RRints, double *evals,
+                      size_t noccA, size_t virA, size_t foccA, std::shared_ptr<Matrix> mo2no, const char *T2ARAR) {
     size_t occA = noccA - foccA;
 
     double **vAAAA = block_matrix(occA * occA, occA * occA);
@@ -2072,7 +2073,8 @@ void SAPTDIIS::get_new_vector() {
         psio_->read_entry(diis_file_, err_label_i.c_str(), (char *)&(vec_i[0]), vec_length_ * (size_t)sizeof(double));
         for (int j = 0; j <= i; j++) {
             std::string err_label_j = get_err_label(j);
-            psio_->read_entry(diis_file_, err_label_j.c_str(), (char *)&(vec_j[0]), vec_length_ * (size_t)sizeof(double));
+            psio_->read_entry(diis_file_, err_label_j.c_str(), (char *)&(vec_j[0]),
+                              vec_length_ * (size_t)sizeof(double));
             Bmat[i][j] = Bmat[j][i] = C_DDOT(vec_length_, vec_i, 1, vec_j, 1);
         }
     }
@@ -2106,13 +2108,9 @@ void SAPTDIIS::get_new_vector() {
     free_block(Bmat);
 }
 
-std::string SAPTDIIS::get_err_label(const int64_t num) {
-    return ("Error vector "+to_str_width(num, 2));
-}
+std::string SAPTDIIS::get_err_label(const int64_t num) { return ("Error vector " + to_str_width(num, 2)); }
 
-std::string SAPTDIIS::get_vec_label(const int64_t num) {
-    return ("Vector "+to_str_width(num, 2));
-}
+std::string SAPTDIIS::get_vec_label(const int64_t num) { return ("Vector " + to_str_width(num, 2)); }
 
 std::shared_ptr<Matrix> SAPT2p::mo2no(int ampfile, const char *VV_opdm, int nvir, double cutoff) {
     auto D = std::make_shared<Matrix>("D", nvir, nvir);

@@ -78,7 +78,8 @@ def fisapt_compute_energy(self, external_potentials=None):
     core.timer_off("FISAPT:SAPT:ind")
     if not core.get_option("FISAPT", "FISAPT_DO_FSAPT"):
         core.timer_on("FISAPT:SAPT:disp")
-        self.disp(self.matrices(), self.vectors(), True)  # Expensive, only do if needed  # unteseted translation of below
+        self.disp(self.matrices(), self.vectors(),
+                  True)  # Expensive, only do if needed  # unteseted translation of below
         # self.disp(matrices_, vectors_, true)  # Expensive, only do if needed
         core.timer_off("FISAPT:SAPT:disp")
 
@@ -157,7 +158,8 @@ def fisapt_fdrop(self, external_potentials=None):
                     elif len(qxyz) == 4:
                         xyz += "Ch %f %f %f\n" % (qxyz[1], qxyz[2], qxyz[3])
                     else:
-                        raise ValidationError(f"Point charge '{qxyz}' not mapping into 'chg, [x, y, z]' or 'chg, x, y, z'")
+                        raise ValidationError(
+                            f"Point charge '{qxyz}' not mapping into 'chg, [x, y, z]' or 'chg, x, y, z'")
 
                 with open(filepath + os.sep + "Extern_%s.xyz" % frag, "w") as fh:
                     fh.write(xyz)
@@ -210,6 +212,7 @@ def fisapt_fdrop(self, external_potentials=None):
         if core.get_option("FISAPT", "FISAPT_DO_FSAPT_DISP"):
             matrices["sDisp_AB"].name = "Disp"
             _drop(matrices["sDisp_AB"], ssapt_filepath)
+
 
 def fisapt_plot(self):
     """Filesystem wrapper for FISAPT::plot."""

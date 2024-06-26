@@ -77,7 +77,7 @@ class ROHF : public HF {
     SharedMatrix moFeff() const { return moFeff_; }
     SharedMatrix moFa() const { return moFa_; }
     SharedMatrix moFb() const { return moFb_; }
-    SharedMatrix Ct() const {return Ct_; }
+    SharedMatrix Ct() const { return Ct_; }
 
     void save_density_and_energy() override;
 

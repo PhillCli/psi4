@@ -226,7 +226,7 @@ OrbitalSpace orthogonal_complement(const OrbitalSpace &space1, const OrbitalSpac
     // Select nullspace vectors from V
     Dimension dim_zero(space1.nirrep());
     Dimension Np(S->dimpi() - nlindep);
-    auto V_Nt = Vt->get_block({Np, Vt->rowspi()},{dim_zero, Vt->colspi()});
+    auto V_Nt = Vt->get_block({Np, Vt->rowspi()}, {dim_zero, Vt->colspi()});
     auto V_N = V_Nt->transpose();
 
     outfile->Printf("    %d linear dependencies will be \'removed\'.\n", nlindep[0]);

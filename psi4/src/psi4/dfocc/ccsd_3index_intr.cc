@@ -36,7 +36,6 @@ namespace psi {
 namespace dfoccwave {
 
 void DFOCC::ccsd_3index_intr() {
-
     // RHF
     if (reference_ == "RESTRICTED") {
         // defs
@@ -186,49 +185,49 @@ void DFOCC::ccsd_3index_intr() {
         T1c->gemv(false, bQiaA, t1A, 1.0, 0.0);
         // tQ += \sum(m,f) (b(Q,mf) * t1A(m,f))
         T1c->gemv(false, bQiaB, t1B, 1.0, 1.0);
-        //t(Q,IA) = \sum(F) t1A(I,F) * b(Q,AF)  (50)
+        // t(Q,IA) = \sum(F) t1A(I,F) * b(Q,AF)  (50)
         tQovA = std::make_shared<Tensor2d>("T1 (Q|IA)", nQ, naoccA, navirA);
         tQovA->contract233(false, false, naoccA, navirA, t1A, bQabA, 1.0, 0.0);
         tQovA->write(psio_, PSIF_DFOCC_AMPS);
         tQovA.reset();
 
-        //t(Q,ia) = \sum(f) t1B(i,f) * b(Q,af)  (51)
+        // t(Q,ia) = \sum(f) t1B(i,f) * b(Q,af)  (51)
         tQovB = std::make_shared<Tensor2d>("T1 (Q|ia)", nQ, naoccB, navirB);
         tQovB->contract233(false, false, naoccB, navirB, t1B, bQabB, 1.0, 0.0);
         tQovB->write(psio_, PSIF_DFOCC_AMPS);
         tQovB.reset();
 
-        //t(Q,IJ) = \sum(E) t1A(I,E) * b(Q,JE)   (53)
+        // t(Q,IJ) = \sum(E) t1A(I,E) * b(Q,JE)   (53)
         tQooA = std::make_shared<Tensor2d>("T1 (Q|IJ)", nQ, naoccA, naoccA);
         tQooA->contract233(false, true, naoccA, naoccA, t1A, bQiaA, 1.0, 0.0);
         tQooA->write(psio_, PSIF_DFOCC_AMPS);
         tQooA.reset();
 
-        //t(Q,ij) = \sum(e) t1B(i,e) * b(Q,je)   (54)
+        // t(Q,ij) = \sum(e) t1B(i,e) * b(Q,je)   (54)
         tQooB = std::make_shared<Tensor2d>("T1 (Q|ij)", nQ, naoccB, naoccB);
         tQooB->contract233(false, true, naoccB, naoccB, t1B, bQiaB, 1.0, 0.0);
         tQooB->write(psio_, PSIF_DFOCC_AMPS);
         tQooB.reset();
 
-        //t(Q,AI) = \sum(M) t1A(M,A) * b(Q,MI)  (56)
+        // t(Q,AI) = \sum(M) t1A(M,A) * b(Q,MI)  (56)
         tQvoA = std::make_shared<Tensor2d>("T1 (Q|AI)", nQ, navirA, naoccA);
         tQvoA->contract233(true, false, navirA, naoccA, t1A, bQijA, 1.0, 0.0);
         tQvoA->write(psio_, PSIF_DFOCC_AMPS);
         tQvoA.reset();
 
-        //t(Q,ai) = \sum(m) t1A(m,a) * b(Q,mi)  (57)
+        // t(Q,ai) = \sum(m) t1A(m,a) * b(Q,mi)  (57)
         tQvoB = std::make_shared<Tensor2d>("T1 (Q|ai)", nQ, navirB, naoccB);
         tQvoB->contract233(true, false, navirB, naoccB, t1B, bQijB, 1.0, 0.0);
         tQvoB->write(psio_, PSIF_DFOCC_AMPS);
         tQvoB.reset();
 
-        //t(Q,AB) = \sum(M) t1A(M,A) * b(Q,MB)  (59)
+        // t(Q,AB) = \sum(M) t1A(M,A) * b(Q,MB)  (59)
         tQvvA = std::make_shared<Tensor2d>("T1 (Q|AB)", nQ, navirA, navirA);
         tQvvA->contract233(true, false, navirA, navirA, t1A, bQiaA, 1.0, 0.0);
         tQvvA->write(psio_, PSIF_DFOCC_AMPS);
         tQvvA.reset();
 
-        //t(Q,ab) = \sum(m) t1A(m,a) * b(Q,mb)  (60)
+        // t(Q,ab) = \sum(m) t1A(m,a) * b(Q,mb)  (60)
         tQvvB = std::make_shared<Tensor2d>("T1 (Q|ab)", nQ, navirB, navirB);
         tQvvB->contract233(true, false, navirB, navirB, t1B, bQiaB, 1.0, 0.0);
         tQvvB->write(psio_, PSIF_DFOCC_AMPS);
@@ -293,7 +292,7 @@ void DFOCC::ccsd_3index_intr() {
         tQooA = std::make_shared<Tensor2d>("T1 (Q|IJ)", nQ, naoccA, naoccA);
         tQooA->read(psio_, PSIF_DFOCC_AMPS);
         ttQA = std::make_shared<Tensor2d>("T1tilde (Q|IA)", nQ, naoccA, navirA);
-        ttQA->contract(false, false, nQ*naoccA, navirA, naoccA, tQooA, t1A, 1.0, 0.0);
+        ttQA->contract(false, false, nQ * naoccA, navirA, naoccA, tQooA, t1A, 1.0, 0.0);
         tQooA.reset();
         ttQA->write(psio_, PSIF_DFOCC_AMPS);
         ttQA.reset();
@@ -302,7 +301,7 @@ void DFOCC::ccsd_3index_intr() {
         tQooB = std::make_shared<Tensor2d>("T1 (Q|ij)", nQ, naoccB, naoccB);
         tQooB->read(psio_, PSIF_DFOCC_AMPS);
         ttQB = std::make_shared<Tensor2d>("T1tilde (Q|ia)", nQ, naoccB, navirB);
-        ttQB->contract(false, false, nQ*naoccB, navirB, naoccB, tQooB, t1B, 1.0, 0.0);
+        ttQB->contract(false, false, nQ * naoccB, navirB, naoccB, tQooB, t1B, 1.0, 0.0);
         tQooB.reset();
         ttQB->write(psio_, PSIF_DFOCC_AMPS);
         ttQB.reset();
@@ -413,76 +412,80 @@ void DFOCC::ccsd_3index_intr() {
 //============================================================================
 //    DF-UCCSD: Tau_IJ^AB = T_IJ^AB + t_I^A t_J^B - t_I^B t_J^A
 //============================================================================
-void DFOCC::uccsd_tau_amps(int occ1, int occ2, int vir1, int vir2, SharedTensor2d &Tau, SharedTensor2d &T2, SharedTensor2d &T1a, SharedTensor2d &T1b) {
-     for(int i=0; i<occ1; ++i) {
-         for(int j=0; j<occ2; ++j) {
-             int ij = (i * occ2) + j;
-             for(int a=0; a<vir1; ++a) {
-                 for(int b=0; b<vir2; ++b) {
-                     int ab = (a * vir2) + b;
-                     double value = T2->get(ij,ab) + (T1a->get(i,a) * T1b->get(j,b)) - (T1a->get(i,b) * T1b->get(j,a));
-                     Tau->set(ij,ab,value);
-                 }
-             }
-         }
-      }
+void DFOCC::uccsd_tau_amps(int occ1, int occ2, int vir1, int vir2, SharedTensor2d &Tau, SharedTensor2d &T2,
+                           SharedTensor2d &T1a, SharedTensor2d &T1b) {
+    for (int i = 0; i < occ1; ++i) {
+        for (int j = 0; j < occ2; ++j) {
+            int ij = (i * occ2) + j;
+            for (int a = 0; a < vir1; ++a) {
+                for (int b = 0; b < vir2; ++b) {
+                    int ab = (a * vir2) + b;
+                    double value =
+                        T2->get(ij, ab) + (T1a->get(i, a) * T1b->get(j, b)) - (T1a->get(i, b) * T1b->get(j, a));
+                    Tau->set(ij, ab, value);
+                }
+            }
+        }
+    }
 }  // end ccsd_tau_amps
 
 //============================================================================
 //    DF-UCCSD: Tau_Ij^Ab = T_Ij^Ab + t_I^A t_j^b
 //============================================================================
-void DFOCC::uccsd_tau_amps_OS(int occ1, int occ2, int vir1, int vir2, SharedTensor2d &Tau, SharedTensor2d &T2, SharedTensor2d &T1a, SharedTensor2d &T1b) {
-     for(int i=0; i<occ1; ++i) {
-         for(int j=0; j<occ2; ++j) {
-             int ij = (i * occ2) + j;
-             for(int a=0; a<vir1; ++a) {
-                 for(int b=0; b<vir2; ++b) {
-                     int ab = (a * vir2) + b;
-                     double value = T2->get(ij,ab) + (T1a->get(i,a) * T1b->get(j,b));
-                     Tau->set(ij,ab,value);
-                 }
-             }
-         }
-      }
+void DFOCC::uccsd_tau_amps_OS(int occ1, int occ2, int vir1, int vir2, SharedTensor2d &Tau, SharedTensor2d &T2,
+                              SharedTensor2d &T1a, SharedTensor2d &T1b) {
+    for (int i = 0; i < occ1; ++i) {
+        for (int j = 0; j < occ2; ++j) {
+            int ij = (i * occ2) + j;
+            for (int a = 0; a < vir1; ++a) {
+                for (int b = 0; b < vir2; ++b) {
+                    int ab = (a * vir2) + b;
+                    double value = T2->get(ij, ab) + (T1a->get(i, a) * T1b->get(j, b));
+                    Tau->set(ij, ab, value);
+                }
+            }
+        }
+    }
 }  // end ccsd_tau_amps_OS
 
 //=============================================================================
 //    DF-UCCSD: Tautilde_IJ^AB = T_IJ^AB + 1/2 (t_I^A t_J^B - t_I^B t_J^A)
 //=============================================================================
-void DFOCC::uccsd_tau_tilde_amps(int occ1, int occ2, int vir1, int vir2, SharedTensor2d &Tautilde, SharedTensor2d &T2, SharedTensor2d &T1a, SharedTensor2d &T1b) {
-     for(int i=0; i<occ1; ++i) {
-         for(int j=0; j<occ2; ++j) {
-             int ij = (i * occ2) + j;
-             for(int a=0; a<vir1; ++a) {
-                 for(int b=0; b<vir2; ++b) {
-                     int ab = (a * vir2) + b;
-                     double value = T2->get(ij,ab) + 0.5 * ((T1a->get(i,a) * T1b->get(j,b)) - (T1a->get(i,b) * T1b->get(j,a)));
-                     Tautilde->set(ij,ab,value);
-                 }
-             }
-         }
-      }
+void DFOCC::uccsd_tau_tilde_amps(int occ1, int occ2, int vir1, int vir2, SharedTensor2d &Tautilde, SharedTensor2d &T2,
+                                 SharedTensor2d &T1a, SharedTensor2d &T1b) {
+    for (int i = 0; i < occ1; ++i) {
+        for (int j = 0; j < occ2; ++j) {
+            int ij = (i * occ2) + j;
+            for (int a = 0; a < vir1; ++a) {
+                for (int b = 0; b < vir2; ++b) {
+                    int ab = (a * vir2) + b;
+                    double value =
+                        T2->get(ij, ab) + 0.5 * ((T1a->get(i, a) * T1b->get(j, b)) - (T1a->get(i, b) * T1b->get(j, a)));
+                    Tautilde->set(ij, ab, value);
+                }
+            }
+        }
+    }
 }  // end ccsd_tau_tilde_amps
-
 
 //=============================================================================
 //    DF-UCCSD: Tautilde_Ij^Ab = T_Ij^Ab + 1/2 (t_I^A t_j^b)
 //=============================================================================
-void DFOCC::uccsd_tau_tilde_amps_OS(int occ1, int occ2, int vir1, int vir2, SharedTensor2d &Tautilde, SharedTensor2d &T2, SharedTensor2d &T1a, SharedTensor2d &T1b) {
-     for(int i=0; i<occ1; ++i) {
-         for(int j=0; j<occ2; ++j) {
-             int ij = (i * occ2) + j;
-             for(int a=0; a<vir1; ++a) {
-                 for(int b=0; b<vir2; ++b) {
-                     int ab = (a * vir2) + b;
-                     double value = T2->get(ij,ab) + 0.5 * ((T1a->get(i,a) * T1b->get(j,b)));
-                     Tautilde->set(ij,ab,value);
-                 }
-             }
-         }
-      }
+void DFOCC::uccsd_tau_tilde_amps_OS(int occ1, int occ2, int vir1, int vir2, SharedTensor2d &Tautilde,
+                                    SharedTensor2d &T2, SharedTensor2d &T1a, SharedTensor2d &T1b) {
+    for (int i = 0; i < occ1; ++i) {
+        for (int j = 0; j < occ2; ++j) {
+            int ij = (i * occ2) + j;
+            for (int a = 0; a < vir1; ++a) {
+                for (int b = 0; b < vir2; ++b) {
+                    int ab = (a * vir2) + b;
+                    double value = T2->get(ij, ab) + 0.5 * ((T1a->get(i, a) * T1b->get(j, b)));
+                    Tautilde->set(ij, ab, value);
+                }
+            }
+        }
+    }
 }  // end ccsd_tau_tilde_amps
-
 
 }  // namespace dfoccwave
 }  // namespace psi

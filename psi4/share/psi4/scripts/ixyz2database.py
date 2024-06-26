@@ -36,9 +36,10 @@ sys.path.append(os.path.dirname(__file__) + '/../../../driver')
 try:
     import qcdb
 except ImportError:
-    print("""Cannot load qcdb python module. Run this script in situ or append the psi4/share/psi4/scripts directory to $PYTHONPATH.""")
+    print(
+        """Cannot load qcdb python module. Run this script in situ or append the psi4/share/psi4/scripts directory to $PYTHONPATH."""
+    )
     exit(1)
-
 """
 Utility: This script converts a set of geometry files in XYZ format into
     a python database file for psi4 and qcdb scripts.
@@ -138,7 +139,7 @@ if route == 2:
             Nrxn = int(Nrxn)
             user_obedient = True
 else:
-    Nrxn = 1    # TODO really need?
+    Nrxn = 1  # TODO really need?
 
 # initialize containers
 spy = ""
@@ -159,7 +160,8 @@ HRGT = []
 TAGLRGT = {}
 BINDRGT = {}
 
-print("\n%-25s %6s %6s %6s %6s %6s\t\t%s\n" % ("system", "CHGsyst", "MLPsyst", "Natom", "Nmol1", "Nmol2", "Fragmentation Pattern"))
+print("\n%-25s %6s %6s %6s %6s %6s\t\t%s\n" %
+      ("system", "CHGsyst", "MLPsyst", "Natom", "Nmol1", "Nmol2", "Fragmentation Pattern"))
 
 for xyzfile in (glob.glob('*.' + fext) + glob.glob('*.p4m')):
 
@@ -224,7 +226,6 @@ Nrgt = len(HRGT)
 if Nrgt != count:
     print("ERROR: discrepancy in counting systems $Nrgt vs $count!\n")
     sys.exit()
-
 
 # python database file
 docstring = """\"\"\"
@@ -322,7 +323,6 @@ elif route == 3:
     spy += "    ACTV[   '%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),\n"
     spy += "                                      '%s-%s-monoA-unCP' % (dbse, rxn),\n"
     spy += "                                      '%s-%s-monoB-unCP' % (dbse, rxn) ]\n\n"
-
 
 spy += "# <<< Reference Values [kcal/mol] >>>\n"
 spy += "BIND = {}\n"

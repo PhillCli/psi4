@@ -40,7 +40,6 @@ void DFOCC::ccd_opdm() {
     SharedTensor2d T, U, X;
     timer_on("opdm");
     if (reference_ == "RESTRICTED") {
-
         // G1_ij = -(G_ij + G_ji)
         T = std::make_shared<Tensor2d>("G Intermediate <I|J>", naoccA, naoccA);
         T->symmetrize(GijA);
@@ -77,7 +76,7 @@ void DFOCC::ccd_opdm() {
             double trace = G1->trace();
             outfile->Printf("\t trace: %12.12f \n", trace);
         }
-    }// end if (reference_ == "RESTRICTED")
+    }  // end if (reference_ == "RESTRICTED")
 
     else if (reference_ == "UNRESTRICTED") {
         // G1_IJ = -(G_IJ + G_JI)
@@ -86,8 +85,8 @@ void DFOCC::ccd_opdm() {
         T->scale(-1.0);
         G1c_ooA->set_act_oo(nfrzc, naoccA, T);
         T.reset();
-        //G1c_ooA->set_act_oo(nfrzc, naoccA, GijA);
-        //G1c_ooA->scale(-1.0);
+        // G1c_ooA->set_act_oo(nfrzc, naoccA, GijA);
+        // G1c_ooA->scale(-1.0);
 
         // G1_ij = -(G_ij + G_ji)
         T = std::make_shared<Tensor2d>("G Intermediate <i|j>", naoccB, naoccB);
@@ -95,8 +94,8 @@ void DFOCC::ccd_opdm() {
         T->scale(-1.0);
         G1c_ooB->set_act_oo(nfrzc, naoccB, T);
         T.reset();
-        //G1c_ooB->set_act_oo(nfrzc, naoccB, GijB);
-        //G1c_ooB->scale(-1.0);
+        // G1c_ooB->set_act_oo(nfrzc, naoccB, GijB);
+        // G1c_ooB->scale(-1.0);
 
         //  G1_AB = -(G_AB + G_AB)
         T = std::make_shared<Tensor2d>("G Intermediate <A|B>", navirA, navirA);
@@ -104,16 +103,16 @@ void DFOCC::ccd_opdm() {
         T->scale(-1.0);
         G1c_vvA->set_act_vv(T);
         T.reset();
-        //G1c_vvA->set_act_vv(GabA);
-        //G1c_vvA->scale(-1.0);
+        // G1c_vvA->set_act_vv(GabA);
+        // G1c_vvA->scale(-1.0);
 
         T = std::make_shared<Tensor2d>("G Intermediate <a|b>", navirB, navirB);
         T->symmetrize(GabB);
         T->scale(-1.0);
         G1c_vvB->set_act_vv(T);
         T.reset();
-        //G1c_vvB->set_act_vv(GabB);
-        //G1c_vvB->scale(-1.0);
+        // G1c_vvB->set_act_vv(GabB);
+        // G1c_vvB->scale(-1.0);
 
         // Build G1c
         G1cA->set_oo(G1c_ooA);

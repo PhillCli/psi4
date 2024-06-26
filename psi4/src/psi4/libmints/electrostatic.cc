@@ -59,7 +59,7 @@ ElectrostaticInt::ElectrostaticInt(std::vector<SphericalTransform>& st, std::sha
 ElectrostaticInt::~ElectrostaticInt() {}
 
 void ElectrostaticInt::compute(SharedMatrix& result, const Vector3& C) {
-    engine0_->set_params(std::vector<std::pair<double, std::array<double,3>>>{{1.0, {C[0], C[1], C[2]}}});
+    engine0_->set_params(std::vector<std::pair<double, std::array<double, 3>>>{{1.0, {C[0], C[1], C[2]}}});
     OneBodyAOInt::compute(result);
 }
 

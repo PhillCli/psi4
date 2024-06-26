@@ -79,7 +79,7 @@ void get_eom_params(SharedWavefunction ref_wfn, Options &options) {
         // map the symmetry of the input ROOTS_PER_IRREP to account for displacements.
         auto ps = options.get_str("PARENT_SYMMETRY");
         if (ps != "") {
-            auto old_pg = std::make_shared<PointGroup> (ps);
+            auto old_pg = std::make_shared<PointGroup>(ps);
             // This is one of a series of displacements;  check the dimension against the parent point group
             size_t full_nirreps = old_pg->char_table().nirrep();
             if (options["ROOTS_PER_IRREP"].size() != full_nirreps)

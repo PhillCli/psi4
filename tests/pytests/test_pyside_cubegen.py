@@ -7,6 +7,7 @@ from utils import compare_cubes
 
 pytestmark = [pytest.mark.psi, pytest.mark.api]
 
+
 def test_pyside_cubegen():
     mol = psi4.geometry("""
         O 0 0 0
@@ -17,9 +18,7 @@ def test_pyside_cubegen():
         """)
 
     psi4.core.be_quiet()
-    psi4.set_options({'basis': "sto-3g",
-                      'scf_type': 'pk',
-                      'cubeprop_tasks': ['density', 'orbitals']})
+    psi4.set_options({'basis': "sto-3g", 'scf_type': 'pk', 'cubeprop_tasks': ['density', 'orbitals']})
     scf_e, wfn = psi4.energy('SCF', return_wfn=True, molecule=mol)
     psi4.cubeprop(wfn)
 

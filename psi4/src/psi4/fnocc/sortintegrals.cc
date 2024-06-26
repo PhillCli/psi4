@@ -94,8 +94,8 @@ void SortBlockNew(size_t nelem, size_t blockdim, struct integral *buffer, double
                   const char *string, size_t maxdim);
 void SortBlockNewNew(size_t *nelem, size_t blockdim, struct integral *buffer, double *tmp, size_t PSIFILE,
                      const char *string, size_t maxdim, size_t filestart, size_t nfiles);
-}
-}
+}  // namespace fnocc
+}  // namespace psi
 
 namespace psi {
 namespace fnocc {
@@ -329,8 +329,8 @@ void SortAllIntegrals(iwlbuf *Buf, int nfzc, int nfzv, int norbs, int ndoccact, 
 
     outfile->Printf("        Initial sort........");
     /**
-      * first buffer (read in when Buf was initialized)
-      */
+     * first buffer (read in when Buf was initialized)
+     */
     for (idx = 4 * Buf->idx; Buf->idx < Buf->inbuf; Buf->idx++) {
         p = (size_t)lblptr[idx++];
         q = (size_t)lblptr[idx++];
@@ -431,8 +431,8 @@ void SortAllIntegrals(iwlbuf *Buf, int nfzc, int nfzv, int norbs, int ndoccact, 
     }
 
     /**
-      * now do the same for the rest of the buffers
-      */
+     * now do the same for the rest of the buffers
+     */
     while (!lastbuf) {
         iwl_buf_fetch(Buf);
         lastbuf = Buf->lastbuf;
@@ -538,8 +538,8 @@ void SortAllIntegrals(iwlbuf *Buf, int nfzc, int nfzv, int norbs, int ndoccact, 
     }
     outfile->Printf("done.\n\n");
     /**
-      * write any leftover bits that might not have been dumped to disk
-      */
+     * write any leftover bits that might not have been dumped to disk
+     */
     for (size_t k = 0; k < nfiles; k++) {
         if (nabcd2[k] > 0) {
             psio->open(PSIF_DCC_SORT_START + k + nfiles, PSIO_OPEN_OLD);
@@ -622,8 +622,8 @@ void SortAllIntegrals(iwlbuf *Buf, int nfzc, int nfzv, int norbs, int ndoccact, 
     }
 
     /**
-      * sort values in each of the files
-      */
+     * sort values in each of the files
+     */
     double *tmp;
     tmp = new double[maxelem];
 
@@ -678,8 +678,8 @@ void SortAllIntegrals(iwlbuf *Buf, int nfzc, int nfzv, int norbs, int ndoccact, 
     double *tmp2;
     tmp2 = new double[maxelem];
     /**
-      *  Sort ABCI2 integrals (actually, just ABCI2-2*ABCI3)
-      */
+     *  Sort ABCI2 integrals (actually, just ABCI2-2*ABCI3)
+     */
     size_t nbins = 0;
     size_t binsize, lastbin;
     for (size_t i = 1; i <= o * v * v * v; i++) {
@@ -719,8 +719,8 @@ void SortAllIntegrals(iwlbuf *Buf, int nfzc, int nfzv, int norbs, int ndoccact, 
     psio->close(PSIF_DCC_ABCI5, 1);
 
     /**
-      *  Combine ABCD1 and ABCD2 integrals if SJS packing
-      */
+     *  Combine ABCD1 and ABCD2 integrals if SJS packing
+     */
     for (size_t i = 1; i <= v * (v + 1) / 2 * v * (v + 1) / 2; i++) {
         if (maxelem >= (double)v * (v + 1) / 2 * v * (v + 1) / 2 / i) {
             binsize = v * (v + 1) / 2 * v * (v + 1) / 2 / i;
@@ -1229,10 +1229,10 @@ void abci1_terms(double val, size_t p, size_t q, size_t r, size_t s, size_t o, s
     }
 }
 /**
-  * ABCD-type integrals, because of weird SJS packing, are really
-  * confusing to sort.  I couldn't think of an analytic way to do
-  * this, so I resorted to brute force.
-  */
+ * ABCD-type integrals, because of weird SJS packing, are really
+ * confusing to sort.  I couldn't think of an analytic way to do
+ * this, so I resorted to brute force.
+ */
 void abcd2_terms(double val, size_t pq, size_t rs, size_t p, size_t q, size_t r, size_t s, size_t o, size_t v,
                  size_t &nabcd2, struct integral *abcd2) {
     size_t ind3, a, b, c, d, ind1, ind2, index, flag;
@@ -2331,8 +2331,8 @@ void Sort_OV3_LowMemory(long int memory, long int o, long int v) {
     delete[] tmp2;
 }
 /**
-  * OVOV in-core integral sort.  requires o^2v^2 doubles
-  */
+ * OVOV in-core integral sort.  requires o^2v^2 doubles
+ */
 void SortOVOV(struct iwlbuf *Buf, int nfzc, int nfzv, int norbs, int ndoccact, int nvirt) {
     double val;
     size_t o = ndoccact;
@@ -2367,8 +2367,8 @@ void SortOVOV(struct iwlbuf *Buf, int nfzc, int nfzv, int norbs, int ndoccact, i
 
     outfile->Printf("        Sort (IA|JB)........");
     /**
-      * first buffer (read in when Buf was initialized)
-      */
+     * first buffer (read in when Buf was initialized)
+     */
     for (idx = 4 * Buf->idx; Buf->idx < Buf->inbuf; Buf->idx++) {
         p = (size_t)lblptr[idx++];
         q = (size_t)lblptr[idx++];
@@ -2392,8 +2392,8 @@ void SortOVOV(struct iwlbuf *Buf, int nfzc, int nfzv, int norbs, int ndoccact, i
     }
 
     /**
-      * now do the same for the rest of the buffers
-      */
+     * now do the same for the rest of the buffers
+     */
     while (!lastbuf) {
         iwl_buf_fetch(Buf);
         lastbuf = Buf->lastbuf;
@@ -2421,8 +2421,8 @@ void SortOVOV(struct iwlbuf *Buf, int nfzc, int nfzv, int norbs, int ndoccact, i
     }
 
     /**
-      * write to disk
-      */
+     * write to disk
+     */
     auto psio = std::make_shared<PSIO>();
     psio->open(PSIF_DCC_IAJB, PSIO_OPEN_NEW);
     psio->write_entry(PSIF_DCC_IAJB, "E2iajb", (char *)&klcd[0], o * o * v * v * sizeof(double));
@@ -2433,5 +2433,5 @@ void SortOVOV(struct iwlbuf *Buf, int nfzc, int nfzv, int norbs, int ndoccact, i
     outfile->Printf("done.\n");
     outfile->Printf("\n");
 }
-}
-}  // end of namespaces
+}  // namespace fnocc
+}  // namespace psi

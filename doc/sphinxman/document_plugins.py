@@ -69,7 +69,8 @@ def substitute_comment(cmnt):
     while True:
         if subst.match(cmnt):
             m = subst.match(cmnt)
-            cmnt = m.group(1) + ' :term:`' + m.group(3).upper() + ' <' + m.group(3).upper() + ' (' + m.group(2).upper() + ')>` ' + m.group(4)
+            cmnt = m.group(1) + ' :term:`' + m.group(3).upper() + ' <' + m.group(3).upper() + ' (' + m.group(
+                2).upper() + ')>` ' + m.group(4)
             continue
         else:
             break
@@ -225,12 +226,12 @@ def determine_options(cfilename):
                     print('ERROR: unrecognized type %s for %s' % (kw_type, kw_name))
                     sys.exit()
 
-            if   kw_type == 'str':    kw_type = 'string'
-            elif kw_type == 'int':    kw_type = 'integer'
-            elif kw_type == 'bool':   kw_type = 'boolean'
+            if kw_type == 'str': kw_type = 'string'
+            elif kw_type == 'int': kw_type = 'integer'
+            elif kw_type == 'bool': kw_type = 'boolean'
             elif kw_type == 'double': pass
-            elif kw_type == 'array':  pass
-            elif kw_type == 'map':    pass
+            elif kw_type == 'array': pass
+            elif kw_type == 'map': pass
             elif kw_type == 'python': pass
             else:
                 print('ERROR: unrecognized type2 %s for %s' % (kw_type, kw_name))
@@ -244,13 +245,15 @@ def determine_options(cfilename):
             #print '\n'
 
             # substitution list file
-            fabbr.write('.. |%s__%s| replace:: :term:`%s <%s (%s)>`\n' % 
-              (currentmodule.lower(), kw_name.lower(), kw_name.upper(), kw_name.upper(), currentmodule.upper()))
+            fabbr.write(
+                '.. |%s__%s| replace:: :term:`%s <%s (%s)>`\n' %
+                (currentmodule.lower(), kw_name.lower(), kw_name.upper(), kw_name.upper(), currentmodule.upper()))
 
             # individual option file for plugin options. rather pointless but consistent w/regular module options
-            fsssdoc = open('source/autodir_plugins/'+currentmodule.lower()+'__'+kw_name.lower()+'.rst', 'w')
+            fsssdoc = open('source/autodir_plugins/' + currentmodule.lower() + '__' + kw_name.lower() + '.rst', 'w')
             div = '"' * (14 + len(currentmodule) + 2 * len(kw_name))
-            fsssdoc.write(':term:`%s <%s (%s)>`\n%s\n\n' % (kw_name.upper(), kw_name.upper(), currentmodule.upper(), div))
+            fsssdoc.write(':term:`%s <%s (%s)>`\n%s\n\n' %
+                          (kw_name.upper(), kw_name.upper(), currentmodule.upper(), div))
             fsssdoc.write('      %s\n\n' % (substitute_comment(tag)))
 
             fglossary.write('   %s (%s)\n      %s\n\n' % (kw_name.upper(), currentmodule.upper(), tag))
@@ -310,7 +313,7 @@ for pydir in glob.glob(DriverPath + '../../plugins/*'):
         pts('plugin', dirname)
         fdriver.write('   autodir_plugins/module__%s' % (dirname))
 
-        fmodule = open('source/autodir_plugins/module__'+dirname+'.rst', 'w')
+        fmodule = open('source/autodir_plugins/module__' + dirname + '.rst', 'w')
         fmodule.write('\n.. _`sec:%s`:\n' % (dirname.lower()))
         fmodule.write('.. index:: plugin; %s\n\n' % (dirname.lower()))
         fmodule.write(':srcplugin:`' + dirname.lower() + '`\n')
@@ -319,7 +322,7 @@ for pydir in glob.glob(DriverPath + '../../plugins/*'):
         #fmodule.write(div + '\n\n')
         #fmodule.write('.. toctree::\n   :hidden:\n   :glob:\n\n   %s__*\n\n' % (dirname.lower()))
         fmodule.write('.. toctree::\n   :hidden:\n\n   /autodir_plugins/glossary__%s\n\n' % (dirname.lower()))
-        fglossary = open('source/autodir_plugins/glossary__'+dirname+'.rst', 'w')
+        fglossary = open('source/autodir_plugins/glossary__' + dirname + '.rst', 'w')
         fglossary.write('\n.. include:: /autodoc_abbr_options_c.rst\n')
         fglossary.write('.. include:: /autodoc_abbr_options_plugins.rst\n\n')
         fglossary.write('.. glossary::\n   :sorted:\n\n')
@@ -342,12 +345,11 @@ for pydir in glob.glob(DriverPath + '../../plugins/*'):
                 fmodule.write('   :undoc-members:\n\n')
 
         # ... include keywords section from any *.cc files
-              # todo: turn this into a fn and store in a dictionary
+        # todo: turn this into a fn and store in a dictionary
         cfiles = glob.glob(pydir + '/*.cc') + glob.glob(pydir + '/*.cc.in')
         if len(cfiles) > 0:
             fmodule.write('C-side Documentation\n')
             fmodule.write('--------------------\n\n')
-
 
             for cfile in cfiles:
                 determine_options(cfile)

@@ -181,5 +181,5 @@ void exit_io() {
     timer_off("ccresponse");
 }
 
-}
+}  // namespace ccresponse
 }  // namespace psi

@@ -56,8 +56,7 @@ def free_atom_volumes(wfn: psi4.core.Wavefunction, **kwargs):
     # are by definition 1.0
     natom = wfn.molecule().natom()
     if natom == 1:
-        return 0 
-    
+        return 0
 
     # the level of theory
     current_en = wfn.scalar_variable('CURRENT ENERGY')
@@ -107,9 +106,9 @@ def free_atom_volumes(wfn: psi4.core.Wavefunction, **kwargs):
 
         # Set the molecule, here just an atom
         a_mol = psi4.core.Molecule.from_arrays(geom=[0, 0, 0],
-                                          elem=[a_sym],
-                                          molecular_charge=0,
-                                          molecular_multiplicity=int(1 + reference_S[a_z]))
+                                               elem=[a_sym],
+                                               molecular_charge=0,
+                                               molecular_multiplicity=int(1 + reference_S[a_z]))
         a_mol.update_geometry()
         psi4.molutil.activate(a_mol)
 
@@ -127,7 +126,7 @@ def free_atom_volumes(wfn: psi4.core.Wavefunction, **kwargs):
         # set the atomic widths as wfn variables
         wfn.set_variable("MBIS FREE ATOM " + a_sym.upper() + " VOLUME", vw)
         # set_variable("MBIS FREE ATOM n VOLUME")  # P::e OEPROP
-        
+
         psi4.core.clean()
         psi4.core.clean_variables()
 

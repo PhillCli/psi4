@@ -70,74 +70,62 @@ JK::JK(std::shared_ptr<BasisSet> primary) : primary_(primary) { common_init(); }
 JK::~JK() {}
 std::shared_ptr<JK> JK::build_JK(std::shared_ptr<BasisSet> primary, std::shared_ptr<BasisSet> auxiliary,
                                  Options& options, std::string jk_type) {
-
     // check if algorithm is composite
-    std::array<std::string, 3> composite_algos = { "DFDIRJ", "COSX", "LINK" };
-    bool is_composite = std::any_of(
-      composite_algos.cbegin(),
-      composite_algos.cend(),
-      [&](std::string composite_algo) { return jk_type.find(composite_algo) != std::string::npos; }
-    );
+    std::array<std::string, 3> composite_algos = {"DFDIRJ", "COSX", "LINK"};
+    bool is_composite = std::any_of(composite_algos.cbegin(), composite_algos.cend(), [&](std::string composite_algo) {
+        return jk_type.find(composite_algo) != std::string::npos;
+    });
 
     // exit calculation if density screening is selected for incompatible JK algo
     bool do_density_screen = options.get_str("SCREENING") == "DENSITY";
 
-    std::array<std::string, 3> can_do_density_screen = { "DIRECT", "DFDIRJ+LINK", "DFDIRJ" };
-    bool is_compatible_density_screen = std::any_of(
-        can_do_density_screen.cbegin(),
-        can_do_density_screen.cend(),
-        [&](std::string jk_algo) { return jk_type == jk_algo; }
-    ); 
+    std::array<std::string, 3> can_do_density_screen = {"DIRECT", "DFDIRJ+LINK", "DFDIRJ"};
+    bool is_compatible_density_screen = std::any_of(can_do_density_screen.cbegin(), can_do_density_screen.cend(),
+                                                    [&](std::string jk_algo) { return jk_type == jk_algo; });
 
-    std::array<std::string, 3> can_be_in_df_scf_guess = { "DIRECT", "MEM_DF", "DISK_DF" };
-    bool is_in_df_scf_guess = std::any_of(
-        can_be_in_df_scf_guess.cbegin(),
-        can_be_in_df_scf_guess.cend(),
-        [&](std::string jk_algo) { return jk_type == jk_algo; }
-    ); 
+    std::array<std::string, 3> can_be_in_df_scf_guess = {"DIRECT", "MEM_DF", "DISK_DF"};
+    bool is_in_df_scf_guess = std::any_of(can_be_in_df_scf_guess.cbegin(), can_be_in_df_scf_guess.cend(),
+                                          [&](std::string jk_algo) { return jk_type == jk_algo; });
     bool do_df_scf_guess = options.get_bool("DF_SCF_GUESS") && is_in_df_scf_guess;
 
     bool is_incompatible_density_screen = !(is_compatible_density_screen || do_df_scf_guess);
-    
+
     if (do_density_screen && is_incompatible_density_screen) {
         std::string error_message = "SCREENING=DENSITY has not been implemented for ";
         error_message += (do_df_scf_guess) ? "DF_SCF_GUESS" : jk_type;
         error_message += ".";
-   
+
         throw PSIEXCEPTION(error_message);
     }
-    
+
     // exit calculation if no screening is selected for incompatible JK algo
     bool do_no_screen = options.get_str("SCREENING") == "NONE";
-    
-    std::array<std::string, 3> cant_do_no_screen = { "PK", "DISK_DF", "DIRECT" };
-    bool is_incompatible_no_screen = std::any_of(
-        cant_do_no_screen.cbegin(),
-        cant_do_no_screen.cend(),
-        [&](std::string jk_algo) { return jk_type == jk_algo; }
-    ); 
-    is_incompatible_no_screen |= is_composite; 
-    
+
+    std::array<std::string, 3> cant_do_no_screen = {"PK", "DISK_DF", "DIRECT"};
+    bool is_incompatible_no_screen = std::any_of(cant_do_no_screen.cbegin(), cant_do_no_screen.cend(),
+                                                 [&](std::string jk_algo) { return jk_type == jk_algo; });
+    is_incompatible_no_screen |= is_composite;
+
     if (do_no_screen && is_incompatible_no_screen) {
         std::string error_message = "SCREENING=NONE has not been implemented for ";
         error_message += jk_type;
         error_message += ".";
- 
+
         throw PSIEXCEPTION(error_message);
     }
 
-    // exit calculation for other incompatible JK + SCREENING combos 
+    // exit calculation for other incompatible JK + SCREENING combos
     std::string screening_type = options.get_str("SCREENING");
-    if (jk_type == "DFDIRJ+LINK" && ((screening_type == "SCHWARZ") || screening_type == "CSAM" )) {
+    if (jk_type == "DFDIRJ+LINK" && ((screening_type == "SCHWARZ") || screening_type == "CSAM")) {
         std::string error_message = "SCREENING=";
         error_message += screening_type;
         error_message += " has not been implemented for ";
         error_message += jk_type;
         error_message += ".";
- 
+
         throw PSIEXCEPTION(error_message);
     }
-   
+
     // Throw small DF warning
     if (jk_type == "DF") {
         outfile->Printf("\n  Warning: JK type 'DF' found in simple constructor, defaulting to DiskDFJK.\n");
@@ -173,7 +161,9 @@ std::shared_ptr<JK> JK::build_JK(std::shared_ptr<BasisSet> primary, std::shared_
         // TODO: re-enable after fixing all bugs
         jk->set_wcombine(false);
         _set_dfjk_options<MemDFJK>(jk, options);
-        if (options["WCOMBINE"].has_changed()) { jk->set_wcombine(options.get_bool("WCOMBINE")); }
+        if (options["WCOMBINE"].has_changed()) {
+            jk->set_wcombine(options.get_bool("WCOMBINE"));
+        }
 
         return jk;
     } else if (jk_type == "PK") {
@@ -210,7 +200,7 @@ std::shared_ptr<JK> JK::build_JK(std::shared_ptr<BasisSet> primary, std::shared_
 
         return std::shared_ptr<JK>(jk);
 
-    /// handle composite methods
+        /// handle composite methods
     } else if (is_composite) {
         auto jk = std::make_shared<CompositeJK>(primary, auxiliary, options);
 
@@ -560,7 +550,6 @@ void JK::USO2AO() {
             offset += ncolspi;
         }
     }
-
 }
 void JK::AO2USO() {
     // If already C1, J/K are J_ao/K_ao, pointers are already aliased
@@ -719,21 +708,22 @@ void JK::set_wcombine(bool wcombine) {
 
 void JK::zero() {
     if (do_J_) {
-        for(auto J : J_) J->zero();
-        for(auto J : J_ao_) J->zero();
+        for (auto J : J_) J->zero();
+        for (auto J : J_ao_) J->zero();
     }
     if (do_K_) {
-        for(auto K : K_) K->zero();
-        for(auto K : K_ao_) K->zero();
+        for (auto K : K_) K->zero();
+        for (auto K : K_ao_) K->zero();
     }
     if (do_wK_) {
-        for(auto wK : wK_) wK->zero();
-        for(auto wK : wK_ao_) wK->zero();
+        for (auto wK : wK_) wK->zero();
+        for (auto wK : wK_ao_) wK->zero();
     }
 }
 
 size_t JK::num_computed_shells() {
-    outfile->Printf("WARNING: JK::num_computed_shells() was called, but benchmarking is disabled for the chosen JK algorithm.");
+    outfile->Printf(
+        "WARNING: JK::num_computed_shells() was called, but benchmarking is disabled for the chosen JK algorithm.");
     outfile->Printf(" Returning 0 as computed shells count.\n");
 
     return 0;

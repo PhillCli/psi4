@@ -494,7 +494,7 @@ void SAPT2::df_integrals() {
                 }
 
             }  // end Schwartz inequality
-        }      // end loop over MU,NU shells
+        }  // end loop over MU,NU shells
 
         for (int P = 0; P < numPshell; ++P) {
             C_DGEMM('T', 'N', nmoA_, nso_, nso_, 1.0, CA_[0], nmoA_, AO_RI[P], nso_, 0.0, halftrans, nso_);
@@ -614,7 +614,7 @@ void SAPT2::df_integrals() {
                 }
 
             }  // end Schwartz inequality
-        }      // end loop over MU,NU shells
+        }  // end loop over MU,NU shells
 
         for (int P = 0; P < numPshell; ++P) {
             C_DGEMM('T', 'N', nmoB_, nso_, nso_, 1.0, CB_[0], nmoB_, AO_RI[P], nso_, 0.0, halftrans, nso_);
@@ -727,7 +727,7 @@ void SAPT2::df_integrals() {
                 }
 
             }  // end Schwartz inequality
-        }      // end loop over MU,NU shells
+        }  // end loop over MU,NU shells
 
         for (int P = 0; P < numPshell; ++P) {
             C_DGEMM('T', 'N', nmoA_, nso_, nso_, 1.0, CA_[0], nmoA_, AO_RI[P], nso_, 0.0, halftrans, nso_);
@@ -914,10 +914,9 @@ void SAPT2::natural_orbitalify(int ampfile, const char *VV_opdm, double *evals, 
     double *occnum = init_array(nvirA);
     double **nat_orbs_MO = block_matrix(nvirA, nvirA);
 
-    if (DSYEV_descending(nvirA, P, occnum, nat_orbs_MO) != 0){
+    if (DSYEV_descending(nvirA, P, occnum, nat_orbs_MO) != 0) {
         throw PSIEXCEPTION("DSYEV diagonalizer failed in SAPT natural obrital calculation!");
     }
-
 
     int num_no_vir = 0;
 
@@ -948,7 +947,7 @@ void SAPT2::natural_orbitalify(int ampfile, const char *VV_opdm, double *evals, 
 
     double *epsilon = init_array(num_no_vir);
     double **X = block_matrix(num_no_vir, num_no_vir);
-    if (DSYEV_ascending(num_no_vir, Fock_NO, epsilon, X) != 0){
+    if (DSYEV_ascending(num_no_vir, Fock_NO, epsilon, X) != 0) {
         throw PSIEXCEPTION("DSYEV diagonalizer failed in SAPT natural obrital calculation!");
     }
 

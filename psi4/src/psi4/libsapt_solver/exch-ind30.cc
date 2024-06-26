@@ -323,7 +323,6 @@ double SAPT2p3::exch_ind30_3(double **sBS) {
 // Konrad Patkowski, based on Jonathan Waldrop's Psi4NumPy code //
 // September 2021 //
 void SAPT2p3::sinf_e30ind() {
-
     if (print_) {
         outfile->Printf("  ==> Nonapproximated third-order induction <==\n\n");
     }
@@ -344,10 +343,10 @@ void SAPT2p3::sinf_e30ind() {
     // => Intermolecular overlap matrix and inverse <= //
     auto Sab = linalg::triplet(CoccA_, Smat_, CoccB_, true, false, false);
 
-    double** Sabp = Sab->pointer();
+    double **Sabp = Sab->pointer();
     auto D = Matrix("D", na + nb, na + nb);
     D.identity();
-    double** Dp = D.pointer();
+    double **Dp = D.pointer();
     for (int a = 0; a < na; a++) {
         for (int b = 0; b < nb; b++) {
             Dp[a][b + na] = Dp[b + na][a] = Sabp[a][b];
@@ -394,10 +393,10 @@ void SAPT2p3::sinf_e30ind() {
     auto D_Ni_a = std::make_shared<Matrix>("D_Ni_a", nn, na + nb);
     auto D_Ni_b = std::make_shared<Matrix>("D_Ni_b", nn, na + nb);
 
-    C_DGEMM('N', 'N', nn, na + nb, na, 1.0, CoccA_->pointer()[0], na, &Dp[0][0], na + nb, 0.0,
-            D_Ni_a->pointer()[0], na + nb);
-    C_DGEMM('N', 'N', nn, na + nb, nb, 1.0, CoccB_->pointer()[0], nb, &Dp[na][0], na + nb, 0.0,
-            D_Ni_b->pointer()[0], na + nb);
+    C_DGEMM('N', 'N', nn, na + nb, na, 1.0, CoccA_->pointer()[0], na, &Dp[0][0], na + nb, 0.0, D_Ni_a->pointer()[0],
+            na + nb);
+    C_DGEMM('N', 'N', nn, na + nb, nb, 1.0, CoccB_->pointer()[0], nb, &Dp[na][0], na + nb, 0.0, D_Ni_b->pointer()[0],
+            na + nb);
 
     // Global JK object
     std::shared_ptr<JK> jk_;
@@ -410,10 +409,10 @@ void SAPT2p3::sinf_e30ind() {
     jk_->initialize();
     jk_->print_header();
 
-    auto& Cl = jk_->C_left();
-    auto& Cr = jk_->C_right();
-    const auto& J = jk_->J();
-    const auto& K = jk_->K();
+    auto &Cl = jk_->C_left();
+    auto &Cr = jk_->C_right();
+    const auto &J = jk_->J();
+    const auto &K = jk_->K();
 
     Cl.clear();
     Cr.clear();
@@ -496,26 +495,26 @@ void SAPT2p3::sinf_e30ind() {
     BJK_br.reset();
     BJK_bs.reset();
 
-    //Konrad - all the stuff above still needed but I adjusted the scale factors in \omega's
-    //we don't need the DF stuff that was below
-    
+    // Konrad - all the stuff above still needed but I adjusted the scale factors in \omega's
+    // we don't need the DF stuff that was below
+
     double CompleteInd30 = 0.0;
-  
-    auto sAR = std::make_shared<Matrix>("sAR", na, nr); 
+
+    auto sAR = std::make_shared<Matrix>("sAR", na, nr);
     double **sARp = sAR->pointer();
 
     for (int a = 0; a < na; a++) {
         for (int r = 0; r < nr; r++) {
-            sARp[a][r] = wBAR_[a][r] / (evalsA_[a] - evalsA_[na+r]);
+            sARp[a][r] = wBAR_[a][r] / (evalsA_[a] - evalsA_[na + r]);
         }
     }
 
-    auto sBS = std::make_shared<Matrix>("sBS", nb, ns); 
+    auto sBS = std::make_shared<Matrix>("sBS", nb, ns);
     double **sBSp = sBS->pointer();
 
     for (int b = 0; b < nb; b++) {
         for (int s = 0; s < ns; s++) {
-            sBSp[b][s] = wABS_[b][s] / (evalsB_[b] - evalsB_[nb+s]);
+            sBSp[b][s] = wABS_[b][s] / (evalsB_[b] - evalsB_[nb + s]);
         }
     }
 
@@ -531,7 +530,7 @@ void SAPT2p3::sinf_e30ind() {
     CompleteInd30 -= STS_ar->vector_dot(omega_ar);
     CompleteInd30 -= STS_bs->vector_dot(omega_bs);
 
-//All Omega-dependent contributions have been completed, now Xi-dependent (J/K) contributions
+    // All Omega-dependent contributions have been completed, now Xi-dependent (J/K) contributions
 
     auto SCt_Na = linalg::doublet(Ct_Kr, sAR, false, true);
     auto SCt_Nb = linalg::doublet(Ct_Ks, sBS, false, true);
@@ -546,7 +545,7 @@ void SAPT2p3::sinf_e30ind() {
     auto XiBA = linalg::doublet(CoccB_, preXiBA, false, true);
     auto XiBB = linalg::doublet(CoccB_, preXiBB, false, true);
 
-    preXiBB->add(preXiBA);  //enough to calculate JK for the sum of the two
+    preXiBB->add(preXiBA);  // enough to calculate JK for the sum of the two
 
     Cl.clear();
     Cr.clear();

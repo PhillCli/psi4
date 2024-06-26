@@ -54,7 +54,9 @@ using namespace psi;
 namespace psi {
 namespace dfmp2 {
 
-CorrGrad::CorrGrad(std::shared_ptr<MintsHelper> mints) : mints_(mints), primary_(mints->get_basisset("ORBITAL")) { common_init(); }
+CorrGrad::CorrGrad(std::shared_ptr<MintsHelper> mints) : mints_(mints), primary_(mints->get_basisset("ORBITAL")) {
+    common_init();
+}
 CorrGrad::~CorrGrad() {}
 std::shared_ptr<CorrGrad> CorrGrad::build_CorrGrad(std::shared_ptr<MintsHelper> mints) {
     Options& options = Process::environment.options;
@@ -111,7 +113,7 @@ void DFCorrGrad::print_header() const {
 
         outfile->Printf("    OpenMP threads:    %11d\n", nthreads_);
         outfile->Printf("    Integrals threads: %11d\n", df_ints_num_threads_);
-        outfile->Printf("    Memory [GiB]:      %11.3f\n", ((double) memory_ * 8.0) / (1024.0 * 1024.0 * 1024.0));
+        outfile->Printf("    Memory [GiB]:      %11.3f\n", ((double)memory_ * 8.0) / (1024.0 * 1024.0 * 1024.0));
         outfile->Printf("    Schwarz Cutoff:    %11.0E\n", cutoff_);
         outfile->Printf("    Fitting Condition: %11.0E\n\n", condition_);
 
@@ -305,7 +307,7 @@ void DFCorrGrad::build_Amn_terms() {
 
 // > Integrals < //
 #pragma omp parallel for schedule(dynamic) num_threads(df_ints_num_threads_)
-        for (long int PMN = 0L; PMN < static_cast<long> (NP) * npairs; PMN++) {
+        for (long int PMN = 0L; PMN < static_cast<long>(NP) * npairs; PMN++) {
             int thread = 0;
 #ifdef _OPENMP
             thread = omp_get_thread_num();
@@ -589,10 +591,10 @@ void DFCorrGrad::build_AB_x_terms() {
     psio_->read_entry(unit_c_, "V", (char*)Kp[0], sizeof(double) * naux * naux);
 
     std::map<std::string, SharedMatrix> densities = {{"Coulomb", J}, {"Exchange", K}};
- 
+
     auto results = mints_->metric_grad(densities, "DF_BASIS_SCF");
 
-    for (const auto& kv: results) {
+    for (const auto& kv : results) {
         gradients_[kv.first] = kv.second;
     }
 }
@@ -793,7 +795,7 @@ void DFCorrGrad::build_Amn_x_terms() {
 
 // > Integrals < //
 #pragma omp parallel for schedule(dynamic) num_threads(df_ints_num_threads_)
-        for (long int PMN = 0L; PMN < static_cast<long> (NP) * npairs; PMN++) {
+        for (long int PMN = 0L; PMN < static_cast<long>(NP) * npairs; PMN++) {
             int thread = 0;
 #ifdef _OPENMP
             thread = omp_get_thread_num();
@@ -824,7 +826,7 @@ void DFCorrGrad::build_Amn_x_terms() {
             int oN = primary_->shell(N).function_index();
 
             int ncart = cP * cM * cN;
-            const auto & buffers = eri[thread]->buffers();
+            const auto& buffers = eri[thread]->buffers();
             const double* Px = buffers[0];
             const double* Py = buffers[1];
             const double* Pz = buffers[2];

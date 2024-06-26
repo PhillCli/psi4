@@ -181,7 +181,7 @@ void tau_build() {
         global_dpd_->file2_close(&tIA);
         global_dpd_->file2_mat_close(&tia);
         global_dpd_->file2_close(&tia);
-    }                           /** RHF or ROHF **/
+    } /** RHF or ROHF **/
     else if (params.ref == 2) { /** UHF **/
 
         global_dpd_->buf4_init(&tIJAB, PSIF_CC_TAMPS, 0, 2, 7, 2, 7, 0, "tIJAB");

@@ -62,7 +62,7 @@ void DFOCC::omp2_opdm() {
 
         // Build G1c_oo and G1c_vv
         G1c_oo->set_act_oo(nfrzc, naoccA, GijA);
-        G1c_oo->scale(-2.0); // build the actual density from the intermediate (needs scaling)
+        G1c_oo->scale(-2.0);  // build the actual density from the intermediate (needs scaling)
         G1c_vv->set_act_vv(GabA);
         G1c_vv->scale(-2.0);
 
@@ -72,7 +72,7 @@ void DFOCC::omp2_opdm() {
 
         // Build G1
         G1->copy(G1c);
-        for (int i = 0; i < noccA; i++) G1->add(i, i, 2.0); // the reference contribution
+        for (int i = 0; i < noccA; i++) G1->add(i, i, 2.0);  // the reference contribution
 
         if (print_ > 2) {
             G1->print();
@@ -183,7 +183,7 @@ void DFOCC::omp2_opdm() {
         // Build G1
         G1A->copy(G1cA);
         G1B->copy(G1cB);
-        for (int i = 0; i < noccA; i++) G1A->add(i, i, 1.0); // Reference contribution
+        for (int i = 0; i < noccA; i++) G1A->add(i, i, 1.0);  // Reference contribution
         for (int i = 0; i < noccB; i++) G1B->add(i, i, 1.0);
 
         // print

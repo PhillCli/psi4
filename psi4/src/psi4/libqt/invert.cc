@@ -98,4 +98,4 @@ double invert_matrix(double **a, double **y, int N, std::string out) {
     d = std::fabs(d);
     return (d);
 }
-}
+}  // namespace psi

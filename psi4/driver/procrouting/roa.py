@@ -54,9 +54,8 @@ def run_roa(name, **kwargs):
     else:
         pass
 
-    core.print_out(
-        'Running ROA computation. Subdirectories for each '
-        'required displaced geometry have been created.\n\n')
+    core.print_out('Running ROA computation. Subdirectories for each '
+                   'required displaced geometry have been created.\n\n')
 
     dbno = 0
     # Initialize database
@@ -64,10 +63,10 @@ def run_roa(name, **kwargs):
     # Check if final result is in here
     # ->if we have already computed roa, back up the dict
     # ->copy it setting this flag to false and continue
-    if ('roa_computed' in db) and ( db['roa_computed'] ):
+    if ('roa_computed' in db) and (db['roa_computed']):
         db2 = shelve.open('.database.bak{}'.format(dbno), writeback=True)
         dbno += 1
-        for key,value in db.items():
+        for key, value in db.items():
             db2[key] = value
 
         db2.close()
@@ -76,11 +75,11 @@ def run_roa(name, **kwargs):
         db['roa_computed'] = False
 
     if 'inputs_generated' not in db:
-        findif_response_utils.initialize_database(db,name,"roa", ["roa_tensor"])
+        findif_response_utils.initialize_database(db, name, "roa", ["roa_tensor"])
 
     # Generate input files
     if not db['inputs_generated']:
-        findif_response_utils.generate_inputs(db,name)
+        findif_response_utils.generate_inputs(db, name)
         # handled by helper db['inputs_generated'] = True
 
     # Check job status
@@ -100,17 +99,10 @@ def run_roa(name, **kwargs):
         }
         gauge_list = ["{} Results".format(x) for x in consider_gauge[mygauge]]
         # Gather data
-        dip_polar_list = findif_response_utils.collect_displaced_matrix_data(
-            db, 'Dipole Polarizability', 3)
+        dip_polar_list = findif_response_utils.collect_displaced_matrix_data(db, 'Dipole Polarizability', 3)
         opt_rot_list = [
-            x for x in (
-                findif_response_utils.collect_displaced_matrix_data(
-                    db,
-                    "Optical Rotation Tensor ({})".format(gauge),
-                    3
-                )
-                for gauge in consider_gauge[mygauge]
-            )
+            x for x in (findif_response_utils.collect_displaced_matrix_data(
+                db, "Optical Rotation Tensor ({})".format(gauge), 3) for gauge in consider_gauge[mygauge])
         ]
         dip_quad_polar_list = findif_response_utils.collect_displaced_matrix_data(
             db, "Electric-Dipole/Quadrupole Polarizability", 9)
@@ -131,6 +123,7 @@ def run_roa(name, **kwargs):
         db['roa_computed'] = True
 
     db.close()
+
 
 #   SAVE this for when multiple wavelengths works
 # # Get list of omega values

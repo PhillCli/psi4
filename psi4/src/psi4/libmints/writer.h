@@ -67,7 +67,6 @@ class PSI_API FCHKWriter {
     const SharedMatrix SCF_Dtot() const { return Dtot_ao; }
 };
 
-
 class PSI_API MoldenWriter {
     std::shared_ptr<Wavefunction> wavefunction_;
 
@@ -84,7 +83,6 @@ class PSI_API MoldenWriter {
                std::shared_ptr<Vector> Ea, std::shared_ptr<Vector> Eb, std::shared_ptr<Vector> OccA,
                std::shared_ptr<Vector> OccB, bool dovirtual);
 };
-
 
 class PSI_API MOWriter {
     std::shared_ptr<Wavefunction> wavefunction_;

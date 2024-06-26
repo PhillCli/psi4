@@ -269,13 +269,13 @@ void CIWavefunction::set_ciblks() {
                                     CIblks_->Ib_size[nblocks] = nbs;
                                     nblocks++;
                                 } /* end loop over nbet4 */
-                            }     /* end loop over nbet3 */
-                        }         /* end loop over nbet1 */
-                    }             /* end loop over nalp4 */
-                }                 /* end loop over nalp3 */
-            }                     /* end loop over nalp1 */
-        }                         /* end loop over irrep */
-    }                             /* end RAS case */
+                            } /* end loop over nbet3 */
+                        } /* end loop over nbet1 */
+                    } /* end loop over nalp4 */
+                } /* end loop over nalp3 */
+            } /* end loop over nalp1 */
+        } /* end loop over irrep */
+    } /* end RAS case */
 
     /* get the first_iablk[] and last_iablk[] arrays */
     CIblks_->first_iablk = init_int_array(AlphaG_->nirreps);

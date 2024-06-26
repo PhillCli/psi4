@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """
 isort:skip_file
 """
@@ -64,7 +63,9 @@ elif "CMAKE_INSTALL_DATADIR" in str(data_dir):
 
 data_dir = data_dir.resolve(strict=False)
 if not data_dir.is_dir():
-    raise KeyError(f"Unable to read the Psi4 Python folder - check the PSIDATADIR environmental variable - current value is {str(data_dir)}")
+    raise KeyError(
+        f"Unable to read the Psi4 Python folder - check the PSIDATADIR environmental variable - current value is {str(data_dir)}"
+    )
 data_dir = str(data_dir)
 
 # Init core

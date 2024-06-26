@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """
 | Database of molecules that are challenging to optimize.
 | Geometries from Baker J. Comput. Chem. 14 1085 (1993), as reported
@@ -52,210 +51,237 @@ dbse = 'BAKERJCC93'
 isOS = 'true'
 
 # <<< Database Members >>>
-HRXN = ['1_3_5_trifluorobenzene', '1_3_5_trisilacyclohexane',
-    '1_3_difluorobenzene', '1_5_difluoronaphthalene',
-    '2_hydroxybicyclopentane', 'ACANIL01', 'acetone', 'acetylene', 'ACHTAR10',
-    'allene', 'ammonia', 'benzaldehyde', 'benzene', 'benzidine', 'caffeine',
-    'difuropyrazine', 'dimethylpentane', 'disilyl_ether', 'ethane', 'ethanol',
-    'furan', 'histidine', 'hydroxysulphane', 'menthone', 'mesityl_oxide',
-    'methylamine', 'naphthalene', 'neopentane', 'pterin', 'water', ]
-HRXN_SM = ['1_3_5_trisilacyclohexane', '2_hydroxybicyclopentane',
-    'acetone', 'acetylene', 'allene', 'ammonia', 'benzene', 'disilyl_ether',
-    'ethane', 'ethanol', 'furan', 'hydroxysulphane', 'methylamine',
-    'neopentane', 'water']
-HRXN_LG = ['1_3_difluorobenzene', '1_3_5_trifluorobenzene',
-    '1_5_difluoronaphthalene', 'ACANIL01', 'ACHTAR10', 'benzaldehyde',
-    'benzidine', 'caffeine', 'difuropyrazine', 'dimethylpentane', 'histidine',
-    'menthone', 'mesityl_oxide', 'naphthalene', 'pterin']
+HRXN = [
+    '1_3_5_trifluorobenzene',
+    '1_3_5_trisilacyclohexane',
+    '1_3_difluorobenzene',
+    '1_5_difluoronaphthalene',
+    '2_hydroxybicyclopentane',
+    'ACANIL01',
+    'acetone',
+    'acetylene',
+    'ACHTAR10',
+    'allene',
+    'ammonia',
+    'benzaldehyde',
+    'benzene',
+    'benzidine',
+    'caffeine',
+    'difuropyrazine',
+    'dimethylpentane',
+    'disilyl_ether',
+    'ethane',
+    'ethanol',
+    'furan',
+    'histidine',
+    'hydroxysulphane',
+    'menthone',
+    'mesityl_oxide',
+    'methylamine',
+    'naphthalene',
+    'neopentane',
+    'pterin',
+    'water',
+]
+HRXN_SM = [
+    '1_3_5_trisilacyclohexane', '2_hydroxybicyclopentane', 'acetone', 'acetylene', 'allene', 'ammonia', 'benzene',
+    'disilyl_ether', 'ethane', 'ethanol', 'furan', 'hydroxysulphane', 'methylamine', 'neopentane', 'water'
+]
+HRXN_LG = [
+    '1_3_difluorobenzene', '1_3_5_trifluorobenzene', '1_5_difluoronaphthalene', 'ACANIL01', 'ACHTAR10', 'benzaldehyde',
+    'benzidine', 'caffeine', 'difuropyrazine', 'dimethylpentane', 'histidine', 'menthone', 'mesityl_oxide',
+    'naphthalene', 'pterin'
+]
 
 # <<< Chemical Systems Involved >>>
-RXNM = {}     # reaction matrix of reagent contributions per reaction
-ACTV = {}     # order of active reagents per reaction
-ACTV['%s-%s'            % (dbse, '1_3_5_trifluorobenzene' )] = ['%s-%s-reagent'      % (dbse, '1_3_5_trifluorobenzene')]
-RXNM['%s-%s'            % (dbse, '1_3_5_trifluorobenzene' )] = dict(zip(ACTV['%s-%s' % (dbse, '1_3_5_trifluorobenzene')], [+1]))
+RXNM = {}  # reaction matrix of reagent contributions per reaction
+ACTV = {}  # order of active reagents per reaction
+ACTV['%s-%s' % (dbse, '1_3_5_trifluorobenzene')] = ['%s-%s-reagent' % (dbse, '1_3_5_trifluorobenzene')]
+RXNM['%s-%s' % (dbse, '1_3_5_trifluorobenzene')] = dict(zip(ACTV['%s-%s' % (dbse, '1_3_5_trifluorobenzene')], [+1]))
 
-ACTV['%s-%s'            % (dbse, '1_3_5_trisilacyclohexane' )] = ['%s-%s-reagent'      % (dbse, '1_3_5_trisilacyclohexane')]
-RXNM['%s-%s'            % (dbse, '1_3_5_trisilacyclohexane' )] = dict(zip(ACTV['%s-%s' % (dbse, '1_3_5_trisilacyclohexane')], [+1]))
+ACTV['%s-%s' % (dbse, '1_3_5_trisilacyclohexane')] = ['%s-%s-reagent' % (dbse, '1_3_5_trisilacyclohexane')]
+RXNM['%s-%s' % (dbse, '1_3_5_trisilacyclohexane')] = dict(zip(ACTV['%s-%s' % (dbse, '1_3_5_trisilacyclohexane')],
+                                                              [+1]))
 
-ACTV['%s-%s'            % (dbse, '1_3_difluorobenzene'   )] = ['%s-%s-reagent'      % (dbse, '1_3_difluorobenzene')]
-RXNM['%s-%s'            % (dbse, '1_3_difluorobenzene'   )] = dict(zip(ACTV['%s-%s' % (dbse, '1_3_difluorobenzene')], [+1]))
+ACTV['%s-%s' % (dbse, '1_3_difluorobenzene')] = ['%s-%s-reagent' % (dbse, '1_3_difluorobenzene')]
+RXNM['%s-%s' % (dbse, '1_3_difluorobenzene')] = dict(zip(ACTV['%s-%s' % (dbse, '1_3_difluorobenzene')], [+1]))
 
-ACTV['%s-%s'            % (dbse, '1_5_difluoronaphthalene' )] = ['%s-%s-reagent'      % (dbse, '1_5_difluoronaphthalene')]
-RXNM['%s-%s'            % (dbse, '1_5_difluoronaphthalene' )] = dict(zip(ACTV['%s-%s' % (dbse, '1_5_difluoronaphthalene')], [+1]))
+ACTV['%s-%s' % (dbse, '1_5_difluoronaphthalene')] = ['%s-%s-reagent' % (dbse, '1_5_difluoronaphthalene')]
+RXNM['%s-%s' % (dbse, '1_5_difluoronaphthalene')] = dict(zip(ACTV['%s-%s' % (dbse, '1_5_difluoronaphthalene')], [+1]))
 
-ACTV['%s-%s'            % (dbse, '2_hydroxybicyclopentane' )] = ['%s-%s-reagent'      % (dbse, '2_hydroxybicyclopentane')]
-RXNM['%s-%s'            % (dbse, '2_hydroxybicyclopentane' )] = dict(zip(ACTV['%s-%s' % (dbse, '2_hydroxybicyclopentane')], [+1]))
+ACTV['%s-%s' % (dbse, '2_hydroxybicyclopentane')] = ['%s-%s-reagent' % (dbse, '2_hydroxybicyclopentane')]
+RXNM['%s-%s' % (dbse, '2_hydroxybicyclopentane')] = dict(zip(ACTV['%s-%s' % (dbse, '2_hydroxybicyclopentane')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'ACANIL01'              )] = ['%s-%s-reagent'      % (dbse, 'ACANIL01')]
-RXNM['%s-%s'            % (dbse, 'ACANIL01'              )] = dict(zip(ACTV['%s-%s' % (dbse, 'ACANIL01')], [+1]))
+ACTV['%s-%s' % (dbse, 'ACANIL01')] = ['%s-%s-reagent' % (dbse, 'ACANIL01')]
+RXNM['%s-%s' % (dbse, 'ACANIL01')] = dict(zip(ACTV['%s-%s' % (dbse, 'ACANIL01')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'acetone'               )] = ['%s-%s-reagent'      % (dbse, 'acetone')]
-RXNM['%s-%s'            % (dbse, 'acetone'               )] = dict(zip(ACTV['%s-%s' % (dbse, 'acetone')], [+1]))
+ACTV['%s-%s' % (dbse, 'acetone')] = ['%s-%s-reagent' % (dbse, 'acetone')]
+RXNM['%s-%s' % (dbse, 'acetone')] = dict(zip(ACTV['%s-%s' % (dbse, 'acetone')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'acetylene'             )] = ['%s-%s-reagent'      % (dbse, 'acetylene')]
-RXNM['%s-%s'            % (dbse, 'acetylene'             )] = dict(zip(ACTV['%s-%s' % (dbse, 'acetylene')], [+1]))
+ACTV['%s-%s' % (dbse, 'acetylene')] = ['%s-%s-reagent' % (dbse, 'acetylene')]
+RXNM['%s-%s' % (dbse, 'acetylene')] = dict(zip(ACTV['%s-%s' % (dbse, 'acetylene')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'ACHTAR10'              )] = ['%s-%s-reagent'      % (dbse, 'ACHTAR10')]
-RXNM['%s-%s'            % (dbse, 'ACHTAR10'              )] = dict(zip(ACTV['%s-%s' % (dbse, 'ACHTAR10')], [+1]))
+ACTV['%s-%s' % (dbse, 'ACHTAR10')] = ['%s-%s-reagent' % (dbse, 'ACHTAR10')]
+RXNM['%s-%s' % (dbse, 'ACHTAR10')] = dict(zip(ACTV['%s-%s' % (dbse, 'ACHTAR10')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'allene'                )] = ['%s-%s-reagent'      % (dbse, 'allene')]
-RXNM['%s-%s'            % (dbse, 'allene'                )] = dict(zip(ACTV['%s-%s' % (dbse, 'allene')], [+1]))
+ACTV['%s-%s' % (dbse, 'allene')] = ['%s-%s-reagent' % (dbse, 'allene')]
+RXNM['%s-%s' % (dbse, 'allene')] = dict(zip(ACTV['%s-%s' % (dbse, 'allene')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'ammonia'               )] = ['%s-%s-reagent'      % (dbse, 'ammonia')]
-RXNM['%s-%s'            % (dbse, 'ammonia'               )] = dict(zip(ACTV['%s-%s' % (dbse, 'ammonia')], [+1]))
+ACTV['%s-%s' % (dbse, 'ammonia')] = ['%s-%s-reagent' % (dbse, 'ammonia')]
+RXNM['%s-%s' % (dbse, 'ammonia')] = dict(zip(ACTV['%s-%s' % (dbse, 'ammonia')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'benzaldehyde'          )] = ['%s-%s-reagent'      % (dbse, 'benzaldehyde')]
-RXNM['%s-%s'            % (dbse, 'benzaldehyde'          )] = dict(zip(ACTV['%s-%s' % (dbse, 'benzaldehyde')], [+1]))
+ACTV['%s-%s' % (dbse, 'benzaldehyde')] = ['%s-%s-reagent' % (dbse, 'benzaldehyde')]
+RXNM['%s-%s' % (dbse, 'benzaldehyde')] = dict(zip(ACTV['%s-%s' % (dbse, 'benzaldehyde')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'benzene'               )] = ['%s-%s-reagent'      % (dbse, 'benzene')]
-RXNM['%s-%s'            % (dbse, 'benzene'               )] = dict(zip(ACTV['%s-%s' % (dbse, 'benzene')], [+1]))
+ACTV['%s-%s' % (dbse, 'benzene')] = ['%s-%s-reagent' % (dbse, 'benzene')]
+RXNM['%s-%s' % (dbse, 'benzene')] = dict(zip(ACTV['%s-%s' % (dbse, 'benzene')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'benzidine'             )] = ['%s-%s-reagent'      % (dbse, 'benzidine')]
-RXNM['%s-%s'            % (dbse, 'benzidine'             )] = dict(zip(ACTV['%s-%s' % (dbse, 'benzidine')], [+1]))
+ACTV['%s-%s' % (dbse, 'benzidine')] = ['%s-%s-reagent' % (dbse, 'benzidine')]
+RXNM['%s-%s' % (dbse, 'benzidine')] = dict(zip(ACTV['%s-%s' % (dbse, 'benzidine')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'caffeine'              )] = ['%s-%s-reagent'      % (dbse, 'caffeine')]
-RXNM['%s-%s'            % (dbse, 'caffeine'              )] = dict(zip(ACTV['%s-%s' % (dbse, 'caffeine')], [+1]))
+ACTV['%s-%s' % (dbse, 'caffeine')] = ['%s-%s-reagent' % (dbse, 'caffeine')]
+RXNM['%s-%s' % (dbse, 'caffeine')] = dict(zip(ACTV['%s-%s' % (dbse, 'caffeine')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'difuropyrazine'        )] = ['%s-%s-reagent'      % (dbse, 'difuropyrazine')]
-RXNM['%s-%s'            % (dbse, 'difuropyrazine'        )] = dict(zip(ACTV['%s-%s' % (dbse, 'difuropyrazine')], [+1]))
+ACTV['%s-%s' % (dbse, 'difuropyrazine')] = ['%s-%s-reagent' % (dbse, 'difuropyrazine')]
+RXNM['%s-%s' % (dbse, 'difuropyrazine')] = dict(zip(ACTV['%s-%s' % (dbse, 'difuropyrazine')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'dimethylpentane'       )] = ['%s-%s-reagent'      % (dbse, 'dimethylpentane')]
-RXNM['%s-%s'            % (dbse, 'dimethylpentane'       )] = dict(zip(ACTV['%s-%s' % (dbse, 'dimethylpentane')], [+1]))
+ACTV['%s-%s' % (dbse, 'dimethylpentane')] = ['%s-%s-reagent' % (dbse, 'dimethylpentane')]
+RXNM['%s-%s' % (dbse, 'dimethylpentane')] = dict(zip(ACTV['%s-%s' % (dbse, 'dimethylpentane')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'disilyl_ether'         )] = ['%s-%s-reagent'      % (dbse, 'disilyl_ether')]
-RXNM['%s-%s'            % (dbse, 'disilyl_ether'         )] = dict(zip(ACTV['%s-%s' % (dbse, 'disilyl_ether')], [+1]))
+ACTV['%s-%s' % (dbse, 'disilyl_ether')] = ['%s-%s-reagent' % (dbse, 'disilyl_ether')]
+RXNM['%s-%s' % (dbse, 'disilyl_ether')] = dict(zip(ACTV['%s-%s' % (dbse, 'disilyl_ether')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'ethane'                )] = ['%s-%s-reagent'      % (dbse, 'ethane')]
-RXNM['%s-%s'            % (dbse, 'ethane'                )] = dict(zip(ACTV['%s-%s' % (dbse, 'ethane')], [+1]))
+ACTV['%s-%s' % (dbse, 'ethane')] = ['%s-%s-reagent' % (dbse, 'ethane')]
+RXNM['%s-%s' % (dbse, 'ethane')] = dict(zip(ACTV['%s-%s' % (dbse, 'ethane')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'ethanol'               )] = ['%s-%s-reagent'      % (dbse, 'ethanol')]
-RXNM['%s-%s'            % (dbse, 'ethanol'               )] = dict(zip(ACTV['%s-%s' % (dbse, 'ethanol')], [+1]))
+ACTV['%s-%s' % (dbse, 'ethanol')] = ['%s-%s-reagent' % (dbse, 'ethanol')]
+RXNM['%s-%s' % (dbse, 'ethanol')] = dict(zip(ACTV['%s-%s' % (dbse, 'ethanol')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'furan'                 )] = ['%s-%s-reagent'      % (dbse, 'furan')]
-RXNM['%s-%s'            % (dbse, 'furan'                 )] = dict(zip(ACTV['%s-%s' % (dbse, 'furan')], [+1]))
+ACTV['%s-%s' % (dbse, 'furan')] = ['%s-%s-reagent' % (dbse, 'furan')]
+RXNM['%s-%s' % (dbse, 'furan')] = dict(zip(ACTV['%s-%s' % (dbse, 'furan')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'histidine'             )] = ['%s-%s-reagent'      % (dbse, 'histidine')]
-RXNM['%s-%s'            % (dbse, 'histidine'             )] = dict(zip(ACTV['%s-%s' % (dbse, 'histidine')], [+1]))
+ACTV['%s-%s' % (dbse, 'histidine')] = ['%s-%s-reagent' % (dbse, 'histidine')]
+RXNM['%s-%s' % (dbse, 'histidine')] = dict(zip(ACTV['%s-%s' % (dbse, 'histidine')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'hydroxysulphane'       )] = ['%s-%s-reagent'      % (dbse, 'hydroxysulphane')]
-RXNM['%s-%s'            % (dbse, 'hydroxysulphane'       )] = dict(zip(ACTV['%s-%s' % (dbse, 'hydroxysulphane')], [+1]))
+ACTV['%s-%s' % (dbse, 'hydroxysulphane')] = ['%s-%s-reagent' % (dbse, 'hydroxysulphane')]
+RXNM['%s-%s' % (dbse, 'hydroxysulphane')] = dict(zip(ACTV['%s-%s' % (dbse, 'hydroxysulphane')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'menthone'              )] = ['%s-%s-reagent'      % (dbse, 'menthone')]
-RXNM['%s-%s'            % (dbse, 'menthone'              )] = dict(zip(ACTV['%s-%s' % (dbse, 'menthone')], [+1]))
+ACTV['%s-%s' % (dbse, 'menthone')] = ['%s-%s-reagent' % (dbse, 'menthone')]
+RXNM['%s-%s' % (dbse, 'menthone')] = dict(zip(ACTV['%s-%s' % (dbse, 'menthone')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'mesityl_oxide'         )] = ['%s-%s-reagent'      % (dbse, 'mesityl_oxide')]
-RXNM['%s-%s'            % (dbse, 'mesityl_oxide'         )] = dict(zip(ACTV['%s-%s' % (dbse, 'mesityl_oxide')], [+1]))
+ACTV['%s-%s' % (dbse, 'mesityl_oxide')] = ['%s-%s-reagent' % (dbse, 'mesityl_oxide')]
+RXNM['%s-%s' % (dbse, 'mesityl_oxide')] = dict(zip(ACTV['%s-%s' % (dbse, 'mesityl_oxide')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'methylamine'           )] = ['%s-%s-reagent'      % (dbse, 'methylamine')]
-RXNM['%s-%s'            % (dbse, 'methylamine'           )] = dict(zip(ACTV['%s-%s' % (dbse, 'methylamine')], [+1]))
+ACTV['%s-%s' % (dbse, 'methylamine')] = ['%s-%s-reagent' % (dbse, 'methylamine')]
+RXNM['%s-%s' % (dbse, 'methylamine')] = dict(zip(ACTV['%s-%s' % (dbse, 'methylamine')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'naphthalene'           )] = ['%s-%s-reagent'      % (dbse, 'naphthalene')]
-RXNM['%s-%s'            % (dbse, 'naphthalene'           )] = dict(zip(ACTV['%s-%s' % (dbse, 'naphthalene')], [+1]))
+ACTV['%s-%s' % (dbse, 'naphthalene')] = ['%s-%s-reagent' % (dbse, 'naphthalene')]
+RXNM['%s-%s' % (dbse, 'naphthalene')] = dict(zip(ACTV['%s-%s' % (dbse, 'naphthalene')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'neopentane'            )] = ['%s-%s-reagent'      % (dbse, 'neopentane')]
-RXNM['%s-%s'            % (dbse, 'neopentane'            )] = dict(zip(ACTV['%s-%s' % (dbse, 'neopentane')], [+1]))
+ACTV['%s-%s' % (dbse, 'neopentane')] = ['%s-%s-reagent' % (dbse, 'neopentane')]
+RXNM['%s-%s' % (dbse, 'neopentane')] = dict(zip(ACTV['%s-%s' % (dbse, 'neopentane')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'pterin'                )] = ['%s-%s-reagent'      % (dbse, 'pterin')]
-RXNM['%s-%s'            % (dbse, 'pterin'                )] = dict(zip(ACTV['%s-%s' % (dbse, 'pterin')], [+1]))
+ACTV['%s-%s' % (dbse, 'pterin')] = ['%s-%s-reagent' % (dbse, 'pterin')]
+RXNM['%s-%s' % (dbse, 'pterin')] = dict(zip(ACTV['%s-%s' % (dbse, 'pterin')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'water'                 )] = ['%s-%s-reagent'      % (dbse, 'water')]
-RXNM['%s-%s'            % (dbse, 'water'                 )] = dict(zip(ACTV['%s-%s' % (dbse, 'water')], [+1]))
+ACTV['%s-%s' % (dbse, 'water')] = ['%s-%s-reagent' % (dbse, 'water')]
+RXNM['%s-%s' % (dbse, 'water')] = dict(zip(ACTV['%s-%s' % (dbse, 'water')], [+1]))
 
 # <<< Reference Values [kcal/mol] >>>
 BIND = {}
-BIND['%s-%s'            % (dbse, '1_3_5_trifluorobenzene' )] =    0.000
-BIND['%s-%s'            % (dbse, '1_3_5_trisilacyclohexane' )] =    0.000
-BIND['%s-%s'            % (dbse, '1_3_difluorobenzene'   )] =    0.000
-BIND['%s-%s'            % (dbse, '1_5_difluoronaphthalene' )] =    0.000
-BIND['%s-%s'            % (dbse, '2_hydroxybicyclopentane' )] =    0.000
-BIND['%s-%s'            % (dbse, 'ACANIL01'              )] =    0.000
-BIND['%s-%s'            % (dbse, 'acetone'               )] =    0.000
-BIND['%s-%s'            % (dbse, 'acetylene'             )] =    0.000
-BIND['%s-%s'            % (dbse, 'ACHTAR10'              )] =    0.000
-BIND['%s-%s'            % (dbse, 'allene'                )] =    0.000
-BIND['%s-%s'            % (dbse, 'ammonia'               )] =    0.000
-BIND['%s-%s'            % (dbse, 'benzaldehyde'          )] =    0.000
-BIND['%s-%s'            % (dbse, 'benzene'               )] =    0.000
-BIND['%s-%s'            % (dbse, 'benzidine'             )] =    0.000
-BIND['%s-%s'            % (dbse, 'caffeine'              )] =    0.000
-BIND['%s-%s'            % (dbse, 'difuropyrazine'        )] =    0.000
-BIND['%s-%s'            % (dbse, 'dimethylpentane'       )] =    0.000
-BIND['%s-%s'            % (dbse, 'disilyl_ether'         )] =    0.000
-BIND['%s-%s'            % (dbse, 'ethane'                )] =    0.000
-BIND['%s-%s'            % (dbse, 'ethanol'               )] =    0.000
-BIND['%s-%s'            % (dbse, 'furan'                 )] =    0.000
-BIND['%s-%s'            % (dbse, 'histidine'             )] =    0.000
-BIND['%s-%s'            % (dbse, 'hydroxysulphane'       )] =    0.000
-BIND['%s-%s'            % (dbse, 'menthone'              )] =    0.000
-BIND['%s-%s'            % (dbse, 'mesityl_oxide'         )] =    0.000
-BIND['%s-%s'            % (dbse, 'methylamine'           )] =    0.000
-BIND['%s-%s'            % (dbse, 'naphthalene'           )] =    0.000
-BIND['%s-%s'            % (dbse, 'neopentane'            )] =    0.000
-BIND['%s-%s'            % (dbse, 'pterin'                )] =    0.000
-BIND['%s-%s'            % (dbse, 'water'                 )] =    0.000
+BIND['%s-%s' % (dbse, '1_3_5_trifluorobenzene')] = 0.000
+BIND['%s-%s' % (dbse, '1_3_5_trisilacyclohexane')] = 0.000
+BIND['%s-%s' % (dbse, '1_3_difluorobenzene')] = 0.000
+BIND['%s-%s' % (dbse, '1_5_difluoronaphthalene')] = 0.000
+BIND['%s-%s' % (dbse, '2_hydroxybicyclopentane')] = 0.000
+BIND['%s-%s' % (dbse, 'ACANIL01')] = 0.000
+BIND['%s-%s' % (dbse, 'acetone')] = 0.000
+BIND['%s-%s' % (dbse, 'acetylene')] = 0.000
+BIND['%s-%s' % (dbse, 'ACHTAR10')] = 0.000
+BIND['%s-%s' % (dbse, 'allene')] = 0.000
+BIND['%s-%s' % (dbse, 'ammonia')] = 0.000
+BIND['%s-%s' % (dbse, 'benzaldehyde')] = 0.000
+BIND['%s-%s' % (dbse, 'benzene')] = 0.000
+BIND['%s-%s' % (dbse, 'benzidine')] = 0.000
+BIND['%s-%s' % (dbse, 'caffeine')] = 0.000
+BIND['%s-%s' % (dbse, 'difuropyrazine')] = 0.000
+BIND['%s-%s' % (dbse, 'dimethylpentane')] = 0.000
+BIND['%s-%s' % (dbse, 'disilyl_ether')] = 0.000
+BIND['%s-%s' % (dbse, 'ethane')] = 0.000
+BIND['%s-%s' % (dbse, 'ethanol')] = 0.000
+BIND['%s-%s' % (dbse, 'furan')] = 0.000
+BIND['%s-%s' % (dbse, 'histidine')] = 0.000
+BIND['%s-%s' % (dbse, 'hydroxysulphane')] = 0.000
+BIND['%s-%s' % (dbse, 'menthone')] = 0.000
+BIND['%s-%s' % (dbse, 'mesityl_oxide')] = 0.000
+BIND['%s-%s' % (dbse, 'methylamine')] = 0.000
+BIND['%s-%s' % (dbse, 'naphthalene')] = 0.000
+BIND['%s-%s' % (dbse, 'neopentane')] = 0.000
+BIND['%s-%s' % (dbse, 'pterin')] = 0.000
+BIND['%s-%s' % (dbse, 'water')] = 0.000
 
 # <<< Comment Lines >>>
 TAGL = {}
-TAGL['%s-%s'            % (dbse, '1_3_5_trifluorobenzene' )] = ''
-TAGL['%s-%s-reagent'    % (dbse, '1_3_5_trifluorobenzene' )] = ''
-TAGL['%s-%s'            % (dbse, '1_3_5_trisilacyclohexane' )] = ''
-TAGL['%s-%s-reagent'    % (dbse, '1_3_5_trisilacyclohexane' )] = ''
-TAGL['%s-%s'            % (dbse, '1_3_difluorobenzene'   )] = ''
-TAGL['%s-%s-reagent'    % (dbse, '1_3_difluorobenzene'   )] = ''
-TAGL['%s-%s'            % (dbse, '1_5_difluoronaphthalene' )] = ''
-TAGL['%s-%s-reagent'    % (dbse, '1_5_difluoronaphthalene' )] = ''
-TAGL['%s-%s'            % (dbse, '2_hydroxybicyclopentane' )] = ''
-TAGL['%s-%s-reagent'    % (dbse, '2_hydroxybicyclopentane' )] = ''
-TAGL['%s-%s'            % (dbse, 'ACANIL01'              )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'ACANIL01'              )] = ''
-TAGL['%s-%s'            % (dbse, 'acetone'               )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'acetone'               )] = ''
-TAGL['%s-%s'            % (dbse, 'acetylene'             )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'acetylene'             )] = ''
-TAGL['%s-%s'            % (dbse, 'ACHTAR10'              )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'ACHTAR10'              )] = ''
-TAGL['%s-%s'            % (dbse, 'allene'                )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'allene'                )] = ''
-TAGL['%s-%s'            % (dbse, 'ammonia'               )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'ammonia'               )] = ''
-TAGL['%s-%s'            % (dbse, 'benzaldehyde'          )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'benzaldehyde'          )] = ''
-TAGL['%s-%s'            % (dbse, 'benzene'               )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'benzene'               )] = ''
-TAGL['%s-%s'            % (dbse, 'benzidine'             )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'benzidine'             )] = ''
-TAGL['%s-%s'            % (dbse, 'caffeine'              )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'caffeine'              )] = ''
-TAGL['%s-%s'            % (dbse, 'difuropyrazine'        )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'difuropyrazine'        )] = ''
-TAGL['%s-%s'            % (dbse, 'dimethylpentane'       )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'dimethylpentane'       )] = ''
-TAGL['%s-%s'            % (dbse, 'disilyl_ether'         )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'disilyl_ether'         )] = ''
-TAGL['%s-%s'            % (dbse, 'ethane'                )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'ethane'                )] = ''
-TAGL['%s-%s'            % (dbse, 'ethanol'               )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'ethanol'               )] = ''
-TAGL['%s-%s'            % (dbse, 'furan'                 )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'furan'                 )] = ''
-TAGL['%s-%s'            % (dbse, 'histidine'             )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'histidine'             )] = ''
-TAGL['%s-%s'            % (dbse, 'hydroxysulphane'       )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'hydroxysulphane'       )] = ''
-TAGL['%s-%s'            % (dbse, 'menthone'              )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'menthone'              )] = ''
-TAGL['%s-%s'            % (dbse, 'mesityl_oxide'         )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'mesityl_oxide'         )] = ''
-TAGL['%s-%s'            % (dbse, 'methylamine'           )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'methylamine'           )] = ''
-TAGL['%s-%s'            % (dbse, 'naphthalene'           )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'naphthalene'           )] = ''
-TAGL['%s-%s'            % (dbse, 'neopentane'            )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'neopentane'            )] = ''
-TAGL['%s-%s'            % (dbse, 'pterin'                )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'pterin'                )] = ''
-TAGL['%s-%s'            % (dbse, 'water'                 )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'water'                 )] = ''
+TAGL['%s-%s' % (dbse, '1_3_5_trifluorobenzene')] = ''
+TAGL['%s-%s-reagent' % (dbse, '1_3_5_trifluorobenzene')] = ''
+TAGL['%s-%s' % (dbse, '1_3_5_trisilacyclohexane')] = ''
+TAGL['%s-%s-reagent' % (dbse, '1_3_5_trisilacyclohexane')] = ''
+TAGL['%s-%s' % (dbse, '1_3_difluorobenzene')] = ''
+TAGL['%s-%s-reagent' % (dbse, '1_3_difluorobenzene')] = ''
+TAGL['%s-%s' % (dbse, '1_5_difluoronaphthalene')] = ''
+TAGL['%s-%s-reagent' % (dbse, '1_5_difluoronaphthalene')] = ''
+TAGL['%s-%s' % (dbse, '2_hydroxybicyclopentane')] = ''
+TAGL['%s-%s-reagent' % (dbse, '2_hydroxybicyclopentane')] = ''
+TAGL['%s-%s' % (dbse, 'ACANIL01')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'ACANIL01')] = ''
+TAGL['%s-%s' % (dbse, 'acetone')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'acetone')] = ''
+TAGL['%s-%s' % (dbse, 'acetylene')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'acetylene')] = ''
+TAGL['%s-%s' % (dbse, 'ACHTAR10')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'ACHTAR10')] = ''
+TAGL['%s-%s' % (dbse, 'allene')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'allene')] = ''
+TAGL['%s-%s' % (dbse, 'ammonia')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'ammonia')] = ''
+TAGL['%s-%s' % (dbse, 'benzaldehyde')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'benzaldehyde')] = ''
+TAGL['%s-%s' % (dbse, 'benzene')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'benzene')] = ''
+TAGL['%s-%s' % (dbse, 'benzidine')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'benzidine')] = ''
+TAGL['%s-%s' % (dbse, 'caffeine')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'caffeine')] = ''
+TAGL['%s-%s' % (dbse, 'difuropyrazine')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'difuropyrazine')] = ''
+TAGL['%s-%s' % (dbse, 'dimethylpentane')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'dimethylpentane')] = ''
+TAGL['%s-%s' % (dbse, 'disilyl_ether')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'disilyl_ether')] = ''
+TAGL['%s-%s' % (dbse, 'ethane')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'ethane')] = ''
+TAGL['%s-%s' % (dbse, 'ethanol')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'ethanol')] = ''
+TAGL['%s-%s' % (dbse, 'furan')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'furan')] = ''
+TAGL['%s-%s' % (dbse, 'histidine')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'histidine')] = ''
+TAGL['%s-%s' % (dbse, 'hydroxysulphane')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'hydroxysulphane')] = ''
+TAGL['%s-%s' % (dbse, 'menthone')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'menthone')] = ''
+TAGL['%s-%s' % (dbse, 'mesityl_oxide')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'mesityl_oxide')] = ''
+TAGL['%s-%s' % (dbse, 'methylamine')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'methylamine')] = ''
+TAGL['%s-%s' % (dbse, 'naphthalene')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'naphthalene')] = ''
+TAGL['%s-%s' % (dbse, 'neopentane')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'neopentane')] = ''
+TAGL['%s-%s' % (dbse, 'pterin')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'pterin')] = ''
+TAGL['%s-%s' % (dbse, 'water')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'water')] = ''
 
 # <<< Geometry Specification Strings >>>
 GEOS = {}
@@ -839,33 +865,33 @@ units bohr
 DATA = {}
 
 DATA['NUCLEAR REPULSION ENERGY'] = {}
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-1_3_5_trifluorobenzene-reagent'  ] =     422.92396136
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-1_3_5_trisilacyclohexane-reagent'] =     458.36587183
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-1_3_difluorobenzene-reagent'     ] =     342.91092587
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-1_5_difluoronaphthalene-reagent' ] =     646.43123032
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-2_hydroxybicyclopentane-reagent' ] =     242.19428832
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-ACANIL01-reagent'                ] =     482.21477925
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-acetone-reagent'                 ] =     117.95076939
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-acetylene-reagent'               ] =      25.27722466
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-ACHTAR10-reagent'                ] =     308.80224696
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-allene-reagent'                  ] =      58.87417679
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-ammonia-reagent'                 ] =      11.96515487
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-benzaldehyde-reagent'            ] =     318.78609908
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-benzene-reagent'                 ] =     203.68596051
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-benzidine-reagent'               ] =     792.45947768
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-caffeine-reagent'                ] =     906.96430213
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-difuropyrazine-reagent'          ] =     627.88695998
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-dimethylpentane-reagent'         ] =     329.98386705
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-disilyl_ether-reagent'           ] =     159.72016132
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-ethane-reagent'                  ] =      42.23178002
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-ethanol-reagent'                 ] =      81.36264622
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-furan-reagent'                   ] =     160.13552808
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-histidine-reagent'               ] =     593.28835805
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-hydroxysulphane-reagent'         ] =      61.30095938
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-menthone-reagent'                ] =     661.81731171
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-mesityl_oxide-reagent'           ] =     286.76670258
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-methylamine-reagent'             ] =      42.02150992
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-naphthalene-reagent'             ] =     460.06217417
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-neopentane-reagent'              ] =     196.29453370
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-pterin-reagent'                  ] =     650.63929481
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-water-reagent'                   ] =       9.15711319
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-1_3_5_trifluorobenzene-reagent'] = 422.92396136
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-1_3_5_trisilacyclohexane-reagent'] = 458.36587183
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-1_3_difluorobenzene-reagent'] = 342.91092587
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-1_5_difluoronaphthalene-reagent'] = 646.43123032
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-2_hydroxybicyclopentane-reagent'] = 242.19428832
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-ACANIL01-reagent'] = 482.21477925
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-acetone-reagent'] = 117.95076939
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-acetylene-reagent'] = 25.27722466
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-ACHTAR10-reagent'] = 308.80224696
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-allene-reagent'] = 58.87417679
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-ammonia-reagent'] = 11.96515487
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-benzaldehyde-reagent'] = 318.78609908
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-benzene-reagent'] = 203.68596051
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-benzidine-reagent'] = 792.45947768
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-caffeine-reagent'] = 906.96430213
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-difuropyrazine-reagent'] = 627.88695998
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-dimethylpentane-reagent'] = 329.98386705
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-disilyl_ether-reagent'] = 159.72016132
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-ethane-reagent'] = 42.23178002
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-ethanol-reagent'] = 81.36264622
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-furan-reagent'] = 160.13552808
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-histidine-reagent'] = 593.28835805
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-hydroxysulphane-reagent'] = 61.30095938
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-menthone-reagent'] = 661.81731171
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-mesityl_oxide-reagent'] = 286.76670258
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-methylamine-reagent'] = 42.02150992
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-naphthalene-reagent'] = 460.06217417
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-neopentane-reagent'] = 196.29453370
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-pterin-reagent'] = 650.63929481
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC93-water-reagent'] = 9.15711319

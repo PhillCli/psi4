@@ -232,8 +232,8 @@ void olsengraph(struct olsen_graph *Graph, int ci_orbs, int num_el, int nirreps,
     int maxj, drc_sym = 0, code = 0, num_el_expl;
     struct stringgraph *sgptr;
 
-    //outfile->Printf("ras1_lvl = %d   ras1_min = %d  ras1_max = %d\n", ras1_lvl, ras1_min, ras1_max);
-    //outfile->Printf("ras3_lvl = %d   ras3_max = %d\n", ras3_lvl, ras3_max);
+    // outfile->Printf("ras1_lvl = %d   ras1_min = %d  ras1_max = %d\n", ras1_lvl, ras1_min, ras1_max);
+    // outfile->Printf("ras3_lvl = %d   ras3_max = %d\n", ras3_lvl, ras3_max);
 
     // Go ahead and set the occupations of the frozen orbs
     occs = init_int_array(num_el);
@@ -376,8 +376,8 @@ void olsengraph(struct olsen_graph *Graph, int ci_orbs, int num_el, int nirreps,
                 /* CDS 8/24/95 */
                 if (CIparams->r4s && n4 >= 2 && n1max - n1 > CIparams->ex_lvl) continue;
 
-                //outfile->Printf("n1 = %d, n2 = %d, n3 = %d, n4 = %d\n", n1, n2, n3, n4);
-                //if (n2 < 0) outfile->Printf("Error: n2 < 0 in form_strings()\n");
+                // outfile->Printf("n1 = %d, n2 = %d, n3 = %d, n4 = %d\n", n1, n2, n3, n4);
+                // if (n2 < 0) outfile->Printf("Error: n2 < 0 in form_strings()\n");
 
                 Ras2.resize(n2);
                 Ras4.resize(n4);
@@ -405,8 +405,8 @@ void olsengraph(struct olsen_graph *Graph, int ci_orbs, int num_el, int nirreps,
                                 for (i = n4 - 1; i >= 0; i--) occs[j++] = array4[i];
 
                                 // print out occupations for debugging
-                                //for (i = 0; i < num_el_expl; i++) outfile->Printf("%2d ", occs[i]);
-                                //outfile->Printf("\n");
+                                // for (i = 0; i < num_el_expl; i++) outfile->Printf("%2d ", occs[i]);
+                                // outfile->Printf("\n");
 
                                 // add this walk to the graph
                                 og_add_walk(n1 - n1min, n3, n4, occs, num_el_expl, ci_orbs, nirreps, num_drc_orbs,
@@ -821,9 +821,9 @@ void print_ci_space(struct stringwr *strlist, int num_strings, int nirreps, int 
             outfile->Printf("   Links:\n");
             for (strsym = 0; strsym < strtypes; strsym++) {
                 for (j = 0; j < strlist->cnt[strsym]; j++) {
-                    outfile->Printf("   %3d [%3d] %c (%2d %3zu)   %d\n", strlist->ij[strsym][j], strlist->oij[strsym][j],
-                                    (strlist->sgn[strsym][j] == 1) ? '+' : '-', strsym, strlist->ridx[strsym][j],
-                                    static_cast<int>(strlist->sgn[strsym][j]));
+                    outfile->Printf("   %3d [%3d] %c (%2d %3zu)   %d\n", strlist->ij[strsym][j],
+                                    strlist->oij[strsym][j], (strlist->sgn[strsym][j] == 1) ? '+' : '-', strsym,
+                                    strlist->ridx[strsym][j], static_cast<int>(strlist->sgn[strsym][j]));
                 }
             } /* end loop over strsym */
         }

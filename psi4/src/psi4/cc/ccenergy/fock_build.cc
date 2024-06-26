@@ -336,5 +336,5 @@ void CCEnergyWavefunction::uhf_fock_build(double **fock_a, double **fock_b, doub
 
     free_block(Dt);
 }
-}
+}  // namespace ccenergy
 }  // namespace psi

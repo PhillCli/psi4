@@ -78,7 +78,8 @@ void SuperFunctional::common_init() {
     density_tolerance_ = 0.0;
 }
 std::shared_ptr<SuperFunctional> SuperFunctional::blank() { return std::make_shared<SuperFunctional>(); }
-std::shared_ptr<SuperFunctional> SuperFunctional::XC_build(std::string name, bool unpolarized, const std::optional<std::map<std::string, double>>& tweakers_) {
+std::shared_ptr<SuperFunctional> SuperFunctional::XC_build(
+    std::string name, bool unpolarized, const std::optional<std::map<std::string, double>>& tweakers_) {
     // Only allow build from full XC kernels
     if (name.find("XC_") == std::string::npos) {
         throw PSIEXCEPTION("XC_build requires full XC_ functional names");
@@ -678,21 +679,21 @@ std::map<std::string, SharedVector>& SuperFunctional::compute_functional(
         std::map<std::string, SharedVector> UKS_vals;
         if (true) {
             UKS_vals["RHO_A"] = std::make_shared<Vector>(std::move((vals.at("RHO_A")->clone())));
-            UKS_vals["RHO_A"]->scale(0.5); // Un-spinsum
+            UKS_vals["RHO_A"]->scale(0.5);  // Un-spinsum
             UKS_vals["RHO_B"] = UKS_vals["RHO_A"];
         }
         if (vals.count("RHO_AX")) {
             UKS_vals["RHO_AX"] = std::make_shared<Vector>(std::move(vals.at("RHO_AX")->clone()));
-            UKS_vals["RHO_AX"]->scale(0.5); // Un-spinsum
+            UKS_vals["RHO_AX"]->scale(0.5);  // Un-spinsum
             UKS_vals["RHO_BX"] = UKS_vals["RHO_AX"];
             UKS_vals["RHO_AY"] = std::make_shared<Vector>(std::move(vals.at("RHO_AY")->clone()));
-            UKS_vals["RHO_AY"]->scale(0.5); // Un-spinsum
+            UKS_vals["RHO_AY"]->scale(0.5);  // Un-spinsum
             UKS_vals["RHO_BY"] = UKS_vals["RHO_AY"];
             UKS_vals["RHO_AZ"] = std::make_shared<Vector>(std::move(vals.at("RHO_AZ")->clone()));
-            UKS_vals["RHO_AZ"]->scale(0.5); // Un-spinsum
+            UKS_vals["RHO_AZ"]->scale(0.5);  // Un-spinsum
             UKS_vals["RHO_BZ"] = UKS_vals["RHO_AZ"];
             UKS_vals["GAMMA_AA"] = std::make_shared<Vector>(std::move(vals.at("GAMMA_AA")->clone()));
-            UKS_vals["GAMMA_AA"]->scale(0.25); // Un-spinsum
+            UKS_vals["GAMMA_AA"]->scale(0.25);  // Un-spinsum
             UKS_vals["GAMMA_AB"] = UKS_vals["GAMMA_AA"];
             UKS_vals["GAMMA_BB"] = UKS_vals["GAMMA_AA"];
         }

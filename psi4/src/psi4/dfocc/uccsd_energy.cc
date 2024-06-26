@@ -28,14 +28,14 @@
 
 #include "dfocc.h"
 
-namespace psi{
+namespace psi {
 namespace dfoccwave {
 
-void DFOCC::uccsd_energy()
-{
+void DFOCC::uccsd_energy() {
     SharedTensor2d X, Y, K, L, T, T2, T2new, G, J, W, U, Tau;
 
-//T2AB   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // T2AB
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     T2 = std::make_shared<Tensor2d>("T2 <Ij|Ab>", naoccA, naoccB, navirA, navirB);
     T2->read(psio_, PSIF_DFOCC_AMPS);
     T2new = std::make_shared<Tensor2d>("New T2 <Ij|Ab>", naoccA, naoccB, navirA, navirB);
@@ -63,9 +63,10 @@ void DFOCC::uccsd_energy()
     Eab = Tau->vector_dot(L);
     L.reset();
     Tau.reset();
-    //outfile->Printf("\tAlpha-beta contribution to Ecorr   : %20.14f\n", Eab);
+    // outfile->Printf("\tAlpha-beta contribution to Ecorr   : %20.14f\n", Eab);
 
-//T2AA   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // T2AA
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     T2 = std::make_shared<Tensor2d>("T2 <IJ|AB>", naoccA, naoccA, navirA, navirA);
     T2->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
     T2new = std::make_shared<Tensor2d>("New T2 <IJ|AB>", naoccA, naoccA, navirA, navirA);
@@ -96,9 +97,10 @@ void DFOCC::uccsd_energy()
     Eaa = 0.25 * Tau->vector_dot(G);
     G.reset();
     Tau.reset();
-    //outfile->Printf("\tAlpha-alpha contribution to Ecorr  : %20.14f\n", Eaa);
+    // outfile->Printf("\tAlpha-alpha contribution to Ecorr  : %20.14f\n", Eaa);
 
-//T2BB   ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // T2BB
+    // ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     T2 = std::make_shared<Tensor2d>("T2 <ij|ab>", naoccB, naoccB, navirB, navirB);
     T2->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
     T2new = std::make_shared<Tensor2d>("New T2 <ij|ab>", naoccB, naoccB, navirB, navirB);
@@ -128,7 +130,7 @@ void DFOCC::uccsd_energy()
     Ebb = 0.25 * Tau->vector_dot(G);
     G.reset();
     Tau.reset();
-    //outfile->Printf("\tBeta-beta contribution to Ecorr    : %20.14f\n", Ebb);
+    // outfile->Printf("\tBeta-beta contribution to Ecorr    : %20.14f\n", Ebb);
     Ecorr = Eaa + Ebb + Eab;
     Eccsd = Escf + Ecorr;
 
@@ -136,8 +138,7 @@ void DFOCC::uccsd_energy()
     rms_t2 = MAX0(rms_ss, rms_t2AB);
     rms_t1 = MAX0(rms_t1A, rms_t1B);
 
-}// end ccsd_energy
+}  // end ccsd_energy
 
 }  // namespace dfoccwave
 }  // namespace psi
-

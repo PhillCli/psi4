@@ -15,12 +15,12 @@ mol = psi4.geometry("""
     symmetry c1
 """)
 
-psi4.set_options({"basis":         "aug-cc-pVDZ",
-                  "scf_type":      "df",
-                  "e_convergence": 1e-8,
-                  "save_jk":       True,
-                 })
-
+psi4.set_options({
+    "basis": "aug-cc-pVDZ",
+    "scf_type": "df",
+    "e_convergence": 1e-8,
+    "save_jk": True,
+})
 
 scf_e, scf_wfn = psi4.energy("SCF", return_wfn=True)
 
@@ -44,6 +44,7 @@ occ = np.array(scf_wfn.epsilon_a_subset("AO", "OCC"))
 vir = np.array(scf_wfn.epsilon_a_subset("AO", "VIR"))
 precon.np[:] = (-occ.reshape(-1, 1) + vir)
 
+
 # Build a preconditioner function
 def precon_func(matrices, active_mask):
     ret = []
@@ -54,7 +55,8 @@ def precon_func(matrices, active_mask):
             ret.append(p)
         else:
             ret.append(False)
-    return ret 
+    return ret
+
 
 def wrap_Hx(matrices, active_mask):
     x_vec = [mat for act, mat in zip(active_mask, matrices) if act]
@@ -71,6 +73,7 @@ def wrap_Hx(matrices, active_mask):
 
     return ret
 
+
 # Solve
 ret, resid = psi4.p4util.solvers.cg_solver(dipoles_xyz, wrap_Hx, precon_func, rcond=1.e-6)
 
@@ -85,7 +88,7 @@ psi4.core.print_out("       %12s %12s %12s\n" % tops)
 for n, p in enumerate(tops):
     psi4.core.print_out("      %3s %12.4f %12.4f %12.4f\n" % (p, polar[n][0], polar[n][1], polar[n][2]))
 psi4.core.print_out("\n")
-    
-psi4.compare_values(8.01554,  polar[0][0], 3, 'Dipole XX Polarizability') # TEST
-psi4.compare_values(12.50363, polar[1][1], 3, 'Dipole YY Polarizability') # TEST
-psi4.compare_values(10.04161, polar[2][2], 3, 'Dipole ZZ Polarizability') # TEST 
+
+psi4.compare_values(8.01554, polar[0][0], 3, 'Dipole XX Polarizability')  # TEST
+psi4.compare_values(12.50363, polar[1][1], 3, 'Dipole YY Polarizability')  # TEST
+psi4.compare_values(10.04161, polar[2][2], 3, 'Dipole ZZ Polarizability')  # TEST

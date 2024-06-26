@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """
 A helper folder for solvent models
 """

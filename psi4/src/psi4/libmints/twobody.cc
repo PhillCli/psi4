@@ -81,9 +81,8 @@ TwoBodyAOInt::TwoBodyAOInt(const IntegralFactory *intsfactory, int deriv)
         screening_type_ = ScreeningType::None;
     else
         throw PSIEXCEPTION("Unknown screening type " + screentype + " in TwoBodyAOInt()");
-    
-    if (screening_threshold_ == 0.0) screening_type_ = ScreeningType::Schwarz;
 
+    if (screening_threshold_ == 0.0) screening_type_ = ScreeningType::Schwarz;
 }
 
 TwoBodyAOInt::TwoBodyAOInt(const TwoBodyAOInt &rhs) : TwoBodyAOInt(rhs.integral_, rhs.deriv_) {
@@ -117,16 +116,15 @@ TwoBodyAOInt::TwoBodyAOInt(const TwoBodyAOInt &rhs) : TwoBodyAOInt(rhs.integral_
 
 TwoBodyAOInt::~TwoBodyAOInt() {}
 
-// Haser 1989, Equation 7 
-void TwoBodyAOInt::update_density(const std::vector<SharedMatrix>& D) {
-
+// Haser 1989, Equation 7
+void TwoBodyAOInt::update_density(const std::vector<SharedMatrix> &D) {
     if (max_dens_shell_pair_.size() == 0) {
         max_dens_shell_pair_.resize(D.size());
         for (int i = 0; i < D.size(); i++) {
             max_dens_shell_pair_[i].resize(nshell_ * nshell_);
         }
     }
-    
+
     timer_on("Update Density");
 #pragma omp parallel for
     for (int M = 0; M < nshell_; M++) {
@@ -138,7 +136,7 @@ void TwoBodyAOInt::update_density(const std::vector<SharedMatrix>& D) {
             int num_n = bs1_->shell(N).nfunction();
 
             for (int i = 0; i < D.size(); i++) {
-                double** Dp = D[i]->pointer();
+                double **Dp = D[i]->pointer();
                 double max_dens = 0.0;
                 for (int m = m_start; m < m_start + num_m; m++) {
                     for (int n = n_start; n < n_start + num_n; n++) {
@@ -148,20 +146,17 @@ void TwoBodyAOInt::update_density(const std::vector<SharedMatrix>& D) {
                 max_dens_shell_pair_[i][M * nshell_ + N] = max_dens;
                 if (M != N) max_dens_shell_pair_[i][N * nshell_ + M] = max_dens;
             }
-
         }
     }
     timer_off("Update Density");
-
 }
-
 
 double TwoBodyAOInt::shell_pair_max_density(int M, int N) const {
     if (max_dens_shell_pair_.empty()) {
         throw PSIEXCEPTION("The density matrix has not been set in the TwoBodyAOInt class!");
     }
     double D_max = 0.0;
-    for (const auto& matrix_max_per_pair: max_dens_shell_pair_) {
+    for (const auto &matrix_max_per_pair : max_dens_shell_pair_) {
         D_max = std::max(D_max, matrix_max_per_pair[M * nshell_ + N]);
     }
     return D_max;
@@ -169,16 +164,16 @@ double TwoBodyAOInt::shell_pair_max_density(int M, int N) const {
 
 // Haser 1989 Equations 6 to 14
 bool TwoBodyAOInt::shell_significant_density(int M, int N, int R, int S) {
-
     // Maximum density matrix equation
     double max_density = 0.0;
 
     // Equation 6 (RHF Case)
     if (max_dens_shell_pair_.size() == 1) {
-        max_density = std::max({4.0 * max_dens_shell_pair_[0][M * nshell_ + N], 4.0 * max_dens_shell_pair_[0][R * nshell_ + S], 
-            max_dens_shell_pair_[0][M * nshell_ + R], max_dens_shell_pair_[0][M * nshell_ + S],
-            max_dens_shell_pair_[0][N * nshell_ + R], max_dens_shell_pair_[0][N * nshell_ + S]});
-    } else { // UHF and ROHF
+        max_density =
+            std::max({4.0 * max_dens_shell_pair_[0][M * nshell_ + N], 4.0 * max_dens_shell_pair_[0][R * nshell_ + S],
+                      max_dens_shell_pair_[0][M * nshell_ + R], max_dens_shell_pair_[0][M * nshell_ + S],
+                      max_dens_shell_pair_[0][N * nshell_ + R], max_dens_shell_pair_[0][N * nshell_ + S]});
+    } else {  // UHF and ROHF
         // J-like terms
         double D_MN = max_dens_shell_pair_[0][M * nshell_ + N] + max_dens_shell_pair_[1][M * nshell_ + N];
         double D_RS = max_dens_shell_pair_[0][R * nshell_ + S] + max_dens_shell_pair_[1][R * nshell_ + S];
@@ -200,7 +195,7 @@ bool TwoBodyAOInt::shell_significant_density(int M, int N, int R, int S) {
     return (mn_mn * rs_rs * max_density * max_density >= screening_threshold_squared_);
 }
 
-bool TwoBodyAOInt::shell_significant_csam(int M, int N, int R, int S) { 
+bool TwoBodyAOInt::shell_significant_csam(int M, int N, int R, int S) {
     // Square of standard Cauchy-Schwarz Q_mu_nu terms (Eq. 1)
     double mn_mn = shell_pair_values_[N * nshell_ + M];
     double rs_rs = shell_pair_values_[S * nshell_ + R];
@@ -246,45 +241,46 @@ void TwoBodyAOInt::setup_sieve() {
         case ScreeningType::Density:
             sieve_impl_ = [=](int M, int N, int R, int S) { return this->shell_significant_density(M, N, R, S); };
             break;
-        case ScreeningType::None:   
+        case ScreeningType::None:
             sieve_impl_ = [=](int M, int N, int R, int S) { return this->shell_significant_none(M, N, R, S); };
             return;
         default:
             throw PSIEXCEPTION("Unimplemented screening type in TwoBodyAOInt::setup_sieve()");
     }
 
-
     // We assume that only the bra or the ket has a pair that generates a sieve.  If all bases are the same, either
     // can be used.  If only bra or ket has a matching pair, that matching pair is used.  If both bra and ket have
     // matching pairs but those pairs are different, we need to generalize this machinery a little to disambiguate
     // which pair should be used to form the sieve.  I don't know of a need for that right now, so I'll assume its
     // not needed and add a safety check to futureproof the code against that kind of use case further down the road.
-    if(bra_same_ && ket_same_ && !braket_same_) throw PSIEXCEPTION("Unexpected integral type (aa|bb) in setup_sieve()");
+    if (bra_same_ && ket_same_ && !braket_same_)
+        throw PSIEXCEPTION("Unexpected integral type (aa|bb) in setup_sieve()");
 
-    if(bra_same_) {
+    if (bra_same_) {
         create_sieve_pair_info(basis1(), shell_pairs_bra_, true);
         shell_pairs_ = shell_pairs_bra_;
     } else {
-        if (basis2()->l2_shell(0) != libint2::Shell::unit()) 
-               throw PSIEXCEPTION("If different basis sets exist in the bra, basis3 is expected to be dummy in setup_sieve()");
-        for(int shell = 0; shell < basis1()->nshell(); ++shell) shell_pairs_bra_.emplace_back(shell,0);
+        if (basis2()->l2_shell(0) != libint2::Shell::unit())
+            throw PSIEXCEPTION(
+                "If different basis sets exist in the bra, basis3 is expected to be dummy in setup_sieve()");
+        for (int shell = 0; shell < basis1()->nshell(); ++shell) shell_pairs_bra_.emplace_back(shell, 0);
     }
-    if(ket_same_) {
-        if(braket_same_) {
+    if (ket_same_) {
+        if (braket_same_) {
             shell_pairs_ket_ = shell_pairs_bra_;
         } else {
             create_sieve_pair_info(basis3(), shell_pairs_ket_, false);
             shell_pairs_ = shell_pairs_ket_;
         }
     } else {
-        if (basis4()->l2_shell(0) != libint2::Shell::unit()) 
-               throw PSIEXCEPTION("If different basis sets exist in the ket, basis4 is expected to be dummy in setup_sieve()");
-        for(int shell = 0; shell < basis3()->nshell(); ++shell) shell_pairs_ket_.emplace_back(shell,0);
+        if (basis4()->l2_shell(0) != libint2::Shell::unit())
+            throw PSIEXCEPTION(
+                "If different basis sets exist in the ket, basis4 is expected to be dummy in setup_sieve()");
+        for (int shell = 0; shell < basis3()->nshell(); ++shell) shell_pairs_ket_.emplace_back(shell, 0);
     }
 }
 
 void TwoBodyAOInt::create_sieve_pair_info(const std::shared_ptr<BasisSet> bs, PairList &shell_pairs, bool is_bra) {
-
     nshell_ = bs->nshell();
     nbf_ = bs->nbf();
 
@@ -315,7 +311,8 @@ void TwoBodyAOInt::create_sieve_pair_info(const std::shared_ptr<BasisSet> bs, Pa
             shell_pair_values_[P * nshell_ + Q] = shell_pair_values_[Q * nshell_ + P] = shell_max_val;
             for (int p = 0; p < nP; p++) {
                 for (int q = 0; q < nQ; q++) {
-                    function_pair_values_[(p + oP) * nbf_ + (q + oQ)] = function_pair_values_[(q + oQ) * nbf_ + (p + oP)] = shell_max_val;
+                    function_pair_values_[(p + oP) * nbf_ + (q + oQ)] =
+                        function_pair_values_[(q + oQ) * nbf_ + (p + oP)] = shell_max_val;
                 }
             }
         }
@@ -404,7 +401,8 @@ void TwoBodyAOInt::create_sieve_pair_info(const std::shared_ptr<BasisSet> bs, Pa
                 if (Q == P) {
                     int oP = bs->shell(P).function_index();
                     for (int p = 0; p < nP; ++p) {
-                        function_sqrt_[oP + p] = std::sqrt(std::abs(buffer[p * (nP * nP * nP + nP) + p * (nP * nP + 1)]));
+                        function_sqrt_[oP + p] =
+                            std::sqrt(std::abs(buffer[p * (nP * nP * nP + nP) + p * (nP * nP + 1)]));
                     }
                 }
 
@@ -470,7 +468,7 @@ bool TwoBodyAOInt::shell_block_significant(int shellpair12, int shellpair34) con
 
     for (const auto &sh12 : vsh12) {
         for (const auto &sh34 : vsh34) {
-            if(shell_significant(sh12.first, sh12.second, sh34.first, sh34.second)) return true;
+            if (shell_significant(sh12.first, sh12.second, sh34.first, sh34.second)) return true;
         }
     }
 

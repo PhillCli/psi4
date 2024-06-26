@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """
 | Database of <description of members and reference energy type>.
 | Geometries from <Reference>.
@@ -60,20 +59,58 @@ import qcdb
 dbse = 'BENCH12'
 
 # <<< Database Members >>>
-HRXN = ['acene1', 'acene2', 'alka10', 'alka2', 'alka4', 'alka6', 'alka8',
-    'alke10', 'alke2', 'alke4', 'alke6', 'alke8', 'Ar', 'bag', 'boat1',
-    'boat2', 'book1', 'book2', 'cage', 'cyclic', 'h2o', 'h2o2', 'h2o3',
-    'h2o4', 'h2o5', 'h2o6', 'Kr', 'Ne', 'prism', 'S22_DD_bz_2_pd',
-    'S22_DD_bz_2_t', 'S22_DD_bz_me', 'S22_DD_ch4_2', 'S22_HB_formamide_2',
-    'S22_HB_formic_2', 'S22_HB_h2o_2', 'S22_HB_nh3_2', 'S22_MX_bz_h2o',
-    'S22_MX_bz_hcn', 'S22_MX_bz_nh3', 'S22_MX_c2h2_c2h4', 'thio1', 'thio2', ]
+HRXN = [
+    'acene1',
+    'acene2',
+    'alka10',
+    'alka2',
+    'alka4',
+    'alka6',
+    'alka8',
+    'alke10',
+    'alke2',
+    'alke4',
+    'alke6',
+    'alke8',
+    'Ar',
+    'bag',
+    'boat1',
+    'boat2',
+    'book1',
+    'book2',
+    'cage',
+    'cyclic',
+    'h2o',
+    'h2o2',
+    'h2o3',
+    'h2o4',
+    'h2o5',
+    'h2o6',
+    'Kr',
+    'Ne',
+    'prism',
+    'S22_DD_bz_2_pd',
+    'S22_DD_bz_2_t',
+    'S22_DD_bz_me',
+    'S22_DD_ch4_2',
+    'S22_HB_formamide_2',
+    'S22_HB_formic_2',
+    'S22_HB_h2o_2',
+    'S22_HB_nh3_2',
+    'S22_MX_bz_h2o',
+    'S22_MX_bz_hcn',
+    'S22_MX_bz_nh3',
+    'S22_MX_c2h2_c2h4',
+    'thio1',
+    'thio2',
+]
 HRXN_SM = ['h2o', 'Ne']
 HRXN_LG = ['alka10']
-alkenes = ['alke2','alke4','alke6','alke8','alke10']
-alkanes = ['alka2','alka4','alka6','alka8','alka10']
-acenes = ['acene1','acene2']
-thiophenes = ['thio1','thio2']
-h2o_size = ['h2o','h2o2','h2o3','h2o4','h2o5','h2o6']
+alkenes = ['alke2', 'alke4', 'alke6', 'alke8', 'alke10']
+alkanes = ['alka2', 'alka4', 'alka6', 'alka8', 'alka10']
+acenes = ['acene1', 'acene2']
+thiophenes = ['thio1', 'thio2']
+h2o_size = ['h2o', 'h2o2', 'h2o3', 'h2o4', 'h2o5', 'h2o6']
 h2o_shape = ['bag', 'boat1', 'boat2', 'book1', 'book2', 'cage', 'cyclic', 'prism']
 S22_MX = ['S22_MX_bz_h2o', 'S22_MX_bz_hcn', 'S22_MX_bz_nh3', 'S22_MX_c2h2_c2h4']
 S22_DD = ['S22_DD_bz_2_pd', 'S22_DD_bz_2_t', 'S22_DD_bz_me', 'S22_DD_ch4_2']
@@ -81,272 +118,272 @@ S22_HB = ['S22_HB_formamide_2', 'S22_HB_formic_2', 'S22_HB_h2o_2', 'S22_HB_nh3_2
 atoms = ['Ne', 'Ar', 'Kr']
 
 # <<< Chemical Systems Involved >>>
-RXNM = {}     # reaction matrix of reagent contributions per reaction
-ACTV = {}     # order of active reagents per reaction
-ACTV['%s-%s'            % (dbse, 'acene1'                )] = ['%s-%s-reagent'      % (dbse, 'acene1')]
-RXNM['%s-%s'            % (dbse, 'acene1'                )] = dict(zip(ACTV['%s-%s' % (dbse, 'acene1')], [+1]))
+RXNM = {}  # reaction matrix of reagent contributions per reaction
+ACTV = {}  # order of active reagents per reaction
+ACTV['%s-%s' % (dbse, 'acene1')] = ['%s-%s-reagent' % (dbse, 'acene1')]
+RXNM['%s-%s' % (dbse, 'acene1')] = dict(zip(ACTV['%s-%s' % (dbse, 'acene1')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'acene2'                )] = ['%s-%s-reagent'      % (dbse, 'acene2')]
-RXNM['%s-%s'            % (dbse, 'acene2'                )] = dict(zip(ACTV['%s-%s' % (dbse, 'acene2')], [+1]))
+ACTV['%s-%s' % (dbse, 'acene2')] = ['%s-%s-reagent' % (dbse, 'acene2')]
+RXNM['%s-%s' % (dbse, 'acene2')] = dict(zip(ACTV['%s-%s' % (dbse, 'acene2')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'alka10'                )] = ['%s-%s-reagent'      % (dbse, 'alka10')]
-RXNM['%s-%s'            % (dbse, 'alka10'                )] = dict(zip(ACTV['%s-%s' % (dbse, 'alka10')], [+1]))
+ACTV['%s-%s' % (dbse, 'alka10')] = ['%s-%s-reagent' % (dbse, 'alka10')]
+RXNM['%s-%s' % (dbse, 'alka10')] = dict(zip(ACTV['%s-%s' % (dbse, 'alka10')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'alka2'                 )] = ['%s-%s-reagent'      % (dbse, 'alka2')]
-RXNM['%s-%s'            % (dbse, 'alka2'                 )] = dict(zip(ACTV['%s-%s' % (dbse, 'alka2')], [+1]))
+ACTV['%s-%s' % (dbse, 'alka2')] = ['%s-%s-reagent' % (dbse, 'alka2')]
+RXNM['%s-%s' % (dbse, 'alka2')] = dict(zip(ACTV['%s-%s' % (dbse, 'alka2')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'alka4'                 )] = ['%s-%s-reagent'      % (dbse, 'alka4')]
-RXNM['%s-%s'            % (dbse, 'alka4'                 )] = dict(zip(ACTV['%s-%s' % (dbse, 'alka4')], [+1]))
+ACTV['%s-%s' % (dbse, 'alka4')] = ['%s-%s-reagent' % (dbse, 'alka4')]
+RXNM['%s-%s' % (dbse, 'alka4')] = dict(zip(ACTV['%s-%s' % (dbse, 'alka4')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'alka6'                 )] = ['%s-%s-reagent'      % (dbse, 'alka6')]
-RXNM['%s-%s'            % (dbse, 'alka6'                 )] = dict(zip(ACTV['%s-%s' % (dbse, 'alka6')], [+1]))
+ACTV['%s-%s' % (dbse, 'alka6')] = ['%s-%s-reagent' % (dbse, 'alka6')]
+RXNM['%s-%s' % (dbse, 'alka6')] = dict(zip(ACTV['%s-%s' % (dbse, 'alka6')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'alka8'                 )] = ['%s-%s-reagent'      % (dbse, 'alka8')]
-RXNM['%s-%s'            % (dbse, 'alka8'                 )] = dict(zip(ACTV['%s-%s' % (dbse, 'alka8')], [+1]))
+ACTV['%s-%s' % (dbse, 'alka8')] = ['%s-%s-reagent' % (dbse, 'alka8')]
+RXNM['%s-%s' % (dbse, 'alka8')] = dict(zip(ACTV['%s-%s' % (dbse, 'alka8')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'alke10'                )] = ['%s-%s-reagent'      % (dbse, 'alke10')]
-RXNM['%s-%s'            % (dbse, 'alke10'                )] = dict(zip(ACTV['%s-%s' % (dbse, 'alke10')], [+1]))
+ACTV['%s-%s' % (dbse, 'alke10')] = ['%s-%s-reagent' % (dbse, 'alke10')]
+RXNM['%s-%s' % (dbse, 'alke10')] = dict(zip(ACTV['%s-%s' % (dbse, 'alke10')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'alke2'                 )] = ['%s-%s-reagent'      % (dbse, 'alke2')]
-RXNM['%s-%s'            % (dbse, 'alke2'                 )] = dict(zip(ACTV['%s-%s' % (dbse, 'alke2')], [+1]))
+ACTV['%s-%s' % (dbse, 'alke2')] = ['%s-%s-reagent' % (dbse, 'alke2')]
+RXNM['%s-%s' % (dbse, 'alke2')] = dict(zip(ACTV['%s-%s' % (dbse, 'alke2')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'alke4'                 )] = ['%s-%s-reagent'      % (dbse, 'alke4')]
-RXNM['%s-%s'            % (dbse, 'alke4'                 )] = dict(zip(ACTV['%s-%s' % (dbse, 'alke4')], [+1]))
+ACTV['%s-%s' % (dbse, 'alke4')] = ['%s-%s-reagent' % (dbse, 'alke4')]
+RXNM['%s-%s' % (dbse, 'alke4')] = dict(zip(ACTV['%s-%s' % (dbse, 'alke4')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'alke6'                 )] = ['%s-%s-reagent'      % (dbse, 'alke6')]
-RXNM['%s-%s'            % (dbse, 'alke6'                 )] = dict(zip(ACTV['%s-%s' % (dbse, 'alke6')], [+1]))
+ACTV['%s-%s' % (dbse, 'alke6')] = ['%s-%s-reagent' % (dbse, 'alke6')]
+RXNM['%s-%s' % (dbse, 'alke6')] = dict(zip(ACTV['%s-%s' % (dbse, 'alke6')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'alke8'                 )] = ['%s-%s-reagent'      % (dbse, 'alke8')]
-RXNM['%s-%s'            % (dbse, 'alke8'                 )] = dict(zip(ACTV['%s-%s' % (dbse, 'alke8')], [+1]))
+ACTV['%s-%s' % (dbse, 'alke8')] = ['%s-%s-reagent' % (dbse, 'alke8')]
+RXNM['%s-%s' % (dbse, 'alke8')] = dict(zip(ACTV['%s-%s' % (dbse, 'alke8')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'Ar'                    )] = ['%s-%s-reagent'      % (dbse, 'Ar')]
-RXNM['%s-%s'            % (dbse, 'Ar'                    )] = dict(zip(ACTV['%s-%s' % (dbse, 'Ar')], [+1]))
+ACTV['%s-%s' % (dbse, 'Ar')] = ['%s-%s-reagent' % (dbse, 'Ar')]
+RXNM['%s-%s' % (dbse, 'Ar')] = dict(zip(ACTV['%s-%s' % (dbse, 'Ar')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'bag'                   )] = ['%s-%s-reagent'      % (dbse, 'bag')]
-RXNM['%s-%s'            % (dbse, 'bag'                   )] = dict(zip(ACTV['%s-%s' % (dbse, 'bag')], [+1]))
+ACTV['%s-%s' % (dbse, 'bag')] = ['%s-%s-reagent' % (dbse, 'bag')]
+RXNM['%s-%s' % (dbse, 'bag')] = dict(zip(ACTV['%s-%s' % (dbse, 'bag')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'boat1'                 )] = ['%s-%s-reagent'      % (dbse, 'boat1')]
-RXNM['%s-%s'            % (dbse, 'boat1'                 )] = dict(zip(ACTV['%s-%s' % (dbse, 'boat1')], [+1]))
+ACTV['%s-%s' % (dbse, 'boat1')] = ['%s-%s-reagent' % (dbse, 'boat1')]
+RXNM['%s-%s' % (dbse, 'boat1')] = dict(zip(ACTV['%s-%s' % (dbse, 'boat1')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'boat2'                 )] = ['%s-%s-reagent'      % (dbse, 'boat2')]
-RXNM['%s-%s'            % (dbse, 'boat2'                 )] = dict(zip(ACTV['%s-%s' % (dbse, 'boat2')], [+1]))
+ACTV['%s-%s' % (dbse, 'boat2')] = ['%s-%s-reagent' % (dbse, 'boat2')]
+RXNM['%s-%s' % (dbse, 'boat2')] = dict(zip(ACTV['%s-%s' % (dbse, 'boat2')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'book1'                 )] = ['%s-%s-reagent'      % (dbse, 'book1')]
-RXNM['%s-%s'            % (dbse, 'book1'                 )] = dict(zip(ACTV['%s-%s' % (dbse, 'book1')], [+1]))
+ACTV['%s-%s' % (dbse, 'book1')] = ['%s-%s-reagent' % (dbse, 'book1')]
+RXNM['%s-%s' % (dbse, 'book1')] = dict(zip(ACTV['%s-%s' % (dbse, 'book1')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'book2'                 )] = ['%s-%s-reagent'      % (dbse, 'book2')]
-RXNM['%s-%s'            % (dbse, 'book2'                 )] = dict(zip(ACTV['%s-%s' % (dbse, 'book2')], [+1]))
+ACTV['%s-%s' % (dbse, 'book2')] = ['%s-%s-reagent' % (dbse, 'book2')]
+RXNM['%s-%s' % (dbse, 'book2')] = dict(zip(ACTV['%s-%s' % (dbse, 'book2')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'cage'                  )] = ['%s-%s-reagent'      % (dbse, 'cage')]
-RXNM['%s-%s'            % (dbse, 'cage'                  )] = dict(zip(ACTV['%s-%s' % (dbse, 'cage')], [+1]))
+ACTV['%s-%s' % (dbse, 'cage')] = ['%s-%s-reagent' % (dbse, 'cage')]
+RXNM['%s-%s' % (dbse, 'cage')] = dict(zip(ACTV['%s-%s' % (dbse, 'cage')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'cyclic'                )] = ['%s-%s-reagent'      % (dbse, 'cyclic')]
-RXNM['%s-%s'            % (dbse, 'cyclic'                )] = dict(zip(ACTV['%s-%s' % (dbse, 'cyclic')], [+1]))
+ACTV['%s-%s' % (dbse, 'cyclic')] = ['%s-%s-reagent' % (dbse, 'cyclic')]
+RXNM['%s-%s' % (dbse, 'cyclic')] = dict(zip(ACTV['%s-%s' % (dbse, 'cyclic')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'h2o'                   )] = ['%s-%s-reagent'      % (dbse, 'h2o')]
-RXNM['%s-%s'            % (dbse, 'h2o'                   )] = dict(zip(ACTV['%s-%s' % (dbse, 'h2o')], [+1]))
+ACTV['%s-%s' % (dbse, 'h2o')] = ['%s-%s-reagent' % (dbse, 'h2o')]
+RXNM['%s-%s' % (dbse, 'h2o')] = dict(zip(ACTV['%s-%s' % (dbse, 'h2o')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'h2o2'                  )] = ['%s-%s-reagent'      % (dbse, 'h2o2')]
-RXNM['%s-%s'            % (dbse, 'h2o2'                  )] = dict(zip(ACTV['%s-%s' % (dbse, 'h2o2')], [+1]))
+ACTV['%s-%s' % (dbse, 'h2o2')] = ['%s-%s-reagent' % (dbse, 'h2o2')]
+RXNM['%s-%s' % (dbse, 'h2o2')] = dict(zip(ACTV['%s-%s' % (dbse, 'h2o2')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'h2o3'                  )] = ['%s-%s-reagent'      % (dbse, 'h2o3')]
-RXNM['%s-%s'            % (dbse, 'h2o3'                  )] = dict(zip(ACTV['%s-%s' % (dbse, 'h2o3')], [+1]))
+ACTV['%s-%s' % (dbse, 'h2o3')] = ['%s-%s-reagent' % (dbse, 'h2o3')]
+RXNM['%s-%s' % (dbse, 'h2o3')] = dict(zip(ACTV['%s-%s' % (dbse, 'h2o3')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'h2o4'                  )] = ['%s-%s-reagent'      % (dbse, 'h2o4')]
-RXNM['%s-%s'            % (dbse, 'h2o4'                  )] = dict(zip(ACTV['%s-%s' % (dbse, 'h2o4')], [+1]))
+ACTV['%s-%s' % (dbse, 'h2o4')] = ['%s-%s-reagent' % (dbse, 'h2o4')]
+RXNM['%s-%s' % (dbse, 'h2o4')] = dict(zip(ACTV['%s-%s' % (dbse, 'h2o4')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'h2o5'                  )] = ['%s-%s-reagent'      % (dbse, 'h2o5')]
-RXNM['%s-%s'            % (dbse, 'h2o5'                  )] = dict(zip(ACTV['%s-%s' % (dbse, 'h2o5')], [+1]))
+ACTV['%s-%s' % (dbse, 'h2o5')] = ['%s-%s-reagent' % (dbse, 'h2o5')]
+RXNM['%s-%s' % (dbse, 'h2o5')] = dict(zip(ACTV['%s-%s' % (dbse, 'h2o5')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'h2o6'                  )] = ['%s-%s-reagent'      % (dbse, 'h2o6')]
-RXNM['%s-%s'            % (dbse, 'h2o6'                  )] = dict(zip(ACTV['%s-%s' % (dbse, 'h2o6')], [+1]))
+ACTV['%s-%s' % (dbse, 'h2o6')] = ['%s-%s-reagent' % (dbse, 'h2o6')]
+RXNM['%s-%s' % (dbse, 'h2o6')] = dict(zip(ACTV['%s-%s' % (dbse, 'h2o6')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'Kr'                    )] = ['%s-%s-reagent'      % (dbse, 'Kr')]
-RXNM['%s-%s'            % (dbse, 'Kr'                    )] = dict(zip(ACTV['%s-%s' % (dbse, 'Kr')], [+1]))
+ACTV['%s-%s' % (dbse, 'Kr')] = ['%s-%s-reagent' % (dbse, 'Kr')]
+RXNM['%s-%s' % (dbse, 'Kr')] = dict(zip(ACTV['%s-%s' % (dbse, 'Kr')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'Ne'                    )] = ['%s-%s-reagent'      % (dbse, 'Ne')]
-RXNM['%s-%s'            % (dbse, 'Ne'                    )] = dict(zip(ACTV['%s-%s' % (dbse, 'Ne')], [+1]))
+ACTV['%s-%s' % (dbse, 'Ne')] = ['%s-%s-reagent' % (dbse, 'Ne')]
+RXNM['%s-%s' % (dbse, 'Ne')] = dict(zip(ACTV['%s-%s' % (dbse, 'Ne')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'prism'                 )] = ['%s-%s-reagent'      % (dbse, 'prism')]
-RXNM['%s-%s'            % (dbse, 'prism'                 )] = dict(zip(ACTV['%s-%s' % (dbse, 'prism')], [+1]))
+ACTV['%s-%s' % (dbse, 'prism')] = ['%s-%s-reagent' % (dbse, 'prism')]
+RXNM['%s-%s' % (dbse, 'prism')] = dict(zip(ACTV['%s-%s' % (dbse, 'prism')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'S22_DD_bz_2_pd'        )] = ['%s-%s-reagent'      % (dbse, 'S22_DD_bz_2_pd')]
-RXNM['%s-%s'            % (dbse, 'S22_DD_bz_2_pd'        )] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_DD_bz_2_pd')], [+1]))
+ACTV['%s-%s' % (dbse, 'S22_DD_bz_2_pd')] = ['%s-%s-reagent' % (dbse, 'S22_DD_bz_2_pd')]
+RXNM['%s-%s' % (dbse, 'S22_DD_bz_2_pd')] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_DD_bz_2_pd')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'S22_DD_bz_2_t'         )] = ['%s-%s-reagent'      % (dbse, 'S22_DD_bz_2_t')]
-RXNM['%s-%s'            % (dbse, 'S22_DD_bz_2_t'         )] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_DD_bz_2_t')], [+1]))
+ACTV['%s-%s' % (dbse, 'S22_DD_bz_2_t')] = ['%s-%s-reagent' % (dbse, 'S22_DD_bz_2_t')]
+RXNM['%s-%s' % (dbse, 'S22_DD_bz_2_t')] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_DD_bz_2_t')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'S22_DD_bz_me'          )] = ['%s-%s-reagent'      % (dbse, 'S22_DD_bz_me')]
-RXNM['%s-%s'            % (dbse, 'S22_DD_bz_me'          )] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_DD_bz_me')], [+1]))
+ACTV['%s-%s' % (dbse, 'S22_DD_bz_me')] = ['%s-%s-reagent' % (dbse, 'S22_DD_bz_me')]
+RXNM['%s-%s' % (dbse, 'S22_DD_bz_me')] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_DD_bz_me')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'S22_DD_ch4_2'          )] = ['%s-%s-reagent'      % (dbse, 'S22_DD_ch4_2')]
-RXNM['%s-%s'            % (dbse, 'S22_DD_ch4_2'          )] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_DD_ch4_2')], [+1]))
+ACTV['%s-%s' % (dbse, 'S22_DD_ch4_2')] = ['%s-%s-reagent' % (dbse, 'S22_DD_ch4_2')]
+RXNM['%s-%s' % (dbse, 'S22_DD_ch4_2')] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_DD_ch4_2')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'S22_HB_formamide_2'    )] = ['%s-%s-reagent'      % (dbse, 'S22_HB_formamide_2')]
-RXNM['%s-%s'            % (dbse, 'S22_HB_formamide_2'    )] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_HB_formamide_2')], [+1]))
+ACTV['%s-%s' % (dbse, 'S22_HB_formamide_2')] = ['%s-%s-reagent' % (dbse, 'S22_HB_formamide_2')]
+RXNM['%s-%s' % (dbse, 'S22_HB_formamide_2')] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_HB_formamide_2')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'S22_HB_formic_2'       )] = ['%s-%s-reagent'      % (dbse, 'S22_HB_formic_2')]
-RXNM['%s-%s'            % (dbse, 'S22_HB_formic_2'       )] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_HB_formic_2')], [+1]))
+ACTV['%s-%s' % (dbse, 'S22_HB_formic_2')] = ['%s-%s-reagent' % (dbse, 'S22_HB_formic_2')]
+RXNM['%s-%s' % (dbse, 'S22_HB_formic_2')] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_HB_formic_2')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'S22_HB_h2o_2'          )] = ['%s-%s-reagent'      % (dbse, 'S22_HB_h2o_2')]
-RXNM['%s-%s'            % (dbse, 'S22_HB_h2o_2'          )] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_HB_h2o_2')], [+1]))
+ACTV['%s-%s' % (dbse, 'S22_HB_h2o_2')] = ['%s-%s-reagent' % (dbse, 'S22_HB_h2o_2')]
+RXNM['%s-%s' % (dbse, 'S22_HB_h2o_2')] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_HB_h2o_2')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'S22_HB_nh3_2'          )] = ['%s-%s-reagent'      % (dbse, 'S22_HB_nh3_2')]
-RXNM['%s-%s'            % (dbse, 'S22_HB_nh3_2'          )] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_HB_nh3_2')], [+1]))
+ACTV['%s-%s' % (dbse, 'S22_HB_nh3_2')] = ['%s-%s-reagent' % (dbse, 'S22_HB_nh3_2')]
+RXNM['%s-%s' % (dbse, 'S22_HB_nh3_2')] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_HB_nh3_2')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'S22_MX_bz_h2o'         )] = ['%s-%s-reagent'      % (dbse, 'S22_MX_bz_h2o')]
-RXNM['%s-%s'            % (dbse, 'S22_MX_bz_h2o'         )] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_MX_bz_h2o')], [+1]))
+ACTV['%s-%s' % (dbse, 'S22_MX_bz_h2o')] = ['%s-%s-reagent' % (dbse, 'S22_MX_bz_h2o')]
+RXNM['%s-%s' % (dbse, 'S22_MX_bz_h2o')] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_MX_bz_h2o')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'S22_MX_bz_hcn'         )] = ['%s-%s-reagent'      % (dbse, 'S22_MX_bz_hcn')]
-RXNM['%s-%s'            % (dbse, 'S22_MX_bz_hcn'         )] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_MX_bz_hcn')], [+1]))
+ACTV['%s-%s' % (dbse, 'S22_MX_bz_hcn')] = ['%s-%s-reagent' % (dbse, 'S22_MX_bz_hcn')]
+RXNM['%s-%s' % (dbse, 'S22_MX_bz_hcn')] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_MX_bz_hcn')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'S22_MX_bz_nh3'         )] = ['%s-%s-reagent'      % (dbse, 'S22_MX_bz_nh3')]
-RXNM['%s-%s'            % (dbse, 'S22_MX_bz_nh3'         )] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_MX_bz_nh3')], [+1]))
+ACTV['%s-%s' % (dbse, 'S22_MX_bz_nh3')] = ['%s-%s-reagent' % (dbse, 'S22_MX_bz_nh3')]
+RXNM['%s-%s' % (dbse, 'S22_MX_bz_nh3')] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_MX_bz_nh3')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'S22_MX_c2h2_c2h4'      )] = ['%s-%s-reagent'      % (dbse, 'S22_MX_c2h2_c2h4')]
-RXNM['%s-%s'            % (dbse, 'S22_MX_c2h2_c2h4'      )] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_MX_c2h2_c2h4')], [+1]))
+ACTV['%s-%s' % (dbse, 'S22_MX_c2h2_c2h4')] = ['%s-%s-reagent' % (dbse, 'S22_MX_c2h2_c2h4')]
+RXNM['%s-%s' % (dbse, 'S22_MX_c2h2_c2h4')] = dict(zip(ACTV['%s-%s' % (dbse, 'S22_MX_c2h2_c2h4')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'thio1'                 )] = ['%s-%s-reagent'      % (dbse, 'thio1')]
-RXNM['%s-%s'            % (dbse, 'thio1'                 )] = dict(zip(ACTV['%s-%s' % (dbse, 'thio1')], [+1]))
+ACTV['%s-%s' % (dbse, 'thio1')] = ['%s-%s-reagent' % (dbse, 'thio1')]
+RXNM['%s-%s' % (dbse, 'thio1')] = dict(zip(ACTV['%s-%s' % (dbse, 'thio1')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'thio2'                 )] = ['%s-%s-reagent'      % (dbse, 'thio2')]
-RXNM['%s-%s'            % (dbse, 'thio2'                 )] = dict(zip(ACTV['%s-%s' % (dbse, 'thio2')], [+1]))
+ACTV['%s-%s' % (dbse, 'thio2')] = ['%s-%s-reagent' % (dbse, 'thio2')]
+RXNM['%s-%s' % (dbse, 'thio2')] = dict(zip(ACTV['%s-%s' % (dbse, 'thio2')], [+1]))
 
 # <<< Reference Values [kcal/mol] >>>
 BIND = {}
 nan = float('NaN')
-BIND['%s-%s'            % (dbse, 'acene1'                )] =      nan
-BIND['%s-%s'            % (dbse, 'acene2'                )] =      nan
-BIND['%s-%s'            % (dbse, 'alka10'                )] =      nan
-BIND['%s-%s'            % (dbse, 'alka2'                 )] =      nan
-BIND['%s-%s'            % (dbse, 'alka4'                 )] =      nan
-BIND['%s-%s'            % (dbse, 'alka6'                 )] =      nan
-BIND['%s-%s'            % (dbse, 'alka8'                 )] =      nan
-BIND['%s-%s'            % (dbse, 'alke10'                )] =      nan
-BIND['%s-%s'            % (dbse, 'alke2'                 )] =      nan
-BIND['%s-%s'            % (dbse, 'alke4'                 )] =      nan
-BIND['%s-%s'            % (dbse, 'alke6'                 )] =      nan
-BIND['%s-%s'            % (dbse, 'alke8'                 )] =      nan
-BIND['%s-%s'            % (dbse, 'Ar'                    )] =      nan
-BIND['%s-%s'            % (dbse, 'bag'                   )] =      nan
-BIND['%s-%s'            % (dbse, 'boat1'                 )] =      nan
-BIND['%s-%s'            % (dbse, 'boat2'                 )] =      nan
-BIND['%s-%s'            % (dbse, 'book1'                 )] =      nan
-BIND['%s-%s'            % (dbse, 'book2'                 )] =      nan
-BIND['%s-%s'            % (dbse, 'cage'                  )] =      nan
-BIND['%s-%s'            % (dbse, 'cyclic'                )] =      nan
-BIND['%s-%s'            % (dbse, 'h2o'                   )] =      nan
-BIND['%s-%s'            % (dbse, 'h2o2'                  )] =      nan
-BIND['%s-%s'            % (dbse, 'h2o3'                  )] =      nan
-BIND['%s-%s'            % (dbse, 'h2o4'                  )] =      nan
-BIND['%s-%s'            % (dbse, 'h2o5'                  )] =      nan
-BIND['%s-%s'            % (dbse, 'h2o6'                  )] =      nan
-BIND['%s-%s'            % (dbse, 'Kr'                    )] =      nan
-BIND['%s-%s'            % (dbse, 'Ne'                    )] =      nan
-BIND['%s-%s'            % (dbse, 'prism'                 )] =      nan
-BIND['%s-%s'            % (dbse, 'S22_DD_bz_2_pd'        )] =      nan
-BIND['%s-%s'            % (dbse, 'S22_DD_bz_2_t'         )] =      nan
-BIND['%s-%s'            % (dbse, 'S22_DD_bz_me'          )] =      nan
-BIND['%s-%s'            % (dbse, 'S22_DD_ch4_2'          )] =      nan
-BIND['%s-%s'            % (dbse, 'S22_HB_formamide_2'    )] =      nan
-BIND['%s-%s'            % (dbse, 'S22_HB_formic_2'       )] =      nan
-BIND['%s-%s'            % (dbse, 'S22_HB_h2o_2'          )] =      nan
-BIND['%s-%s'            % (dbse, 'S22_HB_nh3_2'          )] =      nan
-BIND['%s-%s'            % (dbse, 'S22_MX_bz_h2o'         )] =      nan
-BIND['%s-%s'            % (dbse, 'S22_MX_bz_hcn'         )] =      nan
-BIND['%s-%s'            % (dbse, 'S22_MX_bz_nh3'         )] =      nan
-BIND['%s-%s'            % (dbse, 'S22_MX_c2h2_c2h4'      )] =      nan
-BIND['%s-%s'            % (dbse, 'thio1'                 )] =      nan
-BIND['%s-%s'            % (dbse, 'thio2'                 )] =      nan
+BIND['%s-%s' % (dbse, 'acene1')] = nan
+BIND['%s-%s' % (dbse, 'acene2')] = nan
+BIND['%s-%s' % (dbse, 'alka10')] = nan
+BIND['%s-%s' % (dbse, 'alka2')] = nan
+BIND['%s-%s' % (dbse, 'alka4')] = nan
+BIND['%s-%s' % (dbse, 'alka6')] = nan
+BIND['%s-%s' % (dbse, 'alka8')] = nan
+BIND['%s-%s' % (dbse, 'alke10')] = nan
+BIND['%s-%s' % (dbse, 'alke2')] = nan
+BIND['%s-%s' % (dbse, 'alke4')] = nan
+BIND['%s-%s' % (dbse, 'alke6')] = nan
+BIND['%s-%s' % (dbse, 'alke8')] = nan
+BIND['%s-%s' % (dbse, 'Ar')] = nan
+BIND['%s-%s' % (dbse, 'bag')] = nan
+BIND['%s-%s' % (dbse, 'boat1')] = nan
+BIND['%s-%s' % (dbse, 'boat2')] = nan
+BIND['%s-%s' % (dbse, 'book1')] = nan
+BIND['%s-%s' % (dbse, 'book2')] = nan
+BIND['%s-%s' % (dbse, 'cage')] = nan
+BIND['%s-%s' % (dbse, 'cyclic')] = nan
+BIND['%s-%s' % (dbse, 'h2o')] = nan
+BIND['%s-%s' % (dbse, 'h2o2')] = nan
+BIND['%s-%s' % (dbse, 'h2o3')] = nan
+BIND['%s-%s' % (dbse, 'h2o4')] = nan
+BIND['%s-%s' % (dbse, 'h2o5')] = nan
+BIND['%s-%s' % (dbse, 'h2o6')] = nan
+BIND['%s-%s' % (dbse, 'Kr')] = nan
+BIND['%s-%s' % (dbse, 'Ne')] = nan
+BIND['%s-%s' % (dbse, 'prism')] = nan
+BIND['%s-%s' % (dbse, 'S22_DD_bz_2_pd')] = nan
+BIND['%s-%s' % (dbse, 'S22_DD_bz_2_t')] = nan
+BIND['%s-%s' % (dbse, 'S22_DD_bz_me')] = nan
+BIND['%s-%s' % (dbse, 'S22_DD_ch4_2')] = nan
+BIND['%s-%s' % (dbse, 'S22_HB_formamide_2')] = nan
+BIND['%s-%s' % (dbse, 'S22_HB_formic_2')] = nan
+BIND['%s-%s' % (dbse, 'S22_HB_h2o_2')] = nan
+BIND['%s-%s' % (dbse, 'S22_HB_nh3_2')] = nan
+BIND['%s-%s' % (dbse, 'S22_MX_bz_h2o')] = nan
+BIND['%s-%s' % (dbse, 'S22_MX_bz_hcn')] = nan
+BIND['%s-%s' % (dbse, 'S22_MX_bz_nh3')] = nan
+BIND['%s-%s' % (dbse, 'S22_MX_c2h2_c2h4')] = nan
+BIND['%s-%s' % (dbse, 'thio1')] = nan
+BIND['%s-%s' % (dbse, 'thio2')] = nan
 
 # <<< Comment Lines >>>
 TAGL = {}
-TAGL['%s-%s'            % (dbse, 'acene1'                )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'acene1'                )] = """ """
-TAGL['%s-%s'            % (dbse, 'acene2'                )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'acene2'                )] = """ """
-TAGL['%s-%s'            % (dbse, 'alka10'                )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'alka10'                )] = """ """
-TAGL['%s-%s'            % (dbse, 'alka2'                 )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'alka2'                 )] = """ """
-TAGL['%s-%s'            % (dbse, 'alka4'                 )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'alka4'                 )] = """ """
-TAGL['%s-%s'            % (dbse, 'alka6'                 )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'alka6'                 )] = """ """
-TAGL['%s-%s'            % (dbse, 'alka8'                 )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'alka8'                 )] = """ """
-TAGL['%s-%s'            % (dbse, 'alke10'                )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'alke10'                )] = """ """
-TAGL['%s-%s'            % (dbse, 'alke2'                 )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'alke2'                 )] = """ """
-TAGL['%s-%s'            % (dbse, 'alke4'                 )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'alke4'                 )] = """ """
-TAGL['%s-%s'            % (dbse, 'alke6'                 )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'alke6'                 )] = """ """
-TAGL['%s-%s'            % (dbse, 'alke8'                 )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'alke8'                 )] = """ """
-TAGL['%s-%s'            % (dbse, 'Ar'                    )] = """-1 0 """
-TAGL['%s-%s-reagent'    % (dbse, 'Ar'                    )] = """-1 0 """
-TAGL['%s-%s'            % (dbse, 'bag'                   )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'bag'                   )] = """ """
-TAGL['%s-%s'            % (dbse, 'boat1'                 )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'boat1'                 )] = """ """
-TAGL['%s-%s'            % (dbse, 'boat2'                 )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'boat2'                 )] = """ """
-TAGL['%s-%s'            % (dbse, 'book1'                 )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'book1'                 )] = """ """
-TAGL['%s-%s'            % (dbse, 'book2'                 )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'book2'                 )] = """ """
-TAGL['%s-%s'            % (dbse, 'cage'                  )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'cage'                  )] = """ """
-TAGL['%s-%s'            % (dbse, 'cyclic'                )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'cyclic'                )] = """ """
-TAGL['%s-%s'            % (dbse, 'h2o'                   )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'h2o'                   )] = """ """
-TAGL['%s-%s'            % (dbse, 'h2o2'                  )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'h2o2'                  )] = """ """
-TAGL['%s-%s'            % (dbse, 'h2o3'                  )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'h2o3'                  )] = """ """
-TAGL['%s-%s'            % (dbse, 'h2o4'                  )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'h2o4'                  )] = """ """
-TAGL['%s-%s'            % (dbse, 'h2o5'                  )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'h2o5'                  )] = """ """
-TAGL['%s-%s'            % (dbse, 'h2o6'                  )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'h2o6'                  )] = """ """
-TAGL['%s-%s'            % (dbse, 'Kr'                    )] = """-1 0 """
-TAGL['%s-%s-reagent'    % (dbse, 'Kr'                    )] = """-1 0 """
-TAGL['%s-%s'            % (dbse, 'Ne'                    )] = """-1 0 """
-TAGL['%s-%s-reagent'    % (dbse, 'Ne'                    )] = """-1 0 """
-TAGL['%s-%s'            % (dbse, 'prism'                 )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'prism'                 )] = """ """
-TAGL['%s-%s'            % (dbse, 'S22_DD_bz_2_pd'        )] = """0 1 set S22 index 11 DD-4 benzene_dimer c2h """
-TAGL['%s-%s-reagent'    % (dbse, 'S22_DD_bz_2_pd'        )] = """0 1 set S22 index 11 DD-4 benzene_dimer c2h """
-TAGL['%s-%s'            % (dbse, 'S22_DD_bz_2_t'         )] = """0 1 set S22 index 20 MX-5 benzene_dimer c2v """
-TAGL['%s-%s-reagent'    % (dbse, 'S22_DD_bz_2_t'         )] = """0 1 set S22 index 20 MX-5 benzene_dimer c2v """
-TAGL['%s-%s'            % (dbse, 'S22_DD_bz_me'          )] = """0 1 set S22 index 10 DD-3 benzene_methane c3 """
-TAGL['%s-%s-reagent'    % (dbse, 'S22_DD_bz_me'          )] = """0 1 set S22 index 10 DD-3 benzene_methane c3 """
-TAGL['%s-%s'            % (dbse, 'S22_DD_ch4_2'          )] = """0 1 set S22 index 8 DD-1 methane_dimer d3d """
-TAGL['%s-%s-reagent'    % (dbse, 'S22_DD_ch4_2'          )] = """0 1 set S22 index 8 DD-1 methane_dimer d3d """
-TAGL['%s-%s'            % (dbse, 'S22_HB_formamide_2'    )] = """0 1 set S22 index 4 HB-4 formamide_dimer c2h """
-TAGL['%s-%s-reagent'    % (dbse, 'S22_HB_formamide_2'    )] = """0 1 set S22 index 4 HB-4 formamide_dimer c2h """
-TAGL['%s-%s'            % (dbse, 'S22_HB_formic_2'       )] = """0 1 set S22 index 3 HB-3 formic_acid_dimer c2h """
-TAGL['%s-%s-reagent'    % (dbse, 'S22_HB_formic_2'       )] = """0 1 set S22 index 3 HB-3 formic_acid_dimer c2h """
-TAGL['%s-%s'            % (dbse, 'S22_HB_h2o_2'          )] = """0 1 set S22 index 2 HB-2 water_dimer cs """
-TAGL['%s-%s-reagent'    % (dbse, 'S22_HB_h2o_2'          )] = """0 1 set S22 index 2 HB-2 water_dimer cs """
-TAGL['%s-%s'            % (dbse, 'S22_HB_nh3_2'          )] = """0 1 set S22 index 1 HB-1 ammonia_dimer c2h """
-TAGL['%s-%s-reagent'    % (dbse, 'S22_HB_nh3_2'          )] = """0 1 set S22 index 1 HB-1 ammonia_dimer c2h """
-TAGL['%s-%s'            % (dbse, 'S22_MX_bz_h2o'         )] = """0 1 set S22 index 17 MX-2 benzene_water cs """
-TAGL['%s-%s-reagent'    % (dbse, 'S22_MX_bz_h2o'         )] = """0 1 set S22 index 17 MX-2 benzene_water cs """
-TAGL['%s-%s'            % (dbse, 'S22_MX_bz_hcn'         )] = """0 1 set S22 index 19 MX-4 benzene_hcn cs """
-TAGL['%s-%s-reagent'    % (dbse, 'S22_MX_bz_hcn'         )] = """0 1 set S22 index 19 MX-4 benzene_hcn cs """
-TAGL['%s-%s'            % (dbse, 'S22_MX_bz_nh3'         )] = """0 1 set S22 index 18 MX-3 benzene_ammonia cs """
-TAGL['%s-%s-reagent'    % (dbse, 'S22_MX_bz_nh3'         )] = """0 1 set S22 index 18 MX-3 benzene_ammonia cs """
-TAGL['%s-%s'            % (dbse, 'S22_MX_c2h2_c2h4'      )] = """0 1 set S22 index 16 MX-1 ethene_ethine c2v """
-TAGL['%s-%s-reagent'    % (dbse, 'S22_MX_c2h2_c2h4'      )] = """0 1 set S22 index 16 MX-1 ethene_ethine c2v """
-TAGL['%s-%s'            % (dbse, 'thio1'                 )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'thio1'                 )] = """ """
-TAGL['%s-%s'            % (dbse, 'thio2'                 )] = """ """
-TAGL['%s-%s-reagent'    % (dbse, 'thio2'                 )] = """ """
+TAGL['%s-%s' % (dbse, 'acene1')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'acene1')] = """ """
+TAGL['%s-%s' % (dbse, 'acene2')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'acene2')] = """ """
+TAGL['%s-%s' % (dbse, 'alka10')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'alka10')] = """ """
+TAGL['%s-%s' % (dbse, 'alka2')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'alka2')] = """ """
+TAGL['%s-%s' % (dbse, 'alka4')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'alka4')] = """ """
+TAGL['%s-%s' % (dbse, 'alka6')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'alka6')] = """ """
+TAGL['%s-%s' % (dbse, 'alka8')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'alka8')] = """ """
+TAGL['%s-%s' % (dbse, 'alke10')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'alke10')] = """ """
+TAGL['%s-%s' % (dbse, 'alke2')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'alke2')] = """ """
+TAGL['%s-%s' % (dbse, 'alke4')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'alke4')] = """ """
+TAGL['%s-%s' % (dbse, 'alke6')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'alke6')] = """ """
+TAGL['%s-%s' % (dbse, 'alke8')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'alke8')] = """ """
+TAGL['%s-%s' % (dbse, 'Ar')] = """-1 0 """
+TAGL['%s-%s-reagent' % (dbse, 'Ar')] = """-1 0 """
+TAGL['%s-%s' % (dbse, 'bag')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'bag')] = """ """
+TAGL['%s-%s' % (dbse, 'boat1')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'boat1')] = """ """
+TAGL['%s-%s' % (dbse, 'boat2')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'boat2')] = """ """
+TAGL['%s-%s' % (dbse, 'book1')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'book1')] = """ """
+TAGL['%s-%s' % (dbse, 'book2')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'book2')] = """ """
+TAGL['%s-%s' % (dbse, 'cage')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'cage')] = """ """
+TAGL['%s-%s' % (dbse, 'cyclic')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'cyclic')] = """ """
+TAGL['%s-%s' % (dbse, 'h2o')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'h2o')] = """ """
+TAGL['%s-%s' % (dbse, 'h2o2')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'h2o2')] = """ """
+TAGL['%s-%s' % (dbse, 'h2o3')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'h2o3')] = """ """
+TAGL['%s-%s' % (dbse, 'h2o4')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'h2o4')] = """ """
+TAGL['%s-%s' % (dbse, 'h2o5')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'h2o5')] = """ """
+TAGL['%s-%s' % (dbse, 'h2o6')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'h2o6')] = """ """
+TAGL['%s-%s' % (dbse, 'Kr')] = """-1 0 """
+TAGL['%s-%s-reagent' % (dbse, 'Kr')] = """-1 0 """
+TAGL['%s-%s' % (dbse, 'Ne')] = """-1 0 """
+TAGL['%s-%s-reagent' % (dbse, 'Ne')] = """-1 0 """
+TAGL['%s-%s' % (dbse, 'prism')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'prism')] = """ """
+TAGL['%s-%s' % (dbse, 'S22_DD_bz_2_pd')] = """0 1 set S22 index 11 DD-4 benzene_dimer c2h """
+TAGL['%s-%s-reagent' % (dbse, 'S22_DD_bz_2_pd')] = """0 1 set S22 index 11 DD-4 benzene_dimer c2h """
+TAGL['%s-%s' % (dbse, 'S22_DD_bz_2_t')] = """0 1 set S22 index 20 MX-5 benzene_dimer c2v """
+TAGL['%s-%s-reagent' % (dbse, 'S22_DD_bz_2_t')] = """0 1 set S22 index 20 MX-5 benzene_dimer c2v """
+TAGL['%s-%s' % (dbse, 'S22_DD_bz_me')] = """0 1 set S22 index 10 DD-3 benzene_methane c3 """
+TAGL['%s-%s-reagent' % (dbse, 'S22_DD_bz_me')] = """0 1 set S22 index 10 DD-3 benzene_methane c3 """
+TAGL['%s-%s' % (dbse, 'S22_DD_ch4_2')] = """0 1 set S22 index 8 DD-1 methane_dimer d3d """
+TAGL['%s-%s-reagent' % (dbse, 'S22_DD_ch4_2')] = """0 1 set S22 index 8 DD-1 methane_dimer d3d """
+TAGL['%s-%s' % (dbse, 'S22_HB_formamide_2')] = """0 1 set S22 index 4 HB-4 formamide_dimer c2h """
+TAGL['%s-%s-reagent' % (dbse, 'S22_HB_formamide_2')] = """0 1 set S22 index 4 HB-4 formamide_dimer c2h """
+TAGL['%s-%s' % (dbse, 'S22_HB_formic_2')] = """0 1 set S22 index 3 HB-3 formic_acid_dimer c2h """
+TAGL['%s-%s-reagent' % (dbse, 'S22_HB_formic_2')] = """0 1 set S22 index 3 HB-3 formic_acid_dimer c2h """
+TAGL['%s-%s' % (dbse, 'S22_HB_h2o_2')] = """0 1 set S22 index 2 HB-2 water_dimer cs """
+TAGL['%s-%s-reagent' % (dbse, 'S22_HB_h2o_2')] = """0 1 set S22 index 2 HB-2 water_dimer cs """
+TAGL['%s-%s' % (dbse, 'S22_HB_nh3_2')] = """0 1 set S22 index 1 HB-1 ammonia_dimer c2h """
+TAGL['%s-%s-reagent' % (dbse, 'S22_HB_nh3_2')] = """0 1 set S22 index 1 HB-1 ammonia_dimer c2h """
+TAGL['%s-%s' % (dbse, 'S22_MX_bz_h2o')] = """0 1 set S22 index 17 MX-2 benzene_water cs """
+TAGL['%s-%s-reagent' % (dbse, 'S22_MX_bz_h2o')] = """0 1 set S22 index 17 MX-2 benzene_water cs """
+TAGL['%s-%s' % (dbse, 'S22_MX_bz_hcn')] = """0 1 set S22 index 19 MX-4 benzene_hcn cs """
+TAGL['%s-%s-reagent' % (dbse, 'S22_MX_bz_hcn')] = """0 1 set S22 index 19 MX-4 benzene_hcn cs """
+TAGL['%s-%s' % (dbse, 'S22_MX_bz_nh3')] = """0 1 set S22 index 18 MX-3 benzene_ammonia cs """
+TAGL['%s-%s-reagent' % (dbse, 'S22_MX_bz_nh3')] = """0 1 set S22 index 18 MX-3 benzene_ammonia cs """
+TAGL['%s-%s' % (dbse, 'S22_MX_c2h2_c2h4')] = """0 1 set S22 index 16 MX-1 ethene_ethine c2v """
+TAGL['%s-%s-reagent' % (dbse, 'S22_MX_c2h2_c2h4')] = """0 1 set S22 index 16 MX-1 ethene_ethine c2v """
+TAGL['%s-%s' % (dbse, 'thio1')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'thio1')] = """ """
+TAGL['%s-%s' % (dbse, 'thio2')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'thio2')] = """ """
 
 # <<< Geometry Specification Strings >>>
 GEOS = {}
@@ -1174,46 +1211,46 @@ units angstrom
 DATA = {}
 
 DATA['NUCLEAR REPULSION ENERGY'] = {}
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-acene1-reagent'         ] =     203.03074821
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-acene2-reagent'         ] =     459.00031332
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-alka10-reagent'         ] =     517.65426800
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-alka2-reagent'          ] =      42.25682230
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-alka4-reagent'          ] =     129.94702250
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-alka6-reagent'          ] =     243.14655161
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-alka8-reagent'          ] =     372.80535495
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-alke10-reagent'         ] =     410.15510014
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-alke2-reagent'          ] =      33.35807208
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-alke4-reagent'          ] =     103.30484039
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-alke6-reagent'          ] =     193.23408852
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-alke8-reagent'          ] =     296.61426771
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-Ar-reagent'             ] =       0.00000000
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-bag-reagent'            ] =     293.56471166
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-boat1-reagent'          ] =     271.49594450
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-boat2-reagent'          ] =     271.85423444
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-book1-reagent'          ] =     285.13855152
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-book2-reagent'          ] =     287.81114181
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-cage-reagent'           ] =     300.50508521
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-cyclic-reagent'         ] =     269.20185434
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-h2o-reagent'            ] =       4.81054384
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-h2o2-reagent'           ] =      36.66284785
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-h2o3-reagent'           ] =      84.61922565
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-h2o4-reagent'           ] =     140.74689978
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-h2o5-reagent'           ] =     201.54404786
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-h2o6-reagent'           ] =     269.20185434
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-Kr-reagent'             ] =       0.00000000
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-Ne-reagent'             ] =       0.00000000
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-prism-reagent'          ] =     304.90931419
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_DD_bz_2_pd-reagent' ] =     628.97205684
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_DD_bz_2_t-reagent'  ] =     592.41664529
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_DD_bz_me-reagent'   ] =     272.46182028
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_DD_ch4_2-reagent'   ] =      41.00026380
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_HB_formamide_2-reagent'] =     230.79485521
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_HB_formic_2-reagent'] =     235.94662032
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_HB_h2o_2-reagent'   ] =      36.66284785
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_HB_nh3_2-reagent'   ] =      40.31423984
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_MX_bz_h2o-reagent'  ] =     273.32942470
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_MX_bz_hcn-reagent'  ] =     303.28139752
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_MX_bz_nh3-reagent'  ] =     273.27961438
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_MX_c2h2_c2h4-reagent'] =      85.18906420
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-thio1-reagent'          ] =     202.68555759
-DATA['NUCLEAR REPULSION ENERGY']['BENCH12-thio2-reagent'          ] =     632.02291528
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-acene1-reagent'] = 203.03074821
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-acene2-reagent'] = 459.00031332
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-alka10-reagent'] = 517.65426800
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-alka2-reagent'] = 42.25682230
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-alka4-reagent'] = 129.94702250
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-alka6-reagent'] = 243.14655161
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-alka8-reagent'] = 372.80535495
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-alke10-reagent'] = 410.15510014
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-alke2-reagent'] = 33.35807208
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-alke4-reagent'] = 103.30484039
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-alke6-reagent'] = 193.23408852
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-alke8-reagent'] = 296.61426771
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-Ar-reagent'] = 0.00000000
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-bag-reagent'] = 293.56471166
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-boat1-reagent'] = 271.49594450
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-boat2-reagent'] = 271.85423444
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-book1-reagent'] = 285.13855152
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-book2-reagent'] = 287.81114181
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-cage-reagent'] = 300.50508521
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-cyclic-reagent'] = 269.20185434
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-h2o-reagent'] = 4.81054384
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-h2o2-reagent'] = 36.66284785
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-h2o3-reagent'] = 84.61922565
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-h2o4-reagent'] = 140.74689978
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-h2o5-reagent'] = 201.54404786
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-h2o6-reagent'] = 269.20185434
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-Kr-reagent'] = 0.00000000
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-Ne-reagent'] = 0.00000000
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-prism-reagent'] = 304.90931419
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_DD_bz_2_pd-reagent'] = 628.97205684
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_DD_bz_2_t-reagent'] = 592.41664529
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_DD_bz_me-reagent'] = 272.46182028
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_DD_ch4_2-reagent'] = 41.00026380
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_HB_formamide_2-reagent'] = 230.79485521
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_HB_formic_2-reagent'] = 235.94662032
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_HB_h2o_2-reagent'] = 36.66284785
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_HB_nh3_2-reagent'] = 40.31423984
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_MX_bz_h2o-reagent'] = 273.32942470
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_MX_bz_hcn-reagent'] = 303.28139752
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_MX_bz_nh3-reagent'] = 273.27961438
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-S22_MX_c2h2_c2h4-reagent'] = 85.18906420
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-thio1-reagent'] = 202.68555759
+DATA['NUCLEAR REPULSION ENERGY']['BENCH12-thio2-reagent'] = 632.02291528

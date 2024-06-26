@@ -42,8 +42,8 @@ from .libmintsgshell import ShellInfo
 from .libmintsbasissetparser import Gaussian94BasisSetParser
 from .basislist import corresponding_basis, corresponding_zeta
 
-
 basishorde = {}
+
 
 class BasisSet(object):
     """Basis set container class
@@ -152,13 +152,9 @@ class BasisSet(object):
         """Naive equality test. Haven't considered exp/coeff distribution among shells or AM"""
 
         if isinstance(other, self.__class__):
-            if ((self.name == other.name) and
-                (self.puream == other.puream) and
-                (self.PYnao == other.PYnao) and
-                (self.PYnbf == other.PYnbf) and
-                (self.n_prim_per_shell == other.n_prim_per_shell) and
-                (self.ucoefficients == other.ucoefficients) and
-                (self.uexponents == other.uexponents)):
+            if ((self.name == other.name) and (self.puream == other.puream) and (self.PYnao == other.PYnao)
+                    and (self.PYnbf == other.PYnbf) and (self.n_prim_per_shell == other.n_prim_per_shell)
+                    and (self.ucoefficients == other.ucoefficients) and (self.uexponents == other.uexponents)):
                 return True
             else:
                 return False
@@ -167,29 +163,27 @@ class BasisSet(object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def allclose(self, other, atol: float=1.e-8, verbose: int=1):
+    def allclose(self, other, atol: float = 1.e-8, verbose: int = 1):
         """Equality test. Sorts the coefficients so handles different shell orderings. Print any failed exp/coeff differences if verbose > 1."""
         sc, se = (list(t) for t in zip(*sorted(zip(self.uoriginal_coefficients, self.uexponents))))
         oc, oe = (list(t) for t in zip(*sorted(zip(other.uoriginal_coefficients, other.uexponents))))
 
         if isinstance(other, self.__class__):
-            if ((self.name == other.name) and
-                (self.puream == other.puream) and
-                (self.PYnao == other.PYnao) and
-                (self.PYnbf == other.PYnbf) and
-                (self.n_prim_per_shell == other.n_prim_per_shell) and
-                (all(abs(isc - ioc) < atol for isc, ioc in zip(sc, oc))) and
-                (all(abs(ise - ioe) < atol for ise, ioe in zip(se, oe)))):
+            if ((self.name == other.name) and (self.puream == other.puream) and (self.PYnao == other.PYnao)
+                    and (self.PYnbf == other.PYnbf) and (self.n_prim_per_shell == other.n_prim_per_shell)
+                    and (all(abs(isc - ioc) < atol for isc, ioc in zip(sc, oc)))
+                    and (all(abs(ise - ioe) < atol for ise, ioe in zip(se, oe)))):
                 return True
             else:
                 if verbose > 1:
                     print("")
                     for idx in range(len(sc)):
-                        if not((abs(sc[idx] - oc[idx]) < atol) and (abs(se[idx] - oe[idx]) < atol)):
-                            print(f"{sc[idx]:20.12f} {oc[idx]:20.12f}\t\t{sc[idx] - oc[idx]:8.1E}\t\t\t{se[idx]:20.12f} {oe[idx]:20.12f}\t\t{se[idx] - oe[idx]:8.1E}")
+                        if not ((abs(sc[idx] - oc[idx]) < atol) and (abs(se[idx] - oe[idx]) < atol)):
+                            print(
+                                f"{sc[idx]:20.12f} {oc[idx]:20.12f}\t\t{sc[idx] - oc[idx]:8.1E}\t\t\t{se[idx]:20.12f} {oe[idx]:20.12f}\t\t{se[idx] - oe[idx]:8.1E}"
+                            )
                 return False
         return False
-
 
     # <<< Methods for Construction >>>
     @classmethod
@@ -239,10 +233,9 @@ class BasisSet(object):
         self.xyz = [0.0, 0.0, 0.0]
         self.name = '(Empty Basis Set)'
         self.shells = []
-        self.shells.append(ShellInfo(0, self.uoriginal_coefficients,
-            self.uexponents, 'Cartesian', 0, self.xyz, 0))
+        self.shells.append(ShellInfo(0, self.uoriginal_coefficients, self.uexponents, 'Cartesian', 0, self.xyz, 0))
 
-    def constructor_role_mol_shellmap(self, role, mol, shell_map, is_ecp = False):
+    def constructor_role_mol_shellmap(self, role, mol, shell_map, is_ecp=False):
         """The most commonly used constructor. Extracts basis set name for *role*
         from each atom of *mol*, looks up basis and role entries in the
         *shell_map* dictionary, retrieves the ShellInfo objects and returns
@@ -364,11 +357,14 @@ class BasisSet(object):
                 tst = ustart + atom_nprim
                 tsp = ustart + atom_nprim + shell_nprim
                 self.shells[shell_count] = ShellInfo(am,
-                    self.uoriginal_coefficients[tst:tsp],
-                    self.uexponents[tst:tsp],
-                    'Pure' if self.puream else 'Cartesian',
-                    n, xyz_ptr, bf_count, pt='Normalized' if is_ecp else 'Unnormalized',
-                    rpowers=rpowers[tst:tsp])
+                                                     self.uoriginal_coefficients[tst:tsp],
+                                                     self.uexponents[tst:tsp],
+                                                     'Pure' if self.puream else 'Cartesian',
+                                                     n,
+                                                     xyz_ptr,
+                                                     bf_count,
+                                                     pt='Normalized' if is_ecp else 'Unnormalized',
+                                                     rpowers=rpowers[tst:tsp])
                 for thisbf in range(thisshell.nfunction()):
                     self.function_to_shell[bf_count] = shell_count
                     self.function_center[bf_count] = n
@@ -473,10 +469,14 @@ class BasisSet(object):
                 tst = prim_count
                 tsp = prim_count + shell_nprim
                 self.shells[shell_count] = ShellInfo(am,
-                    self.uoriginal_coefficients[tst:tsp],
-                    self.uexponents[tst:tsp],
-                    'Pure' if self.puream else 'Cartesian',
-                    center, self.xyz, bf_count, pt='Unnormalized', rpowers=None)
+                                                     self.uoriginal_coefficients[tst:tsp],
+                                                     self.uexponents[tst:tsp],
+                                                     'Pure' if self.puream else 'Cartesian',
+                                                     center,
+                                                     self.xyz,
+                                                     bf_count,
+                                                     pt='Unnormalized',
+                                                     rpowers=None)
                 self.shells[shell_count].pyprint()
                 for thisbf in range(shell.nfunction()):
                     self.function_to_shell[bf_count] = shell_count
@@ -584,7 +584,7 @@ class BasisSet(object):
         # sort the shells by angular momentum
         for label, basis_map in combined_atom_basis_shell.items():
             combined_atom_basis_shell[label][name] = sorted(combined_atom_basis_shell[label][name],
-                    key=lambda shell: shell.l)
+                                                            key=lambda shell: shell.l)
 
         # Molecule and parser prepped, call the constructor
         mol.set_basis_all_atoms(name, "CABS")
@@ -618,7 +618,14 @@ class BasisSet(object):
             return bsdict
 
     @staticmethod
-    def pyconstruct(mol, key, target, fitrole='ORBITAL', other=None, return_atomlist=False, return_dict=False, verbose=1):
+    def pyconstruct(mol,
+                    key,
+                    target,
+                    fitrole='ORBITAL',
+                    other=None,
+                    return_atomlist=False,
+                    return_dict=False,
+                    verbose=1):
         """Builds a BasisSet object for *mol* (either a qcdb.Molecule or
         a string that can be instantiated into one) from basis set
         specifications passed in as python functions or as a string that
@@ -676,7 +683,8 @@ class BasisSet(object):
             aux = target
 
         if verbose >= 2:
-            print('BasisSet::pyconstructP', 'key =', key, 'aux =', aux, 'fitrole =', fitrole, 'orb =', orb, 'orbonly =', orbonly) #, mol)
+            print('BasisSet::pyconstructP', 'key =', key, 'aux =', aux, 'fitrole =', fitrole, 'orb =', orb,
+                  'orbonly =', orbonly)  #, mol)
 
         # Create (if necessary) and update qcdb.Molecule
         if not isinstance(mol, Molecule):
@@ -701,7 +709,9 @@ class BasisSet(object):
             mol.set_basis_all_atoms(orb, role='BASIS')
             callby = orb
         else:
-            raise ValidationError("""Orbital basis argument must be function that applies basis sets to Molecule or a string of the basis to be applied to all atoms.""")
+            raise ValidationError(
+                """Orbital basis argument must be function that applies basis sets to Molecule or a string of the basis to be applied to all atoms."""
+            )
 
         if not orbonly:
             if aux is None or aux == '':
@@ -713,13 +723,16 @@ class BasisSet(object):
                 mol.set_basis_all_atoms(aux, role=fitrole)
                 callby = aux
             else:
-                raise ValidationError("""Auxiliary basis argument must be function that applies basis sets to Molecule or a string of the basis to be applied to all atoms.""")
+                raise ValidationError(
+                    """Auxiliary basis argument must be function that applies basis sets to Molecule or a string of the basis to be applied to all atoms."""
+                )
 
         # Not like we're ever using a non-G94 format
         parser = Gaussian94BasisSetParser()
 
         # Molecule and parser prepped, call the constructor
-        bs, msg, ecp = BasisSet.construct(parser, mol,
+        bs, msg, ecp = BasisSet.construct(parser,
+                                          mol,
                                           'BASIS' if fitrole == 'ORBITAL' else fitrole,
                                           None if fitrole == 'ORBITAL' else fitrole,
                                           basstrings['BASIS'] if fitrole == 'ORBITAL' else basstrings[fitrole],
@@ -748,7 +761,7 @@ class BasisSet(object):
                     bsdict['molecule'] = atbs.molecule.to_dict(force_c1=True)
                     atom_basis_list.append(bsdict)
                 return bs, atom_basis_list
-            else:  
+            else:
                 return bs
 
         if return_dict:
@@ -806,11 +819,13 @@ class BasisSet(object):
 
         # Validate deffit for key
         univdef_zeta = 4
-        univdef = {'JFIT': ('def2-universal-jfit', 'def2-universal-jfit', None),
-                   'JKFIT': ('def2-universal-jkfit', 'def2-universal-jkfit', None),
-                   'RIFIT': ('def2-qzvpp-ri', 'def2-qzvpp-ri', None),
-                   'DECON': (None, None, BasisSet.decontract),
-                   'F12': ('def2-qzvpp-f12', 'def2-qzvpp-f12', None)}
+        univdef = {
+            'JFIT': ('def2-universal-jfit', 'def2-universal-jfit', None),
+            'JKFIT': ('def2-universal-jkfit', 'def2-universal-jkfit', None),
+            'RIFIT': ('def2-qzvpp-ri', 'def2-qzvpp-ri', None),
+            'DECON': (None, None, BasisSet.decontract),
+            'F12': ('def2-qzvpp-f12', 'def2-qzvpp-f12', None)
+        }
 
         if deffit is not None:
             if deffit not in univdef.keys():
@@ -841,7 +856,7 @@ class BasisSet(object):
             except KeyError:
                 if key == 'BASIS' or deffit is None:
                     raise BasisSetNotDefined("""BasisSet::construct: No basis set specified for %s and %s.""" %
-                        (symbol, key))
+                                             (symbol, key))
                 else:
                     # No auxiliary / decon basis set for atom, so try darnedest to find one.
                     #   This involves querying the BasisFamily for default and
@@ -888,7 +903,9 @@ class BasisSet(object):
                 # If name is prefixed with "bse:", then load from basis set exchange library
                 if bastitle.lower().startswith('bse:'):
                     if not qcel.util.which_import('basis_set_exchange', return_bool=True):
-                        raise ModuleNotFoundError("Python module 'basis_set_exchange' not found. Solve by installing it: `conda install -c conda-forge basis_set_exchange` or `pip install basis_set_exchange`")
+                        raise ModuleNotFoundError(
+                            "Python module 'basis_set_exchange' not found. Solve by installing it: `conda install -c conda-forge basis_set_exchange` or `pip install basis_set_exchange`"
+                        )
 
                     import basis_set_exchange as bse
 
@@ -960,11 +977,12 @@ class BasisSet(object):
 
             else:
                 # Ne'er found :-(
-                text2  = """  Shell Entries: %s\n""" % (seek['entry'])
+                text2 = """  Shell Entries: %s\n""" % (seek['entry'])
                 text2 += """  Basis Sets: %s\n""" % (seek['basis'])
                 text2 += """  File Path: %s\n""" % (', '.join(map(str, seek['path'].split(os.pathsep))))
                 text2 += """  Input Blocks: %s\n""" % (', '.join(seek['strings']))
-                raise BasisSetNotFound(f'BasisSet::construct: Unable to find a basis set for atom {at + 1} for key {key} among:\n{text2}')
+                raise BasisSetNotFound(
+                    f'BasisSet::construct: Unable to find a basis set for atom {at + 1} for key {key} among:\n{text2}')
 
         # Construct the grand BasisSet for mol
         basisset = BasisSet(key, mol, atom_basis_shell)
@@ -1026,6 +1044,7 @@ class BasisSet(object):
     def set_name(self, name):
         """Sets the name of this basis set"""
         self.name = name
+
 
 # JET added but I think should fail
 #+    def atom_shell_map(self):
@@ -1296,7 +1315,6 @@ class BasisSet(object):
             with open(out, mode='w') as handle:
                 handle.write(text)
 
-
     def export_for_libmints(self, role):
         """From complete BasisSet object, returns array where
         triplets of elements are each unique atom label, the hash
@@ -1318,7 +1336,7 @@ class BasisSet(object):
                 # If core information is present, this is an ECP so we add the
                 # number of electrons this atom's ECP basis accounts for here.
                 try:
-                   atominfo.append(self.ecp_coreinfo[label])
+                    atominfo.append(self.ecp_coreinfo[label])
                 except KeyError:
                     raise ValidationError("Problem with number of cores in ECP constuction!")
             for Q in range(n_shell):
@@ -1512,9 +1530,8 @@ class BasisSet(object):
                     if abs(exp - _exp) < 1.0e-6:
                         unique = False
                 if unique:
-                    us = ShellInfo(am, [1.0], [exp],
-                        'Pure' if pure else 'Cartesian',
-                        nc, center, start, 'Unnormalized')
+                    us = ShellInfo(am, [1.0], [exp], 'Pure' if pure else 'Cartesian', nc, center, start,
+                                   'Unnormalized')
                     shell_list.append(us)
                     exp_map[am].append(exp)
 
@@ -1614,7 +1631,6 @@ def _basis_file_warner_and_aliaser(filename):
         "def2-svp-jkfit": "def2-universal-jkfit",
         "def2-tzvp-jkfit": "def2-universal-jkfit",
         "def2-tzvpp-jkfit": "def2-universal-jkfit",
-
         "def2-qzvp-jfit": "def2-universal-jfit",
         "def2-qzvpp-jfit": "def2-universal-jfit",
         "def2-sv_p_-jfit": "def2-universal-jfit",

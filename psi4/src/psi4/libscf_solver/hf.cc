@@ -645,7 +645,7 @@ void HF::form_H() {
             }
 
         }  // embpot or sphere
-    }      // end perturb_h_
+    }  // end perturb_h_
 
     // If an external field exists, add it to the one-electron Hamiltonian
     if (external_pot_) {
@@ -732,708 +732,717 @@ void HF::form_Shalf() {
         used_brian = true;
 #endif
 
-    if (!used_brian) {
-        double lindep_tolerance = options_.get_double("S_TOLERANCE");
-        double cholesky_tolerance = options_.get_double("S_CHOLESKY_TOLERANCE");
+        if (!used_brian) {
+            double lindep_tolerance = options_.get_double("S_TOLERANCE");
+            double cholesky_tolerance = options_.get_double("S_CHOLESKY_TOLERANCE");
 
-        BasisSetOrthogonalization orthog(method, S_, lindep_tolerance, cholesky_tolerance, print_);
+            BasisSetOrthogonalization orthog(method, S_, lindep_tolerance, cholesky_tolerance, print_);
 
-        // Transform
-        X_ = orthog.basis_to_orthog_basis();
+            // Transform
+            X_ = orthog.basis_to_orthog_basis();
 
-        // Update nmo_
-        nmopi_ = X_->colspi();
-        nmo_ = nmopi_.sum();
-    }
+            // Update nmo_
+            nmopi_ = X_->colspi();
+            nmo_ = nmopi_.sum();
+        }
 
-    // Double check occupation vectors
-    for (int h = 0; h < X_->nirrep(); ++h) {
-        if (std::max(nalphapi_[h], nbetapi_[h]) > nmopi_[h]) {
-            throw PSIEXCEPTION("Not enough molecular orbitals to satisfy requested occupancies");
+        // Double check occupation vectors
+        for (int h = 0; h < X_->nirrep(); ++h) {
+            if (std::max(nalphapi_[h], nbetapi_[h]) > nmopi_[h]) {
+                throw PSIEXCEPTION("Not enough molecular orbitals to satisfy requested occupancies");
+            }
+        }
+        // Refreshes twice in RHF, no big deal
+        epsilon_a_->init(nmopi_);
+        Ca_->init(nirrep_, nsopi_, nmopi_, "Alpha MO coefficients");
+        epsilon_b_->init(nmopi_);
+        if (!same_a_b_orbs_) {
+            Cb_->init(nirrep_, nsopi_, nmopi_, "Beta MO coefficients");
+        }
+
+        // Extra matrix dimension changes for specific derived classes
+        prepare_canonical_orthogonalization();
+
+        if (print_ > 3) {
+            S_->print("outfile");
+            X_->print("outfile");
         }
     }
-    // Refreshes twice in RHF, no big deal
-    epsilon_a_->init(nmopi_);
-    Ca_->init(nirrep_, nsopi_, nmopi_, "Alpha MO coefficients");
-    epsilon_b_->init(nmopi_);
-    if (!same_a_b_orbs_) {
-        Cb_->init(nirrep_, nsopi_, nmopi_, "Beta MO coefficients");
-    }
 
-    // Extra matrix dimension changes for specific derived classes
-    prepare_canonical_orthogonalization();
-
-    if (print_ > 3) {
-        S_->print("outfile");
-        X_->print("outfile");
-    }
-}
-
-void HF::compute_fcpi() {
-    // FROZEN_DOCC takes precedence, FREEZE_CORE directive has second priority
-    if (options_["FROZEN_DOCC"].has_changed()) {
-        if (options_["FROZEN_DOCC"].size() != epsilon_a_->nirrep()) {
-            throw PSIEXCEPTION("The FROZEN_DOCC array has the wrong dimensions");
-        }
-        for (int h = 0; h < epsilon_a_->nirrep(); h++) {
-            frzcpi_[h] = options_["FROZEN_DOCC"][h].to_integer();
-        }
-    } else {
-        int nfzc = 0;
-        if (options_.get_int("NUM_FROZEN_DOCC") != 0) {
-            nfzc = options_.get_int("NUM_FROZEN_DOCC");
+    void HF::compute_fcpi() {
+        // FROZEN_DOCC takes precedence, FREEZE_CORE directive has second priority
+        if (options_["FROZEN_DOCC"].has_changed()) {
+            if (options_["FROZEN_DOCC"].size() != epsilon_a_->nirrep()) {
+                throw PSIEXCEPTION("The FROZEN_DOCC array has the wrong dimensions");
+            }
+            for (int h = 0; h < epsilon_a_->nirrep(); h++) {
+                frzcpi_[h] = options_["FROZEN_DOCC"][h].to_integer();
+            }
         } else {
-            nfzc = basisset_->n_frozen_core();
+            int nfzc = 0;
+            if (options_.get_int("NUM_FROZEN_DOCC") != 0) {
+                nfzc = options_.get_int("NUM_FROZEN_DOCC");
+            } else {
+                nfzc = basisset_->n_frozen_core();
+            }
+            // Print out orbital energies.
+            std::vector<std::pair<double, int> > pairs;
+            for (int h = 0; h < epsilon_a_->nirrep(); ++h) {
+                for (int i = 0; i < epsilon_a_->dimpi()[h]; ++i)
+                    pairs.push_back(std::make_pair(epsilon_a_->get(h, i), h));
+                frzcpi_[h] = 0;
+            }
+            sort(pairs.begin(), pairs.end());
+
+            for (int i = 0; i < nfzc; ++i) frzcpi_[pairs[i].second]++;
         }
-        // Print out orbital energies.
-        std::vector<std::pair<double, int> > pairs;
-        for (int h = 0; h < epsilon_a_->nirrep(); ++h) {
-            for (int i = 0; i < epsilon_a_->dimpi()[h]; ++i) pairs.push_back(std::make_pair(epsilon_a_->get(h, i), h));
-            frzcpi_[h] = 0;
-        }
-        sort(pairs.begin(), pairs.end());
-
-        for (int i = 0; i < nfzc; ++i) frzcpi_[pairs[i].second]++;
-    }
-    // total frozen core
-    nfrzc_ = 0;
-    for (int h = 0; h < epsilon_a_->nirrep(); h++) nfrzc_ += frzcpi_[h];
-}
-
-void HF::compute_fvpi() {
-    // FROZEN_UOCC takes precedence, FREEZE_UOCC directive has second priority
-    if (options_["FROZEN_UOCC"].has_changed()) {
-        if (options_["FROZEN_UOCC"].size() != epsilon_a_->nirrep()) {
-            throw PSIEXCEPTION("The FROZEN_UOCC array has the wrong dimensions");
-        }
-        for (int h = 0; h < epsilon_a_->nirrep(); h++) {
-            frzvpi_[h] = options_["FROZEN_UOCC"][h].to_integer();
-        }
-    } else {
-        int nfzv = options_.get_int("NUM_FROZEN_UOCC");
-        // Print out orbital energies.
-        std::vector<std::pair<double, int> > pairs;
-        for (int h = 0; h < epsilon_a_->nirrep(); ++h) {
-            for (int i = 0; i < epsilon_a_->dimpi()[h]; ++i) pairs.push_back(std::make_pair(epsilon_a_->get(h, i), h));
-            frzvpi_[h] = 0;
-        }
-        sort(pairs.begin(), pairs.end(), std::greater<std::pair<double, int> >());
-
-        for (int i = 0; i < nfzv; ++i) frzvpi_[pairs[i].second]++;
-    }
-}
-
-void HF::print_orbital_pairs(const char* header, std::vector<std::pair<double, std::pair<std::string, int> > > orbs) {
-    outfile->Printf("    %-70s\n\n    ", header);
-    int count = 0;
-    for (int i = 0; i < orbs.size(); i++) {
-        outfile->Printf("%4d%-4s%11.6f  ", orbs[i].second.second, orbs[i].second.first.c_str(), orbs[i].first);
-        if (count++ % 3 == 2 && count != orbs.size()) outfile->Printf("\n    ");
-    }
-    outfile->Printf("\n\n");
-}
-
-void HF::print_orbitals() {
-    std::vector<std::string> labels = molecule_->irrep_labels();
-
-    outfile->Printf("    Orbital Energies [Eh]\n    ---------------------\n\n");
-
-    std::string reference = options_.get_str("REFERENCE");
-    if ((reference == "RHF") || (reference == "RKS")) {
-        std::vector<std::pair<double, std::pair<std::string, int> > > occ;
-        std::vector<std::pair<double, std::pair<std::string, int> > > vir;
-
-        for (int h = 0; h < nirrep_; h++) {
-            std::vector<std::pair<double, int> > orb_e;
-            for (int a = 0; a < nmopi_[h]; a++) orb_e.push_back(std::make_pair(epsilon_a_->get(h, a), a));
-            std::sort(orb_e.begin(), orb_e.end());
-
-            std::vector<int> orb_order(nmopi_[h]);
-            for (int a = 0; a < nmopi_[h]; a++) orb_order[orb_e[a].second] = a;
-
-            for (int a = 0; a < nalphapi_[h]; a++)
-                occ.push_back(std::make_pair(epsilon_a_->get(h, a), std::make_pair(labels[h], orb_order[a] + 1)));
-            for (int a = nalphapi_[h]; a < nmopi_[h]; a++)
-                vir.push_back(std::make_pair(epsilon_a_->get(h, a), std::make_pair(labels[h], orb_order[a] + 1)));
-        }
-        std::sort(occ.begin(), occ.end());
-        std::sort(vir.begin(), vir.end());
-
-        print_orbital_pairs("Doubly Occupied:", occ);
-        print_orbital_pairs("Virtual:", vir);
-
-    } else if ((reference == "UHF") || (reference == "UKS") || (reference == "CUHF")) {
-        std::vector<std::pair<double, std::pair<std::string, int> > > occA;
-        std::vector<std::pair<double, std::pair<std::string, int> > > virA;
-        std::vector<std::pair<double, std::pair<std::string, int> > > occB;
-        std::vector<std::pair<double, std::pair<std::string, int> > > virB;
-
-        for (int h = 0; h < nirrep_; h++) {
-            std::vector<std::pair<double, int> > orb_eA;
-            for (int a = 0; a < nmopi_[h]; a++) orb_eA.push_back(std::make_pair(epsilon_a_->get(h, a), a));
-            std::sort(orb_eA.begin(), orb_eA.end());
-
-            std::vector<int> orb_orderA(nmopi_[h]);
-            for (int a = 0; a < nmopi_[h]; a++) orb_orderA[orb_eA[a].second] = a;
-
-            for (int a = 0; a < nalphapi_[h]; a++)
-                occA.push_back(std::make_pair(epsilon_a_->get(h, a), std::make_pair(labels[h], orb_orderA[a] + 1)));
-            for (int a = nalphapi_[h]; a < nmopi_[h]; a++)
-                virA.push_back(std::make_pair(epsilon_a_->get(h, a), std::make_pair(labels[h], orb_orderA[a] + 1)));
-
-            std::vector<std::pair<double, int> > orb_eB;
-            for (int a = 0; a < nmopi_[h]; a++) orb_eB.push_back(std::make_pair(epsilon_b_->get(h, a), a));
-            std::sort(orb_eB.begin(), orb_eB.end());
-
-            std::vector<int> orb_orderB(nmopi_[h]);
-            for (int a = 0; a < nmopi_[h]; a++) orb_orderB[orb_eB[a].second] = a;
-
-            for (int a = 0; a < nbetapi_[h]; a++)
-                occB.push_back(std::make_pair(epsilon_b_->get(h, a), std::make_pair(labels[h], orb_orderB[a] + 1)));
-            for (int a = nbetapi_[h]; a < nmopi_[h]; a++)
-                virB.push_back(std::make_pair(epsilon_b_->get(h, a), std::make_pair(labels[h], orb_orderB[a] + 1)));
-        }
-        std::sort(occA.begin(), occA.end());
-        std::sort(virA.begin(), virA.end());
-        std::sort(occB.begin(), occB.end());
-        std::sort(virB.begin(), virB.end());
-
-        print_orbital_pairs("Alpha Occupied:", occA);
-        print_orbital_pairs("Alpha Virtual:", virA);
-        print_orbital_pairs("Beta Occupied:", occB);
-        print_orbital_pairs("Beta Virtual:", virB);
-
-    } else if (reference == "ROHF") {
-        std::vector<std::pair<double, std::pair<std::string, int> > > docc;
-        std::vector<std::pair<double, std::pair<std::string, int> > > socc;
-        std::vector<std::pair<double, std::pair<std::string, int> > > vir;
-
-        for (int h = 0; h < nirrep_; h++) {
-            std::vector<std::pair<double, int> > orb_e;
-            for (int a = 0; a < nmopi_[h]; a++) orb_e.push_back(std::make_pair(epsilon_a_->get(h, a), a));
-            std::sort(orb_e.begin(), orb_e.end());
-
-            std::vector<int> orb_order(nmopi_[h]);
-            for (int a = 0; a < nmopi_[h]; a++) orb_order[orb_e[a].second] = a;
-
-            for (int a = 0; a < nbetapi_[h]; a++)
-                docc.push_back(std::make_pair(epsilon_a_->get(h, a), std::make_pair(labels[h], orb_order[a] + 1)));
-            for (int a = nbetapi_[h]; a < nalphapi_[h]; a++)
-                socc.push_back(std::make_pair(epsilon_a_->get(h, a), std::make_pair(labels[h], orb_order[a] + 1)));
-            for (int a = nalphapi_[h]; a < nmopi_[h]; a++)
-                vir.push_back(std::make_pair(epsilon_a_->get(h, a), std::make_pair(labels[h], orb_order[a] + 1)));
-        }
-        std::sort(docc.begin(), docc.end());
-        std::sort(socc.begin(), socc.end());
-        std::sort(vir.begin(), vir.end());
-
-        print_orbital_pairs("Doubly Occupied:", docc);
-        print_orbital_pairs("Singly Occupied:", socc);
-        print_orbital_pairs("Virtual:", vir);
-
-    } else {
-        throw PSIEXCEPTION("Unknown reference in HF::print_orbitals");
+        // total frozen core
+        nfrzc_ = 0;
+        for (int h = 0; h < epsilon_a_->nirrep(); h++) nfrzc_ += frzcpi_[h];
     }
 
-    outfile->Printf("    Final Occupation by Irrep:\n");
-    print_occupation();
-}
+    void HF::compute_fvpi() {
+        // FROZEN_UOCC takes precedence, FREEZE_UOCC directive has second priority
+        if (options_["FROZEN_UOCC"].has_changed()) {
+            if (options_["FROZEN_UOCC"].size() != epsilon_a_->nirrep()) {
+                throw PSIEXCEPTION("The FROZEN_UOCC array has the wrong dimensions");
+            }
+            for (int h = 0; h < epsilon_a_->nirrep(); h++) {
+                frzvpi_[h] = options_["FROZEN_UOCC"][h].to_integer();
+            }
+        } else {
+            int nfzv = options_.get_int("NUM_FROZEN_UOCC");
+            // Print out orbital energies.
+            std::vector<std::pair<double, int> > pairs;
+            for (int h = 0; h < epsilon_a_->nirrep(); ++h) {
+                for (int i = 0; i < epsilon_a_->dimpi()[h]; ++i)
+                    pairs.push_back(std::make_pair(epsilon_a_->get(h, i), h));
+                frzvpi_[h] = 0;
+            }
+            sort(pairs.begin(), pairs.end(), std::greater<std::pair<double, int> >());
 
-void HF::compute_sapgau_guess() {
-  // Build auxiliary basis set object
-  auto sap_basis = get_basisset("SAPGAU");
-  // Do the SAP magic to the basis
-  sap_basis->convert_sap_contraction();
-
-  auto zero_basis = BasisSet::zero_ao_basis_set();
-  auto nsap = sap_basis->nbf();
-  auto nbf = basisset_->nbf();
-
-  // Build (P|pq) raw 3-index ERIs in AO basis, dimension (Nsap, 1, nbf, nbf).
-  auto Ppq = mintshelper()->ao_eri(sap_basis, zero_basis, basisset_, basisset_);
-
-  // Build repulsive potential matrix in AO basis.
-  auto Vsap = std::make_shared<Matrix>("VSAP", basisset_->nbf(), basisset_->nbf());
-  auto Varr = Vsap->pointer();
-  auto Parr = Ppq->pointer();
-  for (auto P = 0; P < nsap; P++) {
-    for(auto u = 0; u < nbf; u++) {
-      for(auto v = 0; v < nbf; v++) {
-        // TBD: this is using Natoms times too much memory - the
-        // integrals should be computed in a loop, parallellizing over
-        // the AO shell pairs
-        Varr[u][v] += Parr[P][u*nbf+v];
-      }
-    }
-  }
-
-  // Convert repulsive potential into the SO basis
-  auto Fsap = std::make_shared<Matrix>("FSAP", AO2SO_->colspi(), AO2SO_->colspi());
-  Fsap->apply_symmetry(Vsap, AO2SO_);
-  // and add in the core Hamiltonian
-  Fsap->add(H_);
-
-  // Set the alpha and beta Fock matrices
-  Fa_->copy(Fsap);
-  Fb_->copy(Fsap);
-}
-
-void HF::guess() {
-    // don't save guess energy as "the" energy because we need to avoid
-    // a false positive test for convergence on the first iteration (that
-    // was happening before in tests/scf-guess-read before I removed
-    // the statements putting this into E_).  -CDS 3/25/13
-    double guess_E;
-
-    // What does the user want?
-    // Options will be:
-    // "CORE"-CORE Hamiltonain
-    // "GWH"-Generalized Wolfsberg-Helmholtz
-    // "SAD"-Superposition of Atomic Densities
-    std::string guess_type = options_.get_str("GUESS");
-
-    // Take care of options that should be overridden
-    if (guess_type == "AUTO") {
-        outfile->Printf("\nWarning! Guess was AUTO, switching to CORE!\n\n");
-        outfile->Printf("           This option should have been configured at the driver level.\n\n");
-        guess_type = "CORE";
+            for (int i = 0; i < nfzv; ++i) frzvpi_[pairs[i].second]++;
+        }
     }
 
-    if ((guess_type == "READ") && !guess_Ca_) {
-        outfile->Printf("\nWarning! Guess was READ without Ca set, switching to CORE!\n");
-        outfile->Printf("           This option should have been configured at the driver level.\n\n");
-        guess_type = "CORE";
+    void HF::print_orbital_pairs(const char* header,
+                                 std::vector<std::pair<double, std::pair<std::string, int> > > orbs) {
+        outfile->Printf("    %-70s\n\n    ", header);
+        int count = 0;
+        for (int i = 0; i < orbs.size(); i++) {
+            outfile->Printf("%4d%-4s%11.6f  ", orbs[i].second.second, orbs[i].second.first.c_str(), orbs[i].first);
+            if (count++ % 3 == 2 && count != orbs.size()) outfile->Printf("\n    ");
+        }
+        outfile->Printf("\n\n");
     }
 
-    if (guess_Ca_) {
-        if (print_) outfile->Printf("  SCF Guess: Orbitals guess was supplied from a previous computation.\n\n");
+    void HF::print_orbitals() {
+        std::vector<std::string> labels = molecule_->irrep_labels();
+
+        outfile->Printf("    Orbital Energies [Eh]\n    ---------------------\n\n");
 
         std::string reference = options_.get_str("REFERENCE");
-        bool single_orb = (reference == "RHF");
+        if ((reference == "RHF") || (reference == "RKS")) {
+            std::vector<std::pair<double, std::pair<std::string, int> > > occ;
+            std::vector<std::pair<double, std::pair<std::string, int> > > vir;
 
-        if (single_orb) {
-            guess_Cb_ = guess_Ca_;
-        } else {
-            if (!guess_Cb_) {
-                throw PSIEXCEPTION("Guess Ca was set, but did not find a matching Cb!\n");
-            }
-        }
-
-        if ((guess_Ca_->nirrep() != nirrep_) || (guess_Cb_->nirrep() != nirrep_)) {
-            throw PSIEXCEPTION(
-                "Number of guess of the input orbitals do not match number of irreps of the wavefunction.");
-        }
-        if ((guess_Ca_->rowspi() != nsopi_) || (guess_Cb_->rowspi() != nsopi_)) {
-            throw PSIEXCEPTION("Nso of the guess orbitals do not match Nso of the wavefunction.");
-        }
-
-        for (int h = 0; h < nirrep_; h++) {
-            for (int i = 0; i < guess_Ca_->colspi()[h]; i++) {
-                C_DCOPY(nsopi_[h], &guess_Ca_->pointer(h)[0][i], guess_Ca_->colspi()[h], &Ca_->pointer(h)[0][i],
-                        nmopi_[h]);
-            }
-        }
-
-        if (single_orb) {
-            Cb_ = Ca_;
-        } else {
             for (int h = 0; h < nirrep_; h++) {
-                for (int i = 0; i < guess_Cb_->colspi()[h]; i++) {
-                    C_DCOPY(nsopi_[h], &guess_Cb_->pointer(h)[0][i], guess_Cb_->colspi()[h], &Cb_->pointer(h)[0][i],
+                std::vector<std::pair<double, int> > orb_e;
+                for (int a = 0; a < nmopi_[h]; a++) orb_e.push_back(std::make_pair(epsilon_a_->get(h, a), a));
+                std::sort(orb_e.begin(), orb_e.end());
+
+                std::vector<int> orb_order(nmopi_[h]);
+                for (int a = 0; a < nmopi_[h]; a++) orb_order[orb_e[a].second] = a;
+
+                for (int a = 0; a < nalphapi_[h]; a++)
+                    occ.push_back(std::make_pair(epsilon_a_->get(h, a), std::make_pair(labels[h], orb_order[a] + 1)));
+                for (int a = nalphapi_[h]; a < nmopi_[h]; a++)
+                    vir.push_back(std::make_pair(epsilon_a_->get(h, a), std::make_pair(labels[h], orb_order[a] + 1)));
+            }
+            std::sort(occ.begin(), occ.end());
+            std::sort(vir.begin(), vir.end());
+
+            print_orbital_pairs("Doubly Occupied:", occ);
+            print_orbital_pairs("Virtual:", vir);
+
+        } else if ((reference == "UHF") || (reference == "UKS") || (reference == "CUHF")) {
+            std::vector<std::pair<double, std::pair<std::string, int> > > occA;
+            std::vector<std::pair<double, std::pair<std::string, int> > > virA;
+            std::vector<std::pair<double, std::pair<std::string, int> > > occB;
+            std::vector<std::pair<double, std::pair<std::string, int> > > virB;
+
+            for (int h = 0; h < nirrep_; h++) {
+                std::vector<std::pair<double, int> > orb_eA;
+                for (int a = 0; a < nmopi_[h]; a++) orb_eA.push_back(std::make_pair(epsilon_a_->get(h, a), a));
+                std::sort(orb_eA.begin(), orb_eA.end());
+
+                std::vector<int> orb_orderA(nmopi_[h]);
+                for (int a = 0; a < nmopi_[h]; a++) orb_orderA[orb_eA[a].second] = a;
+
+                for (int a = 0; a < nalphapi_[h]; a++)
+                    occA.push_back(std::make_pair(epsilon_a_->get(h, a), std::make_pair(labels[h], orb_orderA[a] + 1)));
+                for (int a = nalphapi_[h]; a < nmopi_[h]; a++)
+                    virA.push_back(std::make_pair(epsilon_a_->get(h, a), std::make_pair(labels[h], orb_orderA[a] + 1)));
+
+                std::vector<std::pair<double, int> > orb_eB;
+                for (int a = 0; a < nmopi_[h]; a++) orb_eB.push_back(std::make_pair(epsilon_b_->get(h, a), a));
+                std::sort(orb_eB.begin(), orb_eB.end());
+
+                std::vector<int> orb_orderB(nmopi_[h]);
+                for (int a = 0; a < nmopi_[h]; a++) orb_orderB[orb_eB[a].second] = a;
+
+                for (int a = 0; a < nbetapi_[h]; a++)
+                    occB.push_back(std::make_pair(epsilon_b_->get(h, a), std::make_pair(labels[h], orb_orderB[a] + 1)));
+                for (int a = nbetapi_[h]; a < nmopi_[h]; a++)
+                    virB.push_back(std::make_pair(epsilon_b_->get(h, a), std::make_pair(labels[h], orb_orderB[a] + 1)));
+            }
+            std::sort(occA.begin(), occA.end());
+            std::sort(virA.begin(), virA.end());
+            std::sort(occB.begin(), occB.end());
+            std::sort(virB.begin(), virB.end());
+
+            print_orbital_pairs("Alpha Occupied:", occA);
+            print_orbital_pairs("Alpha Virtual:", virA);
+            print_orbital_pairs("Beta Occupied:", occB);
+            print_orbital_pairs("Beta Virtual:", virB);
+
+        } else if (reference == "ROHF") {
+            std::vector<std::pair<double, std::pair<std::string, int> > > docc;
+            std::vector<std::pair<double, std::pair<std::string, int> > > socc;
+            std::vector<std::pair<double, std::pair<std::string, int> > > vir;
+
+            for (int h = 0; h < nirrep_; h++) {
+                std::vector<std::pair<double, int> > orb_e;
+                for (int a = 0; a < nmopi_[h]; a++) orb_e.push_back(std::make_pair(epsilon_a_->get(h, a), a));
+                std::sort(orb_e.begin(), orb_e.end());
+
+                std::vector<int> orb_order(nmopi_[h]);
+                for (int a = 0; a < nmopi_[h]; a++) orb_order[orb_e[a].second] = a;
+
+                for (int a = 0; a < nbetapi_[h]; a++)
+                    docc.push_back(std::make_pair(epsilon_a_->get(h, a), std::make_pair(labels[h], orb_order[a] + 1)));
+                for (int a = nbetapi_[h]; a < nalphapi_[h]; a++)
+                    socc.push_back(std::make_pair(epsilon_a_->get(h, a), std::make_pair(labels[h], orb_order[a] + 1)));
+                for (int a = nalphapi_[h]; a < nmopi_[h]; a++)
+                    vir.push_back(std::make_pair(epsilon_a_->get(h, a), std::make_pair(labels[h], orb_order[a] + 1)));
+            }
+            std::sort(docc.begin(), docc.end());
+            std::sort(socc.begin(), socc.end());
+            std::sort(vir.begin(), vir.end());
+
+            print_orbital_pairs("Doubly Occupied:", docc);
+            print_orbital_pairs("Singly Occupied:", socc);
+            print_orbital_pairs("Virtual:", vir);
+
+        } else {
+            throw PSIEXCEPTION("Unknown reference in HF::print_orbitals");
+        }
+
+        outfile->Printf("    Final Occupation by Irrep:\n");
+        print_occupation();
+    }
+
+    void HF::compute_sapgau_guess() {
+        // Build auxiliary basis set object
+        auto sap_basis = get_basisset("SAPGAU");
+        // Do the SAP magic to the basis
+        sap_basis->convert_sap_contraction();
+
+        auto zero_basis = BasisSet::zero_ao_basis_set();
+        auto nsap = sap_basis->nbf();
+        auto nbf = basisset_->nbf();
+
+        // Build (P|pq) raw 3-index ERIs in AO basis, dimension (Nsap, 1, nbf, nbf).
+        auto Ppq = mintshelper()->ao_eri(sap_basis, zero_basis, basisset_, basisset_);
+
+        // Build repulsive potential matrix in AO basis.
+        auto Vsap = std::make_shared<Matrix>("VSAP", basisset_->nbf(), basisset_->nbf());
+        auto Varr = Vsap->pointer();
+        auto Parr = Ppq->pointer();
+        for (auto P = 0; P < nsap; P++) {
+            for (auto u = 0; u < nbf; u++) {
+                for (auto v = 0; v < nbf; v++) {
+                    // TBD: this is using Natoms times too much memory - the
+                    // integrals should be computed in a loop, parallellizing over
+                    // the AO shell pairs
+                    Varr[u][v] += Parr[P][u * nbf + v];
+                }
+            }
+        }
+
+        // Convert repulsive potential into the SO basis
+        auto Fsap = std::make_shared<Matrix>("FSAP", AO2SO_->colspi(), AO2SO_->colspi());
+        Fsap->apply_symmetry(Vsap, AO2SO_);
+        // and add in the core Hamiltonian
+        Fsap->add(H_);
+
+        // Set the alpha and beta Fock matrices
+        Fa_->copy(Fsap);
+        Fb_->copy(Fsap);
+    }
+
+    void HF::guess() {
+        // don't save guess energy as "the" energy because we need to avoid
+        // a false positive test for convergence on the first iteration (that
+        // was happening before in tests/scf-guess-read before I removed
+        // the statements putting this into E_).  -CDS 3/25/13
+        double guess_E;
+
+        // What does the user want?
+        // Options will be:
+        // "CORE"-CORE Hamiltonain
+        // "GWH"-Generalized Wolfsberg-Helmholtz
+        // "SAD"-Superposition of Atomic Densities
+        std::string guess_type = options_.get_str("GUESS");
+
+        // Take care of options that should be overridden
+        if (guess_type == "AUTO") {
+            outfile->Printf("\nWarning! Guess was AUTO, switching to CORE!\n\n");
+            outfile->Printf("           This option should have been configured at the driver level.\n\n");
+            guess_type = "CORE";
+        }
+
+        if ((guess_type == "READ") && !guess_Ca_) {
+            outfile->Printf("\nWarning! Guess was READ without Ca set, switching to CORE!\n");
+            outfile->Printf("           This option should have been configured at the driver level.\n\n");
+            guess_type = "CORE";
+        }
+
+        if (guess_Ca_) {
+            if (print_) outfile->Printf("  SCF Guess: Orbitals guess was supplied from a previous computation.\n\n");
+
+            std::string reference = options_.get_str("REFERENCE");
+            bool single_orb = (reference == "RHF");
+
+            if (single_orb) {
+                guess_Cb_ = guess_Ca_;
+            } else {
+                if (!guess_Cb_) {
+                    throw PSIEXCEPTION("Guess Ca was set, but did not find a matching Cb!\n");
+                }
+            }
+
+            if ((guess_Ca_->nirrep() != nirrep_) || (guess_Cb_->nirrep() != nirrep_)) {
+                throw PSIEXCEPTION(
+                    "Number of guess of the input orbitals do not match number of irreps of the wavefunction.");
+            }
+            if ((guess_Ca_->rowspi() != nsopi_) || (guess_Cb_->rowspi() != nsopi_)) {
+                throw PSIEXCEPTION("Nso of the guess orbitals do not match Nso of the wavefunction.");
+            }
+
+            for (int h = 0; h < nirrep_; h++) {
+                for (int i = 0; i < guess_Ca_->colspi()[h]; i++) {
+                    C_DCOPY(nsopi_[h], &guess_Ca_->pointer(h)[0][i], guess_Ca_->colspi()[h], &Ca_->pointer(h)[0][i],
                             nmopi_[h]);
                 }
             }
-        }
 
-        // Figure out occupations from given input
-        if (!(input_socc_ || input_docc_)) {
-            nalphapi_ = guess_Ca_->colspi();
-            nbetapi_ = guess_Cb_->colspi();
-            nalpha_ = nalphapi_.sum();
-            nbeta_ = nbetapi_.sum();
-        }
-
-        format_guess();
-        form_D();
-
-        // This is a guess iteration: orbital occupations may be reset in SCF
-        iteration_ = -1;
-        guess_E = compute_initial_E();
-
-    } else if (guess_type == "SAD") {
-        if (print_)
-            outfile->Printf(
-                "  SCF Guess: Superposition of Atomic Densities via on-the-fly atomic UHF (no occupation "
-                "information).\n\n");
-
-        // Superposition of Atomic Density. Modified by Susi Lehtola
-        // 2018-12-15 to work also for ROHF, as well as to allow using
-        // SAD with predefined orbital occupations. The algorithm is
-        // the same as in van Lenthe et al, "Starting SCF Calculations
-        // by Superposition of Atomic Densities", J Comput Chem 27,
-        // 926 (2006).
-
-        // Build non-idempotent, spin-restricted SAD density matrix
-        compute_SAD_guess(false);
-
-        // This is a guess iteration: orbital occupations must be
-        // reset in SCF.
-        iteration_ = -1;
-        // SAD doesn't yield orbitals so also the SCF logic is
-        // slightly different for the first iteration.
-        sad_ = true;
-        guess_E = compute_initial_E();
-
-    } else if (guess_type == "SADNO") {
-        if (print_)
-            outfile->Printf(
-                "  SCF Guess: Superposition of Atomic Densities' Natural Orbitals via on-the-fly atomic UHF "
-                "(doi:10.1021/acs.jctc.8b01089).\n\n");
-
-        // Like the above, but builds natural orbitals from the SAD
-        // density matrix.
-
-        // Build non-idempotent, spin-restricted SAD density matrix
-        compute_SAD_guess(true);
-        // Find occupations
-        find_occupation();
-
-        // Now we have orbitals and occupations, build a density matrix
-        form_D();
-        guess_E = compute_initial_E();
-
-    } else if (guess_type == "HUCKEL") {
-        if (print_)
-            outfile->Printf("  SCF Guess: Huckel guess via on-the-fly atomic UHF (doi:10.1021/acs.jctc.8b01089).\n\n");
-
-        // Huckel guess, written by Susi Lehtola 2019-01-27.  See "An
-        // assessment of initial guesses for self-consistent field
-        // calculations. Superposition of Atomic Potentials: simple
-        // yet efficient", JCTC 2019, doi: 10.1021/acs.jctc.8b01089.
-
-        if (!options_.get_bool("SAD_SPIN_AVERAGE")) {
-            throw PSIEXCEPTION("  Huckel guess requires SAD_SPIN_AVERAGE = True!");
-        }
-        if (!options_.get_bool("SAD_FRAC_OCC")) {
-            throw PSIEXCEPTION("  Huckel guess requires SAD_FRAC_OCC = True!");
-        }
-        compute_huckel_guess(false);
-
-        form_initial_C();
-        form_D();
-        guess_E = compute_initial_E();
-
-    } else if (guess_type == "MODHUCKEL") {
-      if (print_)
-            outfile->Printf("  SCF Guess: Huckel guess via on-the-fly atomic UHF (doi:10.1021/acs.jctc.8b01089) with the updated GWH rule from doi:10.1021/ja00480a005.\n\n");
-
-        // Huckel guess, written by Susi Lehtola 2019-01-27.  See "An
-        // assessment of initial guesses for self-consistent field
-        // calculations. Superposition of Atomic Potentials: simple
-        // yet efficient", JCTC 2019, doi: 10.1021/acs.jctc.8b01089.
-
-        if (!options_.get_bool("SAD_SPIN_AVERAGE")) {
-            throw PSIEXCEPTION("  Huckel guess requires SAD_SPIN_AVERAGE = True!");
-        }
-        if (!options_.get_bool("SAD_FRAC_OCC")) {
-            throw PSIEXCEPTION("  Huckel guess requires SAD_FRAC_OCC = True!");
-        }
-        compute_huckel_guess(true);
-
-        form_initial_C();
-        form_D();
-        guess_E = compute_initial_E();
-
-    } else if (guess_type == "GWH") {
-        // Generalized Wolfsberg Helmholtz (Sounds cool, easy to code)
-        if (print_) outfile->Printf("  SCF Guess: Generalized Wolfsberg-Helmholtz applied to core Hamiltonian.\n\n");
-
-        Fa_->zero();  // Try Fa_{mn} = S_{mn} (H_{mm} + H_{nn})/2
-        int h, i, j;
-        const int* opi = S_->rowspi();
-        int nirreps = S_->nirrep();
-        for (h = 0; h < nirreps; ++h) {
-            for (i = 0; i < opi[h]; ++i) {
-                Fa_->set(h, i, i, H_->get(h, i, i));
-                for (j = 0; j < i; ++j) {
-                    Fa_->set(h, i, j, 0.875 * S_->get(h, i, j) * (H_->get(h, i, i) + H_->get(h, j, j)));
-                    Fa_->set(h, j, i, Fa_->get(h, i, j));
-                }
-            }
-        }
-        Fb_->copy(Fa_);
-        form_initial_C();
-        form_D();
-        guess_E = compute_initial_E();
-
-    } else if (guess_type == "CORE") {
-        if (print_) outfile->Printf("  SCF Guess: Core (One-Electron) Hamiltonian.\n\n");
-
-        Fa_->copy(H_);  // Try the core Hamiltonian as the Fock Matrix
-        Fb_->copy(H_);
-
-        form_initial_C();
-        form_D();
-        guess_E = compute_initial_E();
-
-    } else if (guess_type == "SAP") {
-        // SAP guess
-        if (print_)
-            outfile->Printf("  SCF Guess: Superposition of Atomic Potentials (doi:10.1021/acs.jctc.8b01089).\n\n");
-
-        auto builder = VBase::build_V(basisset_, functional_, options_, "SAP");
-        builder->initialize();
-
-        // Print info on the integration grid
-        if (print_) {
-            builder->print_header();
-        }
-
-        // Build the SAP potential
-        std::vector<SharedMatrix> Vsap;
-        Vsap.push_back(SharedMatrix(factory_->create_matrix("Vsap")));
-        builder->compute_V(Vsap);
-        Fa_->copy(T_);
-        Fa_->add(Vsap[0]);
-        Fb_->copy(Fa_);
-        form_initial_C();
-        form_D();
-        guess_E = compute_initial_E();
-
-    } else if (guess_type == "SAPGAU") {
-      if (print_)
-        outfile->Printf("  SCF Guess: Superposition of Atomic Potentials (doi:10.1021/acs.jctc.8b01089).\n  Using error function fits of the atomic potentials (doi:10.1063/5.0004046).\n\n");
-
-        // Build the SAP potential
-        compute_sapgau_guess();
-        form_initial_C();
-
-        // Find occupations
-        find_occupation();
-
-        // Now we have orbitals and occupations, build a density matrix
-        form_D();
-        guess_E = compute_initial_E();
-
-    } else {
-        throw PSIEXCEPTION("  SCF Guess: No guess was found!");
-    }
-
-    if (print_ > 3) {
-        Ca_->print();
-        Cb_->print();
-        Da_->print();
-        Db_->print();
-        Fa_->print();
-        Fb_->print();
-    }
-    energies_["Total Energy"] = 0.0;  // don't use this guess in our convergence checks
-}
-
-void HF::format_guess() {
-    // Nothing to do, only for special cases
-}
-
-void HF::check_phases() {
-    for (int h = 0; h < nirrep_; ++h) {
-        for (int p = 0; p < Ca_->colspi(h); ++p) {
-            for (int mu = 0; mu < Ca_->rowspi(h); ++mu) {
-                if (std::fabs(Ca_->get(h, mu, p)) > 1.0E-3) {
-                    if (Ca_->get(h, mu, p) < 1.0E-3) {
-                        Ca_->scale_column(h, p, -1.0);
+            if (single_orb) {
+                Cb_ = Ca_;
+            } else {
+                for (int h = 0; h < nirrep_; h++) {
+                    for (int i = 0; i < guess_Cb_->colspi()[h]; i++) {
+                        C_DCOPY(nsopi_[h], &guess_Cb_->pointer(h)[0][i], guess_Cb_->colspi()[h], &Cb_->pointer(h)[0][i],
+                                nmopi_[h]);
                     }
-                    break;
                 }
             }
+
+            // Figure out occupations from given input
+            if (!(input_socc_ || input_docc_)) {
+                nalphapi_ = guess_Ca_->colspi();
+                nbetapi_ = guess_Cb_->colspi();
+                nalpha_ = nalphapi_.sum();
+                nbeta_ = nbetapi_.sum();
+            }
+
+            format_guess();
+            form_D();
+
+            // This is a guess iteration: orbital occupations may be reset in SCF
+            iteration_ = -1;
+            guess_E = compute_initial_E();
+
+        } else if (guess_type == "SAD") {
+            if (print_)
+                outfile->Printf(
+                    "  SCF Guess: Superposition of Atomic Densities via on-the-fly atomic UHF (no occupation "
+                    "information).\n\n");
+
+            // Superposition of Atomic Density. Modified by Susi Lehtola
+            // 2018-12-15 to work also for ROHF, as well as to allow using
+            // SAD with predefined orbital occupations. The algorithm is
+            // the same as in van Lenthe et al, "Starting SCF Calculations
+            // by Superposition of Atomic Densities", J Comput Chem 27,
+            // 926 (2006).
+
+            // Build non-idempotent, spin-restricted SAD density matrix
+            compute_SAD_guess(false);
+
+            // This is a guess iteration: orbital occupations must be
+            // reset in SCF.
+            iteration_ = -1;
+            // SAD doesn't yield orbitals so also the SCF logic is
+            // slightly different for the first iteration.
+            sad_ = true;
+            guess_E = compute_initial_E();
+
+        } else if (guess_type == "SADNO") {
+            if (print_)
+                outfile->Printf(
+                    "  SCF Guess: Superposition of Atomic Densities' Natural Orbitals via on-the-fly atomic UHF "
+                    "(doi:10.1021/acs.jctc.8b01089).\n\n");
+
+            // Like the above, but builds natural orbitals from the SAD
+            // density matrix.
+
+            // Build non-idempotent, spin-restricted SAD density matrix
+            compute_SAD_guess(true);
+            // Find occupations
+            find_occupation();
+
+            // Now we have orbitals and occupations, build a density matrix
+            form_D();
+            guess_E = compute_initial_E();
+
+        } else if (guess_type == "HUCKEL") {
+            if (print_)
+                outfile->Printf(
+                    "  SCF Guess: Huckel guess via on-the-fly atomic UHF (doi:10.1021/acs.jctc.8b01089).\n\n");
+
+            // Huckel guess, written by Susi Lehtola 2019-01-27.  See "An
+            // assessment of initial guesses for self-consistent field
+            // calculations. Superposition of Atomic Potentials: simple
+            // yet efficient", JCTC 2019, doi: 10.1021/acs.jctc.8b01089.
+
+            if (!options_.get_bool("SAD_SPIN_AVERAGE")) {
+                throw PSIEXCEPTION("  Huckel guess requires SAD_SPIN_AVERAGE = True!");
+            }
+            if (!options_.get_bool("SAD_FRAC_OCC")) {
+                throw PSIEXCEPTION("  Huckel guess requires SAD_FRAC_OCC = True!");
+            }
+            compute_huckel_guess(false);
+
+            form_initial_C();
+            form_D();
+            guess_E = compute_initial_E();
+
+        } else if (guess_type == "MODHUCKEL") {
+            if (print_)
+                outfile->Printf(
+                    "  SCF Guess: Huckel guess via on-the-fly atomic UHF (doi:10.1021/acs.jctc.8b01089) with the "
+                    "updated GWH rule from doi:10.1021/ja00480a005.\n\n");
+
+            // Huckel guess, written by Susi Lehtola 2019-01-27.  See "An
+            // assessment of initial guesses for self-consistent field
+            // calculations. Superposition of Atomic Potentials: simple
+            // yet efficient", JCTC 2019, doi: 10.1021/acs.jctc.8b01089.
+
+            if (!options_.get_bool("SAD_SPIN_AVERAGE")) {
+                throw PSIEXCEPTION("  Huckel guess requires SAD_SPIN_AVERAGE = True!");
+            }
+            if (!options_.get_bool("SAD_FRAC_OCC")) {
+                throw PSIEXCEPTION("  Huckel guess requires SAD_FRAC_OCC = True!");
+            }
+            compute_huckel_guess(true);
+
+            form_initial_C();
+            form_D();
+            guess_E = compute_initial_E();
+
+        } else if (guess_type == "GWH") {
+            // Generalized Wolfsberg Helmholtz (Sounds cool, easy to code)
+            if (print_)
+                outfile->Printf("  SCF Guess: Generalized Wolfsberg-Helmholtz applied to core Hamiltonian.\n\n");
+
+            Fa_->zero();  // Try Fa_{mn} = S_{mn} (H_{mm} + H_{nn})/2
+            int h, i, j;
+            const int* opi = S_->rowspi();
+            int nirreps = S_->nirrep();
+            for (h = 0; h < nirreps; ++h) {
+                for (i = 0; i < opi[h]; ++i) {
+                    Fa_->set(h, i, i, H_->get(h, i, i));
+                    for (j = 0; j < i; ++j) {
+                        Fa_->set(h, i, j, 0.875 * S_->get(h, i, j) * (H_->get(h, i, i) + H_->get(h, j, j)));
+                        Fa_->set(h, j, i, Fa_->get(h, i, j));
+                    }
+                }
+            }
+            Fb_->copy(Fa_);
+            form_initial_C();
+            form_D();
+            guess_E = compute_initial_E();
+
+        } else if (guess_type == "CORE") {
+            if (print_) outfile->Printf("  SCF Guess: Core (One-Electron) Hamiltonian.\n\n");
+
+            Fa_->copy(H_);  // Try the core Hamiltonian as the Fock Matrix
+            Fb_->copy(H_);
+
+            form_initial_C();
+            form_D();
+            guess_E = compute_initial_E();
+
+        } else if (guess_type == "SAP") {
+            // SAP guess
+            if (print_)
+                outfile->Printf("  SCF Guess: Superposition of Atomic Potentials (doi:10.1021/acs.jctc.8b01089).\n\n");
+
+            auto builder = VBase::build_V(basisset_, functional_, options_, "SAP");
+            builder->initialize();
+
+            // Print info on the integration grid
+            if (print_) {
+                builder->print_header();
+            }
+
+            // Build the SAP potential
+            std::vector<SharedMatrix> Vsap;
+            Vsap.push_back(SharedMatrix(factory_->create_matrix("Vsap")));
+            builder->compute_V(Vsap);
+            Fa_->copy(T_);
+            Fa_->add(Vsap[0]);
+            Fb_->copy(Fa_);
+            form_initial_C();
+            form_D();
+            guess_E = compute_initial_E();
+
+        } else if (guess_type == "SAPGAU") {
+            if (print_)
+                outfile->Printf(
+                    "  SCF Guess: Superposition of Atomic Potentials (doi:10.1021/acs.jctc.8b01089).\n  Using error "
+                    "function fits of the atomic potentials (doi:10.1063/5.0004046).\n\n");
+
+            // Build the SAP potential
+            compute_sapgau_guess();
+            form_initial_C();
+
+            // Find occupations
+            find_occupation();
+
+            // Now we have orbitals and occupations, build a density matrix
+            form_D();
+            guess_E = compute_initial_E();
+
+        } else {
+            throw PSIEXCEPTION("  SCF Guess: No guess was found!");
         }
+
+        if (print_ > 3) {
+            Ca_->print();
+            Cb_->print();
+            Da_->print();
+            Db_->print();
+            Fa_->print();
+            Fb_->print();
+        }
+        energies_["Total Energy"] = 0.0;  // don't use this guess in our convergence checks
     }
 
-    if (Ca_ != Cb_) {
+    void HF::format_guess() {
+        // Nothing to do, only for special cases
+    }
+
+    void HF::check_phases() {
         for (int h = 0; h < nirrep_; ++h) {
-            for (int p = 0; p < Cb_->colspi(h); ++p) {
-                for (int mu = 0; mu < Cb_->rowspi(h); ++mu) {
-                    if (std::fabs(Cb_->get(h, mu, p)) > 1.0E-3) {
-                        if (Cb_->get(h, mu, p) < 1.0E-3) {
-                            Cb_->scale_column(h, p, -1.0);
+            for (int p = 0; p < Ca_->colspi(h); ++p) {
+                for (int mu = 0; mu < Ca_->rowspi(h); ++mu) {
+                    if (std::fabs(Ca_->get(h, mu, p)) > 1.0E-3) {
+                        if (Ca_->get(h, mu, p) < 1.0E-3) {
+                            Ca_->scale_column(h, p, -1.0);
                         }
                         break;
                     }
                 }
             }
         }
-    }
-}
 
-void HF::print_occupation() {
-    auto labels = molecule_->irrep_labels();
-    auto reference = options_.get_str("REFERENCE");
-    outfile->Printf("          ");
-    for (int h = 0; h < nirrep_; ++h) outfile->Printf(" %4s ", labels[h].c_str());
-    outfile->Printf("\n");
-    auto docc = doccpi();
-    auto socc = soccpi();
-    outfile->Printf("    DOCC [ ");
-    for (int h = 0; h < nirrep_ - 1; ++h) outfile->Printf(" %4d,", docc[h]);
-    outfile->Printf(" %4d ]\n", docc[nirrep_ - 1]);
-    if (reference != "RHF" && reference != "RKS") {
-        outfile->Printf("    SOCC [ ");
-        for (int h = 0; h < nirrep_ - 1; ++h) outfile->Printf(" %4d,", socc[h]);
-        outfile->Printf(" %4d ]\n", socc[nirrep_ - 1]);
-    }
-    // Also print nalpha and nbeta per irrep, which are more physically meaningful
-    outfile->Printf("    NA   [ ");
-    for (int h = 0; h < nirrep_ - 1; ++h) outfile->Printf(" %4d,", nalphapi_[h]);
-    outfile->Printf(" %4d ]\n", nalphapi_[nirrep_ - 1]);
-    outfile->Printf("    NB   [ ");
-    for (int h = 0; h < nirrep_ - 1; ++h) outfile->Printf(" %4d,", nbetapi_[h]);
-    outfile->Printf(" %4d ]\n", nbetapi_[nirrep_ - 1]);
-
-    outfile->Printf("\n");
-}
-
-//  Returns a vector of the occupation of the a orbitals
-std::shared_ptr<Vector> HF::occupation_a() const {
-    auto occA = std::make_shared<Vector>(nmopi_);
-    for (int h = 0; h < nirrep_; ++h)
-        for (int n = 0; n < nalphapi()[h]; n++) occA->set(h, n, 1.0);
-
-    return occA;
-}
-
-//  Returns a vector of the occupation of the b orbitals
-std::shared_ptr<Vector> HF::occupation_b() const {
-    auto occB = std::make_shared<Vector>(nmopi_);
-    for (int h = 0; h < nirrep_; ++h)
-        for (int n = 0; n < nbetapi()[h]; n++) occB->set(h, n, 1.0);
-
-    return occB;
-}
-
-void HF::diagonalize_F(const SharedMatrix& Fm, SharedMatrix& Cm, std::shared_ptr<Vector>& epsm) {
-#ifdef USING_BrianQC
-    if (brianEnable) {
-        brianInt basisSize = basisset_->nbf();
-        brianInt basisRank = X_->coldim(0);
-
-        // BrianQC needs the matrices in a column-major memory layout,
-        // so we construct a temporary transposed version of the X matrix,
-        // and allocate a transposed C matrix for BrianQC to fill
-        std::shared_ptr<Matrix> orthonormalizationMatrix = X_->transpose();
-        std::shared_ptr<Matrix> C = std::make_shared<Matrix>(basisRank, basisSize);
-
-        brianSCFDiagonalizeFock(&brianCookie, &basisRank, Fm->get_pointer(0), orthonormalizationMatrix->get_pointer(0),
-                                C->get_pointer(0), epsm->pointer(0));
-        checkBrian();
-
-        Cm->copy(C->transpose());
-
-        return;
-    }
-#endif
-
-    // Form F' = X'FX for canonical orthogonalization
-    auto diag_F_temp = linalg::triplet(X_, Fm, X_, true, false, false);
-
-    // Form C' = eig(F')
-    auto diag_C_temp = std::make_shared<Matrix>(nirrep_, nmopi_, nmopi_);
-    diag_F_temp->diagonalize(diag_C_temp, epsm);
-
-    // Form C = XC'
-    Cm->gemm(false, false, 1.0, X_, diag_C_temp, 0.0);
-}
-
-void HF::reset_occupation() {
-    // RHF style for now
-    nalphapi_ = original_nalphapi_;
-    nbetapi_ = original_nbetapi_;
-
-    // These may not match the per irrep. Will remap correctly next find_occupation call
-    nalpha_ = original_nalpha_;
-    nbeta_ = original_nbeta_;
-}
-
-SharedMatrix HF::form_Fia(SharedMatrix Fso, SharedMatrix Cso, int* noccpi) {
-    const int* nsopi = Cso->rowspi();
-    const int* nmopi = Cso->colspi();
-    int* nvirpi = new int[nirrep_];
-
-    for (int h = 0; h < nirrep_; h++) nvirpi[h] = nmopi[h] - noccpi[h];
-
-    auto Fia = std::make_shared<Matrix>("Fia (Some Basis)", nirrep_, noccpi, nvirpi);
-
-    // Hack to get orbital e for this Fock
-    auto C2 = std::make_shared<Matrix>("C2", Cso->rowspi(), Cso->colspi());
-    auto E2 = std::make_shared<Vector>("E2", Cso->colspi());
-    diagonalize_F(Fso, C2, E2);
-
-    for (int h = 0; h < nirrep_; h++) {
-        int nmo = nmopi[h];
-        int nso = nsopi[h];
-        int nvir = nvirpi[h];
-        int nocc = noccpi[h];
-
-        if (nmo == 0 || nso == 0 || nvir == 0 || nocc == 0) continue;
-
-        // double** C = Cso->pointer(h);
-        double** C = C2->pointer(h);
-        double** F = Fso->pointer(h);
-        double** Fiap = Fia->pointer(h);
-
-        double** Temp = block_matrix(nocc, nso);
-
-        C_DGEMM('T', 'N', nocc, nso, nso, 1.0, C[0], nmo, F[0], nso, 0.0, Temp[0], nso);
-        C_DGEMM('N', 'N', nocc, nvir, nso, 1.0, Temp[0], nso, &C[0][nocc], nmo, 0.0, Fiap[0], nvir);
-
-        free_block(Temp);
-
-        // double* eps = E2->pointer(h);
-        // for (int i = 0; i < nocc; i++)
-        //    for (int a = 0; a < nvir; a++)
-        //        Fiap[i][a] /= eps[a + nocc] - eps[i];
-    }
-
-    // Fia->print();
-
-    delete[] nvirpi;
-
-    return Fia;
-}
-SharedMatrix HF::form_FDSmSDF(SharedMatrix Fso, SharedMatrix Dso) {
-    auto FDSmSDF = linalg::triplet(Fso, Dso, S_, false, false, false);
-    auto SDF = FDSmSDF->transpose();
-    FDSmSDF->subtract(SDF);
-
-    SDF.reset();
-
-    FDSmSDF->transform(X_);
-
-    return FDSmSDF;
-}
-
-void HF::print_stability_analysis(std::vector<std::pair<double, int> >& vec) const {
-    std::sort(vec.begin(), vec.end());
-    std::vector<std::pair<double, int> >::const_iterator iter = vec.begin();
-    outfile->Printf("    ");
-    auto irrep_labels = molecule_->irrep_labels();
-    int count = 0;
-    for (; iter != vec.end(); ++iter) {
-        ++count;
-        outfile->Printf("%4s %-10.6f", irrep_labels[iter->second].c_str(), iter->first);
-        if (count == 4) {
-            outfile->Printf("\n    ");
-            count = 0;
-        } else {
-            outfile->Printf("    ");
+        if (Ca_ != Cb_) {
+            for (int h = 0; h < nirrep_; ++h) {
+                for (int p = 0; p < Cb_->colspi(h); ++p) {
+                    for (int mu = 0; mu < Cb_->rowspi(h); ++mu) {
+                        if (std::fabs(Cb_->get(h, mu, p)) > 1.0E-3) {
+                            if (Cb_->get(h, mu, p) < 1.0E-3) {
+                                Cb_->scale_column(h, p, -1.0);
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
-    if (count)
-        outfile->Printf("\n\n");
-    else
+
+    void HF::print_occupation() {
+        auto labels = molecule_->irrep_labels();
+        auto reference = options_.get_str("REFERENCE");
+        outfile->Printf("          ");
+        for (int h = 0; h < nirrep_; ++h) outfile->Printf(" %4s ", labels[h].c_str());
         outfile->Printf("\n");
-}
-bool HF::stability_analysis() {
-    throw PSIEXCEPTION("Stability analysis hasn't been implemented yet for this wfn type.");
-    return false;
-}
+        auto docc = doccpi();
+        auto socc = soccpi();
+        outfile->Printf("    DOCC [ ");
+        for (int h = 0; h < nirrep_ - 1; ++h) outfile->Printf(" %4d,", docc[h]);
+        outfile->Printf(" %4d ]\n", docc[nirrep_ - 1]);
+        if (reference != "RHF" && reference != "RKS") {
+            outfile->Printf("    SOCC [ ");
+            for (int h = 0; h < nirrep_ - 1; ++h) outfile->Printf(" %4d,", socc[h]);
+            outfile->Printf(" %4d ]\n", socc[nirrep_ - 1]);
+        }
+        // Also print nalpha and nbeta per irrep, which are more physically meaningful
+        outfile->Printf("    NA   [ ");
+        for (int h = 0; h < nirrep_ - 1; ++h) outfile->Printf(" %4d,", nalphapi_[h]);
+        outfile->Printf(" %4d ]\n", nalphapi_[nirrep_ - 1]);
+        outfile->Printf("    NB   [ ");
+        for (int h = 0; h < nirrep_ - 1; ++h) outfile->Printf(" %4d,", nbetapi_[h]);
+        outfile->Printf(" %4d ]\n", nbetapi_[nirrep_ - 1]);
+
+        outfile->Printf("\n");
+    }
+
+    //  Returns a vector of the occupation of the a orbitals
+    std::shared_ptr<Vector> HF::occupation_a() const {
+        auto occA = std::make_shared<Vector>(nmopi_);
+        for (int h = 0; h < nirrep_; ++h)
+            for (int n = 0; n < nalphapi()[h]; n++) occA->set(h, n, 1.0);
+
+        return occA;
+    }
+
+    //  Returns a vector of the occupation of the b orbitals
+    std::shared_ptr<Vector> HF::occupation_b() const {
+        auto occB = std::make_shared<Vector>(nmopi_);
+        for (int h = 0; h < nirrep_; ++h)
+            for (int n = 0; n < nbetapi()[h]; n++) occB->set(h, n, 1.0);
+
+        return occB;
+    }
+
+    void HF::diagonalize_F(const SharedMatrix& Fm, SharedMatrix& Cm, std::shared_ptr<Vector>& epsm) {
+#ifdef USING_BrianQC
+        if (brianEnable) {
+            brianInt basisSize = basisset_->nbf();
+            brianInt basisRank = X_->coldim(0);
+
+            // BrianQC needs the matrices in a column-major memory layout,
+            // so we construct a temporary transposed version of the X matrix,
+            // and allocate a transposed C matrix for BrianQC to fill
+            std::shared_ptr<Matrix> orthonormalizationMatrix = X_->transpose();
+            std::shared_ptr<Matrix> C = std::make_shared<Matrix>(basisRank, basisSize);
+
+            brianSCFDiagonalizeFock(&brianCookie, &basisRank, Fm->get_pointer(0),
+                                    orthonormalizationMatrix->get_pointer(0), C->get_pointer(0), epsm->pointer(0));
+            checkBrian();
+
+            Cm->copy(C->transpose());
+
+            return;
+        }
+#endif
+
+        // Form F' = X'FX for canonical orthogonalization
+        auto diag_F_temp = linalg::triplet(X_, Fm, X_, true, false, false);
+
+        // Form C' = eig(F')
+        auto diag_C_temp = std::make_shared<Matrix>(nirrep_, nmopi_, nmopi_);
+        diag_F_temp->diagonalize(diag_C_temp, epsm);
+
+        // Form C = XC'
+        Cm->gemm(false, false, 1.0, X_, diag_C_temp, 0.0);
+    }
+
+    void HF::reset_occupation() {
+        // RHF style for now
+        nalphapi_ = original_nalphapi_;
+        nbetapi_ = original_nbetapi_;
+
+        // These may not match the per irrep. Will remap correctly next find_occupation call
+        nalpha_ = original_nalpha_;
+        nbeta_ = original_nbeta_;
+    }
+
+    SharedMatrix HF::form_Fia(SharedMatrix Fso, SharedMatrix Cso, int* noccpi) {
+        const int* nsopi = Cso->rowspi();
+        const int* nmopi = Cso->colspi();
+        int* nvirpi = new int[nirrep_];
+
+        for (int h = 0; h < nirrep_; h++) nvirpi[h] = nmopi[h] - noccpi[h];
+
+        auto Fia = std::make_shared<Matrix>("Fia (Some Basis)", nirrep_, noccpi, nvirpi);
+
+        // Hack to get orbital e for this Fock
+        auto C2 = std::make_shared<Matrix>("C2", Cso->rowspi(), Cso->colspi());
+        auto E2 = std::make_shared<Vector>("E2", Cso->colspi());
+        diagonalize_F(Fso, C2, E2);
+
+        for (int h = 0; h < nirrep_; h++) {
+            int nmo = nmopi[h];
+            int nso = nsopi[h];
+            int nvir = nvirpi[h];
+            int nocc = noccpi[h];
+
+            if (nmo == 0 || nso == 0 || nvir == 0 || nocc == 0) continue;
+
+            // double** C = Cso->pointer(h);
+            double** C = C2->pointer(h);
+            double** F = Fso->pointer(h);
+            double** Fiap = Fia->pointer(h);
+
+            double** Temp = block_matrix(nocc, nso);
+
+            C_DGEMM('T', 'N', nocc, nso, nso, 1.0, C[0], nmo, F[0], nso, 0.0, Temp[0], nso);
+            C_DGEMM('N', 'N', nocc, nvir, nso, 1.0, Temp[0], nso, &C[0][nocc], nmo, 0.0, Fiap[0], nvir);
+
+            free_block(Temp);
+
+            // double* eps = E2->pointer(h);
+            // for (int i = 0; i < nocc; i++)
+            //    for (int a = 0; a < nvir; a++)
+            //        Fiap[i][a] /= eps[a + nocc] - eps[i];
+        }
+
+        // Fia->print();
+
+        delete[] nvirpi;
+
+        return Fia;
+    }
+    SharedMatrix HF::form_FDSmSDF(SharedMatrix Fso, SharedMatrix Dso) {
+        auto FDSmSDF = linalg::triplet(Fso, Dso, S_, false, false, false);
+        auto SDF = FDSmSDF->transpose();
+        FDSmSDF->subtract(SDF);
+
+        SDF.reset();
+
+        FDSmSDF->transform(X_);
+
+        return FDSmSDF;
+    }
+
+    void HF::print_stability_analysis(std::vector<std::pair<double, int> > & vec) const {
+        std::sort(vec.begin(), vec.end());
+        std::vector<std::pair<double, int> >::const_iterator iter = vec.begin();
+        outfile->Printf("    ");
+        auto irrep_labels = molecule_->irrep_labels();
+        int count = 0;
+        for (; iter != vec.end(); ++iter) {
+            ++count;
+            outfile->Printf("%4s %-10.6f", irrep_labels[iter->second].c_str(), iter->first);
+            if (count == 4) {
+                outfile->Printf("\n    ");
+                count = 0;
+            } else {
+                outfile->Printf("    ");
+            }
+        }
+        if (count)
+            outfile->Printf("\n\n");
+        else
+            outfile->Printf("\n");
+    }
+    bool HF::stability_analysis() {
+        throw PSIEXCEPTION("Stability analysis hasn't been implemented yet for this wfn type.");
+        return false;
+    }
 }  // namespace scf
 }  // namespace psi

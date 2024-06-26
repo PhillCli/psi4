@@ -365,8 +365,10 @@ void DFOCC::lccd_t2_amps() {
         if (orb_opt_ == "FALSE" || mo_optimized == 1) {
             // RAA
             RAA = std::make_shared<Tensor2d>("RT2 <IJ|AB>", ntri_anti_ijAA, ntri_anti_abAA);
-            RAA->read(psio_, PSIF_DFOCC_AMPS); // Out of curiosity: why does this work at all???? Quantities in the antisymmetric format <ab|cd>
-                                               // are usually processed using read_anti_symm/write_anti_symm. Why does a simple "read" suffice here??
+            RAA->read(psio_,
+                      PSIF_DFOCC_AMPS);  // Out of curiosity: why does this work at all???? Quantities in the
+                                         // antisymmetric format <ab|cd> are usually processed using
+                                         // read_anti_symm/write_anti_symm. Why does a simple "read" suffice here??
             auto RT2AA = std::make_shared<Matrix>("RT2AA", ntri_anti_ijAA, ntri_anti_abAA);
             RAA->to_matrix(RT2AA);
             RAA.reset();
@@ -402,8 +404,7 @@ void DFOCC::lccd_t2_amps() {
 
             // add entry
             if (do_diis_ == 1)
-                ccsdDiisManager->add_entry(RT2AA.get(), RT2BB.get(), RT2AB.get(), T2AA.get(), T2BB.get(),
-                                           T2AB.get());
+                ccsdDiisManager->add_entry(RT2AA.get(), RT2BB.get(), RT2AB.get(), T2AA.get(), T2BB.get(), T2AB.get());
             RT2AA.reset();
             RT2BB.reset();
             RT2BB.reset();
@@ -444,97 +445,97 @@ void DFOCC::lccd_energy() {
     SharedTensor2d K, L, M, I, T, Tnew, T1, T2, U, Tau, W, X, Y;
     SharedTensor2d R, RAA, RBB, RAB, TAA, TBB, TAB;
 
-        // Reset T2AA
-        Tnew = std::make_shared<Tensor2d>("New T2 <IJ|AB>", naoccA, naoccA, navirA, navirA);
-        Tnew->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
-        T = std::make_shared<Tensor2d>("T2 <IJ|AB>", naoccA, naoccA, navirA, navirA);
-        T->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
-        rms_t2AA = Tnew->rms(T);
-        T->copy(Tnew);
-        Tnew.reset();
-        T->write_anti_symm(psio_, PSIF_DFOCC_AMPS);
+    // Reset T2AA
+    Tnew = std::make_shared<Tensor2d>("New T2 <IJ|AB>", naoccA, naoccA, navirA, navirA);
+    Tnew->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
+    T = std::make_shared<Tensor2d>("T2 <IJ|AB>", naoccA, naoccA, navirA, navirA);
+    T->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
+    rms_t2AA = Tnew->rms(T);
+    T->copy(Tnew);
+    Tnew.reset();
+    T->write_anti_symm(psio_, PSIF_DFOCC_AMPS);
 
-        // AA Energy
-        L = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints (IA|JB)", naoccA, navirA, naoccA, navirA);
-        L->gemm(true, false, bQiaA, bQiaA, 1.0, 0.0);
-        M = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints <IJ|AB>", naoccA, naoccA, navirA, navirA);
-        M->sort(1324, L, 1.0, 0.0);
-        L.reset();
-        K = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints <IJ||AB>", naoccA, naoccA, navirA, navirA);
-        tei_pqrs_anti_symm_direct(K, M);
-        M.reset();
-        ElccdAA = 0.25 * T->vector_dot(K);
-        K.reset();
+    // AA Energy
+    L = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints (IA|JB)", naoccA, navirA, naoccA, navirA);
+    L->gemm(true, false, bQiaA, bQiaA, 1.0, 0.0);
+    M = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints <IJ|AB>", naoccA, naoccA, navirA, navirA);
+    M->sort(1324, L, 1.0, 0.0);
+    L.reset();
+    K = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints <IJ||AB>", naoccA, naoccA, navirA, navirA);
+    tei_pqrs_anti_symm_direct(K, M);
+    M.reset();
+    ElccdAA = 0.25 * T->vector_dot(K);
+    K.reset();
 
-        // Form T2(IA|JB)
-        U = std::make_shared<Tensor2d>("T2 (IA|JB)", naoccA, navirA, naoccA, navirA);
-        U->sort(1324, T, 1.0, 0.0);
-        T.reset();
-        U->write_symm(psio_, PSIF_DFOCC_AMPS);
-        U.reset();
+    // Form T2(IA|JB)
+    U = std::make_shared<Tensor2d>("T2 (IA|JB)", naoccA, navirA, naoccA, navirA);
+    U->sort(1324, T, 1.0, 0.0);
+    T.reset();
+    U->write_symm(psio_, PSIF_DFOCC_AMPS);
+    U.reset();
 
-        // Reset T2BB
-        Tnew = std::make_shared<Tensor2d>("New T2 <ij|ab>", naoccB, naoccB, navirB, navirB);
-        Tnew->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
-        T = std::make_shared<Tensor2d>("T2 <ij|ab>", naoccB, naoccB, navirB, navirB);
-        T->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
-        rms_t2BB = Tnew->rms(T);
-        T->copy(Tnew);
-        Tnew.reset();
-        T->write_anti_symm(psio_, PSIF_DFOCC_AMPS);
+    // Reset T2BB
+    Tnew = std::make_shared<Tensor2d>("New T2 <ij|ab>", naoccB, naoccB, navirB, navirB);
+    Tnew->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
+    T = std::make_shared<Tensor2d>("T2 <ij|ab>", naoccB, naoccB, navirB, navirB);
+    T->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
+    rms_t2BB = Tnew->rms(T);
+    T->copy(Tnew);
+    Tnew.reset();
+    T->write_anti_symm(psio_, PSIF_DFOCC_AMPS);
 
-        // BB Energy
-        L = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints (ia|jb)", naoccB, navirB, naoccB, navirB);
-        L->gemm(true, false, bQiaB, bQiaB, 1.0, 0.0);
-        M = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints <ij|ab>", naoccB, naoccB, navirB, navirB);
-        M->sort(1324, L, 1.0, 0.0);
-        L.reset();
-        K = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints <ij||ab>", naoccB, naoccB, navirB, navirB);
-        tei_pqrs_anti_symm_direct(K, M);
-        M.reset();
-        ElccdBB = 0.25 * T->vector_dot(K);
-        K.reset();
+    // BB Energy
+    L = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints (ia|jb)", naoccB, navirB, naoccB, navirB);
+    L->gemm(true, false, bQiaB, bQiaB, 1.0, 0.0);
+    M = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints <ij|ab>", naoccB, naoccB, navirB, navirB);
+    M->sort(1324, L, 1.0, 0.0);
+    L.reset();
+    K = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints <ij||ab>", naoccB, naoccB, navirB, navirB);
+    tei_pqrs_anti_symm_direct(K, M);
+    M.reset();
+    ElccdBB = 0.25 * T->vector_dot(K);
+    K.reset();
 
-        // Form T2(ia|jb)
-        U = std::make_shared<Tensor2d>("T2 (ia|jb)", naoccB, navirB, naoccB, navirB);
-        U->sort(1324, T, 1.0, 0.0);
-        T.reset();
-        U->write_symm(psio_, PSIF_DFOCC_AMPS);
-        U.reset();
+    // Form T2(ia|jb)
+    U = std::make_shared<Tensor2d>("T2 (ia|jb)", naoccB, navirB, naoccB, navirB);
+    U->sort(1324, T, 1.0, 0.0);
+    T.reset();
+    U->write_symm(psio_, PSIF_DFOCC_AMPS);
+    U.reset();
 
-        // Reset T2AB
-        Tnew = std::make_shared<Tensor2d>("New T2 <Ij|Ab>", naoccA, naoccB, navirA, navirB);
-        Tnew->read(psio_, PSIF_DFOCC_AMPS);
-        T = std::make_shared<Tensor2d>("T2 <Ij|Ab>", naoccA, naoccB, navirA, navirB);
-        T->read(psio_, PSIF_DFOCC_AMPS);
-        rms_t2AB = Tnew->rms(T);
-        T->copy(Tnew);
-        Tnew.reset();
-        T->write(psio_, PSIF_DFOCC_AMPS);
+    // Reset T2AB
+    Tnew = std::make_shared<Tensor2d>("New T2 <Ij|Ab>", naoccA, naoccB, navirA, navirB);
+    Tnew->read(psio_, PSIF_DFOCC_AMPS);
+    T = std::make_shared<Tensor2d>("T2 <Ij|Ab>", naoccA, naoccB, navirA, navirB);
+    T->read(psio_, PSIF_DFOCC_AMPS);
+    rms_t2AB = Tnew->rms(T);
+    T->copy(Tnew);
+    Tnew.reset();
+    T->write(psio_, PSIF_DFOCC_AMPS);
 
-        // AB Energy
-        L = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints (IA|jb)", naoccA, navirA, naoccB, navirB);
-        L->gemm(true, false, bQiaA, bQiaB, 1.0, 0.0);
-        K = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints <Ij|Ab>", naoccA, naoccB, navirA, navirB);
-        K->sort(1324, L, 1.0, 0.0);
-        L.reset();
-        ElccdAB = T->vector_dot(K);
-        K.reset();
+    // AB Energy
+    L = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints (IA|jb)", naoccA, navirA, naoccB, navirB);
+    L->gemm(true, false, bQiaA, bQiaB, 1.0, 0.0);
+    K = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints <Ij|Ab>", naoccA, naoccB, navirA, navirB);
+    K->sort(1324, L, 1.0, 0.0);
+    L.reset();
+    ElccdAB = T->vector_dot(K);
+    K.reset();
 
-        // Overall energy
-        Ecorr = ElccdAA + ElccdBB + ElccdAB;
-        Elccd = Eref + Ecorr;
+    // Overall energy
+    Ecorr = ElccdAA + ElccdBB + ElccdAB;
+    Elccd = Eref + Ecorr;
 
-        // Form T2(IA|jb)
-        U = std::make_shared<Tensor2d>("T2 (IA|jb)", naoccA, navirA, naoccB, navirB);
-        U->sort(1324, T, 1.0, 0.0);
-        T.reset();
-        U->write(psio_, PSIF_DFOCC_AMPS);
-        U.reset();
+    // Form T2(IA|jb)
+    U = std::make_shared<Tensor2d>("T2 (IA|jb)", naoccA, navirA, naoccB, navirB);
+    U->sort(1324, T, 1.0, 0.0);
+    T.reset();
+    U->write(psio_, PSIF_DFOCC_AMPS);
+    U.reset();
 
-        // combined rms
-        double rms_ss = MAX0(rms_t2AA, rms_t2BB);
-        rms_t2 = MAX0(rms_ss, rms_t2AB);
+    // combined rms
+    double rms_ss = MAX0(rms_t2AA, rms_t2BB);
+    rms_t2 = MAX0(rms_ss, rms_t2AB);
 
 }  // end lccd_energy
 

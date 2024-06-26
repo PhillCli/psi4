@@ -87,7 +87,8 @@ class DFMP2 : public Wavefunction {
     virtual void form_P() = 0;
     // Form part of the unrelaxed correlation EWDM; DiStasio 11-13... plus fudge factors
     virtual void form_W() = 0;
-    // Form the full Lagrangian, solve the Z-vector equations, and apply final corrections to W and P (DiStasio 10, 16, 17)
+    // Form the full Lagrangian, solve the Z-vector equations, and apply final corrections to W and P (DiStasio 10, 16,
+    // 17)
     virtual void form_Z() = 0;
     // Manage the formation of W and P contributions to the gradient
     virtual void form_gradient() = 0;

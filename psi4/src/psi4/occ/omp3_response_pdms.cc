@@ -248,5 +248,5 @@ void OCCWave::omp3_response_pdms() {
     // outfile->Printf("\n response_pdms done... \n");
 
 }  // end of response_pdms
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

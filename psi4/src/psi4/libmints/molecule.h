@@ -243,15 +243,15 @@ class PSI_API Molecule {
     /// Get molecule comment
     const std::string comment() const { return comment_; }
     /// Set molecule comment
-    void set_comment(const std::string &_comment) { comment_ = _comment; }
+    void set_comment(const std::string& _comment) { comment_ = _comment; }
     /// Get molecule provenance
     const Provenance provenance() const { return provenance_; }
     /// Set molecule provenance
-    void set_provenance(const Provenance &_provenance) { provenance_ = _provenance; }
+    void set_provenance(const Provenance& _provenance) { provenance_ = _provenance; }
     /// Get molecule connectivity
     const Connectivity connectivity() const { return connectivity_; }
     /// Set molecule connectivity
-    void set_connectivity(const Connectivity &_connectivity) { connectivity_ = _connectivity; }
+    void set_connectivity(const Connectivity& _connectivity) { connectivity_ = _connectivity; }
     /// Number of atoms
     int natom() const;
     /// Number of all atoms (includes dummies)
@@ -318,7 +318,7 @@ class PSI_API Molecule {
     /// @{
     /// Returns the index of the atom inside the tolerance radius around a specific point.
     /// Returns -1 if no atom is found, throws an exception if multiple atoms are found.
-    int atom_at_position1(double*const, const double tol = 0.05) const;
+    int atom_at_position1(double* const, const double tol = 0.05) const;
     int atom_at_position2(const Vector3&, const double tol = 0.05) const;
     int atom_at_position3(const std::array<double, 3>&, const double tol = 0.05) const;
     /// @}

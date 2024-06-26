@@ -322,5 +322,5 @@ void OCCWave::iterate_t2o1_amplitudes() {
     }  // end if (reference_ == "UNRESTRICTED")
 
 }  // end iterate_t2o1_amplitudes
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

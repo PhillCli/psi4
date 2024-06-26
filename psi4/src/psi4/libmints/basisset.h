@@ -406,7 +406,7 @@ class PSI_API BasisSet {
     void compute_phi(double *phi_ao, double x, double y, double z);
     // Converts the contraction to match the SAP approach.
     void convert_sap_contraction();
-    
+
    private:
     /// Helper functions for frozen core to reduce LOC
     int atom_to_period(int Z);

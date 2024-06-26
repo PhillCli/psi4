@@ -252,7 +252,7 @@ void DFOCC::lccdl_energy() {
     double Eov = 0.0;
     double Evv = 0.0;
 
-    if (wfn_type_ == "DF-OLCCD" | wfn_type_ == "DF-OREMP" ) ElccdL_old = ElccdL;
+    if (wfn_type_ == "DF-OLCCD" | wfn_type_ == "DF-OREMP") ElccdL_old = ElccdL;
 
     if (reference_ == "RESTRICTED") {
         // DE = \sum_{p,q} G_pq f_pq

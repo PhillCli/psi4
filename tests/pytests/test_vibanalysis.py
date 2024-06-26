@@ -9,6 +9,7 @@ from psi4.driver import qcdb
 
 pytestmark = [pytest.mark.psi, pytest.mark.api]
 
+
 def vibanal_str(mass, coord, fcm, dipder=None, hess=None, project_trans=True, project_rot=True):
     """Vibrational analysis driver similar to psi4.driver.driver.vibanal_wfn only
     takes in arrays more directly than from a core.Wavefunction.
@@ -31,8 +32,14 @@ def vibanal_str(mass, coord, fcm, dipder=None, hess=None, project_trans=True, pr
     wfn = psi4.core.Wavefunction.build(mol, "STO-3G")  # dummy, obviously. only used for SALCs
     basisset = wfn.basisset()
 
-    vibinfo, vibtext = qcdb.vib.harmonic_analysis(
-        nmwhess, geom, m, basisset, irrep_labels, dipder, project_trans=project_trans, project_rot=project_rot)
+    vibinfo, vibtext = qcdb.vib.harmonic_analysis(nmwhess,
+                                                  geom,
+                                                  m,
+                                                  basisset,
+                                                  irrep_labels,
+                                                  dipder,
+                                                  project_trans=project_trans,
+                                                  project_rot=project_rot)
     print(vibtext)
     print(qcdb.vib.print_vibs(vibinfo, shortlong=True, normco='q', atom_lbl=symbols))
 
@@ -885,23 +892,20 @@ _cfour_ref = {
 # <<<  Cfour geometries in Psi4 notation  >>>
 
 _psi4_systems = {
-    'hooh':
-    """
+    'hooh': """
 units au
 H  1.8327917647 -1.5752960165 -0.0000055594
 O  1.3171390326  0.1388012713  0.0000003503
 O -1.3171390326 -0.1388012713  0.0000003503
 H -1.8327917647  1.5752960165 -0.0000055594
 """,
-    'co2':
-    """
+    'co2': """
 units au
 C  0.0000000000  0.0000000000  0.0000000000
 O  2.1553604887  0.0000000000  0.0000000000
 O -2.1553604887 -0.0000000000  0.0000000000
 """,
-    'c2h4':
-    """
+    'c2h4': """
 units au
 C  1.2480432017  0.0000000000  0.0000000000
 C -1.2480432017 -0.0000000000  0.0000000000
@@ -910,8 +914,7 @@ H  2.3230381483 -1.7435443352  0.0000000000
 H -2.3230381483  1.7435443352  0.0000000000
 H -2.3230381483 -1.7435443352  0.0000000000
 """,
-    'ch4':
-    """
+    'ch4': """
 units au
 C  0.0000000000  0.0000000000  0.0000000000
 H  0.0000000000  1.6830328110 -1.1900839136
@@ -919,24 +922,21 @@ H  1.6830328110  0.0000000000  1.1900839136
 H -1.6830328110  0.0000000000  1.1900839136
 H  0.0000000000 -1.6830328110 -1.1900839136
 """,
-    'nh3':
-    """
+    'nh3': """
      N                    0.00000000     0.00000000    0.09284449
      H                    0.91560345    -1.58587170   -0.43000462
      H                   -1.83120690    -0.00000000   -0.43000462
      H                    0.91560345     1.58587170   -0.43000462
      units au
 """,
-    'h2co':
-    """
+    'h2co': """
 units au
      C                  0.00000000     0.00000000     1.11607307
      O                  0.00000000     0.00000000    -1.11771672
      H                  0.00000000     1.76217215     2.22504227
      H                  0.00000000    -1.76217215     2.22504227
 """,
-    "ne":
-    """
+    "ne": """
 units au
      Ne                 0.00000000     0.00000000     0.00000000
 """,
@@ -946,17 +946,16 @@ units au
 
 
 @pytest.mark.quick
-@pytest.mark.parametrize(
-    "subject", [
-        'co2',
-        'c2h4',
-        pytest.param('ch4', marks=pytest.mark.xfail(reason="unaligned degen mode pair")),
-        'nh3',
-        'h2co',
-        'hooh',
-        'ne',
-    ],
-    ids=['CO2', 'ethene', 'methane', 'ammonia', 'formaldehyde', 'HOOH_TS', 'atom'])
+@pytest.mark.parametrize("subject", [
+    'co2',
+    'c2h4',
+    pytest.param('ch4', marks=pytest.mark.xfail(reason="unaligned degen mode pair")),
+    'nh3',
+    'h2co',
+    'hooh',
+    'ne',
+],
+                         ids=['CO2', 'ethene', 'methane', 'ammonia', 'formaldehyde', 'HOOH_TS', 'atom'])
 def test_harmonic_analysis_vs_cfour(subject, request):
     # one of the ch4 degen modes has slight noise (when geom is properly bohr, so 4->2)
     tol = 1.e-2 if subject in ['ch4'] else 1.e-4
@@ -968,16 +967,20 @@ def test_harmonic_analysis_vs_cfour(subject, request):
         forgive.append('IR_intensity')
         # there's problems with orientation for DIPDER
 
-    pvibinfo = vibanal_str(
-        mass=_cfour_ref[subject]['mass'],
-        coord=_cfour_ref[subject]['xyz'],
-        fcm=_cfour_ref[subject]['fcm'],
-        dipder=_cfour_ref[subject]['dipder'])
+    pvibinfo = vibanal_str(mass=_cfour_ref[subject]['mass'],
+                           coord=_cfour_ref[subject]['xyz'],
+                           fcm=_cfour_ref[subject]['fcm'],
+                           dipder=_cfour_ref[subject]['dipder'])
     pvibonly = qcdb.vib.filter_nonvib(pvibinfo)
     rvibonly = _cfour_ref[subject]['vibonly']
 
-    assert qcdb.compare_vibinfos(
-        rvibonly, pvibonly, tol, request.node.name, verbose=verbose, forgive=forgive, toldict=toldict)
+    assert qcdb.compare_vibinfos(rvibonly,
+                                 pvibonly,
+                                 tol,
+                                 request.node.name,
+                                 verbose=verbose,
+                                 forgive=forgive,
+                                 toldict=toldict)
 
 
 # <<<  Section II: testing Psi4 findif-by-grad Hessians vs Cfour  >>>
@@ -985,28 +988,26 @@ def test_harmonic_analysis_vs_cfour(subject, request):
 # <<<  Section IV: testing Psi4 analytic Hessians vs Cfour  >>>
 
 
-@pytest.mark.parametrize(
-    "dertype", [
-        pytest.param(2, marks=pytest.mark.d2ints),
-        pytest.param(1, marks=pytest.mark.findif),
-        pytest.param(0, marks=[pytest.mark.findif, pytest.mark.long]),
-    ], ids=['H_analytic', 'H_by_grad', 'H_by_ene'])
-@pytest.mark.parametrize(
-    "subject", [
-        pytest.param('co2'),
-        pytest.param('c2h4', marks=pytest.mark.long),
-        pytest.param('ch4'),
-        pytest.param('nh3'),
-        pytest.param('h2co', marks=pytest.mark.quick),
-        pytest.param('hooh'),
-        pytest.param('ne'),
-    ],
-    ids=['CO2', 'ethene', 'methane', 'ammonia', 'formaldehyde', 'HOOH_TS', 'atom'])
-@pytest.mark.parametrize(
-    "scf_type", [
-        "pk",
-        "df",
-    ])
+@pytest.mark.parametrize("dertype", [
+    pytest.param(2, marks=pytest.mark.d2ints),
+    pytest.param(1, marks=pytest.mark.findif),
+    pytest.param(0, marks=[pytest.mark.findif, pytest.mark.long]),
+],
+                         ids=['H_analytic', 'H_by_grad', 'H_by_ene'])
+@pytest.mark.parametrize("subject", [
+    pytest.param('co2'),
+    pytest.param('c2h4', marks=pytest.mark.long),
+    pytest.param('ch4'),
+    pytest.param('nh3'),
+    pytest.param('h2co', marks=pytest.mark.quick),
+    pytest.param('hooh'),
+    pytest.param('ne'),
+],
+                         ids=['CO2', 'ethene', 'methane', 'ammonia', 'formaldehyde', 'HOOH_TS', 'atom'])
+@pytest.mark.parametrize("scf_type", [
+    "pk",
+    "df",
+])
 def test_hessian_vs_cfour(scf_type, subject, dertype, request):
     """compare analytic, findif by G, findif by E vibrational analyses for several mols"""
 
@@ -1044,8 +1045,13 @@ def test_hessian_vs_cfour(scf_type, subject, dertype, request):
     pvibonly = qcdb.vib.filter_nonvib(pwfn.frequency_analysis)
     rvibonly = _cfour_ref[subject]['vibonly']
 
-    assert qcdb.compare_vibinfos(
-        rvibonly, pvibonly, tol, request.node.name, verbose=verbose, forgive=forgive, toldict=toldict)
+    assert qcdb.compare_vibinfos(rvibonly,
+                                 pvibonly,
+                                 tol,
+                                 request.node.name,
+                                 verbose=verbose,
+                                 forgive=forgive,
+                                 toldict=toldict)
 
 
 # <<<  Section V: Thermo  >>>
@@ -1079,15 +1085,14 @@ def test_thermochemistry():
     thermo_vibinfo = psi4.driver.vibanal_wfn(thermo_wfn)
 
     rot_const = np.asarray(ch4_thermo_mol.rotational_constants())
-    therminfo, text = qcdb.vib.thermo(
-        thermo_vibinfo,
-        T=298.15,
-        P=101325.0,
-        multiplicity=1,
-        molecular_mass=16.0313,
-        E0=-39.97687755,
-        sigma=12,
-        rot_const=rot_const)
+    therminfo, text = qcdb.vib.thermo(thermo_vibinfo,
+                                      T=298.15,
+                                      P=101325.0,
+                                      multiplicity=1,
+                                      molecular_mass=16.0313,
+                                      E0=-39.97687755,
+                                      sigma=12,
+                                      rot_const=rot_const)
     print(text)
 
     ch4_hf_321g_thermoinfo = {
@@ -1277,28 +1282,25 @@ def test_nonequilibrium_harmonic_analysis():
     projtrans = True
     projrot = False
 
-    analytic_vibinfo = vibanal_str(
-        mass=block['mass'],
-        coord=block['xyz'],
-        fcm=block['fcm']['analytic'],
-        project_trans=projtrans,
-        project_rot=projrot)
+    analytic_vibinfo = vibanal_str(mass=block['mass'],
+                                   coord=block['xyz'],
+                                   fcm=block['fcm']['analytic'],
+                                   project_trans=projtrans,
+                                   project_rot=projrot)
     _cfour_ref['neqh2o']['vibonly']['analytic'] = qcdb.vib.filter_nonvib(analytic_vibinfo)
 
-    findifproj_vibinfo = vibanal_str(
-        mass=block['mass'],
-        coord=block['xyz'],
-        fcm=block['fcm']['findifproj'],
-        project_trans=projtrans,
-        project_rot=projrot)
+    findifproj_vibinfo = vibanal_str(mass=block['mass'],
+                                     coord=block['xyz'],
+                                     fcm=block['fcm']['findifproj'],
+                                     project_trans=projtrans,
+                                     project_rot=projrot)
     _cfour_ref['neqh2o']['vibonly']['findifproj'] = qcdb.vib.filter_nonvib(findifproj_vibinfo)
 
-    findifrot_vibinfo = vibanal_str(
-        mass=block['mass'],
-        coord=block['xyz'],
-        fcm=block['fcm']['findifrot'],
-        project_trans=projtrans,
-        project_rot=projrot)
+    findifrot_vibinfo = vibanal_str(mass=block['mass'],
+                                    coord=block['xyz'],
+                                    fcm=block['fcm']['findifrot'],
+                                    project_trans=projtrans,
+                                    project_rot=projrot)
     _cfour_ref['neqh2o']['vibonly']['findifrot'] = qcdb.vib.filter_nonvib(findifrot_vibinfo)
 
     assert compare_values(w_right, block['vibonly']['analytic']['omega'].data[-2].real, 0.2,

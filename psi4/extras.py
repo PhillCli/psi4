@@ -184,6 +184,7 @@ def addons(request: str = None) -> Union[bool, List[str]]:
     *request* not passed, returns list of available Add-Ons: `['adcc', 'ambit', 'c̶c̶t̶3̶', ...` .
 
     """
+
     def strike(text):
         if os.name == "nt":
             # Windows has a probably correctable problem with unicode, but I can't iterate it quickly, so use tilde for strike.
@@ -243,14 +244,13 @@ def test(extent: str = "full", extras: List = None) -> int:
     return retcode
 
 
-def set_output_file(
-    ofile: str,
-    append: bool = False,
-    *,
-    loglevel: int = 20,
-    execute: bool = True,
-    print_header: Optional[bool] = None,
-    inherit_loglevel: bool = False) -> Path:
+def set_output_file(ofile: str,
+                    append: bool = False,
+                    *,
+                    loglevel: int = 20,
+                    execute: bool = True,
+                    print_header: Optional[bool] = None,
+                    inherit_loglevel: bool = False) -> Path:
     """Set the name for output and logging files.
 
     Parameters
@@ -292,7 +292,8 @@ def set_output_file(
 
     # Create formatters
     # * detailed:  example: 2019-11-20:01:13:46,811 DEBUG    [psi4.driver.task_base:156]
-    f_format_detailed = logging.Formatter("%(asctime)s,%(msecs)d %(levelname)-8s [%(name)s:%(lineno)d] %(message)s", datefmt="%Y-%m-%d:%H:%M:%S")
+    f_format_detailed = logging.Formatter("%(asctime)s,%(msecs)d %(levelname)-8s [%(name)s:%(lineno)d] %(message)s",
+                                          datefmt="%Y-%m-%d:%H:%M:%S")
     # * light:     example: 2019-11-20:10:45:21 FINDIFREC CLASS INIT DATA
     f_format_light = logging.Formatter("%(asctime)s %(message)s", datefmt="%Y-%m-%d:%H:%M:%S")
 

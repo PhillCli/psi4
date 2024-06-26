@@ -188,7 +188,7 @@ void Wamef_build() {
         global_dpd_->file2_close(&tIA);
         global_dpd_->file2_close(&tia);
 
-    }                           /** ROHF **/
+    } /** ROHF **/
     else if (params.ref == 2) { /** UHF **/
 
         global_dpd_->file2_init(&tIA, PSIF_CC_OEI, 0, 0, 1, "tIA");

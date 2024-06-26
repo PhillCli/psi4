@@ -58,7 +58,7 @@ void init_io();
 void get_moinfo(std::shared_ptr<Wavefunction>);
 void cleanup();
 void exit_io();
-void diag(ccenergy::CCEnergyWavefunction&);
+void diag(ccenergy::CCEnergyWavefunction &);
 void get_params(Options &);
 void get_eom_params(std::shared_ptr<Wavefunction>, Options &);
 void form_dpd_dp();

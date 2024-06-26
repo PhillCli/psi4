@@ -405,12 +405,12 @@ void Wabei_RHF() {
                                 global_dpd_->buf4_mat_irrep_row_wrt(&W, Gei, ei);
                             }
                         } /* Gf */
-                    }     /* I */
+                    } /* I */
                     global_dpd_->buf4_mat_irrep_row_close(&Z, Gmi);
                     global_dpd_->buf4_mat_irrep_row_close(&T2, Gmi);
                     global_dpd_->buf4_mat_irrep_row_close(&Tau, Gmi);
                 } /* Gi */
-                  /* free W1 target */
+                /* free W1 target */
                 for (Gf = 0; Gf < moinfo.nirreps; Gf++) {
                     Gb = Gf ^ Gmi; /* Z is totally symmetric */
                     Ge = Gf ^ Gma; /* F is totally symmetric */

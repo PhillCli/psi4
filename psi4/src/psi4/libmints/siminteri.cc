@@ -132,7 +132,8 @@ static std::shared_ptr<ShellPairVec> create_shared_multi_shellpair_(const std::v
 // Actual class code starts here
 ////////////////////////////////////////////////
 
-SimintTwoElectronInt::SimintTwoElectronInt(const IntegralFactory *integral, int deriv, bool use_shell_pairs, bool needs_exchange)
+SimintTwoElectronInt::SimintTwoElectronInt(const IntegralFactory *integral, int deriv, bool use_shell_pairs,
+                                           bool needs_exchange)
     : TwoBodyAOInt(integral, deriv) {
     maxam_ =
         std::max(std::max(basis1()->max_am(), basis2()->max_am()), std::max(basis3()->max_am(), basis4()->max_am()));
@@ -152,7 +153,7 @@ SimintTwoElectronInt::SimintTwoElectronInt(const IntegralFactory *integral, int 
     size_t size12 = basis1() == basis2() ? INT_NCART(basis1()->max_am()) * INT_NCART(basis2()->max_am()) : 1;
     size_t size34 = basis3() == basis4() ? INT_NCART(basis3()->max_am()) * INT_NCART(basis4()->max_am()) : 1;
     size_t sieve_size = std::max(size12, size34);
-    size = std::max(size, sieve_size*sieve_size);
+    size = std::max(size, sieve_size * sieve_size);
 
     size_t fullsize = size * batchsize_;
     allwork_size_ = sizeof(double) * (fullsize * 2 + size);
@@ -253,7 +254,8 @@ size_t SimintTwoElectronInt::compute_shell_deriv2(int, int, int, int) {
     throw PSIEXCEPTION("ERROR - SIMINT CANNOT HANDLE DERIVATIVES\n");
 }
 
-size_t SimintTwoElectronInt::compute_shell_for_sieve(const std::shared_ptr<BasisSet> bs, int sh1, int sh2, int sh3, int sh4, bool is_bra) {
+size_t SimintTwoElectronInt::compute_shell_for_sieve(const std::shared_ptr<BasisSet> bs, int sh1, int sh2, int sh3,
+                                                     int sh4, bool is_bra) {
     target_ = target_full_;
     source_ = source_full_;
 
@@ -279,8 +281,10 @@ size_t SimintTwoElectronInt::compute_shell_for_sieve(const std::shared_ptr<Basis
     bool do_cart = curr_buff_size_ == 1 ||
                    (shell1.is_cartesian() && shell2.is_cartesian() && shell3.is_cartesian() && shell4.is_cartesian());
 
-    const simint_multi_shellpair *PQ = is_bra ? &(*single_spairs_bra_)[sh1 * nsh + sh2] :  &(*single_spairs_ket_)[sh1 * nsh + sh2] ;
-    const simint_multi_shellpair *RS = is_bra ? &(*single_spairs_bra_)[sh3 * nsh + sh4] :  &(*single_spairs_ket_)[sh3 * nsh + sh4] ;
+    const simint_multi_shellpair *PQ =
+        is_bra ? &(*single_spairs_bra_)[sh1 * nsh + sh2] : &(*single_spairs_ket_)[sh1 * nsh + sh2];
+    const simint_multi_shellpair *RS =
+        is_bra ? &(*single_spairs_bra_)[sh3 * nsh + sh4] : &(*single_spairs_ket_)[sh3 * nsh + sh4];
 
     // actually compute
     // if we are doing cartesian, put directly in target. Otherwise, put in source
@@ -373,7 +377,6 @@ void SimintTwoElectronInt::compute_shell_blocks(int shellpair1, int shellpair2, 
     bool do_cart = n1234 == 1 ||
                    (shell1.is_cartesian() && shell2.is_cartesian() && shell3.is_cartesian() && shell4.is_cartesian());
 
-
     // get P and Q from the precomputed values
     simint_multi_shellpair P = (*multi_spairs_bra_)[shellpair1];
     simint_multi_shellpair Q = (*multi_spairs_ket_)[shellpair2];
@@ -423,7 +426,6 @@ void SimintTwoElectronInt::compute_shell_blocks_deriv1(int shellpair1, int shell
     throw PSIEXCEPTION("Simint gradients are not implemented yet!");
 }
 
-
 void SimintTwoElectronInt::create_blocks(void) {
     blocks12_.clear();
     blocks34_.clear();
@@ -444,12 +446,12 @@ void SimintTwoElectronInt::create_blocks(void) {
         for (int jam = 0; jam <= am2; jam++) {
             for (int ishell = 0; ishell < basis1()->nshell(); ++ishell) {
                 if (basis1()->shell(ishell).am() != iam) continue;
-                if(bra_same_) {
+                if (bra_same_) {
                     // In this case there's a list of shell pair info to loop over; use it
-                    for ( const auto &jshell : shell_to_shell_[ishell]) {
+                    for (const auto &jshell : shell_to_shell_[ishell]) {
                         if (basis2()->shell(jshell).am() == jam) {
                             if (!bra_same_ || (bra_same_ && ishell >= jshell)) {
-                                 blocks12_.push_back({{ishell, jshell}});
+                                blocks12_.push_back({{ishell, jshell}});
                             }
                         }
                     }
@@ -461,10 +463,11 @@ void SimintTwoElectronInt::create_blocks(void) {
             }
         }
     }
-    std::sort(blocks12_.begin(),blocks12_.end(),
-         [](const ShellPairBlock &i, const ShellPairBlock &j) {return i[0].first < j[0].first || i[0].first == j[0].first && i[0].second < j[0].second;});
+    std::sort(blocks12_.begin(), blocks12_.end(), [](const ShellPairBlock &i, const ShellPairBlock &j) {
+        return i[0].first < j[0].first || i[0].first == j[0].first && i[0].second < j[0].second;
+    });
 
-    if(braket_same_) RSblock_starts_.resize(blocks12_.size());
+    if (braket_same_) RSblock_starts_.resize(blocks12_.size());
 
     // form pairs for the ket these are batched and should be chosen permutationally unique
     size_t dense_index = 0;
@@ -473,11 +476,11 @@ void SimintTwoElectronInt::create_blocks(void) {
             ShellPairBlock curblock;
             for (int kshell = 0; kshell < basis3()->nshell(); ++kshell) {
                 if (basis3()->shell(kshell).am() != kam) continue;
-                if(ket_same_){
-                    for ( const auto &lshell : shell_to_shell_[kshell]) {
+                if (ket_same_) {
+                    for (const auto &lshell : shell_to_shell_[kshell]) {
                         if (basis4()->shell(lshell).am() == lam) {
                             if (kshell >= lshell) {
-                                if(braket_same_) {
+                                if (braket_same_) {
                                     RSblock_starts_[dense_index++] = blocks34_.size();
                                 }
                                 curblock.push_back({kshell, lshell});
@@ -495,7 +498,6 @@ void SimintTwoElectronInt::create_blocks(void) {
                         curblock.clear();
                     }
                 }
-
             }
             if (curblock.size()) blocks34_.push_back(std::move(curblock));
         }

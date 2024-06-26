@@ -147,5 +147,5 @@ void sort_C(int C_index, int C_irr) {
         global_dpd_->buf4_close(&CMnEf);
     }
 }
-}
+}  // namespace cceom
 }  // namespace psi

@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """
 | Geometries from Baker and Chan J. Comput. Chem. 17 888 (1996),
 |   as reported in Bakken and Helgaker, J. Chem. Phys. 117, 9160 (2002).
@@ -45,111 +44,111 @@ dbse = 'BAKERJCC96'
 isOS = 'true'
 
 # <<< Database Members >>>
-HRXN = ['HCN_to_HNC', 'HCCH_to_CCH2', 'H2CO_to_H2_CO',
-    'parent_diels_alder', 's_tetrazine_to_2HCN_N2', 'CH3CH3_to_CH2CH2_H2',
-    'CH3CH2F_to_CH2CH2_HF', 'CH2CHOH_to_CH3CHO', 'silylene_insertion',
-    'HNCCS_to_HCN_CS', 'acrolein_rotation', 'HCONHOH_to_HCOHNHO',
-    'HNC_H2_to_H2CNH', 'H2CNH_to_HCNH2', 'HCNH2_to_HCN_H2']
+HRXN = [
+    'HCN_to_HNC', 'HCCH_to_CCH2', 'H2CO_to_H2_CO', 'parent_diels_alder', 's_tetrazine_to_2HCN_N2',
+    'CH3CH3_to_CH2CH2_H2', 'CH3CH2F_to_CH2CH2_HF', 'CH2CHOH_to_CH3CHO', 'silylene_insertion', 'HNCCS_to_HCN_CS',
+    'acrolein_rotation', 'HCONHOH_to_HCOHNHO', 'HNC_H2_to_H2CNH', 'H2CNH_to_HCNH2', 'HCNH2_to_HCN_H2'
+]
 HRXN_TEMP = ['parent_diels_alder']
 
 # <<< Chemical Systems Involved >>>
-RXNM = {}     # reaction matrix of reagent contributions per reaction
-ACTV = {}     # order of active reagents per reaction
-ACTV['%s-%s'            % (dbse, 'HCN_to_HNC' )] = ['%s-%s-reagent'      % (dbse, 'HCN_to_HNC')]
-RXNM['%s-%s'            % (dbse, 'HCN_to_HNC' )] = dict(zip(ACTV['%s-%s' % (dbse, 'HCN_to_HNC')], [+1]))
+RXNM = {}  # reaction matrix of reagent contributions per reaction
+ACTV = {}  # order of active reagents per reaction
+ACTV['%s-%s' % (dbse, 'HCN_to_HNC')] = ['%s-%s-reagent' % (dbse, 'HCN_to_HNC')]
+RXNM['%s-%s' % (dbse, 'HCN_to_HNC')] = dict(zip(ACTV['%s-%s' % (dbse, 'HCN_to_HNC')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'HCCH_to_CCH2' )] = ['%s-%s-reagent'      % (dbse, 'HCCH_to_CCH2')]
-RXNM['%s-%s'            % (dbse, 'HCCH_to_CCH2' )] = dict(zip(ACTV['%s-%s' % (dbse, 'HCCH_to_CCH2')], [+1]))
+ACTV['%s-%s' % (dbse, 'HCCH_to_CCH2')] = ['%s-%s-reagent' % (dbse, 'HCCH_to_CCH2')]
+RXNM['%s-%s' % (dbse, 'HCCH_to_CCH2')] = dict(zip(ACTV['%s-%s' % (dbse, 'HCCH_to_CCH2')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'H2CO_to_H2_CO' )] = ['%s-%s-reagent'      % (dbse, 'H2CO_to_H2_CO')]
-RXNM['%s-%s'            % (dbse, 'H2CO_to_H2_CO' )] = dict(zip(ACTV['%s-%s' % (dbse, 'H2CO_to_H2_CO')], [+1]))
+ACTV['%s-%s' % (dbse, 'H2CO_to_H2_CO')] = ['%s-%s-reagent' % (dbse, 'H2CO_to_H2_CO')]
+RXNM['%s-%s' % (dbse, 'H2CO_to_H2_CO')] = dict(zip(ACTV['%s-%s' % (dbse, 'H2CO_to_H2_CO')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'parent_diels_alder' )] = ['%s-%s-reagent'      % (dbse, 'parent_diels_alder')]
-RXNM['%s-%s'            % (dbse, 'parent_diels_alder' )] = dict(zip(ACTV['%s-%s' % (dbse, 'parent_diels_alder')], [+1]))
+ACTV['%s-%s' % (dbse, 'parent_diels_alder')] = ['%s-%s-reagent' % (dbse, 'parent_diels_alder')]
+RXNM['%s-%s' % (dbse, 'parent_diels_alder')] = dict(zip(ACTV['%s-%s' % (dbse, 'parent_diels_alder')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 's_tetrazine_to_2HCN_N2' )] = ['%s-%s-reagent'      % (dbse, 's_tetrazine_to_2HCN_N2')]
-RXNM['%s-%s'            % (dbse, 's_tetrazine_to_2HCN_N2' )] = dict(zip(ACTV['%s-%s' % (dbse, 's_tetrazine_to_2HCN_N2')], [+1]))
+ACTV['%s-%s' % (dbse, 's_tetrazine_to_2HCN_N2')] = ['%s-%s-reagent' % (dbse, 's_tetrazine_to_2HCN_N2')]
+RXNM['%s-%s' % (dbse, 's_tetrazine_to_2HCN_N2')] = dict(zip(ACTV['%s-%s' % (dbse, 's_tetrazine_to_2HCN_N2')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'CH3CH3_to_CH2CH2_H2' )] = ['%s-%s-reagent'      % (dbse, 'CH3CH3_to_CH2CH2_H2')]
-RXNM['%s-%s'            % (dbse, 'CH3CH3_to_CH2CH2_H2' )] = dict(zip(ACTV['%s-%s' % (dbse, 'CH3CH3_to_CH2CH2_H2')], [+1]))
+ACTV['%s-%s' % (dbse, 'CH3CH3_to_CH2CH2_H2')] = ['%s-%s-reagent' % (dbse, 'CH3CH3_to_CH2CH2_H2')]
+RXNM['%s-%s' % (dbse, 'CH3CH3_to_CH2CH2_H2')] = dict(zip(ACTV['%s-%s' % (dbse, 'CH3CH3_to_CH2CH2_H2')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'CH3CH2F_to_CH2CH2_HF' )] = ['%s-%s-reagent'      % (dbse, 'CH3CH2F_to_CH2CH2_HF')]
-RXNM['%s-%s'            % (dbse, 'CH3CH2F_to_CH2CH2_HF' )] = dict(zip(ACTV['%s-%s' % (dbse, 'CH3CH2F_to_CH2CH2_HF')], [+1]))
+ACTV['%s-%s' % (dbse, 'CH3CH2F_to_CH2CH2_HF')] = ['%s-%s-reagent' % (dbse, 'CH3CH2F_to_CH2CH2_HF')]
+RXNM['%s-%s' % (dbse, 'CH3CH2F_to_CH2CH2_HF')] = dict(zip(ACTV['%s-%s' % (dbse, 'CH3CH2F_to_CH2CH2_HF')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'CH2CHOH_to_CH3CHO' )] = ['%s-%s-reagent'      % (dbse, 'CH2CHOH_to_CH3CHO')]
-RXNM['%s-%s'            % (dbse, 'CH2CHOH_to_CH3CHO' )] = dict(zip(ACTV['%s-%s' % (dbse, 'CH2CHOH_to_CH3CHO')], [+1]))
+ACTV['%s-%s' % (dbse, 'CH2CHOH_to_CH3CHO')] = ['%s-%s-reagent' % (dbse, 'CH2CHOH_to_CH3CHO')]
+RXNM['%s-%s' % (dbse, 'CH2CHOH_to_CH3CHO')] = dict(zip(ACTV['%s-%s' % (dbse, 'CH2CHOH_to_CH3CHO')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'silylene_insertion' )] = ['%s-%s-reagent'      % (dbse, 'silylene_insertion')]
-RXNM['%s-%s'            % (dbse, 'silylene_insertion' )] = dict(zip(ACTV['%s-%s' % (dbse, 'silylene_insertion')], [+1]))
+ACTV['%s-%s' % (dbse, 'silylene_insertion')] = ['%s-%s-reagent' % (dbse, 'silylene_insertion')]
+RXNM['%s-%s' % (dbse, 'silylene_insertion')] = dict(zip(ACTV['%s-%s' % (dbse, 'silylene_insertion')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'HNCCS_to_HCN_CS' )] = ['%s-%s-reagent'      % (dbse, 'HNCCS_to_HCN_CS')]
-RXNM['%s-%s'            % (dbse, 'HNCCS_to_HCN_CS' )] = dict(zip(ACTV['%s-%s' % (dbse, 'HNCCS_to_HCN_CS')], [+1]))
+ACTV['%s-%s' % (dbse, 'HNCCS_to_HCN_CS')] = ['%s-%s-reagent' % (dbse, 'HNCCS_to_HCN_CS')]
+RXNM['%s-%s' % (dbse, 'HNCCS_to_HCN_CS')] = dict(zip(ACTV['%s-%s' % (dbse, 'HNCCS_to_HCN_CS')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'acrolein_rotation' )] = ['%s-%s-reagent'      % (dbse, 'acrolein_rotation')]
-RXNM['%s-%s'            % (dbse, 'acrolein_rotation' )] = dict(zip(ACTV['%s-%s' % (dbse, 'acrolein_rotation')], [+1]))
+ACTV['%s-%s' % (dbse, 'acrolein_rotation')] = ['%s-%s-reagent' % (dbse, 'acrolein_rotation')]
+RXNM['%s-%s' % (dbse, 'acrolein_rotation')] = dict(zip(ACTV['%s-%s' % (dbse, 'acrolein_rotation')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'HCONHOH_to_HCOHNHO' )] = ['%s-%s-reagent'      % (dbse, 'HCONHOH_to_HCOHNHO')]
-RXNM['%s-%s'            % (dbse, 'HCONHOH_to_HCOHNHO' )] = dict(zip(ACTV['%s-%s' % (dbse, 'HCONHOH_to_HCOHNHO')], [+1]))
+ACTV['%s-%s' % (dbse, 'HCONHOH_to_HCOHNHO')] = ['%s-%s-reagent' % (dbse, 'HCONHOH_to_HCOHNHO')]
+RXNM['%s-%s' % (dbse, 'HCONHOH_to_HCOHNHO')] = dict(zip(ACTV['%s-%s' % (dbse, 'HCONHOH_to_HCOHNHO')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'HNC_H2_to_H2CNH' )] = ['%s-%s-reagent'      % (dbse, 'HNC_H2_to_H2CNH')]
-RXNM['%s-%s'            % (dbse, 'HNC_H2_to_H2CNH' )] = dict(zip(ACTV['%s-%s' % (dbse, 'HNC_H2_to_H2CNH')], [+1]))
+ACTV['%s-%s' % (dbse, 'HNC_H2_to_H2CNH')] = ['%s-%s-reagent' % (dbse, 'HNC_H2_to_H2CNH')]
+RXNM['%s-%s' % (dbse, 'HNC_H2_to_H2CNH')] = dict(zip(ACTV['%s-%s' % (dbse, 'HNC_H2_to_H2CNH')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'H2CNH_to_HCNH2' )] = ['%s-%s-reagent'      % (dbse, 'H2CNH_to_HCNH2')]
-RXNM['%s-%s'            % (dbse, 'H2CNH_to_HCNH2' )] = dict(zip(ACTV['%s-%s' % (dbse, 'H2CNH_to_HCNH2')], [+1]))
+ACTV['%s-%s' % (dbse, 'H2CNH_to_HCNH2')] = ['%s-%s-reagent' % (dbse, 'H2CNH_to_HCNH2')]
+RXNM['%s-%s' % (dbse, 'H2CNH_to_HCNH2')] = dict(zip(ACTV['%s-%s' % (dbse, 'H2CNH_to_HCNH2')], [+1]))
 
-ACTV['%s-%s'            % (dbse, 'HCNH2_to_HCN_H2' )] = ['%s-%s-reagent'      % (dbse, 'HCNH2_to_HCN_H2')]
-RXNM['%s-%s'            % (dbse, 'HCNH2_to_HCN_H2' )] = dict(zip(ACTV['%s-%s' % (dbse, 'HCNH2_to_HCN_H2')], [+1]))
+ACTV['%s-%s' % (dbse, 'HCNH2_to_HCN_H2')] = ['%s-%s-reagent' % (dbse, 'HCNH2_to_HCN_H2')]
+RXNM['%s-%s' % (dbse, 'HCNH2_to_HCN_H2')] = dict(zip(ACTV['%s-%s' % (dbse, 'HCNH2_to_HCN_H2')], [+1]))
 
 # <<< Reference Values [kcal/mol] >>>
 BIND = {}
-BIND['%s-%s'            % (dbse, 'HCN_to_HNC'             )] =    0.000
-BIND['%s-%s'            % (dbse, 'HCCH_to_CCH2'           )] =    0.000
-BIND['%s-%s'            % (dbse, 'H2CO_to_H2_CO'          )] =    0.000
-BIND['%s-%s'            % (dbse, 'parent_diels_alder'     )] =    0.000
-BIND['%s-%s'            % (dbse, 's_tetrazine_to_2HCN_N2' )] =    0.000
-BIND['%s-%s'            % (dbse, 'CH3CH3_to_CH2CH2_H2'    )] =    0.000
-BIND['%s-%s'            % (dbse, 'CH3CH2F_to_CH2CH2_HF'   )] =    0.000
-BIND['%s-%s'            % (dbse, 'CH2CHOH_to_CH3CHO'      )] =    0.000
-BIND['%s-%s'            % (dbse, 'silylene_insertion'     )] =    0.000
-BIND['%s-%s'            % (dbse, 'HNCCS_to_HCN_CS'        )] =    0.000
-BIND['%s-%s'            % (dbse, 'acrolein_rotation'      )] =    0.000
-BIND['%s-%s'            % (dbse, 'HCONHOH_to_HCOHNHO'     )] =    0.000
-BIND['%s-%s'            % (dbse, 'HNC_H2_to_H2CNH'        )] =    0.000
-BIND['%s-%s'            % (dbse, 'H2CNH_to_HCNH2'         )] =    0.000
-BIND['%s-%s'            % (dbse, 'HCNH2_to_HCN_H2'        )] =    0.000
+BIND['%s-%s' % (dbse, 'HCN_to_HNC')] = 0.000
+BIND['%s-%s' % (dbse, 'HCCH_to_CCH2')] = 0.000
+BIND['%s-%s' % (dbse, 'H2CO_to_H2_CO')] = 0.000
+BIND['%s-%s' % (dbse, 'parent_diels_alder')] = 0.000
+BIND['%s-%s' % (dbse, 's_tetrazine_to_2HCN_N2')] = 0.000
+BIND['%s-%s' % (dbse, 'CH3CH3_to_CH2CH2_H2')] = 0.000
+BIND['%s-%s' % (dbse, 'CH3CH2F_to_CH2CH2_HF')] = 0.000
+BIND['%s-%s' % (dbse, 'CH2CHOH_to_CH3CHO')] = 0.000
+BIND['%s-%s' % (dbse, 'silylene_insertion')] = 0.000
+BIND['%s-%s' % (dbse, 'HNCCS_to_HCN_CS')] = 0.000
+BIND['%s-%s' % (dbse, 'acrolein_rotation')] = 0.000
+BIND['%s-%s' % (dbse, 'HCONHOH_to_HCOHNHO')] = 0.000
+BIND['%s-%s' % (dbse, 'HNC_H2_to_H2CNH')] = 0.000
+BIND['%s-%s' % (dbse, 'H2CNH_to_HCNH2')] = 0.000
+BIND['%s-%s' % (dbse, 'HCNH2_to_HCN_H2')] = 0.000
 
 # <<< Comment Lines >>>
 TAGL = {}
-TAGL['%s-%s'            % (dbse, 'HCN_to_HNC' )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'HCN_to_HNC' )] = ''
-TAGL['%s-%s'            % (dbse, 'HCCH_to_CCH2' )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'HCCH_to_CCH2' )] = ''
-TAGL['%s-%s'            % (dbse, 'H2CO_to_H2_CO' )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'H2CO_to_H2_CO' )] = ''
-TAGL['%s-%s'            % (dbse, 'parent_diels_alder' )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'parent_diels_alder' )] = ''
-TAGL['%s-%s'            % (dbse, 's_tetrazine_to_2HCN_N2' )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 's_tetrazine_to_2HCN_N2' )] = ''
-TAGL['%s-%s'            % (dbse, 'CH3CH3_to_CH2CH2_H2' )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'CH3CH3_to_CH2CH2_H2' )] = ''
-TAGL['%s-%s'            % (dbse, 'CH3CH2F_to_CH2CH2_HF' )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'CH3CH2F_to_CH2CH2_HF' )] = ''
-TAGL['%s-%s'            % (dbse, 'CH2CHOH_to_CH3CHO' )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'CH2CHOH_to_CH3CHO' )] = ''
-TAGL['%s-%s'            % (dbse, 'silylene_insertion' )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'silylene_insertion' )] = ''
-TAGL['%s-%s'            % (dbse, 'HNCCS_to_HCN_CS' )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'HNCCS_to_HCN_CS' )] = ''
-TAGL['%s-%s'            % (dbse, 'acrolein_rotation' )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'acrolein_rotation' )] = ''
-TAGL['%s-%s'            % (dbse, 'HCONHOH_to_HCOHNHO' )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'HCONHOH_to_HCOHNHO' )] = ''
-TAGL['%s-%s'            % (dbse, 'HNC_H2_to_H2CNH' )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'HNC_H2_to_H2CNH' )] = ''
-TAGL['%s-%s'            % (dbse, 'H2CNH_to_HCNH2' )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'H2CNH_to_HCNH2' )] = ''
-TAGL['%s-%s'            % (dbse, 'HCNH2_to_HCN_H2' )] = ''
-TAGL['%s-%s-reagent'    % (dbse, 'HCNH2_to_HCN_H2' )] = ''
+TAGL['%s-%s' % (dbse, 'HCN_to_HNC')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'HCN_to_HNC')] = ''
+TAGL['%s-%s' % (dbse, 'HCCH_to_CCH2')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'HCCH_to_CCH2')] = ''
+TAGL['%s-%s' % (dbse, 'H2CO_to_H2_CO')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'H2CO_to_H2_CO')] = ''
+TAGL['%s-%s' % (dbse, 'parent_diels_alder')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'parent_diels_alder')] = ''
+TAGL['%s-%s' % (dbse, 's_tetrazine_to_2HCN_N2')] = ''
+TAGL['%s-%s-reagent' % (dbse, 's_tetrazine_to_2HCN_N2')] = ''
+TAGL['%s-%s' % (dbse, 'CH3CH3_to_CH2CH2_H2')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'CH3CH3_to_CH2CH2_H2')] = ''
+TAGL['%s-%s' % (dbse, 'CH3CH2F_to_CH2CH2_HF')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'CH3CH2F_to_CH2CH2_HF')] = ''
+TAGL['%s-%s' % (dbse, 'CH2CHOH_to_CH3CHO')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'CH2CHOH_to_CH3CHO')] = ''
+TAGL['%s-%s' % (dbse, 'silylene_insertion')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'silylene_insertion')] = ''
+TAGL['%s-%s' % (dbse, 'HNCCS_to_HCN_CS')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'HNCCS_to_HCN_CS')] = ''
+TAGL['%s-%s' % (dbse, 'acrolein_rotation')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'acrolein_rotation')] = ''
+TAGL['%s-%s' % (dbse, 'HCONHOH_to_HCOHNHO')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'HCONHOH_to_HCOHNHO')] = ''
+TAGL['%s-%s' % (dbse, 'HNC_H2_to_H2CNH')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'HNC_H2_to_H2CNH')] = ''
+TAGL['%s-%s' % (dbse, 'H2CNH_to_HCNH2')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'H2CNH_to_HCNH2')] = ''
+TAGL['%s-%s' % (dbse, 'HCNH2_to_HCN_H2')] = ''
+TAGL['%s-%s-reagent' % (dbse, 'HCNH2_to_HCN_H2')] = ''
 
 # <<< Geometry Specification Strings >>>
 GEOS = {}
@@ -340,18 +339,18 @@ units bohr
 DATA = {}
 
 DATA['NUCLEAR REPULSION ENERGY'] = {}
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-HCN_to_HNC-reagent'            ] =      23.31219465
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-HCCH_to_CCH2-reagent'          ] =      24.00207708
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-H2CO_to_H2_CO-reagent'         ] =      29.08166284
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-parent_diels_alder-reagent'    ] =     229.84632631
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-s_tetrazine_to_2HCN_N2-reagent'] =     211.09082404
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-CH3CH3_to_CH2CH2_H2-reagent'   ] =      42.18531523
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-CH3CH2F_to_CH2CH2_HF-reagent'  ] =      72.38149908
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-CH2CHOH_to_CH3CHO-reagent'     ] =      70.96576388
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-silylene_insertion-reagent'    ] =     105.58418932
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-HNCCS_to_HCN_CS-reagent'       ] =     107.98244744
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-acrolein_rotation-reagent'     ] =     104.52459576
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-HCONHOH_to_HCOHNHO-reagent'    ] =     118.18056521
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-HNC_H2_to_H2CNH-reagent'       ] =      33.37163870
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-H2CNH_to_HCNH2-reagent'        ] =      35.16169022
-DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-HCNH2_to_HCN_H2-reagent'       ] =      30.58508624
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-HCN_to_HNC-reagent'] = 23.31219465
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-HCCH_to_CCH2-reagent'] = 24.00207708
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-H2CO_to_H2_CO-reagent'] = 29.08166284
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-parent_diels_alder-reagent'] = 229.84632631
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-s_tetrazine_to_2HCN_N2-reagent'] = 211.09082404
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-CH3CH3_to_CH2CH2_H2-reagent'] = 42.18531523
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-CH3CH2F_to_CH2CH2_HF-reagent'] = 72.38149908
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-CH2CHOH_to_CH3CHO-reagent'] = 70.96576388
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-silylene_insertion-reagent'] = 105.58418932
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-HNCCS_to_HCN_CS-reagent'] = 107.98244744
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-acrolein_rotation-reagent'] = 104.52459576
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-HCONHOH_to_HCOHNHO-reagent'] = 118.18056521
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-HNC_H2_to_H2CNH-reagent'] = 33.37163870
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-H2CNH_to_HCNH2-reagent'] = 35.16169022
+DATA['NUCLEAR REPULSION ENERGY']['BAKERJCC96-HCNH2_to_HCN_H2-reagent'] = 30.58508624

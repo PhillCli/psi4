@@ -281,5 +281,5 @@ void OCCWave::ccl_energy() {
     // outfile->Printf("\n ccl_energy is done... \n");
 
 }  // end of ccl_energy
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

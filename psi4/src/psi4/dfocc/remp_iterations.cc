@@ -58,8 +58,9 @@ void DFOCC::remp_iterations() {
         // RHF
         if (reference_ == "RESTRICTED") {
             Matrix T2("T2", naoccA * navirA, naoccA * navirA);
-            ccsdDiisManager = std::make_shared<DIISManager>(
-                cc_maxdiis_, "CCSD DIIS T Amps", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::OnDisk);
+            ccsdDiisManager =
+                std::make_shared<DIISManager>(cc_maxdiis_, "CCSD DIIS T Amps", DIISManager::RemovalPolicy::LargestError,
+                                              DIISManager::StoragePolicy::OnDisk);
             ccsdDiisManager->set_error_vector_size(T2);
             ccsdDiisManager->set_vector_size(T2);
         }
@@ -69,8 +70,9 @@ void DFOCC::remp_iterations() {
             Matrix T2AA("T2AA", ntri_anti_ijAA, ntri_anti_abAA);
             Matrix T2BB("T2BB", ntri_anti_ijBB, ntri_anti_abBB);
             Matrix T2AB("T2AB", naoccA * naoccB, navirA * navirB);
-            ccsdDiisManager = std::make_shared<DIISManager>(
-                cc_maxdiis_, "CCSD DIIS T Amps", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::OnDisk);
+            ccsdDiisManager =
+                std::make_shared<DIISManager>(cc_maxdiis_, "CCSD DIIS T Amps", DIISManager::RemovalPolicy::LargestError,
+                                              DIISManager::StoragePolicy::OnDisk);
             ccsdDiisManager->set_error_vector_size(T2AA, T2BB, T2AB);
             ccsdDiisManager->set_vector_size(T2AA, T2BB, T2AB);
         }

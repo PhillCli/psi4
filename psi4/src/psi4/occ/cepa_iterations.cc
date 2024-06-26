@@ -60,7 +60,8 @@ void OCCWave::cepa_iterations() {
             psio_->open(PSIF_OCC_DPD, PSIO_OPEN_OLD);
             global_dpd_->buf4_init(&T, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
                                    "T2 <OO|VV>");
-            t2_diis = DIISManager(maxdiis_, "CEPA DIIS T2 Amps", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::OnDisk);
+            t2_diis = DIISManager(maxdiis_, "CEPA DIIS T2 Amps", DIISManager::RemovalPolicy::LargestError,
+                                  DIISManager::StoragePolicy::OnDisk);
             t2_diis.set_error_vector_size(&T);
             t2_diis.set_vector_size(&T);
             global_dpd_->buf4_close(&T);
@@ -76,7 +77,8 @@ void OCCWave::cepa_iterations() {
                                    "T2 <oo|vv>");
             global_dpd_->buf4_init(&Tab, PSIF_OCC_DPD, 0, ID("[O,o]"), ID("[V,v]"), ID("[O,o]"), ID("[V,v]"), 0,
                                    "T2 <Oo|Vv>");
-            t2_diis = DIISManager(maxdiis_, "CEPA DIIS T2 Amps", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::InCore);
+            t2_diis = DIISManager(maxdiis_, "CEPA DIIS T2 Amps", DIISManager::RemovalPolicy::LargestError,
+                                  DIISManager::StoragePolicy::InCore);
             t2_diis.set_error_vector_size(&Taa, &Tbb, &Tab);
             t2_diis.set_vector_size(&Taa, &Tbb, &Tab);
             global_dpd_->buf4_close(&Taa);
@@ -118,7 +120,8 @@ void OCCWave::cepa_iterations() {
         }
 
     } while (std::fabs(DE) >= (0.5 * tol_Eod) || rms_t2 >= tol_t2);
-    // 0.5 scale battens down a touch tighter for spin components since tol_Eod can be satisfied by small energy increase
+    // 0.5 scale battens down a touch tighter for spin components since tol_Eod can be satisfied by small energy
+    // increase
 
     if (conver == 1) {
         EcepaL = Ecepa;
@@ -160,7 +163,8 @@ void OCCWave::remp_iterations() {
             psio_->open(PSIF_OCC_DPD, PSIO_OPEN_OLD);
             global_dpd_->buf4_init(&T, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
                                    "T2 <OO|VV>");
-            t2_diis = DIISManager(maxdiis_, "CEPA DIIS T2 Amps", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::OnDisk);
+            t2_diis = DIISManager(maxdiis_, "CEPA DIIS T2 Amps", DIISManager::RemovalPolicy::LargestError,
+                                  DIISManager::StoragePolicy::OnDisk);
             t2_diis.set_error_vector_size(&T);
             t2_diis.set_vector_size(&T);
             global_dpd_->buf4_close(&T);
@@ -176,7 +180,8 @@ void OCCWave::remp_iterations() {
                                    "T2 <oo|vv>");
             global_dpd_->buf4_init(&Tab, PSIF_OCC_DPD, 0, ID("[O,o]"), ID("[V,v]"), ID("[O,o]"), ID("[V,v]"), 0,
                                    "T2 <Oo|Vv>");
-            t2_diis = DIISManager(maxdiis_, "CEPA DIIS T2 Amps", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::InCore);
+            t2_diis = DIISManager(maxdiis_, "CEPA DIIS T2 Amps", DIISManager::RemovalPolicy::LargestError,
+                                  DIISManager::StoragePolicy::InCore);
             t2_diis.set_error_vector_size(&Taa, &Tbb, &Tab);
             t2_diis.set_vector_size(&Taa, &Tbb, &Tab);
             global_dpd_->buf4_close(&Taa);
@@ -190,11 +195,11 @@ void OCCWave::remp_iterations() {
     do {
         itr_occ++;
         timer_on("T2");
-        t2_amps_remp(); // <- the only actual modification compared to regular CEPA(0)/D
+        t2_amps_remp();  // <- the only actual modification compared to regular CEPA(0)/D
         timer_off("T2");
         timer_on("CEPA Energy");
         cepa_energy();
-        cepa_diis(t2_diis);    // <- CEPA diis can be reused without modifications
+        cepa_diis(t2_diis);  // <- CEPA diis can be reused without modifications
         cepa_chemist();
         timer_off("CEPA Energy");
         Ecorr = Ecepa - Escf;
@@ -218,7 +223,8 @@ void OCCWave::remp_iterations() {
         }
 
     } while (std::fabs(DE) >= (0.5 * tol_Eod) || rms_t2 >= tol_t2);
-    // 0.5 scale battens down a touch tighter for spin components since tol_Eod can be satisfied by small energy increase
+    // 0.5 scale battens down a touch tighter for spin components since tol_Eod can be satisfied by small energy
+    // increase
 
     if (conver == 1) {
         EcepaL = Ecepa;
@@ -237,7 +243,6 @@ void OCCWave::remp_iterations() {
     }
 
 }  // end main
-
 
 void OCCWave::cepa_diis(DIISManager& t2_diis) {
     psio_->open(PSIF_OCC_DPD, PSIO_OPEN_OLD);
@@ -346,5 +351,5 @@ void OCCWave::cepa_chemist() {
     // close files
     psio_->close(PSIF_OCC_DPD, 1);
 }
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

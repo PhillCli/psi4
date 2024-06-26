@@ -569,8 +569,8 @@ void DPD::T3_AAB(double ***W1, int nirreps, int I, int Gi, int J, int Gj, int K,
                 W1[Gab][ab][c] /= (denom + omega);
 
             } /* c */
-        }     /* ab */
-    }         /* Gab */
+        } /* ab */
+    } /* Gab */
 
     for (Gab = 0; Gab < nirreps; Gab++) {
         Gc = Gab ^ Gijk ^ GX3;

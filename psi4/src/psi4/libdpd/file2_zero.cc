@@ -39,7 +39,6 @@
 namespace psi {
 
 int dpdfile2::zero() {
-
     global_dpd_->file2_mat_init(this);
     global_dpd_->file2_mat_rd(this);
     for (int h = 0; h < params->nirreps; ++h) {
@@ -54,4 +53,4 @@ int dpdfile2::zero() {
     return 0;
 }
 
-}
+}  // namespace psi

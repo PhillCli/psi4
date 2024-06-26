@@ -61,9 +61,6 @@ from . import driver, p4util
 
 pp = pprint.PrettyPrinter(width=120, compact=True, indent=1)
 
-
-
-
 ## Methods and properties blocks
 
 methods_dict_ = {
@@ -327,7 +324,7 @@ def _convert_wavefunction(wfn, context=None):
             for i, e in enumerate(epsilon[irrep]):
                 occs.append((e, int(i < nocc)))
 
-        occs.sort(key = lambda x : x[0])
+        occs.sort(key=lambda x: x[0])
         return np.array([occ[1] for occ in occs])
 
     # Map back out what we can
@@ -358,8 +355,10 @@ def _convert_wavefunction(wfn, context=None):
         "scf_fock_b": re2d(wfn.Fa_subset("AO")),
         "scf_eigenvalues_a": wfn.epsilon_a_subset("AO", "ALL"),
         "scf_eigenvalues_b": wfn.epsilon_b_subset("AO", "ALL"),
-        "scf_occupations_a": sort_occs((wfn.doccpi() + wfn.soccpi()).to_tuple(), wfn.epsilon_a().nph),
-        "scf_occupations_b": sort_occs(wfn.doccpi().to_tuple(), wfn.epsilon_b().nph),
+        "scf_occupations_a": sort_occs((wfn.doccpi() + wfn.soccpi()).to_tuple(),
+                                       wfn.epsilon_a().nph),
+        "scf_occupations_b": sort_occs(wfn.doccpi().to_tuple(),
+                                       wfn.epsilon_b().nph),
     }
 
     return ret
@@ -414,9 +413,9 @@ def _quiet_remove(filename):
 
 
 def run_qcschema(
-    input_data: Union[Dict[str, Any], qcel.models.AtomicInput],
-    clean: bool = True,
-    postclean: bool = True,
+        input_data: Union[Dict[str, Any], qcel.models.AtomicInput],
+        clean: bool = True,
+        postclean: bool = True,
 ) -> Union[qcel.models.AtomicResult, qcel.models.FailedOperation]:
     """Run a quantum chemistry job specified by :py:class:`qcelemental.models.AtomicInput` **input_data** in |PSIfour|.
 
@@ -479,8 +478,11 @@ def run_qcschema(
         ret = qcel.models.FailedOperation(input_data=input_data,
                                           success=False,
                                           error={
-                                              'error_type': type(exc).__name__,
-                                              'error_message': input_data["stdout"] + ''.join(traceback.format_exception(*sys.exc_info())),
+                                              'error_type':
+                                              type(exc).__name__,
+                                              'error_message':
+                                              input_data["stdout"] +
+                                              ''.join(traceback.format_exception(*sys.exc_info())),
                                           })
 
     _clean_psi_output(postclean, outfile)
@@ -643,33 +645,30 @@ def run_json_qcschema(json_data, clean, json_serialization, keep_wfn=False):
     for k, v in wfn.variables().items():
         if k not in json_data["extras"]["qcvars"]:
             # interpreting wfn_qcvars_only as no deprecated qcvars either
-            if not (json_data["extras"].get("wfn_qcvars_only", False) and (
-                any([k.upper().endswith(" DIPOLE " + cart) for cart in ["X", "Y", "Z"]])
-                or any([k.upper().endswith(" QUADRUPOLE " + cart) for cart in ["XX", "YY", "ZZ", "XY", "XZ", "YZ"]])
-                or k.upper()
-                in [
-                    "SOS-MP2 CORRELATION ENERGY",
-                    "SOS-MP2 TOTAL ENERGY",
-                    "SOS-PI-MP2 CORRELATION ENERGY",
-                    "SOS-PI-MP2 TOTAL ENERGY",
-                    "SCS-MP3 CORRELATION ENERGY",
-                    "SCS-MP3 TOTAL ENERGY",
-                ]
-            )):
+            if not (json_data["extras"].get("wfn_qcvars_only", False) and
+                    (any([k.upper().endswith(" DIPOLE " + cart) for cart in ["X", "Y", "Z"]]) or any(
+                        [k.upper().endswith(" QUADRUPOLE " + cart)
+                         for cart in ["XX", "YY", "ZZ", "XY", "XZ", "YZ"]]) or k.upper() in [
+                             "SOS-MP2 CORRELATION ENERGY",
+                             "SOS-MP2 TOTAL ENERGY",
+                             "SOS-PI-MP2 CORRELATION ENERGY",
+                             "SOS-PI-MP2 TOTAL ENERGY",
+                             "SCS-MP3 CORRELATION ENERGY",
+                             "SCS-MP3 TOTAL ENERGY",
+                         ])):
                 json_data["extras"]["qcvars"][k] = _serial_translation(v, json=json_serialization)
 
     # Add in handling of matrix arguments which need to be obtained by a
     # a function call.
 
-    if json_data["model"]["method"].lower() in ["ccsd"] :
+    if json_data["model"]["method"].lower() in ["ccsd"]:
         if json_data["extras"].get("psi4:save_tamps", False):
-            if type(wfn.reference_wavefunction()) is core.RHF :
+            if type(wfn.reference_wavefunction()) is core.RHF:
                 json_data["extras"]["psi4:tamps"] = {}
                 json_data["extras"]["psi4:tamps"]["tIjAb"] = wfn.get_amplitudes()["tIjAb"].to_array().tolist()
                 json_data["extras"]["psi4:tamps"]["tIA"] = wfn.get_amplitudes()["tIA"].to_array().tolist()
                 json_data["extras"]["psi4:tamps"]["Da"] = wfn.Da().to_array().tolist()
 
-        
     # Handle the return result
     if json_data["driver"] == "energy":
         json_data["return_result"] = val
@@ -724,7 +723,8 @@ def run_json_qcschema(json_data, clean, json_serialization, keep_wfn=False):
         "psi4.grad": Path(core.get_writer_file_prefix(wfn.molecule().name()) + ".grad"),
         "psi4.hess": Path(core.get_writer_file_prefix(wfn.molecule().name()) + ".hess"),
         # binary "psi4.180.npy": Path(core.get_writer_file_prefix(wfn.molecule().name()) + ".180.npy"),
-        "timer.dat": Path("timer.dat"),  # ok for `psi4 --qcschema` but no file collected for `qcengine.run_program(..., "psi4")`
+        "timer.dat":
+        Path("timer.dat"),  # ok for `psi4 --qcschema` but no file collected for `qcengine.run_program(..., "psi4")`
         "grid_esp.dat": Path("grid_esp.dat"),
         "grid_field.dat": Path("grid_field.dat"),
     }

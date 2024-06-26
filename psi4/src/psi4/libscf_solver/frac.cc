@@ -113,8 +113,7 @@ void HF::frac() {
                     nbeta_++;
             }
 
-            if (val < 0.0)
-                throw PSIEXCEPTION("Fractional Occupation SCF: Occupations must be non-negative.");
+            if (val < 0.0) throw PSIEXCEPTION("Fractional Occupation SCF: Occupations must be non-negative.");
 
             outfile->Printf("    %-5s orbital %4d will contain %11.3E electron.\n", (i > 0 ? "Alpha" : "Beta"),
                             std::abs(i), val);
@@ -163,9 +162,7 @@ void HF::frac_renormalize() {
     Cb_ = unscaled_Cb_;
 }
 
-
 void HF::frac_helper() {
-
     // Save the orbitals, without scaling factors
     unscaled_Ca_ = Ca_->clone();
     unscaled_Cb_ = Cb_->clone();
@@ -191,7 +188,9 @@ void HF::frac_helper() {
         bool is_alpha = (i > 0);
         i = std::abs(i) - 1;  // Back to C ordering
 
-        int h; double** Cp; int j;
+        int h;
+        double** Cp;
+        int j;
         if (is_alpha) {
             h = std::get<1>(pairs_a[i]);
             j = std::get<2>(pairs_a[i]);

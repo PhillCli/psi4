@@ -7,6 +7,7 @@ from utils import compare_arrays
 
 pytestmark = [pytest.mark.psi, pytest.mark.api]
 
+
 def _diag_dom_sym_mat(size, sep, scale, sym=1.0):
     M = np.zeros((size, size))
     # positive diag elements, sep factor determines how close

@@ -260,8 +260,8 @@ void SAPT2p3::print_results() {
     for (scal_it = Xscal.begin(); scal_it != Xscal.end(); ++scal_it) {
         double dHF2 = eHF_ - (e_elst10_ + e_exch10_ + e_ind20_ + *scal_it * e_exch_ind20_);
         double dHF3 = 0.0;
-        dHF3 = eHF_ - (e_elst10_ + e_exch10_ + e_ind20_ + *scal_it * e_exch_ind20_ + e_ind30r_ +
-                       *scal_it * e_exch_ind30r_);
+        dHF3 = eHF_ -
+               (e_elst10_ + e_exch10_ + e_ind20_ + *scal_it * e_exch_ind20_ + e_ind30r_ + *scal_it * e_exch_ind30r_);
 
         double dMP2_2 = 0.0;
         double dMP2_3 = 0.0;
@@ -358,8 +358,7 @@ void SAPT2p3::print_results() {
         double tot_elst = e_elst10_ + e_elst12_ + e_elst13_;
         double tot_exch = e_exch10_ + *scal_it * (e_exch11_ + e_exch12_);
         double tot_ind = 0.0;
-        tot_ind =
-                e_ind20_ + dHF3 + e_ind22_ + e_ind30r_ + *scal_it * (e_exch_ind20_ + e_exch_ind22_ + e_exch_ind30r_);
+        tot_ind = e_ind20_ + dHF3 + e_ind22_ + e_ind30r_ + *scal_it * (e_exch_ind20_ + e_exch_ind22_ + e_exch_ind30r_);
         if (e_MP2 != 0.0) {
             if (third_order_)
                 tot_ind += dMP2_3;
@@ -430,18 +429,17 @@ void SAPT2p3::print_results() {
         outfile->Printf("      Exch-Ind20,r %3s        %16.8lf [mEh] %16.8lf [kcal/mol] %16.8lf [kJ/mol]\n",
                         scaled.c_str(), *scal_it * e_exch_ind20_ * 1000.0,
                         *scal_it * e_exch_ind20_ * pc_hartree2kcalmol, *scal_it * e_exch_ind20_ * pc_hartree2kJmol);
-        if (third_order_)
-            {
-                outfile->Printf("      Exch-Ind30,r %3s (S^2)  %16.8lf [mEh] %16.8lf [kcal/mol] %16.8lf [kJ/mol]\n",
+        if (third_order_) {
+            outfile->Printf("      Exch-Ind30,r %3s (S^2)  %16.8lf [mEh] %16.8lf [kcal/mol] %16.8lf [kJ/mol]\n",
                             scaled.c_str(), *scal_it * e_exch_ind30r_ * 1000.0,
                             *scal_it * e_exch_ind30r_ * pc_hartree2kcalmol,
                             *scal_it * e_exch_ind30r_ * pc_hartree2kJmol);
-                if (e_exch_ind30r_sinf_ != 0.0)
-                    outfile->Printf("      Exch-Ind30,r %3s(S^inf) %16.8lf [mEh] %16.8lf [kcal/mol] %16.8lf [kJ/mol]\n",
-                            scaled.c_str(), *scal_it * e_exch_ind30r_sinf_ * 1000.0,
-                            *scal_it * e_exch_ind30r_sinf_ * pc_hartree2kcalmol,
-                            *scal_it * e_exch_ind30r_sinf_ * pc_hartree2kJmol);
-            }
+            if (e_exch_ind30r_sinf_ != 0.0)
+                outfile->Printf("      Exch-Ind30,r %3s(S^inf) %16.8lf [mEh] %16.8lf [kcal/mol] %16.8lf [kJ/mol]\n",
+                                scaled.c_str(), *scal_it * e_exch_ind30r_sinf_ * 1000.0,
+                                *scal_it * e_exch_ind30r_sinf_ * pc_hartree2kcalmol,
+                                *scal_it * e_exch_ind30r_sinf_ * pc_hartree2kJmol);
+        }
         outfile->Printf("      Exch-Ind22 %3s          %16.8lf [mEh] %16.8lf [kcal/mol] %16.8lf [kJ/mol]\n",
                         scaled.c_str(), *scal_it * e_exch_ind22_ * 1000.0,
                         *scal_it * e_exch_ind22_ * pc_hartree2kcalmol, *scal_it * e_exch_ind22_ * pc_hartree2kJmol);

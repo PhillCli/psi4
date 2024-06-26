@@ -37,7 +37,9 @@ from .procrouting import proc
 from .procrouting.proc_table import procedures
 
 
-def negotiate_convergence_criterion(dermode: Union[Tuple[str, str], Tuple[int, int]], method: str, return_optstash: bool = False):
+def negotiate_convergence_criterion(dermode: Union[Tuple[str, str], Tuple[int, int]],
+                                    method: str,
+                                    return_optstash: bool = False):
     r"""
     This function will set local SCF and global energy convergence criterion
     to the defaults listed at:
@@ -108,8 +110,10 @@ def upgrade_interventions(method):
             raise e
 
     if lowermethod.startswith("mrcc"):
-        raise UpgradeHelper(method, method[2:], 1.7,
-            f' Replace "mr"-prefixed methods in driver calls (e.g., `energy("{method}")`) by the plain method and specify the MRCC addon by option (e.g., `set qc_module mrcc; energy("{method[2:]}")`).')
+        raise UpgradeHelper(
+            method, method[2:], 1.7,
+            f' Replace "mr"-prefixed methods in driver calls (e.g., `energy("{method}")`) by the plain method and specify the MRCC addon by option (e.g., `set qc_module mrcc; energy("{method[2:]}")`).'
+        )
 
     return lowermethod
 
@@ -160,11 +164,11 @@ def parse_cotton_irreps(irrep: Union[str, int], point_group: str) -> int:
 
 
 def negotiate_derivative_type(
-    target_dertype: str,
-    method: str,
-    user_dertype: Optional[int],
-    verbose: int = 1,
-    proc: Optional[Dict] = None,
+        target_dertype: str,
+        method: str,
+        user_dertype: Optional[int],
+        verbose: int = 1,
+        proc: Optional[Dict] = None,
 ) -> Union[Tuple[int, int], Tuple[str, str]]:
     r"""Find the best derivative level (0, 1, 2) and strategy (analytic, finite difference)
     for `method` to achieve `target_dertype` within constraints of `user_dertype`.
@@ -269,7 +273,7 @@ def _alternative_methods_message(method_name: str, dertype: str, *, messages: Di
 
 def highest_analytic_derivative_available(method: str,
                                           proc: Optional[Dict] = None,
-                                          managed_keywords: Optional[Dict] = None) -> Tuple[int, Dict[int,str]]:
+                                          managed_keywords: Optional[Dict] = None) -> Tuple[int, Dict[int, str]]:
     """Find the highest dertype program can provide for method, as encoded in procedures and managed methods.
 
     Managed methods return finer grain "is available" info. For example, "is analytic ROHF DF HF gradient available?"
@@ -325,7 +329,8 @@ def highest_analytic_derivative_available(method: str,
                                 proc["energy"][method](method, probe=True, **managed_keywords)
                             except ManagedMethodError as e:
                                 proc_messages[0] = e.stats
-                                raise MissingMethodError(_alternative_methods_message(method, "any", messages=proc_messages, proc=proc))
+                                raise MissingMethodError(
+                                    _alternative_methods_message(method, "any", messages=proc_messages, proc=proc))
 
     elif method in proc['gradient']:
         dertype = 1
@@ -341,7 +346,8 @@ def highest_analytic_derivative_available(method: str,
                         proc["energy"][method](method, probe=True, **managed_keywords)
                     except ManagedMethodError as e:
                         proc_messages[0] = e.stats
-                        raise MissingMethodError(_alternative_methods_message(method, "any", messages=proc_messages, proc=proc))
+                        raise MissingMethodError(
+                            _alternative_methods_message(method, "any", messages=proc_messages, proc=proc))
 
     elif method in proc['energy']:
         dertype = 0
@@ -352,12 +358,14 @@ def highest_analytic_derivative_available(method: str,
                 proc["energy"][method](method, probe=True, **managed_keywords)
             except ManagedMethodError as e:
                 proc_messages[0] = e.stats
-                raise MissingMethodError(_alternative_methods_message(method, "any", messages=proc_messages, proc=proc))
+                raise MissingMethodError(_alternative_methods_message(method, "any", messages=proc_messages,
+                                                                      proc=proc))
 
     if dertype == '(auto)':
         raise MissingMethodError(_alternative_methods_message(method, "any", messages=proc_messages, proc=proc))
 
-    if dertype == 2 and p4util.libint2_configuration()["eri"][2] is None and p4util.libint2_configuration()["eri"][0] is not None:
+    if dertype == 2 and p4util.libint2_configuration()["eri"][2] is None and p4util.libint2_configuration(
+    )["eri"][0] is not None:
         # If psi4 is build against a Libint without Hessian ERI integrals (["eri"][2] is None), that's
         #   ok, fall back to finite difference. This is the current state of Windows packages from
         #   conda-forge, due to the 6h build limit. But, don't leap to finite difference just because
@@ -372,7 +380,7 @@ def highest_analytic_derivative_available(method: str,
 
 def highest_analytic_properties_available(method: str,
                                           proc: Optional[Dict] = None,
-                                          managed_keywords: Optional[Dict] = None) -> Tuple[str, Dict[int,str]]:
+                                          managed_keywords: Optional[Dict] = None) -> Tuple[str, Dict[int, str]]:
     """Find whether propgram can provide analytic properties for method, as encoded in procedures and managed methods.
 
     Managed methods return finer grain "is available" info. For example, "is analytic ROHF DF HF gradient available?"
@@ -416,7 +424,8 @@ def highest_analytic_properties_available(method: str,
                 proc["properties"][method](method, probe=True, **managed_keywords)
             except ManagedMethodError as e:
                 proc_messages[0] = e.message
-                raise MissingMethodError(_alternative_methods_message(method, "any", messages=proc_messages, proc=proc))
+                raise MissingMethodError(_alternative_methods_message(method, "any", messages=proc_messages,
+                                                                      proc=proc))
 
     if dertype == '(auto)':
         raise MissingMethodError(_alternative_methods_message(method, "any", messages=proc_messages, proc=proc))
@@ -425,11 +434,11 @@ def highest_analytic_properties_available(method: str,
 
 
 def sort_derivative_type(
-    target_dertype,
-    highest_analytic_dertype: int,
-    user_dertype: Union[int, None],
-    proc_messages: Dict[int, str],
-    verbose: int = 1,
+        target_dertype,
+        highest_analytic_dertype: int,
+        user_dertype: Union[int, None],
+        proc_messages: Dict[int, str],
+        verbose: int = 1,
 ) -> Tuple[int, int]:
     r"""Find the best derivative level (0, 1, 2) and strategy (analytic, finite difference)
     to achieve `target_dertype` within constraints of `user_dertype` and `highest_analytic_dertype`.
@@ -507,7 +516,8 @@ def sort_derivative_type(
         dertype = 0
 
     if core.get_global_option("RELATIVISTIC") in ["X2C", "DKH"]:
-        core.print_out("\nRelativistic analytic gradients are not implemented yet, re-routing to finite differences.\n")
+        core.print_out(
+            "\nRelativistic analytic gradients are not implemented yet, re-routing to finite differences.\n")
         dertype = 0
 
     if verbose > 1:

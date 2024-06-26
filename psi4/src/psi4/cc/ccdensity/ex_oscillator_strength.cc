@@ -52,7 +52,7 @@ namespace psi {
 namespace ccdensity {
 #include "psi4/physconst.h"
 
-void ex_oscillator_strength(ccenergy::CCEnergyWavefunction& wfn, struct TD_Params *S, struct TD_Params *U,
+void ex_oscillator_strength(ccenergy::CCEnergyWavefunction &wfn, struct TD_Params *S, struct TD_Params *U,
                             struct XTD_Params *xtd_data) {
     double lt_x, lt_y, lt_z;
     double rt_x, rt_y, rt_z;
@@ -177,5 +177,5 @@ void ex_oscillator_strength(ccenergy::CCEnergyWavefunction& wfn, struct TD_Param
 
     return;
 }
-}
+}  // namespace ccdensity
 }  // namespace psi

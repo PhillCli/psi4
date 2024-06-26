@@ -36,7 +36,6 @@ namespace psi {
 namespace dfoccwave {
 
 void DFOCC::ccsd_t2_amps() {
-
     // RHF
     if (reference_ == "RESTRICTED") {
         // defs

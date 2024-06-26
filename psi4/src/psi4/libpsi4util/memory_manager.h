@@ -227,6 +227,6 @@ void MemoryManager::release_three(T ***&matrix, const char *fileName, size_t lin
     memory_manager->allocate(#type, variable, size1, size2, size3, #variable, __FILE__, __LINE__);
 #define release3(variable) memory_manager->release_three(variable, __FILE__, __LINE__);
 
-} /* End Namespaces */
+}  // namespace psi
 
 #endif  // _psi_src_bin_psimrccmemory_managerh_

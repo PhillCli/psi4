@@ -131,6 +131,7 @@ def _compose_decos(decos):
         for deco in reversed(decos):
             func = deco(func)
         return func
+
     return composition
 
 
@@ -209,7 +210,8 @@ def ctest_runner(inputdatloc, *, extra_infiles: List = None, outfiles: List = No
     infiles = [inputdat]
     if extra_infiles:
         infiles.extend(extra_infiles)
-    infiles_with_contents = {(Path(fl).name if Path(fl).is_absolute() else fl): (ctestdir / fl).read_text() for fl in infiles}
+    infiles_with_contents = {(Path(fl).name if Path(fl).is_absolute() else fl): (ctestdir / fl).read_text()
+                             for fl in infiles}
 
     # Note:  The simple `command = ["psi4", "input.dat"]` works fine for Linux and Mac but not for Windows.
     #   L/M/W   ok with `command = [which("psi4"), "input.dat"]` where `which` on Windows finds the psi4.bat file that points to the psi4 python script. -or-

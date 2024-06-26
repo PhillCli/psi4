@@ -48,11 +48,8 @@ def harvest_output(outtext):
 
     NUMBER = "((?:[-+]?\\d*\\.\\d+(?:[DdEe][-+]?\\d+)?)|(?:[-+]?\\d+\\.\\d*(?:[DdEe][-+]?\\d+)?))"
 
-
     # <<< Process NRE >>>
-    mobj = re.search(
-        r'^\s*' + r'(?:NUCLEAR REPULSION ENERGY)' + r'\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE)
+    mobj = re.search(r'^\s*' + r'(?:NUCLEAR REPULSION ENERGY)' + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE)
     if mobj:
         #print('matched nrc')
         psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(1)
@@ -69,11 +66,9 @@ def harvest_output(outtext):
     # <<< Process MP2 >>>
 
     mobj = re.search(
-        r'^\s*' + r'Reference energy[:]?\s+' + NUMBER + r'\s*' +
-        r'^\s*' + r'MP2 singlet pair energy[:]?\s+' + NUMBER + r'\s*' +
-        r'^\s*' + r'MP2 triplet pair energy[:]?\s+' + NUMBER + r'\s*' +
-        r'^\s*' + r'MP2 correlation energy[:]?\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE)
+        r'^\s*' + r'Reference energy[:]?\s+' + NUMBER + r'\s*' + r'^\s*' + r'MP2 singlet pair energy[:]?\s+' + NUMBER +
+        r'\s*' + r'^\s*' + r'MP2 triplet pair energy[:]?\s+' + NUMBER + r'\s*' + r'^\s*' +
+        r'MP2 correlation energy[:]?\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE)
     if mobj:
         #print('matched mp2')
         psivar['HF TOTAL ENERGY'] = mobj.group(1)
@@ -94,11 +89,12 @@ def harvest_output(outtext):
         #r'^\s+' + r'E2ind\s+' + NUMBER + r'\s+\(\s*' + NUMBER + r')\s+' + NUMBER + r'\s+' + NUMBER + '\s*'
         #r'^\s+' + r'E2ind-exch\s+' + NUMBER + r'\s+\(\s*' + NUMBER + r')\s+' + NUMBER + r'\s+' + NUMBER + '\s*'
         #r'^\s+' + r'E2disp\(unc\)\s+' + NUMBER + r'\s+\(\s*' + NUMBER + r')\s+' + NUMBER + r'\s+' + NUMBER + '\s*'
-#        r'^\s+' + r'E2disp\s+' + NUMBER + r'\s+\(\s*' + NUMBER + r'\)\s+' + NUMBER + r'\s+' + NUMBER + '\s*',
+        #        r'^\s+' + r'E2disp\s+' + NUMBER + r'\s+\(\s*' + NUMBER + r'\)\s+' + NUMBER + r'\s+' + NUMBER + '\s*',
         r'^\s+' + r'E2disp\s+' + NUMBER + r'.*$',
         #r'^\s+' + r'E2disp-exch\(unc\)\s+' + NUMBER + r'\s+\(\s*' + NUMBER + r')\s+' + NUMBER + r'\s+' + NUMBER + '\s*'
         #r'^\s+' + r'E2disp-exc\s+' + NUMBER + r'\s+\(\s*' + NUMBER + r')\s+' + NUMBER + r'\s+' + NUMBER + '\s*'
-        outtext, re.MULTILINE)
+        outtext,
+        re.MULTILINE)
     if mobj:
         #print('matched sapt-like')
         psivar['MP2C DISP20 ENERGY'] = Decimal(mobj.group(1)) / Decimal(1000)
@@ -106,15 +102,15 @@ def harvest_output(outtext):
     # <<< Process SCF-F12 >>>
 
     mobj = re.search(
-        r'^\s+' + r'CABS-singles contribution of\s+' + NUMBER + r'\s+patched into reference energy.\s*' +
-        r'^\s+' + r'New reference energy\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE)
+        r'^\s+' + r'CABS-singles contribution of\s+' + NUMBER + r'\s+patched into reference energy.\s*' + r'^\s+' +
+        r'New reference energy\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE)
     if mobj:
         #print('matched scff12')
         psivar['SCF TOTAL ENERGY'] = Decimal(mobj.group(2)) - Decimal(mobj.group(1))
         psivar['HF-CABS TOTAL ENERGY'] = mobj.group(2)
 
     # <<< Process MP2-F12 >>>
+
 
 # DF-MP2-F12 correlation energies:
 # --------------------------------
@@ -133,14 +129,12 @@ def harvest_output(outtext):
 # DF-MP2-F12/3C(FIX)                    -0.379246010149     -0.187531433611     -0.566777443760   -132.864894951307
 
     mobj = re.search(
-        r'^\s*' + r'DF-MP2-F12 correlation energies:\s*' +
-        r'^\s*(?:[=-]+)\s*' +
-        r'^\s+' + r'Approx.\s+Singlet\s+Triplet\s+Ecorr\s+Total Energy\s*' + 
-        r'^\s+' + r'DF-MP2\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' + 
-        r'^\s+' + r'DF-MP2-F12/3\*C\(DX,FIX\)\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'DF-MP2-F12/3\*C\(FIX\)\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'DF-MP2-F12/3C\(FIX\)\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE)
+        r'^\s*' + r'DF-MP2-F12 correlation energies:\s*' + r'^\s*(?:[=-]+)\s*' + r'^\s+' +
+        r'Approx.\s+Singlet\s+Triplet\s+Ecorr\s+Total Energy\s*' + r'^\s+' + r'DF-MP2\s+' + NUMBER + r'\s+' + NUMBER +
+        r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'DF-MP2-F12/3\*C\(DX,FIX\)\s+' + NUMBER + r'\s+' +
+        NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'DF-MP2-F12/3\*C\(FIX\)\s+' + NUMBER +
+        r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'DF-MP2-F12/3C\(FIX\)\s+' + NUMBER +
+        r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE)
     if mobj:
         #print('matched mp2f12')
         psivar['MP2 CORRELATION ENERGY'] = mobj.group(3)
@@ -159,10 +153,8 @@ def harvest_output(outtext):
     # <<< Process CC >>>
 
     mobj = re.search(
-        r'^\s*' + r'CCSD triplet pair energy\s+' + NUMBER + r'\s*' +
-        r'^\s*' + r'CCSD correlation energy\s+' + NUMBER + r'\s*' +
-        r'^\s*' + r'Triples \(T\) contribution\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE)
+        r'^\s*' + r'CCSD triplet pair energy\s+' + NUMBER + r'\s*' + r'^\s*' + r'CCSD correlation energy\s+' + NUMBER +
+        r'\s*' + r'^\s*' + r'Triples \(T\) contribution\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE)
     if mobj:
         #print('matched ccsd(t)')
         psivar['CCSD CORRELATION ENERGY'] = mobj.group(2)
@@ -178,10 +170,9 @@ def harvest_output(outtext):
     # <<< Process CC-F12 >>>
 
     mobj = re.search(
-        r'^\s*' + r'CCSD-F12a triplet pair energy\s+' + NUMBER + r'\s*' +
-        r'^\s*' + r'CCSD-F12a correlation energy\s+' + NUMBER + r'\s*' +
-        r'^\s*' + r'Triples \(T\) contribution\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE)
+        r'^\s*' + r'CCSD-F12a triplet pair energy\s+' + NUMBER + r'\s*' + r'^\s*' +
+        r'CCSD-F12a correlation energy\s+' + NUMBER + r'\s*' + r'^\s*' + r'Triples \(T\) contribution\s+' + NUMBER +
+        r'\s*$', outtext, re.MULTILINE)
     if mobj:
         #print('matched ccsd(t)-f12a')
         psivar['CCSD-F12A CORRELATION ENERGY'] = mobj.group(2)
@@ -192,17 +183,18 @@ def harvest_output(outtext):
         psivar['CCSD-F12A TOTAL ENERGY'] = Decimal(mobj.group(2)) + psivar['HF-CABS TOTAL ENERGY']
         psivar['(T)-F12AB CORRECTION ENERGY'] = mobj.group(3)
         psivar['CCSD(T)-F12A CORRELATION ENERGY'] = Decimal(mobj.group(2)) + Decimal(mobj.group(3))
-        psivar['CCSD(T)-F12A TOTAL ENERGY'] = psivar['CCSD(T)-F12A CORRELATION ENERGY'] + psivar['HF-CABS TOTAL ENERGY']
+        psivar[
+            'CCSD(T)-F12A TOTAL ENERGY'] = psivar['CCSD(T)-F12A CORRELATION ENERGY'] + psivar['HF-CABS TOTAL ENERGY']
         psivar['(T*)-F12AB CORRECTION ENERGY'] = Decimal(mobj.group(3)) * \
             psivar['MP2-F12 CORRELATION ENERGY'] / psivar['MP2 CORRELATION ENERGY']
         psivar['CCSD(T*)-F12A CORRELATION ENERGY'] = Decimal(mobj.group(2)) + psivar['(T*)-F12AB CORRECTION ENERGY']
-        psivar['CCSD(T*)-F12A TOTAL ENERGY'] = psivar['CCSD(T*)-F12A CORRELATION ENERGY'] + psivar['HF-CABS TOTAL ENERGY']
+        psivar[
+            'CCSD(T*)-F12A TOTAL ENERGY'] = psivar['CCSD(T*)-F12A CORRELATION ENERGY'] + psivar['HF-CABS TOTAL ENERGY']
 
     mobj = re.search(
-        r'^\s*' + r'CCSD-F12b triplet pair energy\s+' + NUMBER + r'\s*' +
-        r'^\s*' + r'CCSD-F12b correlation energy\s+' + NUMBER + r'\s*' +
-        r'^\s*' + r'Triples \(T\) contribution\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE)
+        r'^\s*' + r'CCSD-F12b triplet pair energy\s+' + NUMBER + r'\s*' + r'^\s*' +
+        r'CCSD-F12b correlation energy\s+' + NUMBER + r'\s*' + r'^\s*' + r'Triples \(T\) contribution\s+' + NUMBER +
+        r'\s*$', outtext, re.MULTILINE)
     if mobj:
         #print('matched ccsd(t)-f12b')
         psivar['CCSD-F12B CORRELATION ENERGY'] = mobj.group(2)
@@ -213,17 +205,18 @@ def harvest_output(outtext):
         psivar['CCSD-F12B TOTAL ENERGY'] = Decimal(mobj.group(2)) + psivar['HF-CABS TOTAL ENERGY']
         psivar['(T)-F12AB CORRECTION ENERGY'] = mobj.group(3)
         psivar['CCSD(T)-F12B CORRELATION ENERGY'] = Decimal(mobj.group(2)) + Decimal(mobj.group(3))
-        psivar['CCSD(T)-F12B TOTAL ENERGY'] = psivar['CCSD(T)-F12B CORRELATION ENERGY'] + psivar['HF-CABS TOTAL ENERGY']
+        psivar[
+            'CCSD(T)-F12B TOTAL ENERGY'] = psivar['CCSD(T)-F12B CORRELATION ENERGY'] + psivar['HF-CABS TOTAL ENERGY']
         psivar['(T*)-F12AB CORRECTION ENERGY'] = Decimal(mobj.group(3)) * \
             psivar['MP2-F12 CORRELATION ENERGY'] / psivar['MP2 CORRELATION ENERGY']
         psivar['CCSD(T*)-F12B CORRELATION ENERGY'] = Decimal(mobj.group(2)) + psivar['(T*)-F12AB CORRECTION ENERGY']
-        psivar['CCSD(T*)-F12B TOTAL ENERGY'] = psivar['CCSD(T*)-F12B CORRELATION ENERGY'] + psivar['HF-CABS TOTAL ENERGY']
+        psivar[
+            'CCSD(T*)-F12B TOTAL ENERGY'] = psivar['CCSD(T*)-F12B CORRELATION ENERGY'] + psivar['HF-CABS TOTAL ENERGY']
 
     mobj = re.search(
-        r'^\s*' + r'CCSD-F12c triplet pair energy\s+' + NUMBER + r'\s*' +
-        r'^\s*' + r'CCSD-F12c correlation energy\s+' + NUMBER + r'\s*' +
-        r'^\s*' + r'Triples \(T\) contribution\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE)
+        r'^\s*' + r'CCSD-F12c triplet pair energy\s+' + NUMBER + r'\s*' + r'^\s*' +
+        r'CCSD-F12c correlation energy\s+' + NUMBER + r'\s*' + r'^\s*' + r'Triples \(T\) contribution\s+' + NUMBER +
+        r'\s*$', outtext, re.MULTILINE)
     if mobj:
         #print('matched ccsd(t)-f12c')
         psivar['CCSD-F12C CORRELATION ENERGY'] = mobj.group(2)
@@ -234,16 +227,16 @@ def harvest_output(outtext):
         psivar['CCSD-F12C TOTAL ENERGY'] = Decimal(mobj.group(2)) + psivar['HF-CABS TOTAL ENERGY']
         psivar['(T)-F12C CORRECTION ENERGY'] = mobj.group(3)
         psivar['CCSD(T)-F12C CORRELATION ENERGY'] = Decimal(mobj.group(2)) + Decimal(mobj.group(3))
-        psivar['CCSD(T)-F12C TOTAL ENERGY'] = psivar['CCSD(T)-F12C CORRELATION ENERGY'] + psivar['HF-CABS TOTAL ENERGY']
+        psivar[
+            'CCSD(T)-F12C TOTAL ENERGY'] = psivar['CCSD(T)-F12C CORRELATION ENERGY'] + psivar['HF-CABS TOTAL ENERGY']
         psivar['(T*)-F12C CORRECTION ENERGY'] = Decimal(mobj.group(3)) * \
             psivar['MP2-F12 CORRELATION ENERGY'] / psivar['MP2 CORRELATION ENERGY']
         psivar['CCSD(T*)-F12C CORRELATION ENERGY'] = Decimal(mobj.group(2)) + psivar['(T*)-F12C CORRECTION ENERGY']
-        psivar['CCSD(T*)-F12C TOTAL ENERGY'] = psivar['CCSD(T*)-F12C CORRELATION ENERGY'] + psivar['HF-CABS TOTAL ENERGY']
+        psivar[
+            'CCSD(T*)-F12C TOTAL ENERGY'] = psivar['CCSD(T*)-F12C CORRELATION ENERGY'] + psivar['HF-CABS TOTAL ENERGY']
 
     # Process Completion
-    mobj = re.search(
-        r'^\s*' + r'Variable memory released' + r'\s+$',
-        outtext, re.MULTILINE)
+    mobj = re.search(r'^\s*' + r'Variable memory released' + r'\s+$', outtext, re.MULTILINE)
     if mobj:
         psivar['SUCCESS'] = True
 
@@ -300,26 +293,27 @@ def harvest_output(outtext):
 
 
 class Infile(qcformat.InputFormat2):
-
     def __init__(self, mem, mol, mtd, der, opt):
         qcformat.InputFormat2.__init__(self, mem, mol, mtd, der, opt)
 
         #print self.method, self.molecule.nactive_fragments()
         if ('sapt' in self.method or 'mp2c' in self.method) and self.molecule.nactive_fragments() != 2:
-            raise FragmentCountError("""Requested molecule has %d, not 2, fragments.""" % (self.molecule.nactive_fragments()))
+            raise FragmentCountError("""Requested molecule has %d, not 2, fragments.""" %
+                                     (self.molecule.nactive_fragments()))
+
 
 #        # memory in MB --> MW
 #        self.memory = int(math.ceil(mem / 8.0))
-        # auxiliary basis sets
+# auxiliary basis sets
         [self.unaugbasis, self.augbasis, self.auxbasis] = self.corresponding_aux_basis()
 
     def muster_basis_options(self):
         text = ''
         lowername = self.method.lower()
         options = defaultdict(lambda: defaultdict(dict))
-    
+
         options['BASIS']['ORBITAL']['value'] = self.basis
-    
+
         # this f12 basis setting may be totally messed up
         if self.method in ['ccsd(t)-f12-optri']:
             if self.basis == 'cc-pvdz-f12':
@@ -335,7 +329,9 @@ class Infile(qcformat.InputFormat2):
                 options['BASIS']['JKFITC']['value'] = 'aug-cc-pv5z/mp2fit'
             else:
                 raise ValidationError("""Auxiliary basis not predictable from orbital basis '%s'""" % (self.basis))
-        elif ('df-' in self.method) or ('f12' in self.method) or (self.method in ['mp2c', 'dft-sapt', 'dft-sapt-pbe0acalda']):
+        elif ('df-' in self.method) or ('f12' in self.method) or (self.method in [
+                'mp2c', 'dft-sapt', 'dft-sapt-pbe0acalda'
+        ]):
             if self.unaugbasis and self.auxbasis:
                 options['BASIS']['JKFIT']['value'] = self.auxbasis + '/jkfit'
                 options['BASIS']['JKFITB']['value'] = self.unaugbasis + '/jkfit'
@@ -347,25 +343,25 @@ class Infile(qcformat.InputFormat2):
 
     def prepare_basis_for_molpro(self):
         text = ''
-    
+
         for opt, val in self.options['BASIS'].items():
-                #print opt, val['value']
-                #print molpro_basissets.altbasis.keys()
-                if not text:
-                    text += """basis={\n"""
-                try:
-                    # jaxz, maxz, etc.
-                    for line in molpro_basissets.altbasis[val['value']]:
-                        text += """%s\n""" % (line)
-                    text += '\n'
-                except KeyError:
-                    # haxz
-                    if val['value'].startswith('heavy-aug-'):
-                        text += """set,%s; default,%s,H=%s\n""" % (opt.lower(), self.augbasis, self.unaugbasis)
-                    # xz, axz, 6-31g*
-                    else:
-                        text += """set,%s; default,%s\n""" % (opt.lower(), val['value'])
-    
+            #print opt, val['value']
+            #print molpro_basissets.altbasis.keys()
+            if not text:
+                text += """basis={\n"""
+            try:
+                # jaxz, maxz, etc.
+                for line in molpro_basissets.altbasis[val['value']]:
+                    text += """%s\n""" % (line)
+                text += '\n'
+            except KeyError:
+                # haxz
+                if val['value'].startswith('heavy-aug-'):
+                    text += """set,%s; default,%s,H=%s\n""" % (opt.lower(), self.augbasis, self.unaugbasis)
+                # xz, axz, 6-31g*
+                else:
+                    text += """set,%s; default,%s\n""" % (opt.lower(), val['value'])
+
         if text:
             text += """}\n\n"""
 
@@ -381,24 +377,21 @@ class Infile(qcformat.InputFormat2):
         # Handle molecule and basis set
         molcmd, _molkw = self.molecule.format_molecule_for_molpro(), {}
 
-
-
         # format global convergence directions
-#        text += self.format_global_parameters()
+        #        text += self.format_global_parameters()
         _cdscmd, cdskw = muster_cdsgroup_options(self.method)
 
         # Handle calc type and quantum chemical method
         mdccmd, mdckw, mdcls = procedures['energy'][self.method](self.method, self.dertype, self.molecule)
         _bascmd, baskw = self.muster_basis_options()
 
+        #        # format options
+        #        optcmd = qcdb.options.prepare_options_for_psi4(mdckw)
 
-#        # format options
-#        optcmd = qcdb.options.prepare_options_for_psi4(mdckw)
-
-# make options from imdb only user options (currently non-existent). set basis and castup from here.
+        # make options from imdb only user options (currently non-existent). set basis and castup from here.
         # Handle driver vs input/default keyword reconciliation
         userkw = self.options
-#        userkw = p4util.prepare_options_for_modules()
+        #        userkw = p4util.prepare_options_for_modules()
         #userkw = qcdb.options.reconcile_options(userkw, memkw)
         #userkw = qcdb.options.reconcile_options(userkw, molkw)
         userkw = options.reconcile_options2(userkw, cdskw)
@@ -409,11 +402,10 @@ class Infile(qcformat.InputFormat2):
         # Handle conversion of psi4 keyword structure into cfour format
         #optcmdB = options.prepare_options_for_psi4(userkw)
         optcmd = prepare_options_for_molpro(userkw, mdcls)
-        bascmd, _baskw = self.prepare_basis_for_molpro(), {} #self.options['BASIS']), {}
+        bascmd, _baskw = self.prepare_basis_for_molpro(), {}  #self.options['BASIS']), {}
 
         # Handle text to be passed untouched
         litcmd = """\nshow[1,20f20.12],ee*,ce*,te*\nshow[1,60f20.12],_E*\n\n"""
-
 
         # Assemble infile pieces
         return memcmd + molcmd + bascmd + optcmd + mdccmd + litcmd
@@ -441,9 +433,6 @@ def muster_cdsgroup_options(name):
         pass
 
     return text, options
-
-
-
 
 
 def prepare_options_for_molpro(options, proc):
@@ -529,21 +518,25 @@ def muster_modelchem(name, dertype, mol):
         proc.append('df-ks,')
         proc.append('sapt; monomerA')
         options['DF-HF,']['OPTIONS']['value'] = """basis=jkfit,locorb=0; start,atdens; save,1101.2"""
-        options['DF-KS,']['OPTIONS']['value'] = """lhf,df_basis=dflhf,basis_coul=jkfitb,basis_exch=jkfitb; dftfac,1.0; start,1101.2; save,2101.2"""
+        options['DF-KS,']['OPTIONS'][
+            'value'] = """lhf,df_basis=dflhf,basis_coul=jkfitb,basis_exch=jkfitb; dftfac,1.0; start,1101.2; save,2101.2"""
 
         proc.append(mol.extract_fragments(2, 1).format_molecule_for_molpro())
         proc.append('df-hf')
         proc.append('df-ks')
         proc.append('sapt; monomerB')
         options['DF-HF']['OPTIONS']['value'] = """,basis=jkfit,locorb=0; start,atdens; save,1102.2"""
-        options['DF-KS']['OPTIONS']['value'] = """,lhf,df_basis=dflhf,basis_coul=jkfitb,basis_exch=jkfitb; dftfac,1.0; start,1102.2; save,2102.2"""
+        options['DF-KS']['OPTIONS'][
+            'value'] = """,lhf,df_basis=dflhf,basis_coul=jkfitb,basis_exch=jkfitb; dftfac,1.0; start,1102.2; save,2102.2"""
 
         proc.append(mol.format_molecule_for_molpro())
         proc.append('sapt; intermol')
-        options['SAPT; INTERMOL']['OPTIONS']['value'] = """,saptlevel=3,ca=2101.2,cb=2102.2,icpks=0,fitlevel=3,nlexfac=0.0,cfac=0.0; dfit,basis_coul=jkfit,basis_exch=jkfit,cfit_scf=3"""
+        options['SAPT; INTERMOL']['OPTIONS'][
+            'value'] = """,saptlevel=3,ca=2101.2,cb=2102.2,icpks=0,fitlevel=3,nlexfac=0.0,cfac=0.0; dfit,basis_coul=jkfit,basis_exch=jkfit,cfit_scf=3"""
 
     else:
         raise ValidationError("""Requested Cfour computational methods %d is not available.""" % (lowername))
+
 
 #    # Set clobbering
 #    if 'CFOUR_DERIV_LEVEL' in options['CFOUR']:
@@ -559,11 +552,11 @@ def muster_modelchem(name, dertype, mol):
 
 procedures = {
     'energy': {
-        'mp2c'           : muster_modelchem,
-        'ccsd(t)-f12'    : muster_modelchem,
-        'ccsd(t)-f12c'   : muster_modelchem,
-        'ccsd(t)-f12-optri' : muster_modelchem,
-        'ccsd(t)-f12-cabsfit' : muster_modelchem,
+        'mp2c': muster_modelchem,
+        'ccsd(t)-f12': muster_modelchem,
+        'ccsd(t)-f12c': muster_modelchem,
+        'ccsd(t)-f12-optri': muster_modelchem,
+        'ccsd(t)-f12-cabsfit': muster_modelchem,
         #'sapt0'         : muster_modelchem,
         #'sapt2+'        : muster_modelchem,
         #'sapt2+(3)'     : muster_modelchem,

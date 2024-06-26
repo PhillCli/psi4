@@ -32,15 +32,14 @@
 
 namespace psi {
 
-PCMPotentialInt::PCMPotentialInt(std::vector<SphericalTransform>& trans, std::shared_ptr<BasisSet> bs1,
+PCMPotentialInt::PCMPotentialInt(std::vector<SphericalTransform> &trans, std::shared_ptr<BasisSet> bs1,
                                  std::shared_ptr<BasisSet> /* bs2 */, int /* deriv */)
     : PotentialInt(trans, bs1, bs1) {
-
     int max_am = std::max(basis1()->max_am(), basis2()->max_am());
     int max_nprim = std::max(basis1()->max_nprimitive(), basis2()->max_nprimitive());
 
     int nthreads = Process::environment.get_n_threads();
-    for(int thread=0; thread < nthreads; ++thread) {
+    for (int thread = 0; thread < nthreads; ++thread) {
         engines_.push_back(std::make_unique<libint2::Engine>(libint2::Operator::nuclear, max_nprim, max_am, 0));
     }
 }
@@ -85,9 +84,9 @@ void PCMPotentialInt::compute(PCMPotentialIntFunctor &functor) {
     functor.finalize(nthreads);
 }
 
-template void PCMPotentialInt::compute(ContractOverChargesFunctor&);
-template void PCMPotentialInt::compute(PrintIntegralsFunctor&);
-template void PCMPotentialInt::compute(ContractOverDensityFunctor&);
+template void PCMPotentialInt::compute(ContractOverChargesFunctor &);
+template void PCMPotentialInt::compute(PrintIntegralsFunctor &);
+template void PCMPotentialInt::compute(ContractOverDensityFunctor &);
 
 PCMPotentialInt::~PCMPotentialInt() = default;
 

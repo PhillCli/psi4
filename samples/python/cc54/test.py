@@ -102,9 +102,8 @@ D 2 1.00
 ****
 """)
 
-ccsd_e, wfn = psi4.properties('ccsd',properties=['dipole'],return_wfn=True)
-psi4.oeprop(wfn,"DIPOLE", "QUADRUPOLE", title="(OEPROP)CC")
+ccsd_e, wfn = psi4.properties('ccsd', properties=['dipole'], return_wfn=True)
+psi4.oeprop(wfn, "DIPOLE", "QUADRUPOLE", title="(OEPROP)CC")
 
 psi4.compare_values(ref_di_au, psi4.variable('(OEPROP)CC DIPOLE'), 4, "CC DIPOLE")  #TEST
 psi4.compare_values(ref_quad_au, psi4.variable('(OEPROP)CC QUADRUPOLE'), 4, "CC QUADRUPOLE")  #TEST
-

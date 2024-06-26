@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 """
 isort:skip_file
 """
@@ -37,7 +36,7 @@ def test_threaded_blas(args):
         psi4.set_num_threads(th)
 
         for sz in size:
-            nruns = max(1, int(1.e10 / (sz ** 3)))
+            nruns = max(1, int(1.e10 / (sz**3)))
 
             a = psi4.core.Matrix(sz, sz)
             b = psi4.core.Matrix(sz, sz)
@@ -211,13 +210,15 @@ def print_math_ldd(args):
     print(f'Running {cmd} ...')
     subprocess.call(cmd, shell=True)
     lddout = subprocess.getoutput(cmd)
-    report = {'mkl': lddout.count('libmkl'),
-              'iomp5': lddout.count('libiomp5'),
-              'openblas': lddout.count('libopenblas'),
-              'omp': lddout.count('libomp'),
-              'gomp': lddout.count('libgomp')}
+    report = {
+        'mkl': lddout.count('libmkl'),
+        'iomp5': lddout.count('libiomp5'),
+        'openblas': lddout.count('libopenblas'),
+        'omp': lddout.count('libomp'),
+        'gomp': lddout.count('libgomp')
+    }
     print(report)
-    
+
     if sys.platform.startswith('linux'):
         slddout = collections.defaultdict(list)
         key = ''
@@ -230,21 +231,23 @@ def print_math_ldd(args):
         for k, v in slddout.items():
             if modcore in k:
                 tlddout = '\n'.join(v)
-        treport = {'mkl': tlddout.count('libmkl'),
-                   'iomp5': tlddout.count('libiomp5'),
-                   'openblas': tlddout.count('libopenblas'),
-                   'omp': tlddout.count('libomp'),
-                   'gomp': tlddout.count('libgomp')}
+        treport = {
+            'mkl': tlddout.count('libmkl'),
+            'iomp5': tlddout.count('libiomp5'),
+            'openblas': tlddout.count('libopenblas'),
+            'omp': tlddout.count('libomp'),
+            'gomp': tlddout.count('libgomp')
+        }
         print(treport)
         if args.passfail:
             if sys.platform.startswith('linux'):
                 assert (not treport['iomp5'] and not treport['omp'] and not treport['gomp']) is False
 
-    report = {k : bool(v) for k, v in report.items()}
+    report = {k: bool(v) for k, v in report.items()}
     okmkl = report['mkl'] and report['iomp5'] and not report['openblas'] and not report['gomp']
     okiomp5 = not report['mkl'] and report['iomp5'] and not report['openblas'] and not report['gomp']
     okopenblas = not report['mkl'] and not report['iomp5'] and report['openblas'] and report['gomp']
-    
+
     omplike = (report['iomp5'] or report['omp']) and not report['gomp']
     okmkl2 = report['mkl'] and omplike and not report['openblas']
     if args.passfail:
@@ -254,27 +257,35 @@ def print_math_ldd(args):
             # plugins on Mac won't show mkl through otool (linked to psi4.core)
             assert (okmkl2 != okopenblas) or (omplike != okopenblas)
 
+
 if __name__ == '__main__':
     import argparse
 
     parser = argparse.ArgumentParser(description="Psi4 threading tester. `psi4` and `import psi4` expected in *PATHs")
-    parser.add_argument("-n", "--nthread", default=4,
+    parser.add_argument("-n",
+                        "--nthread",
+                        default=4,
                         help="""Number of threads to use. Psi4 disregards OMP_NUM_THREADS/MKL_NUM_THREADS.""")
-    parser.add_argument("--passfail", action='store_true',
-                        help="""Instead of just printing, run as tests.""")
-    parser.add_argument("--module", default='psi4/core',
-                        help="""In --ldd mode, module and shared library (w/o extension) to analyze, e.g., 'greatplugin/cxxcode.so' or 'psi4/core.cpython-36m-x86_64-linux-gnu.so'.
+    parser.add_argument("--passfail", action='store_true', help="""Instead of just printing, run as tests.""")
+    parser.add_argument(
+        "--module",
+        default='psi4/core',
+        help=
+        """In --ldd mode, module and shared library (w/o extension) to analyze, e.g., 'greatplugin/cxxcode.so' or 'psi4/core.cpython-36m-x86_64-linux-gnu.so'.
 In --plugin-dfmp2 mode, name of dfmp2 module to load, e.g., 'plugdfmp2'.""")
 
     group = parser.add_mutually_exclusive_group(required=False)
-    group.add_argument('--psiapi', action='store_true',
-                        help="""Test Psi4 (PsiAPI) vs NumPy in threaded matrix multiply.""")
-    group.add_argument('--psithon', action='store_true',
-                        help="""Test Psi4 (PSIthon) in threaded SAPT calc.""")
-    group.add_argument('--ldd', action='store_true',
-                        help="""Run ldd to examine BLAS and OMP linking of psi4/core.so (or whatever supplied to --module).""")
-    group.add_argument('--plugin-dfmp2', action='store_true',
-                        help="""Test dfmp2 plugin template (PSIthon) threading.""")
+    group.add_argument('--psiapi',
+                       action='store_true',
+                       help="""Test Psi4 (PsiAPI) vs NumPy in threaded matrix multiply.""")
+    group.add_argument('--psithon', action='store_true', help="""Test Psi4 (PSIthon) in threaded SAPT calc.""")
+    group.add_argument(
+        '--ldd',
+        action='store_true',
+        help="""Run ldd to examine BLAS and OMP linking of psi4/core.so (or whatever supplied to --module).""")
+    group.add_argument('--plugin-dfmp2',
+                       action='store_true',
+                       help="""Test dfmp2 plugin template (PSIthon) threading.""")
 
     args, unknown = parser.parse_known_args()
 
@@ -290,8 +301,6 @@ In --plugin-dfmp2 mode, name of dfmp2 module to load, e.g., 'plugdfmp2'.""")
         test_threaded_blas(args)
         test_psithon(args)
         print_math_ldd(args)
-
-
 """
 PLUG="plugdfmp2"
 THD=8

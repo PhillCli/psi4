@@ -92,6 +92,6 @@ struct psio_ud {
 
 /** A convenient address initialization struct */
 extern PSI_API psio_address PSIO_ZERO;
-}
+}  // namespace psi
 
 #endif /* header guard */

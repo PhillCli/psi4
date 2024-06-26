@@ -567,7 +567,7 @@ void CCLambdaWavefunction::diis(int iter, int L_irr) {
         free_matrix(B, nvector + 1);
         free(C);
         global_dpd_->free_dpd_block(error, 1, vector_length);
-    }                           /** ROHF **/
+    } /** ROHF **/
     else if (params.ref == 2) { /** UHF **/
 
         /* Compute the length of a single error vector */

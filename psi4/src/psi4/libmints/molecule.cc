@@ -190,13 +190,13 @@ Molecule &Molecule::operator=(const Molecule &other) {
 
     // Deep copy provenance
     provenance_.clear();
-    for(auto kv: other.provenance_) {
+    for (auto kv : other.provenance_) {
         provenance_[kv.first] = kv.second;
     }
 
     // Deep copy connectivity
     connectivity_.clear();
-    for (auto conn: other.connectivity_) {
+    for (auto conn : other.connectivity_) {
         connectivity_.push_back(std::make_tuple(std::get<0>(conn), std::get<1>(conn), std::get<2>(conn)));
     }
 
@@ -369,14 +369,14 @@ int Molecule::atom_at_position2(const Vector3 &b, const double tol) const {
         const Vector3 a = xyz(i);
         dists[i] = b.distance(a);
     }
-    const int num_near = std::count_if(dists.cbegin(), dists.cend(), [tol](double dist){return dist < tol;});
-    if (num_near == 0){
+    const int num_near = std::count_if(dists.cbegin(), dists.cend(), [tol](double dist) { return dist < tol; });
+    if (num_near == 0) {
         return -1;
     }
-    if (num_near > 1){
+    if (num_near > 1) {
         throw PSIEXCEPTION(
-          "More than one atom within tolerance distance! The geometry either has one or more atoms extremely close "
-          "to each other, or the tolerance distance has been set too large.");
+            "More than one atom within tolerance distance! The geometry either has one or more atoms extremely close "
+            "to each other, or the tolerance distance has been set too large.");
     }
     return std::min_element(dists.cbegin(), dists.cend()) - dists.cbegin();
 }

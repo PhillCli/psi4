@@ -246,8 +246,8 @@ double ET_RHF() {
                 for (thread = 0; thread < nthreads; ++thread) ET += ET_array[thread];
 
             } /* Gk */
-        }     /* Gj */
-    }         /* Gi */
+        } /* Gj */
+    } /* Gi */
 
     for (h = 0; h < nirreps; h++) {
         global_dpd_->buf4_mat_irrep_close(&T2, h);
@@ -876,8 +876,8 @@ void ET_RHF_thread(ET_RHF_thread_data *data) {
                     // timer_off("malloc");
                 }
             } /* k */
-        }     /* j */
-    }         /* i */
+        } /* j */
+    } /* i */
 }
 
 }  // namespace cctriples

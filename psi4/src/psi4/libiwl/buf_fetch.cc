@@ -61,4 +61,4 @@ void PSI_API iwl_buf_fetch(struct iwlbuf *Buf) {
               &Buf->bufpos);
     Buf->idx = 0;
 }
-}
+}  // namespace psi

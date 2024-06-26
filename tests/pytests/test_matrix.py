@@ -8,6 +8,7 @@ from utils import compare_arrays
 
 pytestmark = [pytest.mark.psi, pytest.mark.api, pytest.mark.quick]
 
+
 def check_dense_mat(m, exp_r, exp_c, exp_name=None):
     assert m.rows() == exp_r
     assert m.cols() == exp_c
@@ -227,6 +228,7 @@ def test_doublets(adl, adr, Ga, bdl, bdr, Gb, at, bt):
     for blk_idx in range(res.nirrep()):
         assert compare_arrays(expected[blk_idx], res_blocks[blk_idx], 8, f"Block[{blk_idx}]")
 
+
 def test_transform():
     # transformed = transformer.T @ original @ transformer
     rdim = Dimension([3, 2])
@@ -237,15 +239,16 @@ def test_transform():
     transformer = build_random_mat(rdim, cdim)
     transformed = original.clone()
     transformed.transform(transformer)
-    assert compare_arrays((transformer.nph[0]).T @ original.nph[0] @ transformer.nph[1], transformed.nph[0]) 
+    assert compare_arrays((transformer.nph[0]).T @ original.nph[0] @ transformer.nph[1], transformed.nph[0])
     assert compare_arrays((transformer.nph[1]).T @ original.nph[1] @ transformer.nph[0], transformed.nph[1])
 
     # Test case that transformed resize not needed.
     transformer = build_random_mat(rdim, rdim)
     transformed = original.clone()
     transformed.transform(transformer)
-    assert compare_arrays((transformer.nph[0]).T @ original.nph[0] @ transformer.nph[1], transformed.nph[0]) 
+    assert compare_arrays((transformer.nph[0]).T @ original.nph[0] @ transformer.nph[1], transformed.nph[0])
     assert compare_arrays((transformer.nph[1]).T @ original.nph[1] @ transformer.nph[0], transformed.nph[1])
+
 
 def test_back_transform():
     # transformed = transformer @ original @ transformer.T
@@ -257,15 +260,16 @@ def test_back_transform():
     transformer = build_random_mat(rdim, cdim)
     transformed = original.clone()
     transformed.back_transform(transformer)
-    assert compare_arrays(transformer.nph[0] @ original.nph[0] @ (transformer.nph[1]).T, transformed.nph[0]) 
+    assert compare_arrays(transformer.nph[0] @ original.nph[0] @ (transformer.nph[1]).T, transformed.nph[0])
     assert compare_arrays(transformer.nph[1] @ original.nph[1] @ (transformer.nph[0]).T, transformed.nph[1])
 
     # Test case that transformed resize not needed.
     transformer = build_random_mat(cdim, cdim)
     transformed = original.clone()
     transformed.back_transform(transformer)
-    assert compare_arrays(transformer.nph[0] @ original.nph[0] @ (transformer.nph[1]).T, transformed.nph[0]) 
+    assert compare_arrays(transformer.nph[0] @ original.nph[0] @ (transformer.nph[1]).T, transformed.nph[0])
     assert compare_arrays(transformer.nph[1] @ original.nph[1] @ (transformer.nph[0]).T, transformed.nph[1])
+
 
 def test_get_matrix():
     # Use get_matrix to extract a block of a non-totally symmetric matrix.
@@ -289,6 +293,7 @@ def test_get_matrix():
     block = mat.get_block(new_slice, new_slice)
     assert psi4.compare_matrices(control_mat, block)
 
+
 def test_set_matrix():
     # Use set_matrix to zero a block of a non-totally symmetric matrix.
     dim = Dimension([3, 2])
@@ -311,12 +316,14 @@ def test_set_matrix():
     mat.set_block(new_slice, new_slice, new_mat)
     assert psi4.compare_matrices(mat, control_mat)
 
+
 def test_transpose_this():
     dim1 = Dimension([3, 2])
     dim2 = Dimension([5, 7])
     mat = Matrix("Name", dim1, dim2, 1)
     with pytest.raises(RuntimeError):
         mat.transpose_this()
+
 
 def test_transpose():
     dim1 = Dimension([2, 3])

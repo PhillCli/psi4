@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """
 | Database of Hydrogen transfer reactions.
 | Geometries from Bozkaya and Sherrill.
@@ -53,363 +52,445 @@ dbse = 'HTR40'
 isOS = 'True'
 
 # <<< Database Members >>>
-HRXN = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40]
+HRXN = [
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31,
+    32, 33, 34, 35, 36, 37, 38, 39, 40
+]
 HRXN_SM = []
 HRXN_LG = []
-HTR15 = [1, 2, 3, 4, 11, 12, 13, 20, 21, 34, 35, 36, 37, 38,  39]
+HTR15 = [1, 2, 3, 4, 11, 12, 13, 20, 21, 34, 35, 36, 37, 38, 39]
 
 # <<< Chemical Systems Involved >>>
-RXNM = {}     # reaction matrix of reagent contributions per reaction
-ACTV = {}     # order of active reagents per reaction
-ACTV['%s-%s'            % (dbse, 1                     )] = ['%s-%s-reagent'      % (dbse, 'ch3'),
-                                                             '%s-%s-reagent'      % (dbse, 'h2'),
-                                                             '%s-%s-reagent'      % (dbse, 'ch4'),
-                                                             '%s-%s-reagent'      % (dbse, 'h') ]
-RXNM['%s-%s'            % (dbse, 1                     )] = dict(zip(ACTV['%s-%s' % (dbse, 1)], [-1,-1,1,1]))
+RXNM = {}  # reaction matrix of reagent contributions per reaction
+ACTV = {}  # order of active reagents per reaction
+ACTV['%s-%s' % (dbse, 1)] = [
+    '%s-%s-reagent' % (dbse, 'ch3'),
+    '%s-%s-reagent' % (dbse, 'h2'),
+    '%s-%s-reagent' % (dbse, 'ch4'),
+    '%s-%s-reagent' % (dbse, 'h')
+]
+RXNM['%s-%s' % (dbse, 1)] = dict(zip(ACTV['%s-%s' % (dbse, 1)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 2                     )] = ['%s-%s-reagent'      % (dbse, 'c2h'),
-                                                              '%s-%s-reagent'      % (dbse, 'h2'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h2'),
-                                                              '%s-%s-reagent'      % (dbse, 'h') ]
-RXNM['%s-%s'            % (dbse, 2                     )] = dict(zip(ACTV['%s-%s' % (dbse, 2)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 2)] = [
+    '%s-%s-reagent' % (dbse, 'c2h'),
+    '%s-%s-reagent' % (dbse, 'h2'),
+    '%s-%s-reagent' % (dbse, 'c2h2'),
+    '%s-%s-reagent' % (dbse, 'h')
+]
+RXNM['%s-%s' % (dbse, 2)] = dict(zip(ACTV['%s-%s' % (dbse, 2)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 3                     )] = ['%s-%s-reagent'      % (dbse, 'c2h3'),
-                                                              '%s-%s-reagent'      % (dbse, 'h2'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h4'),
-                                                              '%s-%s-reagent'      % (dbse, 'h') ]
-RXNM['%s-%s'            % (dbse, 3                     )] = dict(zip(ACTV['%s-%s' % (dbse, 3)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 3)] = [
+    '%s-%s-reagent' % (dbse, 'c2h3'),
+    '%s-%s-reagent' % (dbse, 'h2'),
+    '%s-%s-reagent' % (dbse, 'c2h4'),
+    '%s-%s-reagent' % (dbse, 'h')
+]
+RXNM['%s-%s' % (dbse, 3)] = dict(zip(ACTV['%s-%s' % (dbse, 3)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 4                     )] = ['%s-%s-reagent'      % (dbse, 't-butyl'),
-                                                              '%s-%s-reagent'      % (dbse, 'h2'),
-                                                              '%s-%s-reagent'      % (dbse, 'isobutane'),
-                                                              '%s-%s-reagent'      % (dbse, 'h') ]
-RXNM['%s-%s'            % (dbse, 4                     )] = dict(zip(ACTV['%s-%s' % (dbse, 4)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 4)] = [
+    '%s-%s-reagent' % (dbse, 't-butyl'),
+    '%s-%s-reagent' % (dbse, 'h2'),
+    '%s-%s-reagent' % (dbse, 'isobutane'),
+    '%s-%s-reagent' % (dbse, 'h')
+]
+RXNM['%s-%s' % (dbse, 4)] = dict(zip(ACTV['%s-%s' % (dbse, 4)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 5                     )] = ['%s-%s-reagent'      % (dbse, 'cfch2'),
-                                                              '%s-%s-reagent'      % (dbse, 'h2'),
-                                                              '%s-%s-reagent'      % (dbse, 'chfch2'),
-                                                              '%s-%s-reagent'      % (dbse, 'h') ]
-RXNM['%s-%s'            % (dbse, 5                     )] = dict(zip(ACTV['%s-%s' % (dbse, 5)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 5)] = [
+    '%s-%s-reagent' % (dbse, 'cfch2'),
+    '%s-%s-reagent' % (dbse, 'h2'),
+    '%s-%s-reagent' % (dbse, 'chfch2'),
+    '%s-%s-reagent' % (dbse, 'h')
+]
+RXNM['%s-%s' % (dbse, 5)] = dict(zip(ACTV['%s-%s' % (dbse, 5)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 6                     )] = ['%s-%s-reagent'      % (dbse, 'ch2cho'),
-                                                              '%s-%s-reagent'      % (dbse, 'h2'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3cho'),
-                                                              '%s-%s-reagent'      % (dbse, 'h') ]
-RXNM['%s-%s'            % (dbse, 6                     )] = dict(zip(ACTV['%s-%s' % (dbse, 6)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 6)] = [
+    '%s-%s-reagent' % (dbse, 'ch2cho'),
+    '%s-%s-reagent' % (dbse, 'h2'),
+    '%s-%s-reagent' % (dbse, 'ch3cho'),
+    '%s-%s-reagent' % (dbse, 'h')
+]
+RXNM['%s-%s' % (dbse, 6)] = dict(zip(ACTV['%s-%s' % (dbse, 6)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 7                     )] = ['%s-%s-reagent'      % (dbse, 'ch2cn'),
-                                                              '%s-%s-reagent'      % (dbse, 'h2'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3cn'),
-                                                              '%s-%s-reagent'      % (dbse, 'h') ]
-RXNM['%s-%s'            % (dbse, 7                     )] = dict(zip(ACTV['%s-%s' % (dbse, 7)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 7)] = [
+    '%s-%s-reagent' % (dbse, 'ch2cn'),
+    '%s-%s-reagent' % (dbse, 'h2'),
+    '%s-%s-reagent' % (dbse, 'ch3cn'),
+    '%s-%s-reagent' % (dbse, 'h')
+]
+RXNM['%s-%s' % (dbse, 7)] = dict(zip(ACTV['%s-%s' % (dbse, 7)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 8                     )] = ['%s-%s-reagent'      % (dbse, 'ch2cch'),
-                                                              '%s-%s-reagent'      % (dbse, 'h2'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3cch'),
-                                                              '%s-%s-reagent'      % (dbse, 'h') ]
-RXNM['%s-%s'            % (dbse, 8                     )] = dict(zip(ACTV['%s-%s' % (dbse, 8)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 8)] = [
+    '%s-%s-reagent' % (dbse, 'ch2cch'),
+    '%s-%s-reagent' % (dbse, 'h2'),
+    '%s-%s-reagent' % (dbse, 'ch3cch'),
+    '%s-%s-reagent' % (dbse, 'h')
+]
+RXNM['%s-%s' % (dbse, 8)] = dict(zip(ACTV['%s-%s' % (dbse, 8)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 9                     )] = ['%s-%s-reagent'      % (dbse, 'ch2ccn'),
-                                                              '%s-%s-reagent'      % (dbse, 'h2'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch2chcn'),
-                                                              '%s-%s-reagent'      % (dbse, 'h') ]
-RXNM['%s-%s'            % (dbse, 9                     )] = dict(zip(ACTV['%s-%s' % (dbse, 9)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 9)] = [
+    '%s-%s-reagent' % (dbse, 'ch2ccn'),
+    '%s-%s-reagent' % (dbse, 'h2'),
+    '%s-%s-reagent' % (dbse, 'ch2chcn'),
+    '%s-%s-reagent' % (dbse, 'h')
+]
+RXNM['%s-%s' % (dbse, 9)] = dict(zip(ACTV['%s-%s' % (dbse, 9)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 10                     )] = ['%s-%s-reagent'      % (dbse, 'allyl'),
-                                                              '%s-%s-reagent'      % (dbse, 'h2'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3chch2'),
-                                                              '%s-%s-reagent'      % (dbse, 'h') ]
-RXNM['%s-%s'            % (dbse, 10                     )] = dict(zip(ACTV['%s-%s' % (dbse, 10)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 10)] = [
+    '%s-%s-reagent' % (dbse, 'allyl'),
+    '%s-%s-reagent' % (dbse, 'h2'),
+    '%s-%s-reagent' % (dbse, 'ch3chch2'),
+    '%s-%s-reagent' % (dbse, 'h')
+]
+RXNM['%s-%s' % (dbse, 10)] = dict(zip(ACTV['%s-%s' % (dbse, 10)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 11                     )] = ['%s-%s-reagent'      % (dbse, 'c2h'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch4'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h2'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3') ]
-RXNM['%s-%s'            % (dbse, 11                     )] = dict(zip(ACTV['%s-%s' % (dbse, 11)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 11)] = [
+    '%s-%s-reagent' % (dbse, 'c2h'),
+    '%s-%s-reagent' % (dbse, 'ch4'),
+    '%s-%s-reagent' % (dbse, 'c2h2'),
+    '%s-%s-reagent' % (dbse, 'ch3')
+]
+RXNM['%s-%s' % (dbse, 11)] = dict(zip(ACTV['%s-%s' % (dbse, 11)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 12                     )] = ['%s-%s-reagent'      % (dbse, 'c2h3'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch4'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h4'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3') ]
-RXNM['%s-%s'            % (dbse, 12                     )] = dict(zip(ACTV['%s-%s' % (dbse, 12)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 12)] = [
+    '%s-%s-reagent' % (dbse, 'c2h3'),
+    '%s-%s-reagent' % (dbse, 'ch4'),
+    '%s-%s-reagent' % (dbse, 'c2h4'),
+    '%s-%s-reagent' % (dbse, 'ch3')
+]
+RXNM['%s-%s' % (dbse, 12)] = dict(zip(ACTV['%s-%s' % (dbse, 12)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 13                     )] = ['%s-%s-reagent'      % (dbse, 't-butyl'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch4'),
-                                                              '%s-%s-reagent'      % (dbse, 'isobutane'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3') ]
-RXNM['%s-%s'            % (dbse, 13                     )] = dict(zip(ACTV['%s-%s' % (dbse, 13)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 13)] = [
+    '%s-%s-reagent' % (dbse, 't-butyl'),
+    '%s-%s-reagent' % (dbse, 'ch4'),
+    '%s-%s-reagent' % (dbse, 'isobutane'),
+    '%s-%s-reagent' % (dbse, 'ch3')
+]
+RXNM['%s-%s' % (dbse, 13)] = dict(zip(ACTV['%s-%s' % (dbse, 13)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 14                     )] = ['%s-%s-reagent'      % (dbse, 'cfch2'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch4'),
-                                                              '%s-%s-reagent'      % (dbse, 'chfch2'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3') ]
-RXNM['%s-%s'            % (dbse, 14                     )] = dict(zip(ACTV['%s-%s' % (dbse, 14)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 14)] = [
+    '%s-%s-reagent' % (dbse, 'cfch2'),
+    '%s-%s-reagent' % (dbse, 'ch4'),
+    '%s-%s-reagent' % (dbse, 'chfch2'),
+    '%s-%s-reagent' % (dbse, 'ch3')
+]
+RXNM['%s-%s' % (dbse, 14)] = dict(zip(ACTV['%s-%s' % (dbse, 14)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 15                     )] = ['%s-%s-reagent'      % (dbse, 'ch2cho'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch4'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3cho'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3') ]
-RXNM['%s-%s'            % (dbse, 15                     )] = dict(zip(ACTV['%s-%s' % (dbse, 15)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 15)] = [
+    '%s-%s-reagent' % (dbse, 'ch2cho'),
+    '%s-%s-reagent' % (dbse, 'ch4'),
+    '%s-%s-reagent' % (dbse, 'ch3cho'),
+    '%s-%s-reagent' % (dbse, 'ch3')
+]
+RXNM['%s-%s' % (dbse, 15)] = dict(zip(ACTV['%s-%s' % (dbse, 15)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 16                     )] = ['%s-%s-reagent'      % (dbse, 'ch2cn'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch4'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3cn'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3') ]
-RXNM['%s-%s'            % (dbse, 16                     )] = dict(zip(ACTV['%s-%s' % (dbse, 16)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 16)] = [
+    '%s-%s-reagent' % (dbse, 'ch2cn'),
+    '%s-%s-reagent' % (dbse, 'ch4'),
+    '%s-%s-reagent' % (dbse, 'ch3cn'),
+    '%s-%s-reagent' % (dbse, 'ch3')
+]
+RXNM['%s-%s' % (dbse, 16)] = dict(zip(ACTV['%s-%s' % (dbse, 16)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 17                     )] = ['%s-%s-reagent'      % (dbse, 'ch2cch'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch4'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3cch'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3') ]
-RXNM['%s-%s'            % (dbse, 17                     )] = dict(zip(ACTV['%s-%s' % (dbse, 17)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 17)] = [
+    '%s-%s-reagent' % (dbse, 'ch2cch'),
+    '%s-%s-reagent' % (dbse, 'ch4'),
+    '%s-%s-reagent' % (dbse, 'ch3cch'),
+    '%s-%s-reagent' % (dbse, 'ch3')
+]
+RXNM['%s-%s' % (dbse, 17)] = dict(zip(ACTV['%s-%s' % (dbse, 17)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 18                     )] = ['%s-%s-reagent'      % (dbse, 'ch2ccn'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch4'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch2chcn'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3') ]
-RXNM['%s-%s'            % (dbse, 18                     )] = dict(zip(ACTV['%s-%s' % (dbse, 18)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 18)] = [
+    '%s-%s-reagent' % (dbse, 'ch2ccn'),
+    '%s-%s-reagent' % (dbse, 'ch4'),
+    '%s-%s-reagent' % (dbse, 'ch2chcn'),
+    '%s-%s-reagent' % (dbse, 'ch3')
+]
+RXNM['%s-%s' % (dbse, 18)] = dict(zip(ACTV['%s-%s' % (dbse, 18)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 19                     )] = ['%s-%s-reagent'      % (dbse, 'allyl'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch4'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3chch2'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3') ]
-RXNM['%s-%s'            % (dbse, 19                     )] = dict(zip(ACTV['%s-%s' % (dbse, 19)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 19)] = [
+    '%s-%s-reagent' % (dbse, 'allyl'),
+    '%s-%s-reagent' % (dbse, 'ch4'),
+    '%s-%s-reagent' % (dbse, 'ch3chch2'),
+    '%s-%s-reagent' % (dbse, 'ch3')
+]
+RXNM['%s-%s' % (dbse, 19)] = dict(zip(ACTV['%s-%s' % (dbse, 19)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 20                     )] = ['%s-%s-reagent'      % (dbse, 'c2h'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h4'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h2'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h3') ]
-RXNM['%s-%s'            % (dbse, 20                     )] = dict(zip(ACTV['%s-%s' % (dbse, 20)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 20)] = [
+    '%s-%s-reagent' % (dbse, 'c2h'),
+    '%s-%s-reagent' % (dbse, 'c2h4'),
+    '%s-%s-reagent' % (dbse, 'c2h2'),
+    '%s-%s-reagent' % (dbse, 'c2h3')
+]
+RXNM['%s-%s' % (dbse, 20)] = dict(zip(ACTV['%s-%s' % (dbse, 20)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 21                     )] = ['%s-%s-reagent'      % (dbse, 't-butyl'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h4'),
-                                                              '%s-%s-reagent'      % (dbse, 'isobutane'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h3') ]
-RXNM['%s-%s'            % (dbse, 21                     )] = dict(zip(ACTV['%s-%s' % (dbse, 21)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 21)] = [
+    '%s-%s-reagent' % (dbse, 't-butyl'),
+    '%s-%s-reagent' % (dbse, 'c2h4'),
+    '%s-%s-reagent' % (dbse, 'isobutane'),
+    '%s-%s-reagent' % (dbse, 'c2h3')
+]
+RXNM['%s-%s' % (dbse, 21)] = dict(zip(ACTV['%s-%s' % (dbse, 21)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 22                     )] = ['%s-%s-reagent'      % (dbse, 'cfch2'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h4'),
-                                                              '%s-%s-reagent'      % (dbse, 'chfch2'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h3') ]
-RXNM['%s-%s'            % (dbse, 22                     )] = dict(zip(ACTV['%s-%s' % (dbse, 22)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 22)] = [
+    '%s-%s-reagent' % (dbse, 'cfch2'),
+    '%s-%s-reagent' % (dbse, 'c2h4'),
+    '%s-%s-reagent' % (dbse, 'chfch2'),
+    '%s-%s-reagent' % (dbse, 'c2h3')
+]
+RXNM['%s-%s' % (dbse, 22)] = dict(zip(ACTV['%s-%s' % (dbse, 22)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 23                     )] = ['%s-%s-reagent'      % (dbse, 'ch2cho'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h4'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3cho'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h3') ]
-RXNM['%s-%s'            % (dbse, 23                     )] = dict(zip(ACTV['%s-%s' % (dbse, 23)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 23)] = [
+    '%s-%s-reagent' % (dbse, 'ch2cho'),
+    '%s-%s-reagent' % (dbse, 'c2h4'),
+    '%s-%s-reagent' % (dbse, 'ch3cho'),
+    '%s-%s-reagent' % (dbse, 'c2h3')
+]
+RXNM['%s-%s' % (dbse, 23)] = dict(zip(ACTV['%s-%s' % (dbse, 23)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 24                     )] = ['%s-%s-reagent'      % (dbse, 'ch2cn'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h4'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3cn'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h3') ]
-RXNM['%s-%s'            % (dbse, 24                     )] = dict(zip(ACTV['%s-%s' % (dbse, 24)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 24)] = [
+    '%s-%s-reagent' % (dbse, 'ch2cn'),
+    '%s-%s-reagent' % (dbse, 'c2h4'),
+    '%s-%s-reagent' % (dbse, 'ch3cn'),
+    '%s-%s-reagent' % (dbse, 'c2h3')
+]
+RXNM['%s-%s' % (dbse, 24)] = dict(zip(ACTV['%s-%s' % (dbse, 24)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 25                     )] = ['%s-%s-reagent'      % (dbse, 'ch2cch'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h4'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3cch'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h3') ]
-RXNM['%s-%s'            % (dbse, 25                     )] = dict(zip(ACTV['%s-%s' % (dbse, 25)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 25)] = [
+    '%s-%s-reagent' % (dbse, 'ch2cch'),
+    '%s-%s-reagent' % (dbse, 'c2h4'),
+    '%s-%s-reagent' % (dbse, 'ch3cch'),
+    '%s-%s-reagent' % (dbse, 'c2h3')
+]
+RXNM['%s-%s' % (dbse, 25)] = dict(zip(ACTV['%s-%s' % (dbse, 25)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 26                     )] = ['%s-%s-reagent'      % (dbse, 'ch2ccn'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h4'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch2chcn'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h3') ]
-RXNM['%s-%s'            % (dbse, 26                     )] = dict(zip(ACTV['%s-%s' % (dbse, 26)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 26)] = [
+    '%s-%s-reagent' % (dbse, 'ch2ccn'),
+    '%s-%s-reagent' % (dbse, 'c2h4'),
+    '%s-%s-reagent' % (dbse, 'ch2chcn'),
+    '%s-%s-reagent' % (dbse, 'c2h3')
+]
+RXNM['%s-%s' % (dbse, 26)] = dict(zip(ACTV['%s-%s' % (dbse, 26)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 27                     )] = ['%s-%s-reagent'      % (dbse, 'allyl'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h4'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3chch2'),
-                                                              '%s-%s-reagent'      % (dbse, 'h') ]
-RXNM['%s-%s'            % (dbse, 27                     )] = dict(zip(ACTV['%s-%s' % (dbse, 27)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 27)] = [
+    '%s-%s-reagent' % (dbse, 'allyl'),
+    '%s-%s-reagent' % (dbse, 'c2h4'),
+    '%s-%s-reagent' % (dbse, 'ch3chch2'),
+    '%s-%s-reagent' % (dbse, 'h')
+]
+RXNM['%s-%s' % (dbse, 27)] = dict(zip(ACTV['%s-%s' % (dbse, 27)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 28                     )] = ['%s-%s-reagent'      % (dbse, 'cfch2'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h2'),
-                                                              '%s-%s-reagent'      % (dbse, 'chfch2'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h') ]
-RXNM['%s-%s'            % (dbse, 28                     )] = dict(zip(ACTV['%s-%s' % (dbse, 28)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 28)] = [
+    '%s-%s-reagent' % (dbse, 'cfch2'),
+    '%s-%s-reagent' % (dbse, 'c2h2'),
+    '%s-%s-reagent' % (dbse, 'chfch2'),
+    '%s-%s-reagent' % (dbse, 'c2h')
+]
+RXNM['%s-%s' % (dbse, 28)] = dict(zip(ACTV['%s-%s' % (dbse, 28)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 29                     )] = ['%s-%s-reagent'      % (dbse, 'ch2cho'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h2'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3cho'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h') ]
-RXNM['%s-%s'            % (dbse, 29                     )] = dict(zip(ACTV['%s-%s' % (dbse, 29)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 29)] = [
+    '%s-%s-reagent' % (dbse, 'ch2cho'),
+    '%s-%s-reagent' % (dbse, 'c2h2'),
+    '%s-%s-reagent' % (dbse, 'ch3cho'),
+    '%s-%s-reagent' % (dbse, 'c2h')
+]
+RXNM['%s-%s' % (dbse, 29)] = dict(zip(ACTV['%s-%s' % (dbse, 29)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 30                     )] = ['%s-%s-reagent'      % (dbse, 'ch2cn'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h2'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3cn'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h') ]
-RXNM['%s-%s'            % (dbse, 30                     )] = dict(zip(ACTV['%s-%s' % (dbse, 30)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 30)] = [
+    '%s-%s-reagent' % (dbse, 'ch2cn'),
+    '%s-%s-reagent' % (dbse, 'c2h2'),
+    '%s-%s-reagent' % (dbse, 'ch3cn'),
+    '%s-%s-reagent' % (dbse, 'c2h')
+]
+RXNM['%s-%s' % (dbse, 30)] = dict(zip(ACTV['%s-%s' % (dbse, 30)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 31                     )] = ['%s-%s-reagent'      % (dbse, 'ch2cch'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h2'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3cch'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h') ]
-RXNM['%s-%s'            % (dbse, 31                     )] = dict(zip(ACTV['%s-%s' % (dbse, 31)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 31)] = [
+    '%s-%s-reagent' % (dbse, 'ch2cch'),
+    '%s-%s-reagent' % (dbse, 'c2h2'),
+    '%s-%s-reagent' % (dbse, 'ch3cch'),
+    '%s-%s-reagent' % (dbse, 'c2h')
+]
+RXNM['%s-%s' % (dbse, 31)] = dict(zip(ACTV['%s-%s' % (dbse, 31)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 32                     )] = ['%s-%s-reagent'      % (dbse, 'ch2ccn'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h2'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch2chcn'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h') ]
-RXNM['%s-%s'            % (dbse, 32                     )] = dict(zip(ACTV['%s-%s' % (dbse, 32)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 32)] = [
+    '%s-%s-reagent' % (dbse, 'ch2ccn'),
+    '%s-%s-reagent' % (dbse, 'c2h2'),
+    '%s-%s-reagent' % (dbse, 'ch2chcn'),
+    '%s-%s-reagent' % (dbse, 'c2h')
+]
+RXNM['%s-%s' % (dbse, 32)] = dict(zip(ACTV['%s-%s' % (dbse, 32)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 33                     )] = ['%s-%s-reagent'      % (dbse, 'allyl'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h2'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3chch2'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h') ]
-RXNM['%s-%s'            % (dbse, 33                     )] = dict(zip(ACTV['%s-%s' % (dbse, 33)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 33)] = [
+    '%s-%s-reagent' % (dbse, 'allyl'),
+    '%s-%s-reagent' % (dbse, 'c2h2'),
+    '%s-%s-reagent' % (dbse, 'ch3chch2'),
+    '%s-%s-reagent' % (dbse, 'c2h')
+]
+RXNM['%s-%s' % (dbse, 33)] = dict(zip(ACTV['%s-%s' % (dbse, 33)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 34                     )] = ['%s-%s-reagent'      % (dbse, 'c2h'),
-                                                              '%s-%s-reagent'      % (dbse, 'isobutane'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h2'),
-                                                              '%s-%s-reagent'      % (dbse, 't-butyl') ]
-RXNM['%s-%s'            % (dbse, 34                     )] = dict(zip(ACTV['%s-%s' % (dbse, 34)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 34)] = [
+    '%s-%s-reagent' % (dbse, 'c2h'),
+    '%s-%s-reagent' % (dbse, 'isobutane'),
+    '%s-%s-reagent' % (dbse, 'c2h2'),
+    '%s-%s-reagent' % (dbse, 't-butyl')
+]
+RXNM['%s-%s' % (dbse, 34)] = dict(zip(ACTV['%s-%s' % (dbse, 34)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 35                     )] = ['%s-%s-reagent'      % (dbse, 'c6h5'),
-                                                              '%s-%s-reagent'      % (dbse, 'h2'),
-                                                              '%s-%s-reagent'      % (dbse, 'c6h6'),
-                                                              '%s-%s-reagent'      % (dbse, 'h') ]
-RXNM['%s-%s'            % (dbse, 35                     )] = dict(zip(ACTV['%s-%s' % (dbse, 35)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 35)] = [
+    '%s-%s-reagent' % (dbse, 'c6h5'),
+    '%s-%s-reagent' % (dbse, 'h2'),
+    '%s-%s-reagent' % (dbse, 'c6h6'),
+    '%s-%s-reagent' % (dbse, 'h')
+]
+RXNM['%s-%s' % (dbse, 35)] = dict(zip(ACTV['%s-%s' % (dbse, 35)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 36                     )] = ['%s-%s-reagent'      % (dbse, 'c6h5'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h4'),
-                                                              '%s-%s-reagent'      % (dbse, 'c6h6'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h3') ]
-RXNM['%s-%s'            % (dbse, 36                     )] = dict(zip(ACTV['%s-%s' % (dbse, 36)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 36)] = [
+    '%s-%s-reagent' % (dbse, 'c6h5'),
+    '%s-%s-reagent' % (dbse, 'c2h4'),
+    '%s-%s-reagent' % (dbse, 'c6h6'),
+    '%s-%s-reagent' % (dbse, 'c2h3')
+]
+RXNM['%s-%s' % (dbse, 36)] = dict(zip(ACTV['%s-%s' % (dbse, 36)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 37                     )] = ['%s-%s-reagent'      % (dbse, 'c6h5'),
-                                                              '%s-%s-reagent'      % (dbse, 'isobutane'),
-                                                              '%s-%s-reagent'      % (dbse, 'c6h6'),
-                                                              '%s-%s-reagent'      % (dbse, 't-butyl') ]
-RXNM['%s-%s'            % (dbse, 37                     )] = dict(zip(ACTV['%s-%s' % (dbse, 37)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 37)] = [
+    '%s-%s-reagent' % (dbse, 'c6h5'),
+    '%s-%s-reagent' % (dbse, 'isobutane'),
+    '%s-%s-reagent' % (dbse, 'c6h6'),
+    '%s-%s-reagent' % (dbse, 't-butyl')
+]
+RXNM['%s-%s' % (dbse, 37)] = dict(zip(ACTV['%s-%s' % (dbse, 37)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 38                     )] = ['%s-%s-reagent'      % (dbse, 'c2h'),
-                                                              '%s-%s-reagent'      % (dbse, 'c6h6'),
-                                                              '%s-%s-reagent'      % (dbse, 'c2h2'),
-                                                              '%s-%s-reagent'      % (dbse, 'c6h5') ]
-RXNM['%s-%s'            % (dbse, 38                     )] = dict(zip(ACTV['%s-%s' % (dbse, 38)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 38)] = [
+    '%s-%s-reagent' % (dbse, 'c2h'),
+    '%s-%s-reagent' % (dbse, 'c6h6'),
+    '%s-%s-reagent' % (dbse, 'c2h2'),
+    '%s-%s-reagent' % (dbse, 'c6h5')
+]
+RXNM['%s-%s' % (dbse, 38)] = dict(zip(ACTV['%s-%s' % (dbse, 38)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 39                     )] = ['%s-%s-reagent'      % (dbse, 'c6h5'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch4'),
-                                                              '%s-%s-reagent'      % (dbse, 'c6h6'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3') ]
-RXNM['%s-%s'            % (dbse, 39                     )] = dict(zip(ACTV['%s-%s' % (dbse, 39)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 39)] = [
+    '%s-%s-reagent' % (dbse, 'c6h5'),
+    '%s-%s-reagent' % (dbse, 'ch4'),
+    '%s-%s-reagent' % (dbse, 'c6h6'),
+    '%s-%s-reagent' % (dbse, 'ch3')
+]
+RXNM['%s-%s' % (dbse, 39)] = dict(zip(ACTV['%s-%s' % (dbse, 39)], [-1, -1, 1, 1]))
 
-ACTV['%s-%s'            % (dbse, 40                     )] = ['%s-%s-reagent'      % (dbse, 'c6h5'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch3cn'),
-                                                              '%s-%s-reagent'      % (dbse, 'c6h6'),
-                                                              '%s-%s-reagent'      % (dbse, 'ch2cn') ]
-RXNM['%s-%s'            % (dbse, 40                     )] = dict(zip(ACTV['%s-%s' % (dbse, 40)], [-1,-1,1,1]))
+ACTV['%s-%s' % (dbse, 40)] = [
+    '%s-%s-reagent' % (dbse, 'c6h5'),
+    '%s-%s-reagent' % (dbse, 'ch3cn'),
+    '%s-%s-reagent' % (dbse, 'c6h6'),
+    '%s-%s-reagent' % (dbse, 'ch2cn')
+]
+RXNM['%s-%s' % (dbse, 40)] = dict(zip(ACTV['%s-%s' % (dbse, 40)], [-1, -1, 1, 1]))
 
 # <<< Reference Values [kcal/mol] >>>
 BIND = {}
-BIND['%s-%s'            % (dbse, 1                    )] =    0.000
-BIND['%s-%s'            % (dbse, 2                    )] =    0.000
-BIND['%s-%s'            % (dbse, 3                    )] =    0.000
-BIND['%s-%s'            % (dbse, 4                    )] =    0.000
-BIND['%s-%s'            % (dbse, 5                    )] =    0.000
-BIND['%s-%s'            % (dbse, 6                    )] =    0.000
-BIND['%s-%s'            % (dbse, 7                    )] =    0.000
-BIND['%s-%s'            % (dbse, 8                    )] =    0.000
-BIND['%s-%s'            % (dbse, 9                    )] =    0.000
-BIND['%s-%s'            % (dbse, 10                    )] =    0.000
-BIND['%s-%s'            % (dbse, 11                    )] =    0.000
-BIND['%s-%s'            % (dbse, 12                    )] =    0.000
-BIND['%s-%s'            % (dbse, 13                    )] =    0.000
-BIND['%s-%s'            % (dbse, 14                    )] =    0.000
-BIND['%s-%s'            % (dbse, 15                    )] =    0.000
-BIND['%s-%s'            % (dbse, 16                    )] =    0.000
-BIND['%s-%s'            % (dbse, 17                    )] =    0.000
-BIND['%s-%s'            % (dbse, 18                    )] =    0.000
-BIND['%s-%s'            % (dbse, 19                    )] =    0.000
-BIND['%s-%s'            % (dbse, 20                    )] =    0.000
-BIND['%s-%s'            % (dbse, 21                    )] =    0.000
-BIND['%s-%s'            % (dbse, 22                    )] =    0.000
-BIND['%s-%s'            % (dbse, 23                    )] =    0.000
-BIND['%s-%s'            % (dbse, 24                    )] =    0.000
-BIND['%s-%s'            % (dbse, 25                    )] =    0.000
-BIND['%s-%s'            % (dbse, 27                    )] =    0.000
-BIND['%s-%s'            % (dbse, 28                    )] =    0.000
-BIND['%s-%s'            % (dbse, 29                    )] =    0.000
-BIND['%s-%s'            % (dbse, 30                    )] =    0.000
-BIND['%s-%s'            % (dbse, 31                    )] =    0.000
-BIND['%s-%s'            % (dbse, 32                    )] =    0.000
-BIND['%s-%s'            % (dbse, 33                    )] =    0.000
-BIND['%s-%s'            % (dbse, 34                    )] =    0.000
-BIND['%s-%s'            % (dbse, 35                    )] =    0.000
-BIND['%s-%s'            % (dbse, 36                    )] =    0.000
-BIND['%s-%s'            % (dbse, 37                    )] =    0.000
-BIND['%s-%s'            % (dbse, 38                    )] =    0.000
-BIND['%s-%s'            % (dbse, 39                    )] =    0.000
-BIND['%s-%s'            % (dbse, 40                    )] =    0.000
-
+BIND['%s-%s' % (dbse, 1)] = 0.000
+BIND['%s-%s' % (dbse, 2)] = 0.000
+BIND['%s-%s' % (dbse, 3)] = 0.000
+BIND['%s-%s' % (dbse, 4)] = 0.000
+BIND['%s-%s' % (dbse, 5)] = 0.000
+BIND['%s-%s' % (dbse, 6)] = 0.000
+BIND['%s-%s' % (dbse, 7)] = 0.000
+BIND['%s-%s' % (dbse, 8)] = 0.000
+BIND['%s-%s' % (dbse, 9)] = 0.000
+BIND['%s-%s' % (dbse, 10)] = 0.000
+BIND['%s-%s' % (dbse, 11)] = 0.000
+BIND['%s-%s' % (dbse, 12)] = 0.000
+BIND['%s-%s' % (dbse, 13)] = 0.000
+BIND['%s-%s' % (dbse, 14)] = 0.000
+BIND['%s-%s' % (dbse, 15)] = 0.000
+BIND['%s-%s' % (dbse, 16)] = 0.000
+BIND['%s-%s' % (dbse, 17)] = 0.000
+BIND['%s-%s' % (dbse, 18)] = 0.000
+BIND['%s-%s' % (dbse, 19)] = 0.000
+BIND['%s-%s' % (dbse, 20)] = 0.000
+BIND['%s-%s' % (dbse, 21)] = 0.000
+BIND['%s-%s' % (dbse, 22)] = 0.000
+BIND['%s-%s' % (dbse, 23)] = 0.000
+BIND['%s-%s' % (dbse, 24)] = 0.000
+BIND['%s-%s' % (dbse, 25)] = 0.000
+BIND['%s-%s' % (dbse, 27)] = 0.000
+BIND['%s-%s' % (dbse, 28)] = 0.000
+BIND['%s-%s' % (dbse, 29)] = 0.000
+BIND['%s-%s' % (dbse, 30)] = 0.000
+BIND['%s-%s' % (dbse, 31)] = 0.000
+BIND['%s-%s' % (dbse, 32)] = 0.000
+BIND['%s-%s' % (dbse, 33)] = 0.000
+BIND['%s-%s' % (dbse, 34)] = 0.000
+BIND['%s-%s' % (dbse, 35)] = 0.000
+BIND['%s-%s' % (dbse, 36)] = 0.000
+BIND['%s-%s' % (dbse, 37)] = 0.000
+BIND['%s-%s' % (dbse, 38)] = 0.000
+BIND['%s-%s' % (dbse, 39)] = 0.000
+BIND['%s-%s' % (dbse, 40)] = 0.000
 
 # <<< Comment Lines >>>
 TAGL = {}
-TAGL['%s-%s'            % (dbse, 1                     )] = """Reaction 1 """
-TAGL['%s-%s'            % (dbse, 2                     )] = """Reaction 2 """
-TAGL['%s-%s'            % (dbse, 3                     )] = """Reaction 3 """
-TAGL['%s-%s'            % (dbse, 4                     )] = """Reaction 4 """
-TAGL['%s-%s'            % (dbse, 5                     )] = """Reaction 5 """
-TAGL['%s-%s'            % (dbse, 6                     )] = """Reaction 6 """
-TAGL['%s-%s'            % (dbse, 7                     )] = """Reaction 7 """
-TAGL['%s-%s'            % (dbse, 8                     )] = """Reaction 8 """
-TAGL['%s-%s'            % (dbse, 9                     )] = """Reaction 9 """
-TAGL['%s-%s'            % (dbse, 10                    )] = """Reaction 10 """
-TAGL['%s-%s'            % (dbse, 11                    )] = """Reaction 11 """
-TAGL['%s-%s'            % (dbse, 12                    )] = """Reaction 12 """
-TAGL['%s-%s'            % (dbse, 13                    )] = """Reaction 13 """
-TAGL['%s-%s'            % (dbse, 14                    )] = """Reaction 14 """
-TAGL['%s-%s'            % (dbse, 15                    )] = """Reaction 15 """
-TAGL['%s-%s'            % (dbse, 16                    )] = """Reaction 16 """
-TAGL['%s-%s'            % (dbse, 17                    )] = """Reaction 17 """
-TAGL['%s-%s'            % (dbse, 18                    )] = """Reaction 18 """
-TAGL['%s-%s'            % (dbse, 19                    )] = """Reaction 19 """
-TAGL['%s-%s'            % (dbse, 20                    )] = """Reaction 20 """
-TAGL['%s-%s'            % (dbse, 21                    )] = """Reaction 21 """
-TAGL['%s-%s'            % (dbse, 22                    )] = """Reaction 22 """
-TAGL['%s-%s'            % (dbse, 23                    )] = """Reaction 23 """
-TAGL['%s-%s'            % (dbse, 24                    )] = """Reaction 24 """
-TAGL['%s-%s'            % (dbse, 25                    )] = """Reaction 25 """
-TAGL['%s-%s'            % (dbse, 26                    )] = """Reaction 26 """
-TAGL['%s-%s'            % (dbse, 27                    )] = """Reaction 27 """
-TAGL['%s-%s'            % (dbse, 28                    )] = """Reaction 28 """
-TAGL['%s-%s'            % (dbse, 29                    )] = """Reaction 29 """
-TAGL['%s-%s'            % (dbse, 30                    )] = """Reaction 30 """
-TAGL['%s-%s'            % (dbse, 31                    )] = """Reaction 31 """
-TAGL['%s-%s'            % (dbse, 32                    )] = """Reaction 32 """
-TAGL['%s-%s'            % (dbse, 33                    )] = """Reaction 33 """
-TAGL['%s-%s'            % (dbse, 34                    )] = """Reaction 34 """
-TAGL['%s-%s'            % (dbse, 35                    )] = """Reaction 35 """
-TAGL['%s-%s'            % (dbse, 36                    )] = """Reaction 36 """
-TAGL['%s-%s'            % (dbse, 37                    )] = """Reaction 37 """
-TAGL['%s-%s'            % (dbse, 38                    )] = """Reaction 38 """
-TAGL['%s-%s'            % (dbse, 39                    )] = """Reaction 39 """
-TAGL['%s-%s'            % (dbse, 40                    )] = """Reaction 40 """
-TAGL['%s-%s-reagent'            % (dbse, 't-butyl'               )] = """ """
-TAGL['%s-%s-reagent'            % (dbse, 'cfch2'                 )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'c2h2'                  )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'ch3cho'                )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'ch2cn'                 )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'c2h4'                  )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'ch2chcn'               )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'c2h'                   )] = """ """  
-TAGL['%s-%s-reagent'            % (dbse, 'ch4'                   )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'c2h3'                  )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'ch3cn'                 )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'allyl'                 )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'ch3cch'                )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'ch3'                   )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'h2'                    )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'ch3chch2'              )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'chfch2'                )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'h'                     )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'isobutane'             )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'ch2cho'                )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'ch2cch'                )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'ch2ccn'                )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'c6h6'                  )] = """ """   
-TAGL['%s-%s-reagent'            % (dbse, 'c6h5'                  )] = """ """   
+TAGL['%s-%s' % (dbse, 1)] = """Reaction 1 """
+TAGL['%s-%s' % (dbse, 2)] = """Reaction 2 """
+TAGL['%s-%s' % (dbse, 3)] = """Reaction 3 """
+TAGL['%s-%s' % (dbse, 4)] = """Reaction 4 """
+TAGL['%s-%s' % (dbse, 5)] = """Reaction 5 """
+TAGL['%s-%s' % (dbse, 6)] = """Reaction 6 """
+TAGL['%s-%s' % (dbse, 7)] = """Reaction 7 """
+TAGL['%s-%s' % (dbse, 8)] = """Reaction 8 """
+TAGL['%s-%s' % (dbse, 9)] = """Reaction 9 """
+TAGL['%s-%s' % (dbse, 10)] = """Reaction 10 """
+TAGL['%s-%s' % (dbse, 11)] = """Reaction 11 """
+TAGL['%s-%s' % (dbse, 12)] = """Reaction 12 """
+TAGL['%s-%s' % (dbse, 13)] = """Reaction 13 """
+TAGL['%s-%s' % (dbse, 14)] = """Reaction 14 """
+TAGL['%s-%s' % (dbse, 15)] = """Reaction 15 """
+TAGL['%s-%s' % (dbse, 16)] = """Reaction 16 """
+TAGL['%s-%s' % (dbse, 17)] = """Reaction 17 """
+TAGL['%s-%s' % (dbse, 18)] = """Reaction 18 """
+TAGL['%s-%s' % (dbse, 19)] = """Reaction 19 """
+TAGL['%s-%s' % (dbse, 20)] = """Reaction 20 """
+TAGL['%s-%s' % (dbse, 21)] = """Reaction 21 """
+TAGL['%s-%s' % (dbse, 22)] = """Reaction 22 """
+TAGL['%s-%s' % (dbse, 23)] = """Reaction 23 """
+TAGL['%s-%s' % (dbse, 24)] = """Reaction 24 """
+TAGL['%s-%s' % (dbse, 25)] = """Reaction 25 """
+TAGL['%s-%s' % (dbse, 26)] = """Reaction 26 """
+TAGL['%s-%s' % (dbse, 27)] = """Reaction 27 """
+TAGL['%s-%s' % (dbse, 28)] = """Reaction 28 """
+TAGL['%s-%s' % (dbse, 29)] = """Reaction 29 """
+TAGL['%s-%s' % (dbse, 30)] = """Reaction 30 """
+TAGL['%s-%s' % (dbse, 31)] = """Reaction 31 """
+TAGL['%s-%s' % (dbse, 32)] = """Reaction 32 """
+TAGL['%s-%s' % (dbse, 33)] = """Reaction 33 """
+TAGL['%s-%s' % (dbse, 34)] = """Reaction 34 """
+TAGL['%s-%s' % (dbse, 35)] = """Reaction 35 """
+TAGL['%s-%s' % (dbse, 36)] = """Reaction 36 """
+TAGL['%s-%s' % (dbse, 37)] = """Reaction 37 """
+TAGL['%s-%s' % (dbse, 38)] = """Reaction 38 """
+TAGL['%s-%s' % (dbse, 39)] = """Reaction 39 """
+TAGL['%s-%s' % (dbse, 40)] = """Reaction 40 """
+TAGL['%s-%s-reagent' % (dbse, 't-butyl')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'cfch2')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'c2h2')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'ch3cho')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'ch2cn')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'c2h4')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'ch2chcn')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'c2h')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'ch4')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'c2h3')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'ch3cn')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'allyl')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'ch3cch')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'ch3')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'h2')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'ch3chch2')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'chfch2')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'h')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'isobutane')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'ch2cho')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'ch2cch')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'ch2ccn')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'c6h6')] = """ """
+TAGL['%s-%s-reagent' % (dbse, 'c6h5')] = """ """
 
 # <<< Geometry Specification Strings >>>
 GEOS = {}
@@ -691,4 +772,3 @@ H         -0.03011941      -2.49351046       0.00000000
 H         -2.22399795      -1.23906809       0.00000000
 units angstrom
 """)
-

@@ -671,9 +671,9 @@ void DPD::cc3_sigma_RHF(dpdbuf4 *CIjAb, dpdbuf4 *WAbEi, dpdbuf4 *WMbIj, int do_s
                                 timer_off("X3*Wamef");
 #endif
                             } /* end Wamef*X3->Sijab contributions */
-                        }     /* k */
-                    }         /* j */
-                }             /* i */
+                        } /* k */
+                    } /* j */
+                } /* i */
 
                 for (Gab = 0; Gab < nirreps; Gab++) {
                     Gc = Gab ^ Gijk ^ GX3;
@@ -692,8 +692,8 @@ void DPD::cc3_sigma_RHF(dpdbuf4 *CIjAb, dpdbuf4 *WAbEi, dpdbuf4 *WMbIj, int do_s
                         free_dpd_block(W3a[Ga], virtpi[Ga], WAbEi->params->coltot[Gbc]);
                 }
             } /* Gk */
-        }     /* Gj */
-    }         /* Gi */
+        } /* Gj */
+    } /* Gi */
 
     /* close up files and update sigma vectors */
     file2_mat_close(&fIJ);

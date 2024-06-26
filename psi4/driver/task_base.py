@@ -82,12 +82,16 @@ class AtomicComputer(BaseComputer):
     molecule: Any = Field(..., description="The molecule to use in the computation.")
     basis: str = Field(..., description="The quantum chemistry basis set to evaluate (e.g., 6-31g, cc-pVDZ, ...).")
     method: str = Field(..., description="The quantum chemistry method to evaluate (e.g., B3LYP, MP2, ...).")
-    driver: DriverEnum = Field(..., description="The resulting type of computation: energy, gradient, hessian, properties."
+    driver: DriverEnum = Field(
+        ...,
+        description="The resulting type of computation: energy, gradient, hessian, properties."
         "Note for finite difference that this should be the target driver, not the means driver.")
     keywords: Dict[str, Any] = Field(default_factory=dict, description="The keywords to use in the computation.")
-    protocols: Optional[Union[AtomicResultProtocols, Dict[str, Any]]] = Field({"stdout": True}, description="Output modifications.")
+    protocols: Optional[Union[AtomicResultProtocols, Dict[str, Any]]] = Field({"stdout": True},
+                                                                              description="Output modifications.")
     tag: str = Field("*", description="The tags to pass along to compute managers.")
-    priority: str = Field(1, description="The priority of a Task; higher priority will be pulled first. {high:2, normal:1, low:0}")
+    priority: str = Field(
+        1, description="The priority of a Task; higher priority will be pulled first. {high:2, normal:1, low:0}")
     owner_group: Optional[str] = Field(None, description="group in the chown sense.")
     computed: bool = Field(False, description="Whether quantum chemistry has been run on this task.")
     result: Any = Field(default_factory=dict, description=":py:class:`~qcelemental.models.AtomicResult` return.")
@@ -111,20 +115,21 @@ class AtomicComputer(BaseComputer):
     def plan(self) -> AtomicInput:
         """Form QCSchema input from member data."""
 
-        atomic_model = AtomicInput(**{
-            "molecule": self.molecule.to_schema(dtype=2),
-            "driver": self.driver,
-            "model": {
-                "method": self.method,
-                "basis": self.basis
-            },
-            "keywords": self.keywords,
-            "protocols": self.protocols,
-            "extras": {
-                "psiapi": True,
-                "wfn_qcvars_only": True,
-            },
-        })
+        atomic_model = AtomicInput(
+            **{
+                "molecule": self.molecule.to_schema(dtype=2),
+                "driver": self.driver,
+                "model": {
+                    "method": self.method,
+                    "basis": self.basis
+                },
+                "keywords": self.keywords,
+                "protocols": self.protocols,
+                "extras": {
+                    "psiapi": True,
+                    "wfn_qcvars_only": True,
+                },
+            })
 
         return atomic_model
 
@@ -169,7 +174,8 @@ class AtomicComputer(BaseComputer):
 
             return
 
-        logger.info(f'<<< JSON launch ... {self.molecule.schoenflies_symbol()} {self.molecule.nuclear_repulsion_energy()}')
+        logger.info(
+            f'<<< JSON launch ... {self.molecule.schoenflies_symbol()} {self.molecule.nuclear_repulsion_energy()}')
         gof = core.get_output_file()
 
         # EITHER ...
@@ -184,7 +190,7 @@ class AtomicComputer(BaseComputer):
             #   distributed runs through QCFractal will likely need a different setup.
             task_config={
                 # B -> GiB
-                "memory": core.get_memory() / (2 ** 30),
+                "memory": core.get_memory() / (2**30),
                 "ncores": core.get_num_threads(),
             },
         )
@@ -233,17 +239,17 @@ def _singlepointrecord_to_atomicresult(spr: "qcportal.singlepoint.SinglepointRec
         if pv.startswith("return_") or pv.endswith("_moment"):
             continue
         if pv in [
-            "scf_one_electron_energy",
-            "scf_two_electron_energy",
-            "scf_vv10_energy",
-            "scf_xc_energy",
-            "scf_dispersion_correction_energy",
-            "mp2_same_spin_correlation_energy",
-            "mp2_opposite_spin_correlation_energy",
-            "ccsd_same_spin_correlation_energy",
-            "ccsd_opposite_spin_correlation_energy",
-            "ccsd_prt_pr_correlation_energy",
-            "ccsd_prt_pr_total_energy",
+                "scf_one_electron_energy",
+                "scf_two_electron_energy",
+                "scf_vv10_energy",
+                "scf_xc_energy",
+                "scf_dispersion_correction_energy",
+                "mp2_same_spin_correlation_energy",
+                "mp2_opposite_spin_correlation_energy",
+                "ccsd_same_spin_correlation_energy",
+                "ccsd_opposite_spin_correlation_energy",
+                "ccsd_prt_pr_correlation_energy",
+                "ccsd_prt_pr_total_energy",
         ]:
             continue
         shared_qcvars[pv.upper().replace("_", " ")] = dpv

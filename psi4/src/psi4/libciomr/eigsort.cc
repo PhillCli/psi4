@@ -179,4 +179,4 @@ void mosort(double *d, double **v, int *sym, int nso, int nmo) {
         }
     }
 }
-}
+}  // namespace psi

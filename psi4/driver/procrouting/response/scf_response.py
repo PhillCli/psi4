@@ -142,8 +142,7 @@ def cpscf_linear_response(wfn, *args, **kwargs):
     vectors_transformed = []
     for vector in vectors:
         if vector.shape != (nbf, nbf):
-            raise ValidationError(f"Vector must be of shape ({nbf}, {nbf}) for transformation"
-                                  " to the SO basis.")
+            raise ValidationError(f"Vector must be of shape ({nbf}, {nbf}) for transformation" " to the SO basis.")
         v_a = core.triplet(Co[0], vector, Cv[0], True, False, False)
         vectors_transformed.append(v_a)
         if not restricted:
@@ -361,9 +360,8 @@ def _solve_loop(wfn,
             R_velocity = -np.einsum("i,i", edtm_velocity, mdtm) / e
 
             results.append(
-                _TDSCFResults(e, irrep_GS, irrep_ES, irrep_trans, irrep_trans_index,
-                              edtm_length, f_length, edtm_velocity, f_velocity,
-                              mdtm, R_length, R_velocity, spin_mult, R, L))
+                _TDSCFResults(e, irrep_GS, irrep_ES, irrep_trans, irrep_trans_index, edtm_length, f_length,
+                              edtm_velocity, f_velocity, mdtm, R_length, R_velocity, spin_mult, R, L))
 
     return results
 
@@ -407,8 +405,8 @@ def _validate_tdscf(*, wfn, states, triplets, guess) -> None:
     if guess != "DENOMINATORS":
         raise ValidationError(f"TDSCF: Guess type {guess} is not valid")
 
-def _analyze_tdscf_excitations(tdscf_results, wfn, tda, coeff_cutoff,
-                               tdm_print):
+
+def _analyze_tdscf_excitations(tdscf_results, wfn, tda, coeff_cutoff, tdm_print):
     """Print transition dipole moments and significant (de)excitation components."""
 
     restricted = wfn.same_a_b_orbs()
@@ -430,27 +428,18 @@ def _analyze_tdscf_excitations(tdscf_results, wfn, tda, coeff_cutoff,
     }
 
     for p in tdm_print:
-        core.print_out(
-            f"\n{_printable[p]['title']}:\nState      X          Y          Z\n"
-        )
+        core.print_out(f"\n{_printable[p]['title']}:\nState      X          Y          Z\n")
         for i, q in enumerate(tdscf_results):
             x, y, z = _printable[p]['what'](q)
             core.print_out(f" {i+1: 4d} {x:< 10.6f} {y:< 10.6f} {z:< 10.6f}\n")
 
     # Print contributing transitions...
     core.print_out(f"\n\nContributing excitations{'' if tda else ' and de-excitations'}")
-    core.print_out(
-        f"\nOnly contributions with abs(coeff) >{coeff_cutoff: .2e} will be printed:\n"
-    )
+    core.print_out(f"\nOnly contributions with abs(coeff) >{coeff_cutoff: .2e} will be printed:\n")
     for i, x in enumerate(tdscf_results):
-        E_ex_nm = 1e9 / (constants.conversion_factor('hartree', 'm^-1') *
-                            x.E_ex_au)
-        core.print_out(
-            f"\nExcited State {i+1:4d} ({1 if x.spin_mult== 'singlet' else 3} {x.irrep_ES}):"
-        )
-        core.print_out(
-            f"{x.E_ex_au:> 10.5f} au   {E_ex_nm: >.2f} nm f = {x.f_length: >.4f}\n"
-        )
+        E_ex_nm = 1e9 / (constants.conversion_factor('hartree', 'm^-1') * x.E_ex_au)
+        core.print_out(f"\nExcited State {i+1:4d} ({1 if x.spin_mult== 'singlet' else 3} {x.irrep_ES}):")
+        core.print_out(f"{x.E_ex_au:> 10.5f} au   {E_ex_nm: >.2f} nm f = {x.f_length: >.4f}\n")
 
         if not restricted:
             core.print_out("Alpha orbitals:\n")
@@ -472,8 +461,7 @@ def _analyze_tdscf_excitations(tdscf_results, wfn, tda, coeff_cutoff,
             Yssq = Y.sum_of_squares()
 
             core.print_out(
-                f"  Sums of squares: Xssq = {Xssq: .6e}; Yssq = {Yssq: .6e}; Xssq - Yssq = {Xssq-Yssq: .6e}\n"
-            )
+                f"  Sums of squares: Xssq = {Xssq: .6e}; Yssq = {Yssq: .6e}; Xssq - Yssq = {Xssq-Yssq: .6e}\n")
 
         nocc = wfn.epsilon_a_subset("SO", "OCC").shape
         nvir = wfn.epsilon_a_subset("SO", "VIR").shape
@@ -537,8 +525,7 @@ def _analyze_tdscf_excitations(tdscf_results, wfn, tda, coeff_cutoff,
                 Yssq = Y.sum_of_squares()
 
                 core.print_out(
-                    f"  Sums of squares: Xssq = {Xssq: .6e}; Yssq = {Yssq: .6e}; Xssq - Yssq = {Xssq-Yssq: .6e}\n"
-                )
+                    f"  Sums of squares: Xssq = {Xssq: .6e}; Yssq = {Yssq: .6e}; Xssq - Yssq = {Xssq-Yssq: .6e}\n")
 
             nocc = wfn.epsilon_b_subset("SO", "OCC").shape
             nvir = wfn.epsilon_b_subset("SO", "VIR").shape
@@ -831,7 +818,8 @@ def tdscf_excitations(wfn,
 
             def transition_setter(prop_name, val):
                 wfn.set_variable(f"TD-{name} ROOT 0 -> ROOT {i+1} {prop_name}", val)
-                wfn.set_variable(f"TD-{name} ROOT 0 (IN {x.irrep_GS}) -> ROOT {target_h_count} (IN {x.irrep_ES}) {prop_name}", val)
+                wfn.set_variable(
+                    f"TD-{name} ROOT 0 (IN {x.irrep_GS}) -> ROOT {target_h_count} (IN {x.irrep_ES}) {prop_name}", val)
                 wfn.set_variable(f"TD-{name} ROOT 0 ({x.irrep_GS}) -> ROOT {i+1} ({x.irrep_ES}) {prop_name}", val)
                 wfn.set_variable(f"TD-{name} ROOT 0 -> ROOT {i+1} {prop_name} - {x.irrep_trans} TRANSITION", val)
 
@@ -869,17 +857,20 @@ def tdscf_excitations(wfn,
             # wfn.set_array_variable("TD-fctl ROOT 0 (IN h) -> ROOT n (IN i) ELECTRIC TRANSITION DIPOLE MOMENT (LEN")        # P::e SCF
             # wfn.set_array_variable("TD-fctl ROOT 0 (h) -> ROOT n (i) ELECTRIC TRANSITION DIPOLE MOMENT (LEN")        # P::e SCF
             # wfn.set_array_variable("TD-fctl ROOT 0 -> ROOT n ELECTRIC TRANSITION DIPOLE MOMENT (LEN) - h TRANSITION")  # P::e SCF
-            transition_setter("ELECTRIC TRANSITION DIPOLE MOMENT (LEN)", core.Matrix.from_array(x.edtm_length.reshape((1, 3))))
+            transition_setter("ELECTRIC TRANSITION DIPOLE MOMENT (LEN)",
+                              core.Matrix.from_array(x.edtm_length.reshape((1, 3))))
             # wfn.set_array_variable("TD-fctl ROOT 0 -> ROOT n ELECTRIC TRANSITION DIPOLE MOMENT (VEL)")               # P::e SCF
             # wfn.set_array_variable("TD-fctl ROOT 0 (IN h) -> ROOT n (IN i) ELECTRIC TRANSITION DIPOLE MOMENT (VEL)")       # P::e SCF
             # wfn.set_array_variable("TD-fctl ROOT 0 (h) -> ROOT n (i) ELECTRIC TRANSITION DIPOLE MOMENT (VEL)")       # P::e SCF
             # wfn.set_array_variable("TD-fctl ROOT 0 -> ROOT n ELECTRIC TRANSITION DIPOLE MOMENT (VEL) - h TRANSITION")  # P::e SCF
-            transition_setter("ELECTRIC TRANSITION DIPOLE MOMENT (VEL)", core.Matrix.from_array(x.edtm_velocity.reshape((1, 3))))
+            transition_setter("ELECTRIC TRANSITION DIPOLE MOMENT (VEL)",
+                              core.Matrix.from_array(x.edtm_velocity.reshape((1, 3))))
             # wfn.set_array_variable("TD-fctl ROOT 0 -> ROOT n MAGNETIC TRANSITION DIPOLE MOMENT")               # P::e SCF
             # wfn.set_array_variable("TD-fctl ROOT 0 (IN h) -> ROOT n (IN i) MAGNETIC TRANSITION DIPOLE MOMENT")       # P::e SCF
             # wfn.set_array_variable("TD-fctl ROOT 0 (h) -> ROOT n (i) MAGNETIC TRANSITION DIPOLE MOMENT")       # P::e SCF
             # wfn.set_array_variable("TD-fctl ROOT 0 -> ROOT n MAGNETIC TRANSITION DIPOLE MOMENT - h TRANSITION")  # P::e SCF
-            transition_setter("MAGNETIC TRANSITION DIPOLE MOMENT (VEL)", core.Matrix.from_array(x.mdtm.reshape((1, 3))))
+            transition_setter("MAGNETIC TRANSITION DIPOLE MOMENT (VEL)", core.Matrix.from_array(x.mdtm.reshape(
+                (1, 3))))
             # wfn.set_array_variable("TD-fctl ROOT 0 -> ROOT n RIGHT EIGENVECTOR ALPHA")               # P::e SCF
             # wfn.set_array_variable("TD-fctl ROOT 0 (IN h) -> ROOT n (IN i) RIGHT EIGENVECTOR ALPHA")       # P::e SCF
             # wfn.set_array_variable("TD-fctl ROOT 0 (h) -> ROOT n (i) RIGHT EIGENVECTOR ALPHA")       # P::e SCF
@@ -907,7 +898,7 @@ def tdscf_excitations(wfn,
         root_count[x.irrep_ES] += 1
 
     core.print_out("\n")
-    
+
     _analyze_tdscf_excitations(_results, wfn, tda, coeff_cutoff, tdm_print)
 
     _print_tdscf_warning()

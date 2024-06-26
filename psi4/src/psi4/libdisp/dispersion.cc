@@ -27,11 +27,11 @@
  */
 
 /**********************************************************
-* dispersion.cc: definitions for -D for KS-DFT
-* Robert Parrish, robparrish@gmail.com
-* 09/01/2010
-*
-***********************************************************/
+ * dispersion.cc: definitions for -D for KS-DFT
+ * Robert Parrish, robparrish@gmail.com
+ * 09/01/2010
+ *
+ ***********************************************************/
 
 #include "psi4/libmints/vector.h"
 #include "psi4/libmints/matrix.h"
@@ -92,7 +92,7 @@ std::shared_ptr<Dispersion> Dispersion::build(const std::string &name, double s6
         disp->bibtex_ = "Grimme:2006:1787";
         disp->s6_ = s6;
         disp->d_ = alpha6;  // 20.0
-        disp->sr6_ = sr6;  // 1.1
+        disp->sr6_ = sr6;   // 1.1
         disp->C6_ = C6_D2_;
         disp->RvdW_ = RvdW_D2_;
         disp->C6_type_ = C6_geom;
@@ -346,7 +346,7 @@ double Dispersion::compute_energy(std::shared_ptr<Molecule> m) {
                 }
 
                 if (Damping_type_ == Damping_D1) {
-                    double RvdW = (RvdW_[(int) atom_list_p[i]] + RvdW_[(int) atom_list_p[j]]) / 1.1;
+                    double RvdW = (RvdW_[(int)atom_list_p[i]] + RvdW_[(int)atom_list_p[j]]) / 1.1;
                     f = 1.0 / (1.0 + exp(-d_ * (R / (sr6_ * RvdW) - 1)));
                 } else if (Damping_type_ == Damping_CHG) {
                     double RvdW = RvdW_[(int)atom_list_p[i]] + RvdW_[(int)atom_list_p[j]];
@@ -495,4 +495,4 @@ std::shared_ptr<Vector> Dispersion::set_atom_list(std::shared_ptr<Molecule> mol)
     return atom_list;
 }
 
-}  // end namespace
+}  // namespace psi

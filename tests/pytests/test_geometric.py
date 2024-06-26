@@ -28,9 +28,7 @@ def test_h2o(inp, engine):
         H 1 1.0 2 90.0
     """)
 
-    psi4.set_options({'basis': 'cc-pvdz',
-                      'g_convergence': 'gau_tight'
-                     })
+    psi4.set_options({'basis': 'cc-pvdz', 'g_convergence': 'gau_tight'})
     psi4.set_options(inp['options'])
 
     e, wfn = psi4.optimize(inp['name'], return_wfn=True, engine=engine)
@@ -55,23 +53,22 @@ def test_h2o_constrained(inp):
         H 1 1.0 2 90.0
     """)
 
-    psi4.set_options({'basis': 'cc-pvdz',
-                      'g_convergence': 'gau_tight'
-                     })
+    psi4.set_options({'basis': 'cc-pvdz', 'g_convergence': 'gau_tight'})
     psi4.set_options(inp['options'])
 
-    # geometric specific options 
+    # geometric specific options
     geometric_keywords = {
-        'coordsys' : 'tric',
-        'enforce' : 0.0,
-        'constraints' : { 
-            'set' : [{'type'    : 'angle',
-                      'indices' : [1, 0, 2],
-                      'value'   : 90.0 }]
+        'coordsys': 'tric',
+        'enforce': 0.0,
+        'constraints': {
+            'set': [{
+                'type': 'angle',
+                'indices': [1, 0, 2],
+                'value': 90.0
+            }]
         }
     }
 
     e, wfn = psi4.optimize(inp['name'], return_wfn=True, engine='geometric', optimizer_keywords=geometric_keywords)
     assert compare_values(inp['ref_ene'], e, 6)
     assert compare_values(inp['ref_nuc'], h2o.nuclear_repulsion_energy(), 3)
-

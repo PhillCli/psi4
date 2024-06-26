@@ -94,7 +94,7 @@ void sortI_ROHF(Wavefunction& wfn) {
     Slice socc_in_vir(moinfo.virtpi - moinfo.openpi, moinfo.virtpi);
     Slice uocc_in_vir(Dimension(moinfo.nirreps), moinfo.virtpi - moinfo.openpi);
     Slice uocc_in_full(moinfo.frdocc + moinfo.occpi, moinfo.orbspi - moinfo.fruocc);
-    
+
     Matrix O_b(moinfo.orbspi, moinfo.orbspi);
 
     global_dpd_->file2_init(&D, PSIF_CC_OEI, 0, 0, 0, "I(i,j)");

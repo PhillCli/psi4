@@ -719,7 +719,8 @@ void DCTSolver::build_tau_U() {
     bocc_d->copy(bocc_tau_);
     bvir_d->copy(bvir_tau_);
 
-    DIISManager diisManager(maxdiis_, "DCT DIIS Tau", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::InCore);
+    DIISManager diisManager(maxdiis_, "DCT DIIS Tau", DIISManager::RemovalPolicy::LargestError,
+                            DIISManager::StoragePolicy::InCore);
     if ((nalpha_ + nbeta_) > 1) {
         diisManager.set_error_vector_size(&aocc_tau_, &bocc_tau_, &avir_tau_, &bvir_tau_);
         diisManager.set_vector_size(&aocc_tau_, &bocc_tau_, &avir_tau_, &bvir_tau_);
@@ -776,7 +777,8 @@ void DCTSolver::build_tau_U() {
 
         if (rms < diis_start_thresh_) {
             // Store the DIIS vectors
-            if (diisManager.add_entry(aocc_r.get(), bocc_r.get(), avir_r.get(), bvir_r.get(), &aocc_tau_, &bocc_tau_, &avir_tau_, &bvir_tau_)) {
+            if (diisManager.add_entry(aocc_r.get(), bocc_r.get(), avir_r.get(), bvir_r.get(), &aocc_tau_, &bocc_tau_,
+                                      &avir_tau_, &bvir_tau_)) {
                 diisString += "S";
             }
 

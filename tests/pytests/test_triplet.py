@@ -7,6 +7,7 @@ import psi4
 
 pytestmark = [pytest.mark.psi, pytest.mark.api]
 
+
 @pytest.mark.quick
 def test_triplet_speedup():
     a = np.random.rand(10000, 10)

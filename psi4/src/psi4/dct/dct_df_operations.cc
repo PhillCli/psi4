@@ -42,7 +42,7 @@
 namespace psi {
 namespace dct {
 
-    void DCTSolver::initialize_df() {
+void DCTSolver::initialize_df() {
     dct_timer_on("DCTSolver::df_build_b()");
 
     outfile->Printf("\n\n\t                  ************************************************\n");
@@ -2302,7 +2302,7 @@ void DCTSolver::three_idx_separable_density() {
 }
 
 DFTensor DCTSolver::three_idx_separable_helper(const Matrix& Q, const Matrix& J, const Matrix& RDM,
-                                             const Matrix& C_subset) {
+                                               const Matrix& C_subset) {
     // Coulomb-like term of 10.1063/1.4896235:54 b(Q|pq) gamma^p_q gamma^r_s
     auto temp = DFTensor::contract123(Q, RDM);
     // Exchange-like term of 10.1063/1.4896235:54 b(Q|pq) gamma^p_s gamma^r_q
@@ -2334,4 +2334,3 @@ void DCTSolver::construct_metric_density(const std::string& basis_type) {
 
 }  // namespace dct
 }  // namespace psi
-

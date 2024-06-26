@@ -48,8 +48,7 @@
 namespace psi {
 namespace ccdensity {
 
-void transdip(const MintsHelper &mints) {
-
+void transdip(const MintsHelper& mints) {
     /*** Transform the SO dipole integrals to the MO basis ***/
     moinfo.dip = mints.so_dipole();
     for (auto& i : moinfo.dip) {

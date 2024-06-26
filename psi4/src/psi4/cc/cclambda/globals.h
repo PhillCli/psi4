@@ -58,7 +58,7 @@ EXTERN struct Params params;
 EXTERN struct L_Params *pL_params;
 EXTERN struct Local local;
 void check_sum(char *lbl, int L_irr);
-}
+}  // namespace cclambda
 }  // namespace psi
 
 #endif

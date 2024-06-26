@@ -1,4 +1,3 @@
-
 # @BEGIN LICENSE
 #
 # Psi4: an open-source quantum chemistry software package
@@ -280,7 +279,9 @@ def scf_iterate(self, e_conv=None, d_conv=None):
     scf_maxiter_post_screening = core.get_option('SCF', 'COSX_MAXITER_FINAL')
 
     if scf_maxiter_post_screening < -1:
-        raise ValidationError('COSX_MAXITER_FINAL ({}) must be -1 or above. If you wish to attempt full SCF converge on the final COSX grid, set COSX_MAXITER_FINAL to -1.'.format(scf_maxiter_post_screening))
+        raise ValidationError(
+            'COSX_MAXITER_FINAL ({}) must be -1 or above. If you wish to attempt full SCF converge on the final COSX grid, set COSX_MAXITER_FINAL to -1.'
+            .format(scf_maxiter_post_screening))
 
     # has early_screening changed from True to False?
     early_screening_disabled = False
@@ -345,9 +346,7 @@ def scf_iterate(self, e_conv=None, d_conv=None):
         if core.get_option('SCF', 'PE'):
             Dt = self.Da().clone()
             Dt.add(self.Db())
-            upe, Vpe = self.pe_state.get_pe_contribution(
-                Dt, elec_only=False
-            )
+            upe, Vpe = self.pe_state.get_pe_contribution(Dt, elec_only=False)
             SCFE += upe
             self.push_back_external_potential(Vpe)
         self.set_variable("PE ENERGY", upe)  # P::e PE
@@ -633,7 +632,8 @@ def scf_finalize_energy(self):
         self.set_energies("Total Energy", SCFE)
         core.print_out(efpobj.energy_summary(scfefp=SCFE, label='psi'))
 
-        self.set_variable("EFP ELST ENERGY", efpene['electrostatic'] + efpene['charge_penetration'] + efpene['electrostatic_point_charges'])  # P::e EFP
+        self.set_variable("EFP ELST ENERGY", efpene['electrostatic'] + efpene['charge_penetration'] +
+                          efpene['electrostatic_point_charges'])  # P::e EFP
         self.set_variable("EFP IND ENERGY", efpene['polarization'])  # P::e EFP
         self.set_variable("EFP DISP ENERGY", efpene['dispersion'])  # P::e EFP
         self.set_variable("EFP EXCH ENERGY", efpene['exchange_repulsion'])  # P::e EFP
@@ -644,12 +644,12 @@ def scf_finalize_energy(self):
 
     if self.V_potential():
         quad = self.V_potential().quadrature_values()
-        rho_a = quad['RHO_A']/2 if self.same_a_b_dens() else quad['RHO_A']
-        rho_b = quad['RHO_B']/2 if self.same_a_b_dens() else quad['RHO_B']
+        rho_a = quad['RHO_A'] / 2 if self.same_a_b_dens() else quad['RHO_A']
+        rho_b = quad['RHO_B'] / 2 if self.same_a_b_dens() else quad['RHO_B']
         rho_ab = (rho_a + rho_b)
-        self.set_variable("GRID ELECTRONS TOTAL",rho_ab)  # P::e SCF
-        self.set_variable("GRID ELECTRONS ALPHA",rho_a)  # P::e SCF
-        self.set_variable("GRID ELECTRONS BETA",rho_b)  # P::e SCF
+        self.set_variable("GRID ELECTRONS TOTAL", rho_ab)  # P::e SCF
+        self.set_variable("GRID ELECTRONS ALPHA", rho_a)  # P::e SCF
+        self.set_variable("GRID ELECTRONS BETA", rho_b)  # P::e SCF
         dev_a = rho_a - self.nalpha()
         dev_b = rho_b - self.nbeta()
         core.print_out(f"   Electrons on quadrature grid:\n")
@@ -659,7 +659,7 @@ def scf_finalize_energy(self):
             core.print_out(f"      Nalpha   = {rho_a:15.10f} ; deviation = {dev_a:.3e}\n")
             core.print_out(f"      Nbeta    = {rho_b:15.10f} ; deviation = {dev_b:.3e}\n")
             core.print_out(f"      Ntotal   = {rho_ab:15.10f} ; deviation = {dev_b+dev_a:.3e} \n\n")
-        if ((dev_b+dev_a) > 0.1):
+        if ((dev_b + dev_a) > 0.1):
             core.print_out("   WARNING: large deviation in the electron count on grid detected. Check grid size!")
     self.check_phases()
     self.compute_spin_contamination()
@@ -707,17 +707,16 @@ def scf_finalize_energy(self):
         _, Vpcm = self.get_PCM().compute_PCM_terms(Dt, calc_type)
         self.push_back_external_potential(Vpcm)
         # Set callback function for CPSCF
-        self.set_external_cpscf_perturbation("PCM", lambda pert_dm : self.get_PCM().compute_V(pert_dm))
+        self.set_external_cpscf_perturbation("PCM", lambda pert_dm: self.get_PCM().compute_V(pert_dm))
 
     if core.get_option('SCF', 'PE'):
         Dt = self.Da().clone()
         Dt.add(self.Db())
-        _, Vpe = self.pe_state.get_pe_contribution(
-            Dt, elec_only=False
-        )
+        _, Vpe = self.pe_state.get_pe_contribution(Dt, elec_only=False)
         self.push_back_external_potential(Vpe)
         # Set callback function for CPSCF
-        self.set_external_cpscf_perturbation("PE", lambda pert_dm : self.pe_state.get_pe_contribution(pert_dm, elec_only=True)[1])
+        self.set_external_cpscf_perturbation(
+            "PE", lambda pert_dm: self.pe_state.get_pe_contribution(pert_dm, elec_only=True)[1])
 
     if core.get_option('SCF', 'DDX'):
         Dt = self.Da().clone()
@@ -726,7 +725,8 @@ def scf_finalize_energy(self):
         self.push_back_external_potential(Vddx)
         # Set callback function for CPSCF
         self.set_external_cpscf_perturbation(
-            "DDX", lambda pert_dm : self.ddx.get_solvation_contributions(pert_dm, elec_only=True, nonequilibrium=True)[1])
+            "DDX", lambda pert_dm: self.ddx.get_solvation_contributions(pert_dm, elec_only=True, nonequilibrium=True)[
+                1])
 
     # Orbitals are always saved, in case an MO guess is requested later
     # save_orbitals()
@@ -763,8 +763,8 @@ def scf_print_energies(self):
     hf_energy = enuc + e1 + e2
     dft_energy = hf_energy + exc + ed + evv10
     total_energy = dft_energy + eefp + epcm + edd + epe
-    full_qm = (not core.get_option('SCF', 'PCM') and not core.get_option('SCF', 'DDX') and not core.get_option('SCF', 'PE')
-               and not hasattr(self.molecule(), 'EFP'))
+    full_qm = (not core.get_option('SCF', 'PCM') and not core.get_option('SCF', 'DDX')
+               and not core.get_option('SCF', 'PE') and not hasattr(self.molecule(), 'EFP'))
 
     core.print_out("   => Energetics <=\n\n")
     core.print_out("    Nuclear Repulsion Energy =        {:24.16f}\n".format(enuc))
@@ -801,7 +801,7 @@ def scf_print_energies(self):
         self.set_variable("HF KINETIC ENERGY", ke)  # P::e SCF
         self.set_variable("HF POTENTIAL ENERGY", potential)  # P::e SCF
         if full_qm:
-            self.set_variable("HF VIRIAL RATIO", - potential / ke)  # P::e SCF
+            self.set_variable("HF VIRIAL RATIO", -potential / ke)  # P::e SCF
         self.set_variable("HF TOTAL ENERGY", hf_energy)  # P::e SCF
     if hasattr(self, "_disp_functor"):
         self.set_variable("DISPERSION CORRECTION ENERGY", ed)  # P::e SCF
@@ -817,7 +817,7 @@ def scf_print_energies(self):
     self.set_variable("SCF ITERATIONS", self.iteration_)  # P::e SCF
 
 
-def scf_print_preiterations(self,small=False):
+def scf_print_preiterations(self, small=False):
     # small version does not print Nalpha,Nbeta,Ndocc,Nsocc, e.g. for SAD guess where they are not
     # available
     ct = self.molecule().point_group().char_table()
@@ -843,14 +843,10 @@ def scf_print_preiterations(self,small=False):
         core.print_out("   -------------------------\n")
 
         for h in range(self.nirrep()):
-            core.print_out(
-                f"     {ct.gamma(h).symbol():<3s}   {self.nsopi()[h]:6d}  {self.nmopi()[h]:6d} \n"
-            )
+            core.print_out(f"     {ct.gamma(h).symbol():<3s}   {self.nsopi()[h]:6d}  {self.nmopi()[h]:6d} \n")
 
         core.print_out("   -------------------------\n")
-        core.print_out(
-            f"    Total  {self.nso():6d}  {self.nmo():6d}\n"
-        )
+        core.print_out(f"    Total  {self.nso():6d}  {self.nmo():6d}\n")
         core.print_out("   -------------------------\n\n")
 
 
@@ -925,7 +921,9 @@ def _validate_diis(self):
         start = core.get_option('SCF', 'SCF_INITIAL_START_DIIS_TRANSITION')
         stop = core.get_option('SCF', 'SCF_INITIAL_FINISH_DIIS_TRANSITION')
         if start < stop:
-            raise ValidationError('SCF_INITIAL_START_DIIS_TRANSITION error magnitude cannot be less than SCF_INITIAL_FINISH_DIIS_TRANSITION.')
+            raise ValidationError(
+                'SCF_INITIAL_START_DIIS_TRANSITION error magnitude cannot be less than SCF_INITIAL_FINISH_DIIS_TRANSITION.'
+            )
         elif start < 0:
             raise ValidationError('SCF_INITIAL_START_DIIS_TRANSITION cannot be negative.')
         elif stop < 0:
@@ -1021,7 +1019,9 @@ def _validate_soscf():
 
     return enabled
 
+
 core.HF.validate_diis = _validate_diis
+
 
 def efp_field_fn(xyz):
     """Callback function for PylibEFP to compute electric field from electrons

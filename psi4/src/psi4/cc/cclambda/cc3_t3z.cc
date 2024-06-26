@@ -221,8 +221,8 @@ void cc3_t3z_RHF_AAA() {
                             }
 
                         } /* k */
-                    }     /* j */
-                }         /* i */
+                    } /* j */
+                } /* i */
 
                 for (Gab = 0; Gab < nirreps; Gab++) {
                     Gc = Gab ^ Gijk; /* totally symmetric */
@@ -234,8 +234,8 @@ void cc3_t3z_RHF_AAA() {
                 }
 
             } /* Gk */
-        }     /* Gj */
-    }         /* Gi */
+        } /* Gj */
+    } /* Gi */
 
     free(W1);
     free(W2);
@@ -595,8 +595,8 @@ void cc3_t3z_RHF_AAB() {
                             }
 
                         } /* k */
-                    }     /* j */
-                }         /* i */
+                    } /* j */
+                } /* i */
 
                 for (Gab = 0; Gab < nirreps; Gab++) {
                     Gc = Gab ^ Gijk; /* totally symmetric */
@@ -608,8 +608,8 @@ void cc3_t3z_RHF_AAB() {
                 }
 
             } /* Gk */
-        }     /* Gj */
-    }         /* Gi */
+        } /* Gj */
+    } /* Gi */
 
     free(W1);
     free(W2);

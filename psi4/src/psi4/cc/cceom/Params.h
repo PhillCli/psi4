@@ -81,7 +81,7 @@ struct Eom_params {
     int mult;
     bool follow_root;
     bool collapse_with_last;
-    bool collapse_with_last_cc3 ;
+    bool collapse_with_last_cc3;
     int skip_diagSS;
     int vectors_cc3;
     int restart_eom_cc3;

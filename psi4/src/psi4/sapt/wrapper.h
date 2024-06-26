@@ -40,6 +40,6 @@ namespace sapt {
 PsiReturnType sapt(SharedWavefunction Dimer, SharedWavefunction MonomerA, SharedWavefunction MonomerB,
                    Options& options);
 }
-}
+}  // namespace psi
 
 #endif

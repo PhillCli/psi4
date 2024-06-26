@@ -153,5 +153,5 @@ void sortone_ROHF(const struct RHO_Params& rho_params) {
     moinfo.opdm = Matrix(O_a);
     moinfo.opdm.add(O_b);
 }
-}
+}  // namespace ccdensity
 }  // namespace psi

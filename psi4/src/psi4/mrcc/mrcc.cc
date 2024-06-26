@@ -917,19 +917,20 @@ PsiReturnType mrcc_generate_input(SharedWavefunction ref_wfn, Options &options, 
     auto mode2 = std::ostream::trunc;
     printer = std::make_shared<PsiOutStream>("fort.56", mode2);
     // FILE* fort56 = fopen("fort.56", "w");
-    printer->Printf("%6d%6d%6d%6d%6d      0     0%6d     0%6d%6d%6d%6d      0      0%6d     0     0    0.00    0%10lu\n",
-                    exlevel,                                         // # 1
-                    nsing,                                           // # 2
-                    ntrip,                                           // # 3
-                    options.get_int("MRCC_RESTART"),                 // # 4
-                    method,                                          // # 5
-                    symm,                                            // # 8
-                    closed_shell,                                    // #10
-                    spatial_orbitals,                                // #11
-                    HF_canonical,                                    // #12
-                    ndoub,                                           // #13
-                    e_conv,                                          // #16
-                    Process::environment.get_memory() / 1000 / 1000  // #21
+    printer->Printf(
+        "%6d%6d%6d%6d%6d      0     0%6d     0%6d%6d%6d%6d      0      0%6d     0     0    0.00    0%10lu\n",
+        exlevel,                                         // # 1
+        nsing,                                           // # 2
+        ntrip,                                           // # 3
+        options.get_int("MRCC_RESTART"),                 // # 4
+        method,                                          // # 5
+        symm,                                            // # 8
+        closed_shell,                                    // #10
+        spatial_orbitals,                                // #11
+        HF_canonical,                                    // #12
+        ndoub,                                           // #13
+        e_conv,                                          // #16
+        Process::environment.get_memory() / 1000 / 1000  // #21
     );
 
     printer->Printf(

@@ -206,4 +206,4 @@ void MemoryManager::MemCheck(std::string out) {
     printer->Printf("\n  ==============================================================================\n");
 }
 
-} /* End Namespace */
+}  // namespace psi

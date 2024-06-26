@@ -502,7 +502,8 @@ void DPD::file4_cache_lock(dpdfile4 *File) {
     if (this_entry != nullptr && !this_entry->lock) {
         /* Increment the locked cache memory counter */
         for (h = 0; h < File->params->nirreps; h++) {
-            dpd_main.memlocked += static_cast<size_t>(File->params->rowtot[h]) * File->params->coltot[h ^ (File->my_irrep)];
+            dpd_main.memlocked +=
+                static_cast<size_t>(File->params->rowtot[h]) * File->params->coltot[h ^ (File->my_irrep)];
         }
 
         this_entry->lock = 1;
@@ -521,7 +522,8 @@ void DPD::file4_cache_unlock(dpdfile4 *File) {
 
         /* Decrement the locked cache memory counter */
         for (h = 0; h < File->params->nirreps; h++) {
-            dpd_main.memlocked -= static_cast<size_t>(File->params->rowtot[h]) * File->params->coltot[h ^ (File->my_irrep)];
+            dpd_main.memlocked -=
+                static_cast<size_t>(File->params->rowtot[h]) * File->params->coltot[h ^ (File->my_irrep)];
         }
     }
 }

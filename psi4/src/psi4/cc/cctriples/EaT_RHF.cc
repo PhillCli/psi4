@@ -225,8 +225,8 @@ double EaT_RHF() {
                 for (thread = 0; thread < nthreads; ++thread) ET += ET_array[thread];
 
             } /* Gk */
-        }     /* Gj */
-    }         /* Gi */
+        } /* Gj */
+    } /* Gi */
 
     ET /= 3.0;
 
@@ -840,8 +840,8 @@ void EaT_RHF_thread(EaT_RHF_thread_data *data) {
                 // timer_off("malloc");
 
             } /* k */
-        }     /* j */
-    }         /* i */
+        } /* j */
+    } /* i */
 }
 
 }  // namespace cctriples

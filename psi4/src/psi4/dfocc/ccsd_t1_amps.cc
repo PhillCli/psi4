@@ -36,7 +36,6 @@ namespace psi {
 namespace dfoccwave {
 
 void DFOCC::ccsd_t1_amps() {
-
     // RHF
     if (reference_ == "RESTRICTED") {
         // defs
@@ -97,9 +96,9 @@ void DFOCC::ccsd_t1_amps() {
         // Alpha Part
         // t(I,A) * D(I,A) = f(I,A)
         // D(I,A) = f(I,I) - f(A,A)
-        for(int i=0; i<naoccA; ++i) {
-            for(int a=0; a<navirA; ++a) {
-               t1newA->set(i, a, FockA->get(i+nfrzc, a+noccA));
+        for (int i = 0; i < naoccA; ++i) {
+            for (int a = 0; a < navirA; ++a) {
+                t1newA->set(i, a, FockA->get(i + nfrzc, a + noccA));
             }
         }
 
@@ -151,24 +150,24 @@ void DFOCC::ccsd_t1_amps() {
         Y->swap_3index_col(T);
         T.reset();
 
-        t1newA->contract(true, false, naoccA, navirA, nQ*navirA, Y, bQabA, 1.0, 1.0);
+        t1newA->contract(true, false, naoccA, navirA, nQ * navirA, Y, bQabA, 1.0, 1.0);
         Y.reset();
 
         // Denom
-        for(int i=0; i<naoccA; ++i) {
-             for(int a=0; a<navirA; ++a) {
-                 double value = FockA->get(i+nfrzc, i+nfrzc) - FockA->get(a+noccA, a+noccA);
-                 t1newA->set(i, a, t1newA->get(i,a)/value);
-             }
+        for (int i = 0; i < naoccA; ++i) {
+            for (int a = 0; a < navirA; ++a) {
+                double value = FockA->get(i + nfrzc, i + nfrzc) - FockA->get(a + noccA, a + noccA);
+                t1newA->set(i, a, t1newA->get(i, a) / value);
+            }
         }
-        //t1newA->print();
+        // t1newA->print();
 
         // Beta Part
         // t(i,a) * D(i,a) = f(i,a)
         // D(i,a) = f(i,i) - f(a,a)
-        for(int i=0; i<naoccB; ++i) {
-            for(int a=0; a<navirB; ++a) {
-               t1newB->set(i, a, FockB->get(i+nfrzc, a+noccB));
+        for (int i = 0; i < naoccB; ++i) {
+            for (int a = 0; a < navirB; ++a) {
+                t1newB->set(i, a, FockB->get(i + nfrzc, a + noccB));
             }
         }
 
@@ -210,7 +209,7 @@ void DFOCC::ccsd_t1_amps() {
         X->add(K);
         K.reset();
 
-        t1newB->contract(true, false, naoccB, navirB, nQ*naoccB, bQijB, X, -1.0, 1.0);
+        t1newB->contract(true, false, naoccB, navirB, nQ * naoccB, bQijB, X, -1.0, 1.0);
         X.reset();
 
         // t(i,a) += \sum_(Q,e) T(Q,ie) * b(Q,ae)
@@ -220,17 +219,16 @@ void DFOCC::ccsd_t1_amps() {
         Y->swap_3index_col(T);
         T.reset();
 
-        t1newB->contract(true, false, naoccB, navirB, nQ*navirB, Y, bQabB, 1.0, 1.0);
+        t1newB->contract(true, false, naoccB, navirB, nQ * navirB, Y, bQabB, 1.0, 1.0);
         Y.reset();
 
         // Denom
-        for(int i=0; i<naoccB; ++i) {
-             for(int a=0; a<navirB; ++a) {
-                 double value = FockB->get(i+nfrzc, i+nfrzc) - FockB->get(a+noccB, a+noccB);
-                 t1newB->set(i, a, t1newB->get(i,a)/value);
-             }
+        for (int i = 0; i < naoccB; ++i) {
+            for (int a = 0; a < navirB; ++a) {
+                double value = FockB->get(i + nfrzc, i + nfrzc) - FockB->get(a + noccB, a + noccB);
+                t1newB->set(i, a, t1newB->get(i, a) / value);
+            }
         }
-
 
     }  // else if (reference_ == "UNRESTRICTED")
 

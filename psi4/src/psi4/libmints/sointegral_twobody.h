@@ -47,7 +47,7 @@
 
 #include <vector>
 
-//#define DebugPrint 1
+// #define DebugPrint 1
 
 #ifdef _OPENMP
 #include <omp.h>
@@ -213,7 +213,6 @@ void TwoBodySOInt::compute_shell(int uish, int ujsh, int uksh, int ulsh, TwoBody
     // timer_on("TwoBodySOInt::compute_shell overall");
     mints_timer_on("TwoBodySOInt::compute_shell overall");
     mints_timer_on("TwoBodySOInt::compute_shell setup");
-
 
     const SOTransform &t1 = b1_->sotrans(uish);
     const SOTransform &t2 = b2_->sotrans(ujsh);
@@ -556,7 +555,6 @@ void TwoBodySOInt::compute_shell_deriv1(int uish, int ujsh, int uksh, int ulsh, 
     int thread = 0;
     // Old call: WorldComm->thread_id(pthread_self());
 
-
     const SOTransform &t1 = b1_->sotrans(uish);
     const SOTransform &t2 = b2_->sotrans(ujsh);
     const SOTransform &t3 = b3_->sotrans(uksh);
@@ -686,7 +684,7 @@ void TwoBodySOInt::compute_shell_deriv1(int uish, int ujsh, int uksh, int ulsh, 
 
         // Compute this unique AO shell
         tb_[thread]->compute_shell_deriv1(si, sj, sk, sl);
-        const auto& buffers = tb_[thread]->buffers();
+        const auto &buffers = tb_[thread]->buffers();
         const double *pAx = buffers[0];
         const double *pAy = buffers[1];
         const double *pAz = buffers[2];

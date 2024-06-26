@@ -66,41 +66,41 @@ void get_moinfo(std::shared_ptr<Wavefunction> wfn);
 void get_frozen();
 void get_params(Options &options);
 void exit_io();
-void onepdm(const struct RHO_Params&);
-void sortone(const struct RHO_Params&);
+void onepdm(const struct RHO_Params &);
+void sortone(const struct RHO_Params &);
 void twopdm();
-void energy(const struct RHO_Params&);
+void energy(const struct RHO_Params &);
 // Note: resort_tei() may be used by a frozen-core CC gradient implementation in the future.
 // See https://github.com/psi4/psi4/pull/2696 for discussion.
 // void resort_tei();
 // void resort_gamma();
-void lag(const struct RHO_Params& rho_params);
+void lag(const struct RHO_Params &rho_params);
 void build_X();
 void build_A();
 void build_Z();
 void relax_I();
-void relax_D(const struct RHO_Params& rho_params);
-void sortI(Wavefunction& wfn);
-void fold(const struct RHO_Params& rho_params);
-void deanti(const struct RHO_Params& rho_params);
+void relax_D(const struct RHO_Params &rho_params);
+void sortI(Wavefunction &wfn);
+void fold(const struct RHO_Params &rho_params);
+void deanti(const struct RHO_Params &rho_params);
 void add_ref_RHF(struct iwlbuf *);
 void add_ref_ROHF(struct iwlbuf *);
 void add_ref_UHF(struct iwlbuf *, struct iwlbuf *, struct iwlbuf *);
 void add_core_ROHF(struct iwlbuf *);
 // void add_core_UHF(struct iwlbuf *, struct iwlbuf *, struct iwlbuf *);
-void dump_RHF(struct iwlbuf *, const struct RHO_Params& rho_params);
-void dump_ROHF(struct iwlbuf *, const struct RHO_Params& rho_params);
-void dump_UHF(struct iwlbuf *, struct iwlbuf *, struct iwlbuf *, const struct RHO_Params& rho_params);
+void dump_RHF(struct iwlbuf *, const struct RHO_Params &rho_params);
+void dump_ROHF(struct iwlbuf *, const struct RHO_Params &rho_params);
+void dump_UHF(struct iwlbuf *, struct iwlbuf *, struct iwlbuf *, const struct RHO_Params &rho_params);
 void kinetic(std::shared_ptr<Wavefunction> wfn);
 void probable();
 int **cacheprep_rhf(int level, int *cachefiles);
 int **cacheprep_uhf(int level, int *cachefiles);
 void cachedone_rhf(int **cachelist);
 void cachedone_uhf(int **cachelist);
-void setup_LR(const struct RHO_Params&);
+void setup_LR(const struct RHO_Params &);
 void G_build();
-void x_oe_intermediates(const struct RHO_Params&);
-void x_onepdm(const struct RHO_Params&);
+void x_oe_intermediates(const struct RHO_Params &);
+void x_onepdm(const struct RHO_Params &);
 void x_te_intermediates();
 void x_Gijkl();
 void x_Gabcd();
@@ -114,27 +114,28 @@ void x_xi_zero();
 void x_xi2();
 void x_xi_oe_intermediates();
 // void G_norm();
-void zero_onepdm(const struct RHO_Params& rho_params);
+void zero_onepdm(const struct RHO_Params &rho_params);
 void zero_twopdm();
 void get_rho_params(Options &options);
 void get_td_params(Options &options);
-void td_setup(const struct TD_Params& S);
-void tdensity(const struct TD_Params& S);
+void td_setup(const struct TD_Params &S);
+void tdensity(const struct TD_Params &S);
 void td_print();
-void oscillator_strength(ccenergy::CCEnergyWavefunction& wfn, struct TD_Params *S);
-void rotational_strength(ccenergy::CCEnergyWavefunction& wfn, struct TD_Params *S);
+void oscillator_strength(ccenergy::CCEnergyWavefunction &wfn, struct TD_Params *S);
+void rotational_strength(ccenergy::CCEnergyWavefunction &wfn, struct TD_Params *S);
 void td_cleanup();
-void x_oe_intermediates_rhf(const struct RHO_Params& rho_params);
+void x_oe_intermediates_rhf(const struct RHO_Params &rho_params);
 void x_te_intermediates_rhf();
 void x_xi_intermediates();
 void V_build();
 void V_cc2();
-void ex_tdensity(char hand, const struct TD_Params& S, const struct TD_Params& U);
-void ex_td_setup(const struct TD_Params& S, const struct TD_Params& U);
+void ex_tdensity(char hand, const struct TD_Params &S, const struct TD_Params &U);
+void ex_td_setup(const struct TD_Params &S, const struct TD_Params &U);
 void ex_td_cleanup();
-void ex_oscillator_strength(ccenergy::CCEnergyWavefunction& wfn, struct TD_Params *S, struct TD_Params *U,
+void ex_oscillator_strength(ccenergy::CCEnergyWavefunction &wfn, struct TD_Params *S, struct TD_Params *U,
                             struct XTD_Params *xtd_data);
-void ex_rotational_strength(ccenergy::CCEnergyWavefunction& wfn, struct TD_Params *S, struct TD_Params *U, struct XTD_Params *xtd_data);
+void ex_rotational_strength(ccenergy::CCEnergyWavefunction &wfn, struct TD_Params *S, struct TD_Params *U,
+                            struct XTD_Params *xtd_data);
 void ex_td_print(std::vector<struct XTD_Params>);
 
 PsiReturnType ccdensity(std::shared_ptr<ccenergy::CCEnergyWavefunction> ref_wfn, Options &options) {
@@ -282,8 +283,8 @@ PsiReturnType ccdensity(std::shared_ptr<ccenergy::CCEnergyWavefunction> ref_wfn,
             if (params.relax_opdm) {
                 relax_D(rho_params[i]); /* adds orbital response contributions to onepdm */
             }
-            sortone(rho_params[i]);  /* builds large moinfo.opdm matrix */
-            sortI(*ref_wfn);    /* builds large lagrangian matrix I */
+            sortone(rho_params[i]); /* builds large moinfo.opdm matrix */
+            sortI(*ref_wfn);        /* builds large lagrangian matrix I */
             fold(rho_params[i]);
             deanti(rho_params[i]);
         }

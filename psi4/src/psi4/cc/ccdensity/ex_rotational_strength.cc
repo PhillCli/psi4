@@ -57,7 +57,8 @@ void transdip(const MintsHelper &mints);
 void transp(const MintsHelper &mints, double sign);
 void transL(const MintsHelper &mints, double sign);
 
-void ex_rotational_strength(ccenergy::CCEnergyWavefunction& wfn, struct TD_Params *S, struct TD_Params *U, struct XTD_Params *xtd_data) {
+void ex_rotational_strength(ccenergy::CCEnergyWavefunction &wfn, struct TD_Params *S, struct TD_Params *U,
+                            struct XTD_Params *xtd_data) {
     int i, j, k;
     int no, nv, nt;
     double rs_lx, rs_ly, rs_lz;
@@ -67,7 +68,7 @@ void ex_rotational_strength(ccenergy::CCEnergyWavefunction& wfn, struct TD_Param
     double conv;
     double delta_ee;
     int nmo = moinfo.nmo;
-    const auto& mints = *wfn.mintshelper();
+    const auto &mints = *wfn.mintshelper();
 
     transdip(mints);
 
@@ -127,7 +128,7 @@ void ex_rotational_strength(ccenergy::CCEnergyWavefunction& wfn, struct TD_Param
     outfile->Printf("\n");
     outfile->Printf("\tRotational Strength (au)                 %11.8lf\n", rs);
     outfile->Printf("\tRotational Strength (10^-40 esu^2 cm^2)  %11.8lf\n", rs * _au2cgs);
-    
+
     // Save rotatory strength to wfn.
     // Process::environment.globals["CCname ROOT m -> ROOT n ROTATORY STRENGTH (LEN)"]
     // Process::environment.globals["CCname ROOT m -> ROOT n ROTATORY STRENGTH (LEN) - h TRANSITION"]
@@ -215,5 +216,5 @@ void ex_rotational_strength(ccenergy::CCEnergyWavefunction& wfn, struct TD_Param
 
     return;
 }
-}
+}  // namespace ccdensity
 }  // namespace psi

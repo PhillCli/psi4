@@ -13,18 +13,16 @@ from addons import uusing, using
 from qcengine.programs.tests import test_dftd3_mp2d
 ref, gref = test_dftd3_mp2d.ref, test_dftd3_mp2d.gref
 
-
 pytestmark = [pytest.mark.psi, pytest.mark.api, pytest.mark.quick]
 
 import platform
-skipmac =  pytest.mark.skipif(platform.system().startswith("Darwin"), reason="Mac fails 3body and getting replaced")
+skipmac = pytest.mark.skipif(platform.system().startswith("Darwin"), reason="Mac fails 3body and getting replaced")
 
-@pytest.mark.parametrize(
-    "program",
-    [
-        pytest.param("dftd3", marks=using("classic-dftd3")),
-        pytest.param("s-dftd3", marks=using("s-dftd3")),
-    ])
+
+@pytest.mark.parametrize("program", [
+    pytest.param("dftd3", marks=using("classic-dftd3")),
+    pytest.param("s-dftd3", marks=using("s-dftd3")),
+])
 @pytest.mark.parametrize("method", [
     "b3lyp-d3",
     "b3lyp-d3m",
@@ -45,7 +43,6 @@ def test_dftd3_task(method, program):
         assert key in ret["provenance"]
 
     assert ret["success"] is True
-
 
 
 seneyne = """
@@ -230,7 +227,9 @@ def test_dftd3__from_arrays(inp, expected):
     res = empirical_dispersion_resources.from_arrays(**inp[0])
     assert compare_recursive(expected, res, atol=1.e-4)
     assert compare(inp[1], _compute_key(res), 'key')
-    res = empirical_dispersion_resources.from_arrays(name_hint=res['fctldash'], level_hint=res['dashlevel'], param_tweaks=res['dashparams'])
+    res = empirical_dispersion_resources.from_arrays(name_hint=res['fctldash'],
+                                                     level_hint=res['dashlevel'],
+                                                     param_tweaks=res['dashparams'])
     assert compare_recursive(expected, res, tnm() + ' idempotent', atol=1.e-4)
 
 
@@ -261,13 +260,14 @@ def test_dftd3__from_arrays__supplement():
     res = empirical_dispersion_resources.from_arrays(name_hint='asdf-d4', level_hint='chg', dashcoeff_supplement=supp)
     assert compare_recursive(ans, res, atol=1.e-4)
     with pytest.raises(qcng.exceptions.InputError) as e:
-        empirical_dispersion_resources.from_arrays(name_hint=res['fctldash'], level_hint=res['dashlevel'], param_tweaks=res['dashparams'])
+        empirical_dispersion_resources.from_arrays(name_hint=res['fctldash'],
+                                                   level_hint=res['dashlevel'],
+                                                   param_tweaks=res['dashparams'])
     assert "Can't guess -D correction level" in str(e.value)
-    res = empirical_dispersion_resources.from_arrays(
-        name_hint=res['fctldash'],
-        level_hint=res['dashlevel'],
-        param_tweaks=res['dashparams'],
-        dashcoeff_supplement=supp)
+    res = empirical_dispersion_resources.from_arrays(name_hint=res['fctldash'],
+                                                     level_hint=res['dashlevel'],
+                                                     param_tweaks=res['dashparams'],
+                                                     dashcoeff_supplement=supp)
     assert compare_recursive(ans, res, tnm() + ' idempotent', atol=1.e-4)
 
 
@@ -400,8 +400,9 @@ def test_mp2d__run_mp2d__2body(inp, subjects, request):
 
     assert compare_values(gexpected, jrec['extras']['qcvars']['CURRENT GRADIENT'], atol=1.e-7)
     assert compare_values(gexpected, jrec['extras']['qcvars']['DISPERSION CORRECTION GRADIENT'], atol=1.e-7)
-    assert compare_values(
-    gexpected, jrec['extras']['qcvars'][inp['lbl'] + ' DISPERSION CORRECTION GRADIENT'], atol=1.e-7)
+    assert compare_values(gexpected,
+                          jrec['extras']['qcvars'][inp['lbl'] + ' DISPERSION CORRECTION GRADIENT'],
+                          atol=1.e-7)
 
 
 @uusing("dftd3")
@@ -467,8 +468,9 @@ def test_dftd3__run_dftd3__2body(inp, program, subjects, request):
     assert compare_values(gexpected, jrec['extras']['qcvars']['DISPERSION CORRECTION GRADIENT'], atol=5.e-7)
     if program == "dftd3":
         assert compare_values(gexpected, jrec['extras']['qcvars']['2-BODY DISPERSION CORRECTION GRADIENT'], atol=1.e-7)
-    assert compare_values(
-        gexpected, jrec['extras']['qcvars'][inp['lbl'] + ' DISPERSION CORRECTION GRADIENT'], atol=5.e-7)
+    assert compare_values(gexpected,
+                          jrec['extras']['qcvars'][inp['lbl'] + ' DISPERSION CORRECTION GRADIENT'],
+                          atol=5.e-7)
 
 
 @uusing("dftd3_321")
@@ -517,11 +519,13 @@ def test_dftd3__run_dftd3__3body(inp, subjects, request):
     assert compare_values(expected, jrec['extras']['qcvars']['CURRENT ENERGY'], atol=1.e-7)
     assert compare_values(expected, jrec['extras']['qcvars']['DISPERSION CORRECTION ENERGY'], atol=1.e-7)
     assert compare_values(expected, jrec['extras']['qcvars']['3-BODY DISPERSION CORRECTION ENERGY'], atol=1.e-7)
-    assert compare_values(
-        expected, jrec['extras']['qcvars']['AXILROD-TELLER-MUTO 3-BODY DISPERSION CORRECTION ENERGY'], atol=1.e-7)
+    assert compare_values(expected,
+                          jrec['extras']['qcvars']['AXILROD-TELLER-MUTO 3-BODY DISPERSION CORRECTION ENERGY'],
+                          atol=1.e-7)
 
     assert compare_values(gexpected, jrec['extras']['qcvars']['CURRENT GRADIENT'], atol=1.e-7)
     assert compare_values(gexpected, jrec['extras']['qcvars']['DISPERSION CORRECTION GRADIENT'], atol=1.e-7)
     assert compare_values(gexpected, jrec['extras']['qcvars']['3-BODY DISPERSION CORRECTION GRADIENT'], atol=1.e-7)
-    assert compare_values(
-        gexpected, jrec['extras']['qcvars']['AXILROD-TELLER-MUTO 3-BODY DISPERSION CORRECTION GRADIENT'], atol=1.e-7)
+    assert compare_values(gexpected,
+                          jrec['extras']['qcvars']['AXILROD-TELLER-MUTO 3-BODY DISPERSION CORRECTION GRADIENT'],
+                          atol=1.e-7)

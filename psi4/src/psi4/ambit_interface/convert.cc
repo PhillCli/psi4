@@ -32,7 +32,7 @@
 
 #include "convert.h"
 #include <ambit/tensor.h>
-//#include <tensor/core/core.h>
+// #include <tensor/core/core.h>
 
 namespace ambit {
 

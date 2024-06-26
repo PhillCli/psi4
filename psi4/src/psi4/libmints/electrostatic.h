@@ -45,7 +45,6 @@ class Vector3;
  * Use an IntegralFactory to create this object.
  */
 class ElectrostaticInt : public PotentialInt {
-
    public:
     /// Constructor
     ElectrostaticInt(std::vector<SphericalTransform>&, std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>,

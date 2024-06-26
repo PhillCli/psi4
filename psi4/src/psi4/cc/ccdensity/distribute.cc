@@ -104,7 +104,7 @@ void distribute() {
             /*      outfile->Printf( "(%d %d|%d %d) = %20.10lf\n", p, q, r, s, value); */
 
         } /* end loop through current buffer */
-    }     /* end loop over reading buffers */
+    } /* end loop over reading buffers */
 
     iwl_buf_close(&InBuf, 1);
     iwl_buf_flush(&ABuf, 1);

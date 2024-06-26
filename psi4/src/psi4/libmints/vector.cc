@@ -42,7 +42,7 @@
 
 namespace psi {
 
-void Vector::gemv(bool transa, double alpha, const Matrix& A, const Vector& X, double beta) {
+void Vector::gemv(bool transa, double alpha, const Matrix &A, const Vector &X, double beta) {
     char trans = transa ? 't' : 'n';
 
     for (int h = 0; h < nirrep(); ++h) {
@@ -102,8 +102,7 @@ void Vector::save(psi::PSIO *const psio, size_t fileno) const {
 
         // Write the sub-blocks
         if (dimpi_[h] > 0)
-            psio->write_entry(fileno, const_cast<char *>(str.c_str()), (char *)vector_[h],
-                              sizeof(double) * dimpi_[h]);
+            psio->write_entry(fileno, const_cast<char *>(str.c_str()), (char *)vector_[h], sizeof(double) * dimpi_[h]);
     }
     if (!already_open) psio->close(fileno, 1);  // Close and keep
 }
@@ -122,9 +121,7 @@ void Vector::load(psi::PSIO *const psio, size_t fileno) {
         str += " Irrep " + std::to_string(h);
 
         // Read the sub-blocks
-        if (dimpi_[h] > 0)
-            psio->read_entry(fileno, str.c_str(), (char *)vector_[h],
-                             sizeof(double) * dimpi_[h]);
+        if (dimpi_[h] > 0) psio->read_entry(fileno, str.c_str(), (char *)vector_[h], sizeof(double) * dimpi_[h]);
     }
 
     if (!already_open) psio->close(fileno, 1);  // Close and keep

@@ -341,7 +341,8 @@ class DFOCC : public Wavefunction {
     void trans_mp2();
     void formJ(std::shared_ptr<BasisSet> auxiliary_, std::shared_ptr<BasisSet> zero);
     void formJ_ref(std::shared_ptr<BasisSet> auxiliary_, std::shared_ptr<BasisSet> zero);
-    void b_so(std::shared_ptr<BasisSet> primary_, std::shared_ptr<BasisSet> auxiliary_, std::shared_ptr<BasisSet> zero, bool do_mp2);
+    void b_so(std::shared_ptr<BasisSet> primary_, std::shared_ptr<BasisSet> auxiliary_, std::shared_ptr<BasisSet> zero,
+              bool do_mp2);
     void b_so_ref(std::shared_ptr<BasisSet> primary_, std::shared_ptr<BasisSet> auxiliary_,
                   std::shared_ptr<BasisSet> zero);
     void b_oo();
@@ -628,8 +629,8 @@ class DFOCC : public Wavefunction {
     void ccd_pdm_yQia();
     void ccd_opdm();
     void ccd_tpdm();
-    void ccd_tpdm_pplA(SharedTensor2d& G, std::string amps);
-    void ccd_tpdm_pplB(SharedTensor2d& G, std::string amps);
+    void ccd_tpdm_pplA(SharedTensor2d &G, std::string amps);
+    void ccd_tpdm_pplB(SharedTensor2d &G, std::string amps);
 
     // QCHF
     void qchf_manager();
@@ -1398,10 +1399,14 @@ class DFOCC : public Wavefunction {
 
     void title_dfuccsd();
 
-    void uccsd_tau_amps(int occ1, int occ2, int vir1, int vir2, SharedTensor2d &Tau, SharedTensor2d &T2, SharedTensor2d &T1a, SharedTensor2d &T1b);
-    void uccsd_tau_amps_OS(int occ1, int occ2, int vir1, int vir2, SharedTensor2d &Tau, SharedTensor2d &T2, SharedTensor2d &T1a, SharedTensor2d &T1b);
-    void uccsd_tau_tilde_amps(int occ1, int occ2, int vir1, int vir2, SharedTensor2d &Tautilde, SharedTensor2d &T2, SharedTensor2d &T1a, SharedTensor2d &T1b);
-    void uccsd_tau_tilde_amps_OS(int occ1, int occ2, int vir1, int vir2, SharedTensor2d &Tautilde, SharedTensor2d &T2, SharedTensor2d &T1a, SharedTensor2d &T1b);
+    void uccsd_tau_amps(int occ1, int occ2, int vir1, int vir2, SharedTensor2d &Tau, SharedTensor2d &T2,
+                        SharedTensor2d &T1a, SharedTensor2d &T1b);
+    void uccsd_tau_amps_OS(int occ1, int occ2, int vir1, int vir2, SharedTensor2d &Tau, SharedTensor2d &T2,
+                           SharedTensor2d &T1a, SharedTensor2d &T1b);
+    void uccsd_tau_tilde_amps(int occ1, int occ2, int vir1, int vir2, SharedTensor2d &Tautilde, SharedTensor2d &T2,
+                              SharedTensor2d &T1a, SharedTensor2d &T1b);
+    void uccsd_tau_tilde_amps_OS(int occ1, int occ2, int vir1, int vir2, SharedTensor2d &Tautilde, SharedTensor2d &T2,
+                                 SharedTensor2d &T1a, SharedTensor2d &T1b);
 
     void uccsd_W_MNIJT2AA();
     void uccsd_W_mnijT2BB();

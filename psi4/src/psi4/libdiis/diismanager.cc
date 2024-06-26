@@ -58,15 +58,10 @@ DIISManager::DIISManager(int maxSubspaceSize, const std::string &label, RemovalP
 
 int DIISManager::subspace_size() { return py::len(pydiis.attr("stored_vectors")); }
 
-void DIISManager::delete_diis_file() {
-    pydiis.attr("delete_diis_file")();
-}
+void DIISManager::delete_diis_file() { pydiis.attr("delete_diis_file")(); }
 
-void DIISManager::reset_subspace() {
-    pydiis.attr("reset_subspace")();
-}
+void DIISManager::reset_subspace() { pydiis.attr("reset_subspace")(); }
 
-DIISManager::~DIISManager() {
-}
+DIISManager::~DIISManager() {}
 
 }  // namespace psi

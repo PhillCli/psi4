@@ -75,18 +75,18 @@ contribution::contribution(int b, double c) : bfn(b), coef(c) {}
 
 ///////////////////////////////////////////////////////////////////////////////
 
-SO::SO() {length=0;}
+SO::SO() { length = 0; }
 
 SO::SO(int l) { set_length(l); }
 
 void SO::set_length(int l) {
-  length=l;
-  cont.resize(l);
+    length = l;
+    cont.resize(l);
 }
 
 void SO::reset_length(int l) {
-  length=l;
-  cont.resize(l);
+    length = l;
+    cont.resize(l);
 }
 
 int SO::equiv(const SO &so) {
@@ -113,20 +113,16 @@ SO_block::SO_block() {}
 
 SO_block::SO_block(int l) { set_length(l); }
 
-void SO_block::set_length(int l) {
-  so.resize(l);
-}
+void SO_block::set_length(int l) { so.resize(l); }
 
-void SO_block::reset_length(int l) {
-  so.resize(l);
-}
+void SO_block::reset_length(int l) { so.resize(l); }
 
 int SO_block::add(SO &s, int i) {
     // first check to see if s is already here
-  for (int j = 0; j < ((i < len()) ? i : len()); j++)
+    for (int j = 0; j < ((i < len()) ? i : len()); j++)
         if (so[j].equiv(s)) return 0;
 
-  if (i >= len()) reset_length(i + 1);
+    if (i >= len()) reset_length(i + 1);
     so[i] = s;
 
     return 1;
@@ -153,14 +149,14 @@ struct lin_comb {
     int ns;
     int f0;
     int mapf0;
-  std::vector<std::vector<double>> c;
+    std::vector<std::vector<double>> c;
 
     lin_comb(int ins, int if0, int imf0) : ns(ins), f0(if0), mapf0(imf0) {
         int i;
 
         c.resize(ns);
         for (i = 0; i < ns; i++) {
-          c[i].assign(ns,0);
+            c[i].assign(ns, 0);
         }
     }
 
@@ -179,7 +175,7 @@ struct lin_comb {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-  std::vector<std::vector<int>> compute_atom_map(const Molecule *molecule, double tol, bool suppress_mol_print_in_exc) {
+std::vector<std::vector<int>> compute_atom_map(const Molecule *molecule, double tol, bool suppress_mol_print_in_exc) {
     // grab references to the Molecule
     const Molecule &mol = *molecule;
 
@@ -226,11 +222,12 @@ struct lin_comb {
     return atom_map;
 }
 
-std::vector<std::vector<int>> compute_atom_map(const std::shared_ptr<Molecule> &molecule, double tol, bool suppress_mol_print_in_exc) {
+std::vector<std::vector<int>> compute_atom_map(const std::shared_ptr<Molecule> &molecule, double tol,
+                                               bool suppress_mol_print_in_exc) {
     return compute_atom_map(molecule.get(), tol, suppress_mol_print_in_exc);
 }
 
-  ShellMapType compute_shell_map(const std::vector<std::vector<int>> & atom_map, const std::shared_ptr<BasisSet> &basis) {
+ShellMapType compute_shell_map(const std::vector<std::vector<int>> &atom_map, const std::shared_ptr<BasisSet> &basis) {
     BasisSet &gbs = *basis.get();
     Molecule &mol = *gbs.molecule().get();
 
@@ -600,7 +597,7 @@ std::vector<SO_block> PetiteList::compute_aotoso_info() {
 
     std::vector<std::vector<std::vector<double>>> function_parities(nirrep_);
     for (int symop = 0; symop < nirrep_; ++symop) {
-      function_parities[symop].resize(maxam + 1);
+        function_parities[symop].resize(maxam + 1);
         SymmetryOperation so = ct.symm_operation(symop);
         // How does this symmetry operation affect the x, y and z coordinates?
         bool op_inverts_x = so(0, 0) < 0.0;

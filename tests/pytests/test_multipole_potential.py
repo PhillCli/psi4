@@ -7,7 +7,6 @@ import itertools
 import pytest
 import psi4
 
-
 pytestmark = [pytest.mark.psi, pytest.mark.api, pytest.mark.quick]
 
 
@@ -34,9 +33,7 @@ def compare_charge_integrals(mints, point):
 def compare_field_integrals(mints, point):
     # electric_field is evaluated using Libint2
     ref = matlist_to_ndarray(mints.electric_field(point))
-    test = matlist_to_ndarray(
-        mints.ao_multipole_potential(order=1, origin=point)[1:]
-    )
+    test = matlist_to_ndarray(mints.ao_multipole_potential(order=1, origin=point)[1:])
     np.testing.assert_allclose(ref, test, atol=1e-14)
 
 
@@ -46,9 +43,7 @@ def compare_arbitrary_order_fd(mints, point, step=1e-5):
     for m_order in range(1, 6):
         o = multipole_offset(m_order)
         o_prev = multipole_offset(m_order - 1)
-        test = matlist_to_ndarray(
-            mints.ao_multipole_potential(order=m_order, origin=point)[o:]
-        )
+        test = matlist_to_ndarray(mints.ao_multipole_potential(order=m_order, origin=point)[o:])
 
         components = list(itertools.combinations_with_replacement((0, 1, 2), m_order))
         comp_grad = list(itertools.combinations_with_replacement((0, 1, 2), m_order - 1))

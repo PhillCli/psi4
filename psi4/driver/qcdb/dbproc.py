@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 r"""File to
 
 """
@@ -124,6 +123,6 @@ def dictify_database_docstrings():
     #    print '\nbenchmark\n\n', DSD[basename]['benchmark']
     #    print '\nsubset\n\n', DSD[basename]['subset']
 
-        #print '  %-12s   %s' % ('[' + basename + ']', DSD[basename]['general'][0])
+    #print '  %-12s   %s' % ('[' + basename + ']', DSD[basename]['general'][0])
 
     #print 'DSD2\n', DSD['S22']['subset']

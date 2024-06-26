@@ -110,7 +110,7 @@ void OCCWave::semi_canonic() {
 
                 count++;
             }  // end loop over occpi
-        }      // end loop over h
+        }  // end loop over h
 
         // print vir orb energy
         outfile->Printf("\n\t  Alpha virtual orbitals\n");
@@ -121,7 +121,7 @@ void OCCWave::semi_canonic() {
 
                 count++;
             }  // end loop over occpi
-        }      // end loop over h
+        }  // end loop over h
 
     }  // end main if
 
@@ -243,7 +243,7 @@ void OCCWave::semi_canonic() {
 
                     count++;
                 }  // end loop over occpi
-            }      // end loop over h
+            }  // end loop over h
 
             // print vir orb energy
             outfile->Printf("\n\t  Beta virtual orbitals\n");
@@ -254,7 +254,7 @@ void OCCWave::semi_canonic() {
 
                     count++;
                 }  // end loop over occpi
-            }      // end loop over h
+            }  // end loop over h
 
         }  // end main if
 
@@ -303,5 +303,5 @@ void OCCWave::semi_canonic() {
         FockvvB.reset();
     }  // end uhf
 }
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

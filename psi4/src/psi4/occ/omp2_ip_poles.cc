@@ -703,5 +703,5 @@ void OCCWave::omp2_ip_poles() {
     }  // end if (reference_ == "UNRESTRICTED")
     // outfile->Printf("\n omp2_ip_poles is done. \n");
 }  // end omp2_ip_poles
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

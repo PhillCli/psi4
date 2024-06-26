@@ -108,7 +108,7 @@ class OCCWave : public Wavefunction {
     void second_order_opdm();
     void set_t2_amplitudes_mp2();
     void mp2_energy(bool include_singles = false);
-    void oo_diis(DIISManager&);
+    void oo_diis(DIISManager &);
 
     // Processing functions - print output, save variables
     void mp2_printing(bool scf = false, bool include_singles = false, bool incomplete_singles = false);
@@ -127,8 +127,8 @@ class OCCWave : public Wavefunction {
     void omp2_ip_poles();
     void omp2_ea_poles();
     void ep2_ip();
-    void iterate_t2o1_amplitudes(); // Used by all OMP methods, as all need T2(1)
-    void iterative_mp_postdiis_amplitudes(); // Used by OMP methods higher than OMP2
+    void iterate_t2o1_amplitudes();           // Used by all OMP methods, as all need T2(1)
+    void iterative_mp_postdiis_amplitudes();  // Used by OMP methods higher than OMP2
 
     // OMP3
     void omp3_manager();
@@ -151,7 +151,7 @@ class OCCWave : public Wavefunction {
     void ocepa_manager();
     void cepa_manager();
     void cepa_iterations();
-    void cepa_diis(DIISManager&);
+    void cepa_diis(DIISManager &);
     void cepa_chemist();
     void ocepa_tpdm_vvvv();
     void ocepa_response_pdms();
@@ -376,14 +376,14 @@ class OCCWave : public Wavefunction {
     std::string comput_s2_;
 
     // Several of these int*'s seem like they should be Dimension objects.
-    Dimension occpiA;           /* number of alpha occupied MOs per irrep */
-    Dimension occpiB;           /* number of beta occupied MOs per irrep */
+    Dimension occpiA;      /* number of alpha occupied MOs per irrep */
+    Dimension occpiB;      /* number of beta occupied MOs per irrep */
     Dimension virtpiA;     /* number of alpha virtual MOs per irrep */
     Dimension virtpiB;     /* number of beta virtual MOs per irrep */
     Dimension aoccpiA;     /* number of active alpha occupied MOs per irrep */
     Dimension aoccpiB;     /* number of active beta occupied MOs per irrep */
-    Dimension avirtpiA;         /* number of active alpha virtual MOs per irrep */
-    Dimension avirtpiB;         /* number of active beta virtual MOs per irrep */
+    Dimension avirtpiA;    /* number of active alpha virtual MOs per irrep */
+    Dimension avirtpiB;    /* number of active beta virtual MOs per irrep */
     int *mosym;            /* symmetry of all MOs in pitzer order */
     int *sosym;            /* symmetry of all SOs in pitzer order */
     int *mosym_c1;         /* symmetry of all MOs in energy order */
@@ -528,7 +528,7 @@ class OCCWave : public Wavefunction {
     std::map<SpinType, SharedMatrix> C_;
     std::map<SpinType, SharedMatrix> C_ref_;
 };
-}
-}
+}  // namespace occwave
+}  // namespace psi
 
 #endif  // occwave_h

@@ -613,7 +613,7 @@ void Wmbij_build() {
         global_dpd_->buf4_axpy(&Z, &W, 1.0);
         global_dpd_->buf4_close(&Z);
         global_dpd_->buf4_close(&W);
-    }                           /** RHF or ROHF **/
+    } /** RHF or ROHF **/
     else if (params.ref == 2) { /** UHF **/
 
         global_dpd_->buf4_init(&Z, PSIF_CC_TMP0, 0, 0, 20, 0, 20, 0, "Z(MI,JB)");
@@ -1081,7 +1081,7 @@ void Wmbij_build() {
         global_dpd_->buf4_axpy(&Z2, &W, 1.0);
         global_dpd_->buf4_close(&W);
         global_dpd_->buf4_close(&Z2);
-    }                           /** RHF or ROHF **/
+    } /** RHF or ROHF **/
     else if (params.ref == 2) { /** UHF **/
 
         /** t_JN^BF <MN||EF> --> Z_MBJE **/

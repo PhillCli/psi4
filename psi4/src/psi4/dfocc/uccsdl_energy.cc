@@ -31,8 +31,7 @@
 namespace psi {
 namespace dfoccwave {
 
-void DFOCC::uccsdl_energy()
-{
+void DFOCC::uccsdl_energy() {
     SharedTensor2d X, Y, K, L, T, T2, L2, L2new, G, J, W, U, Tau;
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,7 +54,7 @@ void DFOCC::uccsdl_energy()
     // EccsdLAB Energy
     Tau = std::make_shared<Tensor2d>("Tau <Ij|Ab>", naoccA, naoccB, navirA, navirB);
     uccsd_tau_amps_OS(naoccA, naoccB, navirA, navirB, Tau, L2, l1A, l1B);
-//L2->print();
+    // L2->print();
     L2.reset();
 
     J = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints (IA|jb)", naoccA, navirA, naoccB, navirB);
@@ -63,11 +62,10 @@ void DFOCC::uccsdl_energy()
     L = std::make_shared<Tensor2d>("MO Int <Ij|Ab>", naoccA, naoccB, navirA, navirB);
     L->sort(1324, J, 1.0, 0.0);
     J.reset();
-    EabL =  Tau->vector_dot(L);
+    EabL = Tau->vector_dot(L);
     L.reset();
     Tau.reset();
-    //outfile->Printf("\tAlpha-beta contribution to EcorrL   : %20.14f\n", EabL);
-
+    // outfile->Printf("\tAlpha-beta contribution to EcorrL   : %20.14f\n", EabL);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //========================================================================================================//
@@ -94,7 +92,7 @@ void DFOCC::uccsdl_energy()
     L2->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
     Tau = std::make_shared<Tensor2d>("Tau <IJ|AB>", naoccA, naoccA, navirA, navirA);
     uccsd_tau_amps(naoccA, naoccA, navirA, navirA, Tau, L2, l1A, l1A);
-//L2->print();
+    // L2->print();
     L2.reset();
 
     J = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints (IA|JB)", naoccA, navirA, naoccA, navirA);
@@ -106,7 +104,7 @@ void DFOCC::uccsdl_energy()
     EaaL = 0.25 * Tau->vector_dot(G);
     G.reset();
     Tau.reset();
-    //outfile->Printf("\tAlpha-alpha contribution to EcorrL  : %20.14f\n", EaaL);
+    // outfile->Printf("\tAlpha-alpha contribution to EcorrL  : %20.14f\n", EaaL);
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //========================================================================================================//
@@ -133,7 +131,7 @@ void DFOCC::uccsdl_energy()
     L2->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
     Tau = std::make_shared<Tensor2d>("Tau <ij|ab>", naoccB, naoccB, navirB, navirB);
     uccsd_tau_amps(naoccB, naoccB, navirB, navirB, Tau, L2, l1B, l1B);
-//L2->print();
+    // L2->print();
     L2.reset();
 
     J = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints (ia|jb)", naoccB, navirB, naoccB, navirB);
@@ -145,13 +143,13 @@ void DFOCC::uccsdl_energy()
     EbbL = 0.25 * Tau->vector_dot(G);
     G.reset();
     Tau.reset();
-    //outfile->Printf("\tBeta-beta contribution to EcorrL    : %20.14f\n", EbbL);
+    // outfile->Printf("\tBeta-beta contribution to EcorrL    : %20.14f\n", EbbL);
 
-    //double El1A =  l1A->vector_dot(FiaA);
-    //double El1B =  l1B->vector_dot(FiaB);
-    //outfile->Printf("\tL1A contribution to EcorrL          : %20.14f\n", El1A);
-    //outfile->Printf("\tL1B contribution to EcorrL          : %20.14f\n", El1B);
-    //EcorrL = EaaL + EbbL + EabL + El1A + El1B;
+    // double El1A =  l1A->vector_dot(FiaA);
+    // double El1B =  l1B->vector_dot(FiaB);
+    // outfile->Printf("\tL1A contribution to EcorrL          : %20.14f\n", El1A);
+    // outfile->Printf("\tL1B contribution to EcorrL          : %20.14f\n", El1B);
+    // EcorrL = EaaL + EbbL + EabL + El1A + El1B;
     EcorrL = EaaL + EbbL + EabL;
     EccsdL = Escf + EcorrL;
 
@@ -160,9 +158,7 @@ void DFOCC::uccsdl_energy()
     rms_t2 = MAX0(rms_ss, rms_t2AB);
     rms_t1 = MAX0(rms_t1A, rms_t1B);
 
+}  // end ccsd_energy
 
-}// end ccsd_energy
-
-} // dfoccwave
-} // End Namespaces
-
+}  // namespace dfoccwave
+}  // namespace psi

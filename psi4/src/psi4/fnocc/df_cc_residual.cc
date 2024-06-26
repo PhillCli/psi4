@@ -493,5 +493,5 @@ void DFCoupledCluster::CCResidual() {
                         omp_get_wtime() - start);
     }
 }
-}
-}
+}  // namespace fnocc
+}  // namespace psi

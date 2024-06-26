@@ -251,8 +251,9 @@ void DFOCC::ccsd_canonic_triples() {
                                            (t1A->get(j, b) * J->get(ia, kc)) + (t1A->get(k, c) * J->get(ia, jb));
 
                             // E[4]_DT term
-                            value += (FockA->get(i+nfrzc, a+noccA) * T->get(jk, bc)) +
-                                           (FockA->get(j+nfrzc, b+noccA) * T->get(ik, ac)) + (FockA->get(k+nfrzc, c+noccA) * T->get(ij, ab));
+                            value += (FockA->get(i + nfrzc, a + noccA) * T->get(jk, bc)) +
+                                     (FockA->get(j + nfrzc, b + noccA) * T->get(ik, ac)) +
+                                     (FockA->get(k + nfrzc, c + noccA) * T->get(ij, ab));
 
                             double denom = 1 + ((a == b) + (b == c) + (a == c));
                             V->set(ab, c, value / denom);
@@ -311,8 +312,8 @@ void DFOCC::ccsd_canonic_triples() {
                 }
 
             }  // k
-        }      // j
-    }          // i
+        }  // j
+    }  // i
     T.reset();
     J.reset();
     W.reset();
@@ -525,8 +526,9 @@ void DFOCC::ccsd_canonic_triples_hm() {
                                            (t1A->get(j, b) * J->get(ia, kc)) + (t1A->get(k, c) * J->get(ia, jb));
 
                             // E[4]_DT term
-                            value += (FockA->get(i+nfrzc, a+noccA) * T->get(jk, bc)) +
-                                           (FockA->get(j+nfrzc, b+noccA) * T->get(ik, ac)) + (FockA->get(k+nfrzc, c+noccA) * T->get(ij, ab));
+                            value += (FockA->get(i + nfrzc, a + noccA) * T->get(jk, bc)) +
+                                     (FockA->get(j + nfrzc, b + noccA) * T->get(ik, ac)) +
+                                     (FockA->get(k + nfrzc, c + noccA) * T->get(ij, ab));
 
                             double denom = 1 + ((a == b) + (b == c) + (a == c));
                             V->set(ab, c, value / denom);
@@ -585,8 +587,8 @@ void DFOCC::ccsd_canonic_triples_hm() {
                 }
 
             }  // k
-        }      // j
-    }          // i
+        }  // j
+    }  // i
     J1.reset();
     T.reset();
     J.reset();
@@ -705,8 +707,8 @@ void DFOCC::ccsd_canonic_triples_disk() {
         J1->myread(psio_, PSIF_DFOCC_IABC, (size_t)(i * navirA * navirA * navirA) * sizeof(double));
 
         for (long int j = 0; j <= i; ++j) {
-             long int ij = ij_idxAA->get(i, j);
-             double Dij = Di + FockA->get(j + nfrzc, j + nfrzc);
+            long int ij = ij_idxAA->get(i, j);
+            double Dij = Di + FockA->get(j + nfrzc, j + nfrzc);
 
             // Read J[j](a,bc)
             // psio_address addr2 = psio_get_address(PSIO_ZERO,(size_t)(j*navirA*navirA*navirA)*sizeof(double));
@@ -714,8 +716,8 @@ void DFOCC::ccsd_canonic_triples_disk() {
             J2->myread(psio_, PSIF_DFOCC_IABC, (size_t)(j * navirA * navirA * navirA) * sizeof(double));
 
             for (long int k = 0; k <= j; ++k) {
-                 long int ik = ij_idxAA->get(i, k);
-                 long int jk = ij_idxAA->get(j, k);
+                long int ik = ij_idxAA->get(i, k);
+                long int jk = ij_idxAA->get(j, k);
                 // Read J[k](a,bc)
                 // psio_address addr3 = psio_get_address(PSIO_ZERO,(size_t)(k*navirA*navirA*navirA)*sizeof(double));
                 // J3->read(psio_, PSIF_DFOCC_INTS, addr3, &addr3);
@@ -836,8 +838,9 @@ void DFOCC::ccsd_canonic_triples_disk() {
                                            (t1A->get(j, b) * J->get(ia, kc)) + (t1A->get(k, c) * J->get(ia, jb));
 
                             // E[4]_DT term
-                            value += (FockA->get(i+nfrzc, a+noccA) * T->get(jk, bc)) +
-                                           (FockA->get(j+nfrzc, b+noccA) * T->get(ik, ac)) + (FockA->get(k+nfrzc, c+noccA) * T->get(ij, ab));
+                            value += (FockA->get(i + nfrzc, a + noccA) * T->get(jk, bc)) +
+                                     (FockA->get(j + nfrzc, b + noccA) * T->get(ik, ac)) +
+                                     (FockA->get(k + nfrzc, c + noccA) * T->get(ij, ab));
 
                             double denom = 1 + ((a == b) + (b == c) + (a == c));
                             V->set(ab, c, value / denom);
@@ -896,8 +899,8 @@ void DFOCC::ccsd_canonic_triples_disk() {
                 }
 
             }  // k
-        }      // j
-    }          // i
+        }  // j
+    }  // i
     T.reset();
     J.reset();
     W.reset();
@@ -1171,7 +1174,7 @@ void DFOCC::ccsd_canonic_triples_grad() {
                 double value_ = 0.0;
                 double value2_ = 0.0;
                 double value3_ = 0.0;
-//#pragma omp parallel for private(value_,value2_,value3_) reduction(+:sum)
+// #pragma omp parallel for private(value_,value2_,value3_) reduction(+:sum)
 #pragma omp parallel for
                 for (long int a = 0; a < navirA; ++a) {
                     double Dijka = Dijk - FockA->get(a + noccA, a + noccA);
@@ -1369,7 +1372,7 @@ void DFOCC::ccsd_canonic_triples_grad() {
                                 (j * naoccA * navirA * navirA) + (k * navirA * navirA), 1.0, 1.0);
 
             }  // k
-        }      // j
+        }  // j
         Miabd->mywrite(psio_, PSIF_DFOCC_MIABC, true);
     }  // i
     // T.reset();
@@ -1458,7 +1461,7 @@ void DFOCC::ccsd_canonic_triples_grad() {
         Jt->contract(false, false, naoccA, ntri_abAA, nQ, L, K, a * naoccA * nQ, 0, 1.0, 0.0);
         J1->expand23(naoccA, navirA, navirA, Jt);
 
-        //#pragma omp parallel for
+        // #pragma omp parallel for
         for (long int b = 0; b < navirA; ++b) {
             for (long int i = 0; i < naoccA; ++i) {
                 long int ib = ia_idxAA->get(i, b);
@@ -1694,8 +1697,8 @@ for(long int i = 0 ; i < naoccA; ++i){
                 G1c_ij->contract(false, true, naoccA, naoccA, naoccA * naoccA, X, V, 0.5, 1.0);
 
             }  // c
-        }      // b
-    }          // a
+        }  // b
+    }  // a
     U.reset();
     I2.reset();
     I3.reset();
@@ -2195,7 +2198,7 @@ void DFOCC::ccsd_canonic_triples_grad2() {
                 }
 
             }  // k
-        }      // j
+        }  // j
         Miabd->mywrite(psio_, PSIF_DFOCC_MIABC, true);
     }  // i
     I2.reset();
@@ -2230,25 +2233,24 @@ void DFOCC::ccsd_canonic_triples_grad2() {
     L2c.reset();
 
     // debug
-    //L2c = std::make_shared<Tensor2d>("(T)L2 <Ij|Ab>", naoccA, naoccA, navirA, navirA);
-    //L2c->sort(1324, tL2, 1.0, 0.0);
-    //L2c->print();
+    // L2c = std::make_shared<Tensor2d>("(T)L2 <Ij|Ab>", naoccA, naoccA, navirA, navirA);
+    // L2c->sort(1324, tL2, 1.0, 0.0);
+    // L2c->print();
 
-
-    //auto L2aa = std::make_shared<Tensor2d>("(T)L2 <IJ||AB>", naoccA, naoccA, navirA, navirA);
-    //L2aa->sort(2134, L2c, -1.0, 0.0);
-    //L2aa->add(L2c);
-    //L2aa->print();
-    //L2c.reset();
-    //L2aa.reset();
-    // end debug
+    // auto L2aa = std::make_shared<Tensor2d>("(T)L2 <IJ||AB>", naoccA, naoccA, navirA, navirA);
+    // L2aa->sort(2134, L2c, -1.0, 0.0);
+    // L2aa->add(L2c);
+    // L2aa->print();
+    // L2c.reset();
+    // L2aa.reset();
+    //  end debug
 
     tL2->write_symm(psio_, PSIF_DFOCC_AMPS);
     tL2.reset();
 
     // write
     tL1->write(psio_, PSIF_DFOCC_AMPS);
-    //tL1->print();
+    // tL1->print();
     tL1.reset();
 
     // Delete the (IA|BC) file
@@ -2385,8 +2387,8 @@ void DFOCC::ccsdl_canonic_triples_disk() {
             J2->myread(psio_, PSIF_DFOCC_IABC, (size_t)(j * navirA * navirA * navirA) * sizeof(double));
 
             for (long int k = 0; k <= j; ++k) {
-                 long int ik = ij_idxAA->get(i, k);
-                 long int jk = ij_idxAA->get(j, k);
+                long int ik = ij_idxAA->get(i, k);
+                long int jk = ij_idxAA->get(j, k);
                 // Read J[k](a,bc)
                 // psio_address addr3 = psio_get_address(PSIO_ZERO,(size_t)(k*navirA*navirA*navirA)*sizeof(double));
                 // J3->read(psio_, PSIF_DFOCC_INTS, addr3, &addr3);
@@ -2605,8 +2607,9 @@ void DFOCC::ccsdl_canonic_triples_disk() {
                                            (l1A->get(j, b) * J->get(ia, kc)) + (l1A->get(k, c) * J->get(ia, jb));
 
                             // E[4]_DT term
-                            value += (FockA->get(i+nfrzc, a+noccA) * L->get(jk, bc)) +
-                                           (FockA->get(j+nfrzc, b+noccA) * L->get(ik, ac)) + (FockA->get(k+nfrzc, c+noccA) * L->get(ij, ab));
+                            value += (FockA->get(i + nfrzc, a + noccA) * L->get(jk, bc)) +
+                                     (FockA->get(j + nfrzc, b + noccA) * L->get(ik, ac)) +
+                                     (FockA->get(k + nfrzc, c + noccA) * L->get(ij, ab));
 
                             double denom = 1 + ((a == b) + (b == c) + (a == c));
                             V->set(ab, c, value / denom);
@@ -2664,8 +2667,8 @@ void DFOCC::ccsdl_canonic_triples_disk() {
                 }
 
             }  // k
-        }      // j
-    }          // i
+        }  // j
+    }  // i
     T.reset();
     L.reset();
     J.reset();

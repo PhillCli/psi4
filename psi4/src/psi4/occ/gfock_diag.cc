@@ -118,7 +118,7 @@ void OCCWave::gfock_diag() {
                 if (wfn_type_ == "OREMP") {
                     global_dpd_->buf4_init(&X, PSIF_OCC_DENSITY, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"),
                                            0, "X <OO|VV>");
-                    global_dpd_->buf4_scm(&X, 1.0E0-remp_A);
+                    global_dpd_->buf4_scm(&X, 1.0E0 - remp_A);
                     global_dpd_->buf4_close(&X);
                 }
             }
@@ -256,7 +256,7 @@ void OCCWave::gfock_diag() {
                 if (wfn_type_ == "OREMP") {
                     global_dpd_->buf4_init(&X, PSIF_OCC_DENSITY, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"),
                                            0, "X <OO|VV>");
-                    global_dpd_->buf4_scm(&X, 1.0E0-remp_A);
+                    global_dpd_->buf4_scm(&X, 1.0E0 - remp_A);
                     global_dpd_->buf4_close(&X);
                 }
 
@@ -289,7 +289,7 @@ void OCCWave::gfock_diag() {
                 if (wfn_type_ == "OREMP") {
                     global_dpd_->buf4_init(&X, PSIF_OCC_DENSITY, 0, ID("[o,o]"), ID("[v,v]"), ID("[o,o]"), ID("[v,v]"),
                                            0, "X <oo|vv>");
-                    global_dpd_->buf4_scm(&X, 1.0E0-remp_A);
+                    global_dpd_->buf4_scm(&X, 1.0E0 - remp_A);
                     global_dpd_->buf4_close(&X);
                 }
 
@@ -322,12 +322,12 @@ void OCCWave::gfock_diag() {
                 if (wfn_type_ == "OREMP") {
                     global_dpd_->buf4_init(&X, PSIF_OCC_DENSITY, 0, ID("[O,o]"), ID("[V,v]"), ID("[O,o]"), ID("[V,v]"),
                                            0, "X <Oo|Vv>");
-                    global_dpd_->buf4_scm(&X, 1.0E0-remp_A);
+                    global_dpd_->buf4_scm(&X, 1.0E0 - remp_A);
                     global_dpd_->buf4_close(&X);
                 }
 
             }  // end main if for X
-        }      // end if (wfn_type_ != "OMP2")
+        }  // end if (wfn_type_ != "OMP2")
 
         /********************************************************************************************/
         /************************** OO-Block ********************************************************/
@@ -771,5 +771,5 @@ void OCCWave::gfock_diag() {
     // outfile->Printf("\n gfock_diag done. \n");
 
 }  // end gfock_diag
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

@@ -168,13 +168,12 @@ def task_planner(driver: DriverEnum, method: str, molecule: core.Molecule, **kwa
 
             # We define cp as being a correction to only interaction energies
             # If only doing cp, we need to ignore any user-specified 1st (monomer) level
-            if 'cp' in kwargs.get("bsse_type", None) and 'nocp' not in kwargs.get("bsse_type", None): 
+            if 'cp' in kwargs.get("bsse_type", None) and 'nocp' not in kwargs.get("bsse_type", None):
                 if 1 in levels.keys():
                     removed_level = levels.pop(1)
-                    logger.info("NOTE: User specified exclusively 'cp' correction, but provided level 1 details") 
+                    logger.info("NOTE: User specified exclusively 'cp' correction, but provided level 1 details")
                     logger.info(f"NOTE: Removing level {removed_level}")
                     logger.info("NOTE: For total energies, add 'nocp' to bsse_list")
-
 
         # Organize nbody calculations into modelchem levels
         # * expand keys of `levels` into full lists of nbodies covered. save to plan, resetting max_nbody accordingly
@@ -238,8 +237,7 @@ def task_planner(driver: DriverEnum, method: str, molecule: core.Molecule, **kwa
                     plan.build_tasks(AtomicComputer, **packet, mc_level_idx=mc_level_idx, **kwargs)
                 else:
                     logger.info(
-                        f"PLANNING MB(FD):  {mc_level_idx=} {packet=} findif_kw={current_findif_kwargs} kw={kwargs}"
-                    )
+                        f"PLANNING MB(FD):  {mc_level_idx=} {packet=} findif_kw={current_findif_kwargs} kw={kwargs}")
                     plan.build_tasks(FiniteDifferenceComputer,
                                      **packet,
                                      mc_level_idx=mc_level_idx,
@@ -288,7 +286,4 @@ def task_planner(driver: DriverEnum, method: str, molecule: core.Molecule, **kwa
             keywords.update(convcrit)
             logger.info(
                 f'PLANNING FD:  dermode={dermode} keywords={keywords} findif_kw={current_findif_kwargs} kw={kwargs}')
-            return FiniteDifferenceComputer(**packet,
-                                            findif_mode=dermode,
-                                            **current_findif_kwargs,
-                                            **kwargs)
+            return FiniteDifferenceComputer(**packet, findif_mode=dermode, **current_findif_kwargs, **kwargs)

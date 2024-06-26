@@ -34,7 +34,6 @@ from . import molpro_basissets
 
 
 class MolproIn(qcformat.InputFormat):
-
     def __init__(self, mem, mtd, bas, mol, sys, cast):
         qcformat.InputFormat.__init__(self, mem, mtd, bas, mol, sys, cast)
 
@@ -72,7 +71,9 @@ class MolproIn(qcformat.InputFormat):
             else:
                 text += """set,orbital; default,%s\n""" % (self.basis)
 
-        if ('df-' in self.method) or ('f12' in self.method) or (self.method in ['mp2c', 'dft-sapt', 'dft-sapt-pbe0acalda']):
+        if ('df-' in self.method) or ('f12' in self.method) or (self.method in [
+                'mp2c', 'dft-sapt', 'dft-sapt-pbe0acalda'
+        ]):
             if self.unaugbasis and self.auxbasis:
 
                 text += """set,jkfit;   default,%s/jkfit\n""" % (self.auxbasis)
@@ -118,170 +119,81 @@ class MolproIn(qcformat.InputFormat):
 
 
 qcmtdIN = {
-'ccsd(t)-f12': [
-    'rhf',
-    'eehf=energy',
-    'ccsd(t)-f12,df_basis=mp2fit,df_basis_exch=jkfitb,ri_basis=jkfitb',
-    'eemp2=emp2',
-    'cemp2=eemp2-eehf',
-    'eemp3=emp3',
-    'cemp3=eemp3-eehf',
-    'eeccsd=energc',
-    'ceccsd=eeccsd-eehf',
-    'eeccsdt=energy',
-    'ceccsdt=eeccsdt-eehf',
-    'temp2=emp2_trip',
-    'teccsd=ectrip'],
+    'ccsd(t)-f12': [
+        'rhf', 'eehf=energy', 'ccsd(t)-f12,df_basis=mp2fit,df_basis_exch=jkfitb,ri_basis=jkfitb', 'eemp2=emp2',
+        'cemp2=eemp2-eehf', 'eemp3=emp3', 'cemp3=eemp3-eehf', 'eeccsd=energc', 'ceccsd=eeccsd-eehf', 'eeccsdt=energy',
+        'ceccsdt=eeccsdt-eehf', 'temp2=emp2_trip', 'teccsd=ectrip'
+    ],
+    'ccsd(t)': [
+        'rhf', 'eehf=energy', 'ccsd(t)', 'eemp2=emp2', 'cemp2=eemp2-eehf', 'eemp3=emp3', 'cemp3=eemp3-eehf',
+        'eeccsd=energc', 'ceccsd=eeccsd-eehf', 'eeccsdt=energy', 'ceccsdt=eeccsdt-eehf', 'temp2=emp2_trip',
+        'teccsd=ectrip'
+    ],
+    'mp3': [
+        'gdirect', 'rhf', 'eehf=energy', 'mp3', 'eemp2=emp2', 'eemp3=emp3', 'eemp25=0.5*(eemp2+eemp3)',
+        'cemp2=eemp2-eehf', 'cemp3=eemp3-eehf', 'cemp25=eemp25-eehf', 'temp2=emp2_trip', 'temp3=ectrip'
+    ],
+    'mp2': ['gdirect', 'rhf', 'eehf=energy', 'mp2', 'eemp2=emp2', 'cemp2=eemp2-eehf', 'temp2=emp2_trip'],
+    'df-hf-mp2':
+    ['gdirect', '{df-hf,basis=jkfit}', 'eehf=energy', 'mp2', 'eemp2=emp2', 'cemp2=eemp2-eehf', 'temp2=emp2_trip'],
+    'hf-df-mp2': [
+        'gdirect', 'rhf', 'eehf=energy', '{df-mp2,basis_mp2=mp2fit}', 'eemp2=emp2', 'cemp2=eemp2-eehf',
+        'temp2=emp2_trip'
+    ],
+    'hf': ['rhf', 'eehf=energy'],
+    'mp2-f12': ['gdirect', 'rhf', 'eehf=energy', 'mp2-f12', 'eemp2=emp2', 'cemp2=eemp2-eehf', 'temp2=emp2_trip'],
+    'df-mp2-f12': [
+        'gdirect',
+        #'rhf',
+        '{df-hf,basis=jkfit}',
+        'eehf=energy',
+        #'{df-mp2-f12,df_basis=mp2fit,df_basis_exch=jkfit,ri_basis=optrib}',
+        '{df-mp2-f12,df_basis=mp2fit,df_basis_exch=jkfitb,ri_basis=jkfitb}',
+        'eemp2=emp2',
+        'cemp2=eemp2-eehf',
+        'temp2=emp2_trip'
+    ],
+    'df-mp2': [
+        'gdirect', '{df-hf,basis=jkfit}', 'eehf=energy', '{df-mp2,basis_mp2=mp2fit}', 'eemp2=emp2', 'cemp2=eemp2-eehf',
+        'temp2=emp2_trip'
+    ],
+    'df-hf': ['gdirect', '{df-hf,basis=jkfit}', 'eehf=energy'],
+    'b3lyp-d': ['gdirect', 'rks,b3lyp3', 'eehf=energy', 'dispcorr', 'eehfd=eehf+edisp'],
+    'df-b3lyp-d': ['gdirect', '{df-rks,b3lyp3,basis=jkfit}', 'eehf=energy', 'dispcorr', 'eehfd=eehf+edisp'],
+    'b3lyp': ['gdirect', 'rks,b3lyp3', 'eehf=energy'],
+    'df-b3lyp': ['gdirect', '{df-rks,b3lyp3,basis=jkfit}', 'eehf=energy'],
 
-'ccsd(t)': [
-    'rhf',
-    'eehf=energy',
-    'ccsd(t)',
-    'eemp2=emp2',
-    'cemp2=eemp2-eehf',
-    'eemp3=emp3',
-    'cemp3=eemp3-eehf',
-    'eeccsd=energc',
-    'ceccsd=eeccsd-eehf',
-    'eeccsdt=energy',
-    'ceccsdt=eeccsdt-eehf',
-    'temp2=emp2_trip',
-    'teccsd=ectrip'],
-
-'mp3': [
-    'gdirect',
-    'rhf',
-    'eehf=energy',
-    'mp3',
-    'eemp2=emp2',
-    'eemp3=emp3',
-    'eemp25=0.5*(eemp2+eemp3)',
-    'cemp2=eemp2-eehf',
-    'cemp3=eemp3-eehf',
-    'cemp25=eemp25-eehf',
-    'temp2=emp2_trip',
-    'temp3=ectrip'],
-
-'mp2': [
-    'gdirect',
-    'rhf',
-    'eehf=energy',
-    'mp2',
-    'eemp2=emp2',
-    'cemp2=eemp2-eehf',
-    'temp2=emp2_trip'],
-
-'df-hf-mp2': [
-    'gdirect',
-    '{df-hf,basis=jkfit}',
-    'eehf=energy',
-    'mp2',
-    'eemp2=emp2',
-    'cemp2=eemp2-eehf',
-    'temp2=emp2_trip'],
-
-'hf-df-mp2': [
-    'gdirect',
-    'rhf',
-    'eehf=energy',
-    '{df-mp2,basis_mp2=mp2fit}',
-    'eemp2=emp2',
-    'cemp2=eemp2-eehf',
-    'temp2=emp2_trip'],
-
-'hf': [
-    'rhf',
-    'eehf=energy'],
-
-'mp2-f12': [
-    'gdirect',
-    'rhf',
-    'eehf=energy',
-    'mp2-f12',
-    'eemp2=emp2',
-    'cemp2=eemp2-eehf',
-    'temp2=emp2_trip'],
-
-'df-mp2-f12': [
-    'gdirect',
-    #'rhf',
-    '{df-hf,basis=jkfit}',
-    'eehf=energy',
-    #'{df-mp2-f12,df_basis=mp2fit,df_basis_exch=jkfit,ri_basis=optrib}',
-    '{df-mp2-f12,df_basis=mp2fit,df_basis_exch=jkfitb,ri_basis=jkfitb}',
-    'eemp2=emp2',
-    'cemp2=eemp2-eehf',
-    'temp2=emp2_trip'],
-
-'df-mp2': [
-    'gdirect',
-    '{df-hf,basis=jkfit}',
-    'eehf=energy',
-    '{df-mp2,basis_mp2=mp2fit}',
-    'eemp2=emp2',
-    'cemp2=eemp2-eehf',
-    'temp2=emp2_trip'],
-
-'df-hf': [
-    'gdirect',
-    '{df-hf,basis=jkfit}',
-    'eehf=energy'],
-
-'b3lyp-d': [
-    'gdirect',
-    'rks,b3lyp3',
-    'eehf=energy',
-    'dispcorr',
-    'eehfd=eehf+edisp'],
-
-'df-b3lyp-d': [
-    'gdirect',
-    '{df-rks,b3lyp3,basis=jkfit}',
-    'eehf=energy',
-    'dispcorr',
-    'eehfd=eehf+edisp'],
-
-'b3lyp': [
-    'gdirect',
-    'rks,b3lyp3',
-    'eehf=energy'],
-
-'df-b3lyp': [
-    'gdirect',
-    '{df-rks,b3lyp3,basis=jkfit}',
-    'eehf=energy'],
-
-#'mp2c': [ # this job computes one part [E_disp(TDDFT)] of the three parts of a MP2C calculation
-#        # check that nfrag = 2
-#         'gdirect',
-#         'ga=1101.2; gb=1102.2',
-#         'ca=2101.2; cb=2102.2\n',
-#
-#         $spin = $cgmp{MLPmol1} - 1;
-#         'SET,CHARGE=$cgmp{CHGmol1}',
-#         'SET,SPIN=$spin',
-#         'dummy',
-#         foreach $at (@monoBreal) { print $handle ",$at"; }
-#         ''
-#         '{df-hf,basis=jkfit,locorb=0; start,atdens; save,$ga}',
-#         '{df-ks,lhf,df_basis=dflhf,basis_coul=jkfitb,basis_exch=jkfitb; dftfac,1.0; start,$ga; save,$ca}',
-#         'eehfa=energy; sapt; monomerA',
-#         '',
-#
-#         $spin = $cgmp{MLPmol2} - 1;
-#         print $handle "SET,CHARGE=$cgmp{CHGmol2}\nSET,SPIN=$spin\ndummy";
-#         foreach $at (@monoAreal) { print $handle ",$at"; }
-#         print $handle "\n{df-hf,basis=jkfit,locorb=0; start,atdens; save,\$gb}\n";
-#         print $handle "{df-ks,lhf,df_basis=dflhf,basis_coul=jkfitb,basis_exch=jkfitb; dftfac,1.0; start,\$gb; save,\$cb}\n";
-#         print $handle "eehfb=energy; sapt; monomerB\n\n";
-#
-#         $spin = $cgmp{MLPsyst} - 1;
-#         print $handle "SET,CHARGE=$cgmp{CHGsyst}\nSET,SPIN=$spin\n";
-#         print $handle "{sapt,SAPT_LEVEL=3; intermol,ca=\$ca,cb=\$cb,icpks=0,fitlevel=3,nlexfac=0.0,cfac=0.0\n";
-#         print $handle "dfit,basis_coul=jkfit,basis_exch=jkfit,cfit_scf=3}\n";
-#         print $handle "eedisp=E2disp\n\n";
-#
-#    ],
+    #'mp2c': [ # this job computes one part [E_disp(TDDFT)] of the three parts of a MP2C calculation
+    #        # check that nfrag = 2
+    #         'gdirect',
+    #         'ga=1101.2; gb=1102.2',
+    #         'ca=2101.2; cb=2102.2\n',
+    #
+    #         $spin = $cgmp{MLPmol1} - 1;
+    #         'SET,CHARGE=$cgmp{CHGmol1}',
+    #         'SET,SPIN=$spin',
+    #         'dummy',
+    #         foreach $at (@monoBreal) { print $handle ",$at"; }
+    #         ''
+    #         '{df-hf,basis=jkfit,locorb=0; start,atdens; save,$ga}',
+    #         '{df-ks,lhf,df_basis=dflhf,basis_coul=jkfitb,basis_exch=jkfitb; dftfac,1.0; start,$ga; save,$ca}',
+    #         'eehfa=energy; sapt; monomerA',
+    #         '',
+    #
+    #         $spin = $cgmp{MLPmol2} - 1;
+    #         print $handle "SET,CHARGE=$cgmp{CHGmol2}\nSET,SPIN=$spin\ndummy";
+    #         foreach $at (@monoAreal) { print $handle ",$at"; }
+    #         print $handle "\n{df-hf,basis=jkfit,locorb=0; start,atdens; save,\$gb}\n";
+    #         print $handle "{df-ks,lhf,df_basis=dflhf,basis_coul=jkfitb,basis_exch=jkfitb; dftfac,1.0; start,\$gb; save,\$cb}\n";
+    #         print $handle "eehfb=energy; sapt; monomerB\n\n";
+    #
+    #         $spin = $cgmp{MLPsyst} - 1;
+    #         print $handle "SET,CHARGE=$cgmp{CHGsyst}\nSET,SPIN=$spin\n";
+    #         print $handle "{sapt,SAPT_LEVEL=3; intermol,ca=\$ca,cb=\$cb,icpks=0,fitlevel=3,nlexfac=0.0,cfac=0.0\n";
+    #         print $handle "dfit,basis_coul=jkfit,basis_exch=jkfit,cfit_scf=3}\n";
+    #         print $handle "eedisp=E2disp\n\n";
+    #
+    #    ],
 }
 
 #'dft-sapt-shift': [

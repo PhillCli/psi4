@@ -493,5 +493,5 @@ void OCCWave::ekt_ip() {
     // outfile->Printf("\n ekt_ip is done. \n");
 
 }  // end ekt_ip
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

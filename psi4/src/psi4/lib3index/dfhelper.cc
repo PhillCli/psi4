@@ -62,18 +62,17 @@
 
 namespace psi {
 
-DFHelper::DFHelper(std::shared_ptr<BasisSet> primary, std::shared_ptr<BasisSet> aux)
-    : primary_(primary), aux_(aux) {
-    if(Process::environment.options["SCF_SUBTYPE"].has_changed()) {
+DFHelper::DFHelper(std::shared_ptr<BasisSet> primary, std::shared_ptr<BasisSet> aux) : primary_(primary), aux_(aux) {
+    if (Process::environment.options["SCF_SUBTYPE"].has_changed()) {
         subalgo_ = Process::environment.options.get_str("SCF_SUBTYPE");
-    }
-    else {
-        // Default to in-core for MemDF b/c out-of-core is so slow we don't want it to be hit w/o explicit user SCF_SUBTYPE.
-        // By setting this, checks below will crash if memory is insufficient.
-        // Needed b/c the enough_mem ? mem : disk memory logic is slightly different from the DFHelper memory logic, so one can hit MemDF+Disk_algorithm by accident.
+    } else {
+        // Default to in-core for MemDF b/c out-of-core is so slow we don't want it to be hit w/o explicit user
+        // SCF_SUBTYPE. By setting this, checks below will crash if memory is insufficient. Needed b/c the enough_mem ?
+        // mem : disk memory logic is slightly different from the DFHelper memory logic, so one can hit
+        // MemDF+Disk_algorithm by accident.
         subalgo_ = "INCORE";
     }
-    
+
     nbf_ = primary_->nbf();
     naux_ = aux_->nbf();
     prepare_blocking();
@@ -200,9 +199,10 @@ void DFHelper::initialize() {
         prepare_AO();
         if (do_wK_) {
             std::stringstream error;
-            error << "DFHelper: not equipped to do wK out of core. \nPlease supply more memory or remove scf_type Mem_DF from the imput file";
+            error << "DFHelper: not equipped to do wK out of core. \nPlease supply more memory or remove scf_type "
+                     "Mem_DF from the imput file";
             throw PSIEXCEPTION(error.str().c_str());
-            //prepare_AO_wK();
+            // prepare_AO_wK();
         }
     }
 
@@ -213,7 +213,7 @@ void DFHelper::initialize() {
         outfile->Printf("Exiting DFHelper::initialize\n");
     }
 }
-void DFHelper::AO_core(bool set_AO_core=true) {
+void DFHelper::AO_core(bool set_AO_core = true) {
     prepare_sparsity();
 
     if (direct_iaQ_) {
@@ -223,7 +223,7 @@ void DFHelper::AO_core(bool set_AO_core=true) {
     } else {
         // total size of sparse AOs.
         // yes, a nested ternary operator
-        required_core_size_ = (do_wK_ ? ( wcombine_ ? 2 * big_skips_[nbf_] : 3 * big_skips_[nbf_] ) : big_skips_[nbf_]);
+        required_core_size_ = (do_wK_ ? (wcombine_ ? 2 * big_skips_[nbf_] : 3 * big_skips_[nbf_]) : big_skips_[nbf_]);
     }
 
     // Auxiliary metric
@@ -248,26 +248,29 @@ void DFHelper::AO_core(bool set_AO_core=true) {
             AO_core_ = true;
             if (memory_ < required_core_size_) AO_core_ = false;
 
-        // .. or forcibly disable AO_core_ if user specifies ...
+            // .. or forcibly disable AO_core_ if user specifies ...
         } else if (subalgo_ == "OUT_OF_CORE") {
             AO_core_ = false;
 
             if (print_lvl_ > 0) {
                 outfile->Printf("  SCF_SUBTYPE = OUT_OF_CORE selected. Out-of-core MEM_DF algorithm will be used.\n");
             }
-        // .. or force AO_core_ if user specifies
+            // .. or force AO_core_ if user specifies
         } else if (subalgo_ == "INCORE") {
             if (memory_ < required_core_size_) {
-                throw PSIEXCEPTION("SCF_SUBTYPE=INCORE was specified, but there is not enough memory to do in-core! Increase the amount of memory allocated to Psi4 or allow for out-of-core to be used.\n");
-	        } else {
+                throw PSIEXCEPTION(
+                    "SCF_SUBTYPE=INCORE was specified, but there is not enough memory to do in-core! Increase the "
+                    "amount of memory allocated to Psi4 or allow for out-of-core to be used.\n");
+            } else {
                 AO_core_ = true;
 
-	        if (print_lvl_ > 0) {
+                if (print_lvl_ > 0) {
                     outfile->Printf("  SCF_SUBTYPE=INCORE selected. In-core MEM_DF algorithm will be used.\n");
                 }
-	    }
+            }
         } else {
-            throw PSIEXCEPTION("Invalid SCF_SUBTYPE option! The choices for SCF_SUBTYPE are AUTO, INCORE, and OUT_OF_CORE.");
+            throw PSIEXCEPTION(
+                "Invalid SCF_SUBTYPE option! The choices for SCF_SUBTYPE are AUTO, INCORE, and OUT_OF_CORE.");
         }
 
         if (print_lvl_ > 0) {
@@ -338,7 +341,7 @@ void DFHelper::prepare_sparsity() {
         for (size_t NU = 0; NU <= MU; ++NU) {
             size_t nnu = primary_->shell(NU).nfunction();
             eri[rank]->compute_shell(MU, NU, MU, NU);
-            const auto *buffer = buffers[0];
+            const auto* buffer = buffers[0];
             // Loop over basis functions inside shell pair
             for (size_t mu = 0; mu < nmu; ++mu) {
                 size_t omu = primary_->shell(MU).function_index() + mu;
@@ -369,7 +372,7 @@ void DFHelper::prepare_sparsity() {
 
     // ==> Is this shell pair significant? <==
     for (size_t i = 0; i < pshells_ * pshells_; i++) schwarz_shell_mask_[i] = (shell_max_vals[i] >= tolerance);
-    
+
     // ==> Is this basis function pair significant? Also start storing non-symmetric indexing. <==
     for (size_t i = 0, count = 0; i < nbf_; i++) {
         count = 0;
@@ -422,8 +425,8 @@ void DFHelper::prepare_AO() {
     auto rifactory = std::make_shared<IntegralFactory>(aux_, zero, primary_, primary_);
     std::vector<std::shared_ptr<TwoBodyAOInt>> eri(nthreads_);
     eri[0] = std::shared_ptr<TwoBodyAOInt>(rifactory->eri());
-    for(int rank = 1; rank < nthreads_; rank++) {
-	eri[rank] = std::shared_ptr<TwoBodyAOInt>(eri.front()->clone());
+    for (int rank = 1; rank < nthreads_; rank++) {
+        eri[rank] = std::shared_ptr<TwoBodyAOInt>(eri.front()->clone());
     }
 
     // gather blocking info
@@ -518,7 +521,7 @@ void DFHelper::prepare_AO_core() {
 #ifdef _OPENMP
         rank = omp_get_thread_num();
 #endif
-        if(rank) eri[rank] = std::shared_ptr<TwoBodyAOInt>(eri.front()->clone());
+        if (rank) eri[rank] = std::shared_ptr<TwoBodyAOInt>(eri.front()->clone());
     }
 
     // determine blocking
@@ -610,7 +613,6 @@ void DFHelper::prepare_AO_wK_core() {
 
     if (!wcombine_) Ppq_ = std::make_unique<double[]>(big_skips_[nbf_]);
 
-
     double* wppq = wPpq_.get();
     double* ppq = nullptr;
 
@@ -647,10 +649,10 @@ void DFHelper::prepare_AO_wK_core() {
         size_t begin = pshell_aggs_[start];
         size_t end = pshell_aggs_[stop + 1] - 1;
 
-        if ( wcombine_ ) {
+        if (wcombine_) {
             // computes (Q|mn) and (Q|w|mn)
             timer_on("DFH: AO Construction");
-            compute_sparse_pQq_blocking_p_symm_abw(start,stop, M1p, M2p, eri, weri);
+            compute_sparse_pQq_blocking_p_symm_abw(start, stop, M1p, M2p, eri, weri);
             timer_off("DFH: AO Construction");
             // computes  [J^{-1.0}](Q|mn)
             timer_on("DFH: AO-Met. Contraction");
@@ -659,7 +661,6 @@ void DFHelper::prepare_AO_wK_core() {
 
             copy_upper_lower_wAO_core_symm(M2p, wppq, begin, end);
         } else {
-
             timer_on("DFH: AO Construction");
             compute_sparse_pQq_blocking_p_symm(start, stop, M1p, eri);
             timer_off("DFH: AO Construction");
@@ -668,21 +669,20 @@ void DFHelper::prepare_AO_wK_core() {
             timer_on("DFH: AO-Met. Contraction");
             contract_metric_AO_core_symm(M1p, m1ppq, met1p, begin, end);
             timer_off("DFH: AO-Met. Contraction");
-    
+
             // contract half metric inverse
             timer_on("DFH: AO-Met. Contraction");
             contract_metric_AO_core_symm(M1p, ppq, metp, begin, end);
             timer_off("DFH: AO-Met. Contraction");
-    
+
             // compute (A|w|mn)
             timer_on("DFH: wAO Construction");
             compute_sparse_pQq_blocking_p_symm(start, stop, M1p, weri);
             timer_off("DFH: wAO Construction");
-    
+
             timer_on("DFH: wAO Copy");
             copy_upper_lower_wAO_core_symm(M1p, wppq, begin, end);
             timer_off("DFH: wAO Copy");
-
         }
     }
     // no more need for metrics
@@ -706,11 +706,10 @@ std::pair<size_t, size_t> DFHelper::pshell_blocks_for_AO_build(const size_t mem,
             current = symm_big_skips_[end + 1] - symm_big_skips_[begin];
             if (do_wK_) {
                 if (wcombine_) {
-                    current *= 2; 
-                }
-                else {
+                    current *= 2;
+                } else {
                     current *= 3;
-                } 
+                }
             }
             total += current;
         } else {
@@ -1334,13 +1333,12 @@ void DFHelper::compute_sparse_pQq_blocking_p_symm(const size_t start, const size
                 }
             }
         }
-    } // ends MU loop
+    }  // ends MU loop
 }
 
-void DFHelper::compute_sparse_pQq_blocking_p_symm_abw(const size_t start, const size_t stop, double* just_Mp, double* param_Mp,
-                                                  std::vector<std::shared_ptr<TwoBodyAOInt>> eri,
-                                                  std::vector<std::shared_ptr<TwoBodyAOInt>> weri
-) {
+void DFHelper::compute_sparse_pQq_blocking_p_symm_abw(const size_t start, const size_t stop, double* just_Mp,
+                                                      double* param_Mp, std::vector<std::shared_ptr<TwoBodyAOInt>> eri,
+                                                      std::vector<std::shared_ptr<TwoBodyAOInt>> weri) {
     size_t begin = pshell_aggs_[start];
     size_t end = pshell_aggs_[stop + 1] - 1;
     size_t block_size = end - begin + 1;
@@ -1361,7 +1359,6 @@ void DFHelper::compute_sparse_pQq_blocking_p_symm_abw(const size_t start, const 
         rank = omp_get_thread_num();
 #endif
     }
-
 
 #pragma omp parallel for schedule(guided) num_threads(nthread)
     for (size_t MU = start; MU <= stop; MU++) {
@@ -1399,13 +1396,14 @@ void DFHelper::compute_sparse_pQq_blocking_p_symm_abw(const size_t start, const 
                             size_t jump = schwarz_fun_index_[omu * nbf_ + onu] - schwarz_fun_index_[omu * nbf_ + omu];
                             size_t ind1 = symm_big_skips_[omu] - startind + (PHI + P) * symm_small_skips_[omu] + jump;
                             just_Mp[ind1] = buffer[rank][P * nummu * numnu + mu * numnu + nu];
-                            param_Mp[ind1] = omega_alpha_ * buffer[rank][P * nummu * numnu + mu * numnu + nu] + omega_beta_ * wbuffer[rank][P * nummu * numnu + mu * numnu + nu];
+                            param_Mp[ind1] = omega_alpha_ * buffer[rank][P * nummu * numnu + mu * numnu + nu] +
+                                             omega_beta_ * wbuffer[rank][P * nummu * numnu + mu * numnu + nu];
                         }
                     }
                 }
             }
         }
-    } // ends MU loop
+    }  // ends MU loop
 }
 void DFHelper::grab_AO(const size_t start, const size_t stop, double* Mp) {
     size_t begin = Qshell_aggs_[start];
@@ -1441,7 +1439,7 @@ double* DFHelper::metric_prep_core(double m_pow) {
     if (!on) {
         power = m_pow;
         SharedMatrix J = metrics_[1.0];
-        if ( fabs(m_pow - 1.0) < 1e-13 ) {
+        if (fabs(m_pow - 1.0) < 1e-13) {
             return J->pointer()[0];
         } else {
             J->power(power, condition_);
@@ -2044,8 +2042,8 @@ void DFHelper::transform() {
 
     timer_on("DFH: Metric Contractions");
 
-    // release in-core AO 
-    if (AO_core_ && release_core_AO_before_metric_)  {
+    // release in-core AO
+    if (AO_core_ && release_core_AO_before_metric_) {
         Ppq_.reset();
     }
 
@@ -3007,7 +3005,9 @@ void DFHelper::build_JK(std::vector<SharedMatrix> Cleft, std::vector<SharedMatri
         outfile->Printf("Entering DFHelper::build_JK\n");
     }
     bool store_k = do_K;
-    if ( do_wK && wcombine_ ) { do_K = false; } 
+    if (do_wK && wcombine_) {
+        do_K = false;
+    }
 
     // This was an if-else statement. Presumably, we could manage J construction
     //   to more effectively manage memory, so I think that was what was going on.
@@ -3023,7 +3023,9 @@ void DFHelper::build_JK(std::vector<SharedMatrix> Cleft, std::vector<SharedMatri
         timer_off("DFH: compute_wK()");
     }
 
-    if (store_k) { do_K = true;}
+    if (store_k) {
+        do_K = true;
+    }
 
     if (debug_) {
         outfile->Printf("Exiting DFHelper::build_JK\n");
@@ -3076,7 +3078,7 @@ void DFHelper::compute_JK(std::vector<SharedMatrix> Cleft, std::vector<SharedMat
     // allocate first Ktmp
     size_t Ktmp_size = (!max_nocc ? totsb * 1 : totsb * max_nocc);
     Ktmp_size = std::max(Ktmp_size * nbf_, nthreads_ * naux_);  // max necessary
-    Ktmp_size = std::max(Ktmp_size, nbf_ * nbf_); 
+    Ktmp_size = std::max(Ktmp_size, nbf_ * nbf_);
     T1 = std::make_unique<double[]>(Ktmp_size);
     double* T1p = T1.get();
 
@@ -3089,7 +3091,7 @@ void DFHelper::compute_JK(std::vector<SharedMatrix> Cleft, std::vector<SharedMat
     }
 
     // necessary for wcombine case for small molecules
-    Ktmp_size = std::max(Ktmp_size, nbf_ * nbf_); 
+    Ktmp_size = std::max(Ktmp_size, nbf_ * nbf_);
     Ktmp_size = std::max(Ktmp_size, nthreads_ * naux_);
 
     T2 = std::make_unique<double[]>(Ktmp_size);
@@ -3099,8 +3101,9 @@ void DFHelper::compute_JK(std::vector<SharedMatrix> Cleft, std::vector<SharedMat
     if (!AO_core_) {
         M = std::make_unique<double[]>(tots);
         Mp = M.get();
-    } else
-        if (!wcombine_) {Mp = Ppq_.get();}
+    } else if (!wcombine_) {
+        Mp = Ppq_.get();
+    }
 
     double* M1p;
     if (wcombine_) {
@@ -3109,7 +3112,7 @@ void DFHelper::compute_JK(std::vector<SharedMatrix> Cleft, std::vector<SharedMat
 
     // Transform a single batch of integrals
     size_t bcount = 0;
-    for (const auto& Qstep :Qsteps) {
+    for (const auto& Qstep : Qsteps) {
         // Qshell step info
         auto start = std::get<0>(Qstep);
         auto stop = std::get<1>(Qstep);
@@ -3215,8 +3218,8 @@ void DFHelper::fill(double* b, size_t count, double value) {
         b[i] = value;
     }
 }
-void DFHelper::compute_J(const std::vector<SharedMatrix> D, std::vector<SharedMatrix> J, double* Mp, double* T1p, double* T2p,
-                         std::vector<std::vector<double>>& D_buffers, size_t bcount, size_t block_size) {
+void DFHelper::compute_J(const std::vector<SharedMatrix> D, std::vector<SharedMatrix> J, double* Mp, double* T1p,
+                         double* T2p, std::vector<std::vector<double>>& D_buffers, size_t bcount, size_t block_size) {
     for (size_t i = 0; i < J.size(); i++) {
         // grab orbital spaces
         auto Dp = D[i]->pointer()[0];
@@ -3271,11 +3274,12 @@ void DFHelper::compute_J(const std::vector<SharedMatrix> D, std::vector<SharedMa
         }
     }
 }
-void DFHelper::compute_J_combined(std::vector<SharedMatrix> D, std::vector<SharedMatrix> J, double* Mp, double* T1p, double* T2p, std::vector<std::vector<double>>& D_buffers, size_t bcount, size_t block_size) {
-//    double* coul_metp = metric_prep_core(1.0);
+void DFHelper::compute_J_combined(std::vector<SharedMatrix> D, std::vector<SharedMatrix> J, double* Mp, double* T1p,
+                                  double* T2p, std::vector<std::vector<double>>& D_buffers, size_t bcount,
+                                  size_t block_size) {
+    //    double* coul_metp = metric_prep_core(1.0);
     double* coul_metp;
     std::unique_ptr<double[]> metric;
-
 
     if (!hold_met_) {
         metric = std::make_unique<double[]>(naux_ * naux_);
@@ -3285,19 +3289,18 @@ void DFHelper::compute_J_combined(std::vector<SharedMatrix> D, std::vector<Share
     } else
         coul_metp = metric_prep_core(1.0);
 
-
     for (size_t i = 0; i < J.size(); i++) {
         double* Dp = D[i]->pointer()[0];
         double* Jp = J[i]->pointer()[0];
-        memset(T1p, 0, naux_ *  nthreads_ * sizeof(double));
+        memset(T1p, 0, naux_ * nthreads_ * sizeof(double));
         memset(T2p, 0, naux_ * sizeof(double));
 
 #pragma omp parallel for schedule(guided) num_threads(nthreads_)
         for (size_t k = 0; k < nbf_; k++) {
             size_t sp_size = small_skips_[k];
-            size_t jump = (AO_core_ ? big_skips_[k] + bcount * sp_size : (big_skips_[k] * block_size) / naux_ );
+            size_t jump = (AO_core_ ? big_skips_[k] + bcount * sp_size : (big_skips_[k] * block_size) / naux_);
             int rank = 0;
-#ifdef _OPENMP 
+#ifdef _OPENMP
             rank = omp_get_thread_num();
 #endif
             for (size_t m = 0, sp_count = -1; m < nbf_; m++) {
@@ -3306,30 +3309,33 @@ void DFHelper::compute_J_combined(std::vector<SharedMatrix> D, std::vector<Share
                     D_buffers[rank][sp_count] = Dp[nbf_ * m + k];
                 }
             }
-            C_DGEMV('N', block_size, sp_size, 1.0, &Mp[jump], sp_size, &D_buffers[rank][0], 1, 1.0, &T1p[rank * naux_], 1);
+            C_DGEMV('N', block_size, sp_size, 1.0, &Mp[jump], sp_size, &D_buffers[rank][0], 1, 1.0, &T1p[rank * naux_],
+                    1);
         }
-        //reduce
+        // reduce
         for (size_t k = 1; k < nthreads_; k++) {
-            for (size_t l = 0; l < naux_; l++) { T1p[l] += T1p[ k * naux_ + l ]; }
+            for (size_t l = 0; l < naux_; l++) {
+                T1p[l] += T1p[k * naux_ + l];
+            }
         }
 
-        //metric contraction
+        // metric contraction
         C_DGEMV('N', naux_, naux_, 1.0, coul_metp, naux_, T1p, 1, 0.0, T2p, 1);
 
         memset(T1p, 0, nbf_ * nbf_ * sizeof(double));
         // comute pruned J
 #pragma omp parallel for schedule(guided) num_threads(nthreads_)
-        for (size_t k = 0; k < nbf_; k++ ) {
+        for (size_t k = 0; k < nbf_; k++) {
             size_t sp_size = small_skips_[k];
-            size_t jump = (AO_core_ ? big_skips_[k] + bcount * sp_size : (big_skips_[k] * block_size) / naux_ );
-            C_DGEMV('T', block_size, sp_size, 1.0, &Mp[jump], sp_size, T2p, 1, 0.0, &T1p[k*nbf_], 1);
+            size_t jump = (AO_core_ ? big_skips_[k] + bcount * sp_size : (big_skips_[k] * block_size) / naux_);
+            C_DGEMV('T', block_size, sp_size, 1.0, &Mp[jump], sp_size, T2p, 1, 0.0, &T1p[k * nbf_], 1);
         }
 
         for (size_t k = 0; k < nbf_; k++) {
             for (size_t m = 0, count = -1; m < nbf_; m++) {
                 if (schwarz_fun_index_[k * nbf_ + m]) {
                     count++;
-                    Jp[k * nbf_ + m ] += T1p[k * nbf_ + count];
+                    Jp[k * nbf_ + m] += T1p[k * nbf_ + count];
                 }
             }
         }
@@ -3425,4 +3431,4 @@ void DFHelper::compute_wK(std::vector<SharedMatrix> Cleft, std::vector<SharedMat
     }
 }
 
-}  // End namespaces
+}  // namespace psi

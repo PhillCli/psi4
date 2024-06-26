@@ -94,8 +94,8 @@
 
 namespace psi {
 
-#define NUM_TO_OPERATOR_ID(x) ((x) ? 1 << ((x)-1) : 0)
-#define SKIP_THIS_OPERATOR(num, bit) ((bit) ? !((1 << ((bit)-1)) & (num)) : 0)
+#define NUM_TO_OPERATOR_ID(x) ((x) ? 1 << ((x) - 1) : 0)
+#define SKIP_THIS_OPERATOR(num, bit) ((bit) ? !((1 << ((bit) - 1)) & (num)) : 0)
 
 namespace SymmOps {
 enum Operations { E = 0, C2_z = 1, C2_y = 2, C2_x = 4, i = 8, Sigma_xy = 16, Sigma_xz = 32, Sigma_yz = 64, ID = 128 };

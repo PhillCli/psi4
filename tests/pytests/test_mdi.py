@@ -8,6 +8,7 @@ import psi4
 
 pytestmark = [pytest.mark.psi, pytest.mark.api, pytest.mark.quick, pytest.mark.mdi]
 
+
 @pytest.mark.smoke
 @uusing("mdi")
 def test_mdi_water():
@@ -130,8 +131,15 @@ def test_mdi_water():
     assert compare_values(expected, energy, atol=1.e-6)
     forces = engine.send_forces()
     expected = [
-        0.032656171616, -0.027255620629, -0.02211206073, 0.015827924001, -0.009687198705,
-        0.011685024025, 0.026352703866, 0.008313469614, 0.033873286169,
+        0.032656171616,
+        -0.027255620629,
+        -0.02211206073,
+        0.015827924001,
+        -0.009687198705,
+        0.011685024025,
+        0.026352703866,
+        0.008313469614,
+        0.033873286169,
     ]
     assert compare_values(expected, forces, atol=1.e-6)
 

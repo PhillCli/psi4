@@ -31,9 +31,9 @@
 #include <vector>
 
 #include "dpdmospace.h"
+using std::cout;
 using std::string;
 using std::vector;
-using std::cout;
 namespace psi {
 
 DPDMOSpace::DPDMOSpace(const char label, const string &indices, vector<int> orbspi) {

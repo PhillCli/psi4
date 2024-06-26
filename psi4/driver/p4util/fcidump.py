@@ -154,7 +154,7 @@ def fcidump(wfn: core.Wavefunction, fname: str = 'INTDUMP', oe_ints: Optional[Li
             PSIF_MO_FZC = 'MO-basis Frozen-Core Operator'
             moH = core.Matrix(PSIF_MO_FZC, wfn.nmopi(), wfn.nmopi())
             moH.load(core.IO.shared_object(), psif.PSIF_OEI)
-            mo_slice = core.Slice(frzcpi, frzcpi+active_mopi)
+            mo_slice = core.Slice(frzcpi, frzcpi + active_mopi)
             MO_FZC = moH.get_block(mo_slice, mo_slice)
             offset = 0
             for h, block in enumerate(MO_FZC.nph):
@@ -235,15 +235,16 @@ def _irrep_map(wfn):
     """Returns an array of irrep indices that maps from Psi4's ordering convention to the standard FCIDUMP convention.
     """
     symm = wfn.molecule().point_group().symbol()
-    psi2dump = {'c1' : [1],               # A
-                'ci' : [1,2],             # Ag Au
-                'c2' : [1,2],             # A  B
-                'cs' : [1,2],             # A' A"
-                'd2' : [1,4,3,2],         # A  B1  B2  B3
-                'c2v' : [1,4,2,3],        # A1 A2  B1  B2
-                'c2h' : [1,4,2,3],        # Ag Bg  Au  Bu
-                'd2h' : [1,4,6,7,8,5,3,2] # Ag B1g B2g B3g Au B1u B2u B3u
-                }
+    psi2dump = {
+        'c1': [1],  # A
+        'ci': [1, 2],  # Ag Au
+        'c2': [1, 2],  # A  B
+        'cs': [1, 2],  # A' A"
+        'd2': [1, 4, 3, 2],  # A  B1  B2  B3
+        'c2v': [1, 4, 2, 3],  # A1 A2  B1  B2
+        'c2h': [1, 4, 2, 3],  # Ag Bg  Au  Bu
+        'd2h': [1, 4, 6, 7, 8, 5, 3, 2]  # Ag B1g B2g B3g Au B1u B2u B3u
+    }
 
     irrep_map = psi2dump[symm]
     return np.array(irrep_map, dtype='int')
@@ -365,11 +366,7 @@ def compare_fcidumps(expected: str, computed: str, label: str):
     intdump = fcidump_from_file(computed)
 
     # Compare headers
-    compare_recursive(
-        ref_intdump,
-        intdump,
-        'FCIDUMP header',
-        forgive=['enuc', 'hcore', 'eri', 'epsilon'])
+    compare_recursive(ref_intdump, intdump, 'FCIDUMP header', forgive=['enuc', 'hcore', 'eri', 'epsilon'])
 
     ref_energies = energies_from_fcidump(ref_intdump)
     energies = energies_from_fcidump(intdump)

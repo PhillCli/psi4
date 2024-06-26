@@ -47,7 +47,6 @@ class PSIO;
 
 class PSI_API DIISManager {
    public:
-
     /**
      * @brief How the quantities are to be stored;
      *
@@ -63,18 +62,19 @@ class PSI_API DIISManager {
      */
     enum class RemovalPolicy { LargestError, OldestAdded };
 
-    DIISManager(int maxSubspaceSize, const std::string& label, RemovalPolicy = RemovalPolicy::LargestError, StoragePolicy = StoragePolicy::OnDisk);
+    DIISManager(int maxSubspaceSize, const std::string& label, RemovalPolicy = RemovalPolicy::LargestError,
+                StoragePolicy = StoragePolicy::OnDisk);
     DIISManager() {}
     ~DIISManager();
 
     // Variadic templates to interface with Python.
     // If you're new to variadics, these allow multiple arguments.
     // MUST be implemented in header.
-    template <typename ... types>
-    void set_error_vector_size(types ... arrays) {
+    template <typename... types>
+    void set_error_vector_size(types... arrays) {
         pydiis.attr("set_error_vector_size")(arrays...);
     }
-    template <typename ... types>
+    template <typename... types>
     void set_vector_size(types... arrays) {
         pydiis.attr("set_vector_size")(arrays...);
     }
@@ -82,7 +82,7 @@ class PSI_API DIISManager {
     bool extrapolate(types... arrays) {
         return py::len(pydiis.attr("extrapolate")(arrays...));
     }
-    template <typename ... types>
+    template <typename... types>
     bool add_entry(types... arrays) {
         auto success = pydiis.attr("add_entry")(arrays...);
         return success.template cast<bool>();
@@ -94,10 +94,8 @@ class PSI_API DIISManager {
     /// The number of vectors currently in the subspace
     int subspace_size();
 
-  protected:
-
+   protected:
     py::object pydiis;
-
 };
 
 }  // namespace psi

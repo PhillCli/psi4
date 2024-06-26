@@ -12,12 +12,7 @@ dimer = psi4.geometry("""
 Be   0.000000000   0.000000000   0.000000000
 """)
 
-psi4.set_options({
-   "scf_type"      :  "out_of_core",
-   "basis"         :  "cc-pVTZ",
-   "e_convergence" :  1e-8,
-   "d_convergence" :  1e-8
-})
+psi4.set_options({"scf_type": "out_of_core", "basis": "cc-pVTZ", "e_convergence": 1e-8, "d_convergence": 1e-8})
 
 # Build the SCF wavefunction
 scf_energy, wfn = psi4.energy('SCF', return_wfn=True)
@@ -92,14 +87,13 @@ for CI_ITER in range(max_guess - 1):
     for i in range(num_vecs - num_eig, num_vecs):
         ciwfn.sigma(cvecs, svecs, i, i)
         for j in range(0, num_vecs):
-            G[j,i] = G[i, j] = svecs.vdot(cvecs, i, j)
+            G[j, i] = G[i, j] = svecs.vdot(cvecs, i, j)
 
     evals, evecs = np.linalg.eigh(G[:num_vecs, :num_vecs])
 
     CI_E = evals[0]
-    print('CI Iteration %3d: Energy = %4.16f   dE = % 1.5E   dC = %1.5E'
-          % (CI_ITER, CI_E, (CI_E - Eold), delta_c))
-    if (abs(CI_E - Eold) < etol) and (delta_c < ctol) and (CI_ITER > 3): 
+    print('CI Iteration %3d: Energy = %4.16f   dE = % 1.5E   dC = %1.5E' % (CI_ITER, CI_E, (CI_E - Eold), delta_c))
+    if (abs(CI_E - Eold) < etol) and (delta_c < ctol) and (CI_ITER > 3):
         print('\nCI has converged!')
         break
     Eold = CI_E
@@ -117,14 +111,13 @@ for CI_ITER in range(max_guess - 1):
         ciwfn.sigma(dvecs, svecs, dwork_vec, swork_vec)
         svecs.axpy(-1 * evals[n], dvecs, swork_vec, dwork_vec)
         norm = svecs.dcalc(evals[n], Hd, swork_vec)
-        svecs.symnormalize(1 / norm, swork_vec) 
+        svecs.symnormalize(1 / norm, swork_vec)
         delta_c = norm
 
         # Build a new vector that is orthornormal to all previous vectors
         dvecs.copy(svecs, n, swork_vec)
         norm = dvecs.norm(n)
         dvecs.symnormalize(1 / norm, n)
-        
 
         total_proj = 0
         for i in range(num_vecs):
@@ -141,7 +134,6 @@ for CI_ITER in range(max_guess - 1):
             cvecs.copy(dvecs, num_vecs, n)
             num_vecs += 1
 
-
 print("\nComparison to Psi4's DETCI module:")
 psi_ci_energy, ciwfn = psi4.energy('DETCI', return_wfn=True)
-psi4.compare_values(CI_E, psi_ci_energy, 6, 'CI Energy') 
+psi4.compare_values(CI_E, psi_ci_energy, 6, 'CI Energy')

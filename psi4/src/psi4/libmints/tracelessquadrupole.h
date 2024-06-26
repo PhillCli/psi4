@@ -46,10 +46,10 @@ class BasisSet;
  *  Use an IntegralFactory to create this object.
  */
 class TracelessQuadrupoleInt : public OneBodyAOInt {
-
     void compute_pair(const libint2::Shell &, const libint2::Shell &) override;
+
    public:
-    TracelessQuadrupoleInt(std::vector<SphericalTransform>&, std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>);
+    TracelessQuadrupoleInt(std::vector<SphericalTransform> &, std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>);
     ~TracelessQuadrupoleInt() override;
 };
 

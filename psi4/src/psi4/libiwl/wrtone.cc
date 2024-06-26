@@ -56,4 +56,4 @@ void IWL::write_one(PSIO *psio, int itap, const char *label, int ntri, double *o
     psio->write_entry(itap, label, (char *)onel_ints, ntri * sizeof(double));
     psio->close(itap, 1);
 }
-}
+}  // namespace psi

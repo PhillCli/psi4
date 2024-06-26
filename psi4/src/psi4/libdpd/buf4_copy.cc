@@ -51,7 +51,7 @@ namespace psi {
 ** TDC, September 1999
 */
 
-int DPD::buf4_copy(dpdbuf4 *InBuf, int outfilenum, const std::string& label) {
+int DPD::buf4_copy(dpdbuf4 *InBuf, int outfilenum, const std::string &label) {
     auto label_ptr = label.c_str();
     int h, row, col, my_irrep;
     long int rowtot, coltot;

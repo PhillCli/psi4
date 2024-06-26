@@ -198,7 +198,7 @@ double CCEnergyWavefunction::compute_energy() {
     moinfo_.ecc = energy();
 
     auto nocc_act = moinfo_.clsdpi.sum();
-    std::vector<double> emp2_aa(nocc_act * (nocc_act - 1) /2);
+    std::vector<double> emp2_aa(nocc_act * (nocc_act - 1) / 2);
     std::vector<double> emp2_ab(nocc_act * nocc_act);
     pair_energies(emp2_aa, emp2_ab);
     double last_energy = 0;
@@ -446,7 +446,7 @@ double CCEnergyWavefunction::compute_energy() {
     if (params_.ref == 0) spinad_amps();
 
     /* Compute pair energies */
-    std::vector<double> ecc_aa(nocc_act * (nocc_act - 1) /2);
+    std::vector<double> ecc_aa(nocc_act * (nocc_act - 1) / 2);
     std::vector<double> ecc_ab(nocc_act * nocc_act);
     if (params_.print_pair_energies) {
         pair_energies(ecc_aa, ecc_ab);
@@ -502,10 +502,14 @@ double CCEnergyWavefunction::compute_energy() {
         // Run cctriples
         if (psi::cctriples::cctriples(reference_wavefunction_, options_) == Success) {
             energy_ = Process::environment.globals["CURRENT ENERGY"];
-            set_scalar_variable("(T) CORRECTION ENERGY", reference_wavefunction_->scalar_variable("(T) CORRECTION ENERGY"));
-            set_scalar_variable("CCSD(T) CORRELATION ENERGY", reference_wavefunction_->scalar_variable("CCSD(T) CORRELATION ENERGY"));
-            set_scalar_variable("CCSD(T) TOTAL ENERGY", reference_wavefunction_->scalar_variable("CCSD(T) TOTAL ENERGY"));
-            set_scalar_variable("CURRENT CORRELATION ENERGY", reference_wavefunction_->scalar_variable("CCSD(T) CORRELATION ENERGY"));
+            set_scalar_variable("(T) CORRECTION ENERGY",
+                                reference_wavefunction_->scalar_variable("(T) CORRECTION ENERGY"));
+            set_scalar_variable("CCSD(T) CORRELATION ENERGY",
+                                reference_wavefunction_->scalar_variable("CCSD(T) CORRELATION ENERGY"));
+            set_scalar_variable("CCSD(T) TOTAL ENERGY",
+                                reference_wavefunction_->scalar_variable("CCSD(T) TOTAL ENERGY"));
+            set_scalar_variable("CURRENT CORRELATION ENERGY",
+                                reference_wavefunction_->scalar_variable("CCSD(T) CORRELATION ENERGY"));
             set_scalar_variable("CURRENT ENERGY", reference_wavefunction_->scalar_variable("CCSD(T) TOTAL ENERGY"));
         } else {
             energy_ = 0.0;

@@ -1,7 +1,6 @@
 #! CCSD dipole with user-specified basis set
 import psi4
 
-
 psi4.set_output_file("output.dat", False)
 
 h2o = psi4.geometry("""
@@ -100,7 +99,5 @@ D 2 1.00
 ****
 """)
 
-ccsd_e, wfn = psi4.properties('ccsd',properties=['dipole'],return_wfn=True)
-psi4.oeprop(wfn,"DIPOLE", "QUADRUPOLE", title="(OEPROP)CC")
-
-
+ccsd_e, wfn = psi4.properties('ccsd', properties=['dipole'], return_wfn=True)
+psi4.oeprop(wfn, "DIPOLE", "QUADRUPOLE", title="(OEPROP)CC")

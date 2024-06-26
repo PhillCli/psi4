@@ -68,46 +68,31 @@ using namespace psi;
 namespace psi {
 namespace scfgrad {
 
-JKGrad::JKGrad(int deriv, std::shared_ptr<BasisSet> primary) :
-    deriv_(deriv), primary_(primary)
-{
-    common_init();
-}
-JKGrad::~JKGrad()
-{
-}
-std::shared_ptr<JKGrad> JKGrad::build_JKGrad(int deriv, std::shared_ptr<MintsHelper> mints)
-{
+JKGrad::JKGrad(int deriv, std::shared_ptr<BasisSet> primary) : deriv_(deriv), primary_(primary) { common_init(); }
+JKGrad::~JKGrad() {}
+std::shared_ptr<JKGrad> JKGrad::build_JKGrad(int deriv, std::shared_ptr<MintsHelper> mints) {
     Options& options = Process::environment.options;
 
     if (options.get_str("SCF_TYPE").find("DF") != std::string::npos) {
         DFJKGrad* jk = new DFJKGrad(deriv, mints);
 
-        if (options["INTS_TOLERANCE"].has_changed())
-            jk->set_cutoff(options.get_double("INTS_TOLERANCE"));
-        if (options["PRINT"].has_changed())
-            jk->set_print(options.get_int("PRINT"));
-        if (options["DEBUG"].has_changed())
-            jk->set_debug(options.get_int("DEBUG"));
-        if (options["BENCH"].has_changed())
-            jk->set_bench(options.get_int("BENCH"));
+        if (options["INTS_TOLERANCE"].has_changed()) jk->set_cutoff(options.get_double("INTS_TOLERANCE"));
+        if (options["PRINT"].has_changed()) jk->set_print(options.get_int("PRINT"));
+        if (options["DEBUG"].has_changed()) jk->set_debug(options.get_int("DEBUG"));
+        if (options["BENCH"].has_changed()) jk->set_bench(options.get_int("BENCH"));
         jk->set_condition(options.get_double("DF_FITTING_CONDITION"));
         if (options["DF_INTS_NUM_THREADS"].has_changed())
             jk->set_df_ints_num_threads(options.get_int("DF_INTS_NUM_THREADS"));
 
         return std::shared_ptr<JKGrad>(jk);
-    } else if (options.get_str("SCF_TYPE") == "DIRECT" || options.get_str("SCF_TYPE") == "PK" || options.get_str("SCF_TYPE") == "OUT_OF_CORE") {
-
+    } else if (options.get_str("SCF_TYPE") == "DIRECT" || options.get_str("SCF_TYPE") == "PK" ||
+               options.get_str("SCF_TYPE") == "OUT_OF_CORE") {
         DirectJKGrad* jk = new DirectJKGrad(deriv, mints->get_basisset("ORBITAL"));
 
-        if (options["INTS_TOLERANCE"].has_changed())
-            jk->set_cutoff(options.get_double("INTS_TOLERANCE"));
-        if (options["PRINT"].has_changed())
-            jk->set_print(options.get_int("PRINT"));
-        if (options["DEBUG"].has_changed())
-            jk->set_debug(options.get_int("DEBUG"));
-        if (options["BENCH"].has_changed())
-            jk->set_bench(options.get_int("BENCH"));
+        if (options["INTS_TOLERANCE"].has_changed()) jk->set_cutoff(options.get_double("INTS_TOLERANCE"));
+        if (options["PRINT"].has_changed()) jk->set_print(options.get_int("PRINT"));
+        if (options["DEBUG"].has_changed()) jk->set_debug(options.get_int("DEBUG"));
+        if (options["BENCH"].has_changed()) jk->set_bench(options.get_int("BENCH"));
         // TODO: rename every DF case
         if (options["DF_INTS_NUM_THREADS"].has_changed())
             jk->set_ints_num_threads(options.get_int("DF_INTS_NUM_THREADS"));
@@ -136,9 +121,8 @@ void JKGrad::common_init() {
     do_wK_ = false;
     omega_ = 0.0;
 }
-DFJKGrad::DFJKGrad(int deriv, std::shared_ptr<MintsHelper> mints) :
-    JKGrad(deriv,mints->get_basisset("ORBITAL")), auxiliary_(mints->get_basisset("DF_BASIS_SCF")), mints_(mints)
-{
+DFJKGrad::DFJKGrad(int deriv, std::shared_ptr<MintsHelper> mints)
+    : JKGrad(deriv, mints->get_basisset("ORBITAL")), auxiliary_(mints->get_basisset("DF_BASIS_SCF")), mints_(mints) {
     common_init();
 }
 DFJKGrad::~DFJKGrad() {}
@@ -454,14 +438,15 @@ void DFJKGrad::build_Amn_terms() {
         // > Beta < //
         if (!restricted && (do_K_ || do_wK_)) {
             // skip if there are no beta electrons
-            if (nb > 0){
+            if (nb > 0) {
                 // > (A|mn) C_ni -> (A|mi) < //
-                    C_DGEMM('N', 'N', np * (size_t)nso, nb, nso, 1.0, Amnp[0], nso, Cbp[0], nb, 0.0, Amip[0], na);
+                C_DGEMM('N', 'N', np * (size_t)nso, nb, nso, 1.0, Amnp[0], nso, Cbp[0], nb, 0.0, Amip[0], na);
 
                 // > (A|mi) C_mj -> (A|ij) < //
 #pragma omp parallel for
                 for (int p = 0; p < np; p++) {
-                    C_DGEMM('T', 'N', nb, nb, nso, 1.0, Amip[p], na, Cbp[0], nb, 0.0, &Aijp[0][p * (size_t)nb * nb], nb);
+                    C_DGEMM('T', 'N', nb, nb, nso, 1.0, Amip[p], na, Cbp[0], nb, 0.0, &Aijp[0][p * (size_t)nb * nb],
+                            nb);
                 }
             }
             // > Stripe < //
@@ -831,8 +816,7 @@ void DFJKGrad::build_UV_terms() {
     psio_->write_entry(unit_c_, "W", (char*)Vp[0], sizeof(double) * naux * naux);
 }
 
-void DFJKGrad::build_AB_x_terms()
-{
+void DFJKGrad::build_AB_x_terms() {
     auto naux = auxiliary_->nbf();
 
     std::map<std::string, SharedMatrix> densities;
@@ -840,7 +824,7 @@ void DFJKGrad::build_AB_x_terms()
     if (do_J_) {
         auto d = std::make_shared<Vector>("d", naux);
         auto dp = d->pointer();
-        psio_->read_entry(unit_c_, "c", (char*) dp, sizeof(double) * naux);
+        psio_->read_entry(unit_c_, "c", (char*)dp, sizeof(double) * naux);
         auto D = std::make_shared<Matrix>("D", naux, naux);
         auto Dp = D->pointer();
         C_DGER(naux, naux, 1, dp, 1, dp, 1, Dp[0], naux);
@@ -849,19 +833,19 @@ void DFJKGrad::build_AB_x_terms()
     if (do_K_) {
         auto V = std::make_shared<Matrix>("V", naux, naux);
         auto Vp = V->pointer();
-        psio_->read_entry(unit_c_, "V", (char*) Vp[0], sizeof(double) * naux * naux);
+        psio_->read_entry(unit_c_, "V", (char*)Vp[0], sizeof(double) * naux * naux);
         densities["Exchange"] = V;
     }
     if (do_wK_) {
         auto W = std::make_shared<Matrix>("W", naux, naux);
         auto Wp = W->pointer();
-        psio_->read_entry(unit_c_, "W", (char*) Wp[0], sizeof(double) * naux * naux);
+        psio_->read_entry(unit_c_, "W", (char*)Wp[0], sizeof(double) * naux * naux);
         densities["Exchange,LR"] = W;
     }
 
     auto results = mints_->metric_grad(densities, "DF_BASIS_SCF");
 
-    for (const auto& kv: results) {
+    for (const auto& kv : results) {
         gradients_[kv.first] = kv.second;
     }
 }
@@ -1007,7 +991,7 @@ void DFJKGrad::build_Amn_x_terms() {
     }
     if (do_wK_) {
         transforms.push_back(std::make_tuple(unit_a_, "(A|w|ij)", Cap, na, &next_Awija, wKmnp));
-        // skip if there are no beta electrons        
+        // skip if there are no beta electrons
         if (!restricted && nb > 0) {
             transforms.push_back(std::make_tuple(unit_b_, "(A|w|ij)", Cbp, nb, &next_Awijb, wKmnp));
         }
@@ -1277,7 +1261,7 @@ void DFJKGrad::compute_hessian() {
      * Andy Simmonett (07/16)
      *
      */
-     // clang-format on
+    // clang-format on
 
     // => Set up hessians <= //
     int natom = primary_->molecule()->natom();
@@ -1318,25 +1302,25 @@ void DFJKGrad::compute_hessian() {
     double** PQp = PQ->pointer();
 
     auto c = std::make_shared<Vector>("c[A] = (mn|A) D[m][n]", np);
-    double *cp = c->pointer();
-    auto dc = std::make_shared<Matrix>("dc[x][A] = (mn|A)^x D[m][n]",  3*natoms, np);
-    double **dcp = dc->pointer();
+    double* cp = c->pointer();
+    auto dc = std::make_shared<Matrix>("dc[x][A] = (mn|A)^x D[m][n]", 3 * natoms, np);
+    double** dcp = dc->pointer();
 
-    auto dAa_ij = std::make_shared<Matrix>("dAij[x][A,i,j] = (mn|A)^x C[m][i] C[n][j]",  3*natoms, np*na*na);
-    double **dAa_ijp = dAa_ij->pointer();
-    auto dAb_ij = std::make_shared<Matrix>("dAij[x][A,i,j] = (mn|A)^x C[m][i] C[n][j]",  3*natoms, np*nb*nb);
-    double **dAb_ijp = dAb_ij->pointer();
+    auto dAa_ij = std::make_shared<Matrix>("dAij[x][A,i,j] = (mn|A)^x C[m][i] C[n][j]", 3 * natoms, np * na * na);
+    double** dAa_ijp = dAa_ij->pointer();
+    auto dAb_ij = std::make_shared<Matrix>("dAij[x][A,i,j] = (mn|A)^x C[m][i] C[n][j]", 3 * natoms, np * nb * nb);
+    double** dAb_ijp = dAb_ij->pointer();
 
     auto d = std::make_shared<Vector>("d[A] = Minv[A][B] C[B]", np);
-    double *dp = d->pointer();
-    auto dd = std::make_shared<Matrix>("dd[x][B] = dc[x][A] Minv[A][B]", 3*natoms, np);
-    double **ddp = dd->pointer();
-    auto de = std::make_shared<Matrix>("de[x][A] = (A|B)^x d[B] ", 3*natoms, np);
-    double **dep = de->pointer();
-    auto dea_ij = std::make_shared<Matrix>("deij[x][A,i,j] = (A|B)^x Bij[B,i,j]", 3*natoms, np*na*na);
-    double **dea_ijp = dea_ij->pointer();
-    auto deb_ij = std::make_shared<Matrix>("deij[x][A,i,j] = (A|B)^x Bij[B,i,j]", 3*natoms, np*nb*nb);
-    double **deb_ijp = deb_ij->pointer();
+    double* dp = d->pointer();
+    auto dd = std::make_shared<Matrix>("dd[x][B] = dc[x][A] Minv[A][B]", 3 * natoms, np);
+    double** ddp = dd->pointer();
+    auto de = std::make_shared<Matrix>("de[x][A] = (A|B)^x d[B] ", 3 * natoms, np);
+    double** dep = de->pointer();
+    auto dea_ij = std::make_shared<Matrix>("deij[x][A,i,j] = (A|B)^x Bij[B,i,j]", 3 * natoms, np * na * na);
+    double** dea_ijp = dea_ij->pointer();
+    auto deb_ij = std::make_shared<Matrix>("deij[x][A,i,j] = (A|B)^x Bij[B,i,j]", 3 * natoms, np * nb * nb);
+    double** deb_ijp = deb_ij->pointer();
 
     // Build some integral factories
     auto Pmnfactory = std::make_shared<IntegralFactory>(auxiliary_, BasisSet::zero_ao_basis_set(), primary_, primary_);
@@ -1344,33 +1328,33 @@ void DFJKGrad::compute_hessian() {
                                                        BasisSet::zero_ao_basis_set());
     std::shared_ptr<TwoBodyAOInt> Pmnint(Pmnfactory->eri(2));
     std::shared_ptr<TwoBodyAOInt> PQint(PQfactory->eri(2));
-    auto Amn = std::make_shared<Matrix>("(A|mn)", np, nso*nso);
-    auto Aa_mi = std::make_shared<Matrix>("(A|mi)", np, nso*na);
-    auto Aa_ij = std::make_shared<Matrix>("(A|ij)", np, na*na);
-    auto Ba_ij = std::make_shared<Matrix>("Minv[B][A] (A|ij)", np, na*na);
-    auto Ba_im = std::make_shared<Matrix>("Minv[B][A] (A|im)", np, nso*na);
-    auto Ba_mn = std::make_shared<Matrix>("Minv[B][A] (A|mn)", np, nso*nso);
+    auto Amn = std::make_shared<Matrix>("(A|mn)", np, nso * nso);
+    auto Aa_mi = std::make_shared<Matrix>("(A|mi)", np, nso * na);
+    auto Aa_ij = std::make_shared<Matrix>("(A|ij)", np, na * na);
+    auto Ba_ij = std::make_shared<Matrix>("Minv[B][A] (A|ij)", np, na * na);
+    auto Ba_im = std::make_shared<Matrix>("Minv[B][A] (A|im)", np, nso * na);
+    auto Ba_mn = std::make_shared<Matrix>("Minv[B][A] (A|mn)", np, nso * nso);
     auto Da_PQ = std::make_shared<Matrix>("B(P|ij) B(Q|ij)", np, np);
-    double **Amnp = Amn->pointer();
-    double **Aa_mip = Aa_mi->pointer();
-    double **Aa_ijp = Aa_ij->pointer();
-    double **Ba_ijp = Ba_ij->pointer();
-    double **Ba_imp = Ba_im->pointer();
-    double **Ba_mnp = Ba_mn->pointer();
-    double **Da_PQp = Da_PQ->pointer();
+    double** Amnp = Amn->pointer();
+    double** Aa_mip = Aa_mi->pointer();
+    double** Aa_ijp = Aa_ij->pointer();
+    double** Ba_ijp = Ba_ij->pointer();
+    double** Ba_imp = Ba_im->pointer();
+    double** Ba_mnp = Ba_mn->pointer();
+    double** Da_PQp = Da_PQ->pointer();
 
-    auto Ab_mi = std::make_shared<Matrix>("(A|mi)", np, nso*nb);
-    auto Ab_ij = std::make_shared<Matrix>("(A|ij)", np, nb*nb);
-    auto Bb_ij = std::make_shared<Matrix>("Minv[B][A] (A|ij)", np, nb*nb);
-    auto Bb_im = std::make_shared<Matrix>("Minv[B][A] (A|im)", np, nso*nb);
-    auto Bb_mn = std::make_shared<Matrix>("Minv[B][A] (A|mn)", np, nso*nso);
+    auto Ab_mi = std::make_shared<Matrix>("(A|mi)", np, nso * nb);
+    auto Ab_ij = std::make_shared<Matrix>("(A|ij)", np, nb * nb);
+    auto Bb_ij = std::make_shared<Matrix>("Minv[B][A] (A|ij)", np, nb * nb);
+    auto Bb_im = std::make_shared<Matrix>("Minv[B][A] (A|im)", np, nso * nb);
+    auto Bb_mn = std::make_shared<Matrix>("Minv[B][A] (A|mn)", np, nso * nso);
     auto Db_PQ = std::make_shared<Matrix>("B(P|ij) B(Q|ij)", np, np);
-    double **Ab_mip = Ab_mi->pointer();
-    double **Ab_ijp = Ab_ij->pointer();
-    double **Bb_ijp = Bb_ij->pointer();
-    double **Bb_imp = Bb_im->pointer();
-    double **Bb_mnp = Bb_mn->pointer();
-    double **Db_PQp = Db_PQ->pointer();
+    double** Ab_mip = Ab_mi->pointer();
+    double** Ab_ijp = Ab_ij->pointer();
+    double** Bb_ijp = Bb_ij->pointer();
+    double** Bb_imp = Bb_im->pointer();
+    double** Bb_mnp = Bb_mn->pointer();
+    double** Db_PQp = Db_PQ->pointer();
 
     for (int P = 0; P < nauxshell; ++P) {
         int nP = auxiliary_->shell(P).nfunction();
@@ -1385,10 +1369,10 @@ void DFJKGrad::compute_hessian() {
                 Pmnint->compute_shell(P, 0, M, N);
                 const double* buffer = Pmnint->buffer();
 
-                for (int p = oP; p < oP+nP; p++) {
-                    for (int m = oM; m < oM+nM; m++) {
-                        for (int n = oN; n < oN+nN; n++) {
-                            Amnp[p][m*nso+n] = (*buffer++);
+                for (int p = oP; p < oP + nP; p++) {
+                    for (int m = oM; m < oM + nM; m++) {
+                        for (int n = oN; n < oN + nN; n++) {
+                            Amnp[p][m * nso + n] = (*buffer++);
                         }
                     }
                 }
@@ -1397,30 +1381,30 @@ void DFJKGrad::compute_hessian() {
     }
     // First alpha
     // (A|mj) = (A|mn) C[n][j]
-    C_DGEMM('N','N',np*(size_t)nso,na,nso,1.0,Amnp[0],nso,Cap[0],na,0.0,Aa_mip[0],na);
-    // (A|ij) = (A|mj) C[m][i]
-    #pragma omp parallel for
+    C_DGEMM('N', 'N', np * (size_t)nso, na, nso, 1.0, Amnp[0], nso, Cap[0], na, 0.0, Aa_mip[0], na);
+// (A|ij) = (A|mj) C[m][i]
+#pragma omp parallel for
     for (int p = 0; p < np; p++) {
-        C_DGEMM('T','N',na,na,nso,1.0,Aa_mip[p],na,Cap[0],na,0.0,&Aa_ijp[0][p * (size_t) na * na],na);
+        C_DGEMM('T', 'N', na, na, nso, 1.0, Aa_mip[p], na, Cap[0], na, 0.0, &Aa_ijp[0][p * (size_t)na * na], na);
     }
     // Beta
-    if (!same_ab){
+    if (!same_ab) {
         // (A|mj) = (A|mn) C[n][j]
-        C_DGEMM('N','N',np*(size_t)nso,nb,nso,1.0,Amnp[0],nso,Cbp[0],nb,0.0,Ab_mip[0],nb);
-        // (A|ij) = (A|mj) C[m][i]
-        #pragma omp parallel for
+        C_DGEMM('N', 'N', np * (size_t)nso, nb, nso, 1.0, Amnp[0], nso, Cbp[0], nb, 0.0, Ab_mip[0], nb);
+// (A|ij) = (A|mj) C[m][i]
+#pragma omp parallel for
         for (int p = 0; p < np; p++) {
-            C_DGEMM('T','N',nb,nb,nso,1.0,Ab_mip[p],nb,Cbp[0],nb,0.0,&Ab_ijp[0][p * (size_t) nb * nb],nb);
+            C_DGEMM('T', 'N', nb, nb, nso, 1.0, Ab_mip[p], nb, Cbp[0], nb, 0.0, &Ab_ijp[0][p * (size_t)nb * nb], nb);
         }
     }
     // c[A] = (A|mn) D[m][n]
-    C_DGEMV('N', np, nso*(size_t)nso, 1.0, Amnp[0], nso*(size_t)nso, Dtp[0], 1, 0.0, cp, 1);
+    C_DGEMV('N', np, nso * (size_t)nso, 1.0, Amnp[0], nso * (size_t)nso, Dtp[0], 1, 0.0, cp, 1);
     // (A|mj) = (A|mn) C[n][j]
-    C_DGEMM('N','N',np*(size_t)nso,na,nso,1.0,Amnp[0],nso,Cap[0],na,0.0,Aa_mip[0],na);
-    // (A|ij) = (A|mj) C[m][i]
-    #pragma omp parallel for
+    C_DGEMM('N', 'N', np * (size_t)nso, na, nso, 1.0, Amnp[0], nso, Cap[0], na, 0.0, Aa_mip[0], na);
+// (A|ij) = (A|mj) C[m][i]
+#pragma omp parallel for
     for (int p = 0; p < np; p++) {
-        C_DGEMM('T','N',na,na,nso,1.0,Aa_mip[p],na,Cap[0],na,0.0,&Aa_ijp[0][p * (size_t) na * na],na);
+        C_DGEMM('T', 'N', na, na, nso, 1.0, Aa_mip[p], na, Cap[0], na, 0.0, &Aa_ijp[0][p * (size_t)na * na], na);
     }
 
     // d[A] = Minv[A][B] c[B]
@@ -1428,38 +1412,38 @@ void DFJKGrad::compute_hessian() {
 
     // Alpha
     // B[B][i,j] = Minv[A][B] (A|ij)
-    C_DGEMM('n','n', np, na*na, np, 1.0, PQp[0], np, Aa_ijp[0], na*na, 0.0, Ba_ijp[0], na*na);
+    C_DGEMM('n', 'n', np, na * na, np, 1.0, PQp[0], np, Aa_ijp[0], na * na, 0.0, Ba_ijp[0], na * na);
     // B[B][i,n] = B[B][i,j] C[n][j]
-    C_DGEMM('N', 'T', np*(size_t)na, nso, na, 1.0, Ba_ijp[0], na, Cap[0], na, 0.0, Ba_imp[0], nso);
-    // B[B][m,n] = C[m][i] B[B][i,n]
-    #pragma omp parallel for
+    C_DGEMM('N', 'T', np * (size_t)na, nso, na, 1.0, Ba_ijp[0], na, Cap[0], na, 0.0, Ba_imp[0], nso);
+// B[B][m,n] = C[m][i] B[B][i,n]
+#pragma omp parallel for
     for (int p = 0; p < np; p++) {
         C_DGEMM('n', 'n', nso, nso, na, 1.0, Cap[0], na, Ba_imp[p], nso, 0.0, Ba_mnp[p], nso);
     }
     // D[A][B] = B[A][ij] B[B][ij]
-    C_DGEMM('n','t', np, np, na*na, 1.0, Ba_ijp[0], na*na, Ba_ijp[0], na*na, 0.0, Da_PQp[0], np);
+    C_DGEMM('n', 't', np, np, na * na, 1.0, Ba_ijp[0], na * na, Ba_ijp[0], na * na, 0.0, Da_PQp[0], np);
 
     // Beta
-    if(!same_ab){
+    if (!same_ab) {
         // B[B][i,j] = Minv[A][B] (A|ij)
-        C_DGEMM('n','n', np, nb*nb, np, 1.0, PQp[0], np, Ab_ijp[0], nb*nb, 0.0, Bb_ijp[0], nb*nb);
+        C_DGEMM('n', 'n', np, nb * nb, np, 1.0, PQp[0], np, Ab_ijp[0], nb * nb, 0.0, Bb_ijp[0], nb * nb);
         // B[B][i,n] = B[B][i,j] C[n][j]
-        C_DGEMM('N', 'T', np*(size_t)nb, nso, nb, 1.0, Bb_ijp[0], nb, Cbp[0], nb, 0.0, Bb_imp[0], nso);
-        // B[B][m,n] = C[m][i] B[B][i,n]
-        #pragma omp parallel for
+        C_DGEMM('N', 'T', np * (size_t)nb, nso, nb, 1.0, Bb_ijp[0], nb, Cbp[0], nb, 0.0, Bb_imp[0], nso);
+// B[B][m,n] = C[m][i] B[B][i,n]
+#pragma omp parallel for
         for (int p = 0; p < np; p++) {
             C_DGEMM('n', 'n', nso, nso, nb, 1.0, Cbp[0], nb, Bb_imp[p], nso, 0.0, Bb_mnp[p], nso);
         }
         // D[A][B] = B[A][ij] B[B][ij]
-        C_DGEMM('n','t', np, np, nb*nb, 1.0, Bb_ijp[0], nb*nb, Bb_ijp[0], nb*nb, 0.0, Db_PQp[0], np);
+        C_DGEMM('n', 't', np, np, nb * nb, 1.0, Bb_ijp[0], nb * nb, Bb_ijp[0], nb * nb, 0.0, Db_PQp[0], np);
     }
 
     int maxp = auxiliary_->max_function_per_shell();
     int maxm = primary_->max_function_per_shell();
-    auto Ta = std::make_shared<Matrix>("Ta", maxp, maxm*na);
-    double **Tap = Ta->pointer();
-    auto Tb = std::make_shared<Matrix>("Tb", maxp, maxm*nb);
-    double **Tbp = Tb->pointer();
+    auto Ta = std::make_shared<Matrix>("Ta", maxp, maxm * na);
+    double** Tap = Ta->pointer();
+    auto Tb = std::make_shared<Matrix>("Tb", maxp, maxm * nb);
+    double** Tbp = Tb->pointer();
 
     for (int P = 0; P < nauxshell; ++P) {
         int nP = auxiliary_->shell(P).nfunction();
@@ -1526,83 +1510,119 @@ void DFJKGrad::compute_hessian() {
                 //
                 // T[p][m,j] <- (p|mn) C[n][j]
                 // dAij[x][p,i,j] <- C[m][i] T[p][m,j]
-                if(do_K_) {
+                if (do_K_) {
                     // Alpha
-                    C_DGEMM('n', 'n', nP*nM, na, nN, 1.0, const_cast<double*>(PxBuf), nN, Cap[oN], na, 0.0, Tap[0], na);
+                    C_DGEMM('n', 'n', nP * nM, na, nN, 1.0, const_cast<double*>(PxBuf), nN, Cap[oN], na, 0.0, Tap[0],
+                            na);
 #pragma omp parallel for
-                    for(int p = 0; p < nP; ++p)
-                        C_DGEMM('t', 'n', na, na, nM, 1.0, Cap[oM], na, Tap[0]+p*(nM*na), na, 1.0, &dAa_ijp[Px][(p+oP)*na*na], na);
-                    C_DGEMM('n', 'n', nP*nM, na, nN, 1.0, const_cast<double*>(PyBuf), nN, Cap[oN], na, 0.0, Tap[0], na);
+                    for (int p = 0; p < nP; ++p)
+                        C_DGEMM('t', 'n', na, na, nM, 1.0, Cap[oM], na, Tap[0] + p * (nM * na), na, 1.0,
+                                &dAa_ijp[Px][(p + oP) * na * na], na);
+                    C_DGEMM('n', 'n', nP * nM, na, nN, 1.0, const_cast<double*>(PyBuf), nN, Cap[oN], na, 0.0, Tap[0],
+                            na);
 #pragma omp parallel for
-                    for(int p = 0; p < nP; ++p)
-                        C_DGEMM('t', 'n', na, na, nM, 1.0, Cap[oM], na, Tap[0]+p*(nM*na), na, 1.0, &dAa_ijp[Py][(p+oP)*na*na], na);
-                    C_DGEMM('n', 'n', nP*nM, na, nN, 1.0, const_cast<double*>(PzBuf), nN, Cap[oN], na, 0.0, Tap[0], na);
+                    for (int p = 0; p < nP; ++p)
+                        C_DGEMM('t', 'n', na, na, nM, 1.0, Cap[oM], na, Tap[0] + p * (nM * na), na, 1.0,
+                                &dAa_ijp[Py][(p + oP) * na * na], na);
+                    C_DGEMM('n', 'n', nP * nM, na, nN, 1.0, const_cast<double*>(PzBuf), nN, Cap[oN], na, 0.0, Tap[0],
+                            na);
 #pragma omp parallel for
-                    for(int p = 0; p < nP; ++p)
-                        C_DGEMM('t', 'n', na, na, nM, 1.0, Cap[oM], na, Tap[0]+p*(nM*na), na, 1.0, &dAa_ijp[Pz][(p+oP)*na*na], na);
-                    C_DGEMM('n', 'n', nP*nM, na, nN, 1.0, const_cast<double*>(mxBuf), nN, Cap[oN], na, 0.0, Tap[0], na);
+                    for (int p = 0; p < nP; ++p)
+                        C_DGEMM('t', 'n', na, na, nM, 1.0, Cap[oM], na, Tap[0] + p * (nM * na), na, 1.0,
+                                &dAa_ijp[Pz][(p + oP) * na * na], na);
+                    C_DGEMM('n', 'n', nP * nM, na, nN, 1.0, const_cast<double*>(mxBuf), nN, Cap[oN], na, 0.0, Tap[0],
+                            na);
 #pragma omp parallel for
-                    for(int p = 0; p < nP; ++p)
-                        C_DGEMM('t', 'n', na, na, nM, 1.0, Cap[oM], na, Tap[0]+p*(nM*na), na, 1.0, &dAa_ijp[mx][(p+oP)*na*na], na);
-                    C_DGEMM('n', 'n', nP*nM, na, nN, 1.0, const_cast<double*>(myBuf), nN, Cap[oN], na, 0.0, Tap[0], na);
+                    for (int p = 0; p < nP; ++p)
+                        C_DGEMM('t', 'n', na, na, nM, 1.0, Cap[oM], na, Tap[0] + p * (nM * na), na, 1.0,
+                                &dAa_ijp[mx][(p + oP) * na * na], na);
+                    C_DGEMM('n', 'n', nP * nM, na, nN, 1.0, const_cast<double*>(myBuf), nN, Cap[oN], na, 0.0, Tap[0],
+                            na);
 #pragma omp parallel for
-                    for(int p = 0; p < nP; ++p)
-                        C_DGEMM('t', 'n', na, na, nM, 1.0, Cap[oM], na, Tap[0]+p*(nM*na), na, 1.0, &dAa_ijp[my][(p+oP)*na*na], na);
-                    C_DGEMM('n', 'n', nP*nM, na, nN, 1.0, const_cast<double*>(mzBuf), nN, Cap[oN], na, 0.0, Tap[0], na);
+                    for (int p = 0; p < nP; ++p)
+                        C_DGEMM('t', 'n', na, na, nM, 1.0, Cap[oM], na, Tap[0] + p * (nM * na), na, 1.0,
+                                &dAa_ijp[my][(p + oP) * na * na], na);
+                    C_DGEMM('n', 'n', nP * nM, na, nN, 1.0, const_cast<double*>(mzBuf), nN, Cap[oN], na, 0.0, Tap[0],
+                            na);
 #pragma omp parallel for
-                    for(int p = 0; p < nP; ++p)
-                        C_DGEMM('t', 'n', na, na, nM, 1.0, Cap[oM], na, Tap[0]+p*(nM*na), na, 1.0, &dAa_ijp[mz][(p+oP)*na*na], na);
-                    C_DGEMM('n', 'n', nP*nM, na, nN, 1.0, const_cast<double*>(nxBuf), nN, Cap[oN], na, 0.0, Tap[0], na);
+                    for (int p = 0; p < nP; ++p)
+                        C_DGEMM('t', 'n', na, na, nM, 1.0, Cap[oM], na, Tap[0] + p * (nM * na), na, 1.0,
+                                &dAa_ijp[mz][(p + oP) * na * na], na);
+                    C_DGEMM('n', 'n', nP * nM, na, nN, 1.0, const_cast<double*>(nxBuf), nN, Cap[oN], na, 0.0, Tap[0],
+                            na);
 #pragma omp parallel for
-                    for(int p = 0; p < nP; ++p)
-                        C_DGEMM('t', 'n', na, na, nM, 1.0, Cap[oM], na, Tap[0]+p*(nM*na), na, 1.0, &dAa_ijp[nx][(p+oP)*na*na], na);
-                    C_DGEMM('n', 'n', nP*nM, na, nN, 1.0, const_cast<double*>(nyBuf), nN, Cap[oN], na, 0.0, Tap[0], na);
+                    for (int p = 0; p < nP; ++p)
+                        C_DGEMM('t', 'n', na, na, nM, 1.0, Cap[oM], na, Tap[0] + p * (nM * na), na, 1.0,
+                                &dAa_ijp[nx][(p + oP) * na * na], na);
+                    C_DGEMM('n', 'n', nP * nM, na, nN, 1.0, const_cast<double*>(nyBuf), nN, Cap[oN], na, 0.0, Tap[0],
+                            na);
 #pragma omp parallel for
-                    for(int p = 0; p < nP; ++p)
-                        C_DGEMM('t', 'n', na, na, nM, 1.0, Cap[oM], na, Tap[0]+p*(nM*na), na, 1.0, &dAa_ijp[ny][(p+oP)*na*na], na);
-                    C_DGEMM('n', 'n', nP*nM, na, nN, 1.0, const_cast<double*>(nzBuf), nN, Cap[oN], na, 0.0, Tap[0], na);
+                    for (int p = 0; p < nP; ++p)
+                        C_DGEMM('t', 'n', na, na, nM, 1.0, Cap[oM], na, Tap[0] + p * (nM * na), na, 1.0,
+                                &dAa_ijp[ny][(p + oP) * na * na], na);
+                    C_DGEMM('n', 'n', nP * nM, na, nN, 1.0, const_cast<double*>(nzBuf), nN, Cap[oN], na, 0.0, Tap[0],
+                            na);
 #pragma omp parallel for
-                    for(int p = 0; p < nP; ++p)
-                        C_DGEMM('t', 'n', na, na, nM, 1.0, Cap[oM], na, Tap[0]+p*(nM*na), na, 1.0, &dAa_ijp[nz][(p+oP)*na*na], na);
+                    for (int p = 0; p < nP; ++p)
+                        C_DGEMM('t', 'n', na, na, nM, 1.0, Cap[oM], na, Tap[0] + p * (nM * na), na, 1.0,
+                                &dAa_ijp[nz][(p + oP) * na * na], na);
 
                     // Beta
-                    if (!same_ab){
-                        C_DGEMM('n', 'n', nP*nM, nb, nN, 1.0, const_cast<double*>(PxBuf), nN, Cbp[oN], nb, 0.0, Tbp[0], nb);
+                    if (!same_ab) {
+                        C_DGEMM('n', 'n', nP * nM, nb, nN, 1.0, const_cast<double*>(PxBuf), nN, Cbp[oN], nb, 0.0,
+                                Tbp[0], nb);
 #pragma omp parallel for
-                        for(int p = 0; p < nP; ++p)
-                            C_DGEMM('t', 'n', nb, nb, nM, 1.0, Cbp[oM], nb, Tbp[0]+p*(nM*nb), nb, 1.0, &dAb_ijp[Px][(p+oP)*nb*nb], nb);
-                        C_DGEMM('n', 'n', nP*nM, nb, nN, 1.0, const_cast<double*>(PyBuf), nN, Cbp[oN], nb, 0.0, Tbp[0], nb);
+                        for (int p = 0; p < nP; ++p)
+                            C_DGEMM('t', 'n', nb, nb, nM, 1.0, Cbp[oM], nb, Tbp[0] + p * (nM * nb), nb, 1.0,
+                                    &dAb_ijp[Px][(p + oP) * nb * nb], nb);
+                        C_DGEMM('n', 'n', nP * nM, nb, nN, 1.0, const_cast<double*>(PyBuf), nN, Cbp[oN], nb, 0.0,
+                                Tbp[0], nb);
 #pragma omp parallel for
-                        for(int p = 0; p < nP; ++p)
-                            C_DGEMM('t', 'n', nb, nb, nM, 1.0, Cbp[oM], nb, Tbp[0]+p*(nM*nb), nb, 1.0, &dAb_ijp[Py][(p+oP)*nb*nb], nb);
-                        C_DGEMM('n', 'n', nP*nM, nb, nN, 1.0, const_cast<double*>(PzBuf), nN, Cbp[oN], nb, 0.0, Tbp[0], nb);
+                        for (int p = 0; p < nP; ++p)
+                            C_DGEMM('t', 'n', nb, nb, nM, 1.0, Cbp[oM], nb, Tbp[0] + p * (nM * nb), nb, 1.0,
+                                    &dAb_ijp[Py][(p + oP) * nb * nb], nb);
+                        C_DGEMM('n', 'n', nP * nM, nb, nN, 1.0, const_cast<double*>(PzBuf), nN, Cbp[oN], nb, 0.0,
+                                Tbp[0], nb);
 #pragma omp parallel for
-                        for(int p = 0; p < nP; ++p)
-                            C_DGEMM('t', 'n', nb, nb, nM, 1.0, Cbp[oM], nb, Tbp[0]+p*(nM*nb), nb, 1.0, &dAb_ijp[Pz][(p+oP)*nb*nb], nb);
-                        C_DGEMM('n', 'n', nP*nM, nb, nN, 1.0, const_cast<double*>(mxBuf), nN, Cbp[oN], nb, 0.0, Tbp[0], nb);
+                        for (int p = 0; p < nP; ++p)
+                            C_DGEMM('t', 'n', nb, nb, nM, 1.0, Cbp[oM], nb, Tbp[0] + p * (nM * nb), nb, 1.0,
+                                    &dAb_ijp[Pz][(p + oP) * nb * nb], nb);
+                        C_DGEMM('n', 'n', nP * nM, nb, nN, 1.0, const_cast<double*>(mxBuf), nN, Cbp[oN], nb, 0.0,
+                                Tbp[0], nb);
 #pragma omp parallel for
-                        for(int p = 0; p < nP; ++p)
-                            C_DGEMM('t', 'n', nb, nb, nM, 1.0, Cbp[oM], nb, Tbp[0]+p*(nM*nb), nb, 1.0, &dAb_ijp[mx][(p+oP)*nb*nb], nb);
-                        C_DGEMM('n', 'n', nP*nM, nb, nN, 1.0, const_cast<double*>(myBuf), nN, Cbp[oN], nb, 0.0, Tbp[0], nb);
+                        for (int p = 0; p < nP; ++p)
+                            C_DGEMM('t', 'n', nb, nb, nM, 1.0, Cbp[oM], nb, Tbp[0] + p * (nM * nb), nb, 1.0,
+                                    &dAb_ijp[mx][(p + oP) * nb * nb], nb);
+                        C_DGEMM('n', 'n', nP * nM, nb, nN, 1.0, const_cast<double*>(myBuf), nN, Cbp[oN], nb, 0.0,
+                                Tbp[0], nb);
 #pragma omp parallel for
-                        for(int p = 0; p < nP; ++p)
-                            C_DGEMM('t', 'n', nb, nb, nM, 1.0, Cbp[oM], nb, Tbp[0]+p*(nM*nb), nb, 1.0, &dAb_ijp[my][(p+oP)*nb*nb], nb);
-                        C_DGEMM('n', 'n', nP*nM, nb, nN, 1.0, const_cast<double*>(mzBuf), nN, Cbp[oN], nb, 0.0, Tbp[0], nb);
+                        for (int p = 0; p < nP; ++p)
+                            C_DGEMM('t', 'n', nb, nb, nM, 1.0, Cbp[oM], nb, Tbp[0] + p * (nM * nb), nb, 1.0,
+                                    &dAb_ijp[my][(p + oP) * nb * nb], nb);
+                        C_DGEMM('n', 'n', nP * nM, nb, nN, 1.0, const_cast<double*>(mzBuf), nN, Cbp[oN], nb, 0.0,
+                                Tbp[0], nb);
 #pragma omp parallel for
-                        for(int p = 0; p < nP; ++p)
-                            C_DGEMM('t', 'n', nb, nb, nM, 1.0, Cbp[oM], nb, Tbp[0]+p*(nM*nb), nb, 1.0, &dAb_ijp[mz][(p+oP)*nb*nb], nb);
-                        C_DGEMM('n', 'n', nP*nM, nb, nN, 1.0, const_cast<double*>(nxBuf), nN, Cbp[oN], nb, 0.0, Tbp[0], nb);
+                        for (int p = 0; p < nP; ++p)
+                            C_DGEMM('t', 'n', nb, nb, nM, 1.0, Cbp[oM], nb, Tbp[0] + p * (nM * nb), nb, 1.0,
+                                    &dAb_ijp[mz][(p + oP) * nb * nb], nb);
+                        C_DGEMM('n', 'n', nP * nM, nb, nN, 1.0, const_cast<double*>(nxBuf), nN, Cbp[oN], nb, 0.0,
+                                Tbp[0], nb);
 #pragma omp parallel for
-                        for(int p = 0; p < nP; ++p)
-                            C_DGEMM('t', 'n', nb, nb, nM, 1.0, Cbp[oM], nb, Tbp[0]+p*(nM*nb), nb, 1.0, &dAb_ijp[nx][(p+oP)*nb*nb], nb);
-                        C_DGEMM('n', 'n', nP*nM, nb, nN, 1.0, const_cast<double*>(nyBuf), nN, Cbp[oN], nb, 0.0, Tbp[0], nb);
+                        for (int p = 0; p < nP; ++p)
+                            C_DGEMM('t', 'n', nb, nb, nM, 1.0, Cbp[oM], nb, Tbp[0] + p * (nM * nb), nb, 1.0,
+                                    &dAb_ijp[nx][(p + oP) * nb * nb], nb);
+                        C_DGEMM('n', 'n', nP * nM, nb, nN, 1.0, const_cast<double*>(nyBuf), nN, Cbp[oN], nb, 0.0,
+                                Tbp[0], nb);
 #pragma omp parallel for
-                        for(int p = 0; p < nP; ++p)
-                            C_DGEMM('t', 'n', nb, nb, nM, 1.0, Cbp[oM], nb, Tbp[0]+p*(nM*nb), nb, 1.0, &dAb_ijp[ny][(p+oP)*nb*nb], nb);
-                        C_DGEMM('n', 'n', nP*nM, nb, nN, 1.0, const_cast<double*>(nzBuf), nN, Cbp[oN], nb, 0.0, Tbp[0], nb);
+                        for (int p = 0; p < nP; ++p)
+                            C_DGEMM('t', 'n', nb, nb, nM, 1.0, Cbp[oM], nb, Tbp[0] + p * (nM * nb), nb, 1.0,
+                                    &dAb_ijp[ny][(p + oP) * nb * nb], nb);
+                        C_DGEMM('n', 'n', nP * nM, nb, nN, 1.0, const_cast<double*>(nzBuf), nN, Cbp[oN], nb, 0.0,
+                                Tbp[0], nb);
 #pragma omp parallel for
-                        for(int p = 0; p < nP; ++p)
-                            C_DGEMM('t', 'n', nb, nb, nM, 1.0, Cbp[oM], nb, Tbp[0]+p*(nM*nb), nb, 1.0, &dAb_ijp[nz][(p+oP)*nb*nb], nb);
+                        for (int p = 0; p < nP; ++p)
+                            C_DGEMM('t', 'n', nb, nb, nM, 1.0, Cbp[oM], nb, Tbp[0] + p * (nM * nb), nb, 1.0,
+                                    &dAb_ijp[nz][(p + oP) * nb * nb], nb);
                     }
                 }
             }
@@ -1629,7 +1649,7 @@ void DFJKGrad::compute_hessian() {
             int Qy = 3 * Qcenter + 1;
             int Qz = 3 * Qcenter + 2;
 
-            //size_t stride = static_cast<size_t>(Pncart) * Qncart;
+            // size_t stride = static_cast<size_t>(Pncart) * Qncart;
 
             PQint->compute_shell_deriv1(P, 0, Q, 0);
             const auto& buffers = PQint->buffers();
@@ -1657,21 +1677,33 @@ void DFJKGrad::compute_hessian() {
             }
             // K term intermediates
             // deij[x][A,i,j] <- (A|B)^x Bij[B,i,j]
-            if(do_K_){
-                C_DGEMM('n', 'n', nP, na*na, nQ, 1.0, const_cast<double*>(Pxbuf), nQ, Ba_ijp[oQ], na*na, 1.0, &dea_ijp[Px][oP*na*na], na*na);
-                C_DGEMM('n', 'n', nP, na*na, nQ, 1.0, const_cast<double*>(Pybuf), nQ, Ba_ijp[oQ], na*na, 1.0, &dea_ijp[Py][oP*na*na], na*na);
-                C_DGEMM('n', 'n', nP, na*na, nQ, 1.0, const_cast<double*>(Pzbuf), nQ, Ba_ijp[oQ], na*na, 1.0, &dea_ijp[Pz][oP*na*na], na*na);
-                C_DGEMM('n', 'n', nP, na*na, nQ, 1.0, const_cast<double*>(Qxbuf), nQ, Ba_ijp[oQ], na*na, 1.0, &dea_ijp[Qx][oP*na*na], na*na);
-                C_DGEMM('n', 'n', nP, na*na, nQ, 1.0, const_cast<double*>(Qybuf), nQ, Ba_ijp[oQ], na*na, 1.0, &dea_ijp[Qy][oP*na*na], na*na);
-                C_DGEMM('n', 'n', nP, na*na, nQ, 1.0, const_cast<double*>(Qzbuf), nQ, Ba_ijp[oQ], na*na, 1.0, &dea_ijp[Qz][oP*na*na], na*na);
+            if (do_K_) {
+                C_DGEMM('n', 'n', nP, na * na, nQ, 1.0, const_cast<double*>(Pxbuf), nQ, Ba_ijp[oQ], na * na, 1.0,
+                        &dea_ijp[Px][oP * na * na], na * na);
+                C_DGEMM('n', 'n', nP, na * na, nQ, 1.0, const_cast<double*>(Pybuf), nQ, Ba_ijp[oQ], na * na, 1.0,
+                        &dea_ijp[Py][oP * na * na], na * na);
+                C_DGEMM('n', 'n', nP, na * na, nQ, 1.0, const_cast<double*>(Pzbuf), nQ, Ba_ijp[oQ], na * na, 1.0,
+                        &dea_ijp[Pz][oP * na * na], na * na);
+                C_DGEMM('n', 'n', nP, na * na, nQ, 1.0, const_cast<double*>(Qxbuf), nQ, Ba_ijp[oQ], na * na, 1.0,
+                        &dea_ijp[Qx][oP * na * na], na * na);
+                C_DGEMM('n', 'n', nP, na * na, nQ, 1.0, const_cast<double*>(Qybuf), nQ, Ba_ijp[oQ], na * na, 1.0,
+                        &dea_ijp[Qy][oP * na * na], na * na);
+                C_DGEMM('n', 'n', nP, na * na, nQ, 1.0, const_cast<double*>(Qzbuf), nQ, Ba_ijp[oQ], na * na, 1.0,
+                        &dea_ijp[Qz][oP * na * na], na * na);
 
-                if (!same_ab){
-                    C_DGEMM('n', 'n', nP, nb*nb, nQ, 1.0, const_cast<double*>(Pxbuf), nQ, Bb_ijp[oQ], nb*nb, 1.0, &deb_ijp[Px][oP*nb*nb], nb*nb);
-                    C_DGEMM('n', 'n', nP, nb*nb, nQ, 1.0, const_cast<double*>(Pybuf), nQ, Bb_ijp[oQ], nb*nb, 1.0, &deb_ijp[Py][oP*nb*nb], nb*nb);
-                    C_DGEMM('n', 'n', nP, nb*nb, nQ, 1.0, const_cast<double*>(Pzbuf), nQ, Bb_ijp[oQ], nb*nb, 1.0, &deb_ijp[Pz][oP*nb*nb], nb*nb);
-                    C_DGEMM('n', 'n', nP, nb*nb, nQ, 1.0, const_cast<double*>(Qxbuf), nQ, Bb_ijp[oQ], nb*nb, 1.0, &deb_ijp[Qx][oP*nb*nb], nb*nb);
-                    C_DGEMM('n', 'n', nP, nb*nb, nQ, 1.0, const_cast<double*>(Qybuf), nQ, Bb_ijp[oQ], nb*nb, 1.0, &deb_ijp[Qy][oP*nb*nb], nb*nb);
-                    C_DGEMM('n', 'n', nP, nb*nb, nQ, 1.0, const_cast<double*>(Qzbuf), nQ, Bb_ijp[oQ], nb*nb, 1.0, &deb_ijp[Qz][oP*nb*nb], nb*nb);
+                if (!same_ab) {
+                    C_DGEMM('n', 'n', nP, nb * nb, nQ, 1.0, const_cast<double*>(Pxbuf), nQ, Bb_ijp[oQ], nb * nb, 1.0,
+                            &deb_ijp[Px][oP * nb * nb], nb * nb);
+                    C_DGEMM('n', 'n', nP, nb * nb, nQ, 1.0, const_cast<double*>(Pybuf), nQ, Bb_ijp[oQ], nb * nb, 1.0,
+                            &deb_ijp[Py][oP * nb * nb], nb * nb);
+                    C_DGEMM('n', 'n', nP, nb * nb, nQ, 1.0, const_cast<double*>(Pzbuf), nQ, Bb_ijp[oQ], nb * nb, 1.0,
+                            &deb_ijp[Pz][oP * nb * nb], nb * nb);
+                    C_DGEMM('n', 'n', nP, nb * nb, nQ, 1.0, const_cast<double*>(Qxbuf), nQ, Bb_ijp[oQ], nb * nb, 1.0,
+                            &deb_ijp[Qx][oP * nb * nb], nb * nb);
+                    C_DGEMM('n', 'n', nP, nb * nb, nQ, 1.0, const_cast<double*>(Qybuf), nQ, Bb_ijp[oQ], nb * nb, 1.0,
+                            &deb_ijp[Qy][oP * nb * nb], nb * nb);
+                    C_DGEMM('n', 'n', nP, nb * nb, nQ, 1.0, const_cast<double*>(Qzbuf), nQ, Bb_ijp[oQ], nb * nb, 1.0,
+                            &deb_ijp[Qz][oP * nb * nb], nb * nb);
                 }
             }
         }
@@ -1868,18 +1900,57 @@ void DFJKGrad::compute_hessian() {
                     // Loop through alpha/beta terms
                     std::vector<double**> Blist = {Ba_mnp};
                     if (!same_ab) Blist.push_back(Bb_mnp);
-                    for (auto& B : Blist){
-                        PxPx=0.0; PxPy=0.0; PxPz=0.0; PyPy=0.0; PyPz=0.0; PzPz=0.0;
-                        mxmx=0.0; mxmy=0.0; mxmz=0.0; mymy=0.0; mymz=0.0; mzmz=0.0;
-                        nxnx=0.0; nxny=0.0; nxnz=0.0; nyny=0.0; nynz=0.0; nznz=0.0;
-                        Pxmx=0.0; Pxmy=0.0; Pxmz=0.0; Pymx=0.0; Pymy=0.0; Pymz=0.0; Pzmx=0.0; Pzmy=0.0; Pzmz=0.0;
-                        Pxnx=0.0; Pxny=0.0; Pxnz=0.0; Pynx=0.0; Pyny=0.0; Pynz=0.0; Pznx=0.0; Pzny=0.0; Pznz=0.0;
-                        mxnx=0.0; mxny=0.0; mxnz=0.0; mynx=0.0; myny=0.0; mynz=0.0; mznx=0.0; mzny=0.0; mznz=0.0;
+                    for (auto& B : Blist) {
+                        PxPx = 0.0;
+                        PxPy = 0.0;
+                        PxPz = 0.0;
+                        PyPy = 0.0;
+                        PyPz = 0.0;
+                        PzPz = 0.0;
+                        mxmx = 0.0;
+                        mxmy = 0.0;
+                        mxmz = 0.0;
+                        mymy = 0.0;
+                        mymz = 0.0;
+                        mzmz = 0.0;
+                        nxnx = 0.0;
+                        nxny = 0.0;
+                        nxnz = 0.0;
+                        nyny = 0.0;
+                        nynz = 0.0;
+                        nznz = 0.0;
+                        Pxmx = 0.0;
+                        Pxmy = 0.0;
+                        Pxmz = 0.0;
+                        Pymx = 0.0;
+                        Pymy = 0.0;
+                        Pymz = 0.0;
+                        Pzmx = 0.0;
+                        Pzmy = 0.0;
+                        Pzmz = 0.0;
+                        Pxnx = 0.0;
+                        Pxny = 0.0;
+                        Pxnz = 0.0;
+                        Pynx = 0.0;
+                        Pyny = 0.0;
+                        Pynz = 0.0;
+                        Pznx = 0.0;
+                        Pzny = 0.0;
+                        Pznz = 0.0;
+                        mxnx = 0.0;
+                        mxny = 0.0;
+                        mxnz = 0.0;
+                        mynx = 0.0;
+                        myny = 0.0;
+                        mynz = 0.0;
+                        mznx = 0.0;
+                        mzny = 0.0;
+                        mznz = 0.0;
                         delta = 0L;
-                        for (int p = oP; p < oP+nP; p++) {
-                            for (int m = oM; m < oM+nM; m++) {
-                                for (int n = oN; n < oN+nN; n++) {
-                                    double Cpmn = 2.0 * B[p][m*nso+n];
+                        for (int p = oP; p < oP + nP; p++) {
+                            for (int m = oM; m < oM + nM; m++) {
+                                for (int n = oN; n < oN + nN; n++) {
+                                    double Cpmn = 2.0 * B[p][m * nso + n];
                                     PxPx += Cpmn * PxPxBuf[delta];
                                     PxPy += Cpmn * PxPyBuf[delta];
                                     PxPz += Cpmn * PxPzBuf[delta];
@@ -1932,42 +2003,42 @@ void DFJKGrad::compute_hessian() {
                         KHessp[Px][Px] += PxPx;
                         KHessp[Px][Py] += PxPy;
                         KHessp[Px][Pz] += PxPz;
-                        KHessp[Px][mx] += Pmscale*Pxmx;
+                        KHessp[Px][mx] += Pmscale * Pxmx;
                         KHessp[Px][my] += Pxmy;
                         KHessp[Px][mz] += Pxmz;
-                        KHessp[Px][nx] += Pnscale*Pxnx;
+                        KHessp[Px][nx] += Pnscale * Pxnx;
                         KHessp[Px][ny] += Pxny;
                         KHessp[Px][nz] += Pxnz;
                         KHessp[Py][Py] += PyPy;
                         KHessp[Py][Pz] += PyPz;
                         KHessp[Py][mx] += Pymx;
-                        KHessp[Py][my] += Pmscale*Pymy;
+                        KHessp[Py][my] += Pmscale * Pymy;
                         KHessp[Py][mz] += Pymz;
                         KHessp[Py][nx] += Pynx;
-                        KHessp[Py][ny] += Pnscale*Pyny;
+                        KHessp[Py][ny] += Pnscale * Pyny;
                         KHessp[Py][nz] += Pynz;
                         KHessp[Pz][Pz] += PzPz;
                         KHessp[Pz][mx] += Pzmx;
                         KHessp[Pz][my] += Pzmy;
-                        KHessp[Pz][mz] += Pmscale*Pzmz;
+                        KHessp[Pz][mz] += Pmscale * Pzmz;
                         KHessp[Pz][nx] += Pznx;
                         KHessp[Pz][ny] += Pzny;
-                        KHessp[Pz][nz] += Pnscale*Pznz;
+                        KHessp[Pz][nz] += Pnscale * Pznz;
                         KHessp[mx][mx] += mxmx;
                         KHessp[mx][my] += mxmy;
                         KHessp[mx][mz] += mxmz;
-                        KHessp[mx][nx] += mnscale*mxnx;
+                        KHessp[mx][nx] += mnscale * mxnx;
                         KHessp[mx][ny] += mxny;
                         KHessp[mx][nz] += mxnz;
                         KHessp[my][my] += mymy;
                         KHessp[my][mz] += mymz;
                         KHessp[my][nx] += mynx;
-                        KHessp[my][ny] += mnscale*myny;
+                        KHessp[my][ny] += mnscale * myny;
                         KHessp[my][nz] += mynz;
                         KHessp[mz][mz] += mzmz;
                         KHessp[mz][nx] += mznx;
                         KHessp[mz][ny] += mzny;
-                        KHessp[mz][nz] += mnscale*mznz;
+                        KHessp[mz][nz] += mnscale * mznz;
                         KHessp[nx][nx] += nxnx;
                         KHessp[nx][ny] += nxny;
                         KHessp[nx][nz] += nxnz;
@@ -2081,13 +2152,31 @@ void DFJKGrad::compute_hessian() {
                 // K terms
                 std::vector<double**> Dlist = {Da_PQp};
                 if (!same_ab) Dlist.push_back(Db_PQp);
-                for (auto& DPQp : Dlist){
-                    PxPx=0.0; PxPy=0.0; PxPz=0.0; PyPy=0.0; PyPz=0.0; PzPz=0.0;
-                    QxQx=0.0; QxQy=0.0; QxQz=0.0; QyQy=0.0; QyQz=0.0; QzQz=0.0;
-                    PxQx=0.0; PxQy=0.0; PxQz=0.0; PyQx=0.0; PyQy=0.0; PyQz=0.0; PzQx=0.0; PzQy=0.0; PzQz=0.0;
+                for (auto& DPQp : Dlist) {
+                    PxPx = 0.0;
+                    PxPy = 0.0;
+                    PxPz = 0.0;
+                    PyPy = 0.0;
+                    PyPz = 0.0;
+                    PzPz = 0.0;
+                    QxQx = 0.0;
+                    QxQy = 0.0;
+                    QxQz = 0.0;
+                    QyQy = 0.0;
+                    QyQz = 0.0;
+                    QzQz = 0.0;
+                    PxQx = 0.0;
+                    PxQy = 0.0;
+                    PxQz = 0.0;
+                    PyQx = 0.0;
+                    PyQy = 0.0;
+                    PyQz = 0.0;
+                    PzQx = 0.0;
+                    PzQy = 0.0;
+                    PzQz = 0.0;
                     delta = 0L;
-                    for (int p = oP; p < oP+nP; p++) {
-                        for (int q = oQ; q < oQ+nQ; q++) {
+                    for (int p = oP; p < oP + nP; p++) {
+                        for (int q = oQ; q < oQ + nQ; q++) {
                             double dAdB = -DPQp[p][q];
                             PxPx += dAdB * PxPxBuf[delta];
                             PxPy += dAdB * PxPyBuf[delta];
@@ -2112,23 +2201,22 @@ void DFJKGrad::compute_hessian() {
                             QzQz += dAdB * QzQzBuf[delta];
                             ++delta;
                         }
-
                     }
                     KHessp[Px][Px] += PxPx;
                     KHessp[Px][Py] += PxPy;
                     KHessp[Px][Pz] += PxPz;
-                    KHessp[Px][Qx] += PQscale*PxQx;
+                    KHessp[Px][Qx] += PQscale * PxQx;
                     KHessp[Px][Qy] += PxQy;
                     KHessp[Px][Qz] += PxQz;
                     KHessp[Py][Py] += PyPy;
                     KHessp[Py][Pz] += PyPz;
                     KHessp[Py][Qx] += PyQx;
-                    KHessp[Py][Qy] += PQscale*PyQy;
+                    KHessp[Py][Qy] += PQscale * PyQy;
                     KHessp[Py][Qz] += PyQz;
                     KHessp[Pz][Pz] += PzPz;
                     KHessp[Pz][Qx] += PzQx;
                     KHessp[Pz][Qy] += PzQy;
-                    KHessp[Pz][Qz] += PQscale*PzQz;
+                    KHessp[Pz][Qz] += PQscale * PzQz;
                     KHessp[Qx][Qx] += QxQx;
                     KHessp[Qx][Qy] += QxQy;
                     KHessp[Qx][Qz] += QxQz;
@@ -2152,35 +2240,35 @@ void DFJKGrad::compute_hessian() {
 
     // Stitch all the intermediates together to form the actual Hessian contributions
 
-    auto tmp1 = std::make_shared<Matrix>("Tmp1", np, np*np);
-    double **ptmp1 = tmp1->pointer();
+    auto tmp1 = std::make_shared<Matrix>("Tmp1", np, np * np);
+    double** ptmp1 = tmp1->pointer();
 
-    auto tmp_a = std::make_shared<Matrix>("Tmp [P][i,j]", np, na*na);
-    double **ptmp_a = tmp_a->pointer();
-    auto tmp_b = std::make_shared<Matrix>("Tmp [P][i,j]", np, nb*nb);
-    double **ptmp_b = tmp_b->pointer();
+    auto tmp_a = std::make_shared<Matrix>("Tmp [P][i,j]", np, na * na);
+    double** ptmp_a = tmp_a->pointer();
+    auto tmp_b = std::make_shared<Matrix>("Tmp [P][i,j]", np, nb * nb);
+    double** ptmp_b = tmp_b->pointer();
 
     for (int x = 0; x < 3 * natoms; ++x) {
         for (int y = 0; y < 3 * natoms; ++y) {
             // J terms
-            JHessp[x][y] += 2.0*C_DDOT(np, ddp[x], 1, dcp[y], 1);
-            JHessp[x][y] -= 4.0*C_DDOT(np, ddp[x], 1, dep[y], 1);
+            JHessp[x][y] += 2.0 * C_DDOT(np, ddp[x], 1, dcp[y], 1);
+            JHessp[x][y] -= 4.0 * C_DDOT(np, ddp[x], 1, dep[y], 1);
             C_DGEMV('n', np, np, 1.0, PQp[0], np, dep[y], 1, 0.0, ptmp1[0], 1);
-            JHessp[x][y] += 2.0*C_DDOT(np, dep[x], 1, ptmp1[0], 1);
+            JHessp[x][y] += 2.0 * C_DDOT(np, dep[x], 1, ptmp1[0], 1);
 
             if (do_K_) {
                 // K terms
-                C_DGEMM('n', 'n', np, na*na, np,  1.0, PQp[0], np, dAa_ijp[y], na*na, 0.0, ptmp_a[0], na*na);
-                KHessp[x][y] += 2.0*C_DDOT(static_cast<size_t> (np)*na*na, dAa_ijp[x], 1, ptmp_a[0], 1);
-                C_DGEMM('n', 'n', np, na*na, np,  1.0, PQp[0], np, dea_ijp[y], na*na, 0.0, ptmp_a[0], na*na);
-                KHessp[x][y] -= 4.0*C_DDOT(static_cast<size_t> (np)*na*na, dAa_ijp[x], 1, ptmp_a[0], 1);
-                KHessp[x][y] += 2.0*C_DDOT(static_cast<size_t> (np)*na*na, dea_ijp[x], 1, ptmp_a[0], 1);
-                if (!same_ab){
-                    C_DGEMM('n', 'n', np, nb*nb, np,  1.0, PQp[0], np, dAb_ijp[y], nb*nb, 0.0, ptmp_b[0], nb*nb);
-                    KHessp[x][y] += 2.0*C_DDOT(static_cast<size_t> (np)*nb*nb, dAb_ijp[x], 1, ptmp_b[0], 1);
-                    C_DGEMM('n', 'n', np, nb*nb, np,  1.0, PQp[0], np, deb_ijp[y], nb*nb, 0.0, ptmp_b[0], nb*nb);
-                    KHessp[x][y] -= 4.0*C_DDOT(static_cast<size_t> (np)*nb*nb, dAb_ijp[x], 1, ptmp_b[0], 1);
-                    KHessp[x][y] += 2.0*C_DDOT(static_cast<size_t> (np)*nb*nb, deb_ijp[x], 1, ptmp_b[0], 1);
+                C_DGEMM('n', 'n', np, na * na, np, 1.0, PQp[0], np, dAa_ijp[y], na * na, 0.0, ptmp_a[0], na * na);
+                KHessp[x][y] += 2.0 * C_DDOT(static_cast<size_t>(np) * na * na, dAa_ijp[x], 1, ptmp_a[0], 1);
+                C_DGEMM('n', 'n', np, na * na, np, 1.0, PQp[0], np, dea_ijp[y], na * na, 0.0, ptmp_a[0], na * na);
+                KHessp[x][y] -= 4.0 * C_DDOT(static_cast<size_t>(np) * na * na, dAa_ijp[x], 1, ptmp_a[0], 1);
+                KHessp[x][y] += 2.0 * C_DDOT(static_cast<size_t>(np) * na * na, dea_ijp[x], 1, ptmp_a[0], 1);
+                if (!same_ab) {
+                    C_DGEMM('n', 'n', np, nb * nb, np, 1.0, PQp[0], np, dAb_ijp[y], nb * nb, 0.0, ptmp_b[0], nb * nb);
+                    KHessp[x][y] += 2.0 * C_DDOT(static_cast<size_t>(np) * nb * nb, dAb_ijp[x], 1, ptmp_b[0], 1);
+                    C_DGEMM('n', 'n', np, nb * nb, np, 1.0, PQp[0], np, deb_ijp[y], nb * nb, 0.0, ptmp_b[0], nb * nb);
+                    KHessp[x][y] -= 4.0 * C_DDOT(static_cast<size_t>(np) * nb * nb, dAb_ijp[x], 1, ptmp_b[0], 1);
+                    KHessp[x][y] += 2.0 * C_DDOT(static_cast<size_t>(np) * nb * nb, deb_ijp[x], 1, ptmp_b[0], 1);
                 }
             }
         }
@@ -2227,15 +2315,14 @@ void DirectJKGrad::print_header() const {
 void DirectJKGrad::compute_gradient() {
     if (!do_J_ && !do_K_ && !do_wK_) return;
 
-    if (!(Ca_ && Cb_ && Da_ && Db_ && Dt_))
-        throw PSIEXCEPTION("Occupation/Density not set");
-    
+    if (!(Ca_ && Cb_ && Da_ && Db_ && Dt_)) throw PSIEXCEPTION("Occupation/Density not set");
+
 #ifdef USING_BrianQC
     if (brianEnable) {
         brianBool computeCoulomb = (do_J_ ? BRIAN_TRUE : BRIAN_FALSE);
         brianBool computeExchange = ((do_K_ || do_wK_) ? BRIAN_TRUE : BRIAN_FALSE);
         bool betaFlag = (brianRestrictionType != BRIAN_RESTRICTION_TYPE_RHF);
-        
+
         std::shared_ptr<Matrix> Jgrad, Kgrada, Kgradb;
         if (computeCoulomb) {
             Jgrad = std::make_shared<Matrix>("Coulomb Gradient", primary_->molecule()->natom(), 3);
@@ -2246,17 +2333,13 @@ void DirectJKGrad::compute_gradient() {
                 Kgradb = std::make_shared<Matrix>("Exchange Gradient beta", primary_->molecule()->natom(), 3);
             }
         }
-        
-        brianOPTBuildGradientRepulsionDeriv(&brianCookie,
-            &computeCoulomb,
-            &computeExchange,
-            Da_->get_pointer(),
-            (betaFlag ? Db_->get_pointer() : nullptr),
-            (computeCoulomb ? Jgrad->get_pointer() : nullptr),
-            (computeExchange ? Kgrada->get_pointer() : nullptr),
-            ((computeExchange && betaFlag) ? Kgradb->get_pointer() : nullptr)
-        );
-        
+
+        brianOPTBuildGradientRepulsionDeriv(&brianCookie, &computeCoulomb, &computeExchange, Da_->get_pointer(),
+                                            (betaFlag ? Db_->get_pointer() : nullptr),
+                                            (computeCoulomb ? Jgrad->get_pointer() : nullptr),
+                                            (computeExchange ? Kgrada->get_pointer() : nullptr),
+                                            ((computeExchange && betaFlag) ? Kgradb->get_pointer() : nullptr));
+
         if (computeExchange) {
             if (betaFlag) {
                 Kgrada->add(Kgradb);
@@ -2264,23 +2347,24 @@ void DirectJKGrad::compute_gradient() {
                 Kgrada->scale(2.0);
             }
         }
-        
+
         gradients_.clear();
-        
+
         if (do_J_) {
             gradients_["Coulomb"] = Jgrad;
         }
-        
+
         if (do_K_) {
             gradients_["Exchange"] = Kgrada;
-            
+
             if (do_wK_) {
-                gradients_["Exchange,LR"] = std::make_shared<Matrix>("Exchange,LR Gradient", primary_->molecule()->natom(), 3);
+                gradients_["Exchange,LR"] =
+                    std::make_shared<Matrix>("Exchange,LR Gradient", primary_->molecule()->natom(), 3);
             }
         } else if (do_wK_) {
             gradients_["Exchange,LR"] = Kgrada;
         }
-        
+
         return;
     }
 #endif
@@ -2574,9 +2658,9 @@ std::map<std::string, std::shared_ptr<Matrix>> DirectJKGrad::compute1(
                     pDy += block_size;
                     pDz += block_size;
                 }  // pairRS
-            }      // pairPQ
-        }          // blockRS
-    }              // blockPQ
+            }  // pairPQ
+        }  // blockRS
+    }  // blockPQ
 
     for (int thread = 1; thread < nthreads; thread++) {
         Jgrad[0]->add(Jgrad[thread]);
@@ -2957,9 +3041,9 @@ std::map<std::string, std::shared_ptr<Matrix>> DirectJKGrad::compute2(
 
                     for (auto& buf : bufptrs) buf += block_size;
                 }  // pairRS
-            }      // pairPQ
-        }          // blockRS
-    }              // blockPQ
+            }  // pairPQ
+        }  // blockRS
+    }  // blockPQ
 
     for (int thread = 1; thread < nthreads; thread++) {
         Jhess[0]->add(Jhess[thread]);

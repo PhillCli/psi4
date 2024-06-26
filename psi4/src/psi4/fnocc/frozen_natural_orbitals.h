@@ -73,7 +73,7 @@ class PSI_API DFFrozenNO : public FrozenNO {
     void BuildFock(long int nQ, double* Qso, double* F);
     void TransformQ(long int nQ, double* Qso);
 };
-}
-}
+}  // namespace fnocc
+}  // namespace psi
 
 #endif

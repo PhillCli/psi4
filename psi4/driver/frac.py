@@ -174,7 +174,7 @@ def frac_traverse(name: Union[str, Callable], **kwargs) -> Dict[float, float]:
 
     # => Burn the anion in with hf, if requested <= #
     if hf_guess:
-        core.set_local_option("SCF", "REFERENCE","UHF")
+        core.set_local_option("SCF", "REFERENCE", "UHF")
         driver.energy('scf', dft_functional=name, molecule=molecule, **kwargs)
         core.set_local_option("SCF", "REFERENCE", "UKS")
         core.set_local_option("SCF", "GUESS", "READ")
@@ -211,7 +211,6 @@ def frac_traverse(name: Union[str, Callable], **kwargs) -> Dict[float, float]:
         core.set_local_option("SCF", "GUESS", "READ")
         core.set_local_option("SCF", "FRAC_DIIS", frac_diis)
         core.set_local_option("SCF", "DF_INTS_IO", "LOAD")
-
 
     # => Run the neutral next <= #
 
@@ -438,7 +437,7 @@ def frac_nuke(name: Union[str, Callable], **kwargs) -> Dict[float, float]:
             else:
                 HOMO = -Nb
 
-        stats.append("""    %6d %6d %6d %6d %6d %6d\n""" % (Nintegral-1, Na, Nb, charge, mult, HOMO))
+        stats.append("""    %6d %6d %6d %6d %6d %6d\n""" % (Nintegral - 1, Na, Nb, charge, mult, HOMO))
 
         if HOMO > 0:
             Na -= 1
@@ -480,7 +479,12 @@ def frac_nuke(name: Union[str, Callable], **kwargs) -> Dict[float, float]:
     return E
 
 
-def ip_fitting(name: Union[str, Callable], omega_l: float = 0.05, omega_r: float = 2.5, omega_convergence: float = 1.0e-3, maxiter: int = 20, **kwargs) -> float:
+def ip_fitting(name: Union[str, Callable],
+               omega_l: float = 0.05,
+               omega_r: float = 2.5,
+               omega_convergence: float = 1.0e-3,
+               maxiter: int = 20,
+               **kwargs) -> float:
     """Optimize DFT omega parameter for molecular system.
 
     Parameters
@@ -505,13 +509,8 @@ def ip_fitting(name: Union[str, Callable], omega_l: float = 0.05, omega_r: float
         Optimal omega parameter.
 
     """
-    optstash = p4util.OptionsState(
-        ['SCF', 'REFERENCE'],
-        ['SCF', 'GUESS'],
-        ['SCF', 'DF_INTS_IO'],
-        ['SCF', 'DFT_OMEGA'],
-        ['DOCC'],
-        ['SOCC'])
+    optstash = p4util.OptionsState(['SCF', 'REFERENCE'], ['SCF', 'GUESS'], ['SCF', 'DF_INTS_IO'], ['SCF', 'DFT_OMEGA'],
+                                   ['DOCC'], ['SOCC'])
 
     kwargs = p4util.kwargs_lower(kwargs)
 
@@ -559,8 +558,12 @@ def ip_fitting(name: Union[str, Callable], omega_l: float = 0.05, omega_r: float
         core.set_local_option("SCF", "GUESS", "READ")
         copy_file_to_scratch(read180, 'psi', 'ot', 180)
     core.set_local_option("SCF", "DF_INTS_IO", "SAVE")
-    E, wfn = driver.energy('scf', dft_functional=name, return_wfn=True, molecule=molecule,
-                           banner='IP Fitting SCF: Burn-in', **kwargs)
+    E, wfn = driver.energy('scf',
+                           dft_functional=name,
+                           return_wfn=True,
+                           molecule=molecule,
+                           banner='IP Fitting SCF: Burn-in',
+                           **kwargs)
     core.set_local_option("SCF", "DF_INTS_IO", "LOAD")
 
     if not wfn.functional().is_x_lrc():
@@ -608,8 +611,12 @@ def ip_fitting(name: Union[str, Callable], omega_l: float = 0.05, omega_r: float
 
     molecule.set_molecular_charge(charge0)
     molecule.set_multiplicity(mult0)
-    E0r, wfn = driver.energy('scf', dft_functional=name, return_wfn=True, molecule=molecule,
-                             banner='IP Fitting SCF: Neutral, Right Endpoint', **kwargs)
+    E0r, wfn = driver.energy('scf',
+                             dft_functional=name,
+                             return_wfn=True,
+                             molecule=molecule,
+                             banner='IP Fitting SCF: Neutral, Right Endpoint',
+                             **kwargs)
     eps_a = wfn.epsilon_a()
     eps_b = wfn.epsilon_b()
     if Nb == 0:
@@ -628,8 +635,11 @@ def ip_fitting(name: Union[str, Callable], omega_l: float = 0.05, omega_r: float
 
     molecule.set_molecular_charge(charge1)
     molecule.set_multiplicity(mult1)
-    E1r = driver.energy('scf', dft_functional=name, molecule=molecule,
-                               banner='IP Fitting SCF: Cation, Right Endpoint', **kwargs)
+    E1r = driver.energy('scf',
+                        dft_functional=name,
+                        molecule=molecule,
+                        banner='IP Fitting SCF: Cation, Right Endpoint',
+                        **kwargs)
     core.IO.change_file_namespace(180, "ot", "cation")
 
     IPr = E1r - E0r
@@ -637,7 +647,8 @@ def ip_fitting(name: Union[str, Callable], omega_l: float = 0.05, omega_r: float
     delta_r = IPr - kIPr
 
     if IPr > kIPr:
-        raise ValidationError("""\n***IP Fitting Error: Right Omega limit should have kIP > IP: {} !> {}""".format(kIPr, IPr))
+        raise ValidationError("""\n***IP Fitting Error: Right Omega limit should have kIP > IP: {} !> {}""".format(
+            kIPr, IPr))
 
     omegas.append(omega_r)
     types.append('Right Limit')
@@ -658,8 +669,12 @@ def ip_fitting(name: Union[str, Callable], omega_l: float = 0.05, omega_r: float
     molecule.set_multiplicity(mult0)
     core.set_global_option("DOCC", [Nb])
     core.set_global_option("SOCC", [Na - Nb])
-    E0l, wfn = driver.energy('scf', dft_functional=name, return_wfn=True, molecule=molecule,
-                             banner='IP Fitting SCF: Neutral, Left Endpoint', **kwargs)
+    E0l, wfn = driver.energy('scf',
+                             dft_functional=name,
+                             return_wfn=True,
+                             molecule=molecule,
+                             banner='IP Fitting SCF: Neutral, Left Endpoint',
+                             **kwargs)
     eps_a = wfn.epsilon_a()
     eps_b = wfn.epsilon_b()
     if Nb == 0:
@@ -677,8 +692,11 @@ def ip_fitting(name: Union[str, Callable], omega_l: float = 0.05, omega_r: float
     molecule.set_multiplicity(mult1)
     core.set_global_option("DOCC", [Nb1])
     core.set_global_option("SOCC", [Na1 - Nb1])
-    E1l = driver.energy('scf', dft_functional=name, molecule=molecule,
-                        banner='IP Fitting SCF: Cation, Left Endpoint', **kwargs)
+    E1l = driver.energy('scf',
+                        dft_functional=name,
+                        molecule=molecule,
+                        banner='IP Fitting SCF: Cation, Left Endpoint',
+                        **kwargs)
     core.IO.change_file_namespace(180, "ot", "cation")
 
     IPl = E1l - E0l
@@ -686,7 +704,8 @@ def ip_fitting(name: Union[str, Callable], omega_l: float = 0.05, omega_r: float
     delta_l = IPl - kIPl
 
     if IPl < kIPl:
-        raise ValidationError("""\n***IP Fitting Error: Left Omega limit should have kIP < IP: {} !< {}""".format(kIPl, IPl))
+        raise ValidationError("""\n***IP Fitting Error: Left Omega limit should have kIP < IP: {} !< {}""".format(
+            kIPl, IPl))
 
     omegas.append(omega_l)
     types.append('Left Limit')
@@ -705,7 +724,7 @@ def ip_fitting(name: Union[str, Callable], omega_l: float = 0.05, omega_r: float
             delta_l /= 2.0
         if repeat_r > 1:
             delta_r /= 2.0
-        omega = - (omega_r - omega_l) / (delta_r - delta_l) * delta_l + omega_l
+        omega = -(omega_r - omega_l) / (delta_r - delta_l) * delta_l + omega_l
         core.set_local_option('SCF', 'DFT_OMEGA', omega)
 
         # Neutral
@@ -714,8 +733,12 @@ def ip_fitting(name: Union[str, Callable], omega_l: float = 0.05, omega_r: float
         molecule.set_multiplicity(mult0)
         core.set_global_option("DOCC", [Nb])
         core.set_global_option("SOCC", [Na - Nb])
-        E0, wfn = driver.energy('scf', dft_functional=name, return_wfn=True, molecule=molecule,
-                                banner='IP Fitting SCF: Neutral, Omega = {:11.3E}'.format(omega), **kwargs)
+        E0, wfn = driver.energy('scf',
+                                dft_functional=name,
+                                return_wfn=True,
+                                molecule=molecule,
+                                banner='IP Fitting SCF: Neutral, Omega = {:11.3E}'.format(omega),
+                                **kwargs)
         eps_a = wfn.epsilon_a()
         eps_b = wfn.epsilon_b()
         if Nb == 0:
@@ -732,8 +755,11 @@ def ip_fitting(name: Union[str, Callable], omega_l: float = 0.05, omega_r: float
         molecule.set_multiplicity(mult1)
         core.set_global_option("DOCC", [Nb1])
         core.set_global_option("SOCC", [Na1 - Nb1])
-        E1 = driver.energy('scf', dft_functional=name, molecule=molecule,
-                           banner='IP Fitting SCF: Cation, Omega = {:11.3E}'.format(omega), **kwargs)
+        E1 = driver.energy('scf',
+                           dft_functional=name,
+                           molecule=molecule,
+                           banner='IP Fitting SCF: Cation, Omega = {:11.3E}'.format(omega),
+                           **kwargs)
         core.IO.change_file_namespace(180, "ot", "cation")
 
         IP = E1 - E0
@@ -780,7 +806,7 @@ def ip_fitting(name: Union[str, Callable], omega_l: float = 0.05, omega_r: float
     core.print_out("""     Cation:  %6d %6d %6d %6d %6d\n\n""" % (N - 1, Na1, Nb1, charge1, mult1))
 
     core.print_out("""     => Regula Falsi Iterations <=\n\n""")
-    core.print_out("""    %3s %11s %14s %14s %14s %s\n""" % ('N','Omega','IP','kIP','Delta','Type'))
+    core.print_out("""    %3s %11s %14s %14s %14s %s\n""" % ('N', 'Omega', 'IP', 'kIP', 'Delta', 'Type'))
     for k in range(len(omegas)):
         core.print_out("""    %3d %11.3E %14.6E %14.6E %14.6E %s\n""" %
                        (k + 1, omegas[k], IPs[k], kIPs[k], IPs[k] - kIPs[k], types[k]))

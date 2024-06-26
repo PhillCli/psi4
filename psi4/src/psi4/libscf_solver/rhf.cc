@@ -420,7 +420,8 @@ std::vector<SharedMatrix> RHF::onel_Hx(std::vector<SharedMatrix> x_vec) {
 
     return ret;
 }
-std::vector<SharedMatrix> RHF::twoel_Hx_full(std::vector<SharedMatrix> x_vec, bool combine, std::string return_basis, bool singlet) {
+std::vector<SharedMatrix> RHF::twoel_Hx_full(std::vector<SharedMatrix> x_vec, bool combine, std::string return_basis,
+                                             bool singlet) {
     // Make sure we have a JK object
     if (!jk_) {
         throw PSIEXCEPTION("RHF::twoel_Hx: JK object is not initialized, please set option SAVE_JK to True.");
@@ -969,7 +970,7 @@ bool RHF::stability_analysis() {
 
             global_dpd_->buf4_mat_irrep_init(&Asing, h);
             global_dpd_->buf4_mat_irrep_rd(&Asing, h);
-            if (DSYEV_ascending(dim, Asing.matrix[h], evals, evecs) != 0){
+            if (DSYEV_ascending(dim, Asing.matrix[h], evals, evecs) != 0) {
                 throw PSIEXCEPTION("DSYEV diagonalizer failed in RHF stability check!");
             }
             global_dpd_->buf4_mat_irrep_close(&Asing, h);
@@ -982,7 +983,7 @@ bool RHF::stability_analysis() {
 
             global_dpd_->buf4_mat_irrep_init(&Atrip, h);
             global_dpd_->buf4_mat_irrep_rd(&Atrip, h);
-            if (DSYEV_ascending(dim, Atrip.matrix[h], evals, evecs) != 0){
+            if (DSYEV_ascending(dim, Atrip.matrix[h], evals, evecs) != 0) {
                 throw PSIEXCEPTION("DSYEV diagonalizer failed in RHF stability check!");
             }
             global_dpd_->buf4_mat_irrep_close(&Atrip, h);

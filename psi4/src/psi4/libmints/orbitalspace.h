@@ -114,7 +114,7 @@ class PSI_API OrbitalSpace {
       */
     static SharedMatrix overlap(const std::shared_ptr<BasisSet>& basis1, const std::shared_ptr<BasisSet>& basis2);
 
-     /** Given two spaces, it projects out one space from the other and returns the new spaces.
+    /** Given two spaces, it projects out one space from the other and returns the new spaces.
      * \param orb_space The space to project out. The returned space will be orthogonal to this.
      * \param ri_space The space being projected on. The returned space will be this space minus orb_space.
      * \param linear_tol The tolerance for linear dependencies.

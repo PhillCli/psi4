@@ -108,8 +108,7 @@ void brianInit() {
     outfile->Printf("BrianQC initialization successful\n");
 }
 
-void brianRelease()
-{
+void brianRelease() {
     if (brianCookie == 0) {
         throw PSIEXCEPTION("Attempting to release the BrianQC module when it hasn't been initialized\n");
     }
@@ -199,12 +198,11 @@ namespace psimrcc {
 SharedWavefunction psimrcc(SharedWavefunction, Options&);
 }
 namespace dummy_einsums {
-SharedWavefunction dummy_einsums (SharedWavefunction, Options&);
+SharedWavefunction dummy_einsums(SharedWavefunction, Options&);
 }
 namespace dummy_integratorxx {
 SharedWavefunction dummy_integratorxx(SharedWavefunction, Options&);
 }
-
 
 // Matrix returns
 namespace scfgrad {
@@ -564,28 +562,34 @@ void throw_deprecation_errors(std::string const& key, std::string const& module 
             __FILE__, __LINE__);
     }
     if (module == "SCF" && key == "DIIS_MIN_VECS") {
-        py_psi_print_out("WARNING!\n\tRemove keyword DIIS_MIN_VECS! This keyword does nothing. Using it will raise an error in v1.7.\n");
+        py_psi_print_out(
+            "WARNING!\n\tRemove keyword DIIS_MIN_VECS! This keyword does nothing. Using it will raise an error in "
+            "v1.7.\n");
     }
     if (module == "SCF" && key == "PK_NO_INCORE") {
-        py_psi_print_out("WARNING!\n\tRemove keyword PK_NO_INCORE! PK_NO_INCORE has been replaced by the SCF_SUBTYPE=NO_INCORE option. Using PK_NO_INCORE will raise an error in v1.8.\n");
+        py_psi_print_out(
+            "WARNING!\n\tRemove keyword PK_NO_INCORE! PK_NO_INCORE has been replaced by the SCF_SUBTYPE=NO_INCORE "
+            "option. Using PK_NO_INCORE will raise an error in v1.8.\n");
     }
     if (module == "SCF" && key == "PK_ALGO") {
-        py_psi_print_out("WARNING!\n\tRemove keyword PK_ALGO! PK_ALGO has been replaced by the SCF_SUBTYPE=YOSHIMINE_OUT_OF_CORE and REORDER_OUT_OF_CORE options. Using PK_ALGO will raise an error in v1.8.\n");
+        py_psi_print_out(
+            "WARNING!\n\tRemove keyword PK_ALGO! PK_ALGO has been replaced by the SCF_SUBTYPE=YOSHIMINE_OUT_OF_CORE "
+            "and REORDER_OUT_OF_CORE options. Using PK_ALGO will raise an error in v1.8.\n");
     }
     if (module == "SAPT" && key == "E_CONVERGENCE") {
-        throw PsiException(
-        "Remove keyword " + key + " for module " + module + ". This convergence control and keyword were removed in v1.10.",
-            __FILE__, __LINE__);
+        throw PsiException("Remove keyword " + key + " for module " + module +
+                               ". This convergence control and keyword were removed in v1.10.",
+                           __FILE__, __LINE__);
     }
     if (module == "SAPT" && key == "D_CONVERGENCE") {
-        throw PsiException(
-        "Rename keyword " + key + " for module " + module + " to CPHF_R_CONVERGENCE. The keyword was renamed in v1.10.",
-            __FILE__, __LINE__);
+        throw PsiException("Rename keyword " + key + " for module " + module +
+                               " to CPHF_R_CONVERGENCE. The keyword was renamed in v1.10.",
+                           __FILE__, __LINE__);
     }
     if (module == "FISAPT" && key == "D_CONVERGENCE") {
-        throw PsiException(
-        "Rename keyword " + key + " for module " + module + " to CPHF_R_CONVERGENCE. The keyword was renamed in v1.10.",
-            __FILE__, __LINE__);
+        throw PsiException("Rename keyword " + key + " for module " + module +
+                               " to CPHF_R_CONVERGENCE. The keyword was renamed in v1.10.",
+                           __FILE__, __LINE__);
     }
 }
 
@@ -1034,7 +1038,6 @@ void py_psi_print_variable_map() {
              << std::fixed << std::setprecision(12) << it->second << std::endl;
     }
 
-
     outfile->Printf("\n\n  Variable Map:");
     outfile->Printf("\n  ----------------------------------------------------------------------------\n");
     outfile->Printf("%s\n\n", line.str().c_str());
@@ -1044,7 +1047,9 @@ void py_psi_print_variable_map() {
          it != Process::environment.arrays.end(); ++it) {
         first_tmp = "\"" + it->first + "\"";
         line << "  " << std::left << std::setw(largest_key) << first_tmp << " => " << std::setw(20) << std::right
-             << std::fixed << std::setprecision(12) << it->second->get(0,0) << " ... " << it->second->get(it->second->nrow()-1, it->second->ncol()-1) << " " << it->second->nrow() << " by " << it->second->ncol() << std::endl;
+             << std::fixed << std::setprecision(12) << it->second->get(0, 0) << " ... "
+             << it->second->get(it->second->nrow() - 1, it->second->ncol() - 1) << " " << it->second->nrow() << " by "
+             << it->second->ncol() << std::endl;
     }
     outfile->Printf("\n\n  Array Variable Map:");
     outfile->Printf("\n  ----------------------------------------------------------------------------\n");
@@ -1092,7 +1097,7 @@ bool psi4_python_module_initialize() {
 #elif psi4_SHGSHELL_ORDERING == LIBINT_SHGSHELL_ORDERING_GAUSSIAN
     libint2::set_solid_harmonics_ordering(libint2::SHGShellOrdering_Gaussian);
 #else
-#  error "unknown value of macro psi4_SHGSHELL_ORDERING"
+#error "unknown value of macro psi4_SHGSHELL_ORDERING"
 #endif
     libint2::initialize();
 
@@ -1164,7 +1169,8 @@ PYBIND11_MODULE(core, core) {
     //           set_local_option
     //)pbdoc");
 
-    core.def("initialize", &psi4_python_module_initialize, "Called upon psi4 module import to initialize timers, singletons, and I/O. Idempotent");
+    core.def("initialize", &psi4_python_module_initialize,
+             "Called upon psi4 module import to initialize timers, singletons, and I/O. Idempotent");
     core.def("finalize", &psi4_python_module_finalize, "Called upon psi4 module exit to closes timers and I/O.");
 
     py::enum_<PsiReturnType>(core, "PsiReturnType", "Return status.")  // after C-OptKing, only Failure slightly used
@@ -1172,8 +1178,19 @@ PYBIND11_MODULE(core, core) {
         .value("Failure", Failure)
         .export_values();
 
-    core.def("version", []() { PyErr_SetString(PyExc_AttributeError, "psi4.core.version removed since hasn't been working as intended."); }, ".. deprecated:: 1.4");
-    core.def("git_version", []() { PyErr_SetString(PyExc_AttributeError, "psi4.core.git_version removed since hasn't been working as intended."); }, ".. deprecated:: 1.4");
+    core.def(
+        "version",
+        []() {
+            PyErr_SetString(PyExc_AttributeError, "psi4.core.version removed since hasn't been working as intended.");
+        },
+        ".. deprecated:: 1.4");
+    core.def(
+        "git_version",
+        []() {
+            PyErr_SetString(PyExc_AttributeError,
+                            "psi4.core.git_version removed since hasn't been working as intended.");
+        },
+        ".. deprecated:: 1.4");
     core.def("clean", py_psi_clean, "Remove scratch files. Call between independent jobs.");
     core.def("clean_options", py_psi_clean_options, "Reset options to clean state.");
 
@@ -1220,10 +1237,12 @@ PYBIND11_MODULE(core, core) {
              "Sets the memory available to Psi (in bytes); prefer :func:`psi4.driver.set_memory`.");
     core.def("get_memory", py_psi_get_memory, "Returns the amount of memory available to Psi (in bytes).");
 
-    core.def("set_datadir", [](const std::string& pdd) { Process::environment.set_datadir(pdd); }, "psidatadir"_a,
-             "Sets the path to shared text resources, :envvar:`PSIDATADIR`.");
-    core.def("get_datadir", []() { return Process::environment.get_datadir(); },
-             "Returns the path to shared text resources, :envvar:`PSIDATADIR`");
+    core.def(
+        "set_datadir", [](const std::string& pdd) { Process::environment.set_datadir(pdd); }, "psidatadir"_a,
+        "Sets the path to shared text resources, :envvar:`PSIDATADIR`.");
+    core.def(
+        "get_datadir", []() { return Process::environment.get_datadir(); },
+        "Returns the path to shared text resources, :envvar:`PSIDATADIR`");
     core.def("set_num_threads", py_psi_set_n_threads, "nthread"_a, "quiet"_a = false,
              "Sets the number of threads to use in SMP parallel computations.");
     core.def("get_num_threads", py_psi_get_n_threads,
@@ -1308,39 +1327,50 @@ PYBIND11_MODULE(core, core) {
              "Get dictionary of whether options of module have changed.");
 
     // These return/set/print PSI variables found in Process::environment.globals
-    core.def("has_scalar_variable",
-             [](const std::string& key) { return bool(Process::environment.globals.count(to_upper(key))); },
-             "key"_a, "Is the double QCVariable *key* (case-insensitive) set? Prefer :func:`~psi4.core.has_variable`");
-    core.def("has_array_variable",
-             [](const std::string& key) { return bool(Process::environment.arrays.count(to_upper(key))); },
-             "key"_a, "Is the Matrix QCVariable *key* (case-insensitive) set? Prefer :func:`~psi4.core.has_variable`");
-    core.def("scalar_variable", [](const std::string& key) { return Process::environment.globals[to_upper(key)]; },
-             "key"_a, "Returns the double QCVariable *key* (case-insensitive); prefer :func:`~psi4.core.variable`");
-    core.def("array_variable",
-             [](const std::string& key) { return Process::environment.arrays[to_upper(key)]->clone(); },
-             "key"_a, "Returns copy of the Matrix QCVariable *key* (case-insensitive); prefer :func:`~psi4.core.variable`");
-    core.def("set_scalar_variable",
-             [](const std::string& key, double value) { Process::environment.globals[to_upper(key)] = value; },
-             "key"_a, "value"_a, "Sets the double QCVariable *key* (case-insensitive); prefer :func:`~psi4.core.set_variable`");
+    core.def(
+        "has_scalar_variable",
+        [](const std::string& key) { return bool(Process::environment.globals.count(to_upper(key))); }, "key"_a,
+        "Is the double QCVariable *key* (case-insensitive) set? Prefer :func:`~psi4.core.has_variable`");
+    core.def(
+        "has_array_variable",
+        [](const std::string& key) { return bool(Process::environment.arrays.count(to_upper(key))); }, "key"_a,
+        "Is the Matrix QCVariable *key* (case-insensitive) set? Prefer :func:`~psi4.core.has_variable`");
+    core.def(
+        "scalar_variable", [](const std::string& key) { return Process::environment.globals[to_upper(key)]; }, "key"_a,
+        "Returns the double QCVariable *key* (case-insensitive); prefer :func:`~psi4.core.variable`");
+    core.def(
+        "array_variable", [](const std::string& key) { return Process::environment.arrays[to_upper(key)]->clone(); },
+        "key"_a, "Returns copy of the Matrix QCVariable *key* (case-insensitive); prefer :func:`~psi4.core.variable`");
+    core.def(
+        "set_scalar_variable",
+        [](const std::string& key, double value) { Process::environment.globals[to_upper(key)] = value; }, "key"_a,
+        "value"_a, "Sets the double QCVariable *key* (case-insensitive); prefer :func:`~psi4.core.set_variable`");
     core.def(
         "set_array_variable",
         [](const std::string& key, SharedMatrix value) { Process::environment.arrays[to_upper(key)] = value->clone(); },
-        "key"_a, "value"_a, "Sets the requested (case-insensitive) Matrix QCVariable; prefer :func:`~psi4.core.set_variable`");
-    core.def("del_scalar_variable", [](const std::string key) { Process::environment.globals.erase(to_upper(key)); },
-             "key"_a, "Removes the double QCVariable *key* (case-insensitive); prefer :func:`~psi4.core.del_variable`");
-    core.def("del_array_variable", [](const std::string key) { Process::environment.arrays.erase(to_upper(key)); },
-             "key"_a, "Removes the Matrix QCVariable *key* (case-insensitive); prefer :func:`~psi4.core.del_variable`");
-    core.def("print_variables", py_psi_print_variable_map, "Prints to output file all QCVariables that have been set in global memory.");
-    core.def("clean_variables",
-             []() {
-                 Process::environment.globals.clear();
-                 Process::environment.arrays.clear();
-             },
-             "Empties all double and Matrix QCVariables that have been set in global memory.");
-    core.def("scalar_variables", []() { return Process::environment.globals; },
-             "Returns dictionary of all double QCVariables; prefer :func:`~psi4.core.variables`");
-    core.def("array_variables", []() { return Process::environment.arrays; },
-             "Returns dictionary of all Matrix QCVariables; prefer :func:`~psi4.core.variables`");
+        "key"_a, "value"_a,
+        "Sets the requested (case-insensitive) Matrix QCVariable; prefer :func:`~psi4.core.set_variable`");
+    core.def(
+        "del_scalar_variable", [](const std::string key) { Process::environment.globals.erase(to_upper(key)); },
+        "key"_a, "Removes the double QCVariable *key* (case-insensitive); prefer :func:`~psi4.core.del_variable`");
+    core.def(
+        "del_array_variable", [](const std::string key) { Process::environment.arrays.erase(to_upper(key)); }, "key"_a,
+        "Removes the Matrix QCVariable *key* (case-insensitive); prefer :func:`~psi4.core.del_variable`");
+    core.def("print_variables", py_psi_print_variable_map,
+             "Prints to output file all QCVariables that have been set in global memory.");
+    core.def(
+        "clean_variables",
+        []() {
+            Process::environment.globals.clear();
+            Process::environment.arrays.clear();
+        },
+        "Empties all double and Matrix QCVariables that have been set in global memory.");
+    core.def(
+        "scalar_variables", []() { return Process::environment.globals; },
+        "Returns dictionary of all double QCVariables; prefer :func:`~psi4.core.variables`");
+    core.def(
+        "array_variables", []() { return Process::environment.arrays; },
+        "Returns dictionary of all Matrix QCVariables; prefer :func:`~psi4.core.variables`");
 
     // Returns the location where the Psi4 source is located.
     core.def("psi_top_srcdir", py_psi_top_srcdir, "Returns the location of the source code.");
@@ -1363,7 +1393,8 @@ PYBIND11_MODULE(core, core) {
     core.def("mrcc_generate_input", py_psi_mrcc_generate_input, "Generates an input for Kallay's MRCC code.");
     core.def("mrcc_load_densities", py_psi_mrcc_load_densities,
              "Reads in the density matrices from Kallay's MRCC code.");
-    core.def("sapt", py_psi_sapt, "dimer_wfn"_a, "monoa_wfn"_a, "monob_wfn"_a, "Runs the symmetry adapted perturbation theory code.");
+    core.def("sapt", py_psi_sapt, "dimer_wfn"_a, "monoa_wfn"_a, "monob_wfn"_a,
+             "Runs the symmetry adapted perturbation theory code.");
     core.def("psimrcc", py_psi_psimrcc, "Runs the multireference coupled cluster code.");
     core.def("cctransort", py_psi_cctransort, "ref_wfn"_a,
              "Runs cctransort that transforms and reorders integrals for use in the coupled cluster codes.");
@@ -1377,7 +1408,8 @@ PYBIND11_MODULE(core, core) {
     core.def("ccdensity", py_psi_ccdensity, "ref_wfn"_a, "Runs the code to compute coupled cluster density matrices.");
     core.def("ccresponse", py_psi_ccresponse, "ref_wfn"_a, "Runs the coupled cluster response theory code.");
     core.def("scatter", py_psi_scatter, "New Scatter function.");
-    core.def("cceom", py_psi_cceom, "ref_wfn"_a, "Runs the equation of motion coupled cluster code for excited states.");
+    core.def("cceom", py_psi_cceom, "ref_wfn"_a,
+             "Runs the equation of motion coupled cluster code for excited states.");
     core.def("occ", py_psi_occ, "ref_wfn"_a, "Runs the orbital optimized CC codes.");
     core.def("dfocc", py_psi_dfocc, "ref_wfn"_a, "Runs the density-fitted orbital optimized CC codes.");
     core.def("dummy_einsums", py_psi_dummy_einsums, "ref_wfn"_a, "Runs the einsums placeholder code.");
@@ -1392,18 +1424,29 @@ PYBIND11_MODULE(core, core) {
         }
         outfile_name = ofname;
     });
-    core.def("set_output_file", [](const std::string ofname, bool append) {
-        if (ofname == "stdout") {
-            outfile = std::make_shared<PsiOutStream>();
-        } else {
-            auto mode = append ? std::ostream::app : std::ostream::trunc;
-            outfile = std::make_shared<PsiOutStream>(ofname, mode);
-        }
-        outfile_name = ofname;
-    }, "ofname"_a, "append"_a = false, "Set the name for output file; prefer :func:`~psi4.set_output_file`");
-    core.def("get_output_file", []() { return outfile_name; }, "Returns output file name (stem + suffix, no directory). 'stdout'.");
-    core.def("set_psi_file_prefix", []() { PyErr_SetString(PyExc_AttributeError, "psi4.core.set_psi_file_prefix removed since hasn't been working as intended."); }, ".. deprecated:: 1.4");
-        // [](std::string fprefix) { psi_file_prefix = strdup(fprefix.c_str()); });  // doesn't always work
+    core.def(
+        "set_output_file",
+        [](const std::string ofname, bool append) {
+            if (ofname == "stdout") {
+                outfile = std::make_shared<PsiOutStream>();
+            } else {
+                auto mode = append ? std::ostream::app : std::ostream::trunc;
+                outfile = std::make_shared<PsiOutStream>(ofname, mode);
+            }
+            outfile_name = ofname;
+        },
+        "ofname"_a, "append"_a = false, "Set the name for output file; prefer :func:`~psi4.set_output_file`");
+    core.def(
+        "get_output_file", []() { return outfile_name; },
+        "Returns output file name (stem + suffix, no directory). 'stdout'.");
+    core.def(
+        "set_psi_file_prefix",
+        []() {
+            PyErr_SetString(PyExc_AttributeError,
+                            "psi4.core.set_psi_file_prefix removed since hasn't been working as intended.");
+        },
+        ".. deprecated:: 1.4");
+    // [](std::string fprefix) { psi_file_prefix = strdup(fprefix.c_str()); });  // doesn't always work
 
     // ??
     // py::class_<Process::Environment>(core, "Environment")

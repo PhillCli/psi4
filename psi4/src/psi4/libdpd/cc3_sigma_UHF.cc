@@ -240,8 +240,8 @@ void DPD::cc3_sigma_UHF_AAA(dpdbuf4 *CMNEF, dpdbuf4 *WABEI, dpdbuf4 *WMBIJ, int 
                             } /* end do_doubles */
 
                         } /* k */
-                    }     /* j */
-                }         /* i */
+                    } /* j */
+                } /* i */
 
                 for (Gab = 0; Gab < nirreps; Gab++) {
                     /* This will need to change for non-totally-symmetric cases */
@@ -250,8 +250,8 @@ void DPD::cc3_sigma_UHF_AAA(dpdbuf4 *CMNEF, dpdbuf4 *WABEI, dpdbuf4 *WMBIJ, int 
                 }
 
             } /* Gk */
-        }     /* Gj */
-    }         /* Gi */
+        } /* Gj */
+    } /* Gi */
 
     free(W1);
 
@@ -464,8 +464,8 @@ void DPD::cc3_sigma_UHF_BBB(dpdbuf4 *Cmnef, dpdbuf4 *Wabei, dpdbuf4 *Wmbij, int 
                             } /* end do_doubles */
 
                         } /* k */
-                    }     /* j */
-                }         /* i */
+                    } /* j */
+                } /* i */
 
                 for (Gab = 0; Gab < nirreps; Gab++) {
                     /* This will need to change for non-totally-symmetric cases */
@@ -474,8 +474,8 @@ void DPD::cc3_sigma_UHF_BBB(dpdbuf4 *Cmnef, dpdbuf4 *Wabei, dpdbuf4 *Wmbij, int 
                 }
 
             } /* Gk */
-        }     /* Gj */
-    }         /* Gi */
+        } /* Gj */
+    } /* Gi */
 
     free(W1);
 
@@ -968,8 +968,8 @@ void DPD::cc3_sigma_UHF_AAB(dpdbuf4 *C2AA, dpdbuf4 *C2AB, dpdbuf4 *C2BA, dpdbuf4
                             }
 
                         } /* k */
-                    }     /* j */
-                }         /* i */
+                    } /* j */
+                } /* i */
 
                 for (Gab = 0; Gab < nirreps; Gab++) {
                     /* This will need to change for non-totally-symmetric cases */
@@ -986,8 +986,8 @@ void DPD::cc3_sigma_UHF_AAB(dpdbuf4 *C2AA, dpdbuf4 *C2AB, dpdbuf4 *C2BA, dpdbuf4
                 }
 
             } /* Gk */
-        }     /* Gj */
-    }         /* Gi */
+        } /* Gj */
+    } /* Gi */
 
     free(W1);
     free(W2);
@@ -1502,8 +1502,8 @@ void DPD::cc3_sigma_UHF_BBA(dpdbuf4 *C2BB, dpdbuf4 *C2AB, dpdbuf4 *C2BA, dpdbuf4
                             } /* end do_doubles */
 
                         } /* k */
-                    }     /* j */
-                }         /* i */
+                    } /* j */
+                } /* i */
 
                 for (Gab = 0; Gab < nirreps; Gab++) {
                     Gc = Gab ^ Gijk ^ GX3;
@@ -1518,8 +1518,8 @@ void DPD::cc3_sigma_UHF_BBA(dpdbuf4 *C2BB, dpdbuf4 *C2AB, dpdbuf4 *C2BA, dpdbuf4
                     free_dpd_block(W3[Gb], bvirtpi[Gb], WmAfE->params->coltot[Gac]);
                 }
             } /* Gk */
-        }     /* Gj */
-    }         /* Gi */
+        } /* Gj */
+    } /* Gi */
 
     free(W1);
     free(W2);

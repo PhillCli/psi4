@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """Dummy setup.py file solely for the purposes of getting an on-the-fly
 computed version number into the conda recipe.
 
@@ -45,6 +44,5 @@ def version_func():
     else:
         return out.strip()
 
-setup(
-    version=version_func(),
-)
+
+setup(version=version_func(), )

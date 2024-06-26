@@ -639,7 +639,7 @@ struct sigma_data {
     int *L, *R;
     int max_dim;
 };
-}
+}  // namespace detci
 }  // namespace psi
 
 #endif  // header guard

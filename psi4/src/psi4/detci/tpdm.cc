@@ -227,9 +227,9 @@ std::vector<SharedMatrix> CIWavefunction::tpdm(SharedCIVector Ivec, SharedCIVect
                     } /* end loop over Jbuf */
 
                 } /* end loop over Ibuf transpose */
-            }     /* end loop over Ibuf */
-        }         /* end loop over roots */
-    }             /* end icore==0 */
+            } /* end loop over Ibuf */
+        } /* end loop over roots */
+    } /* end icore==0 */
 
     else if (Parameters_->icore == 1) { /* whole vectors in-core */
         for (int root_idx = 0; root_idx < states_vec.size(); root_idx++) {
@@ -256,8 +256,8 @@ std::vector<SharedMatrix> CIWavefunction::tpdm(SharedCIVector Ivec, SharedCIVect
                                    Jnas, Jnbs, Iac, Ibc, Inas, Inbs, weight);
                 }
             } /* end loop over Iblock */
-        }     /* end loop over roots */
-    }         /* end icore==1 */
+        } /* end loop over roots */
+    } /* end icore==1 */
 
     else if (Parameters_->icore == 2) { /* icore==2 */
         for (int root_idx = 0; root_idx < states_vec.size(); root_idx++) {
@@ -337,13 +337,13 @@ std::vector<SharedMatrix> CIWavefunction::tpdm(SharedCIVector Ivec, SharedCIVect
                                 }
 
                             } /* end loop over Jblock */
-                        }     /* end Ivec offdiag */
+                        } /* end Ivec offdiag */
 
                     } /* end loop over Iblock */
-                }     /* end loop over Jbuf */
-            }         /* end loop over Ibuf */
-        }             /* end loop over roots */
-    }                 /* end icore==2 */
+                } /* end loop over Jbuf */
+            } /* end loop over Ibuf */
+        } /* end loop over roots */
+    } /* end icore==2 */
 
     else {
         throw PSIEXCEPTION("CIWavefunction::tpdm: unrecognized core option!\n");
@@ -501,10 +501,10 @@ void CIWavefunction::tpdm_block(struct stringwr **alplist, struct stringwr **bet
                         }
 
                     } /* end loop over Jb_ex */
-                }     /* end loop over Kb_list */
-            }         /* end loop over Jb_idx */
-        }             /* end loop over Ia_idx */
-    }                 /* end case Ia_list == Ja_list */
+                } /* end loop over Kb_list */
+            } /* end loop over Jb_idx */
+        } /* end loop over Ia_idx */
+    } /* end case Ia_list == Ja_list */
 
     /* loop over Ib in Ib_list */
     if (Ib_list == Jb_list) {
@@ -559,10 +559,10 @@ void CIWavefunction::tpdm_block(struct stringwr **alplist, struct stringwr **bet
                         }
 
                     } /* end loop over Ja_ex */
-                }     /* end loop over Ka_list */
-            }         /* end loop over Ja_idx */
-        }             /* end loop over Ib_idx */
-    }                 /* end case Ib_list == Jb_list */
+                } /* end loop over Ka_list */
+            } /* end loop over Ja_idx */
+        } /* end loop over Ib_idx */
+    } /* end case Ib_list == Jb_list */
 
     /* now do the sigma3 looking (alpha-beta) part */
     /* loop over Ja                                */
@@ -605,9 +605,9 @@ void CIWavefunction::tpdm_block(struct stringwr **alplist, struct stringwr **bet
                     twopdm_ab[ijkl] += tval;
                 }
             } /* end loop over Jb */
-        }     /* end loop over Ja_ex */
-    }         /* end loop over Ja */
+        } /* end loop over Ja_ex */
+    } /* end loop over Ja */
     timer_off("CIWave: TPDM Block");
 }
-}
+}  // namespace detci
 }  // namespace psi

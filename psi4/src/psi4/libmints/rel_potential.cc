@@ -47,9 +47,15 @@ RelPotentialInt::RelPotentialInt(std::vector<SphericalTransform>& st, std::share
     }
 
     if (bs1 != bs2) {
-        outfile->Printf("*********************************************************************************************************************\n");
-        outfile->Printf("When computing potential integrals with different bra and ket basis, the atom definition is taken from the bra basis.\n");
-        outfile->Printf("*********************************************************************************************************************\n");
+        outfile->Printf(
+            "**********************************************************************************************************"
+            "***********\n");
+        outfile->Printf(
+            "When computing potential integrals with different bra and ket basis, the atom definition is taken from "
+            "the bra basis.\n");
+        outfile->Printf(
+            "**********************************************************************************************************"
+            "***********\n");
     }
 
     int max_am = std::max(basis1()->max_am(), basis2()->max_am());
@@ -58,9 +64,8 @@ RelPotentialInt::RelPotentialInt(std::vector<SphericalTransform>& st, std::share
     // Setup the initial field of partial charges
     std::vector<std::pair<double, std::array<double, 3>>> params;
     for (int A = 0; A < bs1_->molecule()->natom(); A++) {
-        params.push_back({
-            (double)bs1_->molecule()->Z(A),
-            {bs1_->molecule()->x(A), bs1_->molecule()->y(A), bs1_->molecule()->z(A)}});
+        params.push_back(
+            {(double)bs1_->molecule()->Z(A), {bs1_->molecule()->x(A), bs1_->molecule()->y(A), bs1_->molecule()->z(A)}});
     }
 
     set_chunks(4);

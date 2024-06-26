@@ -750,5 +750,5 @@ void OCCWave::ep2_ip() {
     }  // end if (reference_ == "UNRESTRICTED")
     // outfile->Printf("\n ep2_ip is done. \n");
 }  // end ep2_ip
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

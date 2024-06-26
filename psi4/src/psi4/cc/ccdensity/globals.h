@@ -28,7 +28,6 @@
 #ifndef CCDENSITY_GLOBALS_H
 #define CCDENSITY_GLOBALS_H
 
-
 /*! \file
     \ingroup CCDENSITY
     \brief Enter brief description of file here
@@ -60,7 +59,7 @@ EXTERN struct Params params;
 EXTERN struct RHO_Params *rho_params;
 EXTERN std::vector<TD_Params> td_params;
 // EXTERN std::vector<struct XTD_Params> xtd_params;
-}
+}  // namespace ccdensity
 }  // namespace psi
 
 #endif

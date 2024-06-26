@@ -390,7 +390,7 @@ void FCHKWriter::write(const std::string &filename) {
         atomic_weights.push_back(mol->mass(atom));
         int_atomic_weights.push_back(mol->mass_number(atom));
         nuc_charges.push_back(mol->Z(atom));
-        atomic_numbers.push_back(intZ > 0 ? mol->true_atomic_number(atom) : intZ); // care about ECP & ghosts!
+        atomic_numbers.push_back(intZ > 0 ? mol->true_atomic_number(atom) : intZ);  // care about ECP & ghosts!
         const Vector3 &xyz = mol->xyz(atom);
         coords.push_back(xyz[0]);
         coords.push_back(xyz[1]);
@@ -424,50 +424,42 @@ void FCHKWriter::write(const std::string &filename) {
         /* 2 */ {1.0, 0.0, 0.0},
     };
 
-    const double pureP_from_sss[3][3] = {
-        //            0    1    2
-        // Psi4:     -1    0   +1
-        // Expected: +1   -1    0
-        /* 0 */ {0.0, 0.0, 1.0},
-        /* 1 */ {1.0, 0.0, 0.0},
-        /* 2 */ {0.0, 1.0, 0.0}
-    };
-    const double pureD_from_sss[5][5] = {
-        //            0    1    2    3    4
-        // Psi4:     -2   -1    0   +1   +2
-        // Expected:  0   +1   -1   +2   -2
-        /* 0 */ {0.0, 0.0, 1.0, 0.0, 0.0},
-        /* 1 */ {0.0, 0.0, 0.0, 1.0, 0.0},
-        /* 2 */ {0.0, 1.0, 0.0, 0.0, 0.0},
-        /* 3 */ {0.0, 0.0, 0.0, 0.0, 1.0},
-        /* 4 */ {1.0, 0.0, 0.0, 0.0, 0.0}
-    };
-    const double pureF_from_sss[7][7] = {
-        //            0    1    2    3    4    5    6
-        // Psi4:     -3   -2   -1    0   +1   +2   +3
-        // Expected:  0   +1   -1   +2   -2   +3   -3
-        /* 0 */ {0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0},
-        /* 1 */ {0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0},
-        /* 2 */ {0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0},
-        /* 3 */ {0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0},
-        /* 4 */ {0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-        /* 5 */ {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0},
-        /* 6 */ {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
-    };
-    const double pureG_from_sss[9][9] = {
-        //            0    1    2    3    4    5    6    7    8
-        // Psi4:     -4   -3   -2   -1    0   +1   +2   +3   +4
-        // Expected:  0   +1   -1   +2   -2   +3   -3   +4   -4
-        /* 0 */ {0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0},
-        /* 1 */ {0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0},
-        /* 2 */ {0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-        /* 3 */ {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0},
-        /* 4 */ {0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-        /* 5 */ {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0},
-        /* 6 */ {0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
-        /* 7 */ {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0},
-        /* 8 */ {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}
-    };
+    const double pureP_from_sss[3][3] = {//            0    1    2
+                                         // Psi4:     -1    0   +1
+                                         // Expected: +1   -1    0
+                                         /* 0 */ {0.0, 0.0, 1.0},
+                                         /* 1 */ {1.0, 0.0, 0.0},
+                                         /* 2 */ {0.0, 1.0, 0.0}};
+    const double pureD_from_sss[5][5] = {//            0    1    2    3    4
+                                         // Psi4:     -2   -1    0   +1   +2
+                                         // Expected:  0   +1   -1   +2   -2
+                                         /* 0 */ {0.0, 0.0, 1.0, 0.0, 0.0},
+                                         /* 1 */ {0.0, 0.0, 0.0, 1.0, 0.0},
+                                         /* 2 */ {0.0, 1.0, 0.0, 0.0, 0.0},
+                                         /* 3 */ {0.0, 0.0, 0.0, 0.0, 1.0},
+                                         /* 4 */ {1.0, 0.0, 0.0, 0.0, 0.0}};
+    const double pureF_from_sss[7][7] = {//            0    1    2    3    4    5    6
+                                         // Psi4:     -3   -2   -1    0   +1   +2   +3
+                                         // Expected:  0   +1   -1   +2   -2   +3   -3
+                                         /* 0 */ {0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0},
+                                         /* 1 */ {0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0},
+                                         /* 2 */ {0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0},
+                                         /* 3 */ {0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0},
+                                         /* 4 */ {0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+                                         /* 5 */ {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0},
+                                         /* 6 */ {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}};
+    const double pureG_from_sss[9][9] = {//            0    1    2    3    4    5    6    7    8
+                                         // Psi4:     -4   -3   -2   -1    0   +1   +2   +3   +4
+                                         // Expected:  0   +1   -1   +2   -2   +3   -3   +4   -4
+                                         /* 0 */ {0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0},
+                                         /* 1 */ {0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0},
+                                         /* 2 */ {0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+                                         /* 3 */ {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0},
+                                         /* 4 */ {0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+                                         /* 5 */ {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0},
+                                         /* 6 */ {0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0},
+                                         /* 7 */ {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0},
+                                         /* 8 */ {1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0}};
 
     double pf1, pf2, pf3, pf4;
     pf1 = 1.0;              // aa
@@ -558,16 +550,20 @@ void FCHKWriter::write(const std::string &filename) {
 #if psi4_SHGSHELL_ORDERING == LIBINT_SHGSHELL_ORDERING_STANDARD
             if (am == 1) {
                 for (int row = 0; row < 3; ++row)
-                    for (int col = 0; col < 3; ++col) transmat->set(offset + row, offset + col, pureP_from_sss[row][col]);
+                    for (int col = 0; col < 3; ++col)
+                        transmat->set(offset + row, offset + col, pureP_from_sss[row][col]);
             } else if (am == 2) {
                 for (int row = 0; row < 5; ++row)
-                    for (int col = 0; col < 5; ++col) transmat->set(offset + row, offset + col, pureD_from_sss[row][col]);
+                    for (int col = 0; col < 5; ++col)
+                        transmat->set(offset + row, offset + col, pureD_from_sss[row][col]);
             } else if (am == 3) {
                 for (int row = 0; row < 7; ++row)
-                    for (int col = 0; col < 7; ++col) transmat->set(offset + row, offset + col, pureF_from_sss[row][col]);
+                    for (int col = 0; col < 7; ++col)
+                        transmat->set(offset + row, offset + col, pureF_from_sss[row][col]);
             } else if (am == 4) {
                 for (int row = 0; row < 9; ++row)
-                    for (int col = 0; col < 9; ++col) transmat->set(offset + row, offset + col, pureG_from_sss[row][col]);
+                    for (int col = 0; col < 9; ++col)
+                        transmat->set(offset + row, offset + col, pureG_from_sss[row][col]);
             } else if (am >= 5) {
                 throw PSIEXCEPTION("The Psi4 FCHK writer only supports up to G shell (l=4) spherical functions");
             }
@@ -575,10 +571,11 @@ void FCHKWriter::write(const std::string &filename) {
             // Spherical harmonics - everything is fine, apart from P orbitals
             if (am == 1) {
                 for (int row = 0; row < 3; ++row)
-                    for (int col = 0; col < 3; ++col) transmat->set(offset + row, offset + col, pureP_from_gss[row][col]);
+                    for (int col = 0; col < 3; ++col)
+                        transmat->set(offset + row, offset + col, pureP_from_gss[row][col]);
             }
 #else
-#  error "unknown value of macro psi4_SHGSHELL_ORDERING"
+#error "unknown value of macro psi4_SHGSHELL_ORDERING"
 #endif
         } else {
             // Cartesians - S and P orbitals are fine, but higher terms need reordering

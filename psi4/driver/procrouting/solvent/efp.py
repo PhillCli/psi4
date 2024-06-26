@@ -50,8 +50,7 @@ def get_qm_atoms_opts(mol):
     # set options
     # * 'chtr', 'qm_exch', 'qm_disp', 'qm_chtr' may be enabled in a future libefp release
     opts = {}
-    for opt in ['elst', 'exch', 'ind', 'disp',
-                'elst_damping', 'ind_damping', 'disp_damping']:
+    for opt in ['elst', 'exch', 'ind', 'disp', 'elst_damping', 'ind_damping', 'disp_damping']:
         psiopt = 'EFP_' + opt.upper()
         if core.has_option_changed('EFP', psiopt):
             opts[opt] = core.get_option('EFP', psiopt)
@@ -97,8 +96,10 @@ def modify_Fock_permanent(mol, mints, verbose=1):
     val_mp = np.asarray(efpobj.get_multipole_values(verbose=verbose)).reshape(nmp, 20)
 
     #                    0  X  Y  Z  XX   YY   ZZ   XY   XZ   YZ
-    prefacs = np.array([ 1, 1, 1, 1, 1/3, 1/3, 1/3, 2/3, 2/3, 2/3,
-        1/15, 1/15, 1/15, 3/15, 3/15, 3/15, 3/15, 3/15, 3/15, 6/15])
+    prefacs = np.array([
+        1, 1, 1, 1, 1 / 3, 1 / 3, 1 / 3, 2 / 3, 2 / 3, 2 / 3, 1 / 15, 1 / 15, 1 / 15, 3 / 15, 3 / 15, 3 / 15, 3 / 15,
+        3 / 15, 3 / 15, 6 / 15
+    ])
     #   XXX   YYY   ZZZ   XXY   XXZ   XYY   YYZ   XZZ   YZZ   XYZ
 
     # EFP permanent moment contribution to the Fock Matrix

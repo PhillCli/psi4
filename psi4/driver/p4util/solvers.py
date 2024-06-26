@@ -43,22 +43,20 @@ import numpy as np
 from psi4 import core
 
 from .exceptions import ValidationError
-
 """
 Generalized iterative solvers for Psi4.
 
 """
 
 
-def cg_solver(
-    rhs_vec: List[core.Matrix],
-    hx_function: Callable,
-    preconditioner: Callable,
-    guess: Optional[List[core.Matrix]] = None,
-    printer: Optional[Callable] = None,
-    printlvl: int = 1,
-    maxiter: int = 20,
-    rcond: float = 1.e-6) -> List[core.Matrix]:
+def cg_solver(rhs_vec: List[core.Matrix],
+              hx_function: Callable,
+              preconditioner: Callable,
+              guess: Optional[List[core.Matrix]] = None,
+              printer: Optional[Callable] = None,
+              printlvl: int = 1,
+              maxiter: int = 20,
+              rcond: float = 1.e-6) -> List[core.Matrix]:
     """
     Solves the :math:`Ax = b` linear equations via Conjugate Gradient. The `A` matrix must be a hermitian, positive definite matrix.
 
@@ -657,16 +655,15 @@ class SolverEngine(ABC):
         """
 
 
-def davidson_solver(
-    engine: Type[SolverEngine],
-    guess: List,
-    *,
-    nroot: int,
-    r_convergence: float = 1.0E-4,
-    max_ss_size: int = 100,
-    maxiter: int = 60,
-    verbose: int = 1,
-    nonneg_only: bool = False) -> Dict[str, Any]:
+def davidson_solver(engine: Type[SolverEngine],
+                    guess: List,
+                    *,
+                    nroot: int,
+                    r_convergence: float = 1.0E-4,
+                    max_ss_size: int = 100,
+                    maxiter: int = 60,
+                    verbose: int = 1,
+                    nonneg_only: bool = False) -> Dict[str, Any]:
     """Solves for the lowest few eigenvalues and eigenvectors of a large problem emulated through an engine.
 
     If the large matrix `A` has dimension `{NxN}` and N is very large, and only
@@ -847,15 +844,14 @@ def davidson_solver(
     return {"eigvals": best_eigvals, "eigvecs": list(zip(best_eigvecs, best_eigvecs)), "stats": stats}
 
 
-def hamiltonian_solver(
-    engine: Type[SolverEngine],
-    guess: List,
-    *,
-    nroot: int,
-    r_convergence: float = 1.0E-4,
-    max_ss_size: int = 100,
-    maxiter: int = 60,
-    verbose: int = 1):
+def hamiltonian_solver(engine: Type[SolverEngine],
+                       guess: List,
+                       *,
+                       nroot: int,
+                       r_convergence: float = 1.0E-4,
+                       max_ss_size: int = 100,
+                       maxiter: int = 60,
+                       verbose: int = 1):
     """Finds the smallest eigenvalues and associated right and left hand
     eigenvectors of a large real Hamiltonian eigenvalue problem emulated
     through an engine.

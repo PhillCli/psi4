@@ -186,10 +186,16 @@ void DFMP2::common_init() {
 }
 double DFMP2::compute_energy() {
     print_header();
-    auto num_alpha_excit = std::min(Ca_subset("AO", "ACTIVE_OCC")->colspi()[0], Ca_subset("AO", "ACTIVE_VIR")->colspi()[0]);
-    auto num_beta_excit = std::min(Cb_subset("AO", "ACTIVE_OCC")->colspi()[0], Cb_subset("AO", "ACTIVE_VIR")->colspi()[0]);
+    auto num_alpha_excit =
+        std::min(Ca_subset("AO", "ACTIVE_OCC")->colspi()[0], Ca_subset("AO", "ACTIVE_VIR")->colspi()[0]);
+    auto num_beta_excit =
+        std::min(Cb_subset("AO", "ACTIVE_OCC")->colspi()[0], Cb_subset("AO", "ACTIVE_VIR")->colspi()[0]);
     if (num_alpha_excit + num_beta_excit < 2) {
-        outfile->Printf("  Warning: no MP2 calculation performed on system with alpha ACTIVE_OCC (%d), beta ACTIVE_OCC (%d), alpha ACTIVE_VIR (%d), beta ACTIVE_VIR (%d); returning 0.0 by definition.\n", Ca_subset("AO", "ACTIVE_OCC")->colspi()[0], Cb_subset("AO", "ACTIVE_OCC")->colspi()[0], Ca_subset("AO", "ACTIVE_VIR")->colspi()[0], Cb_subset("AO", "ACTIVE_VIR")->colspi()[0]);
+        outfile->Printf(
+            "  Warning: no MP2 calculation performed on system with alpha ACTIVE_OCC (%d), beta ACTIVE_OCC (%d), alpha "
+            "ACTIVE_VIR (%d), beta ACTIVE_VIR (%d); returning 0.0 by definition.\n",
+            Ca_subset("AO", "ACTIVE_OCC")->colspi()[0], Cb_subset("AO", "ACTIVE_OCC")->colspi()[0],
+            Ca_subset("AO", "ACTIVE_VIR")->colspi()[0], Cb_subset("AO", "ACTIVE_VIR")->colspi()[0]);
         variables_["MP2 SINGLES ENERGY"] = 0.0;
         variables_["MP2 SAME-SPIN CORRELATION ENERGY"] = 0.0;
         variables_["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] = 0.0;
@@ -630,7 +636,7 @@ void DFMP2::apply_G_transpose(size_t file, size_t naux, size_t nia) {
     for (int Q = 0; Q < naux; Q++) {
         psio_->write(file, "G(Q|ia)", (char*)temp.data(), sizeof(double) * nia, next_QIA, &next_QIA);
     }
-    std::vector<double>().swap(temp); // Dirty trick to clear temp memory immediately.
+    std::vector<double>().swap(temp);  // Dirty trick to clear temp memory immediately.
     next_QIA = PSIO_ZERO;
     psio_address next_IAQ = PSIO_ZERO;
 
@@ -714,21 +720,22 @@ void DFMP2::apply_B_transpose(size_t file, size_t naux, size_t naocc, size_t nav
     psio_->close(file, 1);
 }
 void DFMP2::print_energies() {
-    variables_["MP2 DOUBLES ENERGY"] = variables_["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] +
-                                       variables_["MP2 SAME-SPIN CORRELATION ENERGY"];
+    variables_["MP2 DOUBLES ENERGY"] =
+        variables_["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] + variables_["MP2 SAME-SPIN CORRELATION ENERGY"];
     variables_["MP2 CORRELATION ENERGY"] = variables_["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] +
                                            variables_["MP2 SAME-SPIN CORRELATION ENERGY"] +
                                            variables_["MP2 SINGLES ENERGY"];
     variables_["MP2 TOTAL ENERGY"] = variables_["SCF TOTAL ENERGY"] + variables_["MP2 CORRELATION ENERGY"];
 
-    variables_["SCS-MP2 CORRELATION ENERGY"] = 6.0/5.0 * variables_["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] +
-                                               1.0/3.0 * variables_["MP2 SAME-SPIN CORRELATION ENERGY"] +
-                                                         variables_["MP2 SINGLES ENERGY"];
+    variables_["SCS-MP2 CORRELATION ENERGY"] = 6.0 / 5.0 * variables_["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] +
+                                               1.0 / 3.0 * variables_["MP2 SAME-SPIN CORRELATION ENERGY"] +
+                                               variables_["MP2 SINGLES ENERGY"];
     variables_["SCS-MP2 TOTAL ENERGY"] = variables_["SCF TOTAL ENERGY"] + variables_["SCS-MP2 CORRELATION ENERGY"];
     variables_["CUSTOM SCS-MP2 CORRELATION ENERGY"] = oss_ * variables_["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] +
                                                       sss_ * variables_["MP2 SAME-SPIN CORRELATION ENERGY"] +
-                                                             variables_["MP2 SINGLES ENERGY"];
-    variables_["CUSTOM SCS-MP2 TOTAL ENERGY"] = variables_["SCF TOTAL ENERGY"] + variables_["CUSTOM SCS-MP2 CORRELATION ENERGY"];
+                                                      variables_["MP2 SINGLES ENERGY"];
+    variables_["CUSTOM SCS-MP2 TOTAL ENERGY"] =
+        variables_["SCF TOTAL ENERGY"] + variables_["CUSTOM SCS-MP2 CORRELATION ENERGY"];
 
     outfile->Printf("\t-----------------------------------------------------------\n");
     outfile->Printf("\t ==================> DF-MP2 Energies <==================== \n");
@@ -1485,7 +1492,7 @@ void RDFMP2::form_AB_x_terms() {
 
     auto results = mintshelper_->metric_grad(densities, "DF_BASIS_MP2");
 
-    for (const auto& kv: results) {
+    for (const auto& kv : results) {
         gradients_[kv.first] = kv.second;
     }
 }
@@ -1603,8 +1610,8 @@ void RDFMP2::form_Amn_x_terms() {
 
         // On Prefactors:
         // One factor of 2 is built into the definition of the term.
-        // Combined, the permutational factor and 0.5 * (G(P|mn) + G(P|nm)) account for us summing over ordered shell pairs. 
-        // Spin cases are accounted for because G(Q|ia) is spin-summed
+        // Combined, the permutational factor and 0.5 * (G(P|mn) + G(P|nm)) account for us summing over ordered shell
+        // pairs. Spin cases are accounted for because G(Q|ia) is spin-summed
 
 // > Integrals < //
 #pragma omp parallel for schedule(dynamic) num_threads(num_threads)
@@ -1622,7 +1629,7 @@ void RDFMP2::form_Amn_x_terms() {
             eri[thread]->compute_shell_deriv1(P, 0, M, N);
 
             const auto buffer = eri[thread]->buffer();
-            const auto &buffers = eri[thread]->buffers();
+            const auto& buffers = eri[thread]->buffers();
 
             int nP = ribasis_->shell(P).nfunction();
             int cP = ribasis_->shell(P).ncartesian();
@@ -1730,9 +1737,9 @@ void RDFMP2::form_L() {
     int max_rows;
     int maxP = ribasis_->max_function_per_shell();
     size_t row_cost = 0L;
-    row_cost += static_cast<size_t>(nso)   * static_cast<size_t>(nso);
-    row_cost += static_cast<size_t>(nso)   * static_cast<size_t>(naocc);
-    row_cost += static_cast<size_t>(nso)   * static_cast<size_t>(navir);
+    row_cost += static_cast<size_t>(nso) * static_cast<size_t>(nso);
+    row_cost += static_cast<size_t>(nso) * static_cast<size_t>(naocc);
+    row_cost += static_cast<size_t>(nso) * static_cast<size_t>(navir);
     row_cost += static_cast<size_t>(naocc) * static_cast<size_t>(navir);
     size_t rows = memory / row_cost;
     rows = (rows > naux ? naux : rows);
@@ -1841,7 +1848,8 @@ void RDFMP2::form_L() {
         // Eq. 20, 29 of DiStasio
         // Used to construct Z-vector terms
         // This is spin-summed because G(Q|ia) is
-        // N.B. Compared to DiStasio, this equation has an extra factor of -1. Adjust equations using this intermediate accordingly.
+        // N.B. Compared to DiStasio, this equation has an extra factor of -1. Adjust equations using this intermediate
+        // accordingly.
 
 #pragma omp parallel for
         for (int p = 0; p < np; p++) {
@@ -1974,9 +1982,9 @@ void RDFMP2::form_P() {
 
     // DEFINITION: P_pq
     // This is the spin-summed density matrix, eq 6-10 of DiStasio, plus (later) the reference density.
-    // N.B. This matrix is incomplete! The occupied/virtual block, eq. 10, cannot be added until we solve for the Z-vector.
-    // Other formulations, differ in how they assign terms to the OPDM vs the Z-vector. The distinction isn't well-defined.
-    // Further, we will add the reference to this.
+    // N.B. This matrix is incomplete! The occupied/virtual block, eq. 10, cannot be added until we solve for the
+    // Z-vector. Other formulations, differ in how they assign terms to the OPDM vs the Z-vector. The distinction isn't
+    // well-defined. Further, we will add the reference to this.
     psio_->write_entry(PSIF_DFMP2_AIA, "P_pq", (char*)Ppqp[0], sizeof(double) * nmo * nmo);
     psio_->close(PSIF_DFMP2_AIA, 1);
 }
@@ -2022,7 +2030,7 @@ void RDFMP2::form_W() {
     // All formulas for Term 1 are given in the block of five unnumbered equations on pg. 842
     // Note that the Lagrangians are spin-summed, so the final equations are as well.
 
-    // We divide by 1/2 now and correct for it later. 
+    // We divide by 1/2 now and correct for it later.
     // In some cases, we correct when we hermtivitize.
     // In other cases, we correct with a "subtle trick" later in the code. (Search those words to see where.)
     // In yet other cases, the DiStasio paper is just wrong, and no correction is needed.
@@ -2050,7 +2058,6 @@ void RDFMP2::form_W() {
         C_DGEMM('T', 'N', nfvir, navir, nso, -0.5, Cfvirp[0], nfvir, Lmap[0], navir, 0.0,
                 &Wpq1p[nfocc + naocc + navir][nfocc + naocc], nmo);
     }
-
 
     // > Occ-Virt <= //
     // WARNING! DiStasio 13 is in error. The last expression should be W_ia, and j must in occ.
@@ -3174,8 +3181,8 @@ void UDFMP2::form_energy() {
                 // Read iaQ chunk
                 timer_on("DFMP2 Bia Read");
                 next_BIAb = psio_get_address(PSIO_ZERO, sizeof(double) * (jstart * navir_b * naux));
-                psio_->read(PSIF_DFMP2_QIA, "B(ia|Q)", (char*)Bjbp[0], sizeof(double) * (nj * navir_b * naux), next_BIAb,
-                            &next_BIAb);
+                psio_->read(PSIF_DFMP2_QIA, "B(ia|Q)", (char*)Bjbp[0], sizeof(double) * (nj * navir_b * naux),
+                            next_BIAb, &next_BIAb);
                 timer_off("DFMP2 Bia Read");
 
 #pragma omp parallel for schedule(dynamic) num_threads(nthread) reduction(+ : e_os)

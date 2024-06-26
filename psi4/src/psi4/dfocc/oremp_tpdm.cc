@@ -64,7 +64,7 @@ void DFOCC::oremp_tpdm() {
         G2 = std::make_shared<Tensor2d>("Correlation 3-Index TPDM (Q|OO)", nQ, noccA, noccA);
         G2->set3_act_oo(nfrzc, G);
         G.reset();
-        G2->scale(1.0E0-remp_a);  //CSB this density only occurs in the OCEPA case
+        G2->scale(1.0E0 - remp_a);  // CSB this density only occurs in the OCEPA case
         G2->write(psio_, PSIF_DFOCC_DENS);
         if (print_ > 3) G2->print();
         G2.reset();
@@ -82,7 +82,7 @@ void DFOCC::oremp_tpdm() {
         // G_ia^Q += 2*y_ia^Q  //CSB y_ia^Q is specific to the OCEPA case -> scale
         T = std::make_shared<Tensor2d>("Y (Q|IA)", nQ, naoccA, navirA);
         T->read(psio_, PSIF_DFOCC_AMPS);
-        G->axpy(T, 2.0E0*(1.0E0-remp_a));
+        G->axpy(T, 2.0E0 * (1.0E0 - remp_a));
         T.reset();
 
         // Form overall OV Block
@@ -203,7 +203,7 @@ void DFOCC::oremp_tpdm() {
 
         // symmetrize
         G->symmetrize3(G);
-        G->scale(2.0E0*(1.0E0-remp_a));
+        G->scale(2.0E0 * (1.0E0 - remp_a));
         G2 = std::make_shared<Tensor2d>("Correlation 3-Index TPDM (Q|VV)", nQ, nvirA, nvirA);
         G2->set3_act_vv(G);
         G.reset();
@@ -237,7 +237,7 @@ void DFOCC::oremp_tpdm() {
         G2 = std::make_shared<Tensor2d>("Correlation 3-Index TPDM (Q|OO)", nQ, noccA, noccA);
         G2->set3_act_oo(nfrzc, G);
         G.reset();
-        G2->scale(1.0E0-remp_a);
+        G2->scale(1.0E0 - remp_a);
         G2->write(psio_, PSIF_DFOCC_DENS);
         if (print_ > 3) G2->print();
         G2.reset();
@@ -261,7 +261,7 @@ void DFOCC::oremp_tpdm() {
         G2 = std::make_shared<Tensor2d>("Correlation 3-Index TPDM (Q|oo)", nQ, noccB, noccB);
         G2->set3_act_oo(nfrzc, G);
         G.reset();
-        G2->scale(1.0E0-remp_a);
+        G2->scale(1.0E0 - remp_a);
         G2->write(psio_, PSIF_DFOCC_DENS);
         if (print_ > 3) G2->print();
         G2.reset();
@@ -282,7 +282,7 @@ void DFOCC::oremp_tpdm() {
         // G_IA^Q += y_IA^Q
         T = std::make_shared<Tensor2d>("Y (Q|IA)", nQ, naoccA, navirA);
         T->read(psio_, PSIF_DFOCC_AMPS);
-        T->scale(1.0E0-remp_a);
+        T->scale(1.0E0 - remp_a);
         G->axpy(T, 1.0);
         T.reset();
 
@@ -311,7 +311,7 @@ void DFOCC::oremp_tpdm() {
         // G_ia^Q += y_ia^Q
         T = std::make_shared<Tensor2d>("Y (Q|ia)", nQ, naoccB, navirB);
         T->read(psio_, PSIF_DFOCC_AMPS);
-        T->scale(1.0E0-remp_a);
+        T->scale(1.0E0 - remp_a);
         G->axpy(T, 1.0);
         T.reset();
 
@@ -365,7 +365,8 @@ void DFOCC::oremp_tpdm() {
         for (int b = 0; b < navirA; ++b) {
 // Form (+)T[b](f, m>=n)
 #pragma omp parallel for
-            for (int m = 0; m < naoccA; ++m) { //CSB consider fusing these loops into one large loop over (m,n) pairs. Otherwise, parallel efficientcy on big machines will be poor...
+            for (int m = 0; m < naoccA; ++m) {  // CSB consider fusing these loops into one large loop over (m,n) pairs.
+                                                // Otherwise, parallel efficientcy on big machines will be poor...
                 for (int n = 0; n <= m; ++n) {
                     int mn2 = index2(m, n);
                     int mn = n + (m * naoccA);
@@ -427,7 +428,7 @@ void DFOCC::oremp_tpdm() {
         V = std::make_shared<Tensor2d>("V[B] (A,ef)", navirA, navirB * navirB);
         X = std::make_shared<Tensor2d>("TPDM[B] (Q|A)", nQ, navirA);
         // Main loop
-        for (int b = 0; b < navirA; ++b) {  //CSB consider moving "pragma omp parallel outside the loop?
+        for (int b = 0; b < navirA; ++b) {  // CSB consider moving "pragma omp parallel outside the loop?
 // Form (+)T[B](Mn,f)
 #pragma omp parallel for
             for (int m = 0; m < naoccA; ++m) {
@@ -467,7 +468,7 @@ void DFOCC::oremp_tpdm() {
         G2 = std::make_shared<Tensor2d>("Correlation 3-Index TPDM (Q|VV)", nQ, nvirA, nvirA);
         G2->set3_act_vv(G);
         G.reset();
-        G2->scale(1.0E0-remp_a);
+        G2->scale(1.0E0 - remp_a);
         G2->write(psio_, PSIF_DFOCC_DENS, true, true);
         if (print_ > 3) G2->print();
         G2.reset();
@@ -619,7 +620,7 @@ void DFOCC::oremp_tpdm() {
         G2 = std::make_shared<Tensor2d>("Correlation 3-Index TPDM (Q|vv)", nQ, nvirB, nvirB);
         G2->set3_act_vv(G);
         G.reset();
-        G2->scale(1.0E0-remp_a);
+        G2->scale(1.0E0 - remp_a);
         G2->write(psio_, PSIF_DFOCC_DENS, true, true);
         if (print_ > 3) G2->print();
         G2.reset();

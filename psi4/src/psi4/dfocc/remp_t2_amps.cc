@@ -39,7 +39,7 @@ void DFOCC::remp_t2_amps() {
     // defs
     SharedTensor2d K, L, M, I, T, Tnew, T1, T2, U, Tau, W, X, Y, Tnew_MP2;
     SharedTensor2d R, RAA, RBB, RAB, TAA, TBB, TAB;
-//    outfile->Printf("starting REMP T2 amps\n");
+    //    outfile->Printf("starting REMP T2 amps\n");
 
     if (reference_ == "RESTRICTED") {
         // Read DF integrals
@@ -73,8 +73,8 @@ void DFOCC::remp_t2_amps() {
         X.reset();
 
         // new: copy Tnew to Tnew_MP2
-        Tnew_MP2 = std::make_shared<Tensor2d>("New T2_MP2 (IA|JB)", naoccA,navirA,naoccA,navirA);
-        Tnew_MP2->copy(Tnew); // create a copy of the MP2 residuum
+        Tnew_MP2 = std::make_shared<Tensor2d>("New T2_MP2 (IA|JB)", naoccA, navirA, naoccA, navirA);
+        Tnew_MP2->copy(Tnew);  // create a copy of the MP2 residuum
         Tnew->zero();
 
         // Write and close
@@ -94,8 +94,8 @@ void DFOCC::remp_t2_amps() {
         Tnew = std::make_shared<Tensor2d>("New T2 (IA|JB)", naoccA, navirA, naoccA, navirA);
         Tnew->read_symm(psio_, PSIF_DFOCC_AMPS);
 
-        //The RE part is now finished and read-in again
-        Tnew->scale(1.0E0-remp_a); //CSB scale the RE-ony part by 1-A
+        // The RE part is now finished and read-in again
+        Tnew->scale(1.0E0 - remp_a);  // CSB scale the RE-ony part by 1-A
         Tnew->add(Tnew_MP2);
         Tnew_MP2.reset();
 
@@ -108,7 +108,7 @@ void DFOCC::remp_t2_amps() {
         Tau = std::make_shared<Tensor2d>("RT2 (IA|JB)", naoccA, navirA, naoccA, navirA);
         Tau->copy(Tnew);
         Tau->subtract(t2);
-        Tau->write_symm(psio_,PSIF_DFOCC_AMPS);
+        Tau->write_symm(psio_, PSIF_DFOCC_AMPS);
         t2->copy(Tnew);
         Tnew.reset();
 
@@ -210,8 +210,8 @@ void DFOCC::remp_t2_amps() {
         X.reset();
 
         // new: copy Tnew to Tnew_MP2
-        Tnew_MP2= std::make_shared<Tensor2d>("New T2_MP2 <IJ|AB>", naoccA,naoccA,navirA,navirA);
-        Tnew_MP2->copy(Tnew); // create a copy of the MP2 residuum
+        Tnew_MP2 = std::make_shared<Tensor2d>("New T2_MP2 <IJ|AB>", naoccA, naoccA, navirA, navirA);
+        Tnew_MP2->copy(Tnew);  // create a copy of the MP2 residuum
         Tnew->zero();
 
         // Write and close
@@ -231,8 +231,8 @@ void DFOCC::remp_t2_amps() {
         Tnew = std::make_shared<Tensor2d>("New T2 <IJ|AB>", naoccA, naoccA, navirA, navirA);
         Tnew->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
 
-        //The RE part is now finished and read-in again
-        Tnew->scale(1.0E0-remp_a); //CSB scale the RE-only part by 1-A
+        // The RE part is now finished and read-in again
+        Tnew->scale(1.0E0 - remp_a);  // CSB scale the RE-only part by 1-A
         Tnew->add(Tnew_MP2);
         Tnew_MP2.reset();
 
@@ -291,8 +291,8 @@ void DFOCC::remp_t2_amps() {
         X.reset();
 
         // new: copy Tnew to Tnew_MP2
-        Tnew_MP2= std::make_shared<Tensor2d>("New T2_MP2 <ij|ab>", naoccB,naoccB,navirB,navirB);
-        Tnew_MP2->copy(Tnew); // create a copy of the MP2 residuum
+        Tnew_MP2 = std::make_shared<Tensor2d>("New T2_MP2 <ij|ab>", naoccB, naoccB, navirB, navirB);
+        Tnew_MP2->copy(Tnew);  // create a copy of the MP2 residuum
         Tnew->zero();
 
         // write and close
@@ -312,8 +312,8 @@ void DFOCC::remp_t2_amps() {
         Tnew = std::make_shared<Tensor2d>("New T2 <ij|ab>", naoccB, naoccB, navirB, navirB);
         Tnew->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
 
-        //The RE part is now finished and read-in again
-        Tnew->scale(1.0E0-remp_a); //CSB scale the RE-ony part by 1-A
+        // The RE part is now finished and read-in again
+        Tnew->scale(1.0E0 - remp_a);  // CSB scale the RE-ony part by 1-A
         Tnew->add(Tnew_MP2);
         Tnew_MP2.reset();
 
@@ -363,8 +363,8 @@ void DFOCC::remp_t2_amps() {
         T.reset();
 
         // new: copy Tnew to Tnew_MP2
-        Tnew_MP2= std::make_shared<Tensor2d>("New T2_MP2 <Ij|Ab>", naoccA,naoccB,navirA,navirB);
-        Tnew_MP2->copy(Tnew); // create a copy of the MP2 residuum
+        Tnew_MP2 = std::make_shared<Tensor2d>("New T2_MP2 <Ij|Ab>", naoccA, naoccB, navirA, navirB);
+        Tnew_MP2->copy(Tnew);  // create a copy of the MP2 residuum
         Tnew->zero();
 
         // write and close
@@ -383,8 +383,8 @@ void DFOCC::remp_t2_amps() {
         // Denom
         Tnew = std::make_shared<Tensor2d>("New T2 <Ij|Ab>", naoccA, naoccB, navirA, navirB);
         Tnew->read(psio_, PSIF_DFOCC_AMPS);
-        //The RE part is now finished and read-in again
-        Tnew->scale(1.0E0-remp_a); //CSB scale the RE-ony part by 1-A
+        // The RE part is now finished and read-in again
+        Tnew->scale(1.0E0 - remp_a);  // CSB scale the RE-ony part by 1-A
         Tnew->add(Tnew_MP2);
         Tnew_MP2.reset();
 
@@ -445,8 +445,7 @@ void DFOCC::remp_t2_amps() {
 
             // add entry
             if (do_diis_ == 1)
-                ccsdDiisManager->add_entry(RT2AA.get(), RT2BB.get(), RT2AB.get(), T2AA.get(), T2BB.get(),
-                                           T2AB.get());
+                ccsdDiisManager->add_entry(RT2AA.get(), RT2BB.get(), RT2AB.get(), T2AA.get(), T2BB.get(), T2AB.get());
             RT2AA.reset();
             RT2BB.reset();
             RT2BB.reset();

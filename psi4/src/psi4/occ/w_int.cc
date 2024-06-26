@@ -228,5 +228,5 @@ void OCCWave::w_int() {
     psio_->close(PSIF_OCC_DPD, 1);
 
 }  // end W_int
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

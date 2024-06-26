@@ -152,5 +152,5 @@ void OCCWave::mograd() {
 
     }  // end if (reference_ == "UNRESTRICTED")
 }  // end of mograd
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

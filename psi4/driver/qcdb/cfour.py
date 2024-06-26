@@ -45,6 +45,7 @@ from .align import B787
 
 # Not maintained: see https://github.com/psi4/psi4/issues/2478
 
+
 def harvest_output(outtext):
     """Function to separate portions of a CFOUR output file *outtest*,
     divided by xjoda.
@@ -75,15 +76,15 @@ def harvest_output(outtext):
 
     retindx = -1 if pass_coord[-1] else -2
 
-#    print '    <<<  C4 PSIVAR  >>>'
-#    for item in pass_psivar[retindx]:
-#        print('       %30s %16.8f' % (item, pass_psivar[retindx][item]))
-#    print '    <<<  C4 COORD   >>>'
-#    for item in pass_coord[retindx]:
-#        print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
-#    print '    <<<   C4 GRAD   >>>'
-#    for item in pass_grad[retindx]:
-#        print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
+    #    print '    <<<  C4 PSIVAR  >>>'
+    #    for item in pass_psivar[retindx]:
+    #        print('       %30s %16.8f' % (item, pass_psivar[retindx][item]))
+    #    print '    <<<  C4 COORD   >>>'
+    #    for item in pass_coord[retindx]:
+    #        print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
+    #    print '    <<<   C4 GRAD   >>>'
+    #    for item in pass_grad[retindx]:
+    #        print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
 
     return pass_psivar[retindx], pass_coord[retindx], pass_grad[retindx]
 
@@ -100,32 +101,28 @@ def local_harvest_outfile_pass(outtext):
     psivar_coord = None
     psivar_grad = None
 
-#    TODO: BCC
-#          CI
-#          QCISD(T)
-#          other ROHF tests
-#          vcc/ecc
+    #    TODO: BCC
+    #          CI
+    #          QCISD(T)
+    #          other ROHF tests
+    #          vcc/ecc
 
     NUMBER = "((?:[-+]?\\d*\\.\\d+(?:[DdEe][-+]?\\d+)?)|(?:[-+]?\\d+\\.\\d*(?:[DdEe][-+]?\\d+)?))"
 
     # Process NRE
-    mobj = re.search(r'^\s+' + r'(?:Nuclear repulsion energy :)' + r'\s+' + NUMBER + r'\s+a\.u\.\s*$',
-        outtext, re.MULTILINE)
+    mobj = re.search(r'^\s+' + r'(?:Nuclear repulsion energy :)' + r'\s+' + NUMBER + r'\s+a\.u\.\s*$', outtext,
+                     re.MULTILINE)
     if mobj:
         print('matched nre')
         psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(1)
 
     # Process SCF
-    mobj = re.search(
-        r'^\s+' + r'(?:E\(SCF\))' + r'\s+=\s+' + NUMBER + r'\s+a\.u\.\s*$',
-        outtext, re.MULTILINE)
+    mobj = re.search(r'^\s+' + r'(?:E\(SCF\))' + r'\s+=\s+' + NUMBER + r'\s+a\.u\.\s*$', outtext, re.MULTILINE)
     if mobj:
         print('matched scf1')
         psivar['SCF TOTAL ENERGY'] = mobj.group(1)
 
-    mobj = re.search(
-        r'^\s+' + r'(?:E\(SCF\)=)' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE)
+    mobj = re.search(r'^\s+' + r'(?:E\(SCF\)=)' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE)
     if mobj:
         print('matched scf2')
         psivar['SCF TOTAL ENERGY'] = mobj.group(1)
@@ -133,28 +130,22 @@ def local_harvest_outfile_pass(outtext):
     if 'SCF TOTAL ENERGY' not in psivar:
         # can be too greedy and match across scf cycles
         mobj = re.search(
-            r'^\s+' + r'(?:SCF has converged.)' + r'\s*$' +
-            r'(?:.*?)' +
-            r'^\s+' + r'(?:\d+)' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*$',
-            outtext, re.MULTILINE | re.DOTALL)
+            r'^\s+' + r'(?:SCF has converged.)' + r'\s*$' + r'(?:.*?)' + r'^\s+' + r'(?:\d+)' + r'\s+' + NUMBER +
+            r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE | re.DOTALL)
         if mobj:
             print('matched scf3')
             psivar['SCF TOTAL ENERGY'] = mobj.group(1)
 
-    mobj = re.search(
-        r'^\s+' + r'(?:E\(ROHF\)=)' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE)
+    mobj = re.search(r'^\s+' + r'(?:E\(ROHF\)=)' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE)
     if mobj:
         print('matched scf4')
         psivar['SCF TOTAL ENERGY'] = mobj.group(1)
 
     # Process MP2
     mobj = re.search(
-        r'^\s+' + r'(?:E2\(AA\))' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*' +
-        r'^\s+' + r'(?:E2\(AB\))' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*' +
-        r'^\s+' + r'(?:E2\(TOT\))' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*' +
-        r'^\s+' + r'(?:Total MP2 energy)' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*$',
-        outtext, re.MULTILINE)
+        r'^\s+' + r'(?:E2\(AA\))' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*' + r'^\s+' + r'(?:E2\(AB\))' + r'\s+=\s+' +
+        NUMBER + r'\s+a.u.\s*' + r'^\s+' + r'(?:E2\(TOT\))' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*' + r'^\s+' +
+        r'(?:Total MP2 energy)' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*$', outtext, re.MULTILINE)
     if mobj:
         print('matched mp2r')
         psivar['MP2 SAME-SPIN CORRELATION ENERGY'] = 2 * Decimal(mobj.group(1))
@@ -163,12 +154,10 @@ def local_harvest_outfile_pass(outtext):
         psivar['MP2 TOTAL ENERGY'] = mobj.group(4)
 
     mobj = re.search(
-        r'^\s+' + r'(?:E2\(AA\))' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*' +
-        r'^\s+' + r'(?:E2\(BB\))' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*' +
-        r'^\s+' + r'(?:E2\(AB\))' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*' +
-        r'^\s+' + r'(?:E2\(TOT\))' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*' +
-        r'^\s+' + r'(?:Total MP2 energy)' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*$',
-        outtext, re.MULTILINE)
+        r'^\s+' + r'(?:E2\(AA\))' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*' + r'^\s+' + r'(?:E2\(BB\))' + r'\s+=\s+' +
+        NUMBER + r'\s+a.u.\s*' + r'^\s+' + r'(?:E2\(AB\))' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*' + r'^\s+' +
+        r'(?:E2\(TOT\))' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*' + r'^\s+' + r'(?:Total MP2 energy)' + r'\s+=\s+' +
+        NUMBER + r'\s+a.u.\s*$', outtext, re.MULTILINE)
     if mobj:
         print('matched mp2u')
         psivar['MP2 SAME-SPIN CORRELATION ENERGY'] = Decimal(mobj.group(1)) + Decimal(mobj.group(2))
@@ -178,13 +167,11 @@ def local_harvest_outfile_pass(outtext):
         psivar['MP2 TOTAL ENERGY'] = mobj.group(5)
 
     mobj = re.search(
-        r'^\s+' + r'(?:E2\(AA\))' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*' +
-        r'^\s+' + r'(?:E2\(BB\))' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*' +
-        r'^\s+' + r'(?:E2\(AB\))' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*' +
-        r'^\s+' + r'(?:E2\(SINGLE\))' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*' +
-        r'^\s+' + r'(?:E2\(TOT\))' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*' +
-        r'^\s+' + r'(?:Total MP2 energy)' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*$',
-        outtext, re.MULTILINE)
+        r'^\s+' + r'(?:E2\(AA\))' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*' + r'^\s+' + r'(?:E2\(BB\))' + r'\s+=\s+' +
+        NUMBER + r'\s+a.u.\s*' + r'^\s+' + r'(?:E2\(AB\))' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*' + r'^\s+' +
+        r'(?:E2\(SINGLE\))' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*' + r'^\s+' + r'(?:E2\(TOT\))' + r'\s+=\s+' + NUMBER +
+        r'\s+a.u.\s*' + r'^\s+' + r'(?:Total MP2 energy)' + r'\s+=\s+' + NUMBER + r'\s+a.u.\s*$', outtext,
+        re.MULTILINE)
     if mobj:
         print('matched mp2ro')
         psivar['MP2 SAME-SPIN CORRELATION ENERGY'] = Decimal(mobj.group(1)) + Decimal(mobj.group(2))
@@ -195,9 +182,8 @@ def local_harvest_outfile_pass(outtext):
         psivar['MP2 TOTAL ENERGY'] = mobj.group(6)
 
     mobj = re.search(
-        r'^\s+' + r'(?:S-MBPT\(2\))' + r'\s+' + r'(?P<sgl>' + NUMBER + r')' + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:D-MBPT\(2\))' + r'\s+' + r'(?P<dbl>' + NUMBER + r')' + r'\s+' +
-                                                r'(?P<mp2tot>' + NUMBER + r')' + r'\s*$',
+        r'^\s+' + r'(?:S-MBPT\(2\))' + r'\s+' + r'(?P<sgl>' + NUMBER + r')' + r'\s+' + NUMBER + r'\s*' + r'^\s+' +
+        r'(?:D-MBPT\(2\))' + r'\s+' + r'(?P<dbl>' + NUMBER + r')' + r'\s+' + r'(?P<mp2tot>' + NUMBER + r')' + r'\s*$',
         outtext, re.MULTILINE)
     if mobj:
         print('matched mp2ro2')
@@ -209,9 +195,8 @@ def local_harvest_outfile_pass(outtext):
 
     # Process MP3
     mobj = re.search(
-        r'^\s+' + r'(?:D-MBPT\(2\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:D-MBPT\(3\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE | re.DOTALL)
+        r'^\s+' + r'(?:D-MBPT\(2\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'(?:D-MBPT\(3\))' +
+        r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE | re.DOTALL)
     if mobj:
         print('matched mp3r')
         dmp2 = Decimal(mobj.group(1))
@@ -224,11 +209,10 @@ def local_harvest_outfile_pass(outtext):
         psivar['MP2.5 TOTAL ENERGY'] = psivar['MP2.5 CORRELATION ENERGY'] + psivar['SCF TOTAL ENERGY']
 
     mobj = re.search(
-        r'^\s+' + r'(?:S-MBPT\(2\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:D-MBPT\(2\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:S-MBPT\(3\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:D-MBPT\(3\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE | re.DOTALL)
+        r'^\s+' + r'(?:S-MBPT\(2\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'(?:D-MBPT\(2\))' +
+        r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'(?:S-MBPT\(3\))' + r'\s+' + NUMBER + r'\s+' + NUMBER +
+        r'\s*' + r'^\s+' + r'(?:D-MBPT\(3\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*$', outtext,
+        re.MULTILINE | re.DOTALL)
     if mobj:
         print('matched mp3ro')
         dmp2 = Decimal(mobj.group(1)) + Decimal(mobj.group(3))
@@ -240,12 +224,10 @@ def local_harvest_outfile_pass(outtext):
 
     # Process MP4
     mobj = re.search(
-        r'^\s+' + r'(?:D-MBPT\(2\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:D-MBPT\(3\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:D-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:Q-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:S-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE | re.DOTALL)
+        r'^\s+' + r'(?:D-MBPT\(2\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'(?:D-MBPT\(3\))' +
+        r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'(?:D-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER +
+        r'\s*' + r'^\s+' + r'(?:Q-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' + r'^\s+' +
+        r'(?:S-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE | re.DOTALL)
     if mobj:
         print('matched mp4r')
         dmp2 = Decimal(mobj.group(1))
@@ -261,13 +243,11 @@ def local_harvest_outfile_pass(outtext):
         psivar['MP4(SDQ) TOTAL ENERGY'] = mobj.group(10)
 
     mobj = re.search(
-        r'^\s+' + r'(?:S-MBPT\(2\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:D-MBPT\(2\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:S-MBPT\(3\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:D-MBPT\(3\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:L-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:NL-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE | re.DOTALL)
+        r'^\s+' + r'(?:S-MBPT\(2\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'(?:D-MBPT\(2\))' +
+        r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'(?:S-MBPT\(3\))' + r'\s+' + NUMBER + r'\s+' + NUMBER +
+        r'\s*' + r'^\s+' + r'(?:D-MBPT\(3\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' + r'^\s+' +
+        r'(?:L-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'(?:NL-MBPT\(4\))' + r'\s+' +
+        NUMBER + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE | re.DOTALL)
     if mobj:
         print('matched mp4ro')
         dmp2 = Decimal(mobj.group(1)) + Decimal(mobj.group(3))
@@ -283,11 +263,10 @@ def local_harvest_outfile_pass(outtext):
         psivar['MP4(SDQ) TOTAL ENERGY'] = mobj.group(12)
 
     mobj = re.search(
-        r'^\s+' + r'(?:D-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:Q-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:S-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:T-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE | re.DOTALL)
+        r'^\s+' + r'(?:D-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'(?:Q-MBPT\(4\))' +
+        r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'(?:S-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER +
+        r'\s*' + r'^\s+' + r'(?:T-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*$', outtext,
+        re.MULTILINE | re.DOTALL)
     if mobj:
         print('matched mp4tr')
         dmp4sdq = Decimal(mobj.group(1)) + Decimal(mobj.group(3)) + Decimal(mobj.group(5))
@@ -301,11 +280,10 @@ def local_harvest_outfile_pass(outtext):
         psivar['MP4 TOTAL ENERGY'] = psivar['MP4(SDTQ) TOTAL ENERGY']
 
     mobj = re.search(
-        r'^\s+' + r'(?:L-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:NL-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:WT12-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s+' + r'(?:T-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE | re.DOTALL)
+        r'^\s+' + r'(?:L-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'(?:NL-MBPT\(4\))' +
+        r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' + r'^\s+' + r'(?:WT12-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' +
+        NUMBER + r'\s*' + r'^\s+' + r'(?:T-MBPT\(4\))' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*$', outtext,
+        re.MULTILINE | re.DOTALL)
     if mobj:
         print('matched mp4tro')
         dmp4sdq = Decimal(mobj.group(1)) + Decimal(mobj.group(3))
@@ -321,24 +299,19 @@ def local_harvest_outfile_pass(outtext):
     # Process CC Iterations
     mobj = re.search(
         r'^\s+' + r'(?P<fullCC>(?P<iterCC>CC(?:\w+))(?:\(T\))?)' + r'\s+(?:energy will be calculated.)\s*' +
-        r'(?:.*?)' +
-        r'^\s+' + r'(?:\d+)' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s+DIIS\s*' +
-        r'^\s*(?:-+)\s*' +
-        r'^\s*(?:A miracle (?:has come|come) to pass. The CC iterations have converged.)\s*$',
-        outtext, re.MULTILINE | re.DOTALL)
+        r'(?:.*?)' + r'^\s+' + r'(?:\d+)' + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s+DIIS\s*' + r'^\s*(?:-+)\s*' +
+        r'^\s*(?:A miracle (?:has come|come) to pass. The CC iterations have converged.)\s*$', outtext,
+        re.MULTILINE | re.DOTALL)
     if mobj:
         print('matched cc with full %s iterating %s' % (mobj.group('fullCC'), mobj.group('iterCC')))
         psivar['%s CORRELATION ENERGY' % (mobj.group('iterCC'))] = mobj.group(3)
         psivar['%s TOTAL ENERGY' % (mobj.group('iterCC'))] = mobj.group(4)
 
     mobj = re.search(
-        r'^\s+' + r'(?:\d+)' + r'\s+' + r'(?P<corl>' + NUMBER + r')\s+' +
-                  NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*' +
-        r'^\s*' +
-        r'^\s*' + r'(?:\w+ iterations converged .*?)' +
-        r'^\s*' +
-        r'^\s*' + r'(?:Total (?P<iterCC>\w+) energy:)' + r'\s+' + r'(?P<tot>' + NUMBER + r')\s*$',
-        outtext, re.MULTILINE | re.DOTALL)
+        r'^\s+' + r'(?:\d+)' + r'\s+' + r'(?P<corl>' + NUMBER + r')\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER +
+        r'\s+' + NUMBER + r'\s*' + r'^\s*' + r'^\s*' + r'(?:\w+ iterations converged .*?)' + r'^\s*' + r'^\s*' +
+        r'(?:Total (?P<iterCC>\w+) energy:)' + r'\s+' + r'(?P<tot>' + NUMBER + r')\s*$', outtext,
+        re.MULTILINE | re.DOTALL)
     if mobj:
         print('matched ncc cc iter')
         psivar['{} CORRELATION ENERGY'.format(mobj.group('iterCC'))] = mobj.group('corl')
@@ -346,11 +319,8 @@ def local_harvest_outfile_pass(outtext):
 
     # Process CC(T)
     mobj = re.search(
-        r'^\s+' + r'(?:E\(SCF\))' + r'\s+=\s+' + NUMBER + r'\s+a\.u\.\s*' +
-        r'(?:.*?)' +
-        r'^\s+' + r'(?:E\(CCSD\))' + r'\s+=\s+' + NUMBER + r'\s*' +
-        r'(?:.*?)' +
-        r'^\s+' + r'(?:E\(CCSD\(T\)\))' + r'\s+=\s+' + NUMBER + r'\s*$',
+        r'^\s+' + r'(?:E\(SCF\))' + r'\s+=\s+' + NUMBER + r'\s+a\.u\.\s*' + r'(?:.*?)' + r'^\s+' + r'(?:E\(CCSD\))' +
+        r'\s+=\s+' + NUMBER + r'\s*' + r'(?:.*?)' + r'^\s+' + r'(?:E\(CCSD\(T\)\))' + r'\s+=\s+' + NUMBER + r'\s*$',
         outtext, re.MULTILINE | re.DOTALL)
     if mobj:
         print('matched ccsd(t) vcc')
@@ -361,10 +331,8 @@ def local_harvest_outfile_pass(outtext):
         psivar['CCSD(T) TOTAL ENERGY'] = mobj.group(3)
 
     mobj = re.search(
-        r'^\s+' + r'(?:E\(CCSD\))' + r'\s+=\s+' + NUMBER + r'\s*' +
-        r'(?:.*?)' +
-        r'^\s+' + r'(?:E\(CCSD\(T\)\))' + r'\s+=\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE | re.DOTALL)
+        r'^\s+' + r'(?:E\(CCSD\))' + r'\s+=\s+' + NUMBER + r'\s*' + r'(?:.*?)' + r'^\s+' + r'(?:E\(CCSD\(T\)\))' +
+        r'\s+=\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE | re.DOTALL)
     if mobj:
         print('matched ccsd(t) vcc v2')
         psivar['CCSD TOTAL ENERGY'] = mobj.group(1)
@@ -372,14 +340,10 @@ def local_harvest_outfile_pass(outtext):
         psivar['CCSD(T) TOTAL ENERGY'] = mobj.group(2)
 
     mobj = re.search(
-        r'^\s+' + r'(?:E\(SCF\))' + r'\s+=\s*' + NUMBER + r'\s+a\.u\.\s*' +
-        r'(?:.*?)' +
-        r'^\s+' + r'(?:CCSD energy)' + r'\s+' + NUMBER + r'\s*' +
-        r'(?:.*?)' +
-        r'^\s+' + r'(?:Total perturbative triples energy:)' + r'\s+' + NUMBER + r'\s*' +
-        r'^\s*(?:-+)\s*' +
-        r'^\s+' + r'(?:CCSD\(T\) energy)' + r'\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE | re.DOTALL)
+        r'^\s+' + r'(?:E\(SCF\))' + r'\s+=\s*' + NUMBER + r'\s+a\.u\.\s*' + r'(?:.*?)' + r'^\s+' + r'(?:CCSD energy)' +
+        r'\s+' + NUMBER + r'\s*' + r'(?:.*?)' + r'^\s+' + r'(?:Total perturbative triples energy:)' + r'\s+' + NUMBER +
+        r'\s*' + r'^\s*(?:-+)\s*' + r'^\s+' + r'(?:CCSD\(T\) energy)' + r'\s+' + NUMBER + r'\s*$', outtext,
+        re.MULTILINE | re.DOTALL)
     if mobj:
         print('matched ccsd(t) ecc')
         psivar['SCF TOTAL ENERGY'] = mobj.group(1)
@@ -389,15 +353,10 @@ def local_harvest_outfile_pass(outtext):
         psivar['CCSD(T) TOTAL ENERGY'] = mobj.group(4)
 
     mobj = re.search(
-        r'^\s+' + r'(?:HF-SCF energy)' + r'\s+' + NUMBER + r'\s*' +
-        r'(?:.*?)' +
-        r'^\s+' + r'(?:CCSD energy)' + r'\s+' + NUMBER + r'\s*' +
-        r'(?:.*?)' +
-        r'^\s+' + r'(?:E4T \+ E5ST)' + r'\s+' + NUMBER + r'\s*' +
-        r'(?:.*?)' +
-        r'^\s*(?:-+)\s*' +
-        r'^\s+' + r'(?:CCSD\(T\) energy)' + r'\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE | re.DOTALL)
+        r'^\s+' + r'(?:HF-SCF energy)' + r'\s+' + NUMBER + r'\s*' + r'(?:.*?)' + r'^\s+' + r'(?:CCSD energy)' +
+        r'\s+' + NUMBER + r'\s*' + r'(?:.*?)' + r'^\s+' + r'(?:E4T \+ E5ST)' + r'\s+' + NUMBER + r'\s*' + r'(?:.*?)' +
+        r'^\s*(?:-+)\s*' + r'^\s+' + r'(?:CCSD\(T\) energy)' + r'\s+' + NUMBER + r'\s*$', outtext,
+        re.MULTILINE | re.DOTALL)
     if mobj:
         print('matched ccsd(t) ecc v2')
         psivar['SCF TOTAL ENERGY'] = mobj.group(1)
@@ -407,10 +366,8 @@ def local_harvest_outfile_pass(outtext):
         psivar['CCSD(T) TOTAL ENERGY'] = mobj.group(4)
 
     mobj = re.search(
-        r'^\s+' + r'(?:CCSD energy)' + r'\s+' + NUMBER + r'\s*' +
-        r'^\s*(?:-+)\s*' +
-        r'^\s+' + r'(?:CCSD\(T\) energy)' + r'\s+' + NUMBER + r'\s*$',
-        outtext, re.MULTILINE | re.DOTALL)
+        r'^\s+' + r'(?:CCSD energy)' + r'\s+' + NUMBER + r'\s*' + r'^\s*(?:-+)\s*' + r'^\s+' +
+        r'(?:CCSD\(T\) energy)' + r'\s+' + NUMBER + r'\s*$', outtext, re.MULTILINE | re.DOTALL)
     if mobj:
         print('matched ccsd(t) lamb')
         psivar['CCSD TOTAL ENERGY'] = mobj.group(1)
@@ -421,8 +378,8 @@ def local_harvest_outfile_pass(outtext):
     mobj = re.search(
         r'^\s+' + r'(?:CCSD\(T\) contribution:)\s+' + r'(?P<tcorr>' + NUMBER + ')' + r'\s*'
         r'^\s*' + r'(?:CCSD\[T\] contribution:)\s+' + r'(?P<bkttcorr>' + NUMBER + ')' + r'\s*'
-        r'^\s*' + r'(?:Total CCSD\(T\) energy:)\s+' + r'(?P<ttot>' + NUMBER + ')' + r'\s*$',
-        outtext, re.MULTILINE | re.DOTALL)
+        r'^\s*' + r'(?:Total CCSD\(T\) energy:)\s+' + r'(?P<ttot>' + NUMBER + ')' + r'\s*$', outtext,
+        re.MULTILINE | re.DOTALL)
     if mobj:
         print('matched ccsd(t) ncc')
         psivar['(T) CORRECTION ENERGY'] = mobj.group('tcorr')
@@ -432,48 +389,43 @@ def local_harvest_outfile_pass(outtext):
     # Process SCS-CC
     mobj = re.search(
         r'^\s+' + r'(?P<fullCC>(?P<iterCC>CC(?:\w+))(?:\(T\))?)' + r'\s+(?:energy will be calculated.)\s*' +
-        r'(?:.*?)' +
-        r'^\s*' + r'(?:@CCENRG-I, Correlation energies.)' + r'\s+(?:ECCAA)\s+' + NUMBER + r'\s*' +
-        r'^\s+(?:ECCBB)\s+' + NUMBER + r'\s*' +
-        r'^\s+(?:ECCAB)\s+' + NUMBER + r'\s*' +
-        r'^\s+(?:Total)\s+' + NUMBER + r'\s*',
-        outtext, re.MULTILINE | re.DOTALL)
+        r'(?:.*?)' + r'^\s*' + r'(?:@CCENRG-I, Correlation energies.)' + r'\s+(?:ECCAA)\s+' + NUMBER + r'\s*' +
+        r'^\s+(?:ECCBB)\s+' + NUMBER + r'\s*' + r'^\s+(?:ECCAB)\s+' + NUMBER + r'\s*' + r'^\s+(?:Total)\s+' + NUMBER +
+        r'\s*', outtext, re.MULTILINE | re.DOTALL)
     if mobj:  # PRINT=2 to get SCS-CC components
         print('matched scscc')
-        psivar['%s SAME-SPIN CORRELATION ENERGY' % (mobj.group('iterCC'))] = Decimal(mobj.group(3)) + Decimal(mobj.group(4))
+        psivar['%s SAME-SPIN CORRELATION ENERGY' %
+               (mobj.group('iterCC'))] = Decimal(mobj.group(3)) + Decimal(mobj.group(4))
         psivar['%s OPPOSITE-SPIN CORRELATION ENERGY' % (mobj.group('iterCC'))] = mobj.group(5)
         psivar['%s CORRELATION ENERGY' % (mobj.group('iterCC'))] = mobj.group(6)
 
     mobj = re.search(
         r'^\s+' + r'(?P<fullCC>(?P<iterCC>CC(?:\w+))(?:\(T\))?)' + r'\s+(?:energy will be calculated.)\s*' +
-        r'(?:.*?)' +
-        r'^\s+' + r'Amplitude equations converged in' + r'\s*\d+\s*' + r'iterations.' +
-        r'(?:.*?)' +
-        r'^\s+' + r'The AA contribution to the correlation energy is:\s+' + NUMBER + r'\s+a.u.\s*' +
-        r'^\s+' + r'The BB contribution to the correlation energy is:\s+' + NUMBER + r'\s+a.u.\s*' +
-        r'^\s+' + r'The AB contribution to the correlation energy is:\s+' + NUMBER + r'\s+a.u.\s*' +
-        r'^\s+' + r'The total correlation energy is\s+' + NUMBER + r'\s+a.u.\s*' +
-        r'(?:.*?)' +
+        r'(?:.*?)' + r'^\s+' + r'Amplitude equations converged in' + r'\s*\d+\s*' + r'iterations.' + r'(?:.*?)' +
+        r'^\s+' + r'The AA contribution to the correlation energy is:\s+' + NUMBER + r'\s+a.u.\s*' + r'^\s+' +
+        r'The BB contribution to the correlation energy is:\s+' + NUMBER + r'\s+a.u.\s*' + r'^\s+' +
+        r'The AB contribution to the correlation energy is:\s+' + NUMBER + r'\s+a.u.\s*' + r'^\s+' +
+        r'The total correlation energy is\s+' + NUMBER + r'\s+a.u.\s*' + r'(?:.*?)' +
         #r'^\s+' + r'The CC iterations have converged.' + r'\s*$',
         r'^\s+' + r'(?:A miracle come to pass. )?' + r'The CC iterations have converged.' + r'\s*$',
-        outtext, re.MULTILINE | re.DOTALL)
+        outtext,
+        re.MULTILINE | re.DOTALL)
     if mobj:  # PRINT=2 to get SCS components
         print('matched scscc2')
-        psivar['%s SAME-SPIN CORRELATION ENERGY' % (mobj.group('iterCC'))] = Decimal(mobj.group(3)) + Decimal(mobj.group(4))
+        psivar['%s SAME-SPIN CORRELATION ENERGY' %
+               (mobj.group('iterCC'))] = Decimal(mobj.group(3)) + Decimal(mobj.group(4))
         psivar['%s OPPOSITE-SPIN CORRELATION ENERGY' % (mobj.group('iterCC'))] = mobj.group(5)
         psivar['%s CORRELATION ENERGY' % (mobj.group('iterCC'))] = mobj.group(6)
 
     # Process gradient
     mobj = re.search(
-        r'\s+' + r'Molecular gradient' + r'\s*' +
-        r'\s+' + r'------------------' + r'\s*' +
-        r'\s+' + r'\n' +
+        r'\s+' + r'Molecular gradient' + r'\s*' + r'\s+' + r'------------------' + r'\s*' + r'\s+' + r'\n' +
         r'(?:(?:\s+[A-Z]+\s*#\d+\s+[xyz]\s+[-+]?\d+\.\d+\s*\n)+)' +  # optional, it seems
         r'\n\n' +  # optional, it seems
-        r'((?:\s+[A-Z]+\s*#\d+\s+\d?\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s*\n)+)' +
-        r'\n\n' +
-        r'\s+' + 'Molecular gradient norm',
-        outtext, re.MULTILINE)
+        r'((?:\s+[A-Z]+\s*#\d+\s+\d?\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s*\n)+)' + r'\n\n' + r'\s+' +
+        'Molecular gradient norm',
+        outtext,
+        re.MULTILINE)
     if mobj:
         print('matched molgrad')
         atoms = []
@@ -486,13 +438,12 @@ def local_harvest_outfile_pass(outtext):
 
     # Process geometry
     mobj = re.search(
-#        r'\s+(?:-+)\s*' +
-#        r'^\s+' + r'Z-matrix   Atomic            Coordinates (in bohr)' + r'\s*' +
-        r'^\s+' + r'Symbol    Number           X              Y              Z' + r'\s*' +
-        r'^\s+(?:-+)\s*' +
-        r'((?:\s+[A-Z]+\s+[0-9]+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s*\n)+)' +
-        r'^\s+(?:-+)\s*',
-        outtext, re.MULTILINE)
+        #        r'\s+(?:-+)\s*' +
+        #        r'^\s+' + r'Z-matrix   Atomic            Coordinates (in bohr)' + r'\s*' +
+        r'^\s+' + r'Symbol    Number           X              Y              Z' + r'\s*' + r'^\s+(?:-+)\s*' +
+        r'((?:\s+[A-Z]+\s+[0-9]+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s+[-+]?\d+\.\d+\s*\n)+)' + r'^\s+(?:-+)\s*',
+        outtext,
+        re.MULTILINE)
     if mobj:
         print('matched geom')
         molxyz = '%d bohr\n\n' % len(mobj.group(1).splitlines())
@@ -504,9 +455,8 @@ def local_harvest_outfile_pass(outtext):
 
     # Process atom geometry
     mobj = re.search(
-        r'^\s+' + r'@GETXYZ-I,     1 atoms read from ZMAT.' + r'\s*' +
-        r'^\s+' + r'[0-9]+\s+([A-Z]+)\s+[0-9]+\s+' + NUMBER + r'\s*',
-        outtext, re.MULTILINE)
+        r'^\s+' + r'@GETXYZ-I,     1 atoms read from ZMAT.' + r'\s*' + r'^\s+' + r'[0-9]+\s+([A-Z]+)\s+[0-9]+\s+' +
+        NUMBER + r'\s*', outtext, re.MULTILINE)
     if mobj:
         print('matched atom')
         # Dinky Molecule
@@ -514,9 +464,8 @@ def local_harvest_outfile_pass(outtext):
         psivar_coord = Molecule.from_string(molxyz, dtype='xyz+', fix_com=True, fix_orientation=True)
 
     # Process error codes
-    mobj = re.search(
-        r'^\s*' + r'--executable ' + r'(\w+)' + r' finished with status' + r'\s+' + r'([1-9][0-9]*)',
-        outtext, re.MULTILINE)
+    mobj = re.search(r'^\s*' + r'--executable ' + r'(\w+)' + r' finished with status' + r'\s+' + r'([1-9][0-9]*)',
+                     outtext, re.MULTILINE)
     if mobj:
         print('matched error')
         psivar['CFOUR ERROR CODE'] = mobj.group(2)
@@ -538,6 +487,7 @@ def local_harvest_outfile_pass(outtext):
     if 'MP4 TOTAL ENERGY' in psivar and 'MP4 CORRELATION ENERGY' in psivar:
         psivar['CURRENT CORRELATION ENERGY'] = psivar['MP4 CORRELATION ENERGY']
         psivar['CURRENT ENERGY'] = psivar['MP4 TOTAL ENERGY']
+
 
 #    if ('%s TOTAL ENERGY' % (mobj.group('fullCC')) in psivar) and \
 #       ('%s CORRELATION ENERGY' % (mobj.group('fullCC')) in psivar):
@@ -615,11 +565,11 @@ def harvest(p4Mol, c4out, **largs):
         if grdMol:
             if abs(outMol.nuclear_repulsion_energy() - grdMol.nuclear_repulsion_energy()) > 1.0e-3:
                 raise ValidationError("""Cfour outfile (NRE: %f) inconsistent with Cfour GRD (NRE: %f).""" %
-                        (outMol.nuclear_repulsion_energy(), grdMol.nuclear_repulsion_energy()))
+                                      (outMol.nuclear_repulsion_energy(), grdMol.nuclear_repulsion_energy()))
         if p4Mol:
             if abs(outMol.nuclear_repulsion_energy() - p4Mol.nuclear_repulsion_energy()) > 1.0e-3:
                 raise ValidationError("""Cfour outfile (NRE: %f) inconsistent with Psi4 input (NRE: %f).""" %
-                    (outMol.nuclear_repulsion_energy(), p4Mol.nuclear_repulsion_energy()))
+                                      (outMol.nuclear_repulsion_energy(), p4Mol.nuclear_repulsion_energy()))
     else:
         raise ValidationError("""No coordinate information extracted from Cfour output.""")
 
@@ -633,11 +583,17 @@ def harvest(p4Mol, c4out, **largs):
 #    if grdMol:
 #        grdMol.print_out_in_bohr()
 
-    # Set up array reorientation object
+# Set up array reorientation object
     if p4Mol and grdMol:
         rgeom, _, _, _, runiq = p4Mol.to_arrays(dummy=True, ghost_as_dummy=True)
         cgeom, _, _, _, cuniq = grdMol.to_arrays(dummy=True, ghost_as_dummy=True)
-        rmsd, mill = B787(cgeom=cgeom, rgeom=rgeom, cuniq=cuniq, runiq=runiq, atoms_map=False, mols_align=True, verbose=0)
+        rmsd, mill = B787(cgeom=cgeom,
+                          rgeom=rgeom,
+                          cuniq=cuniq,
+                          runiq=runiq,
+                          atoms_map=False,
+                          mols_align=True,
+                          verbose=0)
 
         oriCoord = mill.align_coordinates(grdMol.full_geometry(np_out=True))
         oriGrad = mill.align_gradient(np.array(grdGrad))
@@ -655,7 +611,13 @@ def harvest(p4Mol, c4out, **largs):
         # TODO watch out - haven't seen atom_map=False yet
         rgeom, _, _, _, runiq = p4Mol.to_arrays(dummy=True, ghost_as_dummy=True)
         cgeom, _, _, _, cuniq = outMol.to_arrays(dummy=True, ghost_as_dummy=True)
-        rmsd, mill = B787(cgeom=cgeom, rgeom=rgeom, cuniq=cuniq, runiq=runiq, atoms_map=True, mols_align=True, verbose=0)
+        rmsd, mill = B787(cgeom=cgeom,
+                          rgeom=rgeom,
+                          cuniq=cuniq,
+                          runiq=runiq,
+                          atoms_map=True,
+                          mols_align=True,
+                          verbose=0)
 
         oriCoord = mill.align_coordinates(outMol.full_geometry(np_out=True))
         oriGrad = None
@@ -670,6 +632,7 @@ def harvest(p4Mol, c4out, **largs):
         oriGrad = None
         oriDip = None if dipolDip is None else dipolDip
         oriHess = None
+
 
 #    print p4c4
 #    print '    <<<   [4] C4-ORI-MOL   >>>'
@@ -725,7 +688,8 @@ def harvest_GRD(grd):
         mline = grd[at + 1].split()
         el = 'GH' if int(float(mline[0])) == 0 else qcel.periodictable.to_E(int(float(mline[0])))
         if el == "GH":
-            raise ValidationError("Psi4/Cfour gradients with ghost atoms no longer supported. Use QCEngine or QCDB where they are.")
+            raise ValidationError(
+                "Psi4/Cfour gradients with ghost atoms no longer supported. Use QCEngine or QCDB where they are.")
         molxyz += '%s %16s %16s %16s\n' % (el, mline[-3], mline[-2], mline[-1])
         lline = grd[at + 1 + Nat].split()
         grad.append([float(lline[-3]), float(lline[-2]), float(lline[-1])])
@@ -831,6 +795,7 @@ def muster_memory(mem):
         options['CFOUR'][item]['clobber'] = True
     return text, options
 
+
 #   Ways of modifying a computation
 #   global:     set global c-side option
 #   local:      set local c-side option
@@ -887,6 +852,7 @@ def muster_psi4options(opt):
     for item in options['CFOUR']:
         options['CFOUR'][item]['clobber'] = False
     return text, options
+
 
 # Philosophy break:
 #   Specification options
@@ -1094,53 +1060,45 @@ def cfour_psivar_list():
 
     """
     VARH = {}
-    VARH['c4-scf'] = {
-                         'c4-scf': 'SCF TOTAL ENERGY'}
-    VARH['c4-hf'] = {
-                          'c4-hf': 'HF TOTAL ENERGY'}
-    VARH['c4-mp2'] = {
-                          'c4-hf': 'HF TOTAL ENERGY',
-                         'c4-mp2': 'MP2 TOTAL ENERGY'}
+    VARH['c4-scf'] = {'c4-scf': 'SCF TOTAL ENERGY'}
+    VARH['c4-hf'] = {'c4-hf': 'HF TOTAL ENERGY'}
+    VARH['c4-mp2'] = {'c4-hf': 'HF TOTAL ENERGY', 'c4-mp2': 'MP2 TOTAL ENERGY'}
     VARH['c4-mp3'] = {
-                          'c4-hf': 'HF TOTAL ENERGY',
-                         'c4-mp2': 'MP2 TOTAL ENERGY',
-                       'c4-mp2.5': 'MP2.5 TOTAL ENERGY',
-                         'c4-mp3': 'MP3 TOTAL ENERGY'}
+        'c4-hf': 'HF TOTAL ENERGY',
+        'c4-mp2': 'MP2 TOTAL ENERGY',
+        'c4-mp2.5': 'MP2.5 TOTAL ENERGY',
+        'c4-mp3': 'MP3 TOTAL ENERGY'
+    }
     VARH['c4-mp4(sdq)'] = {
-                          'c4-hf': 'HF TOTAL ENERGY',
-                         'c4-mp2': 'MP2 TOTAL ENERGY',
-                       'c4-mp2.5': 'MP2.5 TOTAL ENERGY',
-                         'c4-mp3': 'MP3 TOTAL ENERGY',
-                    'c4-mp4(sdq)': 'MP4(SDQ) TOTAL ENERGY'}
+        'c4-hf': 'HF TOTAL ENERGY',
+        'c4-mp2': 'MP2 TOTAL ENERGY',
+        'c4-mp2.5': 'MP2.5 TOTAL ENERGY',
+        'c4-mp3': 'MP3 TOTAL ENERGY',
+        'c4-mp4(sdq)': 'MP4(SDQ) TOTAL ENERGY'
+    }
     VARH['c4-mp4'] = {
-                          'c4-hf': 'HF TOTAL ENERGY',
-                         'c4-mp2': 'MP2 TOTAL ENERGY',
-                       'c4-mp2.5': 'MP2.5 TOTAL ENERGY',
-                         'c4-mp3': 'MP3 TOTAL ENERGY',
-                    'c4-mp4(sdq)': 'MP4(SDQ) TOTAL ENERGY',
-                         'c4-mp4': 'MP4(SDTQ) TOTAL ENERGY'}
-    VARH['c4-cc2'] = {
-                          'c4-hf': 'HF TOTAL ENERGY',
-                         'c4-mp2': 'MP2 TOTAL ENERGY',
-                         'c4-cc2': 'CC2 TOTAL ENERGY'}
-    VARH['c4-ccsd'] = {
-                          'c4-hf': 'HF TOTAL ENERGY',
-                         'c4-mp2': 'MP2 TOTAL ENERGY',
-                        'c4-ccsd': 'CCSD TOTAL ENERGY'}
-    VARH['c4-cc3'] = {
-                          'c4-hf': 'HF TOTAL ENERGY',
-                         'c4-mp2': 'MP2 TOTAL ENERGY',
-                         'c4-cc3': 'CC3 TOTAL ENERGY'}
+        'c4-hf': 'HF TOTAL ENERGY',
+        'c4-mp2': 'MP2 TOTAL ENERGY',
+        'c4-mp2.5': 'MP2.5 TOTAL ENERGY',
+        'c4-mp3': 'MP3 TOTAL ENERGY',
+        'c4-mp4(sdq)': 'MP4(SDQ) TOTAL ENERGY',
+        'c4-mp4': 'MP4(SDTQ) TOTAL ENERGY'
+    }
+    VARH['c4-cc2'] = {'c4-hf': 'HF TOTAL ENERGY', 'c4-mp2': 'MP2 TOTAL ENERGY', 'c4-cc2': 'CC2 TOTAL ENERGY'}
+    VARH['c4-ccsd'] = {'c4-hf': 'HF TOTAL ENERGY', 'c4-mp2': 'MP2 TOTAL ENERGY', 'c4-ccsd': 'CCSD TOTAL ENERGY'}
+    VARH['c4-cc3'] = {'c4-hf': 'HF TOTAL ENERGY', 'c4-mp2': 'MP2 TOTAL ENERGY', 'c4-cc3': 'CC3 TOTAL ENERGY'}
     VARH['c4-ccsd(t)'] = {
-                          'c4-hf': 'HF TOTAL ENERGY',
-                         'c4-mp2': 'MP2 TOTAL ENERGY',
-                        'c4-ccsd': 'CCSD TOTAL ENERGY',
-                     'c4-ccsd(t)': 'CCSD(T) TOTAL ENERGY'}
+        'c4-hf': 'HF TOTAL ENERGY',
+        'c4-mp2': 'MP2 TOTAL ENERGY',
+        'c4-ccsd': 'CCSD TOTAL ENERGY',
+        'c4-ccsd(t)': 'CCSD(T) TOTAL ENERGY'
+    }
     VARH['c4-ccsdt'] = {
-                          'c4-hf': 'HF TOTAL ENERGY',
-                         'c4-mp2': 'MP2 TOTAL ENERGY',
-                        'c4-ccsd': 'CCSD TOTAL ENERGY',
-                       'c4-ccsdt': 'CCSDT TOTAL ENERGY'}
+        'c4-hf': 'HF TOTAL ENERGY',
+        'c4-mp2': 'MP2 TOTAL ENERGY',
+        'c4-ccsd': 'CCSD TOTAL ENERGY',
+        'c4-ccsdt': 'CCSDT TOTAL ENERGY'
+    }
 
     return VARH
 
@@ -1180,7 +1138,8 @@ def format_fjobarc(energy, map, elem, coordinates, gradient, dipole):
     fja += 'GRD FILE\n'
     fja += '%5d%20.10f\n' % (Nat, 0.0)
     for at in range(Nat):
-        fja += '%20.10f%20.10f%20.10f%20.10f\n' % (elem[at], coordinates[at][0], coordinates[at][1], coordinates[at][2])
+        fja += '%20.10f%20.10f%20.10f%20.10f\n' % (elem[at], coordinates[at][0], coordinates[at][1],
+                                                   coordinates[at][2])
     for at in range(Nat):
         fja += '%20.10f%20.10f%20.10f%20.10f\n' % (elem[at], gradient[at][0], gradient[at][1], gradient[at][2])
     fja += 'DIPOL FILE\n'

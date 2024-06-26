@@ -129,8 +129,11 @@ void CCEnergyWavefunction::pair_energies(std::vector<double>& epair_aa, std::vec
     }
 }
 
-void CCEnergyWavefunction::print_pair_energies(const std::vector<double>& emp2_aa, const std::vector<double>& emp2_ab, const std::vector<double>& ecc_aa, const std::vector<double>& ecc_ab) {
-    if (params_.ref != 0) { return; }
+void CCEnergyWavefunction::print_pair_energies(const std::vector<double>& emp2_aa, const std::vector<double>& emp2_ab,
+                                               const std::vector<double>& ecc_aa, const std::vector<double>& ecc_ab) {
+    if (params_.ref != 0) {
+        return;
+    }
 
     // Be warned that this code is heavily boilerplate, but classes of pair energies differ in fussy indexing details.
     // Also, while it's possible to combine the storage and pairing loops, separating the tasks reads cleaner.
@@ -176,7 +179,8 @@ void CCEnergyWavefunction::print_pair_energies(const std::vector<double>& emp2_a
     outfile->Printf("      -----   -----   ------------   ------------\n");
     for (int i = 0, ij = 0; i < nocc_act; i++) {
         for (int j = 0; j < i; j++, ij++) {
-            outfile->Printf("      %3d     %3d     %12.9lf   %12.9lf\n", i + 1, j + 1, mp2_mat->get(i, j), cc_mat->get(i, j));
+            outfile->Printf("      %3d     %3d     %12.9lf   %12.9lf\n", i + 1, j + 1, mp2_mat->get(i, j),
+                            cc_mat->get(i, j));
             emp_tot += mp2_mat->get(i, j);
             ecc_tot += cc_mat->get(i, j);
         }
@@ -196,7 +200,7 @@ void CCEnergyWavefunction::print_pair_energies(const std::vector<double>& emp2_a
     }
     set_array_variable("MP2 ALPHA-BETA PAIR ENERGIES", mp2_mat);
     set_array_variable("CC ALPHA-BETA PAIR ENERGIES", cc_mat);
-    cc_str = full_name +  " ALPHA-BETA PAIR ENERGIES";
+    cc_str = full_name + " ALPHA-BETA PAIR ENERGIES";
     set_array_variable(cc_str, cc_mat);
     // Process::environment.globals["CCSD ALPHA-BETA PAIR ENERGIES"]
     // Process::environment.globals["CC2 ALPHA-BETA PAIR ENERGIES"]
@@ -209,7 +213,8 @@ void CCEnergyWavefunction::print_pair_energies(const std::vector<double>& emp2_a
     outfile->Printf("      -----   -----   ------------   ------------\n");
     for (int i = 0, ij = 0; i < nocc_act; i++) {
         for (int j = 0; j < nocc_act; j++, ij++) {
-            outfile->Printf("      %3d     %3d     %12.9lf   %12.9lf\n", i + 1, j + 1, mp2_mat->get(i, j), cc_mat->get(i, j));
+            outfile->Printf("      %3d     %3d     %12.9lf   %12.9lf\n", i + 1, j + 1, mp2_mat->get(i, j),
+                            cc_mat->get(i, j));
             emp_tot += mp2_mat->get(i, j);
             ecc_tot += cc_mat->get(i, j);
         }
@@ -224,7 +229,8 @@ void CCEnergyWavefunction::print_pair_energies(const std::vector<double>& emp2_a
     for (int i = 0; i < nocc_act; i++) {
         for (int j = 0; j <= i; j++) {
             int ij_ab = i * nocc_act + j;
-            int ij_aa = i * (i - 1) / 2 + j;;
+            int ij_aa = i * (i - 1) / 2 + j;
+            ;
             if (i == j) {
                 mp2_mat->set(i, j, emp2_ab[ij_ab]);
                 cc_mat->set(j, i, ecc_ab[ij_ab]);
@@ -240,7 +246,7 @@ void CCEnergyWavefunction::print_pair_energies(const std::vector<double>& emp2_a
     }
     set_array_variable("MP2 SINGLET PAIR ENERGIES", mp2_mat);
     set_array_variable("CC SINGLET PAIR ENERGIES", cc_mat);
-    cc_str = full_name +  " SINGLET PAIR ENERGIES";
+    cc_str = full_name + " SINGLET PAIR ENERGIES";
     set_array_variable(cc_str, cc_mat);
     // Process::environment.globals["CCSD SINGLET PAIR ENERGIES"]
     // Process::environment.globals["CC2 SINGLET PAIR ENERGIES"]
@@ -253,7 +259,8 @@ void CCEnergyWavefunction::print_pair_energies(const std::vector<double>& emp2_a
     outfile->Printf("      -----   -----   ------------   ------------\n");
     for (int i = 0; i < nocc_act; i++) {
         for (int j = 0; j <= i; j++) {
-            outfile->Printf("      %3d     %3d     %12.9lf   %12.9lf\n", i + 1, j + 1, mp2_mat->get(i, j), cc_mat->get(i, j));
+            outfile->Printf("      %3d     %3d     %12.9lf   %12.9lf\n", i + 1, j + 1, mp2_mat->get(i, j),
+                            cc_mat->get(i, j));
             emp_tot += mp2_mat->get(i, j);
             ecc_tot += cc_mat->get(i, j);
         }
@@ -275,7 +282,7 @@ void CCEnergyWavefunction::print_pair_energies(const std::vector<double>& emp2_a
     }
     set_array_variable("MP2 TRIPLET PAIR ENERGIES", mp2_mat);
     set_array_variable("CC TRIPLET PAIR ENERGIES", cc_mat);
-    cc_str = full_name +  " TRIPLET PAIR ENERGIES";
+    cc_str = full_name + " TRIPLET PAIR ENERGIES";
     set_array_variable(cc_str, cc_mat);
     // Process::environment.globals["CCSD TRIPLET PAIR ENERGIES"]
     // Process::environment.globals["CC2 TRIPLET PAIR ENERGIES"]
@@ -288,7 +295,8 @@ void CCEnergyWavefunction::print_pair_energies(const std::vector<double>& emp2_a
     outfile->Printf("      -----   -----   ------------   ------------\n");
     for (int i = 0, ij = 0; i < nocc_act; i++) {
         for (int j = 0; j < i; j++, ij++) {
-            outfile->Printf("      %3d     %3d     %12.9lf   %12.9lf\n", i + 1, j + 1, mp2_mat->get(i, j), cc_mat->get(i, j));
+            outfile->Printf("      %3d     %3d     %12.9lf   %12.9lf\n", i + 1, j + 1, mp2_mat->get(i, j),
+                            cc_mat->get(i, j));
             emp_tot += mp2_mat->get(i, j);
             ecc_tot += cc_mat->get(i, j);
         }

@@ -82,11 +82,11 @@ struct MOInfo {
     int *avir_off;                   /* virtual alpha orbital offsets within each irrep */
     int *bvir_off;                   /* virtual beta orbital offsets within each irrep */
     std::shared_ptr<Matrix> Ca;
-    int *mu_irreps;                  /* irreps of x,y,z dipole components */
-    int *l_irreps;                   /* irreps of x,y,z angular momentum components */
-    int natom;                       /* number of atoms */
-    double *zvals;                   /* atomic zvals */
-    double ***C;                     /* Virtual orbital transformation matrix */
+    int *mu_irreps; /* irreps of x,y,z dipole components */
+    int *l_irreps;  /* irreps of x,y,z angular momentum components */
+    int natom;      /* number of atoms */
+    double *zvals;  /* atomic zvals */
+    double ***C;    /* Virtual orbital transformation matrix */
 };
 
 }  // namespace ccresponse

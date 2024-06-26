@@ -105,7 +105,9 @@ int MatrixFactory::ncol(int h) const { return colspi_[h]; }
 int MatrixFactory::norb() const { return nso_; }
 
 /// Returns a new Matrix object with default dimensions
-std::unique_ptr<Matrix> MatrixFactory::create_matrix(int symmetry) { return std::make_unique<Matrix>(nirrep_, rowspi_, colspi_, symmetry); }
+std::unique_ptr<Matrix> MatrixFactory::create_matrix(int symmetry) {
+    return std::make_unique<Matrix>(nirrep_, rowspi_, colspi_, symmetry);
+}
 
 /// Returns a new Matrix object with default dimensions
 SharedMatrix MatrixFactory::create_shared_matrix() const { return std::make_shared<Matrix>(nirrep_, rowspi_, colspi_); }

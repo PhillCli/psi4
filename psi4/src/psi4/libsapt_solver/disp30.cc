@@ -71,7 +71,8 @@ void SAPT2p3::disp30() {
 }
 
 double SAPT2p3::disp30_1(int ampfile, const char *amplabel, int AAintfile, const char *RRlabel, int BBintfile,
-                         const char *SSlabel, size_t foccA, size_t noccA, size_t nvirA, size_t foccB, size_t noccB, size_t nvirB) {
+                         const char *SSlabel, size_t foccA, size_t noccA, size_t nvirA, size_t foccB, size_t noccB,
+                         size_t nvirB) {
     size_t aoccA = noccA - foccA;
     size_t aoccB = noccB - foccB;
 
@@ -152,8 +153,8 @@ double SAPT2p3::disp30_1(int ampfile, const char *amplabel, int AAintfile, const
 }
 
 double SAPT2p3::disp30_2(int ampfile, const char *amplabel, int AAintfile, const char *AAlabel, const char *RRlabel,
-                         int BBintfile, const char *BBlabel, const char *SSlabel, size_t foccA, size_t noccA, size_t nvirA,
-                         size_t foccB, size_t noccB, size_t nvirB) {
+                         int BBintfile, const char *BBlabel, const char *SSlabel, size_t foccA, size_t noccA,
+                         size_t nvirA, size_t foccB, size_t noccB, size_t nvirB) {
     size_t aoccA = noccA - foccA;
     size_t aoccB = noccB - foccB;
 

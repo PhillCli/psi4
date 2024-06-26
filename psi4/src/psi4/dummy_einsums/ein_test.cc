@@ -39,7 +39,6 @@ namespace psi {
 namespace dummy_einsums {
 
 SharedWavefunction dummy_einsums(SharedWavefunction ref_wfn, Options& options) {
-
     using namespace einsums;
     using namespace einsums::tensor_algebra;
     using namespace einsums::tensor_algebra::index;
@@ -47,7 +46,7 @@ SharedWavefunction dummy_einsums(SharedWavefunction ref_wfn, Options& options) {
     einsums::initialize();
 
     // Create a file to hold the data from the DiskTensor tests.
-    //einsums::state::data = h5::create("Data.h5", H5F_ACC_TRUNC);
+    // einsums::state::data = h5::create("Data.h5", H5F_ACC_TRUNC);
 
     auto [_t, _w] = polynomial::laguerre::gauss_laguerre(40);
     println(_t);
@@ -60,7 +59,7 @@ SharedWavefunction dummy_einsums(SharedWavefunction ref_wfn, Options& options) {
     }
     println(_w);
 
-    ranges::for_each(ranges::views::zip(_t.vector_data(), _w.vector_data()), [](auto &&v) {
+    ranges::for_each(ranges::views::zip(_t.vector_data(), _w.vector_data()), [](auto&& v) {
         auto t = std::get<0>(v);
         auto w = std::get<1>(v);
 

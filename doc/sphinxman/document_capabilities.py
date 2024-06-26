@@ -17,11 +17,23 @@ method_governing_type_keywords["b2plyp"] = "scf_type"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--sphinx", action="store_true", help="Sphinx format vs. eyes format")
-parser.add_argument("--mode", default="details", choices=["details", "summary", "ccenergy", "fnocc", "dfmp2", "occ", "occ_oo", "occ_nonoo", "scf"], help="summary table vs. detailed (per-module) table vs. single-module table")
-parser.add_argument("--stdsuite", default="stdsuite_psi4.txt", help="where is recorder file written by standard_suite_runner.py")
-parser.add_argument("--writefile", action="append", help="where should table file be saved? defaults to autodoc_capabilities_{mode}.rst . repeat arg for multiple outputs")
+parser.add_argument("--mode",
+                    default="details",
+                    choices=["details", "summary", "ccenergy", "fnocc", "dfmp2", "occ", "occ_oo", "occ_nonoo", "scf"],
+                    help="summary table vs. detailed (per-module) table vs. single-module table")
+parser.add_argument("--stdsuite",
+                    default="stdsuite_psi4.txt",
+                    help="where is recorder file written by standard_suite_runner.py")
+parser.add_argument(
+    "--writefile",
+    action="append",
+    help=
+    "where should table file be saved? defaults to autodoc_capabilities_{mode}.rst . repeat arg for multiple outputs")
 parser.add_argument("--quiet", action="store_true", help="Don't also print to screen")
-parser.add_argument("--second-in-rst", action="store_true", help="Suppress Sphinx substitution definitions to avoid warnings if multiple tables included in rst file")
+parser.add_argument(
+    "--second-in-rst",
+    action="store_true",
+    help="Suppress Sphinx substitution definitions to avoid warnings if multiple tables included in rst file")
 parser.add_argument("--driver", default="eg", choices=["e", "eg", "egh"], help="maximum deriv column")
 args = parser.parse_args()
 
@@ -32,19 +44,30 @@ dashh = "-"
 notes = []
 
 trans_cell = {
-    "pass":   ('\u2713',       "|y|"),
+    "pass": ('\u2713', "|y|"),
     "(pass)": ('\u2713\u0332', "|d|"),
     "[pass]": ('\u2713\u0333', "|g|"),
-    "fd":     ('\u2237',       "|e|"),
-    "(fd)":   ('\u2237\u0332', "|b|"),
-    "[fd]":   ('\u2237\u0333', "|c|"),
-    "error":  ('',             ""   ),  # toggle for " " in visual mode
+    "fd": ('\u2237', "|e|"),
+    "(fd)": ('\u2237\u0332', "|b|"),
+    "[fd]": ('\u2237\u0333', "|c|"),
+    "error": ('', ""),  # toggle for " " in visual mode
     # "error":  ('\u2717',       ""   ),  # toggle for "X" in visual mode
-    "wrong":  ('\u0021',       "|w|"),
+    "wrong": ('\u0021', "|w|"),
 }
 
 # need indep letter for footnotes `[#f1]_` for each table so multiple can be included on one page, plus "h" for common headers. used are: a, c, d, e, f, m, n, o, r, s
-fn_lbl = {"details": "d", "summary": "s", "ccenergy": "e", "fnocc": "f", "dfmp2": "m", "occ": "o", "occ_oo": "c", "occ_nonoo": "n", "scf": "r"}[args.mode]
+fn_lbl = {
+    "details": "d",
+    "summary": "s",
+    "ccenergy": "e",
+    "fnocc": "f",
+    "dfmp2": "m",
+    "occ": "o",
+    "occ_oo": "c",
+    "occ_nonoo": "n",
+    "scf": "r"
+}[args.mode]
+
 
 def unique(sequence):
     seen = set()
@@ -74,7 +97,7 @@ def fcell(module, winnowed, contrast=False):
             cell = "(" + cell + ")"
 
         if False:
-        #if note:
+            #if note:
             notes.append(note)
             notes = unique(notes)
             idx = notes.index(note) + 10
@@ -142,7 +165,8 @@ def fline_data(outer, mid, inner, guts, *, span=1, contrast=1):
 
     if args.sphinx:
         csguts = [f"{fheader(item, eff_width, contrast=True):^{compute_width(item, eff_width)}}" for item in guts]
-        lguts = [(csguts[i:i + contrast] if (b % 2) else sguts[i:i + contrast]) for b, i in enumerate(range(0, len(sguts), contrast))]
+        lguts = [(csguts[i:i + contrast] if (b % 2) else sguts[i:i + contrast])
+                 for b, i in enumerate(range(0, len(sguts), contrast))]
         lguts = [vertex.join(i) for i in lguts]
     else:
         lguts = [sguts[i:i + contrast] for i in range(0, len(sguts), contrast)]
@@ -178,51 +202,51 @@ def extract_modules(winnowed):
 
 
 methods = [
-"hf",
-"mp2",
-"mp2.5",
-"mp3",
-"mp4(sdq)",
-"mp4",
-"zapt2",
-"cisd",
-"qcisd",
-"qcisd(t)",
-"fci",
-"remp2",
-"lccd",
-"lccsd",
-"cepa(1)",
-"cepa(3)",
-"acpf",
-"aqcc",
-"ccd",
-"bccd",
-"cc2",
-"ccsd",
-"ccsd+t(ccsd)",
-"ccsd(t)",
-"a-ccsd(t)",
-"bccd(t)",
-"cc3",
-"ccsdt-1a",
-"ccsdt-1b",
-"ccsdt-2",
-"ccsdt-3",
-"ccsdt",
-"ccsdt(q)",
-"ccsdtq",
-"omp2",
-"omp2.5",
-"omp3",
-"oremp2",
-"olccd",
-"svwn",
-"pbe",
-"b3lyp",
-"b3lyp5",
-"wb97x",
-"b2plyp",
+    "hf",
+    "mp2",
+    "mp2.5",
+    "mp3",
+    "mp4(sdq)",
+    "mp4",
+    "zapt2",
+    "cisd",
+    "qcisd",
+    "qcisd(t)",
+    "fci",
+    "remp2",
+    "lccd",
+    "lccsd",
+    "cepa(1)",
+    "cepa(3)",
+    "acpf",
+    "aqcc",
+    "ccd",
+    "bccd",
+    "cc2",
+    "ccsd",
+    "ccsd+t(ccsd)",
+    "ccsd(t)",
+    "a-ccsd(t)",
+    "bccd(t)",
+    "cc3",
+    "ccsdt-1a",
+    "ccsdt-1b",
+    "ccsdt-2",
+    "ccsdt-3",
+    "ccsdt",
+    "ccsdt(q)",
+    "ccsdtq",
+    "omp2",
+    "omp2.5",
+    "omp3",
+    "oremp2",
+    "olccd",
+    "svwn",
+    "pbe",
+    "b3lyp",
+    "b3lyp5",
+    "wb97x",
+    "b2plyp",
 ]
 
 notes_holder = {
@@ -242,7 +266,10 @@ notes_holder = {
     ("cisd", None): (r", ci\ *n*", "Arbitrary-order *n* through DETCI is inefficient byproduct of CI", ["fnocc"]),
     ("zapt2", None): (r", zapt\ *n*", "Arbitrary-order *n* through DETCI is inefficient byproduct of CI", None),
     ("mp4", None): (r", mp\ *n*", "Arbitrary-order *n* through DETCI is inefficient byproduct of CI", ["fnocc"]),
-    ("ccsd(t)", "CCENERGY"): ("FN", r"Analytic gradients for conventional all-electron RHF/UHF computations can be requested through |globals__qc_module|\ ``=ccenergy``, but their scaling is best suited to small molecules.", None),
+    ("ccsd(t)", "CCENERGY"):
+    ("FN",
+     r"Analytic gradients for conventional all-electron RHF/UHF computations can be requested through |globals__qc_module|\ ``=ccenergy``, but their scaling is best suited to small molecules.",
+     None),
 }
 
 
@@ -294,7 +321,6 @@ with open(args.stdsuite, "r") as fp:
 
 stuff = [ast.literal_eval(ln) for ln in contents]
 
-
 methods.extend([entry["method"] for entry in stuff])
 methods = unique(methods)
 fcaes = ["ae", "fc"]
@@ -308,7 +334,6 @@ refs = ["rhf", "uhf", "rohf"]
 corl_types = ["conv", "df", "cd"]
 natural_ref = {"conv": "pk", "df": "df", "cd": "cd"}
 natural_ref_rev = {v: k for k, v in natural_ref.items()}
-
 
 # left margin, left outer header, left mid header (can be zero), left inner header, and body column widths
 pwidth = 3
@@ -357,7 +382,9 @@ def table_builder__ref_driver_type_fcae():
         lines.append('.. role:: gbg')
         lines.append('.. raw:: html')
         lines.append('')
-        lines.append('   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>')
+        lines.append(
+            '   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>'
+        )
         lines.append('   <script>')
         lines.append('     $(document).ready(function() {')
         lines.append('       $(".gbg").parent().addClass("gbg-parent");')
@@ -402,25 +429,25 @@ def table_builder__ref_driver_type_fcae():
         legend_lines.append(f""".. table:: Capabilities of |PSIfour|, including details of overlapping modules.""")
     elif args.mode == "ccenergy":
         lines.append(".. _`table:ccenergy_stdsuite`:")
-        legend_lines.append(".. table:: Detailed capabilities of CCENERGY and related modules.""")
+        legend_lines.append(".. table:: Detailed capabilities of CCENERGY and related modules." "")
     elif args.mode == "fnocc":
         lines.append(".. _`table:fnocc_stdsuite`:")
-        legend_lines.append(".. table:: Detailed capabilities of the FNOCC module.""")
+        legend_lines.append(".. table:: Detailed capabilities of the FNOCC module." "")
     elif args.mode == "dfmp2":
         lines.append(".. _`table:dfmp2_stdsuite`:")
-        legend_lines.append(".. table:: Detailed capabilities of the DFMP2 module.""")
+        legend_lines.append(".. table:: Detailed capabilities of the DFMP2 module." "")
     elif args.mode == "occ":
         lines.append(".. _`table:occ_stdsuite`:")
-        legend_lines.append(".. table:: Detailed capabilities of the OCC module.""")
+        legend_lines.append(".. table:: Detailed capabilities of the OCC module." "")
     elif args.mode == "occ_oo":
         lines.append(".. _`table:occ_stdsuite_oo`:")
-        legend_lines.append(".. table:: Detailed orbital-optimized capabilities of the OCC module.""")
+        legend_lines.append(".. table:: Detailed orbital-optimized capabilities of the OCC module." "")
     elif args.mode == "occ_nonoo":
         lines.append(".. _`table:occ_stdsuite_nonoo`:")
-        legend_lines.append(".. table:: Detailed non-orbital-optimized capabilities of the OCC module.""")
+        legend_lines.append(".. table:: Detailed non-orbital-optimized capabilities of the OCC module." "")
     elif args.mode == "scf":
         lines.append(".. _`table:scf_stdsuite`:")
-        legend_lines.append(".. table:: Detailed capabilities of the SCF module.""")
+        legend_lines.append(".. table:: Detailed capabilities of the SCF module." "")
     else:
         pass
 
@@ -430,16 +457,24 @@ def table_builder__ref_driver_type_fcae():
         legend_lines.append(f'''"{trans_cell['fd'][args.sphinx]}" runs derivative with internal finite difference.''')
 
     if args.mode == "details":
-        legend_lines.append(f"""Single underline "{trans_cell['(pass)'][args.sphinx]}" or "{trans_cell['(fd)'][args.sphinx]}" is default module when |globals__qc_module| unspecified.""")
+        legend_lines.append(
+            f"""Single underline "{trans_cell['(pass)'][args.sphinx]}" or "{trans_cell['(fd)'][args.sphinx]}" is default module when |globals__qc_module| unspecified."""
+        )
     elif args.mode == "summary":
         pass
     else:
-        legend_lines.append(f"""Single underline "{trans_cell['(pass)'][args.sphinx]}" is default module when |globals__qc_module| unspecified.""")
+        legend_lines.append(
+            f"""Single underline "{trans_cell['(pass)'][args.sphinx]}" is default module when |globals__qc_module| unspecified."""
+        )
 
     if args.mode in ["details", "summary"]:
-        legend_lines.append(rf"""Double underline "{trans_cell['[pass]'][args.sphinx]}" or "{trans_cell['[fd]'][args.sphinx]}" is default algorithm type when type selector (e.g., |globals__cc_type|\ ) unspecified.""")
+        legend_lines.append(
+            rf"""Double underline "{trans_cell['[pass]'][args.sphinx]}" or "{trans_cell['[fd]'][args.sphinx]}" is default algorithm type when type selector (e.g., |globals__cc_type|\ ) unspecified."""
+        )
     else:
-        legend_lines.append(rf"""Double underline "{trans_cell['[pass]'][args.sphinx]}" is default algorithm type when type selector (e.g., |globals__cc_type|\ ) unspecified.""")
+        legend_lines.append(
+            rf"""Double underline "{trans_cell['[pass]'][args.sphinx]}" is default algorithm type when type selector (e.g., |globals__cc_type|\ ) unspecified."""
+        )
 
     lines.append("")
     lines.append(" ".join(legend_lines))
@@ -464,13 +499,19 @@ def table_builder__ref_driver_type_fcae():
         #  +============+======================+==========================+
 
         lines.append(fline_fill(dashh, dashh, dashh, [dashh] * ncol))
-        lines.append(fline_data(place, blank, referenceh, refs, span=len(fcaes)*len(corl_types)*len(eghs)))
+        lines.append(fline_data(place, blank, referenceh, refs, span=len(fcaes) * len(corl_types) * len(eghs)))
         lines.append(fline_fill(blank, blank, blank, [dashh] * ncol))
-        lines.append(fline_data(nameh, blank, place, len(refs)*eghs, span=len(fcaes)*len(corl_types)))
+        lines.append(fline_data(nameh, blank, place, len(refs) * eghs, span=len(fcaes) * len(corl_types)))
         lines.append(fline_fill(blank, blank, blank, [dashh] * ncol))
-        lines.append(fline_data(place, blank, typeh, len(refs)*len(eghs)*corl_types, span=len(fcaes)))
+        lines.append(fline_data(place, blank, typeh, len(refs) * len(eghs) * corl_types, span=len(fcaes)))
         lines.append(fline_fill(blank, blank, blank, [dashh] * ncol))
-        lines.append(fline_data(place, blank, fcaeh, len(refs)*len(eghs)*len(corl_types)*fcaes, span=1, contrast=contrast_span))
+        lines.append(
+            fline_data(place,
+                       blank,
+                       fcaeh,
+                       len(refs) * len(eghs) * len(corl_types) * fcaes,
+                       span=1,
+                       contrast=contrast_span))
         lines.append(fline_fill(equal, equal, equal, [equal] * ncol))
 
     elif args.mode == "details":
@@ -488,15 +529,23 @@ def table_builder__ref_driver_type_fcae():
         #  +=========================+==========================+
 
         lines.append(fline_fill(dashh, blank, dashh, [dashh] * ncol))
-        lines.append(fline_data(place, blank, qcmoduleh, ["|PSIfour| Capabilities"], span=ncol))  # watch out for replace delimiters lining up with cwidth cell delimiters. leads to bad formatting
+        lines.append(
+            fline_data(place, blank, qcmoduleh, ["|PSIfour| Capabilities"], span=ncol)
+        )  # watch out for replace delimiters lining up with cwidth cell delimiters. leads to bad formatting
         lines.append(fline_fill(blank, blank, blank, [dashh] * ncol))
-        lines.append(fline_data(place, blank, referenceh, refs, span=len(fcaes)*len(corl_types)*len(eghs)))
+        lines.append(fline_data(place, blank, referenceh, refs, span=len(fcaes) * len(corl_types) * len(eghs)))
         lines.append(fline_fill(blank, blank, blank, [dashh] * ncol))
-        lines.append(fline_data(nameh, blank, place, len(refs)*eghs, span=len(fcaes)*len(corl_types)))
+        lines.append(fline_data(nameh, blank, place, len(refs) * eghs, span=len(fcaes) * len(corl_types)))
         lines.append(fline_fill(blank, blank, blank, [dashh] * ncol))
-        lines.append(fline_data(typeh, blank, place, len(refs)*len(eghs)*corl_types, span=len(fcaes)))
+        lines.append(fline_data(typeh, blank, place, len(refs) * len(eghs) * corl_types, span=len(fcaes)))
         lines.append(fline_fill(blank, blank, blank, [dashh] * ncol))
-        lines.append(fline_data(place, blank, fcaeh, len(refs)*len(eghs)*len(corl_types)*fcaes, span=1, contrast=contrast_span))
+        lines.append(
+            fline_data(place,
+                       blank,
+                       fcaeh,
+                       len(refs) * len(eghs) * len(corl_types) * fcaes,
+                       span=1,
+                       contrast=contrast_span))
         lines.append(fline_fill(equal, blank, equal, [equal] * ncol))
 
     else:
@@ -522,19 +571,27 @@ def table_builder__ref_driver_type_fcae():
         spacer = "  " if args.mode in ["dfmp2", "fnocc"] else ""  # avoid aligned delimiters
 
         lines.append(fline_fill(dashh, dashh, dashh, [dashh] * ncol))
-        lines.append(fline_data(place, blank, place, [rf"{spacer}{qcmoduleh[:-2]}\ ={module_caption} Capabilities"], span=ncol))
+        lines.append(
+            fline_data(place, blank, place, [rf"{spacer}{qcmoduleh[:-2]}\ ={module_caption} Capabilities"], span=ncol))
         lines.append(fline_fill(blank, blank, blank, [dashh] * ncol))
-        lines.append(fline_data(place, blank, referenceh, refs, span=len(fcaes)*len(corl_types)*len(eghs)))
+        lines.append(fline_data(place, blank, referenceh, refs, span=len(fcaes) * len(corl_types) * len(eghs)))
         lines.append(fline_fill(blank, blank, blank, [dashh] * ncol))
-        lines.append(fline_data(nameh, blank, place, len(refs)*eghs, span=len(fcaes)*len(corl_types)))
+        lines.append(fline_data(nameh, blank, place, len(refs) * eghs, span=len(fcaes) * len(corl_types)))
         lines.append(fline_fill(blank, blank, blank, [dashh] * ncol))
-        lines.append(fline_data(place, blank, typeh, len(refs)*len(eghs)*corl_types, span=len(fcaes)))
+        lines.append(fline_data(place, blank, typeh, len(refs) * len(eghs) * corl_types, span=len(fcaes)))
         lines.append(fline_fill(blank, blank, blank, [dashh] * ncol))
-        lines.append(fline_data(place, blank, fcaeh, len(refs)*len(eghs)*len(corl_types)*fcaes, span=1, contrast=contrast_span))
+        lines.append(
+            fline_data(place,
+                       blank,
+                       fcaeh,
+                       len(refs) * len(eghs) * len(corl_types) * fcaes,
+                       span=1,
+                       contrast=contrast_span))
         lines.append(fline_fill(equal, equal, equal, [equal] * ncol))
 
     for method in methods:
-        if (args.mode == "occ_oo" and not method.startswith("o")) or (args.mode == "occ_nonoo" and method.startswith("o")):
+        if (args.mode == "occ_oo" and not method.startswith("o")) or (args.mode == "occ_nonoo"
+                                                                      and method.startswith("o")):
             continue
 
         subset1 = [entry for entry in stuff if entry["method"] == method]
@@ -575,14 +632,14 @@ def table_builder__ref_driver_type_fcae():
                     column_block = not column_block
                     for corl_type in corl_types:
                         for fcae in fcaes:
-                            subset4 = [entry for entry in subset2 if (entry["fcae"] == fcae
-                                                                      and entry["reference"] == ref
-                                                                      and entry["driver"] == egh
-                                                                      and (natural_ref_rev[entry["scf_type"]] == corl_type if (method_governing_type_keywords[method] == "scf_type") else entry["corl_type"] == corl_type)
-                                                                      and entry["scf_type"] == natural_ref[corl_type]
-                                                                      and (entry["status"] != "fd" or module.startswith("aaaa-"))
-                                                                     )
-                                      ]
+                            subset4 = [
+                                entry for entry in subset2
+                                if (entry["fcae"] == fcae and entry["reference"] == ref and entry["driver"] == egh and
+                                    (natural_ref_rev[entry["scf_type"]] == corl_type if (
+                                        method_governing_type_keywords[method] == "scf_type") else entry["corl_type"]
+                                     == corl_type) and entry["scf_type"] == natural_ref[corl_type] and (
+                                         entry["status"] != "fd" or module.startswith("aaaa-")))
+                            ]
 
                             line.append(fcell(module, subset4, column_block))
 
@@ -622,22 +679,36 @@ def table_builder__ref_driver_type_fcae():
             lines.append(fline_fill("-", "-", "-", ["-"] * ncol))
 
     lines.append("")
-    lines.append(f""".. [#{fn_lbl}1] Algorithm type selection keyword below. Values to the right: conventional ``CV``, density-fitted ``DF``, and Cholesky-decomposed ``CD``.""")
+    lines.append(
+        f""".. [#{fn_lbl}1] Algorithm type selection keyword below. Values to the right: conventional ``CV``, density-fitted ``DF``, and Cholesky-decomposed ``CD``."""
+    )
     lines.append(f""".. [#{fn_lbl}2] Active orbital values to the right: all-electron ``A`` and frozen-core ``F``.""")
     if "g" in args.driver:
         if args.mode == "summary":
-            lines.append(f""".. [#{fn_lbl}3] Methods with no analytic gradients do not have finite difference explicitly marked by "{trans_cell['fd'][args.sphinx]}", but the capability can be gleaned from the energy availability.""")
+            lines.append(
+                f""".. [#{fn_lbl}3] Methods with no analytic gradients do not have finite difference explicitly marked by "{trans_cell['fd'][args.sphinx]}", but the capability can be gleaned from the energy availability."""
+            )
         elif args.mode == "details":
-            lines.append(f""".. [#{fn_lbl}3] Finite difference gradients are only marked explicitly by "{trans_cell['fd'][args.sphinx]}" for overall (not per-method) lines and when at least one case has analytic gradients implemented, but the capability can be gleaned from the energy availability.""")
+            lines.append(
+                f""".. [#{fn_lbl}3] Finite difference gradients are only marked explicitly by "{trans_cell['fd'][args.sphinx]}" for overall (not per-method) lines and when at least one case has analytic gradients implemented, but the capability can be gleaned from the energy availability."""
+            )
         else:
-            lines.append(f""".. [#{fn_lbl}3] Finite difference gradients are not marked explicitly by "{trans_cell['fd'][args.sphinx]}", but the capability can be gleaned from the energy availability.""")
+            lines.append(
+                f""".. [#{fn_lbl}3] Finite difference gradients are not marked explicitly by "{trans_cell['fd'][args.sphinx]}", but the capability can be gleaned from the energy availability."""
+            )
     if "h" in args.driver:
         if args.mode == "summary":
-            lines.append(f""".. [#{fn_lbl}4] Methods with no analytic Hessians do not have finite difference explicitly marked by "{trans_cell['fd'][args.sphinx]}", but the capability can be gleaned from the gradient or energy availability.""")
+            lines.append(
+                f""".. [#{fn_lbl}4] Methods with no analytic Hessians do not have finite difference explicitly marked by "{trans_cell['fd'][args.sphinx]}", but the capability can be gleaned from the gradient or energy availability."""
+            )
         elif args.mode == "details":
-            lines.append(f""".. [#{fn_lbl}4] Finite difference Hessians are only marked explicitly by "{trans_cell['fd'][args.sphinx]}" for overall (not per-method) lines and when at least one case has analytic Hessians implemented, but the capability can be gleaned from the gradient or energy availability.""")
+            lines.append(
+                f""".. [#{fn_lbl}4] Finite difference Hessians are only marked explicitly by "{trans_cell['fd'][args.sphinx]}" for overall (not per-method) lines and when at least one case has analytic Hessians implemented, but the capability can be gleaned from the gradient or energy availability."""
+            )
         else:
-            lines.append(f""".. [#{fn_lbl}4] Finite difference Hessians are not marked explicitly by "{trans_cell['fd'][args.sphinx]}", but the capability can be gleaned from the gradient or energy availability.""")
+            lines.append(
+                f""".. [#{fn_lbl}4] Finite difference Hessians are not marked explicitly by "{trans_cell['fd'][args.sphinx]}", but the capability can be gleaned from the gradient or energy availability."""
+            )
     for idx, note in enumerate(notes):
         lines.append(f".. [#{fn_lbl}{idx+10}] {note}")
 
@@ -661,4 +732,3 @@ def pts(category, pyfile):
 
 table_builder__ref_driver_type_fcae()
 pts('capabilities', args.mode)
-

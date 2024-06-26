@@ -6,6 +6,7 @@ from psi4.driver import qcdb
 
 psi4.set_output_file("output.dat", False)
 
+
 def test_chgmult(expected, cgmpdict, label):
     rc, rfc, rm, rfm = expected
     qcdb.compare_integers(rc, cgmpdict['molecular_charge'], label + ': c')
@@ -21,25 +22,25 @@ def test_dimer(mol, expected_cgmp, label, mtype):
     test_chgmult(expected_cgmp['AB'], dAB, label + ' AB')
     mAB = mtype.from_dict(dAB)
     qcdb.compare_molrecs(dAB, mAB.to_dict(), label + ' AB roundtrip', atol=1.e-6)
-    
+
     aB = mol.extract_subsets(2, 1)
     daB = aB.to_dict()
     test_chgmult(expected_cgmp['aB'], daB, label + ' aB')
     maB = mtype.from_dict(daB)
     qcdb.compare_molrecs(daB, maB.to_dict(), label + ' aB roundtrip', atol=1.e-6)
-    
+
     Ab = mol.extract_subsets(1, 2)
     dAb = Ab.to_dict()
     test_chgmult(expected_cgmp['Ab'], dAb, label + ' Ab')
     mAb = mtype.from_dict(dAb)
     qcdb.compare_molrecs(dAb, mAb.to_dict(), label + ' Ab roundtrip', atol=1.e-6)
-    
+
     A_ = mol.extract_subsets(1)
     dA_ = A_.to_dict()
     test_chgmult(expected_cgmp['A_'], dA_, label + ' A_')
     mA_ = mtype.from_dict(dA_)
     qcdb.compare_molrecs(dA_, mA_.to_dict(), label + ' A_ roundtrip', atol=1.e-6)
-    
+
     _B = mol.extract_subsets(2)
     d_B = _B.to_dict()
     test_chgmult(expected_cgmp['_B'], d_B, label + ' _B')
@@ -48,7 +49,6 @@ def test_dimer(mol, expected_cgmp, label, mtype):
 
     qcdb.compare_integers(True, type(mol) == mtype, label + ': AB type')
     qcdb.compare_integers(True, type(Ab) == mtype, label + ': Ab type')
-
 
 
 eneyne = """

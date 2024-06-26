@@ -50,26 +50,15 @@ def harvest_output(outtext):
 
     # Process SAPT
     mobj = re.search(
-        r'^\s+' + r'SAPT Results' + r'\s*' + 
-        r'^\s*(?:-+)\s*' +
-        r'^\s+' + r'Electrostatics' +
-        r'(?:.*?)' +
-        r'^\s+' + r'Exchange' + 
-        r'(?:.*?)' +
-        r'^\s+' + r'Induction' + 
-        r'(?:.*?)' +
-        r'^\s+' + r'Dispersion' + 
-        r'(?:.*?)' +
-        r'^\s+' + r'Total' +
-        r'(?:.*?)' + 
-        r'^(?:\s*?)$',
-        outtext, re.MULTILINE | re.DOTALL)
+        r'^\s+' + r'SAPT Results' + r'\s*' + r'^\s*(?:-+)\s*' + r'^\s+' + r'Electrostatics' + r'(?:.*?)' + r'^\s+' +
+        r'Exchange' + r'(?:.*?)' + r'^\s+' + r'Induction' + r'(?:.*?)' + r'^\s+' + r'Dispersion' + r'(?:.*?)' +
+        r'^\s+' + r'Total' + r'(?:.*?)' + r'^(?:\s*?)$', outtext, re.MULTILINE | re.DOTALL)
     if mobj:
         print('matched sapt')
         for pv in mobj.group(0).split('\n'):
-            submobj = re.search(r'^\s+' + r'(.+?)' + r'\s+' + 
-                NUMBER + r'\s+' + r'[mEh]' + r'\s+' +
-                NUMBER + r'\s+' + r'[kcal/mol]' + r'\s*$', pv)
+            submobj = re.search(
+                r'^\s+' + r'(.+?)' + r'\s+' + NUMBER + r'\s+' + r'[mEh]' + r'\s+' + NUMBER + r'\s+' + r'[kcal/mol]' +
+                r'\s*$', pv)
             if submobj:
                 try:
                     key = ''.join(submobj.group(1).split())
@@ -83,11 +72,8 @@ def harvest_output(outtext):
                 #print '*', submobj.group(1), submobj.group(2), submobj.group(3)
 
     # Process PsiVariables
-    mobj = re.search(r'^(?:  Variable Map:)\s*' +
-        r'^\s*(?:-+)\s*' +
-        r'^(.*?)' +
-        r'^(?:\s*?)$',
-        outtext, re.MULTILINE | re.DOTALL)
+    mobj = re.search(r'^(?:  Variable Map:)\s*' + r'^\s*(?:-+)\s*' + r'^(.*?)' + r'^(?:\s*?)$', outtext,
+                     re.MULTILINE | re.DOTALL)
 
     if mobj:
         for pv in mobj.group(1).split('\n'):
@@ -96,8 +82,7 @@ def harvest_output(outtext):
                 psivar['%s' % (submobj.group(1))] = submobj.group(2)
 
     # Process Completion
-    mobj = re.search(r'Psi4 exiting successfully. Buy a developer a beer!',
-        outtext, re.MULTILINE)
+    mobj = re.search(r'Psi4 exiting successfully. Buy a developer a beer!', outtext, re.MULTILINE)
     if mobj:
         psivar['SUCCESS'] = True
 
@@ -105,13 +90,13 @@ def harvest_output(outtext):
 
 
 class Infile(qcformat.InputFormat2):
-
     def __init__(self, mem, mol, mtd, der, opt):
         qcformat.InputFormat2.__init__(self, mem, mol, mtd, der, opt)
 
         #print self.method, self.molecule.nactive_fragments()
         if 'sapt' in self.method and self.molecule.nactive_fragments() != 2:
-            raise FragmentCountError("""Requested molecule has %d, not 2, fragments.""" % (self.molecule.nactive_fragments()))
+            raise FragmentCountError("""Requested molecule has %d, not 2, fragments.""" %
+                                     (self.molecule.nactive_fragments()))
 
 #        # memory in MB --> MW
 #        self.memory = int(math.ceil(mem / 8.0))
@@ -129,19 +114,19 @@ class Infile(qcformat.InputFormat2):
         molcmd, molkw = self.molecule.format_molecule_for_psi4(), {}
 
         # format global convergence directions
-#        text += self.format_global_parameters()
+        #        text += self.format_global_parameters()
         _cdscmd, cdskw = muster_cdsgroup_options()
 
         # Handle calc type and quantum chemical method
         mdccmd, mdckw = procedures['energy'][self.method](self.method, self.dertype)
 
-#        # format options
-#        optcmd = qcdb.options.prepare_options_for_psi4(mdckw)
+        #        # format options
+        #        optcmd = qcdb.options.prepare_options_for_psi4(mdckw)
 
-# make options from imdb only user options (currently non-existent). set basis and castup from here.
+        # make options from imdb only user options (currently non-existent). set basis and castup from here.
         # Handle driver vs input/default keyword reconciliation
         userkw = self.options
-#        userkw = p4util.prepare_options_for_modules()
+        #        userkw = p4util.prepare_options_for_modules()
         #userkw = qcdb.options.reconcile_options(userkw, memkw)
         #userkw = qcdb.options.reconcile_options(userkw, molkw)
         #userkw = qcdb.options.reconcile_options(userkw, baskw)
@@ -157,6 +142,7 @@ class Infile(qcformat.InputFormat2):
 
         # Assemble infile pieces
         return memcmd + molcmd + optcmd + mdccmd + litcmd
+
 
 #'hf'
 #'df-hf'
@@ -312,6 +298,7 @@ def muster_modelchem(name, dertype):
     else:
         raise ValidationError("""Requested Psi4 computational methods %d is not available.""" % (lowername))
 
+
 #    # Set clobbering
 #    if 'CFOUR_DERIV_LEVEL' in options['CFOUR']:
 #        options['CFOUR']['CFOUR_DERIV_LEVEL']['clobber'] = True
@@ -326,21 +313,21 @@ def muster_modelchem(name, dertype):
 
 procedures = {
     'energy': {
-        'df-b97-d3'     : muster_modelchem,
-        'df-wb97x-d'    : muster_modelchem,
-        'df-b3lyp-d3'   : muster_modelchem,
-        'mp2'           : muster_modelchem,
-        'df-mp2'        : muster_modelchem,
-        'sapt0'         : muster_modelchem,
-        'sapt2+'        : muster_modelchem,
-        'sapt2+(3)'     : muster_modelchem,
-        'sapt2+3(ccd)'  : muster_modelchem,
-        'mrccsdt(q)'    : muster_modelchem,
-        'c4-ccsdt(q)'   : muster_modelchem,
-        'ccsd-polarizability' : muster_modelchem,
+        'df-b97-d3': muster_modelchem,
+        'df-wb97x-d': muster_modelchem,
+        'df-b3lyp-d3': muster_modelchem,
+        'mp2': muster_modelchem,
+        'df-mp2': muster_modelchem,
+        'sapt0': muster_modelchem,
+        'sapt2+': muster_modelchem,
+        'sapt2+(3)': muster_modelchem,
+        'sapt2+3(ccd)': muster_modelchem,
+        'mrccsdt(q)': muster_modelchem,
+        'c4-ccsdt(q)': muster_modelchem,
+        'ccsd-polarizability': muster_modelchem,
         'dfdf-b2plyp-d3': muster_modelchem,
-        'df-wpbe'       : muster_modelchem,
-        'df-m05-2x'     : muster_modelchem,
+        'df-wpbe': muster_modelchem,
+        'df-m05-2x': muster_modelchem,
     }
 }
 

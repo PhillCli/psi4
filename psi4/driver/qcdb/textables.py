@@ -39,14 +39,17 @@ except AttributeError:
     # Python 3
     def itervalues(d):
         return iter(d.values())
+
     def items(d):
         return iter(d.items())
 else:
     # Python 2
     def itervalues(d):
         return d.itervalues()
+
     def items(d):
         return d.items()
+
 
 mc_archive = {'mtd': methods, 'bas': bases, 'err': errors}
 fancy_mc_archive = {}
@@ -111,12 +114,24 @@ def empty(kw):
     return ''
 
 
-def table_generic(dbse, serrors,
-    mtd, bas, columnplan, rowplan=['bas', 'mtd'],
-    opt=['CP'], err=['mae'], sset=['default'],
-    landscape=False, standalone=True, subjoin=True, suppressblanks=False,
-    footnotes=[], title='', indextitle='',
-    plotpath='', theme=''):
+def table_generic(dbse,
+                  serrors,
+                  mtd,
+                  bas,
+                  columnplan,
+                  rowplan=['bas', 'mtd'],
+                  opt=['CP'],
+                  err=['mae'],
+                  sset=['default'],
+                  landscape=False,
+                  standalone=True,
+                  subjoin=True,
+                  suppressblanks=False,
+                  footnotes=[],
+                  title='',
+                  indextitle='',
+                  plotpath='',
+                  theme=''):
     """
     Arrays *mtd* and *bas* contain the keys to the qcdb.Method and
     qcdb.BasisSet objects that span all those that the table may
@@ -124,6 +139,7 @@ def table_generic(dbse, serrors,
     should be in the desired order.
 
     """
+
     def table_header(kw, abbr, head1, head0, head2):
         """Form table header"""
         ref = r"""tbl:qcdb-%s-%s""" % (theme, '-'.join([kw[bit] for bit in tag]))
@@ -135,8 +151,7 @@ def table_generic(dbse, serrors,
         text.append(r"""\renewcommand{\baselinestretch}{1}""")
         text.append(r"""\caption{%s""" % (title.format(**fancy_kw).replace('_', '\\_')))
         text.append(r"""\label{%s}}""" % (ref))
-        indices.append(r"""\scriptsize \ref{%s} & \scriptsize %s \\ """ %
-            (ref, indextitle.format(**fancy_kw)))
+        indices.append(r"""\scriptsize \ref{%s} & \scriptsize %s \\ """ % (ref, indextitle.format(**fancy_kw)))
         text.append(r"""\begin{ruledtabular}""")
         text.append(r"""\begin{tabular}{%s}""" % (abbr))
         text.append(head1)
@@ -148,7 +163,8 @@ def table_generic(dbse, serrors,
         """Form table footer"""
 
         # search-and-replace footnotes
-        fnmatch = re.compile(r"""(?P<cellpre>.*)""" + r"""(\\footnotemark)\{(?P<fntext>.*)\}""" + r"""(?P<cellpost>.*)""")
+        fnmatch = re.compile(r"""(?P<cellpre>.*)""" + r"""(\\footnotemark)\{(?P<fntext>.*)\}""" +
+                             r"""(?P<cellpost>.*)""")
         otfcounter = len(footnotes) + 1
         lines2replace = {}
         otffootnotes = collections.OrderedDict()
@@ -167,7 +183,8 @@ def table_generic(dbse, serrors,
                         else:
                             otfcounter += 1
                             otffootnotes[res.group('fntext')] = localcounter
-                    newcells.append(res.group('cellpre') + r"""\footnotemark[""" + str(localcounter) + ']' + res.group('cellpost'))
+                    newcells.append(
+                        res.group('cellpre') + r"""\footnotemark[""" + str(localcounter) + ']' + res.group('cellpost'))
                     changed = True
                 else:
                     newcells.append(cell)
@@ -204,7 +221,8 @@ def table_generic(dbse, serrors,
         if 'tgtcnt' in errpiece:
             kw['count'] = errpiece['tgtcnt']
         if 'misscnt' in errpiece and errpiece['misscnt'] != 0 and 'tgtcnt' in errpiece:
-            kw['footnote'] = r"""\footnotemark{Missing %d of %d reactions.}""" % (errpiece['misscnt'], errpiece['tgtcnt'])
+            kw['footnote'] = r"""\footnotemark{Missing %d of %d reactions.}""" % (errpiece['misscnt'],
+                                                                                  errpiece['tgtcnt'])
         else:
             kw['footnote'] = ''
         return kw
@@ -245,17 +263,26 @@ def table_generic(dbse, serrors,
 
     abbr = ''.join([col[0] for col in columnplan])
     h1 = [(k, len(list(g))) for k, g in itertools.groupby([col[1] for col in columnplan])]
-    head1 = ' & '.join([r"""\multicolumn{%d}{c}{\textbf{%s}}""" % (repeat, label) for (label, repeat) in h1]) + r""" \\ """
+    head1 = ' & '.join([r"""\multicolumn{%d}{c}{\textbf{%s}}""" % (repeat, label)
+                        for (label, repeat) in h1]) + r""" \\ """
     h2 = [(k, len(list(g))) for k, g in itertools.groupby([col[2] for col in columnplan])]
-    head2 = ' & '.join([r"""\multicolumn{%d}{c}{\textbf{%s}}""" % (repeat, label) for (label, repeat) in h2]) + r""" \\ """
+    head2 = ' & '.join([r"""\multicolumn{%d}{c}{\textbf{%s}}""" % (repeat, label)
+                        for (label, repeat) in h2]) + r""" \\ """
 
     # form table body
     text = []
     indices = []
     nH = len(rowplan)
     hline = r"""\hline"""
-    kw = {'plotpath': plotpath, 'sset': sset[0], 'dbse': dbse[0], 'err': err[0],
-          'mtd': mtd[0], 'opt': opt[0], 'bas': bas[0]}
+    kw = {
+        'plotpath': plotpath,
+        'sset': sset[0],
+        'dbse': dbse[0],
+        'err': err[0],
+        'mtd': mtd[0],
+        'opt': opt[0],
+        'bas': bas[0]
+    }
 
     if standalone:
         text += begin_latex_document()
@@ -291,9 +318,11 @@ def table_generic(dbse, serrors,
                         kw[rowplan[2]] = hier2
                         kw['target'] = rowplan[2]
 
-                        text.append(r"""\enspace\enspace""" + ' & '.join([col[3](matelem(kw, col[4])) for col in columnplan]) + r""" \\ """)
+                        text.append(r"""\enspace\enspace""" +
+                                    ' & '.join([col[3](matelem(kw, col[4])) for col in columnplan]) + r""" \\ """)
                 else:
-                    text.append(r"""\enspace""" + ' & '.join([col[3](matelem(kw, col[4])) for col in columnplan]) + r""" \\ """)
+                    text.append(r"""\enspace""" + ' & '.join([col[3](matelem(kw, col[4]))
+                                                              for col in columnplan]) + r""" \\ """)
             if not subjoin:
                 table_footer()
         else:
@@ -340,20 +369,177 @@ def end_latex_document():
 if __name__ == "__main__":
     from collections import OrderedDict
 
-    serrors = {'MP2-CP-adtz': {'hb': {'S22': OrderedDict([('mae', '    0.38'), ('mape', '     2.5')]), 'HBC1': OrderedDict([('mae', '    0.28'), ('mape', '     2.5')]), 'NBC1': None, 'HSG': OrderedDict([('mae', '    0.28'), ('mape', '     1.9')]), 'DB4': OrderedDict([('mae', '    0.31'), ('mape', '     2.3')])}, 'default': {'S22': OrderedDict([('mae', '    0.89'), ('mape', '    19.2')]), 'HBC1': OrderedDict([('mae', '    0.28'), ('mape', '     2.5')]), 'NBC1': OrderedDict([('mae', '    1.10'), ('mape', '   139.0')]), 'HSG': OrderedDict([('mae', '    0.18'), ('mape', '     9.6')]), 'DB4': OrderedDict([('mae', '    0.61'), ('mape', '    42.6')])}, 'mxdd': {'S22': OrderedDict([('mae', '    1.13'), ('mape', '    27.1')]), 'HBC1': None, 'NBC1': OrderedDict([('mae', '    1.10'), ('mape', '   139.0')]), 'HSG': OrderedDict([('mae', '    0.16'), ('mape', '    10.9')]), 'DB4': OrderedDict([('mae', '    0.80'), ('mape', '    59.0')])}}, 'CCSD-CP-adz': {'hb': {'S22': OrderedDict([('mae', '    2.42'), ('mape', '    18.0')]), 'HBC1': OrderedDict([('mae', '    2.09'), ('mape', '    15.3')]), 'NBC1': None, 'HSG': OrderedDict([('mae', '    2.29'), ('mape', '    14.8')]), 'DB4': OrderedDict([('mae', '    2.27'), ('mape', '    16.1')])}, 'default': {'S22': OrderedDict([('mae', '    1.82'), ('mape', '    32.3')]), 'HBC1': OrderedDict([('mae', '    2.09'), ('mape', '    15.3')]), 'NBC1': OrderedDict([('mae', '    1.15'), ('mape', '   147.4')]), 'HSG': OrderedDict([('mae', '    1.14'), ('mape', '    85.9')]), 'DB4': OrderedDict([('mae', '    1.55'), ('mape', '    70.2')])}, 'mxdd': {'S22': OrderedDict([('mae', '    1.54'), ('mape', '    39.0')]), 'HBC1': None, 'NBC1': OrderedDict([('mae', '    1.15'), ('mape', '   147.4')]), 'HSG': OrderedDict([('mae', '    0.95'), ('mape', '    97.7')]), 'DB4': OrderedDict([('mae', '    1.21'), ('mape', '    94.7')])}}, 'MP2-CP-atz': {'hb': {'S22': OrderedDict([('mae', '    0.70'), ('mape', '     5.0')]), 'HBC1': OrderedDict([('mae', '    0.52'), ('mape', '     4.1')]), 'NBC1': None, 'HSG': OrderedDict([('mae', '    0.61'), ('mape', '     4.0')]), 'DB4': OrderedDict([('mae', '    0.61'), ('mape', '     4.4')])}, 'default': {'S22': OrderedDict([('mae', '    0.86'), ('mape', '    17.0')]), 'HBC1': OrderedDict([('mae', '    0.52'), ('mape', '     4.1')]), 'NBC1': OrderedDict([('mae', '    0.98'), ('mape', '   126.7')]), 'HSG': OrderedDict([('mae', '    0.24'), ('mape', '    13.5')]), 'DB4': OrderedDict([('mae', '    0.65'), ('mape', '    40.3')])}, 'mxdd': {'S22': OrderedDict([('mae', '    0.94'), ('mape', '    22.6')]), 'HBC1': None, 'NBC1': OrderedDict([('mae', '    0.98'), ('mape', '   126.7')]), 'HSG': OrderedDict([('mae', '    0.18'), ('mape', '    15.1')]), 'DB4': OrderedDict([('mae', '    0.70'), ('mape', '    54.8')])}}, 'CCSD-CP-atz': {'hb': {'S22': OrderedDict([('mae', '    1.41'), ('mape', '    10.5')]), 'HBC1': OrderedDict([('mae', '    1.11'), ('mape', '     8.4')]), 'NBC1': None, 'HSG': OrderedDict([('mae', '    1.39'), ('mape', '     9.0')]), 'DB4': OrderedDict([('mae', '    1.30'), ('mape', '     9.3')])}, 'default': {'S22': OrderedDict([('mae', '    1.27'), ('mape', '    23.5')]), 'HBC1': OrderedDict([('mae', '    1.11'), ('mape', '     8.4')]), 'NBC1': OrderedDict([('mae', '    0.97'), ('mape', '   123.2')]), 'HSG': OrderedDict([('mae', '    0.77'), ('mape', '    57.9')]), 'DB4': OrderedDict([('mae', '    1.03'), ('mape', '    53.3')])}, 'mxdd': {'S22': OrderedDict([('mae', '    1.20'), ('mape', '    29.6')]), 'HBC1': None, 'NBC1': OrderedDict([('mae', '    0.97'), ('mape', '   123.2')]), 'HSG': OrderedDict([('mae', '    0.67'), ('mape', '    66.1')]), 'DB4': OrderedDict([('mae', '    0.95'), ('mape', '    73.0')])}}, 'CCSD-CP-adtz': {'hb': {'S22': OrderedDict([('mae', '    1.03'), ('mape', '     7.6')]), 'HBC1': OrderedDict([('mae', '    0.76'), ('mape', '     5.9')]), 'NBC1': None, 'HSG': OrderedDict([('mae', '    1.02'), ('mape', '     6.6')]), 'DB4': OrderedDict([('mae', '    0.94'), ('mape', '     6.7')])}, 'default': {'S22': OrderedDict([('mae', '    1.05'), ('mape', '    20.0')]), 'HBC1': OrderedDict([('mae', '    0.76'), ('mape', '     5.9')]), 'NBC1': OrderedDict([('mae', '    0.90'), ('mape', '   113.9')]), 'HSG': OrderedDict([('mae', '    0.62'), ('mape', '    46.7')]), 'DB4': OrderedDict([('mae', '    0.83'), ('mape', '    46.6')])}, 'mxdd': {'S22': OrderedDict([('mae', '    1.06'), ('mape', '    25.7')]), 'HBC1': None, 'NBC1': OrderedDict([('mae', '    0.90'), ('mape', '   113.9')]), 'HSG': OrderedDict([('mae', '    0.55'), ('mape', '    53.3')]), 'DB4': OrderedDict([('mae', '    0.84'), ('mape', '    64.3')])}}, 'MP2-CP-adz': {'hb': {'S22': OrderedDict([('mae', '    1.64'), ('mape', '    12.2')]), 'HBC1': OrderedDict([('mae', '    1.41'), ('mape', '    10.4')]), 'NBC1': None, 'HSG': OrderedDict([('mae', '    1.42'), ('mape', '     9.1')]), 'DB4': OrderedDict([('mae', '    1.49'), ('mape', '    10.6')])}, 'default': {'S22': OrderedDict([('mae', '    0.97'), ('mape', '    16.2')]), 'HBC1': OrderedDict([('mae', '    1.41'), ('mape', '    10.4')]), 'NBC1': OrderedDict([('mae', '    0.70'), ('mape', '    95.9')]), 'HSG': OrderedDict([('mae', '    0.46'), ('mape', '    30.5')]), 'DB4': OrderedDict([('mae', '    0.88'), ('mape', '    38.3')])}, 'mxdd': {'S22': OrderedDict([('mae', '    0.65'), ('mape', '    18.0')]), 'HBC1': None, 'NBC1': OrderedDict([('mae', '    0.70'), ('mape', '    95.9')]), 'HSG': OrderedDict([('mae', '    0.30'), ('mape', '    34.1')]), 'DB4': OrderedDict([('mae', '    0.55'), ('mape', '    49.3')])}}}
+    serrors = {
+        'MP2-CP-adtz': {
+            'hb': {
+                'S22': OrderedDict([('mae', '    0.38'), ('mape', '     2.5')]),
+                'HBC1': OrderedDict([('mae', '    0.28'), ('mape', '     2.5')]),
+                'NBC1': None,
+                'HSG': OrderedDict([('mae', '    0.28'), ('mape', '     1.9')]),
+                'DB4': OrderedDict([('mae', '    0.31'), ('mape', '     2.3')])
+            },
+            'default': {
+                'S22': OrderedDict([('mae', '    0.89'), ('mape', '    19.2')]),
+                'HBC1': OrderedDict([('mae', '    0.28'), ('mape', '     2.5')]),
+                'NBC1': OrderedDict([('mae', '    1.10'), ('mape', '   139.0')]),
+                'HSG': OrderedDict([('mae', '    0.18'), ('mape', '     9.6')]),
+                'DB4': OrderedDict([('mae', '    0.61'), ('mape', '    42.6')])
+            },
+            'mxdd': {
+                'S22': OrderedDict([('mae', '    1.13'), ('mape', '    27.1')]),
+                'HBC1': None,
+                'NBC1': OrderedDict([('mae', '    1.10'), ('mape', '   139.0')]),
+                'HSG': OrderedDict([('mae', '    0.16'), ('mape', '    10.9')]),
+                'DB4': OrderedDict([('mae', '    0.80'), ('mape', '    59.0')])
+            }
+        },
+        'CCSD-CP-adz': {
+            'hb': {
+                'S22': OrderedDict([('mae', '    2.42'), ('mape', '    18.0')]),
+                'HBC1': OrderedDict([('mae', '    2.09'), ('mape', '    15.3')]),
+                'NBC1': None,
+                'HSG': OrderedDict([('mae', '    2.29'), ('mape', '    14.8')]),
+                'DB4': OrderedDict([('mae', '    2.27'), ('mape', '    16.1')])
+            },
+            'default': {
+                'S22': OrderedDict([('mae', '    1.82'), ('mape', '    32.3')]),
+                'HBC1': OrderedDict([('mae', '    2.09'), ('mape', '    15.3')]),
+                'NBC1': OrderedDict([('mae', '    1.15'), ('mape', '   147.4')]),
+                'HSG': OrderedDict([('mae', '    1.14'), ('mape', '    85.9')]),
+                'DB4': OrderedDict([('mae', '    1.55'), ('mape', '    70.2')])
+            },
+            'mxdd': {
+                'S22': OrderedDict([('mae', '    1.54'), ('mape', '    39.0')]),
+                'HBC1': None,
+                'NBC1': OrderedDict([('mae', '    1.15'), ('mape', '   147.4')]),
+                'HSG': OrderedDict([('mae', '    0.95'), ('mape', '    97.7')]),
+                'DB4': OrderedDict([('mae', '    1.21'), ('mape', '    94.7')])
+            }
+        },
+        'MP2-CP-atz': {
+            'hb': {
+                'S22': OrderedDict([('mae', '    0.70'), ('mape', '     5.0')]),
+                'HBC1': OrderedDict([('mae', '    0.52'), ('mape', '     4.1')]),
+                'NBC1': None,
+                'HSG': OrderedDict([('mae', '    0.61'), ('mape', '     4.0')]),
+                'DB4': OrderedDict([('mae', '    0.61'), ('mape', '     4.4')])
+            },
+            'default': {
+                'S22': OrderedDict([('mae', '    0.86'), ('mape', '    17.0')]),
+                'HBC1': OrderedDict([('mae', '    0.52'), ('mape', '     4.1')]),
+                'NBC1': OrderedDict([('mae', '    0.98'), ('mape', '   126.7')]),
+                'HSG': OrderedDict([('mae', '    0.24'), ('mape', '    13.5')]),
+                'DB4': OrderedDict([('mae', '    0.65'), ('mape', '    40.3')])
+            },
+            'mxdd': {
+                'S22': OrderedDict([('mae', '    0.94'), ('mape', '    22.6')]),
+                'HBC1': None,
+                'NBC1': OrderedDict([('mae', '    0.98'), ('mape', '   126.7')]),
+                'HSG': OrderedDict([('mae', '    0.18'), ('mape', '    15.1')]),
+                'DB4': OrderedDict([('mae', '    0.70'), ('mape', '    54.8')])
+            }
+        },
+        'CCSD-CP-atz': {
+            'hb': {
+                'S22': OrderedDict([('mae', '    1.41'), ('mape', '    10.5')]),
+                'HBC1': OrderedDict([('mae', '    1.11'), ('mape', '     8.4')]),
+                'NBC1': None,
+                'HSG': OrderedDict([('mae', '    1.39'), ('mape', '     9.0')]),
+                'DB4': OrderedDict([('mae', '    1.30'), ('mape', '     9.3')])
+            },
+            'default': {
+                'S22': OrderedDict([('mae', '    1.27'), ('mape', '    23.5')]),
+                'HBC1': OrderedDict([('mae', '    1.11'), ('mape', '     8.4')]),
+                'NBC1': OrderedDict([('mae', '    0.97'), ('mape', '   123.2')]),
+                'HSG': OrderedDict([('mae', '    0.77'), ('mape', '    57.9')]),
+                'DB4': OrderedDict([('mae', '    1.03'), ('mape', '    53.3')])
+            },
+            'mxdd': {
+                'S22': OrderedDict([('mae', '    1.20'), ('mape', '    29.6')]),
+                'HBC1': None,
+                'NBC1': OrderedDict([('mae', '    0.97'), ('mape', '   123.2')]),
+                'HSG': OrderedDict([('mae', '    0.67'), ('mape', '    66.1')]),
+                'DB4': OrderedDict([('mae', '    0.95'), ('mape', '    73.0')])
+            }
+        },
+        'CCSD-CP-adtz': {
+            'hb': {
+                'S22': OrderedDict([('mae', '    1.03'), ('mape', '     7.6')]),
+                'HBC1': OrderedDict([('mae', '    0.76'), ('mape', '     5.9')]),
+                'NBC1': None,
+                'HSG': OrderedDict([('mae', '    1.02'), ('mape', '     6.6')]),
+                'DB4': OrderedDict([('mae', '    0.94'), ('mape', '     6.7')])
+            },
+            'default': {
+                'S22': OrderedDict([('mae', '    1.05'), ('mape', '    20.0')]),
+                'HBC1': OrderedDict([('mae', '    0.76'), ('mape', '     5.9')]),
+                'NBC1': OrderedDict([('mae', '    0.90'), ('mape', '   113.9')]),
+                'HSG': OrderedDict([('mae', '    0.62'), ('mape', '    46.7')]),
+                'DB4': OrderedDict([('mae', '    0.83'), ('mape', '    46.6')])
+            },
+            'mxdd': {
+                'S22': OrderedDict([('mae', '    1.06'), ('mape', '    25.7')]),
+                'HBC1': None,
+                'NBC1': OrderedDict([('mae', '    0.90'), ('mape', '   113.9')]),
+                'HSG': OrderedDict([('mae', '    0.55'), ('mape', '    53.3')]),
+                'DB4': OrderedDict([('mae', '    0.84'), ('mape', '    64.3')])
+            }
+        },
+        'MP2-CP-adz': {
+            'hb': {
+                'S22': OrderedDict([('mae', '    1.64'), ('mape', '    12.2')]),
+                'HBC1': OrderedDict([('mae', '    1.41'), ('mape', '    10.4')]),
+                'NBC1': None,
+                'HSG': OrderedDict([('mae', '    1.42'), ('mape', '     9.1')]),
+                'DB4': OrderedDict([('mae', '    1.49'), ('mape', '    10.6')])
+            },
+            'default': {
+                'S22': OrderedDict([('mae', '    0.97'), ('mape', '    16.2')]),
+                'HBC1': OrderedDict([('mae', '    1.41'), ('mape', '    10.4')]),
+                'NBC1': OrderedDict([('mae', '    0.70'), ('mape', '    95.9')]),
+                'HSG': OrderedDict([('mae', '    0.46'), ('mape', '    30.5')]),
+                'DB4': OrderedDict([('mae', '    0.88'), ('mape', '    38.3')])
+            },
+            'mxdd': {
+                'S22': OrderedDict([('mae', '    0.65'), ('mape', '    18.0')]),
+                'HBC1': None,
+                'NBC1': OrderedDict([('mae', '    0.70'), ('mape', '    95.9')]),
+                'HSG': OrderedDict([('mae', '    0.30'), ('mape', '    34.1')]),
+                'DB4': OrderedDict([('mae', '    0.55'), ('mape', '    49.3')])
+            }
+        }
+    }
     #print serrors['CCSD-CP-adtz']['hb']['HSG']['mape']
 
-    columnplan = [
-       ['l', r"""Method \& Basis Set""", '', label, {}],
-       ['d', r'S22', 'HB', val, {'sset': 'hb', 'dbse': 'S22'}],
-       ['d', r'S22', 'MX/DD', val, {'sset': 'mxdd', 'dbse': 'S22'}],
-       ['d', r'S22', 'TT', val, {'sset': 'default', 'dbse': 'S22'}],
-       ['d', r'Overall', 'HB', val, {'sset': 'hb', 'dbse': 'DB4'}],
-       ['d', r'Overall', 'MX/DD', val, {'sset': 'mxdd', 'dbse': 'DB4', 'err': 'mape'}],
-       ['d', r'Overall', 'TT', val, {'sset': 'default', 'dbse': 'DB4'}]]
+    columnplan = [['l', r"""Method \& Basis Set""", '', label, {}],
+                  ['d', r'S22', 'HB', val, {
+                      'sset': 'hb',
+                      'dbse': 'S22'
+                  }], ['d', r'S22', 'MX/DD', val, {
+                      'sset': 'mxdd',
+                      'dbse': 'S22'
+                  }], ['d', r'S22', 'TT', val, {
+                      'sset': 'default',
+                      'dbse': 'S22'
+                  }], ['d', r'Overall', 'HB', val, {
+                      'sset': 'hb',
+                      'dbse': 'DB4'
+                  }], ['d', r'Overall', 'MX/DD', val, {
+                      'sset': 'mxdd',
+                      'dbse': 'DB4',
+                      'err': 'mape'
+                  }], ['d', r'Overall', 'TT', val, {
+                      'sset': 'default',
+                      'dbse': 'DB4'
+                  }]]
 
-    tbl, ind = table_generic(columnplan=columnplan, dbse=['DB4'], serrors=serrors,
-                  mtd=['MP2', 'CCSD'], bas=['adz', 'atz'],
-                  opt=['CP'], err=['mae', 'mape'],
-                  theme='test', subjoin=False)
+    tbl, ind = table_generic(columnplan=columnplan,
+                             dbse=['DB4'],
+                             serrors=serrors,
+                             mtd=['MP2', 'CCSD'],
+                             bas=['adz', 'atz'],
+                             opt=['CP'],
+                             err=['mae', 'mape'],
+                             theme='test',
+                             subjoin=False)
     print('\n'.join(tbl))

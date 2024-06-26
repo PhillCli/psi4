@@ -323,8 +323,8 @@ void s3_block_bz(int Ialist, int Iblist, int Jalist, int Jblist, int nas, int nb
 #endif
 
                     } /* end loop over I */
-                }     /* end loop over l */
-            }         /* end loop over k */
+                } /* end loop over l */
+            } /* end loop over k */
 
             for (J = 0, OVptr = OV[Iblist][fullij] + 1; J < jlen; J++) {
                 tmpi = *OVptr++;
@@ -369,7 +369,7 @@ void s3_block_bz(int Ialist, int Iblist, int Jalist, int Jblist, int nas, int nb
             }
 
         } /* end loop over j */
-    }     /* end loop over i */
+    } /* end loop over i */
 }
-}
+}  // namespace detci
 }  // namespace psi

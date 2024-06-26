@@ -577,7 +577,7 @@ void Wmbej_build() {
 
         global_dpd_->buf4_close(&WMbeJ);
 
-    }                           /** RHF or ROHF **/
+    } /** RHF or ROHF **/
     else if (params.ref == 2) { /** UHF **/
 
         /* W(mb,je) <-- <mb||ej> */

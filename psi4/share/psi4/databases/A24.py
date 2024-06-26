@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """
 | Database (Hobza) of interaction energies for bimolecular complexes.
 | Geometries from <Reference>.
@@ -62,200 +61,205 @@ HRXN_SM = []
 HRXN_LG = []
 
 # <<< Chemical Systems Involved >>>
-RXNM = {}     # reaction matrix of reagent contributions per reaction
-ACTV = {}     # order of active reagents per reaction
+RXNM = {}  # reaction matrix of reagent contributions per reaction
+ACTV = {}  # order of active reagents per reaction
 ACTV_CP = {}  # order of active reagents per counterpoise-corrected reaction
 ACTV_SA = {}  # order of active reagents for non-supermolecular calculations
 for rxn in HRXN:
 
-    RXNM[   '%s-%s' % (dbse, rxn)] = {'%s-%s-dimer'      % (dbse, rxn) : +1,
-                                      '%s-%s-monoA-CP'   % (dbse, rxn) : -1,
-                                      '%s-%s-monoB-CP'   % (dbse, rxn) : -1,
-                                      '%s-%s-monoA-unCP' % (dbse, rxn) : -1,
-                                      '%s-%s-monoB-unCP' % (dbse, rxn) : -1 }
+    RXNM['%s-%s' % (dbse, rxn)] = {
+        '%s-%s-dimer' % (dbse, rxn): +1,
+        '%s-%s-monoA-CP' % (dbse, rxn): -1,
+        '%s-%s-monoB-CP' % (dbse, rxn): -1,
+        '%s-%s-monoA-unCP' % (dbse, rxn): -1,
+        '%s-%s-monoB-unCP' % (dbse, rxn): -1
+    }
 
-    ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn) ]
+    ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn)]
 
-    ACTV_CP['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),
-                                      '%s-%s-monoA-CP'   % (dbse, rxn),
-                                      '%s-%s-monoB-CP'   % (dbse, rxn) ]
+    ACTV_CP['%s-%s' % (dbse, rxn)] = [
+        '%s-%s-dimer' % (dbse, rxn),
+        '%s-%s-monoA-CP' % (dbse, rxn),
+        '%s-%s-monoB-CP' % (dbse, rxn)
+    ]
 
-    ACTV[   '%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),
-                                      '%s-%s-monoA-unCP' % (dbse, rxn),
-                                      '%s-%s-monoB-unCP' % (dbse, rxn) ]
+    ACTV['%s-%s' % (dbse, rxn)] = [
+        '%s-%s-dimer' % (dbse, rxn),
+        '%s-%s-monoA-unCP' % (dbse, rxn),
+        '%s-%s-monoB-unCP' % (dbse, rxn)
+    ]
 
 # <<< Reference Values [kcal/mol] from Rezac and Hobza dx.doi.org/10.1021/ct400057w >>>
 BIND = {}
-BIND['%s-%s'            % (dbse, 1  )] =    -6.524
-BIND['%s-%s'            % (dbse, 2  )] =    -5.014
-BIND['%s-%s'            % (dbse, 3  )] =    -4.749
-BIND['%s-%s'            % (dbse, 4  )] =    -4.572
-BIND['%s-%s'            % (dbse, 5  )] =    -3.157
-BIND['%s-%s'            % (dbse, 6  )] =    -1.679
-BIND['%s-%s'            % (dbse, 7  )] =    -0.779
-BIND['%s-%s'            % (dbse, 8  )] =    -0.672
-BIND['%s-%s'            % (dbse, 9  )] =    -4.474
-BIND['%s-%s'            % (dbse, 10 )] =    -2.578
-BIND['%s-%s'            % (dbse, 11 )] =    -1.629
-BIND['%s-%s'            % (dbse, 12 )] =    -1.537
-BIND['%s-%s'            % (dbse, 13 )] =    -1.389
-BIND['%s-%s'            % (dbse, 14 )] =    -1.110
-BIND['%s-%s'            % (dbse, 15 )] =    -0.514
-BIND['%s-%s'            % (dbse, 16 )] =    -1.518
-BIND['%s-%s'            % (dbse, 17 )] =    -0.837
-BIND['%s-%s'            % (dbse, 18 )] =    -0.615
-BIND['%s-%s'            % (dbse, 19 )] =    -0.538
-BIND['%s-%s'            % (dbse, 20 )] =    -0.408
-BIND['%s-%s'            % (dbse, 21 )] =    -0.370
-BIND['%s-%s'            % (dbse, 22 )] =    0.784
-BIND['%s-%s'            % (dbse, 23 )] =    0.897
-BIND['%s-%s'            % (dbse, 24 )] =    1.075
-
+BIND['%s-%s' % (dbse, 1)] = -6.524
+BIND['%s-%s' % (dbse, 2)] = -5.014
+BIND['%s-%s' % (dbse, 3)] = -4.749
+BIND['%s-%s' % (dbse, 4)] = -4.572
+BIND['%s-%s' % (dbse, 5)] = -3.157
+BIND['%s-%s' % (dbse, 6)] = -1.679
+BIND['%s-%s' % (dbse, 7)] = -0.779
+BIND['%s-%s' % (dbse, 8)] = -0.672
+BIND['%s-%s' % (dbse, 9)] = -4.474
+BIND['%s-%s' % (dbse, 10)] = -2.578
+BIND['%s-%s' % (dbse, 11)] = -1.629
+BIND['%s-%s' % (dbse, 12)] = -1.537
+BIND['%s-%s' % (dbse, 13)] = -1.389
+BIND['%s-%s' % (dbse, 14)] = -1.110
+BIND['%s-%s' % (dbse, 15)] = -0.514
+BIND['%s-%s' % (dbse, 16)] = -1.518
+BIND['%s-%s' % (dbse, 17)] = -0.837
+BIND['%s-%s' % (dbse, 18)] = -0.615
+BIND['%s-%s' % (dbse, 19)] = -0.538
+BIND['%s-%s' % (dbse, 20)] = -0.408
+BIND['%s-%s' % (dbse, 21)] = -0.370
+BIND['%s-%s' % (dbse, 22)] = 0.784
+BIND['%s-%s' % (dbse, 23)] = 0.897
+BIND['%s-%s' % (dbse, 24)] = 1.075
 
 # <<< Comment Lines >>>
 TAGL = {}
-TAGL['%s-%s'            % (dbse, 1)] = """ water_ammonia_Cs """
-TAGL['%s-%s-dimer'      % (dbse, 1)] = """Dimer from water_ammonia_Cs """
-TAGL['%s-%s-monoA-CP'   % (dbse, 1)] = """Monomer A water_ammonia_Cs  """
-TAGL['%s-%s-monoB-CP'   % (dbse, 1)] = """Monomer B water_ammonia_Cs  """
+TAGL['%s-%s' % (dbse, 1)] = """ water_ammonia_Cs """
+TAGL['%s-%s-dimer' % (dbse, 1)] = """Dimer from water_ammonia_Cs """
+TAGL['%s-%s-monoA-CP' % (dbse, 1)] = """Monomer A water_ammonia_Cs  """
+TAGL['%s-%s-monoB-CP' % (dbse, 1)] = """Monomer B water_ammonia_Cs  """
 TAGL['%s-%s-monoA-unCP' % (dbse, 1)] = """Monomer A water_ammonia_Cs  """
 TAGL['%s-%s-monoB-unCP' % (dbse, 1)] = """Monomer B water_ammonia_Cs  """
-TAGL['%s-%s'            % (dbse, 2)] = """ water_water_Cs """
-TAGL['%s-%s-dimer'      % (dbse, 2)] = """Dimer from water_water_Cs """
-TAGL['%s-%s-monoA-CP'   % (dbse, 2)] = """Monomer A from water_water_Cs """
-TAGL['%s-%s-monoB-CP'   % (dbse, 2)] = """Monomer B from water_water_Cs """
+TAGL['%s-%s' % (dbse, 2)] = """ water_water_Cs """
+TAGL['%s-%s-dimer' % (dbse, 2)] = """Dimer from water_water_Cs """
+TAGL['%s-%s-monoA-CP' % (dbse, 2)] = """Monomer A from water_water_Cs """
+TAGL['%s-%s-monoB-CP' % (dbse, 2)] = """Monomer B from water_water_Cs """
 TAGL['%s-%s-monoA-unCP' % (dbse, 2)] = """Monomer A from water_water_Cs """
 TAGL['%s-%s-monoB-unCP' % (dbse, 2)] = """Monomer B from water_water_Cs """
-TAGL['%s-%s'            % (dbse, 3)] = """ HCN_HCN_Cxv """
-TAGL['%s-%s-dimer'      % (dbse, 3)] = """Dimer from HCN_HCN_Cxv """
-TAGL['%s-%s-monoA-CP'   % (dbse, 3)] = """Monomer A from HCN_HCN_Cxv """
-TAGL['%s-%s-monoB-CP'   % (dbse, 3)] = """Monomer B from HCN_HCN_Cxv """
+TAGL['%s-%s' % (dbse, 3)] = """ HCN_HCN_Cxv """
+TAGL['%s-%s-dimer' % (dbse, 3)] = """Dimer from HCN_HCN_Cxv """
+TAGL['%s-%s-monoA-CP' % (dbse, 3)] = """Monomer A from HCN_HCN_Cxv """
+TAGL['%s-%s-monoB-CP' % (dbse, 3)] = """Monomer B from HCN_HCN_Cxv """
 TAGL['%s-%s-monoA-unCP' % (dbse, 3)] = """Monomer A from HCN_HCN_Cxv """
 TAGL['%s-%s-monoB-unCP' % (dbse, 3)] = """Monomer B from HCN_HCN_Cxv """
-TAGL['%s-%s'            % (dbse, 4)] = """ HF_HF_Cs """
-TAGL['%s-%s-dimer'      % (dbse, 4)] = """Dimer from HF_HF_Cs  """
-TAGL['%s-%s-monoA-CP'   % (dbse, 4)] = """Monomer A from HF_HF_Cs """
-TAGL['%s-%s-monoB-CP'   % (dbse, 4)] = """Monomer B from HF_HF_Cs """
+TAGL['%s-%s' % (dbse, 4)] = """ HF_HF_Cs """
+TAGL['%s-%s-dimer' % (dbse, 4)] = """Dimer from HF_HF_Cs  """
+TAGL['%s-%s-monoA-CP' % (dbse, 4)] = """Monomer A from HF_HF_Cs """
+TAGL['%s-%s-monoB-CP' % (dbse, 4)] = """Monomer B from HF_HF_Cs """
 TAGL['%s-%s-monoA-unCP' % (dbse, 4)] = """Monomer A from HF_HF_Cs """
 TAGL['%s-%s-monoB-unCP' % (dbse, 4)] = """Monomer B from HF_HF_Cs """
-TAGL['%s-%s'            % (dbse, 5)] = """ ammonia_ammonia_C2h """
-TAGL['%s-%s-dimer'      % (dbse, 5)] = """Dimer from ammonia_ammonia_C2h """
-TAGL['%s-%s-monoA-CP'   % (dbse, 5)] = """Monomer A from ammonia_ammonia_C2h """
-TAGL['%s-%s-monoB-CP'   % (dbse, 5)] = """Monomer B from ammonia_ammonia_C2h """
+TAGL['%s-%s' % (dbse, 5)] = """ ammonia_ammonia_C2h """
+TAGL['%s-%s-dimer' % (dbse, 5)] = """Dimer from ammonia_ammonia_C2h """
+TAGL['%s-%s-monoA-CP' % (dbse, 5)] = """Monomer A from ammonia_ammonia_C2h """
+TAGL['%s-%s-monoB-CP' % (dbse, 5)] = """Monomer B from ammonia_ammonia_C2h """
 TAGL['%s-%s-monoA-unCP' % (dbse, 5)] = """Monomer A from ammonia_ammonia_C2h """
 TAGL['%s-%s-monoB-unCP' % (dbse, 5)] = """Monomer B from ammonia_ammonia_C2h """
-TAGL['%s-%s'            % (dbse, 6)] = """ methane_HF_C3v """
-TAGL['%s-%s-dimer'      % (dbse, 6)] = """Dimer from methane_HF_C3v """
-TAGL['%s-%s-monoA-CP'   % (dbse, 6)] = """Monomer A from methane_HF_C3v """
-TAGL['%s-%s-monoB-CP'   % (dbse, 6)] = """Monomer B from methane_HF_C3v """
+TAGL['%s-%s' % (dbse, 6)] = """ methane_HF_C3v """
+TAGL['%s-%s-dimer' % (dbse, 6)] = """Dimer from methane_HF_C3v """
+TAGL['%s-%s-monoA-CP' % (dbse, 6)] = """Monomer A from methane_HF_C3v """
+TAGL['%s-%s-monoB-CP' % (dbse, 6)] = """Monomer B from methane_HF_C3v """
 TAGL['%s-%s-monoA-unCP' % (dbse, 6)] = """Monomer A from methane_HF_C3v """
 TAGL['%s-%s-monoB-unCP' % (dbse, 6)] = """Monomer B from methane_HF_C3v """
-TAGL['%s-%s'            % (dbse, 7)] = """ ammmonia_methane_C3v """
-TAGL['%s-%s-dimer'      % (dbse, 7)] = """Dimer from ammmonia_methane_C3v """
-TAGL['%s-%s-monoA-CP'   % (dbse, 7)] = """Monomer A from ammmonia_methane_C3v """
-TAGL['%s-%s-monoB-CP'   % (dbse, 7)] = """Monomer B from ammmonia_methane_C3v """
+TAGL['%s-%s' % (dbse, 7)] = """ ammmonia_methane_C3v """
+TAGL['%s-%s-dimer' % (dbse, 7)] = """Dimer from ammmonia_methane_C3v """
+TAGL['%s-%s-monoA-CP' % (dbse, 7)] = """Monomer A from ammmonia_methane_C3v """
+TAGL['%s-%s-monoB-CP' % (dbse, 7)] = """Monomer B from ammmonia_methane_C3v """
 TAGL['%s-%s-monoA-unCP' % (dbse, 7)] = """Monomer A from ammmonia_methane_C3v """
 TAGL['%s-%s-monoB-unCP' % (dbse, 7)] = """Monomer B from ammmonia_methane_C3v """
-TAGL['%s-%s'            % (dbse, 8)] = """ methane_water_Cs """
-TAGL['%s-%s-dimer'      % (dbse, 8)] = """Dimer from methane_water_Cs """
-TAGL['%s-%s-monoA-CP'   % (dbse, 8)] = """Monomer A from methane_water_Cs """
-TAGL['%s-%s-monoB-CP'   % (dbse, 8)] = """Monomer B from methane_water_Cs """
+TAGL['%s-%s' % (dbse, 8)] = """ methane_water_Cs """
+TAGL['%s-%s-dimer' % (dbse, 8)] = """Dimer from methane_water_Cs """
+TAGL['%s-%s-monoA-CP' % (dbse, 8)] = """Monomer A from methane_water_Cs """
+TAGL['%s-%s-monoB-CP' % (dbse, 8)] = """Monomer B from methane_water_Cs """
 TAGL['%s-%s-monoA-unCP' % (dbse, 8)] = """Monomer A from methane_water_Cs """
 TAGL['%s-%s-monoB-unCP' % (dbse, 8)] = """Monomer B from methane_water_Cs """
-TAGL['%s-%s'            % (dbse, 9)] = """ formaldehyde_formaldehyde_Cs """
-TAGL['%s-%s-dimer'      % (dbse, 9)] = """Dimer from formaldehyde_formaldehyde_Cs """
-TAGL['%s-%s-monoA-CP'   % (dbse, 9)] = """Monomer A from formaldehyde_formaldehyde_Cs """
-TAGL['%s-%s-monoB-CP'   % (dbse, 9)] = """Monomer B from formaldehyde_formaldehyde_Cs """
+TAGL['%s-%s' % (dbse, 9)] = """ formaldehyde_formaldehyde_Cs """
+TAGL['%s-%s-dimer' % (dbse, 9)] = """Dimer from formaldehyde_formaldehyde_Cs """
+TAGL['%s-%s-monoA-CP' % (dbse, 9)] = """Monomer A from formaldehyde_formaldehyde_Cs """
+TAGL['%s-%s-monoB-CP' % (dbse, 9)] = """Monomer B from formaldehyde_formaldehyde_Cs """
 TAGL['%s-%s-monoA-unCP' % (dbse, 9)] = """Monomer A from formaldehyde_formaldehyde_Cs """
 TAGL['%s-%s-monoB-unCP' % (dbse, 9)] = """Monomer B from formaldehyde_formaldehyde_Cs """
-TAGL['%s-%s'            % (dbse, 10)] = """ ethene_wat_Cs """
-TAGL['%s-%s-dimer'      % (dbse, 10)] = """Dimer from ethene_wat_Cs """
-TAGL['%s-%s-monoA-CP'   % (dbse, 10)] = """Monomer A from ethene_wat_Cs """
-TAGL['%s-%s-monoB-CP'   % (dbse, 10)] = """Monomer B from ethene_wat_Cs """
+TAGL['%s-%s' % (dbse, 10)] = """ ethene_wat_Cs """
+TAGL['%s-%s-dimer' % (dbse, 10)] = """Dimer from ethene_wat_Cs """
+TAGL['%s-%s-monoA-CP' % (dbse, 10)] = """Monomer A from ethene_wat_Cs """
+TAGL['%s-%s-monoB-CP' % (dbse, 10)] = """Monomer B from ethene_wat_Cs """
 TAGL['%s-%s-monoA-unCP' % (dbse, 10)] = """Monomer A from ethene_wat_Cs """
 TAGL['%s-%s-monoB-unCP' % (dbse, 10)] = """Monomer B from ethene_wat_Cs """
-TAGL['%s-%s'            % (dbse, 11)] = """ ethene_formaldehyde_Cs """
-TAGL['%s-%s-dimer'      % (dbse, 11)] = """Dimer from ethene_formaldehyde_Cs """
-TAGL['%s-%s-monoA-CP'   % (dbse, 11)] = """Monomer A from ethene_formaldehyde_Cs """
-TAGL['%s-%s-monoB-CP'   % (dbse, 11)] = """Monomer B from ethene_formaldehyde_Cs """
+TAGL['%s-%s' % (dbse, 11)] = """ ethene_formaldehyde_Cs """
+TAGL['%s-%s-dimer' % (dbse, 11)] = """Dimer from ethene_formaldehyde_Cs """
+TAGL['%s-%s-monoA-CP' % (dbse, 11)] = """Monomer A from ethene_formaldehyde_Cs """
+TAGL['%s-%s-monoB-CP' % (dbse, 11)] = """Monomer B from ethene_formaldehyde_Cs """
 TAGL['%s-%s-monoA-unCP' % (dbse, 11)] = """Monomer A from ethene_formaldehyde_Cs """
 TAGL['%s-%s-monoB-unCP' % (dbse, 11)] = """Monomer B from ethene_formaldehyde_Cs """
-TAGL['%s-%s'            % (dbse, 12)] = """ ethyne_ethyne_C2v """
-TAGL['%s-%s-dimer'      % (dbse, 12)] = """Dimer from ethyne_ethyne_C2v """
-TAGL['%s-%s-monoA-CP'   % (dbse, 12)] = """Monomer A from ethyne_ethyne_C2v """
-TAGL['%s-%s-monoB-CP'   % (dbse, 12)] = """Monomer B from ethyne_ethyne_C2v """
+TAGL['%s-%s' % (dbse, 12)] = """ ethyne_ethyne_C2v """
+TAGL['%s-%s-dimer' % (dbse, 12)] = """Dimer from ethyne_ethyne_C2v """
+TAGL['%s-%s-monoA-CP' % (dbse, 12)] = """Monomer A from ethyne_ethyne_C2v """
+TAGL['%s-%s-monoB-CP' % (dbse, 12)] = """Monomer B from ethyne_ethyne_C2v """
 TAGL['%s-%s-monoA-unCP' % (dbse, 12)] = """Monomer A from ethyne_ethyne_C2v """
 TAGL['%s-%s-monoB-unCP' % (dbse, 12)] = """Monomer B from ethyne_ethyne_C2v """
-TAGL['%s-%s'            % (dbse, 13)] = """ ethene_ammonia_Cs """
-TAGL['%s-%s-dimer'      % (dbse, 13)] = """Dimer from ethene_ammonia_Cs """
-TAGL['%s-%s-monoA-CP'   % (dbse, 13)] = """Monomer A from ethene_ammonia_Cs """
-TAGL['%s-%s-monoB-CP'   % (dbse, 13)] = """Monomer B from ethene_ammonia_Cs """
+TAGL['%s-%s' % (dbse, 13)] = """ ethene_ammonia_Cs """
+TAGL['%s-%s-dimer' % (dbse, 13)] = """Dimer from ethene_ammonia_Cs """
+TAGL['%s-%s-monoA-CP' % (dbse, 13)] = """Monomer A from ethene_ammonia_Cs """
+TAGL['%s-%s-monoB-CP' % (dbse, 13)] = """Monomer B from ethene_ammonia_Cs """
 TAGL['%s-%s-monoA-unCP' % (dbse, 13)] = """Monomer A from ethene_ammonia_Cs """
 TAGL['%s-%s-monoB-unCP' % (dbse, 13)] = """Monomer B from ethene_ammonia_Cs """
-TAGL['%s-%s'            % (dbse, 14)] = """ ethene_ethene_C2v """
-TAGL['%s-%s-dimer'      % (dbse, 14)] = """Dimer from ethene_ethene_C2v """
-TAGL['%s-%s-monoA-CP'   % (dbse, 14)] = """Monomer A from ethene_ethene_C2v """
-TAGL['%s-%s-monoB-CP'   % (dbse, 14)] = """Monomer B from ethene_ethene_C2v """
+TAGL['%s-%s' % (dbse, 14)] = """ ethene_ethene_C2v """
+TAGL['%s-%s-dimer' % (dbse, 14)] = """Dimer from ethene_ethene_C2v """
+TAGL['%s-%s-monoA-CP' % (dbse, 14)] = """Monomer A from ethene_ethene_C2v """
+TAGL['%s-%s-monoB-CP' % (dbse, 14)] = """Monomer B from ethene_ethene_C2v """
 TAGL['%s-%s-monoA-unCP' % (dbse, 14)] = """Monomer A from ethene_ethene_C2v """
 TAGL['%s-%s-monoB-unCP' % (dbse, 14)] = """Monomer B from ethene_ethene_C2v """
-TAGL['%s-%s'            % (dbse, 15)] = """ methane_ethene_Cs """
-TAGL['%s-%s-dimer'      % (dbse, 15)] = """Dimer from methane_ethene_Cs """
-TAGL['%s-%s-monoA-CP'   % (dbse, 15)] = """Monomer A from methane_ethene_Cs """
-TAGL['%s-%s-monoB-CP'   % (dbse, 15)] = """Monomer B from methane_ethene_Cs """
+TAGL['%s-%s' % (dbse, 15)] = """ methane_ethene_Cs """
+TAGL['%s-%s-dimer' % (dbse, 15)] = """Dimer from methane_ethene_Cs """
+TAGL['%s-%s-monoA-CP' % (dbse, 15)] = """Monomer A from methane_ethene_Cs """
+TAGL['%s-%s-monoB-CP' % (dbse, 15)] = """Monomer B from methane_ethene_Cs """
 TAGL['%s-%s-monoA-unCP' % (dbse, 15)] = """Monomer A from methane_ethene_Cs """
 TAGL['%s-%s-monoB-unCP' % (dbse, 15)] = """Monomer B from methane_ethene_Cs """
-TAGL['%s-%s'            % (dbse, 16)] = """ borane_methane_Cs """
-TAGL['%s-%s-dimer'      % (dbse, 16)] = """Dimer from borane_methane_Cs """
-TAGL['%s-%s-monoA-CP'   % (dbse, 16)] = """Monomer A from borane_methane_Cs """
-TAGL['%s-%s-monoB-CP'   % (dbse, 16)] = """Monomer B from borane_methane_Cs """
+TAGL['%s-%s' % (dbse, 16)] = """ borane_methane_Cs """
+TAGL['%s-%s-dimer' % (dbse, 16)] = """Dimer from borane_methane_Cs """
+TAGL['%s-%s-monoA-CP' % (dbse, 16)] = """Monomer A from borane_methane_Cs """
+TAGL['%s-%s-monoB-CP' % (dbse, 16)] = """Monomer B from borane_methane_Cs """
 TAGL['%s-%s-monoA-unCP' % (dbse, 16)] = """Monomer A from borane_methane_Cs """
 TAGL['%s-%s-monoB-unCP' % (dbse, 16)] = """Monomer B from borane_methane_Cs """
-TAGL['%s-%s'            % (dbse, 17)] = """ methane_ethane_Cs """
-TAGL['%s-%s-dimer'      % (dbse, 17)] = """Dimer from methane_ethane_Cs """
-TAGL['%s-%s-monoA-CP'   % (dbse, 17)] = """Monomer A from methane_ethane_Cs """
-TAGL['%s-%s-monoB-CP'   % (dbse, 17)] = """Monomer B from methane_ethane_Cs """
+TAGL['%s-%s' % (dbse, 17)] = """ methane_ethane_Cs """
+TAGL['%s-%s-dimer' % (dbse, 17)] = """Dimer from methane_ethane_Cs """
+TAGL['%s-%s-monoA-CP' % (dbse, 17)] = """Monomer A from methane_ethane_Cs """
+TAGL['%s-%s-monoB-CP' % (dbse, 17)] = """Monomer B from methane_ethane_Cs """
 TAGL['%s-%s-monoA-unCP' % (dbse, 17)] = """Monomer A from methane_ethane_Cs """
 TAGL['%s-%s-monoB-unCP' % (dbse, 17)] = """Monomer B from methane_ethane_Cs """
-TAGL['%s-%s'            % (dbse, 18)] = """ methane_ethane_C3 """
-TAGL['%s-%s-dimer'      % (dbse, 18)] = """Dimer from methane_ethane_C3 """
-TAGL['%s-%s-monoA-CP'   % (dbse, 18)] = """Monomer A from methane_ethane_C3 """
-TAGL['%s-%s-monoB-CP'   % (dbse, 18)] = """Monomer B from methane_ethane_C3 """
+TAGL['%s-%s' % (dbse, 18)] = """ methane_ethane_C3 """
+TAGL['%s-%s-dimer' % (dbse, 18)] = """Dimer from methane_ethane_C3 """
+TAGL['%s-%s-monoA-CP' % (dbse, 18)] = """Monomer A from methane_ethane_C3 """
+TAGL['%s-%s-monoB-CP' % (dbse, 18)] = """Monomer B from methane_ethane_C3 """
 TAGL['%s-%s-monoA-unCP' % (dbse, 18)] = """Monomer A from methane_ethane_C3 """
 TAGL['%s-%s-monoB-unCP' % (dbse, 18)] = """Monomer B from methane_ethane_C3 """
-TAGL['%s-%s'            % (dbse, 19)] = """ methane_methane_D3d """
-TAGL['%s-%s-dimer'      % (dbse, 19)] = """Dimer from methane_methane_D3d """
-TAGL['%s-%s-monoA-CP'   % (dbse, 19)] = """Monomer A from methane_methane_D3d """
-TAGL['%s-%s-monoB-CP'   % (dbse, 19)] = """Monomer B from methane_methane_D3d """
+TAGL['%s-%s' % (dbse, 19)] = """ methane_methane_D3d """
+TAGL['%s-%s-dimer' % (dbse, 19)] = """Dimer from methane_methane_D3d """
+TAGL['%s-%s-monoA-CP' % (dbse, 19)] = """Monomer A from methane_methane_D3d """
+TAGL['%s-%s-monoB-CP' % (dbse, 19)] = """Monomer B from methane_methane_D3d """
 TAGL['%s-%s-monoA-unCP' % (dbse, 19)] = """Monomer A from methane_methane_D3d """
 TAGL['%s-%s-monoB-unCP' % (dbse, 19)] = """Monomer B from methane_methane_D3d """
-TAGL['%s-%s'            % (dbse, 20)] = """ methane_Ar_C3v """
-TAGL['%s-%s-dimer'      % (dbse, 20)] = """Dimer from methane_Ar_C3v """
-TAGL['%s-%s-monoA-CP'   % (dbse, 20)] = """Monomer A from methane_Ar_C3v """
-TAGL['%s-%s-monoB-CP'   % (dbse, 20)] = """Monomer B from methane_Ar_C3v """
+TAGL['%s-%s' % (dbse, 20)] = """ methane_Ar_C3v """
+TAGL['%s-%s-dimer' % (dbse, 20)] = """Dimer from methane_Ar_C3v """
+TAGL['%s-%s-monoA-CP' % (dbse, 20)] = """Monomer A from methane_Ar_C3v """
+TAGL['%s-%s-monoB-CP' % (dbse, 20)] = """Monomer B from methane_Ar_C3v """
 TAGL['%s-%s-monoA-unCP' % (dbse, 20)] = """Monomer A from methane_Ar_C3v """
 TAGL['%s-%s-monoB-unCP' % (dbse, 20)] = """Monomer B from methane_Ar_C3v """
-TAGL['%s-%s'            % (dbse, 21)] = """ ethene_Ar_C2v """
-TAGL['%s-%s-dimer'      % (dbse, 21)] = """Dimer from ethene_Ar_C2v """
-TAGL['%s-%s-monoA-CP'   % (dbse, 21)] = """Monomer A from ethene_Ar_C2v """
-TAGL['%s-%s-monoB-CP'   % (dbse, 21)] = """Monomer B from ethene_Ar_C2v """
+TAGL['%s-%s' % (dbse, 21)] = """ ethene_Ar_C2v """
+TAGL['%s-%s-dimer' % (dbse, 21)] = """Dimer from ethene_Ar_C2v """
+TAGL['%s-%s-monoA-CP' % (dbse, 21)] = """Monomer A from ethene_Ar_C2v """
+TAGL['%s-%s-monoB-CP' % (dbse, 21)] = """Monomer B from ethene_Ar_C2v """
 TAGL['%s-%s-monoA-unCP' % (dbse, 21)] = """Monomer A from ethene_Ar_C2v """
 TAGL['%s-%s-monoB-unCP' % (dbse, 21)] = """Monomer B from ethene_Ar_C2v """
-TAGL['%s-%s'            % (dbse, 22)] = """ ethene_ethyne_C2v """
-TAGL['%s-%s-dimer'      % (dbse, 22)] = """Dimer from ethene_ethyne_C2v """
-TAGL['%s-%s-monoA-CP'   % (dbse, 22)] = """Monomer A from ethene_ethyne_C2v """
-TAGL['%s-%s-monoB-CP'   % (dbse, 22)] = """Monomer B from ethene_ethyne_C2v """
+TAGL['%s-%s' % (dbse, 22)] = """ ethene_ethyne_C2v """
+TAGL['%s-%s-dimer' % (dbse, 22)] = """Dimer from ethene_ethyne_C2v """
+TAGL['%s-%s-monoA-CP' % (dbse, 22)] = """Monomer A from ethene_ethyne_C2v """
+TAGL['%s-%s-monoB-CP' % (dbse, 22)] = """Monomer B from ethene_ethyne_C2v """
 TAGL['%s-%s-monoA-unCP' % (dbse, 22)] = """Monomer A from ethene_ethyne_C2v """
 TAGL['%s-%s-monoB-unCP' % (dbse, 22)] = """Monomer B from ethene_ethyne_C2v """
-TAGL['%s-%s'            % (dbse, 23)] = """ ethene_ethene_D2h """
-TAGL['%s-%s-dimer'      % (dbse, 23)] = """Dimer from ethene_ethene_D2h """
-TAGL['%s-%s-monoA-CP'   % (dbse, 23)] = """Monomer A from ethene_ethene_D2h """
-TAGL['%s-%s-monoB-CP'   % (dbse, 23)] = """Monomer B from ethene_ethene_D2h """
+TAGL['%s-%s' % (dbse, 23)] = """ ethene_ethene_D2h """
+TAGL['%s-%s-dimer' % (dbse, 23)] = """Dimer from ethene_ethene_D2h """
+TAGL['%s-%s-monoA-CP' % (dbse, 23)] = """Monomer A from ethene_ethene_D2h """
+TAGL['%s-%s-monoB-CP' % (dbse, 23)] = """Monomer B from ethene_ethene_D2h """
 TAGL['%s-%s-monoA-unCP' % (dbse, 23)] = """Monomer A from ethene_ethene_D2h """
 TAGL['%s-%s-monoB-unCP' % (dbse, 23)] = """Monomer B from ethene_ethene_D2h """
-TAGL['%s-%s'            % (dbse, 24)] = """ ethyne_ethyne_D2h """
-TAGL['%s-%s-dimer'      % (dbse, 24)] = """Dimer from ethyne_ethyne_D2h """
-TAGL['%s-%s-monoA-CP'   % (dbse, 24)] = """Monomer A from ethyne_ethyne_D2h """
-TAGL['%s-%s-monoB-CP'   % (dbse, 24)] = """Monomer B from ethyne_ethyne_D2h """
+TAGL['%s-%s' % (dbse, 24)] = """ ethyne_ethyne_D2h """
+TAGL['%s-%s-dimer' % (dbse, 24)] = """Dimer from ethyne_ethyne_D2h """
+TAGL['%s-%s-monoA-CP' % (dbse, 24)] = """Monomer A from ethyne_ethyne_D2h """
+TAGL['%s-%s-monoB-CP' % (dbse, 24)] = """Monomer B from ethyne_ethyne_D2h """
 TAGL['%s-%s-monoA-unCP' % (dbse, 24)] = """Monomer A from ethyne_ethyne_D2h """
 TAGL['%s-%s-monoB-unCP' % (dbse, 24)] = """Monomer B from ethyne_ethyne_D2h """
 
@@ -641,10 +645,9 @@ C          0.00000000       0.60339700       1.75000000
 units angstrom
 """)
 
-
 # <<< Derived Geometry Strings >>>
 for rxn in HRXN:
     GEOS['%s-%s-monoA-unCP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(1)
     GEOS['%s-%s-monoB-unCP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(2)
-    GEOS['%s-%s-monoA-CP'   % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(1, 2)
-    GEOS['%s-%s-monoB-CP'   % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(2, 1)
+    GEOS['%s-%s-monoA-CP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(1, 2)
+    GEOS['%s-%s-monoB-CP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(2, 1)

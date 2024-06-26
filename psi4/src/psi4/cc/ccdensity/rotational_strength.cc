@@ -58,7 +58,7 @@ void transdip(const MintsHelper &mints);
 void transp(const MintsHelper &mints, double sign);
 void transL(const MintsHelper &mints, double sign);
 
-void rotational_strength(ccenergy::CCEnergyWavefunction& wfn, struct TD_Params *S) {
+void rotational_strength(ccenergy::CCEnergyWavefunction &wfn, struct TD_Params *S) {
     int i, j, k;
     int no, nv, nt;
     double rs_lx, rs_ly, rs_lz;
@@ -67,7 +67,7 @@ void rotational_strength(ccenergy::CCEnergyWavefunction& wfn, struct TD_Params *
     double rs;
     double conv;
     int nmo = moinfo.nmo;
-    const auto& mints = *wfn.mintshelper();
+    const auto &mints = *wfn.mintshelper();
 
     transdip(mints);
 
@@ -194,5 +194,5 @@ void rotational_strength(ccenergy::CCEnergyWavefunction& wfn, struct TD_Params *
 
     return;
 }
-}
+}  // namespace ccdensity
 }  // namespace psi

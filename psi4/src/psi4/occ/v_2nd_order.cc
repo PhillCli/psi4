@@ -289,5 +289,5 @@ void OCCWave::v_2nd_order() {
     }  // end if (reference_ == "UNRESTRICTED")
 
 }  // end V_2nd_order
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

@@ -43,13 +43,13 @@ namespace psi {
 
 // trim from start
 static inline std::string &dpd_ltrim(std::string &s) {
-    s.erase(s.begin(), find_if(s.begin(), s.end(), [](int c) {return !std::isspace(c);}));
+    s.erase(s.begin(), find_if(s.begin(), s.end(), [](int c) { return !std::isspace(c); }));
     return s;
 }
 
 // trim from end
 static inline std::string &dpd_rtrim(std::string &s) {
-    s.erase(find_if(s.rbegin(), s.rend(), [](int c) {return !std::isspace(c);}).base(), s.end());
+    s.erase(find_if(s.rbegin(), s.rend(), [](int c) { return !std::isspace(c); }).base(), s.end());
     return s;
 }
 

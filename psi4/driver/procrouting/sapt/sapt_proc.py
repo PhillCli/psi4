@@ -79,7 +79,9 @@ def run_sapt_dft(name, **kwargs):
     core.print_out("\n")
 
     # core.print_out("  !!!  WARNING:  SAPT(DFT) capability is in beta. Please use with caution. !!!\n\n")
-    core.print_out("Warning! The default value of SAPT_DFT_EXCH_DISP_SCALE_SCHEME has changed from DISP to FIXED. Please be careful comparing results with earlier versions. \n\n")
+    core.print_out(
+        "Warning! The default value of SAPT_DFT_EXCH_DISP_SCALE_SCHEME has changed from DISP to FIXED. Please be careful comparing results with earlier versions. \n\n"
+    )
 
     core.print_out("  ==> Algorithm <==\n\n")
     core.print_out("   SAPT DFT Functional     %12s\n" % str(sapt_dft_functional))
@@ -141,7 +143,7 @@ def run_sapt_dft(name, **kwargs):
         core.set_global_option("SAVE_JK", False)
         core.timer_off("SAPT(DFT):Monomer B SCF")
 
-        if do_dft: # For SAPT(HF) do the JK terms in sapt_dft()
+        if do_dft:  # For SAPT(HF) do the JK terms in sapt_dft()
             # Grab JK object and set to A (so we do not save many JK objects)
             sapt_jk = hf_wfn_B.jk()
             hf_wfn_A.set_jk(sapt_jk)
@@ -196,10 +198,10 @@ def run_sapt_dft(name, **kwargs):
             del hf_wfn_A, hf_wfn_B, sapt_jk
 
         else:
-            wfn_A = hf_wfn_A 
+            wfn_A = hf_wfn_A
             wfn_B = hf_wfn_B
-            data["DFT MONOMER A"] = hf_data["HF MONOMER A"] 
-            data["DFT MONOMER B"] = hf_data["HF MONOMER B"] 
+            data["DFT MONOMER A"] = hf_data["HF MONOMER A"]
+            data["DFT MONOMER B"] = hf_data["HF MONOMER B"]
             dhf_value = hf_data["HF DIMER"] - hf_data["HF MONOMER A"] - hf_data["HF MONOMER B"]
             data["DHF VALUE"] = dhf_value
 
@@ -279,10 +281,7 @@ def run_sapt_dft(name, **kwargs):
     return dimer_wfn
 
 
-def sapt_dft_header(sapt_dft_functional="unknown",
-                    mon_a_shift=None,
-                    mon_b_shift=None,
-                    do_delta_hf="N/A",
+def sapt_dft_header(sapt_dft_functional="unknown", mon_a_shift=None, mon_b_shift=None, do_delta_hf="N/A",
                     jk_alg="N/A"):
     # Print out the title and some information
     core.print_out("\n")
@@ -303,7 +302,16 @@ def sapt_dft_header(sapt_dft_functional="unknown",
     core.print_out("   JK Algorithm            %12s\n" % jk_alg)
 
 
-def sapt_dft(dimer_wfn, wfn_A, wfn_B, do_dft=True, sapt_jk=None, sapt_jk_B=None, data=None, print_header=True, cleanup_jk=True, delta_hf=False):
+def sapt_dft(dimer_wfn,
+             wfn_A,
+             wfn_B,
+             do_dft=True,
+             sapt_jk=None,
+             sapt_jk_B=None,
+             data=None,
+             print_header=True,
+             cleanup_jk=True,
+             delta_hf=False):
     """
     The primary SAPT(DFT) algorithm to compute the interaction energy once the wavefunctions have been built.
 
@@ -433,11 +441,11 @@ def sapt_dft(dimer_wfn, wfn_A, wfn_B, do_dft=True, sapt_jk=None, sapt_jk_B=None,
 
     # Dispersion
     core.timer_on("SAPT(DFT):disp")
-    
+
     primary_basis = wfn_A.basisset()
     aux_basis = core.BasisSet.build(dimer_wfn.molecule(), "DF_BASIS_MP2", core.get_option("DFMP2", "DF_BASIS_MP2"),
-                                        "RIFIT", core.get_global_option('BASIS'))
-    
+                                    "RIFIT", core.get_global_option('BASIS'))
+
     if do_dft:
         core.timer_on("FDDS disp")
         core.print_out("\n")
@@ -450,16 +458,20 @@ def sapt_dft(dimer_wfn, wfn_A, wfn_B, do_dft=True, sapt_jk=None, sapt_jk_B=None,
         nfrozen_B = 0
         core.timer_off("FDDS disp")
     else:
-# this is where we actually need to figure out the number of frozen-core orbitals
-# if SAPT_DFT_MP2_DISP_ALG == FISAPT, the code will not figure it out on its own
-        nfrozen_A = wfn_A.basisset().n_frozen_core(core.get_global_option("FREEZE_CORE"),wfn_A.molecule())
-        nfrozen_B = wfn_B.basisset().n_frozen_core(core.get_global_option("FREEZE_CORE"),wfn_B.molecule())
-        
-    
+        # this is where we actually need to figure out the number of frozen-core orbitals
+        # if SAPT_DFT_MP2_DISP_ALG == FISAPT, the code will not figure it out on its own
+        nfrozen_A = wfn_A.basisset().n_frozen_core(core.get_global_option("FREEZE_CORE"), wfn_A.molecule())
+        nfrozen_B = wfn_B.basisset().n_frozen_core(core.get_global_option("FREEZE_CORE"), wfn_B.molecule())
+
     core.timer_on("MP2 disp")
     if core.get_option("SAPT", "SAPT_DFT_MP2_DISP_ALG") == "FISAPT":
-        mp2_disp = sapt_mp2_terms.df_mp2_fisapt_dispersion(wfn_A, primary_basis, aux_basis, 
-                                                           cache, nfrozen_A, nfrozen_B, do_print=True)
+        mp2_disp = sapt_mp2_terms.df_mp2_fisapt_dispersion(wfn_A,
+                                                           primary_basis,
+                                                           aux_basis,
+                                                           cache,
+                                                           nfrozen_A,
+                                                           nfrozen_B,
+                                                           do_print=True)
     else:
         mp2_disp = sapt_mp2_terms.df_mp2_sapt_dispersion(dimer_wfn,
                                                          wfn_A,
@@ -488,7 +500,7 @@ def sapt_dft(dimer_wfn, wfn_A, wfn_B, do_dft=True, sapt_jk=None, sapt_jk_B=None,
 
     core.timer_off("MP2 disp")
     core.timer_off("SAPT(DFT):disp")
-    
+
     # Print out final data
     core.print_out("\n")
     core.print_out(print_sapt_dft_summary(data, "SAPT(DFT)", do_dft=do_dft))

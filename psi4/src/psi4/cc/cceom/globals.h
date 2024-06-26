@@ -52,7 +52,7 @@ namespace cceom {
 
 EXTERN void check_sum(const char *term_lbl, int index, int irrep);
 
-//#define EOM_DEBUG (0)
+// #define EOM_DEBUG (0)
 
 #define H_IRR (0)
 #define MAX(I, J) ((I > J) ? I : J)
@@ -63,7 +63,7 @@ EXTERN struct Params params;
 EXTERN struct Eom_params eom_params;
 EXTERN struct Local local;
 EXTERN int ***dpd_dp;
-}
+}  // namespace cceom
 }  // namespace psi
 
-#endif // _psi_src_bin_cceom_globals_h
+#endif  // _psi_src_bin_cceom_globals_h

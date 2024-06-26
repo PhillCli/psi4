@@ -77,11 +77,10 @@ void IntegralTransform::presort_mo_tpdm_restricted() {
     bucketOffset[0] = init_int_array(nirreps_);
     int **bucketRowDim = (int **)malloc(sizeof(int *));
     bucketRowDim[0] = init_int_array(nirreps_);
-    //int **bucketSize = (int **)malloc(sizeof(int *));
-    //bucketSize[0] = init_int_array(nirreps_);
-    size_t **bucketSize = (size_t **) malloc(sizeof(size_t *));
+    // int **bucketSize = (int **)malloc(sizeof(int *));
+    // bucketSize[0] = init_int_array(nirreps_);
+    size_t **bucketSize = (size_t **)malloc(sizeof(size_t *));
     bucketSize[0] = init_size_t_array(nirreps_);
-
 
     /* Figure out how many passes we need and where each p,q goes */
     int nBuckets = 1;
@@ -118,16 +117,16 @@ void IntegralTransform::presort_mo_tpdm_restricted() {
                 bucketRowDim[nBuckets - 1] = init_int_array(nirreps_);
                 bucketRowDim[nBuckets - 1][h] = 1;
 
-                //p = static_cast<int **>(realloc(static_cast<void *>(bucketSize), nBuckets * sizeof(int *)));
-                size_t **P = static_cast<size_t **>(realloc(static_cast<void *>(bucketSize),
-                                                    nBuckets * sizeof(size_t *)));
+                // p = static_cast<int **>(realloc(static_cast<void *>(bucketSize), nBuckets * sizeof(int *)));
+                size_t **P =
+                    static_cast<size_t **>(realloc(static_cast<void *>(bucketSize), nBuckets * sizeof(size_t *)));
 
                 if (P == nullptr) {
                     throw PsiException("file_build: allocation error", __FILE__, __LINE__);
                 } else {
                     bucketSize = P;
                 }
-                //bucketSize[nBuckets - 1] = init_int_array(nirreps_);
+                // bucketSize[nBuckets - 1] = init_int_array(nirreps_);
                 bucketSize[nBuckets - 1] = init_size_t_array(nirreps_);
                 bucketSize[nBuckets - 1][h] = rowLength;
             }
@@ -168,7 +167,7 @@ void IntegralTransform::presort_mo_tpdm_restricted() {
                 // Check:
                 //                outfile->Printf("\t%4d %4d %4d %4d = %20.10f\n", p, q, r, s, value);
                 dpdFiller(p, q, r, s, value);
-            }               /* end loop through current buffer */
+            } /* end loop through current buffer */
         } while (!lastbuf); /* end loop over reading buffers */
         iwl->set_keep_flag(true);
         delete iwl;
@@ -318,7 +317,7 @@ void IntegralTransform::presort_mo_tpdm_unrestricted() {
                 int s = aCorrToPitzer_[(int)lblptr[labelIndex++]];
                 auto value = (double)valptr[index];
                 aaDpdFiller(p, q, r, s, value);
-            }               /* end loop through current buffer */
+            } /* end loop through current buffer */
         } while (!lastbuf); /* end loop over reading buffers */
         iwl->set_keep_flag(true);
         delete iwl;
@@ -366,7 +365,7 @@ void IntegralTransform::presort_mo_tpdm_unrestricted() {
                 // Check:
                 //                outfile->Printf("\t%4d %4d %4d %4d = %20.10f\n", p, q, r, s, value);
                 abDpdFiller(p, q, r, s, value);
-            }               /* end loop through current buffer */
+            } /* end loop through current buffer */
         } while (!lastbuf); /* end loop over reading buffers */
         iwl->set_keep_flag(true);
         delete iwl;
@@ -412,7 +411,7 @@ void IntegralTransform::presort_mo_tpdm_unrestricted() {
                 int s = bCorrToPitzer_[(int)lblptr[labelIndex++]];
                 auto value = (double)valptr[index];
                 bbDpdFiller(p, q, r, s, value);
-            }               /* end loop through current buffer */
+            } /* end loop through current buffer */
         } while (!lastbuf); /* end loop over reading buffers */
         iwl->set_keep_flag(true);
         delete iwl;

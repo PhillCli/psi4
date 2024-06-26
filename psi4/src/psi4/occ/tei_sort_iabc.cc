@@ -116,5 +116,5 @@ void OCCWave::tei_sort_iabc() {
      */
     // outfile->Printf("tei_sort_iabc done. \n");
 }  // end sort_iabc
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

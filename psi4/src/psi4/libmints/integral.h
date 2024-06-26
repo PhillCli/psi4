@@ -36,29 +36,22 @@
 #include "onebody.h"
 #include "twobody.h"
 
-
 namespace psi {
 
 /*! \def INT_NCART(am)
     Gives the number of cartesian functions for an angular momentum.
 */
-inline int INT_NCART(unsigned int am) {
-    return (am >= 0) ? ((((am) + 2) * ((am) + 1)) >> 1) : 0;
-}
+inline int INT_NCART(unsigned int am) { return (am >= 0) ? ((((am) + 2) * ((am) + 1)) >> 1) : 0; }
 
 /*! \def INT_PURE(am)
     Gives the number of spherical functions for an angular momentum.
 */
-inline int INT_NPURE(unsigned int am) {
-    return 2 * (am) + 1;
-}
+inline int INT_NPURE(unsigned int am) { return 2 * (am) + 1; }
 
 /*! \def INT_NFUNC(pu,am)
     Gives the number of functions for an angular momentum based on pu.
 */
-inline int INT_NFUNC(unsigned int pu, unsigned int am) {
-    return (pu) ? INT_NPURE(am) : INT_NCART(am);
-}
+inline int INT_NFUNC(unsigned int pu, unsigned int am) { return (pu) ? INT_NPURE(am) : INT_NCART(am); }
 
 /*! \def INT_CARTINDEX(am,i,j)
     Computes offset index for cartesian function.
@@ -70,17 +63,12 @@ inline int INT_CARTINDEX(unsigned int am, int i, int j) {
 /*! \def INT_ICART(a, b, c)
     Given a, b, and c compute a cartesian offset.
 */
-inline int INT_ICART(int a, int b, int c) {
-    return ((((((a) + (b) + (c) + 1) << 1) - (a)) * ((a) + 1)) >> 1) - (b)-1;
-}
+inline int INT_ICART(int a, int b, int c) { return ((((((a) + (b) + (c) + 1) << 1) - (a)) * ((a) + 1)) >> 1) - (b)-1; }
 
 /*! \def INT_IPURE(l, m)
     Given l and m compute a pure function offset.
 */
-inline int INT_IPURE(int l, int m) {
-    return (l) + (m);
-}
-
+inline int INT_IPURE(int l, int m) { return (l) + (m); }
 
 class BasisSet;
 class GaussianShell;
@@ -496,30 +484,31 @@ class PSI_API IntegralFactory {
 
     /// Returns an erf ERI integral object (omega integral)
     virtual std::unique_ptr<TwoBodyAOInt> erf_eri(double omega, int deriv = 0, bool use_shell_pairs = true,
-                                  bool needs_exchange = false);
+                                                  bool needs_exchange = false);
 
     /// Returns an erf complement ERI integral object (omega integral)
     virtual std::unique_ptr<TwoBodyAOInt> erf_complement_eri(double omega, int deriv = 0, bool use_shell_pairs = true,
-                                             bool needs_exchange = false);
+                                                             bool needs_exchange = false);
 
     /// Returns an Yukawa integral object (Slater-type geminal times Coulomb, e^(-z*r)/r)
-    virtual std::unique_ptr<TwoBodyAOInt> yukawa_eri(double zeta, int deriv = 0, bool use_shell_pairs = true, bool needs_exchange = false);
+    virtual std::unique_ptr<TwoBodyAOInt> yukawa_eri(double zeta, int deriv = 0, bool use_shell_pairs = true,
+                                                     bool needs_exchange = false);
 
     /// Returns an F12 integral object
     virtual std::unique_ptr<TwoBodyAOInt> f12(std::vector<std::pair<double, double>> exp_coeff, int deriv = 0,
-                              bool use_shell_pairs = true);
+                                              bool use_shell_pairs = true);
 
     /// Returns an F12 squared integral object
     virtual std::unique_ptr<TwoBodyAOInt> f12_squared(std::vector<std::pair<double, double>> exp_coeff, int deriv = 0,
-                                      bool use_shell_pairs = true);
+                                                      bool use_shell_pairs = true);
 
     /// Returns an F12G12 integral object
     virtual std::unique_ptr<TwoBodyAOInt> f12g12(std::vector<std::pair<double, double>> exp_coeff, int deriv = 0,
-                                 bool use_shell_pairs = true);
+                                                 bool use_shell_pairs = true);
 
     /// Returns an F12 double commutator integral object
-    virtual std::unique_ptr<TwoBodyAOInt> f12_double_commutator(std::vector<std::pair<double, double>> exp_coeff, int deriv = 0,
-                                                bool use_shell_pairs = true);
+    virtual std::unique_ptr<TwoBodyAOInt> f12_double_commutator(std::vector<std::pair<double, double>> exp_coeff,
+                                                                int deriv = 0, bool use_shell_pairs = true);
 
     /// Returns a general ERI iterator object for any (P Q | R S) in shells
     AOIntegralsIterator integrals_iterator(int p, int q, int r, int s);

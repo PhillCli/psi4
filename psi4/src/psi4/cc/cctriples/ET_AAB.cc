@@ -568,19 +568,19 @@ double ET_AAB() {
                                                 ET_AAB += (value_d + value_c) * value_c / denom;
 
                                             } /* c */
-                                        }     /* b */
-                                    }         /* a */
+                                        } /* b */
+                                    } /* a */
 
                                 } /* k */
-                            }     /* j */
-                        }         /* i */
+                            } /* j */
+                        } /* i */
 
                     } /* Gb */
-                }     /* Ga */
+                } /* Ga */
 
             } /* Gk */
-        }     /* Gj */
-    }         /* Gi */
+        } /* Gj */
+    } /* Gi */
 
     /*  outfile->Printf( "cnt = %d\n", cnt); */
     ET_AAB /= 4.0;

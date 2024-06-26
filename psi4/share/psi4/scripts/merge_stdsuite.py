@@ -32,12 +32,11 @@ import shutil
 #     * still from a fewest-sources-of truth argument, one should only store stdsuite_psi4.txt records in the repo. but they're 2k lines long and not easily interpretable.
 #     * so regenerate tables in pairs: a proper reST to objdir (less human-readable) and a unicode version to sphinxman/source for repo (readable and used to monitor changes)
 
-
 # edit as needed
 PYTEST_SCRATCH = f"/tmp/pytest-of-{getpass.getuser()}/pytest-current/"
 
 # concatenate pytest fragments into a single local file
-with open("stdsuite_psi4.txt","wb") as wfd:
+with open("stdsuite_psi4.txt", "wb") as wfd:
     for fl in pathlib.Path(PYTEST_SCRATCH).glob("**/stdsuite_psi4.txt"):
         with open(fl, "rb") as fd:
             shutil.copyfileobj(fd, wfd)
@@ -47,7 +46,8 @@ with open("stdsuite_psi4.txt", "r") as fp:
     contents = fp.readlines()
 stuffs = [ast.literal_eval(ln) for ln in contents]
 stuffs = [dict(t) for t in {tuple(d.items()) for d in stuffs}]  # thanks, https://stackoverflow.com/a/9427216
-stuffs.sort(key=operator.itemgetter("method", "driver", "reference", "fcae", "scf_type", "corl_type", "module", "status", "sdsc", "note"))
+stuffs.sort(key=operator.itemgetter("method", "driver", "reference", "fcae", "scf_type", "corl_type", "module",
+                                    "status", "sdsc", "note"))
 
 # write out single file with sorted lines of dicts
 with open("stdsuite_psi4.txt", "w") as fp:

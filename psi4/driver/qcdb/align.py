@@ -153,4 +153,9 @@ def compute_scramble(nat, do_resort=True, do_shift=True, do_rotate=True, deflect
         category=FutureWarning,
         stacklevel=2)
 
-    return qcel.molutil.compute_scramble(nat, do_resort=do_resort, do_shift=do_shift, do_rotate=do_rotate, deflection=deflection, do_mirror=do_mirror)
+    return qcel.molutil.compute_scramble(nat,
+                                         do_resort=do_resort,
+                                         do_shift=do_shift,
+                                         do_rotate=do_rotate,
+                                         deflection=deflection,
+                                         do_mirror=do_mirror)

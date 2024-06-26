@@ -421,12 +421,10 @@ double OCCWave::compute_energy() {
     else if (nfrzc != 0 && dertype != "NONE") {
         mem_release();
         throw FeatureNotImplemented("OCC module analytic gradients", "Frozen core/virtual", __FILE__, __LINE__);
-    }
-   else if ((wfn_type_ == "REMP" || wfn_type_ == "=REMP") && dertype != "NONE") {
+    } else if ((wfn_type_ == "REMP" || wfn_type_ == "=REMP") && dertype != "NONE") {
         mem_release();
         throw FeatureNotImplemented("OCC module analytic gradients", "no gradients for REMP yet", __FILE__, __LINE__);
     }
-
 
     // Call the appropriate manager
     if (wfn_type_ == "OMP2" && orb_opt_ == "TRUE")
@@ -662,5 +660,5 @@ void OCCWave::mem_release() {
     }
     // outfile->Printf("\n mem_release done. \n");
 }  //
-}
-}
+}  // namespace occwave
+}  // namespace psi

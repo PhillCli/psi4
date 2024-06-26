@@ -156,7 +156,7 @@ void IntegralTransform::transform_tei_first_half(const std::shared_ptr<MOSpace> 
                                 &K.matrix[h][pq][rs], ncols);
                     // TODO else if s2->label() == MOSPACE_NIL, copy buffer...
                 } /* Gr */
-            }     /* pq */
+            } /* pq */
             global_dpd_->buf4_mat_irrep_wrt_block(&K, h, n * rowsPerBucket, thisBucketRows);
         }
         global_dpd_->buf4_mat_irrep_close_block(&J, h, rowsPerBucket);
@@ -264,7 +264,7 @@ void IntegralTransform::transform_tei_first_half(const std::shared_ptr<MOSpace> 
                                     &K.matrix[h][pq][rs], ncols);
                         // TODO else if s1->label() == MOSPACE_NIL, copy buffer...
                     } /* Gr */
-                }     /* pq */
+                } /* pq */
                 global_dpd_->buf4_mat_irrep_wrt_block(&K, h, n * rowsPerBucket, thisBucketRows);
             }
             global_dpd_->buf4_mat_irrep_close_block(&J, h, rowsPerBucket);

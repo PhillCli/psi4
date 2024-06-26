@@ -81,7 +81,7 @@ void DFOCC::t2_1st_gen() {
         RT2 = std::make_shared<Tensor2d>("RT2_1 (ia|jb)", naoccA, navirA, naoccA, navirA);
         RT2->copy(t2p_1new);
         RT2->subtract(t2p_1);
-        RT2->write_symm(psio_,PSIF_DFOCC_AMPS);
+        RT2->write_symm(psio_, PSIF_DFOCC_AMPS);
         RT2.reset();
 
         // reset
@@ -152,7 +152,7 @@ void DFOCC::t2_1st_gen() {
         RT2 = std::make_shared<Tensor2d>("RT2_1 <IJ|AB>", naoccA, naoccA, navirA, navirA);
         RT2->copy(t2_1newAA);
         RT2->subtract(t2_1AA);
-        RT2->write_anti_symm(psio_,PSIF_DFOCC_AMPS);
+        RT2->write_anti_symm(psio_, PSIF_DFOCC_AMPS);
         RT2.reset();
 
         // reset
@@ -208,7 +208,7 @@ void DFOCC::t2_1st_gen() {
         RT2 = std::make_shared<Tensor2d>("RT2_1 <ij|ab>", naoccB, naoccB, navirB, navirB);
         RT2->copy(t2_1newBB);
         RT2->subtract(t2_1BB);
-        RT2->write_anti_symm(psio_,PSIF_DFOCC_AMPS);
+        RT2->write_anti_symm(psio_, PSIF_DFOCC_AMPS);
         RT2.reset();
 
         // reset
@@ -261,7 +261,7 @@ void DFOCC::t2_1st_gen() {
         RT2 = std::make_shared<Tensor2d>("RT2_1 <Ij|Ab>", naoccA, naoccB, navirA, navirB);
         RT2->copy(t2_1newAB);
         RT2->subtract(t2_1AB);
-        RT2->write(psio_,PSIF_DFOCC_AMPS);
+        RT2->write(psio_, PSIF_DFOCC_AMPS);
         RT2.reset();
 
         // reset
@@ -328,7 +328,7 @@ void DFOCC::mp3_t2_1st_gen() {
         Tau = std::make_shared<Tensor2d>("RT2_1 (IA|JB)", naoccA, navirA, naoccA, navirA);
         Tau->copy(t2p_1new);
         Tau->subtract(t2p_1);
-        Tau->write_symm(psio_,PSIF_DFOCC_AMPS);
+        Tau->write_symm(psio_, PSIF_DFOCC_AMPS);
         Tau.reset();
 
         // reset
@@ -389,7 +389,7 @@ void DFOCC::mp3_t2_1st_gen() {
         Tau = std::make_shared<Tensor2d>("RT2_1 <IJ|AB>", naoccA, naoccA, navirA, navirA);
         Tau->copy(t2_1newAA);
         Tau->subtract(t2_1AA);
-        Tau->write_anti_symm(psio_,PSIF_DFOCC_AMPS);
+        Tau->write_anti_symm(psio_, PSIF_DFOCC_AMPS);
         Tau.reset();
 
         // reset
@@ -443,7 +443,7 @@ void DFOCC::mp3_t2_1st_gen() {
         Tau = std::make_shared<Tensor2d>("RT2_1 <ij|ab>", naoccB, naoccB, navirB, navirB);
         Tau->copy(t2_1newBB);
         Tau->subtract(t2_1BB);
-        Tau->write_anti_symm(psio_,PSIF_DFOCC_AMPS);
+        Tau->write_anti_symm(psio_, PSIF_DFOCC_AMPS);
         Tau.reset();
 
         // reset
@@ -494,7 +494,7 @@ void DFOCC::mp3_t2_1st_gen() {
         Tau = std::make_shared<Tensor2d>("RT2_1 <Ij|Ab>", naoccA, naoccB, navirA, navirB);
         Tau->copy(t2_1newAB);
         Tau->subtract(t2_1AB);
-        Tau->write(psio_,PSIF_DFOCC_AMPS);
+        Tau->write(psio_, PSIF_DFOCC_AMPS);
         Tau.reset();
 
         // reset

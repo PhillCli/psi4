@@ -712,5 +712,5 @@ void OCCWave::t2_2nd_sc() {
     }  // end if (reference_ == "UNRESTRICTED")
 
 }  // end t2_2nd_sc
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

@@ -792,7 +792,7 @@ void CIWavefunction::sigma_get_contrib(struct stringwr **alplist, struct stringw
             }
 
         } /* end loop over c blocks */
-    }     /* end loop over sigma blocks */
+    } /* end loop over sigma blocks */
 
     if (print_ > 4) {
         outfile->Printf("\nSigma 1:\n");
@@ -910,7 +910,7 @@ void CIWavefunction::sigma_get_contrib_rotf(CIvect &C, CIvect &S, int **s1_contr
                 if (found) s3_contrib[sblock][cblock] = 1;
             }
         } /* end loop over c blocks */
-    }     /* end loop over sigma blocks */
+    } /* end loop over sigma blocks */
 
     if (print_ > 3) {
         outfile->Printf("\nSigma 1:\n");

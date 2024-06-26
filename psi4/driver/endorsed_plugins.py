@@ -25,11 +25,9 @@
 #
 # @END LICENSE
 #
-
 """Import plugins eligible to be accessible in input files if detected."""
 
 __all__ = []
-
 
 try:
     import v2rdm_casscf
@@ -50,7 +48,8 @@ try:
     import snsmp2
 except ImportError as e:
     if 'scipy' in e.msg:
-        raise ImportError("""Psi4 plugin 'snsmp2' available, but scipy missing. Try `conda install scipy` or `pip install scipy`.""")
+        raise ImportError(
+            """Psi4 plugin 'snsmp2' available, but scipy missing. Try `conda install scipy` or `pip install scipy`.""")
     else:
         pass
 
@@ -73,4 +72,3 @@ try:
     import cct3
 except ImportError:
     pass
-

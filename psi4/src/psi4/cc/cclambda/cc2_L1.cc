@@ -42,7 +42,7 @@
 namespace psi {
 namespace cclambda {
 
-void local_filter_T1(dpdfile2 *T1);
+void local_filter_T1(dpdfile2* T1);
 
 void cc2_L1_build(const struct L_Params& L_params) {
     int GW, GL1, GL2, Gab, Gij, Gei, Gi, Ga, Gm;

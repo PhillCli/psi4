@@ -14,10 +14,10 @@ from utils import *
 def runner_asserter(inp, subject, method, basis, tnm):
 
     qcprog = "psi4"
-    qc_module_in = "-".join([qcprog, inp["keywords"].get("qc_module", "")]).strip("-")  # returns "psi4"|"psi4-<module>"  # input-specified routing
-    qc_module_xptd = (
-        (qcprog + "-" + inp["xptd"]["qc_module"]) if inp.get("xptd", {}).get("qc_module", None) else None
-    )  # expected routing
+    qc_module_in = "-".join([qcprog, inp["keywords"].get("qc_module", "")
+                             ]).strip("-")  # returns "psi4"|"psi4-<module>"  # input-specified routing
+    qc_module_xptd = ((qcprog + "-" + inp["xptd"]["qc_module"]) if inp.get("xptd", {}).get("qc_module", None) else None
+                      )  # expected routing
     driver = inp["driver"]
     reference = inp["keywords"]["reference"]
     fcae = {"true": "fc", "false": "ae"}[inp["keywords"]["freeze_core"]]
@@ -25,7 +25,8 @@ def runner_asserter(inp, subject, method, basis, tnm):
 
     if (qc_module_in == "psi4-detci" or qc_module_xptd == "psi4-detci") and basis != "cc-pvdz":
         pytest.skip(f"basis {basis} too big for {qc_module_in}")
-    if qc_module_in == "psi4-ccenergy" and basis != "cc-pvdz" and method == "ccsd(t)" and reference == "uhf" and driver == "gradient" and inp["keywords"]["function_kwargs"]["dertype"] == 1:
+    if qc_module_in == "psi4-ccenergy" and basis != "cc-pvdz" and method == "ccsd(t)" and reference == "uhf" and driver == "gradient" and inp[
+            "keywords"]["function_kwargs"]["dertype"] == 1:
         pytest.skip(f"ccenergy uhf analytic gradients add 10m")
 
     # <<<  Reference Values  >>>
@@ -94,8 +95,12 @@ def runner_asserter(inp, subject, method, basis, tnm):
         # Hartree--Fock doesn't need this b/c it does value sharing by variable so CONV-AE-CONV also stored at CONV-AE-DF
         corl_type = inp["keywords"].get("mp2_type", natural_ref_inv[scf_type])
 
-    using_fd = (driver == "gradient" and inp["keywords"]["function_kwargs"]["dertype"] == 0 or driver == "hessian" and inp["keywords"]["function_kwargs"]["dertype"] in [0, 1])  # T/F: notate fd vs. analytic for docs table
-    defaultness = "defaultdefault" if ("default" in tnm and all([not k.endswith("_type") for k in inp["keywords"]])) else ("default" if "default" in tnm else "")
+    using_fd = (driver == "gradient" and inp["keywords"]["function_kwargs"]["dertype"] == 0
+                or driver == "hessian" and inp["keywords"]["function_kwargs"]["dertype"] in [0, 1]
+                )  # T/F: notate fd vs. analytic for docs table
+    defaultness = "defaultdefault" if ("default" in tnm and all([not k.endswith("_type")
+                                                                 for k in inp["keywords"]])) else (
+                                                                     "default" if "default" in tnm else "")
 
     # * absolute and relative tolerances function approx as `or` operation. see https://numpy.org/doc/stable/reference/generated/numpy.allclose.html
     atol_e, rtol_e = 1.0e-6, 1.0e-16  # qcdb: 2.0e-7, 1.0e-16
@@ -114,10 +119,13 @@ def runner_asserter(inp, subject, method, basis, tnm):
         if is_dft:
             atol_h = 7.0e-5
 
-
-    chash = answer_hash(
-        system=subject.name(), basis=basis, fcae=fcae, scf_type=scf_type, reference=reference, corl_type=corl_type, sdsc=sdsc
-    )
+    chash = answer_hash(system=subject.name(),
+                        basis=basis,
+                        fcae=fcae,
+                        scf_type=scf_type,
+                        reference=reference,
+                        corl_type=corl_type,
+                        sdsc=sdsc)
 
     # check all calcs against conventional reference to looser tolerance
     atol_conv = 1.5e-4
@@ -125,9 +133,13 @@ def runner_asserter(inp, subject, method, basis, tnm):
     if (method in ["ccsd", "ccsd(t)"] and corl_type in ["df", "cd"]) or (method == "wb97x"):
         # fnocc non-conv ccsd opposite-spin df error is larger than corl df error. TODO: see if other methods/module/mols show this or if suspicious.
         atol_conv = 3.0e-4
-    chash_conv = answer_hash(
-        system=subject.name(), basis=basis, fcae=fcae, reference=reference, corl_type="conv", scf_type="pk", sdsc=sdsc
-    )
+    chash_conv = answer_hash(system=subject.name(),
+                             basis=basis,
+                             fcae=fcae,
+                             reference=reference,
+                             corl_type="conv",
+                             scf_type="pk",
+                             sdsc=sdsc)
     ref_block_conv = std_suite[chash_conv]
 
     # <<<  Prepare Calculation and Call API  >>>
@@ -151,8 +163,7 @@ def runner_asserter(inp, subject, method, basis, tnm):
             # runtime conv crit
             "points": 5,
             "fd_project": False,
-        }
-    )
+        })
     extra_kwargs = inp["keywords"].pop("function_kwargs", {})
 
     if "error" in inp:
@@ -163,7 +174,8 @@ def runner_asserter(inp, subject, method, basis, tnm):
 
         assert re.search(errmatch, str(e.value)), f"Not found: {errtype} '{errmatch}' in {e.value}"
         if "scftype" not in tnm:
-            _recorder(qcprog, qc_module_in, driver, method, reference, fcae, sdsc, scf_type, corl_type, "error", "nyi: " + reason)
+            _recorder(qcprog, qc_module_in, driver, method, reference, fcae, sdsc, scf_type, corl_type, "error",
+                      "nyi: " + reason)
         return
 
     psi4.set_output_file("asdf")  # easy name to find output files. TODO: why doesn't .out remain w/o this?
@@ -327,7 +339,8 @@ def runner_asserter(inp, subject, method, basis, tnm):
 
         assert errmatch in str(e.value), f"Not found: AssertionError '{errmatch}' for '{reason}' in {e.value}"
         if "scftype" not in tnm:
-            _recorder(qcprog, qc_module_out, driver, method, reference, fcae, sdsc, scf_type, corl_type, "wrong", reason + f" First wrong at `{errmatch}`.")
+            _recorder(qcprog, qc_module_out, driver, method, reference, fcae, sdsc, scf_type, corl_type, "wrong",
+                      reason + f" First wrong at `{errmatch}`.")
         pytest.xfail(reason)
 
     # primary label checks
@@ -351,24 +364,54 @@ def runner_asserter(inp, subject, method, basis, tnm):
         return_message=True,
         quiet=True,
     )
-    assert compare_values(ref_block[f"{method.upper()} TOTAL ENERGY"], wfn.energy(), tnm + " wfn", atol=atol_e, rtol=rtol_e), errmsg
+    assert compare_values(ref_block[f"{method.upper()} TOTAL ENERGY"],
+                          wfn.energy(),
+                          tnm + " wfn",
+                          atol=atol_e,
+                          rtol=rtol_e), errmsg
 
     if driver == "energy":
-        assert compare_values(ref_block[f"{method.upper()} TOTAL ENERGY"], ret, tnm + " return", atol=atol_e, rtol=rtol_e)
+        assert compare_values(ref_block[f"{method.upper()} TOTAL ENERGY"],
+                              ret,
+                              tnm + " return",
+                              atol=atol_e,
+                              rtol=rtol_e)
 
     elif driver == "gradient":
-        assert compare_values(
-            ref_block[f"{method.upper()} TOTAL GRADIENT"], wfn.gradient().np, tnm + " grad wfn", atol=atol_g, rtol=rtol_g
-        )
-        assert compare_values(ref_block[f"{method.upper()} TOTAL GRADIENT"], ret.np, tnm + " grad return", atol=atol_g, rtol=rtol_g)
+        assert compare_values(ref_block[f"{method.upper()} TOTAL GRADIENT"],
+                              wfn.gradient().np,
+                              tnm + " grad wfn",
+                              atol=atol_g,
+                              rtol=rtol_g)
+        assert compare_values(ref_block[f"{method.upper()} TOTAL GRADIENT"],
+                              ret.np,
+                              tnm + " grad return",
+                              atol=atol_g,
+                              rtol=rtol_g)
 
     elif driver == "hessian":
-        tf, errmsg = compare_values(ref_block[f"{method.upper()} TOTAL HESSIAN"], wfn.hessian().np, tnm + " hess wfn", atol=atol_h, rtol=rtol_h, return_message=True, quiet=True)
-        assert compare_values(ref_block[f"{method.upper()} TOTAL HESSIAN"], wfn.hessian().np, tnm + " hess wfn", atol=atol_h, rtol=rtol_h), errmsg
-        assert compare_values(
-            ref_block[f"{method.upper()} TOTAL GRADIENT"], wfn.gradient().np, tnm + " grad wfn", atol=atol_g, rtol=rtol_g
-        )
-        assert compare_values(ref_block[f"{method.upper()} TOTAL HESSIAN"], ret.np, tnm + " hess return", atol=atol_h, rtol=rtol_h)
+        tf, errmsg = compare_values(ref_block[f"{method.upper()} TOTAL HESSIAN"],
+                                    wfn.hessian().np,
+                                    tnm + " hess wfn",
+                                    atol=atol_h,
+                                    rtol=rtol_h,
+                                    return_message=True,
+                                    quiet=True)
+        assert compare_values(ref_block[f"{method.upper()} TOTAL HESSIAN"],
+                              wfn.hessian().np,
+                              tnm + " hess wfn",
+                              atol=atol_h,
+                              rtol=rtol_h), errmsg
+        assert compare_values(ref_block[f"{method.upper()} TOTAL GRADIENT"],
+                              wfn.gradient().np,
+                              tnm + " grad wfn",
+                              atol=atol_g,
+                              rtol=rtol_g)
+        assert compare_values(ref_block[f"{method.upper()} TOTAL HESSIAN"],
+                              ret.np,
+                              tnm + " hess return",
+                              atol=atol_h,
+                              rtol=rtol_h)
 
     # generics checks
     # yapf: disable
@@ -379,10 +422,12 @@ def runner_asserter(inp, subject, method, basis, tnm):
     # yapf: enable
 
     if "scftype" not in tnm:
-        _recorder(qcprog, qc_module_out, driver, method, reference, fcae, sdsc, scf_type, corl_type, "fd" if using_fd else "pass", defaultness)
+        _recorder(qcprog, qc_module_out, driver, method, reference, fcae, sdsc, scf_type, corl_type,
+                  "fd" if using_fd else "pass", defaultness)
         if "default" in tnm:
             # add'l entry for "default" line
-            _recorder(qcprog, "aaaa-", driver, method, reference, fcae, sdsc, scf_type, corl_type, "fd" if using_fd else "pass", defaultness if defaultness == "defaultdefault" else "")
+            _recorder(qcprog, "aaaa-", driver, method, reference, fcae, sdsc, scf_type, corl_type,
+                      "fd" if using_fd else "pass", defaultness if defaultness == "defaultdefault" else "")
 
     # assert 0
 
@@ -400,9 +445,13 @@ def _asserter(asserter_args: List, contractual_args: List[str], contractual_fn: 
 
             if present:
                 # verify exact match to method (may be df) and near match to conventional (non-df) method
-                tf, errmsg = compare_values(
-                    ref_block[rpv], query_qcvar(obj, pv), label, atol=atol, rtol=rtol, return_message=True, quiet=True
-                )
+                tf, errmsg = compare_values(ref_block[rpv],
+                                            query_qcvar(obj, pv),
+                                            label,
+                                            atol=atol,
+                                            rtol=rtol,
+                                            return_message=True,
+                                            quiet=True)
                 assert compare_values(ref_block[rpv], query_qcvar(obj, pv), label, atol=atol, rtol=rtol), errmsg
 
                 if isinstance(ref_block_conv[rpv], str) and ref_block_conv[rpv] == "KnownMissing":
@@ -419,7 +468,11 @@ def _asserter(asserter_args: List, contractual_args: List[str], contractual_fn: 
                         return_message=True,
                         quiet=True,
                     )
-                    assert compare_values(ref_block_conv[rpv], query_qcvar(obj, pv), label + " v. CONV", atol=atol_conv, rtol=rtol_conv), errmsg
+                    assert compare_values(ref_block_conv[rpv],
+                                          query_qcvar(obj, pv),
+                                          label + " v. CONV",
+                                          atol=atol_conv,
+                                          rtol=rtol_conv), errmsg
 
                 # Note that the double compare_values lines are to collect the errmsg in the first for assertion in the second.
                 #   If the errmsg isn't present in the assert, the string isn't accessible through `e.value`.

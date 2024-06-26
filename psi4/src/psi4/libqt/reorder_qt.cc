@@ -193,8 +193,8 @@ PSI_API void reorder_qt(const int *docc_in, const int *socc_in, int *frozen_docc
 **
 ** \ingroup QT
 */
-PSI_API void reorder_qt_uhf(const int *docc, const int *socc, int *frozen_docc, int *frozen_uocc, int *order_alpha, int *order_beta,
-                            int *orbspi, int nirreps) {
+PSI_API void reorder_qt_uhf(const int *docc, const int *socc, int *frozen_docc, int *frozen_uocc, int *order_alpha,
+                            int *order_beta, int *orbspi, int nirreps) {
     int p, nmo;
     int cnt_alpha, cnt_beta, irrep, tmpi;
     int *offset, this_offset;

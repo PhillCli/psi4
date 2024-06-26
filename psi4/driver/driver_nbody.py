@@ -178,6 +178,7 @@ FragBasIndex = Tuple[Tuple[int], Tuple[int]]
 
 SubTaskComputers = Union[AtomicComputer, CompositeComputer, FiniteDifferenceComputer]
 
+
 def nbody():
     """
     Computes the nbody interaction energy, gradient, or Hessian depending on input.
@@ -243,19 +244,19 @@ class BsseEnum(str, Enum):
     """Available basis-set superposition error (BSSE) treatments."""
 
     nocp = "nocp"  # plain supramolecular interaction energy
-    cp = "cp"      # counterpoise correction
+    cp = "cp"  # counterpoise correction
     vmfc = "vmfc"  # Valiron-Mayer function counterpoise
 
 
 def _sum_cluster_ptype_data(
-    ptype: DriverEnum,
-    ptype_dict: Dict,
-    compute_list: Set[FragBasIndex],
-    fragment_slice_dict: Dict[int, Sequence],
-    fragment_size_dict: Dict[int, int],
-    mc_level_lbl: int,
-    vmfc: bool = False,
-    nb: int = 0,
+        ptype: DriverEnum,
+        ptype_dict: Dict,
+        compute_list: Set[FragBasIndex],
+        fragment_slice_dict: Dict[int, Sequence],
+        fragment_size_dict: Dict[int, int],
+        mc_level_lbl: int,
+        vmfc: bool = False,
+        nb: int = 0,
 ) -> Union[float, np.ndarray]:
     """
     Sum arrays from n-body computations to obtain the BSSE corrected or uncorrected scalar or array.
@@ -292,7 +293,7 @@ def _sum_cluster_ptype_data(
     sign = 1
     nat = sum(fragment_size_dict.values())
 
-    def labeler(frag: Tuple, bas:Tuple) -> str:
+    def labeler(frag: Tuple, bas: Tuple) -> str:
         return str(mc_level_lbl) + "_" + str((frag, bas))
 
     if ptype == "energy":
@@ -397,11 +398,11 @@ def _print_nbody_energy(energy_body_dict: Dict[int, float], header: str, nfragme
 
 
 def build_nbody_compute_list(
-    bsse_type: List[BsseEnum],
-    nbodies: List[Union[int, Literal["supersystem"]]],
-    nfragments: int,
-    return_total_data: bool,
-    verbose: int = 1,
+        bsse_type: List[BsseEnum],
+        nbodies: List[Union[int, Literal["supersystem"]]],
+        nfragments: int,
+        return_total_data: bool,
+        verbose: int = 1,
 ) -> Dict[str, Dict[int, Set[FragBasIndex]]]:
     """Generates lists of N-Body computations needed for requested BSSE treatments.
 
@@ -510,7 +511,8 @@ def build_nbody_compute_list(
                 if len(item[0]) == nb:
                     compute_list_count[nb].add(item)
     if verbose >= 1:
-        info = "\n".join([f"        Number of {nb}-body computations:     {len(compute_list_count[nb])}" for nb in nbodies])
+        info = "\n".join(
+            [f"        Number of {nb}-body computations:     {len(compute_list_count[nb])}" for nb in nbodies])
         core.print_out(info + "\n")
         logger.info(info)
 
@@ -525,9 +527,9 @@ def build_nbody_compute_list(
 
 
 def assemble_nbody_components(
-    ptype: DriverEnum,
-    component_results: Dict[str, Union[float, np.ndarray]],
-    metadata: Dict[str, Any],
+        ptype: DriverEnum,
+        component_results: Dict[str, Union[float, np.ndarray]],
+        metadata: Dict[str, Any],
 ) -> Dict[str, Any]:
     """Assembles N-body components for a single derivative level and a single model chemistry level into interaction quantities according to requested BSSE treatment(s).
 
@@ -570,7 +572,9 @@ def assemble_nbody_components(
     mc_level_labels = {int(i.split("_")[0]) for i in component_results.keys()}
 
     if len(mc_level_labels) != 1:
-        raise ValidationError(f"Something's wrong - this fn handles single-level (e.g., 1- & 2-body w/mp2) not multi-level (e.g., 1-body w/hf & 2-body w/mp2) assembly: len({mc_level_labels}) != 1")
+        raise ValidationError(
+            f"Something's wrong - this fn handles single-level (e.g., 1- & 2-body w/mp2) not multi-level (e.g., 1-body w/hf & 2-body w/mp2) assembly: len({mc_level_labels}) != 1"
+        )
 
     # get the range of nbodies for this level
     # * modelchem level label (mc_level_lbl) used in qcvars and dict keys is 1-indexed counterpart to 0-indexed modelchem level position (mc_level_idx) used to navigate self.nbodies_per_mc_level
@@ -582,9 +586,11 @@ def assemble_nbody_components(
         metadata['bsse_type'] = ['nocp']
 
     # regenerate per-bsse required calcs list
-    compute_dict = build_nbody_compute_list(
-        metadata['bsse_type'], nbodies, metadata['nfragments'], metadata["return_total_data"], verbose=0
-    )
+    compute_dict = build_nbody_compute_list(metadata['bsse_type'],
+                                            nbodies,
+                                            metadata['nfragments'],
+                                            metadata["return_total_data"],
+                                            verbose=0)
 
     # Build size and slices dictionaries
     fragment_size_dict = {}
@@ -723,7 +729,8 @@ def assemble_nbody_components(
 
         if ptype == "energy":
             if not metadata["quiet"]:
-                _print_nbody_energy(cp_body_dict, "Counterpoise Corrected (CP)", metadata["nfragments"], metadata['embedding_charges'])
+                _print_nbody_energy(cp_body_dict, "Counterpoise Corrected (CP)", metadata["nfragments"],
+                                    metadata['embedding_charges'])
 
             if monomer_sum != 0.0:
                 nbody_dict["CP-CORRECTED TOTAL ENERGY"] = cp_body_dict[metadata['max_nbody']]
@@ -731,7 +738,7 @@ def assemble_nbody_components(
 
             for nb in nbodies[1:]:
                 nbody_dict[f"CP-CORRECTED INTERACTION ENERGY THROUGH {nb}-BODY"] = cp_body_dict[nb] - cp_body_dict[1]
-                nbody_dict[f"CP-CORRECTED {nb}-BODY CONTRIBUTION TO ENERGY"] = cp_body_dict[nb] - cp_body_dict[nb-1]
+                nbody_dict[f"CP-CORRECTED {nb}-BODY CONTRIBUTION TO ENERGY"] = cp_body_dict[nb] - cp_body_dict[nb - 1]
             for nb in nbodies:
                 nbody_dict[f"CP-CORRECTED TOTAL ENERGY THROUGH {nb}-BODY"] = cp_body_dict[nb]
 
@@ -752,14 +759,17 @@ def assemble_nbody_components(
 
         if ptype == "energy":
             if not metadata["quiet"]:
-                _print_nbody_energy(nocp_body_dict, "Non-Counterpoise Corrected (NoCP)", metadata["nfragments"], metadata['embedding_charges'])
+                _print_nbody_energy(nocp_body_dict, "Non-Counterpoise Corrected (NoCP)", metadata["nfragments"],
+                                    metadata['embedding_charges'])
 
             nbody_dict['NOCP-CORRECTED TOTAL ENERGY'] = nocp_body_dict[metadata['max_nbody']]
             nbody_dict['NOCP-CORRECTED INTERACTION ENERGY'] = nocp_body_dict[metadata['max_nbody']] - nocp_body_dict[1]
 
             for nb in nbodies[1:]:
-                nbody_dict[f"NOCP-CORRECTED INTERACTION ENERGY THROUGH {nb}-BODY"] = nocp_body_dict[nb] - nocp_body_dict[1]
-                nbody_dict[f"NOCP-CORRECTED {nb}-BODY CONTRIBUTION TO ENERGY"] = nocp_body_dict[nb] - nocp_body_dict[nb-1]
+                nbody_dict[
+                    f"NOCP-CORRECTED INTERACTION ENERGY THROUGH {nb}-BODY"] = nocp_body_dict[nb] - nocp_body_dict[1]
+                nbody_dict[f"NOCP-CORRECTED {nb}-BODY CONTRIBUTION TO ENERGY"] = nocp_body_dict[nb] - nocp_body_dict[
+                    nb - 1]
             for nb in nbodies:
                 nbody_dict[f"NOCP-CORRECTED TOTAL ENERGY THROUGH {nb}-BODY"] = nocp_body_dict[nb]
 
@@ -777,23 +787,29 @@ def assemble_nbody_components(
 
         if ptype == "energy":
             if not metadata["quiet"]:
-                _print_nbody_energy(vmfc_body_dict, "Valiron-Mayer Function Counterpoise (VMFC)", metadata["nfragments"], metadata['embedding_charges'])
+                _print_nbody_energy(vmfc_body_dict, "Valiron-Mayer Function Counterpoise (VMFC)",
+                                    metadata["nfragments"], metadata['embedding_charges'])
 
             vmfc_interaction_energy = vmfc_body_dict[metadata['max_nbody']] - vmfc_body_dict[1]
             nbody_dict['VMFC-CORRECTED TOTAL ENERGY'] = vmfc_body_dict[metadata['max_nbody']]
             nbody_dict['VMFC-CORRECTED INTERACTION ENERGY'] = vmfc_interaction_energy
 
             for nb in nbodies[1:]:
-                nbody_dict[f"VMFC-CORRECTED INTERACTION ENERGY THROUGH {nb}-BODY"] = vmfc_body_dict[nb] - vmfc_body_dict[1]
-                nbody_dict[f"VMFC-CORRECTED {nb}-BODY CONTRIBUTION TO ENERGY"] = vmfc_body_dict[nb] - vmfc_body_dict[nb-1]
+                nbody_dict[
+                    f"VMFC-CORRECTED INTERACTION ENERGY THROUGH {nb}-BODY"] = vmfc_body_dict[nb] - vmfc_body_dict[1]
+                nbody_dict[f"VMFC-CORRECTED {nb}-BODY CONTRIBUTION TO ENERGY"] = vmfc_body_dict[nb] - vmfc_body_dict[
+                    nb - 1]
             for nb in nbodies:
                 nbody_dict[f"VMFC-CORRECTED TOTAL ENERGY THROUGH {nb}-BODY"] = vmfc_body_dict[nb]
 
     # Collect specific and generalized returns
     results = {
-        f"cp_{ptype}_body_dict" : {f"{nb}cp": j for nb, j in cp_body_dict.items()},
-        f"nocp_{ptype}_body_dict": {f"{nb}nocp": j for nb, j in nocp_body_dict.items()},
-        f"vmfc_{ptype}_body_dict": {f"{nb}vmfc": j for nb, j in vmfc_body_dict.items()},
+        f"cp_{ptype}_body_dict": {f"{nb}cp": j
+                                  for nb, j in cp_body_dict.items()},
+        f"nocp_{ptype}_body_dict": {f"{nb}nocp": j
+                                    for nb, j in nocp_body_dict.items()},
+        f"vmfc_{ptype}_body_dict": {f"{nb}vmfc": j
+                                    for nb, j in vmfc_body_dict.items()},
     }
 
     if ptype == "energy":
@@ -855,16 +871,41 @@ class ManyBodyComputer(BaseComputer):
     driver: DriverEnum = Field(..., description="The computation driver; i.e., energy, gradient, hessian.")
     keywords: Dict[str, Any] = Field({}, description="The computation keywords/options.")
 
-    bsse_type: List[BsseEnum] = Field([BsseEnum.cp], description="Requested BSSE treatments. First in list determines which interaction or total energy/gradient/Hessian returned.")
-    nfragments: int = Field(-1, description="Number of distinct fragments comprising full molecular supersystem.")  # formerly max_frag
-    max_nbody: int = Field(-1, description="Maximum number of bodies to include in the many-body treatment. Possible: max_nbody <= nfragments. Default: max_nbody = nfragments.")
+    bsse_type: List[BsseEnum] = Field(
+        [BsseEnum.cp],
+        description=
+        "Requested BSSE treatments. First in list determines which interaction or total energy/gradient/Hessian returned."
+    )
+    nfragments: int = Field(
+        -1, description="Number of distinct fragments comprising full molecular supersystem.")  # formerly max_frag
+    max_nbody: int = Field(
+        -1,
+        description=
+        "Maximum number of bodies to include in the many-body treatment. Possible: max_nbody <= nfragments. Default: max_nbody = nfragments."
+    )
 
-    nbodies_per_mc_level: List[List[Union[int, Literal["supersystem"]]]] = Field([], description="Distribution of active n-body levels among model chemistry levels. All bodies in range [1, self.max_nbody] must be present exactly once. Number of items in outer list is how many different modelchems. Each inner list specifies what n-bodies to be run at the corresponding modelchem (e.g., `[[1, 2]]` has max_nbody=2 and 1-body and 2-body contributions computed at the same level of theory; `[[1], [2]]` has max_nbody=2 and 1-body and 2-body contributions computed at different levels of theory. An entry 'supersystem' means all higher order n-body effects up to the number of fragments. The n-body levels are effectively sorted in the outer list, and any 'supersystem' element is at the end.")  # formerly nbody_list
+    nbodies_per_mc_level: List[List[Union[int, Literal["supersystem"]]]] = Field(
+        [],
+        description=
+        "Distribution of active n-body levels among model chemistry levels. All bodies in range [1, self.max_nbody] must be present exactly once. Number of items in outer list is how many different modelchems. Each inner list specifies what n-bodies to be run at the corresponding modelchem (e.g., `[[1, 2]]` has max_nbody=2 and 1-body and 2-body contributions computed at the same level of theory; `[[1], [2]]` has max_nbody=2 and 1-body and 2-body contributions computed at different levels of theory. An entry 'supersystem' means all higher order n-body effects up to the number of fragments. The n-body levels are effectively sorted in the outer list, and any 'supersystem' element is at the end."
+    )  # formerly nbody_list
 
-    embedding_charges: Dict[int, List[float]] = Field({}, description="Atom-centered point charges to be used on molecule fragments whose basis sets are not included in the computation. Keys: 1-based index of fragment. Values: list of atom charges for that fragment.")
+    embedding_charges: Dict[int, List[float]] = Field(
+        {},
+        description=
+        "Atom-centered point charges to be used on molecule fragments whose basis sets are not included in the computation. Keys: 1-based index of fragment. Values: list of atom charges for that fragment."
+    )
 
-    return_total_data: Optional[bool] = Field(None, description="When True, returns the total data (energy/gradient/Hessian) of the system, otherwise returns interaction data. Default is False for energies, True for gradients and Hessians. Note that the calculation of total counterpoise corrected energies implies the calculation of the energies of monomers in the monomer basis, hence specifying ``return_total_data = True`` may carry out more computations than ``return_total_data = False``.")
-    quiet: bool = Field(False, description="Whether to print/log formatted n-body energy analysis. Presently used by multi to suppress output. Candidate for removal from class once in-class/out-of-class functions sorted.")
+    return_total_data: Optional[bool] = Field(
+        None,
+        description=
+        "When True, returns the total data (energy/gradient/Hessian) of the system, otherwise returns interaction data. Default is False for energies, True for gradients and Hessians. Note that the calculation of total counterpoise corrected energies implies the calculation of the energies of monomers in the monomer basis, hence specifying ``return_total_data = True`` may carry out more computations than ``return_total_data = False``."
+    )
+    quiet: bool = Field(
+        False,
+        description=
+        "Whether to print/log formatted n-body energy analysis. Presently used by multi to suppress output. Candidate for removal from class once in-class/out-of-class functions sorted."
+    )
 
     task_list: Dict[str, SubTaskComputers] = {}
 
@@ -917,10 +958,10 @@ class ManyBodyComputer(BaseComputer):
         return rtd
 
     def build_tasks(
-        self,
-        mb_computer: SubTaskComputers,
-        mc_level_idx: int,
-        **kwargs: Dict[str, Any],
+            self,
+            mb_computer: SubTaskComputers,
+            mc_level_idx: int,
+            **kwargs: Dict[str, Any],
     ) -> int:
         """Adds to the task_list as many new unique tasks as necessary to treat a single model chemistry level at one or several n-body levels.
         New tasks are of type *mb_computer* with model chemistry level specified in *kwargs* and n-body levels accessed through *mc_level_idx*.
@@ -969,9 +1010,8 @@ class ManyBodyComputer(BaseComputer):
             self.task_list[key] = mb_computer(**data)
             count += 1
 
-            compute_dict = build_nbody_compute_list(
-                ["nocp"], list(range(1, self.max_nbody + 1)), self.nfragments, self.return_total_data
-            )
+            compute_dict = build_nbody_compute_list(["nocp"], list(range(1, self.max_nbody + 1)), self.nfragments,
+                                                    self.return_total_data)
         else:
             compute_dict = build_nbody_compute_list(self.bsse_type, nbodies, self.nfragments, self.return_total_data)
 
@@ -1020,9 +1060,9 @@ class ManyBodyComputer(BaseComputer):
                 t.compute(client=client)
 
     def prepare_results(
-        self,
-        results: Optional[Dict[str, SubTaskComputers]] = None,
-        client: Optional["qcportal.FractalClient"] = None,
+            self,
+            results: Optional[Dict[str, SubTaskComputers]] = None,
+            client: Optional["qcportal.FractalClient"] = None,
     ) -> Dict[str, Any]:
         """Process the results from all n-body component molecular systems and model chemistry levels into final quantities.
 
@@ -1312,7 +1352,8 @@ class ManyBodyComputer(BaseComputer):
             nbody_results.update(assemble_nbody_components("gradient", trove["gradient"], metadata.copy()))
             nbody_results.update(assemble_nbody_components("hessian", trove["hessian"], metadata.copy()))
 
-        def delabeler(item: str, return_obj: bool = False) -> Union[Tuple[str, str, str], Tuple[int, Tuple[int], Tuple[int]]]:
+        def delabeler(item: str,
+                      return_obj: bool = False) -> Union[Tuple[str, str, str], Tuple[int, Tuple[int], Tuple[int]]]:
             """Transform labels like string "1_((2,), (1, 2))" into string tuple ("1", "2", "1, 2") or object tuple (1, (2,), (1, 2))."""
 
             mc, _, fragbas = item.partition("_")
@@ -1421,11 +1462,8 @@ class ManyBodyComputer(BaseComputer):
 
         return nbody_model
 
-    def get_psi_results(
-        self,
-        client: Optional["qcportal.FractalClient"] = None,
-        *,
-        return_wfn: bool = False) -> EnergyGradientHessianWfnReturn:
+    def get_psi_results(self, client: Optional["qcportal.FractalClient"] = None, *,
+                        return_wfn: bool = False) -> EnergyGradientHessianWfnReturn:
         """Called by driver to assemble results into ManyBody-flavored QCSchema,
         then reshape and return them in the customary Psi4 driver interface: ``(e/g/h, wfn)``.
 

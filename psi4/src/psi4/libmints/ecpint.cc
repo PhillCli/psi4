@@ -51,7 +51,6 @@
 
 namespace psi {
 
-
 ECPInt::ECPInt(std::vector<SphericalTransform> &st, std::shared_ptr<BasisSet> bs1, std::shared_ptr<BasisSet> bs2,
                int deriv)
     : OneBodyAOInt(st, bs1, bs2, deriv), engine_(bs1->max_am(), bs1->max_ecp_am(), deriv) {
@@ -59,32 +58,32 @@ ECPInt::ECPInt(std::vector<SphericalTransform> &st, std::shared_ptr<BasisSet> bs
     int maxam2 = bs2->max_am();
 
     // Make LibECP Gaussian basis set objects for the bra...
-    for (int shell = 0; shell < bs1->nshell(); ++shell){
+    for (int shell = 0; shell < bs1->nshell(); ++shell) {
         const GaussianShell &psi_shell = bs1->shell(shell);
         const double *center = psi_shell.center();
-        std::array<double,3> C{center[0], center[1], center[2]};
+        std::array<double, 3> C{center[0], center[1], center[2]};
         libecpint::GaussianShell newshell(C, psi_shell.am());
-        for (int prim = 0; prim < psi_shell.nprimitive(); ++prim){
+        for (int prim = 0; prim < psi_shell.nprimitive(); ++prim) {
             newshell.addPrim(psi_shell.exp(prim), psi_shell.coef(prim));
         }
         libecp_shells1_.push_back(newshell);
     }
     // ... and the ket
-    for (int shell = 0; shell < bs2->nshell(); ++shell){
+    for (int shell = 0; shell < bs2->nshell(); ++shell) {
         const GaussianShell &psi_shell = bs2->shell(shell);
         const double *center = psi_shell.center();
-        std::array<double,3> C{center[0], center[1], center[2]};
+        std::array<double, 3> C{center[0], center[1], center[2]};
         libecpint::GaussianShell newshell(C, psi_shell.am());
-        for (int prim = 0; prim < psi_shell.nprimitive(); ++prim){
+        for (int prim = 0; prim < psi_shell.nprimitive(); ++prim) {
             newshell.addPrim(psi_shell.exp(prim), psi_shell.coef(prim));
         }
         libecp_shells2_.push_back(newshell);
     }
 
     double oldCx, oldCy, oldCz;
-    std::pair<int,libecpint::ECP> ecp;
+    std::pair<int, libecpint::ECP> ecp;
     // Make LibECP ECP objects, grouping all functions on a given center into a single ECP object
-    for (int ecp_shell = 0; ecp_shell < bs1->n_ecp_shell(); ++ecp_shell){
+    for (int ecp_shell = 0; ecp_shell < bs1->n_ecp_shell(); ++ecp_shell) {
         const GaussianShell &psi_ecp_shell = bs1->ecp_shell(ecp_shell);
         const double *center = psi_ecp_shell.center();
         double Cx = center[0];
@@ -107,9 +106,10 @@ ECPInt::ECPInt(std::vector<SphericalTransform> &st, std::shared_ptr<BasisSet> bs
         }
         int nprim = psi_ecp_shell.nprimitive();
         for (int prim = 0; prim < nprim; ++prim) {
-            ecp.second.addPrimitive(psi_ecp_shell.nval(prim), psi_ecp_shell.am(), psi_ecp_shell.exp(prim), psi_ecp_shell.coef(prim), prim==nprim-1);
+            ecp.second.addPrimitive(psi_ecp_shell.nval(prim), psi_ecp_shell.am(), psi_ecp_shell.exp(prim),
+                                    psi_ecp_shell.coef(prim), prim == nprim - 1);
         }
-        if (ecp_shell == bs1->n_ecp_shell()-1){
+        if (ecp_shell == bs1->n_ecp_shell() - 1) {
             // Make sure the last one gets pushed back in!
             centers_and_libecp_ecps_.push_back(ecp);
         }
@@ -143,11 +143,11 @@ void ECPInt::compute_shell(int s1, int s2) {
     const libecpint::GaussianShell &LibECPShell2 = libecp_shells2_[s2];
     const size_t size = LibECPShell1.ncartesian() * LibECPShell2.ncartesian();
     memset(buffer_, 0, size * sizeof(double));
-    for (const auto &center_and_ecp : centers_and_libecp_ecps_){
+    for (const auto &center_and_ecp : centers_and_libecp_ecps_) {
         libecpint::TwoIndex<double> results;
         engine_.compute_shell_pair(center_and_ecp.second, LibECPShell1, LibECPShell2, results);
         // Accumulate the results into buffer_
-        std::transform (results.data.begin(), results.data.end(), buffer_, buffer_, std::plus<double>());
+        std::transform(results.data.begin(), results.data.end(), buffer_, buffer_, std::plus<double>());
     }
     pure_transform(bs1_->l2_shell(s1), bs2_->l2_shell(s2));
     buffers_[0] = buffer_;
@@ -160,17 +160,19 @@ void ECPInt::compute_shell_deriv1(int s1, int s2) {
     memset(buffer_, 0, 3 * natom_ * size * sizeof(double));
     int center1 = bs1_->shell(s1).ncenter();
     int center2 = bs2_->shell(s2).ncenter();
-    for (const auto &center_and_ecp : centers_and_libecp_ecps_){
+    for (const auto &center_and_ecp : centers_and_libecp_ecps_) {
         int center3 = center_and_ecp.first;
         std::array<libecpint::TwoIndex<double>, 9> results;
         engine_.compute_shell_pair_derivative(center_and_ecp.second, LibECPShell1, LibECPShell2, results);
         // Accumulate the results into buffer_
-        const size_t offsets[9] = { center1*3*size + 0*size, center1 * 3*size + 1*size, center1 * 3*size + 2*size,
-                                    center2*3*size + 0*size, center2 * 3*size + 1*size, center2 * 3*size + 2*size,
-                                    center3*3*size + 0*size, center3 * 3*size + 1*size, center3 * 3*size + 2*size };
-        for (int i = 0; i < 9; ++i){
+        const size_t offsets[9] = {
+            center1 * 3 * size + 0 * size, center1 * 3 * size + 1 * size, center1 * 3 * size + 2 * size,
+            center2 * 3 * size + 0 * size, center2 * 3 * size + 1 * size, center2 * 3 * size + 2 * size,
+            center3 * 3 * size + 0 * size, center3 * 3 * size + 1 * size, center3 * 3 * size + 2 * size};
+        for (int i = 0; i < 9; ++i) {
             const size_t offset = offsets[i];
-            std::transform(results[i].data.begin(), results[i].data.end(), buffer_ + offset, buffer_ + offset, std::plus<double>());
+            std::transform(results[i].data.begin(), results[i].data.end(), buffer_ + offset, buffer_ + offset,
+                           std::plus<double>());
         }
     }
     pure_transform(bs1_->l2_shell(s1), bs2_->l2_shell(s2), nchunk_);
@@ -197,13 +199,14 @@ void ECPInt::compute_shell_deriv2(int s1, int s2) {
     const libecpint::GaussianShell &LibECPShell2 = libecp_shells2_[s2];
     const size_t size = LibECPShell1.ncartesian() * LibECPShell2.ncartesian();
     memset(buffer_, 0, 45 * size * sizeof(double));
-    for (const auto &center_and_ecp : centers_and_libecp_ecps_){
+    for (const auto &center_and_ecp : centers_and_libecp_ecps_) {
         std::array<libecpint::TwoIndex<double>, 45> results;
         engine_.compute_shell_pair_second_derivative(center_and_ecp.second, LibECPShell1, LibECPShell2, results);
         // Accumulate the results into buffer_
-        for (int i = 0; i < 45; ++i){
+        for (int i = 0; i < 45; ++i) {
             const size_t offset = i * size;
-            std::transform (results[i].data.begin(), results[i].data.end(), buffer_ + offset, buffer_ + offset, std::plus<double>());
+            std::transform(results[i].data.begin(), results[i].data.end(), buffer_ + offset, buffer_ + offset,
+                           std::plus<double>());
         }
     }
     pure_transform(bs1_->l2_shell(s1), bs2_->l2_shell(s2), nchunk_);

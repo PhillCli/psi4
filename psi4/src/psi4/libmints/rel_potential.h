@@ -49,7 +49,6 @@ class CdSalcList;
  * Use an IntegralFactory to create this object.
  */
 class RelPotentialInt : public OneBodyAOInt {
-
    protected:
     /// The charges and locations that define the external potential
     std::vector<std::pair<double, std::array<double, 3>>> Zxyz_;

@@ -401,40 +401,36 @@ void Matrix::copy(const Matrix &cp) { copy(&cp); }
 
 void Matrix::copy(const SharedMatrix &cp) { copy(cp.get()); }
 
-// produces an Eigen::Map object mapping to the matrix data buffer 
-// of a matrix with a single irrep 
+// produces an Eigen::Map object mapping to the matrix data buffer
+// of a matrix with a single irrep
 Eigen::Map<Eigen::MatrixXd> Matrix::eigen_map() {
-    // this function only works with matrices with a single irrep 
+    // this function only works with matrices with a single irrep
     if (nirrep() != 1) {
         std::string message = "Matrix::eigen_map() called, but matrix only has one irrep! ";
-        message += "Use Matrix::eigen_maps() instead."; 
-        
-        throw PSIEXCEPTION(message); 
+        message += "Use Matrix::eigen_maps() instead.";
+
+        throw PSIEXCEPTION(message);
     }
 
     // create Eigen matrix "map" using Psi4 matrix data array directly
-    return std::move(
-        Eigen::Map<Eigen::MatrixXd>(
-            get_pointer(), nrow(), ncol()
-        )
-    );
+    return std::move(Eigen::Map<Eigen::MatrixXd>(get_pointer(), nrow(), ncol()));
 }
 
 // produces Eigen::Maps object mapping to the matrix data buffer
-// of a matrix with multiple irreps 
+// of a matrix with multiple irreps
 // NOTE: this impl for mapping Psi4 matrices to Eigen maps
-// is currently experimental, as it is unused in the code 
+// is currently experimental, as it is unused in the code
 // currently
 std::vector<Eigen::Map<Eigen::MatrixXd>> Matrix::eigen_maps() {
     std::vector<Eigen::Map<Eigen::MatrixXd>> eigen_maps;
     eigen_maps.reserve(nirrep());
 
-    // create Eigen matrix "map"s for each irrep, 
+    // create Eigen matrix "map"s for each irrep,
     // using Psi4 matrix data array directly
     for (int h = 0; h != nirrep(); ++h) {
         eigen_maps.emplace_back(get_pointer(h), rowdim(h), coldim(h));
-    } 
-    
+    }
+
     return eigen_maps;
 }
 
@@ -675,19 +671,13 @@ SharedMatrix Matrix::get_block(const Slice &rows, const Slice &cols) const {
     return block;
 }
 
-SharedMatrix Matrix::get_block(const Slice &slice) const {
-    return get_block(slice, slice);
-}
+SharedMatrix Matrix::get_block(const Slice &slice) const { return get_block(slice, slice); }
 
-void Matrix::set_block(const Slice &rows, const Slice &cols, SharedMatrix block) {
-    set_block(rows, cols, *block);
-}
+void Matrix::set_block(const Slice &rows, const Slice &cols, SharedMatrix block) { set_block(rows, cols, *block); }
 
-void Matrix::set_block(const Slice &slice, const Matrix& block) {
-    set_block(slice, slice, block);
-}
+void Matrix::set_block(const Slice &slice, const Matrix &block) { set_block(slice, slice, block); }
 
-void Matrix::set_block(const Slice &rows, const Slice &cols, const Matrix& block) {
+void Matrix::set_block(const Slice &rows, const Slice &cols, const Matrix &block) {
     // check if slices are within bounds
     for (int h = 0; h < nirrep_; h++) {
         if (rows.end()[h] > rowspi_[h]) {
@@ -708,7 +698,8 @@ void Matrix::set_block(const Slice &rows, const Slice &cols, const Matrix& block
         throw PSIEXCEPTION("Invalid call to Matrix::set_block() column Slice doesn't match block's columns dimension.");
     }
     if (symmetry_ != block.symmetry()) {
-        throw PSIEXCEPTION("Invalid call to Matrix::set_block() Target and destination matrix have different symmetry..");
+        throw PSIEXCEPTION(
+            "Invalid call to Matrix::set_block() Target and destination matrix have different symmetry..");
     }
     const auto &rows_begin = rows.begin();
     const auto &cols_begin = cols.begin();
@@ -1299,23 +1290,17 @@ double Matrix::absmax() {
     return max;
 }
 
-void Matrix::transform(const Matrix *const a, const Matrix *const transformer) {
-    transform(*a, *transformer);
-}
+void Matrix::transform(const Matrix *const a, const Matrix *const transformer) { transform(*a, *transformer); }
 
 void Matrix::transform(const SharedMatrix &a, const SharedMatrix &transformer) {
     transform(a.get(), transformer.get());
 }
 
-void Matrix::transform(const Matrix *const transformer) {
-    transform(*transformer, *this, *transformer);
-}
+void Matrix::transform(const Matrix *const transformer) { transform(*transformer, *this, *transformer); }
 
 void Matrix::transform(const SharedMatrix &transformer) { transform(transformer.get()); }
 
-void Matrix::transform(const SharedMatrix &L, const SharedMatrix &F, const SharedMatrix &R) {
-    transform(*L, *F, *R);
-}
+void Matrix::transform(const SharedMatrix &L, const SharedMatrix &F, const SharedMatrix &R) { transform(*L, *F, *R); }
 
 void Matrix::transform(const Matrix &L, const Matrix &F, const Matrix &R) {
     auto temp = linalg::doublet(F, R, false, false);
@@ -1461,7 +1446,7 @@ void Matrix::axpy(double a, SharedMatrix X) {
     }
 }
 
-SharedVector Matrix::gemv(bool transa, double alpha, const Vector& A) {
+SharedVector Matrix::gemv(bool transa, double alpha, const Vector &A) {
     auto return_vec = std::make_shared<Vector>(transa ? colspi_ : rowspi_);
     return_vec->gemv(transa, alpha, *this, A, 0);
     return return_vec;
@@ -1733,15 +1718,15 @@ void Matrix::diagonalize(Matrix &eigvectors, Vector &eigvalues, diagonalize_orde
             if (rowspi_[h] != colspi_[h]) throw PSIEXCEPTION("Matrix::diagonalize: non-square irrep!");
 
             int info = -1;
-            if(nMatz == evals_only_ascending){
+            if (nMatz == evals_only_ascending) {
                 info = DSYEV_ascending(rowspi_[h], matrix_[h], eigvalues.pointer(h));
-            }else if(nMatz == ascending){
+            } else if (nMatz == ascending) {
                 info = DSYEV_ascending(rowspi_[h], matrix_[h], eigvalues.pointer(h), eigvectors.matrix_[h]);
-            }else if(nMatz == evals_only_descending){
+            } else if (nMatz == evals_only_descending) {
                 info = DSYEV_descending(rowspi_[h], matrix_[h], eigvalues.pointer(h));
-            }else if(nMatz == descending){
+            } else if (nMatz == descending) {
                 info = DSYEV_descending(rowspi_[h], matrix_[h], eigvalues.pointer(h), eigvectors.matrix_[h]);
-            }else{
+            } else {
                 throw PSIEXCEPTION("Matrix::diagonalize: illegal diagonalize_order!");
             }
             if (info != 0) throw PSIEXCEPTION("Matrix::diagonalize: DSYEV failed!");
@@ -1882,7 +1867,7 @@ void Matrix::svd_a(SharedMatrix &U, SharedVector &S, SharedMatrix &V) {
                 Vp[i][i] = 1.0;
             }
         }
-    } // End for loop
+    }  // End for loop
 }
 
 SharedMatrix Matrix::pseudoinverse(double condition, int &nremoved) {
@@ -1976,7 +1961,7 @@ SharedMatrix Matrix::canonical_orthogonalization(double delta, SharedMatrix eigv
     return X;
 }
 
-void Matrix::sort_cols(const IntVector& idxs) {
+void Matrix::sort_cols(const IntVector &idxs) {
     auto orig = clone();
     if (colspi_ != idxs.dimpi()) {
         throw PSIEXCEPTION("Matrix::sort Indexing vector and columns to sort must have the same dimension.");
@@ -2641,9 +2626,7 @@ void Matrix::hermitivitize() {
 
 // Reference versions of the above functions:
 
-void Matrix::transform(const Matrix &a, const Matrix &transformer) {
-    transform(transformer, a, transformer);
-}
+void Matrix::transform(const Matrix &a, const Matrix &transformer) { transform(transformer, a, transformer); }
 
 void Matrix::apply_symmetry(const SharedMatrix &a, const SharedMatrix &transformer) {
     // Check dimensions of the two matrices and symmetry
@@ -2755,9 +2738,7 @@ void Matrix::remove_symmetry(const SharedMatrix &a, const SharedMatrix &SO2AO) {
     }
 }
 
-void Matrix::transform(const Matrix &transformer) {
-    transform(*this, transformer);
-}
+void Matrix::transform(const Matrix &transformer) { transform(*this, transformer); }
 
 void Matrix::back_transform(const Matrix &a, const Matrix &transformer) {
     auto temp = linalg::doublet(a, transformer, false, true);
@@ -2769,9 +2750,7 @@ void Matrix::back_transform(const Matrix &a, const Matrix &transformer) {
     }
 }
 
-void Matrix::back_transform(const Matrix &transformer) {
-    back_transform(*this, transformer);
-}
+void Matrix::back_transform(const Matrix &transformer) { back_transform(*this, transformer); }
 
 double Matrix::vector_dot(const Matrix &rhs) { return vector_dot(&rhs); }
 
@@ -2787,8 +2766,8 @@ void Matrix::write_to_dpdfile2(dpdfile2 *outFile) {
 
     if (outFile->my_irrep != symmetry_) {
         std::stringstream msg;
-        msg << "Symmetry mismatch. Matrix has symmetry " << outFile->my_irrep << " whereas dpdfile has "
-            << symmetry_ << " symmetry.";
+        msg << "Symmetry mismatch. Matrix has symmetry " << outFile->my_irrep << " whereas dpdfile has " << symmetry_
+            << " symmetry.";
         throw SanityCheckError(msg.str().c_str(), __FILE__, __LINE__);
     }
 
@@ -3006,12 +2985,15 @@ void Matrix::save(psi::PSIO *const psio, size_t fileno, SaveType st) {
         delete[] lower;
     } else if (st == ThreeIndexLowerTriangle) {
         if (nirrep_ != 1) {
-            throw PSIEXCEPTION("Matrix::save: ThreeIndexLowerTriangle only applies to matrices without symmetry. This will be changing soon!\n");
+            throw PSIEXCEPTION(
+                "Matrix::save: ThreeIndexLowerTriangle only applies to matrices without symmetry. This will be "
+                "changing soon!\n");
         }
         auto nP = rowspi(0);
         auto np = static_cast<int>(sqrt(colspi(0)));
         if (np * np != colspi(0)) {
-            throw PSIEXCEPTION("Matrix::save: ThreeIndexLowerTriangle columns must be indexed by pairs of the same vector.\n");
+            throw PSIEXCEPTION(
+                "Matrix::save: ThreeIndexLowerTriangle columns must be indexed by pairs of the same vector.\n");
         }
         auto ntri = np * (np + 1) / 2;
         std::vector<double> temp(nP * ntri, 0);
@@ -3102,12 +3084,15 @@ void Matrix::load(psi::PSIO *const psio, size_t fileno, SaveType st) {
         delete[] lower;
     } else if (st == ThreeIndexLowerTriangle) {
         if (nirrep_ != 1) {
-            throw PSIEXCEPTION("Matrix::load: ThreeIndexLowerTriangle only applies to matrices without symmetry. This will be changing soon!\n");
+            throw PSIEXCEPTION(
+                "Matrix::load: ThreeIndexLowerTriangle only applies to matrices without symmetry. This will be "
+                "changing soon!\n");
         }
         auto nP = rowspi(0);
         auto np = static_cast<int>(sqrt(colspi(0)));
         if (np * np != colspi(0)) {
-            throw PSIEXCEPTION("Matrix::load: ThreeIndexLowerTriangle columns must be indexed by pairs of the same vector.\n");
+            throw PSIEXCEPTION(
+                "Matrix::load: ThreeIndexLowerTriangle columns must be indexed by pairs of the same vector.\n");
         }
         auto ntri = np * (np + 1) / 2;
         std::vector<double> temp(nP * ntri, 0);
@@ -3470,7 +3455,7 @@ SharedMatrix vertcat(const std::vector<SharedMatrix> &mats) {
     return cat;
 }
 
-Matrix doublet(const Matrix& A, const Matrix& B, bool transA, bool transB) {
+Matrix doublet(const Matrix &A, const Matrix &B, bool transA, bool transB) {
     Dimension m = (transA ? A.colspi() : A.rowspi());
     Dimension n = (transB ? B.rowspi() : B.colspi());
 
@@ -3502,7 +3487,6 @@ Matrix triplet(const Matrix &A, const Matrix &B, const Matrix &C, bool transA, b
     int cost2 = 0;
 
     for (int h = 0; h < A.nirrep(); h++) {
-
         int dim1 = transA ? A.colspi(h) : A.rowspi(h);
         int dim2 = transA ? A.rowspi(h) : A.colspi(h);
         int dim3 = transB ? B.colspi(h) : B.rowspi(h);
@@ -3520,7 +3504,6 @@ Matrix triplet(const Matrix &A, const Matrix &B, const Matrix &C, bool transA, b
         // A(BC) cost = (dim3 == dim2) * (dim4 == dim5) * dim6 + dim1 * (dim2 == dim3) * dim6
         cost1 += dim1 * dim4 * (dim2 + dim6);
         cost2 += dim2 * dim6 * (dim1 + dim4);
-
     }
 
     if (cost1 <= cost2) {
@@ -3577,7 +3560,7 @@ bool test_matrix_dpd_interface() {
 
     std::vector<int *> spaces;
     spaces.push_back(dimpi);
-    std::vector<int> sym_vec {0, 0, 3, 0, 2, 0, 3};
+    std::vector<int> sym_vec{0, 0, 3, 0, 2, 0, 3};
     spaces.push_back(sym_vec.data());
     dpd_init(0, 4, 500e6, 0, cachefiles.data(), cachelist, nullptr, 1, spaces);
     dpd_list[0]->file2_init(&io, PSIF_OEI, 2, 0, 0, "Test Matrix");

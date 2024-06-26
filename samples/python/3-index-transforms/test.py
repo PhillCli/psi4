@@ -19,7 +19,9 @@ primary = psi4.core.BasisSet.build(mol, "ORBITAL", "cc-pVTZ")
 aux = psi4.core.BasisSet.build(mol, "ORBITAL", "cc-pVTZ-jkfit")
 
 # don't sieve the integrals, because we're checking to high precision
-psi4.set_options({'ints_tolerance': 0.0,})
+psi4.set_options({
+    'ints_tolerance': 0.0,
+})
 
 # setup ~
 nbf = primary.nbf()
@@ -41,7 +43,7 @@ Jmetric_inv = np.squeeze(Jmetric_inv)
 # form Qpq
 Qpq = np.squeeze(mints.ao_eri(aux, zero_bas, primary, primary))
 Qpq = Jmetric_inv.dot(Qpq.reshape(naux, -1))
-Qpq = Qpq.reshape(naux, nbf, -1) 
+Qpq = Qpq.reshape(naux, nbf, -1)
 
 # construct spaces
 names = ['C1', 'C2', 'C3', 'C4']
@@ -55,18 +57,18 @@ for i in space_pairs:
     Qmo.append(np.zeros((naux, sizes[i[0]], sizes[i[1]])))
 
 # transform
-for ind, i in enumerate(space_pairs): 
+for ind, i in enumerate(space_pairs):
     for Q in range(naux):
         C1 = spaces[names[space_pairs[ind][0]]]
         C2 = spaces[names[space_pairs[ind][1]]]
         Qmo[ind][Q] = np.dot(C1.np.T, Qpq[Q]).dot(C2)
-    
+
 # get other forms (pQq and pqQ)
-Qmo_pQq = []    
-Qmo_pqQ = []    
+Qmo_pQq = []
+Qmo_pqQ = []
 for i in range(ntransforms):
-    Qmo_pQq.append(np.swapaxes(Qmo[i], 0, 1))    
-    Qmo_pqQ.append(np.swapaxes(np.swapaxes(Qmo[i], 0, 2), 0, 1))    
+    Qmo_pQq.append(np.swapaxes(Qmo[i], 0, 1))
+    Qmo_pqQ.append(np.swapaxes(np.swapaxes(Qmo[i], 0, 2), 0, 1))
 
 # setup ~
 methods = ['STORE', 'DIRECT', 'DIRECT_iaQ']
@@ -74,23 +76,23 @@ forms = ['Qpq', 'pQq', 'pqQ']
 transformation_names = ['Qmo1', 'Qmo2', 'Qmo3', 'Qmo4', 'Qmo5', 'Qmo6']
 transformations = OrderedDict({})
 for ind, i in enumerate(transformation_names):
-    transformations[i] = [names[space_pairs[ind][0]], names[space_pairs[ind][1]]] 
+    transformations[i] = [names[space_pairs[ind][0]], names[space_pairs[ind][1]]]
 
 # somewhat exhuastive search on all options
 for method in methods:
     for form in forms:
-        if(form != 'pqQ' and method == 'DIRECT_iaQ'): continue
+        if (form != 'pqQ' and method == 'DIRECT_iaQ'): continue
         for AO_core in [False, True]:
             for MO_core in [False, True]:
                 for hold_met in [False, True]:
-                            
+
                     # get object
                     dfh = psi4.core.DFHelper(primary, aux)
-                    
+
                     # set test options
                     dfh.set_method(method)
                     memory = mem_bump if hold_met else 0
-                    memory += 10*mem if AO_core else mem
+                    memory += 10 * mem if AO_core else mem
                     dfh.set_memory(memory)
                     dfh.set_AO_core(AO_core)
                     dfh.set_MO_core(MO_core)
@@ -98,8 +100,8 @@ for method in methods:
 
                     # build
                     dfh.initialize()
-                    dfh.print_header()                   
- 
+                    dfh.print_header()
+
                     # add spaces
                     for i in spaces:
                         dfh.add_space(i, spaces[i])
@@ -107,32 +109,33 @@ for method in methods:
                     # add transformations
                     for i in transformations:
                         j = transformations[i]
-                        dfh.add_transformation(i, j[0], j[1], form) 
+                        dfh.add_transformation(i, j[0], j[1], form)
 
                     # invoke transformations
                     dfh.transform()
 
                     # grab transformed integrals
                     dfh_Qmo = []
-                    if(form == 'pqQ'):    
+                    if (form == 'pqQ'):
                         for ind, i in enumerate(transformations):
                             j = space_pairs[ind]
                             dfh_Qmo.append(np.zeros((sizes[j[0]], sizes[j[1]], naux)))
                             for k in range(sizes[j[0]]):
-                                dfh_Qmo[ind][k,:,:] = np.asarray(dfh.get_tensor(i, [k, k+1], [0, sizes[j[1]]], [0, naux]))
+                                dfh_Qmo[ind][k, :, :] = np.asarray(
+                                    dfh.get_tensor(i, [k, k + 1], [0, sizes[j[1]]], [0, naux]))
                     else:
                         for ind, i in enumerate(transformations):
                             dfh_Qmo.append(np.asarray(dfh.get_tensor(i)))
 
-                    test_string = 'Alg: ' + method + ' + ' + form + ' core (AOs, MOs, met): [' 
-                    test_string += str(AO_core) + ', ' + str(MO_core) + ', ' + str(hold_met) +  ']' 
+                    test_string = 'Alg: ' + method + ' + ' + form + ' core (AOs, MOs, met): ['
+                    test_string += str(AO_core) + ', ' + str(MO_core) + ', ' + str(hold_met) + ']'
 
                     print(test_string)
                     # am i right?
                     for i in range(ntransforms):
-                        if(form == 'pqQ'):    
+                        if (form == 'pqQ'):
                             psi4.compare_arrays(np.asarray(dfh_Qmo[i]), Qmo_pqQ[i], 9, test_string)
-                        elif(form == 'pQq'):
+                        elif (form == 'pQq'):
                             psi4.compare_arrays(np.asarray(dfh_Qmo[i]), Qmo_pQq[i], 9, test_string)
                         else:
                             psi4.compare_arrays(np.asarray(dfh_Qmo[i]), Qmo[i], 9, test_string)
@@ -142,5 +145,3 @@ for method in methods:
 # TODO:
 # test tensor slicing grabs
 # test pQq and pqQ builds for store and direct0
-
-

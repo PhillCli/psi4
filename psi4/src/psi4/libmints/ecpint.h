@@ -77,9 +77,10 @@ class ECPInt : public OneBodyAOInt {
     /// A list of all of the orbital basis sets, converted to LibECP format for the ket.
     std::vector<libecpint::GaussianShell> libecp_shells2_;
     /// A list of the centers with ECPs, and the corresponding LibECP data structure.
-    std::vector<std::pair<int,libecpint::ECP>> centers_and_libecp_ecps_;
+    std::vector<std::pair<int, libecpint::ECP>> centers_and_libecp_ecps_;
     /// Tracks the iterations over ECP-bearing centers in Hessian integral calculations.
     int current_ecp_iterator_ = -1;
+
    public:
     ECPInt(std::vector<SphericalTransform> &, std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>, int deriv = 0);
     ~ECPInt() override;

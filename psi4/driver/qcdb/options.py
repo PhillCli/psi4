@@ -196,8 +196,7 @@ def reconcile_options(full, partial):
                             else:
                                 raise ValidationError("""
     Option %s value `%s` set by options block incompatible with
-    value `%s` in memory/molecule/command/psi4options block.""" %
-                                (kw, full[module][kw]['value'], kwprop['value']))
+    value `%s` in memory/molecule/command/psi4options block.""" % (kw, full[module][kw]['value'], kwprop['value']))
                         else:
                             # kw in full is touched, conflicts with value in partial,
                             #   but value in partial is recommended, not required, no change
@@ -246,8 +245,7 @@ def reconcile_options2(full, partial):
                             else:
                                 raise ValidationError("""
     Option %s value `%s` set by options block incompatible with
-    value `%s` in memory/molecule/command/psi4options block.""" %
-                                (kw, full[module][kw]['value'], kwprop['value']))
+    value `%s` in memory/molecule/command/psi4options block.""" % (kw, full[module][kw]['value'], kwprop['value']))
                         else:
                             # kw in full is touched, conflicts with value in partial,
                             #   but value in partial is recommended, not required, no change

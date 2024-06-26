@@ -29,18 +29,18 @@
 #include "dfocc.h"
 #include "defines.h"
 
-namespace psi{
+namespace psi {
 namespace dfoccwave {
 
-void DFOCC::uccsd_tpdm()
-{
+void DFOCC::uccsd_tpdm() {
     SharedTensor2d T, T2, L2, Tau, X, Y, Z, V, U, L, G, G2, A, K;
 
     /////////////////////////////////
     //// OO-Block ///////////////////
     /////////////////////////////////
 
-    //// Alpha BLock ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //// Alpha BLock
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // G_IJ^Q = 0.5 * P+(IJ) 2*\cal(V)_IJ^Q
     G = std::make_shared<Tensor2d>("Correlation 3-Index TPDM (Q|IJ)", nQ, naoccA, naoccA);
@@ -140,11 +140,12 @@ void DFOCC::uccsd_tpdm()
     G.reset();
     G2->write(psio_, PSIF_DFOCC_DENS);
     if (print_ > 3) G2->print();
-    //G2->scale(2.0);
-    //G2->print();
+    // G2->scale(2.0);
+    // G2->print();
     G2.reset();
 
-    //// Beta BLock  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //// Beta BLock
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // G_ij^Q = 0.5 * P+(ij) 2*\cal(V)_ij^Q
     G = std::make_shared<Tensor2d>("Correlation 3-Index TPDM (Q|ij)", nQ, naoccB, naoccB);
@@ -244,8 +245,8 @@ void DFOCC::uccsd_tpdm()
     G.reset();
     G2->write(psio_, PSIF_DFOCC_DENS);
     if (print_ > 3) G2->print();
-    //G2->scale(2.0);
-    //G2->print();
+    // G2->scale(2.0);
+    // G2->print();
 
     /* Adding OO for RHF verification
     A = std::make_shared<Tensor2d>("Correlation 3-Index TPDM (Q|OO)", nQ, noccA, noccA);
@@ -262,7 +263,8 @@ void DFOCC::uccsd_tpdm()
     //// OV-Block ///////////////////
     /////////////////////////////////
 
-    //// Alpha BLock ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //// Alpha BLock
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // G_IA^Q = 0.5 * Tau_IA^Q
     G = std::make_shared<Tensor2d>("Correlation 3-Index TPDM (Q|IA)", nQ, naoccA, navirA);
@@ -270,37 +272,37 @@ void DFOCC::uccsd_tpdm()
     T->read(psio_, PSIF_DFOCC_AMPS);
     G->axpy(T, 0.5);
     T.reset();
-    //outfile->Printf("\tStep 1-1 \n");
-    //G->scale(2.0);
-    //G->print();
+    // outfile->Printf("\tStep 1-1 \n");
+    // G->scale(2.0);
+    // G->print();
 
     // G_IA^Q += 0.5 * L_IA^Q
     T = std::make_shared<Tensor2d>("L2 (Q|IA)", nQ, naoccA, navirA);
     T->read(psio_, PSIF_DFOCC_AMPS);
     G->axpy(T, 0.5);
     T.reset();
-    //outfile->Printf("\tStep 1-2 \n");
-    //G->scale(2.0);
-    //G->print();
+    // outfile->Printf("\tStep 1-2 \n");
+    // G->scale(2.0);
+    // G->print();
 
     // G_IA^Q += 0.5 * Z_IA^Q
     T = std::make_shared<Tensor2d>("Zeta (Q|IA)", nQ, naoccA, navirA);
     T->read(psio_, PSIF_DFOCC_AMPS);
     G->axpy(T, 0.5);
     T.reset();
-    //outfile->Printf("\tStep 1-3 \n");
-    //G->scale(2.0);
-    //G->print();
+    // outfile->Printf("\tStep 1-3 \n");
+    // G->scale(2.0);
+    // G->print();
 
     // G_IA^Q += 0.5 * 2*y_IA^Q
     T = std::make_shared<Tensor2d>("Y (Q|IA)", nQ, naoccA, navirA);
     T->read(psio_, PSIF_DFOCC_AMPS);
-    //T->print();
+    // T->print();
     G->axpy(T, 1.0);
     T.reset();
-    //outfile->Printf("\tStep 1-4 \n");
-    //G->scale(2.0);
-    //G->print();
+    // outfile->Printf("\tStep 1-4 \n");
+    // G->scale(2.0);
+    // G->print();
 
     // G_IA^Q -= 0.5 * tEta_IA^Q
     T = std::make_shared<Tensor2d>("Eta2 (Q|IA)", nQ, naoccA, navirA);
@@ -308,9 +310,9 @@ void DFOCC::uccsd_tpdm()
     G->axpy(T, -0.5);
     T.reset();
 
-    //outfile->Printf("\tStep 1 \n");
-    //G->scale(2.0);
-    //G->print();
+    // outfile->Printf("\tStep 1 \n");
+    // G->scale(2.0);
+    // G->print();
 
     // G_IA^Q += 0.5 *  l_I^A t_Q
     G->dirprd123(T1c, l1A, 0.5, 1.0);
@@ -322,8 +324,8 @@ void DFOCC::uccsd_tpdm()
     G->dirprd123(TtA, t1A, 0.5, 1.0);
     TtA.reset();
 
-    //outfile->Printf("\tStep 2 \n");
-    //G->print();
+    // outfile->Printf("\tStep 2 \n");
+    // G->print();
 
     // G_IA^Q += 0.5 * \sum(M) t_M^A (G_IM^Q + V_IM^Q - 2*Vp_IM^Q - n_MI^Q)
     T = std::make_shared<Tensor2d>("Temp (Q|IJ)", nQ, naoccA, naoccA);
@@ -347,8 +349,8 @@ void DFOCC::uccsd_tpdm()
     G->contract(false, false, nQ * naoccA, navirA, naoccA, T, t1A, 0.5, 1.0);
     T.reset();
 
-    //outfile->Printf("\tStep 3 \n");
-    //G->print();
+    // outfile->Printf("\tStep 3 \n");
+    // G->print();
 
     // G_IA^Q -= 0.5 * \sum(M) Tau_MA^Q Gt_IM
     T = std::make_shared<Tensor2d>("Tau (Q|IA)", nQ, naoccA, navirA);
@@ -371,8 +373,8 @@ void DFOCC::uccsd_tpdm()
     G->contract(false, false, nQ * naoccA, navirA, navirA, T, GabA, 0.5, 1.0);
     T.reset();
 
-    //outfile->Printf("\tStep 4 \n");
-    //G->print();
+    // outfile->Printf("\tStep 4 \n");
+    // G->print();
 
     // G_IA^Q += 0.5 * \sum(ME) (t_ME^Q - t_EM^Q) * {L2(IM,AE) + 2*V(IE,MA)}
     U = std::make_shared<Tensor2d>("T1 (Q|AI)", nQ, navirA, naoccA);
@@ -424,8 +426,8 @@ void DFOCC::uccsd_tpdm()
     Y.reset();
     T.reset();
 
-    //outfile->Printf("\tStep 5 \n");
-    //G->print();
+    // outfile->Printf("\tStep 5 \n");
+    // G->print();
 
     // G_IA^Q += 0.5 * \sum(ME) Tau(IM,AE) (Gt_EM^Q - Gt_ME^Q + l_ME^Q - l_EM^Q)
     U = std::make_shared<Tensor2d>("Gt (Q|AI)", nQ, navirA, naoccA);
@@ -487,8 +489,8 @@ void DFOCC::uccsd_tpdm()
     U.reset();
     T.reset();
 
-    //outfile->Printf("\tStep 6 \n");
-    //G->print();
+    // outfile->Printf("\tStep 6 \n");
+    // G->print();
 
     // T3 contribution
     if (wfn_type_ == "DF-CCSD(T)") {
@@ -591,8 +593,8 @@ void DFOCC::uccsd_tpdm()
     G.reset();
     G2->write(psio_, PSIF_DFOCC_DENS);
     if (print_ > 3) G2->print();
-    //G2->scale(2.0);
-    //G2->print();
+    // G2->scale(2.0);
+    // G2->print();
 
     // Form G_vo^Q
     G = std::make_shared<Tensor2d>("Correlation 3-Index TPDM (Q|VO)", nQ, nvirA, noccA);
@@ -602,7 +604,8 @@ void DFOCC::uccsd_tpdm()
     if (print_ > 3) G->print();
     G.reset();
 
-    //// Beta BLock  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //// Beta BLock
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // G_ia^Q = 0.5 * Tau_ia^Q
     G = std::make_shared<Tensor2d>("Correlation 3-Index TPDM (Q|ia)", nQ, naoccB, navirB);
@@ -907,8 +910,8 @@ void DFOCC::uccsd_tpdm()
     G2A->print();
     G2A.reset();
     */
-    //G2->scale(2.0);
-    //G2->print();
+    // G2->scale(2.0);
+    // G2->print();
     G2.reset();
 
     /* Adding VO for RHF verification
@@ -918,8 +921,8 @@ void DFOCC::uccsd_tpdm()
     GA->print();
     GA.reset();
     */
-    //G->scale(2.0);
-    //G->print();
+    // G->scale(2.0);
+    // G->print();
     G->write(psio_, PSIF_DFOCC_DENS);
     if (print_ > 3) G->print();
     G.reset();
@@ -928,10 +931,11 @@ void DFOCC::uccsd_tpdm()
     //// VV-Block ///////////////////
     /////////////////////////////////
 
-    //// Alpha BLock ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //// Alpha BLock
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    //G{AB}^{Q} =  - 0.5 *  P_{+}(AB) [2 V_{AB}^{Q} + 2 {Vt}_{AB}^{Q} + etatilde_{AB}^{Q} + \cal G_{AB} t_{Q}]
-    // G_ab^Q -= 0.5 * P+(ab) 2*V_ab^Q
+    // G{AB}^{Q} =  - 0.5 *  P_{+}(AB) [2 V_{AB}^{Q} + 2 {Vt}_{AB}^{Q} + etatilde_{AB}^{Q} + \cal G_{AB} t_{Q}]
+    //  G_ab^Q -= 0.5 * P+(ab) 2*V_ab^Q
     V = std::make_shared<Tensor2d>("V (Q|AB)", nQ, navirA, navirA);
     V->read(psio_, PSIF_DFOCC_AMPS);
     G = std::make_shared<Tensor2d>("Correlation 3-Index TPDM (Q|AB)", nQ, navirA, navirA);
@@ -950,7 +954,7 @@ void DFOCC::uccsd_tpdm()
     // G_ab^Q -= 0.5 * P+(ab) G_ab t_Q
     G->dirprd123(T1c, GabA, -0.5, 1.0);
 
-    //G{AB}^{Q} =  + 0.5 * P_{+}(AB) \sum_{M}^{occ} l_{B}^{M} [tau_{MA}^{Q} - t_{AM}^{Q}]
+    // G{AB}^{Q} =  + 0.5 * P_{+}(AB) \sum_{M}^{occ} l_{B}^{M} [tau_{MA}^{Q} - t_{AM}^{Q}]
     U = std::make_shared<Tensor2d>("Tau (Q|IA)", nQ, naoccA, navirA);
     U->read(psio_, PSIF_DFOCC_AMPS);
     T = std::make_shared<Tensor2d>("Temp (Q|AI)", nQ, navirA, naoccA);
@@ -964,7 +968,8 @@ void DFOCC::uccsd_tpdm()
     G->contract(false, false, nQ * navirA, navirA, naoccA, T, l1A, -0.5, 1.0);
     T.reset();
 
-    //G{AB}^{Q} =  + 0.5 * P_{+}(AB) \sum_{M}^{occ} t_{M}^{B} [eta_{MA}^{Q} + {\cal G}_{AM}^{Q} + L_{MA}^{Q} + 2 V_{AM}^{Q}]
+    // G{AB}^{Q} =  + 0.5 * P_{+}(AB) \sum_{M}^{occ} t_{M}^{B} [eta_{MA}^{Q} + {\cal G}_{AM}^{Q} + L_{MA}^{Q} + 2
+    // V_{AM}^{Q}]
     U = std::make_shared<Tensor2d>("Eta (Q|IA)", nQ, naoccA, navirA);
     U->read(psio_, PSIF_DFOCC_AMPS);
     T = std::make_shared<Tensor2d>("L2 (Q|IA)", nQ, naoccA, navirA);
@@ -1037,14 +1042,15 @@ void DFOCC::uccsd_tpdm()
     G.reset();
     G2->write(psio_, PSIF_DFOCC_DENS, true, true);
     if (print_ > 3) G2->print();
-    //G2->scale(2.0);
-    //G2->print();
+    // G2->scale(2.0);
+    // G2->print();
     G2.reset();
 
-    //// Beta BLock  ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //// Beta BLock
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    //G{ab}^{Q} = - 0.5 * P_{+}(ab) [2 V_{ab}^{Q} + 2 {Vt}_{ab}^{Q} + etatilde_{ab}^{Q} + \cal G_{ab} t_{Q}]
-    // G_ab^Q -= 0.5 * P+(ab) 2*V_ab^Q
+    // G{ab}^{Q} = - 0.5 * P_{+}(ab) [2 V_{ab}^{Q} + 2 {Vt}_{ab}^{Q} + etatilde_{ab}^{Q} + \cal G_{ab} t_{Q}]
+    //  G_ab^Q -= 0.5 * P+(ab) 2*V_ab^Q
     V = std::make_shared<Tensor2d>("V (Q|ab)", nQ, navirB, navirB);
     V->read(psio_, PSIF_DFOCC_AMPS);
     G = std::make_shared<Tensor2d>("Correlation 3-Index TPDM (Q|ab)", nQ, navirB, navirB);
@@ -1063,7 +1069,7 @@ void DFOCC::uccsd_tpdm()
     // G_ab^Q -= 0.5 * P+(ab) G_ab t_Q
     G->dirprd123(T1c, GabB, -0.5, 1.0);
 
-    //G{ab}^{Q} = + 0.5 * P_{+}(ab) \sum_{m}^{occ} l_{b}^{m} [tau_{ma}^{Q} - t_{am}^{Q}]
+    // G{ab}^{Q} = + 0.5 * P_{+}(ab) \sum_{m}^{occ} l_{b}^{m} [tau_{ma}^{Q} - t_{am}^{Q}]
     U = std::make_shared<Tensor2d>("Tau (Q|ia)", nQ, naoccB, navirB);
     U->read(psio_, PSIF_DFOCC_AMPS);
     T = std::make_shared<Tensor2d>("Temp (Q|ai)", nQ, navirB, naoccB);
@@ -1077,7 +1083,8 @@ void DFOCC::uccsd_tpdm()
     G->contract(false, false, nQ * navirB, navirB, naoccB, T, l1B, -0.5, 1.0);
     T.reset();
 
-    //G{ab}^{Q} = + 0.5 * P_{+}(ab) \sum_{m}^{occ} t_{m}^{b} [eta_{ma}^{Q} + \cal G_{am}^{Q} + L_{ma}^{Q} + 2 V_{am}^{Q}]
+    // G{ab}^{Q} = + 0.5 * P_{+}(ab) \sum_{m}^{occ} t_{m}^{b} [eta_{ma}^{Q} + \cal G_{am}^{Q} + L_{ma}^{Q} + 2
+    // V_{am}^{Q}]
     U = std::make_shared<Tensor2d>("Eta (Q|ia)", nQ, naoccB, navirB);
     U->read(psio_, PSIF_DFOCC_AMPS);
     T = std::make_shared<Tensor2d>("L2 (Q|ia)", nQ, naoccB, navirB);
@@ -1150,8 +1157,8 @@ void DFOCC::uccsd_tpdm()
     G.reset();
     G2->write(psio_, PSIF_DFOCC_DENS, true, true);
     if (print_ > 3) G2->print();
-    //G2->scale(2.0);
-    //G2->print();
+    // G2->scale(2.0);
+    // G2->print();
     /* Adding VV for rhf verification
     SharedTensor2d GA = std::make_shared<Tensor2d>("Correlation 3-Index TPDM (Q|VV)", nQ, nvirA, nvirA);
     GA->read(psio_, PSIF_DFOCC_DENS, true, true);
@@ -1168,7 +1175,7 @@ void DFOCC::uccsd_tpdm()
     remove_binary_file(PSIF_DFOCC_MIABC_AABB);
     remove_binary_file(PSIF_DFOCC_MIABC_BBAA);
 
-    //outfile->Printf("\tI am here.\n");
-} // end uccsd_tpdm
+    // outfile->Printf("\tI am here.\n");
+}  // end uccsd_tpdm
 }  // namespace dfoccwave
 }  // namespace psi

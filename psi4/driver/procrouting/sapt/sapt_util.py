@@ -178,7 +178,7 @@ def print_sapt_dft_summary(data, name, do_dft=True, short=False):
         ret += print_sapt_var("  Exch-Disp20", data["Exch-Disp20,u"]) + "\n"
         ret += "\n"
         core.set_variable("SAPT DISP ENERGY", disp)
-    
+
     # Total energy
     total = data["Elst10,r"] + data["Exch10"] + ind + disp
     ret += print_sapt_var("Total %-17s" % name, total, start_spacer="    ") + "\n"

@@ -35,11 +35,10 @@
 #include "psi4/libscf_solver/rhf.h"
 #include "psi4/libscf_solver/uhf.h"
 
-namespace psi{
+namespace psi {
 namespace scfgrad {
 
-SharedMatrix scfgrad(std::shared_ptr<scf::HF> ref_wfn, Options &options)
-{
+SharedMatrix scfgrad(std::shared_ptr<scf::HF> ref_wfn, Options &options) {
     tstart();
 
     SCFDeriv grad(ref_wfn, options);
@@ -49,12 +48,11 @@ SharedMatrix scfgrad(std::shared_ptr<scf::HF> ref_wfn, Options &options)
     return G;
 }
 
-SharedMatrix scfhess(std::shared_ptr<scf::HF> ref_wfn, Options &options)
-{
+SharedMatrix scfhess(std::shared_ptr<scf::HF> ref_wfn, Options &options) {
     tstart();
 
     SharedMatrix H;
-    if( ref_wfn->same_a_b_orbs() && ref_wfn->same_a_b_dens()) {
+    if (ref_wfn->same_a_b_orbs() && ref_wfn->same_a_b_dens()) {
         // RHF
         RSCFDeriv hessian_computer(std::dynamic_pointer_cast<scf::RHF>(ref_wfn), options);
         H = hessian_computer.compute_hessian();
@@ -69,4 +67,5 @@ SharedMatrix scfhess(std::shared_ptr<scf::HF> ref_wfn, Options &options)
     return H;
 }
 
-}} // End Namespaces
+}  // namespace scfgrad
+}  // namespace psi

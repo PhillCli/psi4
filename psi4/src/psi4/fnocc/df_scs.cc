@@ -85,8 +85,7 @@ std::tuple<double, double, SharedMatrix, SharedMatrix> DFCoupledCluster::Compute
 
                     pair_os += integrals[iajb] * (tb[ijab] + t1[a * o + i] * t1[b * o + j]);
                     pair_ss += integrals[iajb] * (tb[ijab] - tb[b * o * o * v + a * o * o + i * o + j]);
-                    pair_ss += integrals[iajb] *
-                                (t1[a * o + i] * t1[b * o + j] - t1[b * o + i] * t1[a * o + j]);
+                    pair_ss += integrals[iajb] * (t1[a * o + i] * t1[b * o + j] - t1[b * o + i] * t1[a * o + j]);
                 }
             }
             osenergy += pair_os;
@@ -159,5 +158,5 @@ void DFCoupledCluster::SCS_MP2() {
         set_array_variable("MP2 TRIPLET PAIR ENERGIES", triplet);
     }
 }
-}
-}
+}  // namespace fnocc
+}  // namespace psi

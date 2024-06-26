@@ -108,7 +108,8 @@ void IntegralTransform::backtransform_density(bool reset_oneel) {
             /*
              * The Lagrangian
              */
-            psio_->read_entry(PSIF_MO_LAG, "MO-basis Lagrangian", (char *)tempOPDM[0], sizeof(double) * nActive * nActive);
+            psio_->read_entry(PSIF_MO_LAG, "MO-basis Lagrangian", (char *)tempOPDM[0],
+                              sizeof(double) * nActive * nActive);
             for (int p = 0; p < nActive; ++p) {
                 for (int q = 0; q <= p; ++q) {
                     int P = aCorrToPitzer_[p];
@@ -144,7 +145,8 @@ void IntegralTransform::backtransform_density(bool reset_oneel) {
          * Start by transforming the OPDM to the SO basis
          */
         if (reset_oneel) {
-            psio_->read_entry(PSIF_MO_OPDM, "MO-basis Alpha OPDM", (char *)tempOPDM[0], sizeof(double) * nActive * nActive);
+            psio_->read_entry(PSIF_MO_OPDM, "MO-basis Alpha OPDM", (char *)tempOPDM[0],
+                              sizeof(double) * nActive * nActive);
             for (int p = 0; p < nActive; ++p) {
                 for (int q = 0; q <= p; ++q) {
                     int P = aCorrToPitzer_[p];
@@ -164,7 +166,8 @@ void IntegralTransform::backtransform_density(bool reset_oneel) {
                 soOffset += sopi_[h];
                 moOffset += mopi_[h];
             }
-            psio_->read_entry(PSIF_MO_OPDM, "MO-basis Beta OPDM", (char *)tempOPDM[0], sizeof(double) * nActive * nActive);
+            psio_->read_entry(PSIF_MO_OPDM, "MO-basis Beta OPDM", (char *)tempOPDM[0],
+                              sizeof(double) * nActive * nActive);
             for (int p = 0; p < nActive; ++p) {
                 for (int q = 0; q <= p; ++q) {
                     int P = bCorrToPitzer_[p];

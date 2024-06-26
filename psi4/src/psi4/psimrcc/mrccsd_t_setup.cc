@@ -452,7 +452,7 @@ void MRCCSD_T::check_intruders() {
                     }
                 }
             }  // End loop over abc
-        }      // End loop over allowed ijk
+        }  // End loop over allowed ijk
 
         int max_aaa = std::min(10, static_cast<int>(aaa_sample.size()));
         if (max_aaa > 0) {

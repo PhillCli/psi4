@@ -28,6 +28,7 @@ def test_constructors(tested_class):
     v2 = tested_class("v2", int_d)
     check_dense_vec(v2, int_d, "v2")
 
+
 def check_block_vec(v, exp_nirrep, exp_d, exp_name=None):
     assert v.nirrep() == exp_nirrep
     assert v.dimpi() == exp_d
@@ -51,12 +52,14 @@ def test_constructors_w_symmetry(name, dim):
     v = Vector(name, dim)
     check_block_vec(v, dim.n(), dim, name)
 
+
 @pytest.mark.parametrize("tested_class", [pytest.param(i) for i in [Vector, IntVector]])
 def test_clone(tested_class):
     dim = Dimension([1, 2, 3])
     vec = tested_class(dim)
     copy = vec.clone()
     assert copy.dimpi() == dim
+
 
 @pytest.mark.parametrize("tested_class", [pytest.param(i) for i in [Vector, IntVector]])
 def test_add(tested_class):
@@ -68,15 +71,17 @@ def test_add(tested_class):
     assert vec.get(0) == 10
     assert vec.get(2, 2) == 7
 
+
 @pytest.mark.parametrize("tested_class", [pytest.param(i) for i in [Vector, IntVector]])
 def test_set(tested_class):
     dim = Dimension([1, 2, 3])
     vec = tested_class(dim)
     vec.set(0, 5)
-    vec.set(0, 5) # Deliberately doing this twice.
+    vec.set(0, 5)  # Deliberately doing this twice.
     vec.set(2, 2, 7)
     assert vec.get(0) == 5
     assert vec.get(2, 2) == 7
+
 
 def test_int_vs_float():
     dim = Dimension(1)
@@ -86,6 +91,7 @@ def test_int_vs_float():
     with pytest.raises(TypeError):
         foo.add(0, 0.1)
 
+
 def test_iota():
     dim = Dimension([5, 3, 2])
     iota_vec = IntVector.iota(dim)
@@ -93,39 +99,43 @@ def test_iota():
         for i in range(iota_vec.dim(h)):
             assert iota_vec.get(h, i) == i
 
+
 @pytest.mark.parametrize("tested_class", [pytest.param(i) for i in [Vector, IntVector]])
 def test_init(tested_class):
     dim = Dimension([1, 2, 3])
     vec = tested_class(dim)
     vec.set(0, 5)
-    vec.set(0, 5) # Deliberately doing this twice.
+    vec.set(0, 5)  # Deliberately doing this twice.
     vec.set(2, 2, 7)
     vec.init(Dimension(5))
     assert vec.nirrep() == 5
     assert vec.dim(2) == 0
+
 
 @pytest.mark.parametrize("tested_class", [pytest.param(i) for i in [Vector, IntVector]])
 def test_copy(tested_class):
     dim = Dimension([1, 2, 3])
     vec = tested_class(dim)
     vec.set(0, 5)
-    vec.set(0, 5) # Deliberately doing this twice.
+    vec.set(0, 5)  # Deliberately doing this twice.
     vec.set(2, 2, 7)
     vec2 = tested_class(Dimension(5))
     vec.copy(vec2)
     assert vec.nirrep() == 5
     assert vec.dim(2) == 0
 
+
 @pytest.mark.parametrize("tested_class", [pytest.param(i) for i in [Vector, IntVector]])
 def test_zero(tested_class):
     dim = Dimension([1, 2, 3])
     vec = tested_class(dim)
     vec.set(0, 5)
-    vec.set(0, 5) # Deliberately doing this twice.
+    vec.set(0, 5)  # Deliberately doing this twice.
     vec.set(2, 2, 7)
     vec.zero()
     assert vec.get(0) == 0
     assert vec.get(2, 2) == 0
+
 
 @pytest.mark.parametrize("tested_class", [pytest.param(i) for i in [Vector, IntVector]])
 def test_get_block(tested_class):
@@ -139,6 +149,7 @@ def test_get_block(tested_class):
     assert block.dimpi() == Dimension([0, 1, 1])
     assert block.get(1, 0) == 11
     assert block.get(2, 0) == 20
+
 
 @pytest.mark.parametrize("tested_class", [pytest.param(i) for i in [Vector, IntVector]])
 def test_set_block(tested_class):
@@ -154,6 +165,7 @@ def test_set_block(tested_class):
     vec.set_block(my_slice, block)
     assert vec.get(1, 1) == 5
     assert vec.get(2, 0) == 10
+
 
 @pytest.mark.parametrize("tested_class", [pytest.param(i) for i in [Vector, IntVector]])
 def test_bounds(tested_class):

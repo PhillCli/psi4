@@ -102,6 +102,7 @@ def backtick(exelist):
     #   been adequate for driver interfaces. nevertheless, to collect
     #   the proper exit code, 2nd while loop very necessary.
 
+
 # run psi4 and collect testing status from any compare_* in input file
 if os.path.isfile(infile):
     exelist = [psi, infile, outfile, '-l', psidatadir]

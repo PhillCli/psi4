@@ -188,7 +188,7 @@ void T3_UHF_AAA_abc(double ***W, double ***V, int disc, int nirreps, int A, int 
         Gk = Gij ^ Gabc ^ GX3; /* changed */
         W2[Gij] = global_dpd_->dpd_block_matrix(C2->params->coltot[Gij], occpi[Gk]);
         if (C2->params->coltot[Gij] && occpi[Gk]) {
-            memset(W[Gij][0], 0,  sizeof(double) * C2->params->coltot[Gij] * occpi[Gk]);
+            memset(W[Gij][0], 0, sizeof(double) * C2->params->coltot[Gij] * occpi[Gk]);
             memset(W2[Gij][0], 0, sizeof(double) * C2->params->coltot[Gij] * occpi[Gk]);
             if (disc) memset(V[Gij][0], 0, sizeof(double) * C2->params->coltot[Gij] * occpi[Gk]);
         }
@@ -810,8 +810,8 @@ void T3_UHF_AAA_abc(double ***W, double ***V, int disc, int nirreps, int A, int 
                         V[Gij][ij][k] += t_kc * D_jiba + f_kc * t_jiba;
                     }
                 } /* k */
-            }     /* ij */
-        }         /* Gij */
+            } /* ij */
+        } /* Gij */
 
         for (h = 0; h < nirreps; h++) {
             global_dpd_->buf4_mat_irrep_close(C2, h);
@@ -837,8 +837,8 @@ void T3_UHF_AAA_abc(double ***W, double ***V, int disc, int nirreps, int A, int 
                 W[Gij][ij][k] /= (omega + denom);
                 if (disc) V[Gij][ij][k] /= (omega + denom);
             } /* k */
-        }     /* ij */
-    }         /* Gij */
+        } /* ij */
+    } /* Gij */
 
     for (Gij = 0; Gij < nirreps; ++Gij) {
         Gk = Gij ^ Gabc ^ GX3; /* changed */
@@ -1588,8 +1588,8 @@ void T3_UHF_AAB_abc(double ***W, double ***V, int disc, int nirreps, int A, int 
                         V[Gij][ij][k] -= t_kc * D_jiab + f_kc * t_jiab;
                     }
                 } /* k */
-            }     /* ij */
-        }         /* Gij */
+            } /* ij */
+        } /* Gij */
 
         for (h = 0; h < nirreps; h++) {
             global_dpd_->buf4_mat_irrep_close(T2AB, h);
@@ -1620,8 +1620,8 @@ void T3_UHF_AAB_abc(double ***W, double ***V, int disc, int nirreps, int A, int 
                 W[Gij][ij][k] /= (denom + omega);
                 if (disc) V[Gij][ij][k] /= (denom + omega);
             } /* k */
-        }     /* ij */
-    }         /* Gij */
+        } /* ij */
+    } /* Gij */
 
     for (Gij = 0; Gij < nirreps; Gij++) {
         Gk = Gabc ^ Gij ^ GX3;

@@ -134,7 +134,8 @@ void DFOCC::df_corr() {
     timer_off("Form J");
 
     bool do_mp2 = false;
-    //if (wfn_type_ == "DF-OMP2" && orb_opt_ == "FALSE" && dertype == "NONE" && oeprop_ == "FALSE" && ekt_ip_ == "FALSE" && comput_s2_ == "FALSE" && qchf_ == "FALSE") {
+    // if (wfn_type_ == "DF-OMP2" && orb_opt_ == "FALSE" && dertype == "NONE" && oeprop_ == "FALSE" && ekt_ip_ ==
+    // "FALSE" && comput_s2_ == "FALSE" && qchf_ == "FALSE") {
     if (wfn_type_ == "DF-OMP2" && orb_opt_ == "FALSE") {
         do_mp2 = true;
     }
@@ -231,20 +232,20 @@ void DFOCC::formJ(std::shared_ptr<BasisSet> auxiliary_, std::shared_ptr<BasisSet
 
     // First, diagonalize J
     // the C_DSYEV call replaces the original matrix J with its eigenvectors
-    int lwork = 1 + (6*nQ) + (2*nQ*nQ);
-    int liwork = 3 + (5*nQ);
-    double *eigval = new double[nQ];
-    memset(eigval, 0.0, sizeof(double)*nQ);
-    double *work = new double[lwork];
-    memset(work, 0.0, sizeof(double)*lwork);
-    int *iwork = new int[liwork];
-    memset(iwork, 0.0, sizeof(int)*liwork);
+    int lwork = 1 + (6 * nQ) + (2 * nQ * nQ);
+    int liwork = 3 + (5 * nQ);
+    double* eigval = new double[nQ];
+    memset(eigval, 0.0, sizeof(double) * nQ);
+    double* work = new double[lwork];
+    memset(work, 0.0, sizeof(double) * lwork);
+    int* iwork = new int[liwork];
+    memset(iwork, 0.0, sizeof(int) * liwork);
     int status = C_DSYEVD('v', 'u', nQ, J[0], nQ, eigval, work, lwork, iwork, liwork);
     if (status) {
         throw PsiException("Diagonalization of J failed", __FILE__, __LINE__);
     }
-    delete [] work;
-    delete [] iwork;
+    delete[] work;
+    delete[] iwork;
 
     // Now J contains the eigenvectors of the original J
     // Copy J to J_copy
@@ -259,11 +260,11 @@ void DFOCC::formJ(std::shared_ptr<BasisSet> auxiliary_, std::shared_ptr<BasisSet
         // scale one set of eigenvectors by the diagonal elements j^{-1/2}
         C_DSCAL(nQ, eigval[i], J[i], 1);
     }
-    delete [] eigval;
+    delete[] eigval;
 
     // J_mhalf = J_copy(T) * J
     C_DGEMM('t', 'n', nQ, nQ, nQ, 1.0, J_copy[0], nQ, J[0], nQ, 0.0, J_mhalf[0], nQ);
-    //free_block(J);
+    // free_block(J);
     free_block(J_copy);
 
     // write J^-1
@@ -324,7 +325,6 @@ void DFOCC::b_so(std::shared_ptr<BasisSet> primary_, std::shared_ptr<BasisSet> a
     }
     Pstarts.push_back(auxiliary_->nshell());
 
-
     // => Master Loop <= //
 
     for (int block = 0; block < Pstarts.size() - 1; block++) {
@@ -352,7 +352,7 @@ void DFOCC::b_so(std::shared_ptr<BasisSet> primary_, std::shared_ptr<BasisSet> a
             int N = shell_pairs[MN].second;
 
             eri[thread]->compute_shell(P, 0, M, N);
-            const double *buf = eri[thread]->buffer();
+            const double* buf = eri[thread]->buffer();
 
             int nP = auxiliary_->shell(P).nfunction();
             int oP = auxiliary_->shell(P).function_index();
@@ -411,9 +411,10 @@ void DFOCC::b_so(std::shared_ptr<BasisSet> primary_, std::shared_ptr<BasisSet> a
 
     SharedTensor2d K;
     // DO MP2
-    //else {
-    if (do_mp2 && dertype == "NONE" && oeprop_ == "FALSE" && ekt_ip_ == "FALSE" && comput_s2_ == "FALSE" && qchf_ == "FALSE") {
-        //std::cout << "I ma doing new style mp2! \n";
+    // else {
+    if (do_mp2 && dertype == "NONE" && oeprop_ == "FALSE" && ekt_ip_ == "FALSE" && comput_s2_ == "FALSE" &&
+        qchf_ == "FALSE") {
+        // std::cout << "I ma doing new style mp2! \n";
         free_block(Ap);
         bQso = std::make_shared<Tensor2d>("DF_BASIS_CC B (Q|mn)", nQ, nso_, nso_);
         bQso->set(Bp);
@@ -425,43 +426,43 @@ void DFOCC::b_so(std::shared_ptr<BasisSet> primary_, std::shared_ptr<BasisSet> a
         Jmhalf->read(psio_, PSIF_DFOCC_INTS);
 
         // trans only actives
-        //if (dertype == "NONE" && oeprop_ == "FALSE" && ekt_ip_ == "FALSE" && comput_s2_ == "FALSE" && qchf_ == "FALSE") {
-            // Form B(Q,ia)
-            trans_ab = 0;
-            timer_on("Form B(Q,ia)");
-            bQnvA = std::make_shared<Tensor2d>("DF_BASIS_CC (Q|mA)", nQ, nso_, navirA);
-            auto K = std::make_shared<Tensor2d>("DF_BASIS_CC (Q|IA)", nQ, naoccA, navirA);
-            bQnvA->contract(false, false, nQ * nso_, navirA, nso_, bQso, CavirA, 1.0, 0.0);
-            K->contract233(true, false, naoccA, navirA, CaoccA, bQnvA, 1.0, 0.0);
-            bQnvA.reset();
-            //bQnvA->write(io, MQCF_DFOCC_INTS);
+        // if (dertype == "NONE" && oeprop_ == "FALSE" && ekt_ip_ == "FALSE" && comput_s2_ == "FALSE" && qchf_ ==
+        // "FALSE") {
+        // Form B(Q,ia)
+        trans_ab = 0;
+        timer_on("Form B(Q,ia)");
+        bQnvA = std::make_shared<Tensor2d>("DF_BASIS_CC (Q|mA)", nQ, nso_, navirA);
+        auto K = std::make_shared<Tensor2d>("DF_BASIS_CC (Q|IA)", nQ, naoccA, navirA);
+        bQnvA->contract(false, false, nQ * nso_, navirA, nso_, bQso, CavirA, 1.0, 0.0);
+        K->contract233(true, false, naoccA, navirA, CaoccA, bQnvA, 1.0, 0.0);
+        bQnvA.reset();
+        // bQnvA->write(io, MQCF_DFOCC_INTS);
 
-            bQiaA = std::make_shared<Tensor2d>("DF_BASIS_CC B (Q|IA)", nQ, naoccA, navirA);
-            bQiaA->gemm(false, false, Jmhalf, K, 1.0, 0.0);
+        bQiaA = std::make_shared<Tensor2d>("DF_BASIS_CC B (Q|IA)", nQ, naoccA, navirA);
+        bQiaA->gemm(false, false, Jmhalf, K, 1.0, 0.0);
+        K.reset();
+        bQiaA->write(psio_, PSIF_DFOCC_INTS);
+        bQiaA.reset();
+
+        if (reference_ == "UNRESTRICTED") {
+            bQnvB = std::make_shared<Tensor2d>("DF_BASIS_CC (Q|ma)", nQ, nso_, navirB);
+            auto K = std::make_shared<Tensor2d>("DF_BASIS_CC (Q|ia)", nQ, naoccB, navirB);
+            bQnvB->contract(false, false, nQ * nso_, navirB, nso_, bQso, CavirB, 1.0, 0.0);
+            K->contract233(true, false, naoccB, navirB, CaoccB, bQnvB, 1.0, 0.0);
+            // bQnvB->write(io, MQCF_DFOCC_INTS);
+            bQnvB.reset();
+
+            bQiaB = std::make_shared<Tensor2d>("DF_BASIS_CC B (Q|ia)", nQ, naoccB, navirB);
+            bQiaB->gemm(false, false, Jmhalf, K, 1.0, 0.0);
             K.reset();
-            bQiaA->write(psio_, PSIF_DFOCC_INTS);
-            bQiaA.reset();
-
-            if (reference_ == "UNRESTRICTED") {
-                bQnvB = std::make_shared<Tensor2d>("DF_BASIS_CC (Q|ma)", nQ, nso_, navirB);
-                auto K = std::make_shared<Tensor2d>("DF_BASIS_CC (Q|ia)", nQ, naoccB, navirB);
-                bQnvB->contract(false, false, nQ * nso_, navirB, nso_, bQso, CavirB, 1.0, 0.0);
-                K->contract233(true, false, naoccB, navirB, CaoccB, bQnvB, 1.0, 0.0);
-                //bQnvB->write(io, MQCF_DFOCC_INTS);
-                bQnvB.reset();
-
-
-                bQiaB = std::make_shared<Tensor2d>("DF_BASIS_CC B (Q|ia)", nQ, naoccB, navirB);
-                bQiaB->gemm(false, false, Jmhalf, K, 1.0, 0.0);
-                K.reset();
-                bQiaB->write(psio_, PSIF_DFOCC_INTS);
-                bQiaB.reset();
-            }
-            timer_off("Form B(Q,ia)");
+            bQiaB->write(psio_, PSIF_DFOCC_INTS);
+            bQiaB.reset();
+        }
+        timer_off("Form B(Q,ia)");
         //}// end if dertype...
 
         // trans all
-        //else {
+        // else {
         //    // Form B(Q,ia)
         //    trans_ab = 0;
         //    timer_on("Form B(Q,ov)");
@@ -510,11 +511,11 @@ void DFOCC::b_so(std::shared_ptr<BasisSet> primary_, std::shared_ptr<BasisSet> a
         Jmhalf.reset();
         if (print_ > 3) bQso->print();
         bQso.reset();
-    }// if do_mp2 = true
+    }  // if do_mp2 = true
 
     // DO NOT MP2
-    //if (!do_mp2) {
-    else{
+    // if (!do_mp2) {
+    else {
         free_block(Bp);
         bQso = std::make_shared<Tensor2d>("DF_BASIS_CC B (Q|mn)", nQ, nso_, nso_);
         bQso->set(Ap);
@@ -522,8 +523,7 @@ void DFOCC::b_so(std::shared_ptr<BasisSet> primary_, std::shared_ptr<BasisSet> a
         bQso->write(psio_, PSIF_DFOCC_INTS, true, true);
         if (print_ > 3) bQso->print();
         bQso.reset();
-    }// do_mp2 = false
-
+    }  // do_mp2 = false
 
     /*
     // Build C(Q, mu nu)

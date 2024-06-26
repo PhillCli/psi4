@@ -14,7 +14,6 @@ import qcdb
 # RIFIT     H 14/15   C  56/66      H +9/10   C +16/20
 # JKFIT     H 23/25   C  70/81      H +9/10   C +16/20
 
-
 smol = """
 C    0.0  0.0 0.0
 O    1.4  0.0 0.0
@@ -22,9 +21,9 @@ H_r -0.5 -0.7 0.0
 H_l -0.5  0.7 0.0
 """
 
-
 BASIS = 'cc-pvdz'
 verbose = 2
+
 
 def test_1():
     """[1]    <<<  uniform cc-pVDZ  >>>"""
@@ -34,10 +33,11 @@ def test_1():
 
     compare_strings('CC-PVDZ', BASIS, 'name')
     compare_integers(38, wert.nbf(), 'nbf()')
-    compare_integers(40, wert.nao(), 'nao()')  
-    compare_strings('c2v', wert.molecule.schoenflies_symbol(), 'symm')  
-    compare_strings('CC-PVDZ', dwert['name'], 'callby')  
-    compare_strings('CC-PVDZ', dwert['blend'], 'blend')  
+    compare_integers(40, wert.nao(), 'nao()')
+    compare_strings('c2v', wert.molecule.schoenflies_symbol(), 'symm')
+    compare_strings('CC-PVDZ', dwert['name'], 'callby')
+    compare_strings('CC-PVDZ', dwert['blend'], 'blend')
+
 
 @using_psi4
 def test_1b():
@@ -50,22 +50,30 @@ def test_1b():
 
     pwert = psi4.core.BasisSet.construct_from_pydict(pmol, dwert, -1)
     compare_integers(38, pwert.nbf(), 'nbf()')
-    compare_integers(40, pwert.nao(), 'nao()')  
-    compare_strings('c2v', pwert.molecule().schoenflies_symbol(), 'symm')  
-    compare_strings('CC-PVDZ', pwert.name(), 'callby')  
-    compare_strings('CC-PVDZ', pwert.blend(), 'blend')  
+    compare_integers(40, pwert.nao(), 'nao()')
+    compare_strings('c2v', pwert.molecule().schoenflies_symbol(), 'symm')
+    compare_strings('CC-PVDZ', pwert.name(), 'callby')
+    compare_strings('CC-PVDZ', pwert.blend(), 'blend')
+
 
 def test_2():
     """[2]        <<<  RIFIT (default)  >>>"""
 
     qmol = qcdb.Molecule.from_string(smol)
-    wert, dwert = qcdb.BasisSet.pyconstruct(qmol, 'DF_BASIS_MP2', '', 'RIFIT', BASIS, verbose=verbose, return_dict=True)
+    wert, dwert = qcdb.BasisSet.pyconstruct(qmol,
+                                            'DF_BASIS_MP2',
+                                            '',
+                                            'RIFIT',
+                                            BASIS,
+                                            verbose=verbose,
+                                            return_dict=True)
 
     compare_integers(140, wert.nbf(), 'nbf()')
-    compare_integers(162, wert.nao(), 'nao()')  
-    compare_strings('c2v', wert.molecule.schoenflies_symbol(), 'symm')  
-    compare_strings('(CC-PVDZ AUX)', dwert['name'], 'callby')  
-    compare_strings('CC-PVDZ-RI', dwert['blend'], 'blend')  
+    compare_integers(162, wert.nao(), 'nao()')
+    compare_strings('c2v', wert.molecule.schoenflies_symbol(), 'symm')
+    compare_strings('(CC-PVDZ AUX)', dwert['name'], 'callby')
+    compare_strings('CC-PVDZ-RI', dwert['blend'], 'blend')
+
 
 @using_psi4
 def test_2b():
@@ -74,14 +82,21 @@ def test_2b():
 
     qmol = qcdb.Molecule.from_string(smol)
     pmol = psi4.core.Molecule.from_string(smol)
-    wert, dwert = qcdb.BasisSet.pyconstruct(qmol, 'DF_BASIS_MP2', '', 'RIFIT', BASIS, verbose=verbose, return_dict=True)
+    wert, dwert = qcdb.BasisSet.pyconstruct(qmol,
+                                            'DF_BASIS_MP2',
+                                            '',
+                                            'RIFIT',
+                                            BASIS,
+                                            verbose=verbose,
+                                            return_dict=True)
 
     pwert = psi4.core.BasisSet.construct_from_pydict(pmol, dwert, -1)
     compare_integers(140, pwert.nbf(), 'nbf()')
-    compare_integers(162, pwert.nao(), 'nao()')  
-    compare_strings('c2v', pwert.molecule().schoenflies_symbol(), 'symm')  
-    compare_strings('(CC-PVDZ AUX)', pwert.name(), 'callby')  
-    compare_strings('CC-PVDZ-RI', pwert.blend(), 'blend')  
+    compare_integers(162, pwert.nao(), 'nao()')
+    compare_strings('c2v', pwert.molecule().schoenflies_symbol(), 'symm')
+    compare_strings('(CC-PVDZ AUX)', pwert.name(), 'callby')
+    compare_strings('CC-PVDZ-RI', pwert.blend(), 'blend')
+
 
 def test_3():
     """[3]    <<<  cc-pVDZ w/ aug-cc-pVDZ on C  >>>"""
@@ -91,16 +106,18 @@ def test_3():
         mol.set_basis_all_atoms("cc-pvdz", role=role)
         mol.set_basis_by_symbol("c", "aug-cc-pvdz", role=role)
         return basstrings
+
     qcdb.libmintsbasisset.basishorde['DZ_PLUS'] = basisspec_psi4_yo__dz_plus
 
     qmol = qcdb.Molecule.from_string(smol)
     wert, dwert = qcdb.BasisSet.pyconstruct(qmol, 'BASIS', BASIS, verbose=verbose, return_dict=True)
 
     compare_integers(47, wert.nbf(), 'nbf()')
-    compare_integers(50, wert.nao(), 'nao()')  
-    compare_strings('c2v', wert.molecule.schoenflies_symbol(), 'symm')  
-    compare_strings('DZ_PLUS', dwert['name'], 'callby')  
-    compare_strings('AUG-CC-PVDZ + CC-PVDZ', dwert['blend'], 'blend')  
+    compare_integers(50, wert.nao(), 'nao()')
+    compare_strings('c2v', wert.molecule.schoenflies_symbol(), 'symm')
+    compare_strings('DZ_PLUS', dwert['name'], 'callby')
+    compare_strings('AUG-CC-PVDZ + CC-PVDZ', dwert['blend'], 'blend')
+
 
 @using_psi4
 def test_3b():
@@ -118,12 +135,10 @@ def test_3b():
 
     pwert = psi4.core.BasisSet.construct_from_pydict(pmol, dwert, -1)
     compare_integers(47, pwert.nbf(), 'nbf()')
-    compare_integers(50, pwert.nao(), 'nao()')  
-    compare_strings('c2v', pwert.molecule().schoenflies_symbol(), 'symm')  
-    compare_strings('DZ_PLUS', pwert.name(), 'callby')  
-    compare_strings('AUG-CC-PVDZ + CC-PVDZ', pwert.blend(), 'blend')  
-
-
+    compare_integers(50, pwert.nao(), 'nao()')
+    compare_strings('c2v', pwert.molecule().schoenflies_symbol(), 'symm')
+    compare_strings('DZ_PLUS', pwert.name(), 'callby')
+    compare_strings('AUG-CC-PVDZ + CC-PVDZ', pwert.blend(), 'blend')
 
 
 #print('[4]        <<<  RIFIT (default)  >>>')
@@ -289,11 +304,11 @@ def test_3b():
 
 #       print('[4]        <<<  RIFIT (default)  >>>')
 #       wert = psi4.core.BasisSet.build(mymol, 'DF_BASIS_MP2', '', 'RIFIT', get_global_option('BASIS'))
-#       compare_integers(156, wert.nbf(), 'nbf()') 
-#       compare_integers(182, wert.nao(), 'nao()') 
-#       compare_strings('c2v', mymol.schoenflies_symbol(), 'symm') 
-#       compare_strings('(DZ_PLUS AUX)', wert.name(), 'callby') 
-#       compare_strings('AUG-CC-PVDZ-RI + CC-PVDZ-RI', wert.blend(), 'blend') 
+#       compare_integers(156, wert.nbf(), 'nbf()')
+#       compare_integers(182, wert.nao(), 'nao()')
+#       compare_strings('c2v', mymol.schoenflies_symbol(), 'symm')
+#       compare_strings('(DZ_PLUS AUX)', wert.name(), 'callby')
+#       compare_strings('AUG-CC-PVDZ-RI + CC-PVDZ-RI', wert.blend(), 'blend')
 #       mymol.print_out()
 #       print('[5]    <<<  cc-pVDZ w/ aug-cc-pVDZ on C, H_R  >>>')
 #       def basisspec_psi4_yo__dz_plusplus(mol, role):
@@ -305,12 +320,12 @@ def test_3b():
 #       qcdb.libmintsbasisset.basishorde['DZ_PLUSPLUS'] = basisspec_psi4_yo__dz_plusplus
 #       core.set_global_option("BASIS", "dz_PLUSplus")
 #       wert = psi4.core.BasisSet.build(mymol, 'BASIS', get_global_option('BASIS'))
-#       compare_strings('DZ_PLUSPLUS', get_global_option('BASIS'), 'name') 
-#       compare_integers(51, wert.nbf(), 'nbf()') 
-#       compare_integers(54, wert.nao(), 'nao()') 
-#       compare_strings('cs', mymol.schoenflies_symbol(), 'symm') 
-#       compare_strings('DZ_PLUSPLUS', wert.name(), 'callby') 
-#       compare_strings('AUG-CC-PVDZ + CC-PVDZ', wert.blend(), 'blend') 
+#       compare_strings('DZ_PLUSPLUS', get_global_option('BASIS'), 'name')
+#       compare_integers(51, wert.nbf(), 'nbf()')
+#       compare_integers(54, wert.nao(), 'nao()')
+#       compare_strings('cs', mymol.schoenflies_symbol(), 'symm')
+#       compare_strings('DZ_PLUSPLUS', wert.name(), 'callby')
+#       compare_strings('AUG-CC-PVDZ + CC-PVDZ', wert.blend(), 'blend')
 #       mymol.print_out()
 #       print('[6]    <<<  RIFIT (custom: force cc-pVDZ on H, default on C, O)  >>>')
 #       def basisspec_psi4_yo__dz_plusplusri(mol, role):
@@ -320,11 +335,11 @@ def test_3b():
 #       qcdb.libmintsbasisset.basishorde['DZ_PLUSPLUSRI'] = basisspec_psi4_yo__dz_plusplusri
 #       core.set_global_option("DF_BASIS_MP2", "dz_PLUSplusRI")
 #       wert = psi4.core.BasisSet.build(mymol, 'DF_BASIS_MP2', get_global_option('DF_BASIS_MP2'), 'RIFIT', get_global_option('BASIS'))
-#       compare_integers(156, wert.nbf(), 'nbf()') 
-#       compare_integers(182, wert.nao(), 'nao()') 
-#       compare_strings('cs', mymol.schoenflies_symbol(), 'symm') 
-#       compare_strings('DZ_PLUSPLUSRI', wert.name(), 'callby') 
-#       compare_strings('AUG-CC-PVDZ-RI + CC-PVDZ-RI', wert.blend(), 'blend') 
+#       compare_integers(156, wert.nbf(), 'nbf()')
+#       compare_integers(182, wert.nao(), 'nao()')
+#       compare_strings('cs', mymol.schoenflies_symbol(), 'symm')
+#       compare_strings('DZ_PLUSPLUSRI', wert.name(), 'callby')
+#       compare_strings('AUG-CC-PVDZ-RI + CC-PVDZ-RI', wert.blend(), 'blend')
 #       mymol.print_out()
 #       print('[7]    <<<  cc-pVDZ w/ aug-cc-pVDZ on C, H  >>>')
 #       def basisspec_psi4_yo__dz_plusplusplus(mol, role):
@@ -336,36 +351,36 @@ def test_3b():
 #       qcdb.libmintsbasisset.basishorde['DZ_PLUSPLUSPLUS'] = basisspec_psi4_yo__dz_plusplusplus
 #       core.set_global_option("BASIS", "dz_PLUSplusplus")
 #       wert = psi4.core.BasisSet.build(mymol, 'BASIS', get_global_option('BASIS'))
-#       compare_integers(55, wert.nbf(), 'nbf()') 
-#       compare_integers(58, wert.nao(), 'nao()') 
-#       compare_strings('c2v', mymol.schoenflies_symbol(), 'symm') 
-#       compare_strings('DZ_PLUSPLUSPLUS', wert.name(), 'callby') 
-#       compare_strings('AUG-CC-PVDZ + CC-PVDZ', wert.blend(), 'blend') 
+#       compare_integers(55, wert.nbf(), 'nbf()')
+#       compare_integers(58, wert.nao(), 'nao()')
+#       compare_strings('c2v', mymol.schoenflies_symbol(), 'symm')
+#       compare_strings('DZ_PLUSPLUSPLUS', wert.name(), 'callby')
+#       compare_strings('AUG-CC-PVDZ + CC-PVDZ', wert.blend(), 'blend')
 #       mymol.print_out()
 #       print('[8]        <<<  JKFIT (default)  >>>')
 #       wert = psi4.core.BasisSet.build(mymol, 'DF_BASIS_SCF', '', 'JKFIT', get_global_option('BASIS'))
-#       compare_integers(220, wert.nbf(), 'nbf()') 
-#       compare_integers(252, wert.nao(), 'nao()') 
-#       compare_strings('c2v', mymol.schoenflies_symbol(), 'symm') 
-#       compare_strings('(DZ_PLUSPLUSPLUS AUX)', wert.name(), 'callby') 
-#       compare_strings('AUG-CC-PVDZ-JKFIT + CC-PVDZ-JKFIT', wert.blend(), 'blend') 
+#       compare_integers(220, wert.nbf(), 'nbf()')
+#       compare_integers(252, wert.nao(), 'nao()')
+#       compare_strings('c2v', mymol.schoenflies_symbol(), 'symm')
+#       compare_strings('(DZ_PLUSPLUSPLUS AUX)', wert.name(), 'callby')
+#       compare_strings('AUG-CC-PVDZ-JKFIT + CC-PVDZ-JKFIT', wert.blend(), 'blend')
 #       mymol.print_out()
 #       core.set_global_option("BASIS", "aug-cc-pvdz")
 #       print('[9]    <<<  aug-cc-pVDZ  >>>')
 #       wert = psi4.core.BasisSet.build(mymol, 'BASIS', get_global_option('BASIS'))
-#       compare_integers(64, wert.nbf(), 'nbf()') 
-#       compare_integers(68, wert.nao(), 'nao()') 
-#       compare_strings('c2v', mymol.schoenflies_symbol(), 'symm') 
-#       compare_strings('AUG-CC-PVDZ', wert.name(), 'callby') 
-#       compare_strings('AUG-CC-PVDZ', wert.blend(), 'blend') 
+#       compare_integers(64, wert.nbf(), 'nbf()')
+#       compare_integers(68, wert.nao(), 'nao()')
+#       compare_strings('c2v', mymol.schoenflies_symbol(), 'symm')
+#       compare_strings('AUG-CC-PVDZ', wert.name(), 'callby')
+#       compare_strings('AUG-CC-PVDZ', wert.blend(), 'blend')
 #       mymol.print_out()
 #       print('[10]       <<<  JKFIT (default)  >>>')
 #       wert = psi4.core.BasisSet.build(mymol, 'DF_BASIS_SCF', '', 'JKFIT', get_global_option('BASIS'))
-#       compare_integers(236, wert.nbf(), 'nbf()') 
-#       compare_integers(272, wert.nao(), 'nao()') 
-#       compare_strings('c2v', mymol.schoenflies_symbol(), 'symm') 
-#       compare_strings('(AUG-CC-PVDZ AUX)', wert.name(), 'callby') 
-#       compare_strings('AUG-CC-PVDZ-JKFIT', wert.blend(), 'blend') 
+#       compare_integers(236, wert.nbf(), 'nbf()')
+#       compare_integers(272, wert.nao(), 'nao()')
+#       compare_strings('c2v', mymol.schoenflies_symbol(), 'symm')
+#       compare_strings('(AUG-CC-PVDZ AUX)', wert.name(), 'callby')
+#       compare_strings('AUG-CC-PVDZ-JKFIT', wert.blend(), 'blend')
 #       mymol.print_out()
 #       mymol2 = geometry("""
 #       C    0.0  0.0 0.0
@@ -378,11 +393,11 @@ def test_3b():
 #       core.set_global_option("BASIS", "dz_plusplusplus")
 #       print('[11]   <<<  cc-pVDZ w/ aug-cc-pVDZ on C, H  >>>')
 #       wert = psi4.core.BasisSet.build(mymol2, 'BASIS', get_global_option('BASIS'))
-#       compare_integers(64, wert.nbf(), 'nbf()') 
-#       compare_integers(67, wert.nao(), 'nao()') 
-#       compare_strings('cs', mymol2.schoenflies_symbol(), 'symm') 
-#       compare_strings('DZ_PLUSPLUSPLUS', wert.name(), 'callby') 
-#       compare_strings('AUG-CC-PVDZ + CC-PVDZ', wert.blend(), 'blend') 
+#       compare_integers(64, wert.nbf(), 'nbf()')
+#       compare_integers(67, wert.nao(), 'nao()')
+#       compare_strings('cs', mymol2.schoenflies_symbol(), 'symm')
+#       compare_strings('DZ_PLUSPLUSPLUS', wert.name(), 'callby')
+#       compare_strings('AUG-CC-PVDZ + CC-PVDZ', wert.blend(), 'blend')
 #       mymol2.print_out()
 #       hene = geometry("""
 #       He
@@ -395,20 +410,20 @@ def test_3b():
 #           return basstrings
 #       qcdb.libmintsbasisset.basishorde['DISGUISED5Z'] = basisspec_psi4_yo__disguised5z
 #       core.set_global_option("BASIS", "disguised5z")
-#       set_global_option('DF_BASIS_MP2', '') 
+#       set_global_option('DF_BASIS_MP2', '')
 #       print('[12]   <<<  cc-pV5Z on HeNe  >>>')
 #       wert = psi4.core.BasisSet.build(hene, 'BASIS', get_global_option('BASIS'))
-#       compare_integers(146, wert.nbf(), 'nbf()') 
-#       compare_integers(196, wert.nao(), 'nao()') 
-#       compare_strings('DISGUISED5Z', wert.name(), 'callby') 
-#       compare_strings('CC-PV5Z', wert.blend(), 'blend') 
+#       compare_integers(146, wert.nbf(), 'nbf()')
+#       compare_integers(196, wert.nao(), 'nao()')
+#       compare_strings('DISGUISED5Z', wert.name(), 'callby')
+#       compare_strings('CC-PV5Z', wert.blend(), 'blend')
 #       hene.print_out()
 #       print('[13]   <<<  RI for cc-pV5Z on HeNe  >>>')
 #       wert = psi4.core.BasisSet.build(hene, 'DF_BASIS_MP2', '', 'RIFIT', get_global_option('BASIS'))
-#       compare_integers(284, wert.nbf(), 'nbf()') 
-#       compare_integers(413, wert.nao(), 'nao()') 
-#       compare_strings('(DISGUISED5Z AUX)', wert.name(), 'callby') 
-#       compare_strings('CC-PV5Z-RI', wert.blend(), 'blend') 
+#       compare_integers(284, wert.nbf(), 'nbf()')
+#       compare_integers(413, wert.nao(), 'nao()')
+#       compare_strings('(DISGUISED5Z AUX)', wert.name(), 'callby')
+#       compare_strings('CC-PV5Z-RI', wert.blend(), 'blend')
 #       hene.print_out()
 #       print('[14]   <<<  impossible JK for cc-pV5Z on HeNe  >>>')
 #       error_tripped = 0
@@ -416,7 +431,7 @@ def test_3b():
 #           wert = psi4.core.BasisSet.build(hene, 'DF_BASIS_SCF', '', 'JKFIT', get_global_option('BASIS'))
 #       except qcdb.BasisSetNotFound:
 #           error_tripped = 1
-#       compare_integers(1, error_tripped, 'squashed 4z aux for 5z orb') 
+#       compare_integers(1, error_tripped, 'squashed 4z aux for 5z orb')
 #       def basisspec_psi4_yo__uggh(mol, role):
 #           basstrings = {}
 #           mol.set_basis_by_symbol("he", "DEF2-QZVPP-JKFIT", role=role)
@@ -425,9 +440,8 @@ def test_3b():
 #       core.set_global_option("DF_BASIS_SCF", "uggh")
 #       print('[15]   <<<  forced JK for cc-pV5Z on HeNe  >>>')
 #       wert = psi4.core.BasisSet.build(hene, 'DF_BASIS_SCF', '', 'JKFIT', get_global_option('BASIS'))
-#       compare_integers(169, wert.nbf(), 'nbf()') 
-#       compare_integers(241, wert.nao(), 'nao()') 
-#       compare_strings('UGGH', wert.name(), 'callby') 
-#       compare_strings('CC-PV5Z-JKFIT + DEF2-QZVPP-JKFIT', wert.blend(), 'blend') 
+#       compare_integers(169, wert.nbf(), 'nbf()')
+#       compare_integers(241, wert.nao(), 'nao()')
+#       compare_strings('UGGH', wert.name(), 'callby')
+#       compare_strings('CC-PV5Z-JKFIT + DEF2-QZVPP-JKFIT', wert.blend(), 'blend')
 #       hene.print_out()
-

@@ -49,14 +49,14 @@ namespace psi {
 namespace fnocc {
 void SortOVOV(struct iwlbuf *Buf, int nfzc, int nfzv, int norbs, int ndoccact, int nvirt);
 }
-}
+}  // namespace psi
 
 namespace psi {
 namespace fnocc {
 
 /**
-  * canonical MP2
-  */
+ * canonical MP2
+ */
 void CoupledCluster::MP2() {
     int o = ndoccact;
     int v = nvirt;
@@ -121,5 +121,5 @@ void CoupledCluster::MP2() {
 
     free(v2);
 }
-}
-}  // end of namespaces
+}  // namespace fnocc
+}  // namespace psi

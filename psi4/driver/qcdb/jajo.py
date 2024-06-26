@@ -75,7 +75,8 @@ def getrec(reclabelarray, verbose=False):
         "LINEAR  ": 'INTEGER',
         "NATOMS  ": 'INTEGER',
         "COORD   ": 'DOUBLE',
-        "ORIENTMT": 'DOUBLE',  # input orientation from ZMAT (mostly useful for Cartesians) to Cfour standard orientation
+        "ORIENTMT":
+        'DOUBLE',  # input orientation from ZMAT (mostly useful for Cartesians) to Cfour standard orientation
         "ATOMMASS": 'DOUBLE',
         "ORIENT3 ": 'DOUBLE',
         "FULLPTGP": 'CHARACTER',
@@ -376,7 +377,6 @@ def getrec(reclabelarray, verbose=False):
         "REFD4EDX": 'DOUBLE',
         "ZPE_ANHA": 'DOUBLE',
         "OPENSLOT": 'INTEGER',
-
         "BOLTZMAN": 'DOUBLE',
         "MRCCOCC ": 'INTEGER',
         "ABELPTGP": 'CHARACTER',
@@ -389,60 +389,59 @@ def getrec(reclabelarray, verbose=False):
         "ABELPOPV": 'INTEGER',
         "ABELCLSS": 'INTEGER',
         "ABELSTGP": 'CHARACTER',
-        "REALCHRG": 'INTEGER',      # atom/mol? charge taking into acct edp
-        "NSOSCF  ": 'INTEGER',      # whether is spin orbital calc?
-        "SCFVCFLA": 'DOUBLE',       # scf vector expanded from sph to cart basis for symm anal - determin orb sym
-        "EFG_SYM1": 'INTEGER',       # symmetry property of components of electric field gradient  integrals
-        "EFG_SYM2": 'INTEGER',       # symm prop of comp of EFG
-
+        "REALCHRG": 'INTEGER',  # atom/mol? charge taking into acct edp
+        "NSOSCF  ": 'INTEGER',  # whether is spin orbital calc?
+        "SCFVCFLA": 'DOUBLE',  # scf vector expanded from sph to cart basis for symm anal - determin orb sym
+        "EFG_SYM1": 'INTEGER',  # symmetry property of components of electric field gradient  integrals
+        "EFG_SYM2": 'INTEGER',  # symm prop of comp of EFG
         "DCTDISPL": 'DOUBLE',
-        "DANGERUS": 'INTEGER',   #?
-        "FULLCHAR": 'CHARACTER', #?
-        "FULLDEGN": 'CHARACTER', #?
-        "FULLLABL": 'CHARACTER', #?
-        "FULLNIRX": 'CHARACTER', #?
-        "COMPCHAR": 'CHARACTER', #?
-        "COMPDEGN": 'CHARACTER', #?
-        "COMPLABL": 'CHARACTER', #?
-        "COMPNIRX": 'CHARACTER', #?
-        "ROTVECX ": 'CHARACTER', #?
-        "ROTVECY ": 'CHARACTER', #?
-        "ROTVECZ ": 'CHARACTER', #?
-        "COMPNSYQ": 'CHARACTER', #?
-        "COMPSYQT": 'CHARACTER', #?
-        "COMPSYMQ": 'CHARACTER', #?
-        "TRAVECX ": 'CHARACTER', #?
-        "TRAVECY ": 'CHARACTER', #?
-        "TRAVECZ ": 'CHARACTER', #?
-        "NVIBSYM ": 'CHARACTER', #?
-        "NUMVIBRT": 'CHARACTER', #?
-        "SBGRPSYM": 'CHARACTER', #?
-        "ORDERREF": 'CHARACTER', #?
-        "OPERSREF": 'CHARACTER', #?
-        "NVIBSYMF": 'CHARACTER', #?
-        "FULLNSYQ": 'CHARACTER', #?
-        "FULLSYQT": 'CHARACTER', #?
-        "FULLSYMQ": 'CHARACTER', #?
-        "INVPSMAT": 'CHARACTER', #?
-        "FDCOORDS": 'CHARACTER', #?
-        "FDCALCTP": 'CHARACTER', #?
-        "NUMPOINT": 'CHARACTER', #?
-        "NPTIRREP": 'CHARACTER', #?
-        "GRDPOINT": 'CHARACTER', #?
-        "DIPPOINT": 'CHARACTER', #?
-        "ENGPOINT": 'CHARACTER', #?
-        "PASS1FIN": 'CHARACTER', #?
-        "REFENERG": 'CHARACTER', #?
-        "NEXTCALC": 'CHARACTER', #?
-        "PRINSPIN": 'CHARACTER', #?
-        "PRINFROM": 'CHARACTER', #?
-        "PRININTO": 'CHARACTER', #?
-        "NEXTGEOF": 'CHARACTER', #?
-        "ZPE_HARM": 'DOUBLE', #?
+        "DANGERUS": 'INTEGER',  #?
+        "FULLCHAR": 'CHARACTER',  #?
+        "FULLDEGN": 'CHARACTER',  #?
+        "FULLLABL": 'CHARACTER',  #?
+        "FULLNIRX": 'CHARACTER',  #?
+        "COMPCHAR": 'CHARACTER',  #?
+        "COMPDEGN": 'CHARACTER',  #?
+        "COMPLABL": 'CHARACTER',  #?
+        "COMPNIRX": 'CHARACTER',  #?
+        "ROTVECX ": 'CHARACTER',  #?
+        "ROTVECY ": 'CHARACTER',  #?
+        "ROTVECZ ": 'CHARACTER',  #?
+        "COMPNSYQ": 'CHARACTER',  #?
+        "COMPSYQT": 'CHARACTER',  #?
+        "COMPSYMQ": 'CHARACTER',  #?
+        "TRAVECX ": 'CHARACTER',  #?
+        "TRAVECY ": 'CHARACTER',  #?
+        "TRAVECZ ": 'CHARACTER',  #?
+        "NVIBSYM ": 'CHARACTER',  #?
+        "NUMVIBRT": 'CHARACTER',  #?
+        "SBGRPSYM": 'CHARACTER',  #?
+        "ORDERREF": 'CHARACTER',  #?
+        "OPERSREF": 'CHARACTER',  #?
+        "NVIBSYMF": 'CHARACTER',  #?
+        "FULLNSYQ": 'CHARACTER',  #?
+        "FULLSYQT": 'CHARACTER',  #?
+        "FULLSYMQ": 'CHARACTER',  #?
+        "INVPSMAT": 'CHARACTER',  #?
+        "FDCOORDS": 'CHARACTER',  #?
+        "FDCALCTP": 'CHARACTER',  #?
+        "NUMPOINT": 'CHARACTER',  #?
+        "NPTIRREP": 'CHARACTER',  #?
+        "GRDPOINT": 'CHARACTER',  #?
+        "DIPPOINT": 'CHARACTER',  #?
+        "ENGPOINT": 'CHARACTER',  #?
+        "PASS1FIN": 'CHARACTER',  #?
+        "REFENERG": 'CHARACTER',  #?
+        "NEXTCALC": 'CHARACTER',  #?
+        "PRINSPIN": 'CHARACTER',  #?
+        "PRINFROM": 'CHARACTER',  #?
+        "PRININTO": 'CHARACTER',  #?
+        "NEXTGEOF": 'CHARACTER',  #?
+        "ZPE_HARM": 'DOUBLE',  #?
         "NDROPPED": 'INTEGER',
-        "REFCPTGP": 'INTEGER', #?
-        "REFFPTGP": 'INTEGER', #?
-        }
+        "REFCPTGP": 'INTEGER',  #?
+        "REFFPTGP": 'INTEGER',  #?
+    }
 
     with open('JAINDX', mode='rb') as file:  # b is important -> binary
         fileContent = file.read()
@@ -468,18 +467,18 @@ def getrec(reclabelarray, verbose=False):
         'DOUBLE': 8,
         'INTEGER': srcints,
         'CHARACTER': 1,
-        }
+    }
 
     intlen2format = {
         4: 'i',
         8: 'l',
-        }
+    }
 
     type2format = {
         'DOUBLE': 'd',
         'INTEGER': intlen2format[type2len['INTEGER']],
         'CHARACTER': 'c',
-        }
+    }
 
     if verbose:
         print('\n<<<  JAINDX  >>>\n')
@@ -564,6 +563,7 @@ def getrec(reclabelarray, verbose=False):
             returnRecords[jaindx[item]] = jobarc
 
     return returnRecords
+
 
 #if __name__ == "__main__":
 #    want = ['NATOMS  ', 'AU_LENGT', 'COORD   ', 'HBAR    ', 'ATOMCHRG']

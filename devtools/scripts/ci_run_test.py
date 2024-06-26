@@ -4,8 +4,10 @@ import sys
 import time
 
 # <<<  run ctest  >>>
-retcode = subprocess.Popen(['ctest', '-j2', '-L', "plug|smoke"], bufsize=0,
-                            stdout=subprocess.PIPE, universal_newlines=True)
+retcode = subprocess.Popen(['ctest', '-j2', '-L', "plug|smoke"],
+                           bufsize=0,
+                           stdout=subprocess.PIPE,
+                           universal_newlines=True)
 print_all = False
 ctestout = ''
 while True:
@@ -33,8 +35,7 @@ while True:
     time.sleep(0.1)
 
 # <<<  identify failed tests and cat their output  >>>
-sys.stdout.write("""\n  <<<  CTest complete with status %d.  >>>\n\n""" %
-                 (ctest_exit_status))
+sys.stdout.write("""\n  <<<  CTest complete with status %d.  >>>\n\n""" % (ctest_exit_status))
 
 ctestout = str(ctest_exit_status) + "\n" + ctestout
 

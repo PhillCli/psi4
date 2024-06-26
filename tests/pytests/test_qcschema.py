@@ -14,14 +14,14 @@ pp = pprint.PrettyPrinter(width=120, compact=True, indent=1)
 
 pytestmark = [pytest.mark.psi, pytest.mark.api, pytest.mark.quick]
 
+
 @pytest.fixture(scope="function")
 def result_data_fixture():
     return {
         "molecule": {
             "geometry": [
-                0.0, 0.0, -0.1294769411935893,
-                0.0, -1.494187339479985, 1.0274465079245698,
-                0.0, 1.494187339479985, 1.0274465079245698
+                0.0, 0.0, -0.1294769411935893, 0.0, -1.494187339479985, 1.0274465079245698, 0.0, 1.494187339479985,
+                1.0274465079245698
             ],
             "symbols": ["O", "H", "H"],
             "connectivity": [(0, 1, 1.0), (0, 2, 1.0)]
@@ -37,6 +37,7 @@ def result_data_fixture():
             "scf_properties": ["mayer_indices"],
         }
     }
+
 
 def test_qcschema_energy(result_data_fixture):
     ret = psi4.schema_wrapper.run_qcschema(result_data_fixture)
@@ -129,6 +130,7 @@ def test_qcschema_cli(input_enc, input_fn, output_enc, output_fn, result_data_fi
     assert compare_integers(True, parsed, "Result Model Parsed")
     assert compare_values(-76.22831410207938, ret.return_result, "Return")
 
+
 def test_qcschema_wavefunction_basis(result_data_fixture):
     result_data_fixture["protocols"] = {"wavefunction": "orbitals_and_eigenvalues"}
     ret = psi4.schema_wrapper.run_qcschema(result_data_fixture)
@@ -140,6 +142,7 @@ def test_qcschema_wavefunction_basis(result_data_fixture):
     assert wfn.basis.nbf == 24
     assert wfn.restricted
 
+
 def test_qcschema_wavefunction_scf_orbitals(result_data_fixture):
     result_data_fixture["protocols"] = {"wavefunction": "orbitals_and_eigenvalues"}
     ret = psi4.schema_wrapper.run_qcschema(result_data_fixture)
@@ -148,19 +151,46 @@ def test_qcschema_wavefunction_scf_orbitals(result_data_fixture):
     expected_keys = {'basis', 'restricted', 'scf_orbitals_a', 'scf_eigenvalues_a', 'orbitals_a', 'eigenvalues_a'}
     assert wfn.dict().keys() == expected_keys
 
+
 def test_qcschema_wavefunction_scf_occupations_gs(result_data_fixture):
     result_data_fixture["protocols"] = {"wavefunction": "all"}
-    result_data_fixture["keywords"]["docc"] = [3, 0, 1, 1] # ground state
+    result_data_fixture["keywords"]["docc"] = [3, 0, 1, 1]  # ground state
     ret = psi4.schema_wrapper.run_qcschema(result_data_fixture)
     wfn = ret.wavefunction
 
     # correctness check
 
-    ref_occupations_a = np.array([1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,])
-    ref_occupied_energies_a = np.array([-20.55785069,  -1.31618596,  -0.6770761,  -0.55872283,  -0.49037545])
+    ref_occupations_a = np.array([
+        1,
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+    ])
+    ref_occupied_energies_a = np.array([-20.55785069, -1.31618596, -0.6770761, -0.55872283, -0.49037545])
 
     assert compare_arrays(ref_occupations_a, wfn.scf_occupations_a, 6, "Orbital Occupations")
-    assert compare_arrays(ref_occupied_energies_a, wfn.scf_eigenvalues_a[wfn.scf_occupations_a == 1], 6, "Occupied Orbital Energies")
+    assert compare_arrays(ref_occupied_energies_a, wfn.scf_eigenvalues_a[wfn.scf_occupations_a == 1], 6,
+                          "Occupied Orbital Energies")
 
     # consistency check
 
@@ -177,17 +207,43 @@ def test_qcschema_wavefunction_scf_occupations_gs(result_data_fixture):
 
 def test_qcschema_wavefunction_scf_occupations_es(result_data_fixture):
     result_data_fixture["protocols"] = {"wavefunction": "all"}
-    result_data_fixture["keywords"]["docc"] = [2, 1, 1, 1] # excited state
+    result_data_fixture["keywords"]["docc"] = [2, 1, 1, 1]  # excited state
     ret = psi4.schema_wrapper.run_qcschema(result_data_fixture)
     wfn = ret.wavefunction
 
     # correctness check
 
-    ref_occupations_a = np.array([1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,])
-    ref_occupied_energies_a = np.array([-20.86710716,  -1.38875044,  -0.77442913,  -0.6598582,    1.10374473])
+    ref_occupations_a = np.array([
+        1,
+        1,
+        1,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+    ])
+    ref_occupied_energies_a = np.array([-20.86710716, -1.38875044, -0.77442913, -0.6598582, 1.10374473])
 
     assert compare_arrays(ref_occupations_a, ret.wavefunction.scf_occupations_a, 6, "Orbital Occupations")
-    assert compare_arrays(ref_occupied_energies_a, wfn.scf_eigenvalues_a[wfn.scf_occupations_a == 1], 6, "Occupied Orbital Energies")
+    assert compare_arrays(ref_occupied_energies_a, wfn.scf_eigenvalues_a[wfn.scf_occupations_a == 1], 6,
+                          "Occupied Orbital Energies")
 
     # consistency check
 
@@ -200,4 +256,3 @@ def test_qcschema_wavefunction_scf_occupations_es(result_data_fixture):
 
     assert compare_arrays(ea, (Ca.T @ Fa @ Ca).diagonal(), 10, "Orbital Consistency")
     assert compare_arrays(Da, Ca_occ @ Ca_occ.T, 10, "Occupied Orbital Consistency")
-

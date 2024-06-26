@@ -36,9 +36,6 @@
 namespace psi {
 namespace dummy_integratorxx {
 
-SharedWavefunction dummy_intxx(SharedWavefunction ref_wfn, Options& options) {
-
-    return ref_wfn;
-}
+SharedWavefunction dummy_intxx(SharedWavefunction ref_wfn, Options& options) { return ref_wfn; }
 }  // namespace dummy_integratorxx
 }  // namespace psi

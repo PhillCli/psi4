@@ -48,8 +48,7 @@ def get_ddx_options(molecule):
     if core.has_option_changed("DDX", "DDX_RADII"):
         radii = convfac * np.fromiter(core.get_option("DDX", "DDX_RADII"), float)
         if not radii.shape[0] == molecule.natom():
-            raise ValidationError("Length of vector of custom cavity radii does "
-                                  "not agree with number of atoms.")
+            raise ValidationError("Length of vector of custom cavity radii does " "not agree with number of atoms.")
     else:
         radii_set = core.get_option("DDX", "DDX_RADII_SET").lower()
         radii_lookup = getattr(pyddx.data, "radius_" + radii_set)
@@ -88,8 +87,7 @@ def get_ddx_options(molecule):
     if core.get_option("DDX", "DDX_MODEL").lower() == "lpb":
         solvent_kappa = core.get_option("DDX", "DDX_SOLVENT_KAPPA") / convfac
         if solvent_kappa <= 0:
-            raise ValidationError("DDX_SOLVENT_KAPPA is required for LPB and should be a "
-                                  "positive quantity")
+            raise ValidationError("DDX_SOLVENT_KAPPA is required for LPB and should be a " "positive quantity")
 
     fmm_multipole_lmax = core.get_option("DDX", "DDX_LMAX")
     if core.has_option_changed("DDX", "DDX_FMM_MULTIPOLE_LMAX"):
@@ -127,12 +125,11 @@ def get_ddx_options(molecule):
         "DFT_SPHERICAL_POINTS": core.get_option("DDX", "DDX_SOLUTE_SPHERICAL_POINTS"),
         "DFT_RADIAL_POINTS": core.get_option("DDX", "DDX_SOLUTE_RADIAL_POINTS"),
         "DFT_NUCLEAR_SCHEME": "BECKE",  # Treutler and others might work here,
-        "DFT_RADIAL_SCHEME": "BECKE",   # but this is so far untested with Psi4
+        "DFT_RADIAL_SCHEME": "BECKE",  # but this is so far untested with Psi4
         "DFT_PRUNING_SCHEME": "ROBUST",
         "DFT_BLOCK_SCHEME": "ATOMIC",
     }
-    return {"model": model_options, "dielectric": dielectric_options,
-            "solver": solver_options, "grid": grid_options}
+    return {"model": model_options, "dielectric": dielectric_options, "solver": solver_options, "grid": grid_options}
 
 
 def _print_cavity(charges, centres, radii, unit="Angstrom"):
@@ -142,7 +139,7 @@ def _print_cavity(charges, centres, radii, unit="Angstrom"):
         convfac = 1.0
     core.print_out(f"\n    Cavity sphere setup (in {unit}):\n\n")
     core.print_out(("    {0:^6s}   {1:^10s}   {2:^10s}   {3:^10s}   {4:^10s}"
-                   "\n").format("Charge", "X", "Y", "Z", "Radius"))
+                    "\n").format("Charge", "X", "Y", "Z", "Radius"))
     core.print_out("    " + "-" * 6 + ("   " + "-" * 10) * 4 + "\n")
     for i in range(len(charges)):
         core.print_out(f"    {charges[i]:6.2f}")
@@ -159,8 +156,7 @@ class DdxInterface:
         if parse_version(pyddx.__version__) < parse_version(min_version):
             raise ModuleNotFoundError("pyddx version {} is required at least. "
                                       "Version {}"
-                                      " was found.".format(min_version,
-                                                           pyddx.__version__))
+                                      " was found.".format(min_version, pyddx.__version__))
 
         self.basisset = basisset
         self.mints = core.MintsHelper(self.basisset)
@@ -170,8 +166,7 @@ class DdxInterface:
 
         # Setup the model
         try:
-            self.model = pyddx.Model(**options["model"],
-                                     solvent_epsilon=op_dielectric["solvent_epsilon"])
+            self.model = pyddx.Model(**options["model"], solvent_epsilon=op_dielectric["solvent_epsilon"])
             if (e_optical := op_dielectric["solvent_epsilon_optical"]):
                 self.model_optical = pyddx.Model(**options["model"], solvent_epsilon=e_optical)
             else:
@@ -195,10 +190,8 @@ class DdxInterface:
         for k in sorted(list(options["grid"].keys())):
             core.print_out(f"    {k.lower():<20s} = {op_grid[k]}\n")
 
-        _print_cavity(self.sphere_charges, self.model.sphere_centres,
-                      self.model.sphere_radii, "Angstrom")
-        _print_cavity(self.sphere_charges, self.model.sphere_centres,
-                      self.model.sphere_radii, "Bohr")
+        _print_cavity(self.sphere_charges, self.model.sphere_centres, self.model.sphere_radii, "Angstrom")
+        _print_cavity(self.sphere_charges, self.model.sphere_centres, self.model.sphere_radii, "Bohr")
         core.print_out("\n")
 
         grid_int_opts = {k: v for (k, v) in op_grid.items() if isinstance(v, int)}
@@ -220,8 +213,7 @@ class DdxInterface:
         self.nuclear = self.model.multipole_electrostatics(solute_multipoles)
         self.nuclear["psi"] = self.model.multipole_psi(solute_multipoles)
 
-    def get_solvation_contributions(self, density_matrix, state=None,
-                                    elec_only=False, nonequilibrium=False):
+    def get_solvation_contributions(self, density_matrix, state=None, elec_only=False, nonequilibrium=False):
         # Symmetrise the density matrix
         D = density_matrix.transpose()
         D.add(density_matrix)
@@ -276,8 +268,10 @@ class DdxInterface:
         E_ddx = fepsilon * state.energy()
 
         # Fock-matrix contributions
-        eta = [core.Vector.from_array(ylm.np.T @ state.x[:, block.parent_atom()])
-               for (block, ylm) in zip(self.dftgrid.blocks(), self.scaled_ylms)]
+        eta = [
+            core.Vector.from_array(ylm.np.T @ state.x[:, block.parent_atom()])
+            for (block, ylm) in zip(self.dftgrid.blocks(), self.scaled_ylms)
+        ]
         V_ddx = self.numints.potential_integral(eta)
 
         if model.model in ("lpb", ):

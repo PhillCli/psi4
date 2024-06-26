@@ -1,7 +1,6 @@
 import numpy as np
 from qcengine.programs.tests.standard_suite_ref import answer_hash, compute_derived_qcvars, _std_suite, _std_generics
 
-
 # in-repo extensions for _std_suite above
 # * ideally empty. PR to QCEngine ASAP and empty this after QCEngine release.
 _std_suite_psi4_extension = [
@@ -16,8 +15,7 @@ _std_suite_psi4_extension = [
             "corl_type": "conv",
             "sdsc": "sd"
         },
-        "data": {
-        },
+        "data": {},
     },
     {
         "meta": {
@@ -29,8 +27,7 @@ _std_suite_psi4_extension = [
             "corl_type": "conv",
             "sdsc": "sd"
         },
-        "data": {
-        },
+        "data": {},
     },
     {
         "meta": {
@@ -42,8 +39,7 @@ _std_suite_psi4_extension = [
             "corl_type": "conv",
             "sdsc": "sd"
         },
-        "data": {
-        },
+        "data": {},
     },
     {
         "meta": {
@@ -55,8 +51,7 @@ _std_suite_psi4_extension = [
             "corl_type": "conv",
             "sdsc": "sd",
         },
-        "data": {
-        },
+        "data": {},
     },
     {
         "meta": {
@@ -68,8 +63,7 @@ _std_suite_psi4_extension = [
             "corl_type": "conv",
             "sdsc": "sd"
         },
-        "data": {
-        },
+        "data": {},
     },
     {
         "meta": {
@@ -81,8 +75,7 @@ _std_suite_psi4_extension = [
             "corl_type": "conv",
             "sdsc": "sd"
         },
-        "data": {
-        },
+        "data": {},
     },
     {
         "meta": {
@@ -95,7 +88,8 @@ _std_suite_psi4_extension = [
             "sdsc": "sd",
         },
         "data": {
-            "CISD CORRELATION ENERGY": -0.08142433,  # detci != cfour's vcc ???  # locally, replacing the rohf cisd vcc=tce value (stored in qcng) by the detci=guga value. correct sdsc label unclear.
+            "CISD CORRELATION ENERGY":
+            -0.08142433,  # detci != cfour's vcc ???  # locally, replacing the rohf cisd vcc=tce value (stored in qcng) by the detci=guga value. correct sdsc label unclear.
             "FCI CORRELATION ENERGY": -0.084637876308811,  # detci
         },
     },
@@ -184,8 +178,7 @@ _std_suite_psi4_extension = [
             "corl_type": "df",
             "sdsc": "sd"
         },
-        "data": {
-        },
+        "data": {},
     },
     {
         "meta": {
@@ -197,8 +190,7 @@ _std_suite_psi4_extension = [
             "corl_type": "df",
             "sdsc": "sd"
         },
-        "data": {
-        },
+        "data": {},
     },
     {
         "meta": {
@@ -210,8 +202,7 @@ _std_suite_psi4_extension = [
             "corl_type": "df",
             "sdsc": "sd"
         },
-        "data": {
-        },
+        "data": {},
     },
     {
         "meta": {
@@ -223,8 +214,7 @@ _std_suite_psi4_extension = [
             "corl_type": "df",
             "sdsc": "sd",
         },
-        "data": {
-        },
+        "data": {},
     },
     {
         "meta": {
@@ -236,8 +226,7 @@ _std_suite_psi4_extension = [
             "corl_type": "df",
             "sdsc": "sd"
         },
-        "data": {
-        },
+        "data": {},
     },
     {
         "meta": {
@@ -249,13 +238,11 @@ _std_suite_psi4_extension = [
             "corl_type": "df",
             "sdsc": "sd"
         },
-        "data": {
-        },
+        "data": {},
     },
     # <<<  CD-AE-CD  >>>
     # <<<  CD-FC-CD  >>>
 ]
-
 
 for calc1 in _std_suite_psi4_extension:
     metahash1 = answer_hash(**calc1["meta"])

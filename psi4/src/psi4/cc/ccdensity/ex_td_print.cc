@@ -62,5 +62,5 @@ void ex_td_print(std::vector<struct XTD_Params> xtd_list) {
     }
     outfile->Printf("\n");
 }
-}
+}  // namespace ccdensity
 }  // namespace psi

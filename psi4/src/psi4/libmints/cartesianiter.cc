@@ -56,8 +56,7 @@ CartesianIter::operator int() { return (a_ >= 0); }
 
 ////////////////////////////////////////////////////////////////////////
 
-RedundantCartesianIter::RedundantCartesianIter(int l) : done_(0), l_(l), axis_(std::vector<int>(l_)) {
-}
+RedundantCartesianIter::RedundantCartesianIter(int l) : done_(0), l_(l), axis_(std::vector<int>(l_)) {}
 
 RedundantCartesianIter::~RedundantCartesianIter() {}
 

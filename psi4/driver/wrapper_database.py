@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """
 Module with database functionality.
 
@@ -51,7 +50,6 @@ from .constants import constants
 from .driver import *
 
 # never import aliases into this file
-
 
 #########################
 ##  Start of Database  ##
@@ -217,9 +215,9 @@ def database(name, db_name, **kwargs):
     kwargs = p4util.kwargs_lower(kwargs)
 
     # Wrap any positional arguments into kwargs (for intercalls among wrappers)
-    if not('name' in kwargs) and name:
-        kwargs['name'] = name #.lower()
-    if not('db_name' in kwargs) and db_name:
+    if not ('name' in kwargs) and name:
+        kwargs['name'] = name  #.lower()
+    if not ('db_name' in kwargs) and db_name:
         kwargs['db_name'] = db_name
 
     # Establish function to call
@@ -227,12 +225,11 @@ def database(name, db_name, **kwargs):
     kwargs['db_func'] = func
     # Bounce to CP if bsse kwarg (someday)
     if kwargs.get('bsse_type', None) is not None:
-        raise ValidationError("""Database: Cannot specify bsse_type for database. Use the cp keyword withing database instead.""")
+        raise ValidationError(
+            """Database: Cannot specify bsse_type for database. Use the cp keyword withing database instead.""")
 
     allowoptexceeded = kwargs.get('allowoptexceeded', False)
-    optstash = p4util.OptionsState(
-        ['WRITER_FILE_LABEL'],
-        ['SCF', 'REFERENCE'])
+    optstash = p4util.OptionsState(['WRITER_FILE_LABEL'], ['SCF', 'REFERENCE'])
 
     # Wrapper wholly defines molecule. discard any passed-in
     kwargs.pop('molecule', None)
@@ -289,7 +286,9 @@ def database(name, db_name, **kwargs):
         else:
             if p4util.yes.match(str(database.isOS)):
                 openshell_override = 1
-                core.print_out('\nSome reagents in database %s require an open-shell reference; will be reset to UHF/UKS as needed.\n' % (db_name))
+                core.print_out(
+                    '\nSome reagents in database %s require an open-shell reference; will be reset to UHF/UKS as needed.\n'
+                    % (db_name))
 
     # Configuration based upon database keyword options
     #   Option symmetry- whether symmetry treated normally or turned off (currently req'd for dfmp2 & dft)
@@ -342,7 +341,8 @@ def database(name, db_name, **kwargs):
                 database.ACTV_CPRLX
                 database.RXNM_CPRLX
             except AttributeError:
-                raise ValidationError('Deformation and counterpoise correction mode \'yes\' invalid for database %s.' % (db_name))
+                raise ValidationError('Deformation and counterpoise correction mode \'yes\' invalid for database %s.' %
+                                      (db_name))
             else:
                 ACTV = database.ACTV_CPRLX
                 RXNM = database.RXNM_CPRLX
@@ -354,7 +354,7 @@ def database(name, db_name, **kwargs):
             else:
                 ACTV = database.ACTV_RLX
     elif db_rlxd is False:
-    #elif no.match(str(db_rlxd)):
+        #elif no.match(str(db_rlxd)):
         pass
     else:
         raise ValidationError('Deformation correction mode \'%s\' not valid.' % (db_rlxd))
@@ -379,7 +379,8 @@ def database(name, db_name, **kwargs):
         else:
             BIND = p4util.getattr_ignorecase(database, 'BIND_' + db_benchmark)
             if BIND is None:
-                raise ValidationError('Special benchmark \'%s\' not available for database %s.' % (db_benchmark, db_name))
+                raise ValidationError('Special benchmark \'%s\' not available for database %s.' %
+                                      (db_benchmark, db_name))
 
     #   Option tabulate- whether tables of variables other than primary energy method are formed
     # TODO db(func=cbs,tabulate=[non-current-energy])  # broken
@@ -419,7 +420,8 @@ def database(name, db_name, **kwargs):
             if HRXN is None:
                 HRXN = p4util.getattr_ignorecase(database, 'HRXN_' + db_subset)
                 if HRXN is None:
-                    raise ValidationError("""Special subset '%s' not available for database %s.""" % (db_subset, db_name))
+                    raise ValidationError("""Special subset '%s' not available for database %s.""" %
+                                          (db_subset, db_name))
     else:
         temp = []
         for rxn in db_subset:
@@ -475,7 +477,8 @@ def database(name, db_name, **kwargs):
             elif user_reference == 'RKS':
                 core.set_global_option('REFERENCE', 'UKS')
 
-        core.set_global_option('WRITER_FILE_LABEL', user_writer_file_label + ('' if user_writer_file_label == '' else '-') + rgt)
+        core.set_global_option('WRITER_FILE_LABEL',
+                               user_writer_file_label + ('' if user_writer_file_label == '' else '-') + rgt)
 
         if allowoptexceeded:
             try:
@@ -490,7 +493,8 @@ def database(name, db_name, **kwargs):
         for rxn in HRXN:
             db_rxn = dbse + '-' + str(rxn)
             if rgt in ACTV[db_rxn]:
-                core.print_out('   reagent {} contributes by {:.4f} to reaction {}\n'.format(rgt, RXNM[db_rxn][rgt], db_rxn))
+                core.print_out('   reagent {} contributes by {:.4f} to reaction {}\n'.format(
+                    rgt, RXNM[db_rxn][rgt], db_rxn))
         core.print_out('\n')
         for envv in db_tabulate:
             VRGT[rgt][envv.upper()] = core.variable(envv)
@@ -575,8 +579,8 @@ def database(name, db_name, **kwargs):
                 ERXN[db_rxn] += ERGT[ACTV[db_rxn][i]] * RXNM[db_rxn][ACTV[db_rxn][i]]
             error = constants.hartree2kcalmol * ERXN[db_rxn] - BIND[db_rxn]
 
-            tables += """\n%23s   %8.4f %8.4f %10.4f %10.4f""" % (db_rxn, BIND[db_rxn], constants.hartree2kcalmol * ERXN[db_rxn],
-                error, error * constants.cal2J)
+            tables += """\n%23s   %8.4f %8.4f %10.4f %10.4f""" % (db_rxn, BIND[db_rxn], constants.hartree2kcalmol *
+                                                                  ERXN[db_rxn], error, error * constants.cal2J)
             for i in range(len(ACTV[db_rxn])):
                 tables += """ %16.8f %2.0f""" % (ERGT[ACTV[db_rxn][i]], RXNM[db_rxn][ACTV[db_rxn][i]])
 
@@ -649,6 +653,7 @@ def _tblhead(tbl_maxrgt, tbl_delimit, ttype):
             tbl_str += """%20s""" % ('Value Wt')
     tbl_str += """\n   %s""" % (tbl_delimit)
     return tbl_str
+
 
 ##  Aliases  ##
 db = database

@@ -26,7 +26,6 @@ print('[1]    <<<  uniform cc-pVDZ  >>>')
 wert = psi4.core.BasisSet.build(mymol, 'BASIS', psi4.core.get_global_option('BASIS'))
 mymol.print_out()
 
-
 print('[2]        <<<  RIFIT (default)  >>>')
 wert = psi4.core.BasisSet.build(mymol, 'DF_BASIS_MP2', '', 'RIFIT', psi4.core.get_global_option('BASIS'))
 mymol.print_out()
@@ -39,13 +38,11 @@ psi4.basis_helper("""
 wert = psi4.core.BasisSet.build(mymol, 'BASIS', psi4.core.get_global_option('BASIS'))
 mymol.print_out()
 
-
 print('[4]        <<<  RIFIT (default)  >>>')
 wert = psi4.core.BasisSet.build(mymol, 'DF_BASIS_MP2', '', 'RIFIT', psi4.core.get_global_option('BASIS'))
 mymol.print_out()
 wert.print_out()
 mymol.print_out()
-
 
 print('[5]    <<<  cc-pVDZ w/ aug-cc-pVDZ on C, H_R  >>>')
 psi4.basis_helper("""
@@ -53,33 +50,28 @@ psi4.basis_helper("""
     assign c aug-cc-pvdz
     assign h_r aug-cc-pvdz
 """,
-name='dz_PLUSplus',
-key='BASis')
+                  name='dz_PLUSplus',
+                  key='BASis')
 wert = psi4.core.BasisSet.build(mymol, 'BASIS', psi4.core.get_global_option('BASIS'))
 mymol.print_out()
-
 
 print('[6]    <<<  RIFIT (custom: force cc-pVDZ on H, default on C, O)  >>>')
 psi4.basis_helper("""
     assign h cc-pvdz-ri
-""",
-name='dz_PLUSplusRI',
-key='df_basis_mp2')
-wert = psi4.core.BasisSet.build(mymol, 'DF_BASIS_MP2', psi4.core.get_global_option('DF_BASIS_MP2'), 'RIFIT', psi4.core.get_global_option('BASIS'))
+""", name='dz_PLUSplusRI', key='df_basis_mp2')
+wert = psi4.core.BasisSet.build(mymol, 'DF_BASIS_MP2', psi4.core.get_global_option('DF_BASIS_MP2'), 'RIFIT',
+                                psi4.core.get_global_option('BASIS'))
 mymol.print_out()
 mymol.print_out()
-
 
 print('[7]    <<<  cc-pVDZ w/ aug-cc-pVDZ on C, H  >>>')
 psi4.basis_helper("""
     assign cc-pvdz
     assign c aug-cc-pvdz
     assign h aug-cc-pvdz
-""",
-name = 'dz_PLUSplusplus')
+""", name='dz_PLUSplusplus')
 wert = psi4.core.BasisSet.build(mymol, 'BASIS', psi4.core.get_global_option('BASIS'))
 mymol.print_out()
-
 
 print('[8]        <<<  JKFIT (default)  >>>')
 wert = psi4.core.BasisSet.build(mymol, 'DF_BASIS_SCF', '', 'JKFIT', psi4.core.get_global_option('BASIS'))
@@ -91,11 +83,9 @@ print('[9]    <<<  aug-cc-pVDZ  >>>')
 wert = psi4.core.BasisSet.build(mymol, 'BASIS', psi4.core.get_global_option('BASIS'))
 mymol.print_out()
 
-
 print('[10]       <<<  JKFIT (default)  >>>')
 wert = psi4.core.BasisSet.build(mymol, 'DF_BASIS_SCF', '', 'JKFIT', psi4.core.get_global_option('BASIS'))
 mymol.print_out()
-
 
 mymol2 = psi4.geometry("""
 0 2
@@ -145,4 +135,3 @@ hene.print_out()
 
 print('[15]   <<<  forced JK for cc-pV5Z on HeNe  >>>')
 wert = psi4.core.BasisSet.build(hene, 'DF_BASIS_SCF', '', 'JKFIT', psi4.core.get_global_option('BASIS'))
-

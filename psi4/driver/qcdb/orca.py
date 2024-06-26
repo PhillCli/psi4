@@ -34,6 +34,7 @@ from .molecule import Molecule
 
 # Not maintained: see https://github.com/psi4/psi4/issues/2478
 
+
 def harvest(p4Mol, orca_out, **largs):
     """Harvest variables, gradient, and the molecule from the output and other
     files
@@ -90,8 +91,7 @@ def muster_modelchem(name, dertype):
     elif dertype == 1:
         options['ORCA']['ORCA_RUNTYP']['value'] = 'ENGRAD'
     else:
-        raise ValidationError("Requested Orca dertype {} is not available."
-                              .format(dertype))
+        raise ValidationError("Requested Orca dertype {} is not available.".format(dertype))
 
     if lowername == 'orca':
         pass
@@ -104,8 +104,7 @@ def muster_modelchem(name, dertype):
     elif lowername == 'orca-ccsd(t)':
         options['ORCA']['ORCA_CALC_LEVEL']['value'] = 'CCSD(T)'
     else:
-        raise ValidationError("Requested Orca computational methods {} is not "
-                              "available." .format(lowername))
+        raise ValidationError("Requested Orca computational methods {} is not " "available.".format(lowername))
 
     # Set clobbering
     if 'ORCA_RUNTYP' in options['ORCA']:
@@ -229,7 +228,7 @@ def harvest_dipole(lines, psivar):
         # Dipole x, y, z are the last items 6 lines down in the dipole block
         dipole_str_list = lines[dipole_start + 6].split()[-3:]
         # Convert the dipole to debye
-        dipole = [float(i)*constants.dipmom_au2debye for i in dipole_str_list]
+        dipole = [float(i) * constants.dipmom_au2debye for i in dipole_str_list]
         psivar['CURRENT DIPOLE X'] = dipole[0]
         psivar['CURRENT DIPOLE Y'] = dipole[1]
         psivar['CURRENT DIPOLE Z'] = dipole[2]
@@ -244,12 +243,10 @@ def harvest_mp2(lines, psivar):
     #---------------------------------------
     #MP2 TOTAL ENERGY:      -76.226803665 Eh
     #---------------------------------------
-
     """Sample MP2 correlation energy line (yes there is a space)"""
     #-----------------------------------------------
     # MP2 CORRELATION ENERGY   :     -0.125436532 Eh
     #-----------------------------------------------
-
     """Sample RI-MP2 Correlation energy line (yes there is a space)"""
     #-----------------------------------------------
     # RI-MP2 CORRELATION ENERGY:     -0.125496692 Eh
@@ -281,7 +278,6 @@ def harvest_coupled_cluster(lines, psivar):
     #Singles Norm <S|S>**1/2                    ...      0.021106262
     #T1 diagnostic                              ...      0.007462191
     #
-
     """Sample DLPNO coupled cluster block (CCSD)"""
     #----------------------
     #COUPLED CLUSTER ENERGY
@@ -295,7 +291,6 @@ def harvest_coupled_cluster(lines, psivar):
     #Singles Norm <S|S>**1/2                    ...      0.014443573
     #T1 diagnostic                              ...      0.005106574
     #
-
     """Sample CCSD(T) block (same for DLPNO and canonical)"""
     #
     #Triples Correction (T)                     ...     -0.001544381
@@ -314,7 +309,7 @@ def harvest_coupled_cluster(lines, psivar):
     for i, line in enumerate(lines[cc_start:cc_start + 20], start=cc_start):
         if line[:6] == "E(TOT)":
             psivar["CCSD TOTAL ENERGY"] = line.split()[-1]
-            psivar["CCSD CORRELATION ENERGY"] = lines[i-1].split()[-1]
+            psivar["CCSD CORRELATION ENERGY"] = lines[i - 1].split()[-1]
             #psivar["SINGLES NORM"] = lines[i+1].split()[-1]
             #psivar["T1 DIAGNOSTIC"] = lines[i+2].split()[-1]
             break
@@ -323,9 +318,9 @@ def harvest_coupled_cluster(lines, psivar):
     for i, line in enumerate(lines[cc_start:], start=cc_start):
         if line[:22] == "Triples Correction (T)":
             #psivar["TRIPLES CORRELATION ENERGY"] = line.split()[-1]
-            psivar["CCSD(T) CORRELATION ENERGY"] = lines[i+1].split()[-1]
-            psivar["CCSD TOTAL ENERGY"] = lines[i+2].split()[-1]
-            psivar["CCSD(T) TOTAL ENERGY"] = lines[i+3].split()[-1]
+            psivar["CCSD(T) CORRELATION ENERGY"] = lines[i + 1].split()[-1]
+            psivar["CCSD TOTAL ENERGY"] = lines[i + 2].split()[-1]
+            psivar["CCSD(T) TOTAL ENERGY"] = lines[i + 3].split()[-1]
             break
 
 
@@ -338,7 +333,7 @@ def harvest_engrad(engrad):
     num_atoms = int(lines[3].strip())
     energy = lines[7].strip()
     grad = []
-    for i in range(12, 13 + num_atoms*3, 3):
+    for i in range(12, 13 + num_atoms * 3, 3):
         grad.append(list(map(float, lines[i:i + 3])))
     return grad
 

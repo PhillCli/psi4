@@ -10,8 +10,9 @@ pytestmark = [pytest.mark.psi, pytest.mark.api]
 
 # checks for
 # - correct HF density
-# - principal execution 
+# - principal execution
 # - comparison against reference file
+
 
 @pytest.fixture
 def datadir(tmpdir, request):
@@ -37,12 +38,35 @@ def calcD(wfn):
     Db = np.dot(Cb_occ, Cb_occ.T)
     return Da + Db
 
+
 @pytest.mark.parametrize('inp2', [
-    pytest.param({'name': 'hf', 'options': {'scf_type': 'df'} }, id='df-uhf'),
-    pytest.param({'name': 'pbe', 'options': {'scf_type': 'df'} }, id='df-uhf-dft'), 
-    pytest.param({'name': 'mp2', 'options': {'scf_type': 'df','qc_module': 'occ'} }, id='df-uhf-mp2'),
-    pytest.param({'name': 'ccsd', 'options': {'scf_type': 'pk','cc_type':'conv'} }, id='conv-uhf-ccsd') 
-    ])
+    pytest.param({
+        'name': 'hf',
+        'options': {
+            'scf_type': 'df'
+        }
+    }, id='df-uhf'),
+    pytest.param({
+        'name': 'pbe',
+        'options': {
+            'scf_type': 'df'
+        }
+    }, id='df-uhf-dft'),
+    pytest.param({
+        'name': 'mp2',
+        'options': {
+            'scf_type': 'df',
+            'qc_module': 'occ'
+        }
+    }, id='df-uhf-mp2'),
+    pytest.param({
+        'name': 'ccsd',
+        'options': {
+            'scf_type': 'pk',
+            'cc_type': 'conv'
+        }
+    }, id='conv-uhf-ccsd')
+])
 def test_uhf_fchk(inp2, datadir):
     """  FCHK UHF """
     mol = psi4.geometry("""
@@ -68,16 +92,66 @@ def test_uhf_fchk(inp2, datadir):
     assert psi4.compare_arrays(ret["Total SCF Density"], calcD(wfn), 9, "FCHK UHF Density")
     assert psi4.compare_fchkfiles(reference_file, FCHK_file, 1.e-8, f" File comparison: {FCHK_file}")
 
+
 @pytest.mark.parametrize('inp', [
-    pytest.param({'name': 'hf', 'options': {'scf_type': 'df'} }, id='df-rhf)'),
-    pytest.param({'name': 'pbe', 'options': {'scf_type': 'df'} }, id='df-rhf-dft)'),
-    pytest.param({'name': 'mp2', 'options': {'scf_type': 'df','mp2_type':'df'} }, id='df-rhf-mp2'),
-    pytest.param({'name': 'omp2', 'options': {'scf_type': 'df','mp2_type':'df'} }, id='df-rhf-omp2'),
-    pytest.param({'name': 'cc2', 'options': {'scf_type': 'pk','cc_type':'conv'}}, id='conv-rhf-cc2'),
-    pytest.param({'name': 'ccsd', 'options': {'scf_type': 'pk','cc_type':'conv'}}, id='conv-rhf-ccsd'),
-    pytest.param({'name': 'dct', 'options': {'scf_type': 'pk','dct_type':'conv'}}, id='conv-rhf-dct'),
-    pytest.param({'name': 'mp2', 'options': {'scf_type': 'pk','mp2_type':'conv','qc_module':'occ'}}, marks=pytest.mark.xfail(reason="OCC not allowed in FCHK"), id='conv-rhf-mp2(occ)'),
-    ])
+    pytest.param({
+        'name': 'hf',
+        'options': {
+            'scf_type': 'df'
+        }
+    }, id='df-rhf)'),
+    pytest.param({
+        'name': 'pbe',
+        'options': {
+            'scf_type': 'df'
+        }
+    }, id='df-rhf-dft)'),
+    pytest.param({
+        'name': 'mp2',
+        'options': {
+            'scf_type': 'df',
+            'mp2_type': 'df'
+        }
+    }, id='df-rhf-mp2'),
+    pytest.param({
+        'name': 'omp2',
+        'options': {
+            'scf_type': 'df',
+            'mp2_type': 'df'
+        }
+    }, id='df-rhf-omp2'),
+    pytest.param({
+        'name': 'cc2',
+        'options': {
+            'scf_type': 'pk',
+            'cc_type': 'conv'
+        }
+    }, id='conv-rhf-cc2'),
+    pytest.param({
+        'name': 'ccsd',
+        'options': {
+            'scf_type': 'pk',
+            'cc_type': 'conv'
+        }
+    }, id='conv-rhf-ccsd'),
+    pytest.param({
+        'name': 'dct',
+        'options': {
+            'scf_type': 'pk',
+            'dct_type': 'conv'
+        }
+    }, id='conv-rhf-dct'),
+    pytest.param({
+        'name': 'mp2',
+        'options': {
+            'scf_type': 'pk',
+            'mp2_type': 'conv',
+            'qc_module': 'occ'
+        }
+    },
+                 marks=pytest.mark.xfail(reason="OCC not allowed in FCHK"),
+                 id='conv-rhf-mp2(occ)'),
+])
 def test_rhf_fchk(inp, datadir):
     """  FCHK RHF """
     mol = psi4.geometry("""
@@ -106,4 +180,3 @@ def test_rhf_fchk(inp, datadir):
         expected = calcD(wfn)
     assert psi4.compare_arrays(ret["Total SCF Density"], expected, 9, "FCHK RHF Density")
     assert psi4.compare_fchkfiles(reference_file, FCHK_file, 1.e-8, f" File comparison: {FCHK_file}")
-

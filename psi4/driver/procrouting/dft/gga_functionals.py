@@ -39,11 +39,9 @@ funcs.append({
     "c_functionals": {
         "GGA_C_LYP": {}
     },
-    "citation":
-    '    P.J. Stephens et. al., J. Phys. Chem., 98, 11623-11627, 1994\n' +
+    "citation": '    P.J. Stephens et. al., J. Phys. Chem., 98, 11623-11627, 1994\n' +
     '    B. Miehlich et. al., Chem. Phys. Lett., 157(3), 200-206 1989\n',
-    "description":
-    '    BLYP GGA Exchange-Correlation Functional\n',
+    "description": '    BLYP GGA Exchange-Correlation Functional\n',
 })
 
 funcs.append({
@@ -163,10 +161,8 @@ funcs.append({
         "GGA_C_P86": {}
     },
     "citation":
-    '    A. D. Becke, Phys. Rev. A, 38, 3098-3100, 1988\n' +
-    '    J. P. Perdew, Phys. Rev. B, 33, 8822, 1986\n',
-    "description":
-    '    BP86 GGA Exchange-Correlation Functional\n',
+    '    A. D. Becke, Phys. Rev. A, 38, 3098-3100, 1988\n' + '    J. P. Perdew, Phys. Rev. B, 33, 8822, 1986\n',
+    "description": '    BP86 GGA Exchange-Correlation Functional\n',
 })
 
 funcs.append({
@@ -189,11 +185,9 @@ funcs.append({
     "c_functionals": {
         "GGA_C_PBE": {}
     },
-    "citation":
-    '    Y. Zhao, and D. G. Truhlar, J. Chem. Phys. 128, 184109, 2008\n' +
+    "citation": '    Y. Zhao, and D. G. Truhlar, J. Chem. Phys. 128, 184109, 2008\n' +
     '    J. Perdew, K. Burke, M. Ernzerhof, Phys. Rev. Lett. 77, 3865-3868, 1996\n',
-    "description":
-    '   SOGGA Exchange + PBE Correlation Functional\n',
+    "description": '   SOGGA Exchange + PBE Correlation Functional\n',
 })
 
 funcs.append({
@@ -319,11 +313,9 @@ funcs.append({
     "c_functionals": {
         "GGA_C_OP_PBE": {}
     },
-    "citation":
-    '    T. Tsuneda, T. Suzumura, K. Hirao, J. Chem. Phys. 110, 10664, 1999\n' +
+    "citation": '    T. Tsuneda, T. Suzumura, K. Hirao, J. Chem. Phys. 110, 10664, 1999\n' +
     '    T. Tsuneda, T. Suzumura, K. Hirao, J. Chem. Phys. 111, 5656, 1999\n',
-    "description":
-    '    BP86 GGA Exchange-Correlation Functional\n',
+    "description": '    BP86 GGA Exchange-Correlation Functional\n',
 })
 
 funcs.append({
@@ -347,8 +339,7 @@ funcs.append({
     "c_functionals": {
         "GGA_C_P86VWN_FT": {}
     },
-    "description":
-    '    BP86 GGA XC Functional based on VWN5 corr. & more accurate ftilde value\n',
+    "description": '    BP86 GGA XC Functional based on VWN5 corr. & more accurate ftilde value\n',
 })
 
 # B97-3c = modified B97(GGA) + D3BJ + SRB(through mctc-gcp)
@@ -358,7 +349,8 @@ funcs.append({
     "xc_functionals": {
         "GGA_XC_B97_3C": {}
     },
-    "description": '    B97-3c GGA-based 3C composite method with a TZ basis set, D3 and short-range basis set correction.\n',
+    "description":
+    '    B97-3c GGA-based 3C composite method with a TZ basis set, D3 and short-range basis set correction.\n',
     "citation": '     J. G. Brandenburg, C.Bannwarth, A. Hansen, S. Grimme J. Chem. Phys. 148, 064104, 2018\n',
     "doi": "10.1063/1.5012601",
     "dispersion": {
@@ -371,7 +363,6 @@ funcs.append({
         },
     },
 })
-
 
 functional_list = {}
 for functional in funcs:

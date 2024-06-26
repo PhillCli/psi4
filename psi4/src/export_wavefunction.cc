@@ -92,7 +92,8 @@ void export_wavefunction(py::module& m) {
         .def("shallow_copy", take_sharedwfn(&Wavefunction::shallow_copy), "Copies the pointers to the internal data.")
         .def("deep_copy", take_sharedwfn(&Wavefunction::deep_copy), "Deep copies the internal data.")
         .def("c1_deep_copy", &Wavefunction::c1_deep_copy,
-             "Returns a new wavefunction with internal data converted to :math:`C_1` symmetry, using pre-c1-constructed `basis`",
+             "Returns a new wavefunction with internal data converted to :math:`C_1` symmetry, using "
+             "pre-c1-constructed `basis`",
              "basis"_a)
         .def("same_a_b_orbs", &Wavefunction::same_a_b_orbs, "Returns true if the alpha and beta orbitals are the same.")
         .def("same_a_b_dens", &Wavefunction::same_a_b_dens,
@@ -250,7 +251,8 @@ void export_wavefunction(py::module& m) {
         .def("doccpi", &Wavefunction::doccpi, py::return_value_policy::copy, "assume_socc_alpha"_a = true,
              "Returns the number of doubly occupied orbitals per irrep.")
         .def("force_occpi", &Wavefunction::force_occpi,
-             "Specialized expert use only. Sets the number of doubly and singly occupied oribtals per irrep. Note that this "
+             "Specialized expert use only. Sets the number of doubly and singly occupied oribtals per irrep. Note that "
+             "this "
              "results in inconsistent Wavefunction objects for SCF, so caution is advised.")
         .def("soccpi", &Wavefunction::soccpi, py::return_value_policy::copy, "assume_socc_alpha"_a = true,
              "Returns the number of singly occupied orbitals per irrep.")
@@ -281,11 +283,13 @@ void export_wavefunction(py::module& m) {
              "Is the ExternalPotential QC variable (case-insensitive) set? "
              "(This function is provisional and might be removed in the future.)")
         .def("scalar_variable", &Wavefunction::scalar_variable,
-             "Returns the requested (case-insensitive) double QC variable. Prefer :meth:`~psi4.core.Wavefunction.variable`.")
+             "Returns the requested (case-insensitive) double QC variable. Prefer "
+             ":meth:`~psi4.core.Wavefunction.variable`.")
         .def("array_variable", &Wavefunction::array_variable,
-             "Returns copy of the requested (case-insensitive) Matrix QC variable. Prefer :meth:`~psi4.core.Wavefunction.variable`.")
-        .def("potential_variable", &Wavefunction::potential_variable,
-             "key"_a, "Returns copy of the requested (case-insensitive) ExternalPotential QC variable *key*. "
+             "Returns copy of the requested (case-insensitive) Matrix QC variable. Prefer "
+             ":meth:`~psi4.core.Wavefunction.variable`.")
+        .def("potential_variable", &Wavefunction::potential_variable, "key"_a,
+             "Returns copy of the requested (case-insensitive) ExternalPotential QC variable *key*. "
              "(This function is provisional and might be removed in the future.)")
         .def("set_scalar_variable", &Wavefunction::set_scalar_variable,
              "Sets the requested (case-insensitive) double QC variable. Syncs with ``Wavefunction.energy_`` if CURRENT "
@@ -297,9 +301,11 @@ void export_wavefunction(py::module& m) {
              "Sets the requested (case-insensitive) ExternalPotential QC variable. "
              "(This function is provisional and might be removed in the future.)")
         .def("del_scalar_variable", &Wavefunction::del_scalar_variable,
-             "Removes the requested (case-insensitive) double QC variable. Prefer :meth:`~psi4.core.Wavefunction.del_variable`.")
+             "Removes the requested (case-insensitive) double QC variable. Prefer "
+             ":meth:`~psi4.core.Wavefunction.del_variable`.")
         .def("del_array_variable", &Wavefunction::del_array_variable,
-             "Removes the requested (case-insensitive) Matrix QC variable. Prefer :meth:`~psi4.core.Wavefunction.del_variable`.")
+             "Removes the requested (case-insensitive) Matrix QC variable. Prefer "
+             ":meth:`~psi4.core.Wavefunction.del_variable`.")
         .def("del_potential_variable", &Wavefunction::del_potential_variable,
              "Removes the requested (case-insensitive) ExternalPotential QC variable. "
              "(This function is provisional and might be removed in the future.)")
@@ -307,7 +313,8 @@ void export_wavefunction(py::module& m) {
              "Returns the dictionary of all double QC variables. Prefer :meth:`~psi4.core.Wavefunction.variables`.")
         .def("array_variables", &Wavefunction::array_variables,
              "Returns the dictionary of all Matrix QC variables. Prefer :meth:`~psi4.core.Wavefunction.variables`.")
-        .def("potential_variables", &Wavefunction::potential_variables, "Returns the dictionary of all ExternalPotential QC variables. "
+        .def("potential_variables", &Wavefunction::potential_variables,
+             "Returns the dictionary of all ExternalPotential QC variables. "
              "(This function is provisional and might be removed in the future.)")
 
 #ifdef USING_PCMSolver
@@ -315,7 +322,8 @@ void export_wavefunction(py::module& m) {
         .def("get_PCM", &Wavefunction::get_PCM, "Get the PCM object")
 #endif
         .def("PCM_enabled", &Wavefunction::PCM_enabled, "Whether running a PCM calculation")
-        .def("get_density", [](Wavefunction& wfn, std::string name) {return wfn.density_map_[name] ;}, "Experimental!");
+        .def(
+            "get_density", [](Wavefunction& wfn, std::string name) { return wfn.density_map_[name]; }, "Experimental!");
 
     py::class_<scf::HF, std::shared_ptr<scf::HF>, Wavefunction>(m, "HF", "docstring")
         .def("compute_fvpi", &scf::HF::compute_fvpi, "Update number of frozen virtuals")
@@ -379,9 +387,13 @@ void export_wavefunction(py::module& m) {
         .def("push_back_external_potential", &scf::HF::push_back_external_potential,
              "Add an external potential to the private external_potentials list", "V"_a)
         .def("set_external_cpscf_perturbation", &scf::HF::set_external_cpscf_perturbation,
-             "Add an external potential/perturbation to the private external_cpscf_perturbations map for CPSCF", "name"_a, "function"_a)
-        .def("clear_external_cpscf_perturbations", &scf::HF::clear_external_cpscf_perturbations, "Clear private external_cpscf_perturbations map")
-        .def_property("iteration_", &scf::HF::iteration, &scf::HF::set_iteration, "Internal iterator for SCF cycles. After completion, this equals the number of iterations taken to converge the SCF equations.")
+             "Add an external potential/perturbation to the private external_cpscf_perturbations map for CPSCF",
+             "name"_a, "function"_a)
+        .def("clear_external_cpscf_perturbations", &scf::HF::clear_external_cpscf_perturbations,
+             "Clear private external_cpscf_perturbations map")
+        .def_property("iteration_", &scf::HF::iteration, &scf::HF::set_iteration,
+                      "Internal iterator for SCF cycles. After completion, this equals the number of iterations taken "
+                      "to converge the SCF equations.")
         .def_property("diis_enabled_", &scf::HF::diis_enabled, &scf::HF::set_diis_enabled, "docstring")
         .def_property("diis_start_", &scf::HF::diis_start, &scf::HF::set_diis_start, "docstring")
         .def_property("frac_performed_", &scf::HF::frac_performed, &scf::HF::set_frac_performed,
@@ -417,7 +429,8 @@ void export_wavefunction(py::module& m) {
         .def("moFa", &scf::ROHF::moFa, "docstring")
         .def("moFb", &scf::ROHF::moFb, "docstring")
         .def("Ct", &scf::ROHF::Ct,
-             "MO coefficients in the orthogonalized MO basis. Differs from the standard C matrix by an orthogonalizer matrix.")
+             "MO coefficients in the orthogonalized MO basis. Differs from the standard C matrix by an orthogonalizer "
+             "matrix.")
         .def("c1_deep_copy", &scf::ROHF::c1_deep_copy,
              "Returns a new wavefunction with internal data converted to C_1 symmetry, using pre-c1-constructed "
              "BasisSet *basis*",
@@ -528,7 +541,7 @@ void export_wavefunction(py::module& m) {
         .def("diag_h", &detci::CIWavefunction::diag_h, "docstring")
         .def("ndet", &detci::CIWavefunction::ndet, "docstring")
         .def("transform_ci_integrals", &detci::CIWavefunction::transform_ci_integrals,
-            "Transforms the one- and two-electron integrals for a CI computation.")
+             "Transforms the one- and two-electron integrals for a CI computation.")
         .def("transform_mcscf_integrals", &detci::CIWavefunction::transform_mcscf_integrals, "docstring")
         .def("rotate_mcscf_integrals", &detci::CIWavefunction::rotate_mcscf_integrals, "docstring")
         .def("pitzer_to_ci_order_onel", &detci::CIWavefunction::pitzer_to_ci_order_onel, "docstring")
@@ -537,8 +550,7 @@ void export_wavefunction(py::module& m) {
         .def("set_orbitals", &detci::CIWavefunction::set_orbitals, "docstring")
         .def("form_opdm", &detci::CIWavefunction::form_opdm, "docstring")
         .def("form_tpdm", &detci::CIWavefunction::form_tpdm, "docstring")
-        .def("get_opdm", &detci::CIWavefunction::get_opdm,
-             "Iroot"_a, "Jroot"_a, "spin"_a, "full_space"_a, R"pbdoc(
+        .def("get_opdm", &detci::CIWavefunction::get_opdm, "Iroot"_a, "Jroot"_a, "spin"_a, "full_space"_a, R"pbdoc(
               Returns the one-particle density or transition matrix.
 
               Parameters
@@ -562,8 +574,7 @@ void export_wavefunction(py::module& m) {
                   Irrep h of the matrix corresponds to orbitals of irrep h.
                   Element pq is <ψ|a^p a_q|ψ>.
               )pbdoc")
-        .def("get_tpdm", &detci::CIWavefunction::get_tpdm,
-             "spin"_a, "symmetrize"_a, R"pbdoc(
+        .def("get_tpdm", &detci::CIWavefunction::get_tpdm, "spin"_a, "symmetrize"_a, R"pbdoc(
               Returns the two-particle density matrix.
 
               Parameters
@@ -603,8 +614,11 @@ void export_wavefunction(py::module& m) {
     py::class_<ccenergy::CCEnergyWavefunction, std::shared_ptr<ccenergy::CCEnergyWavefunction>, Wavefunction>(
         m, "CCWavefunction", "Specialized Wavefunction used by the ccenergy, cceom, ccgradient, etc. modules.")
         .def(py::init<std::shared_ptr<Wavefunction>, Options&>())
-        .def("total_index", [](ccenergy::CCEnergyWavefunction& wfn, int i, int h) { return wfn.total_indices[{i, h}]; },
-                """Map an index (i) within irrep (h) to its energy-sorted index among all roots.", "i"_a, "h"_a)
+        .def(
+            "total_index", [](ccenergy::CCEnergyWavefunction& wfn, int i, int h) { return wfn.total_indices[{i, h}]; },
+            ""
+            "Map an index (i) within irrep (h) to its energy-sorted index among all roots.",
+            "i"_a, "h"_a)
         .def("get_amplitudes", &ccenergy::CCEnergyWavefunction::get_amplitudes, R"pbdoc(
                Get dict of converged T amplitudes.
 

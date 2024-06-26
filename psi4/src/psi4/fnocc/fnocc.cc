@@ -109,7 +109,7 @@ SharedWavefunction fnocc(SharedWavefunction ref_wfn, Options &options) {
         } else {
             wfn = ref_wfn;
         }
-// ccsd(t)!
+        // ccsd(t)!
 
 #ifdef GPUCC
         auto ccsd = std::make_shared<GPUDFCoupledCluster>(wfn, options);
@@ -130,5 +130,5 @@ SharedWavefunction fnocc(SharedWavefunction ref_wfn, Options &options) {
 
     // return wfn;
 }  // end fnocc
-}
-}  // end namespaces
+}  // namespace fnocc
+}  // namespace psi

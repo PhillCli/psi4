@@ -48,7 +48,7 @@
 namespace psi {
 namespace ccdensity {
 
-void transL(const MintsHelper &mints, double sign) {
+void transL(const MintsHelper& mints, double sign) {
     /*** Transform the SO angular momentum integrals to the MO basis ***/
     moinfo.L = mints.so_angular_momentum();
     for (const auto& i : moinfo.L) {

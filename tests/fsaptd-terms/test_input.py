@@ -2,6 +2,7 @@ from pathlib import Path
 import psi4
 from addons import *
 
+
 @uusing("dftd3")
 @ctest_labeler("quick;sapt;cart;fsapt")
 def test_fsaptd_terms():
@@ -10,4 +11,3 @@ def test_fsaptd_terms():
     ctest_runner(__file__, extra_infiles=[
         fsaptpy_installed,
     ])
-

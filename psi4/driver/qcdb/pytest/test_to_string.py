@@ -59,7 +59,6 @@ CoH2
 #Co                    0.000000000000     0.000000000000     0.000000000000
 #H                    -1.058354417180     0.000000000000     0.000000000000"""
 
-
 subject2 = """
 Co 0 0 0
 no_reorient
@@ -97,6 +96,7 @@ def test_toxyz_1a():
 
     assert compare_strings(ans1_au, xyz, sys._getframe().f_code.co_name)
 
+
 def test_toxyz_1b():
     subject = subject1
     mol = qcdb.Molecule(subject)
@@ -104,6 +104,7 @@ def test_toxyz_1b():
     xyz = mol.to_string(dtype='xyz', units='Angstrom')
 
     assert compare_strings(ans1_ang, xyz, sys._getframe().f_code.co_name)
+
 
 def test_toxyz_1c():
     subject = subject1
@@ -113,6 +114,7 @@ def test_toxyz_1c():
     print(xyz)
 
     assert compare_strings(ans1c_ang, xyz, sys._getframe().f_code.co_name)
+
 
 #def test_toxyz_2a():
 #    subject = subject2
@@ -138,6 +140,7 @@ def test_toxyz_1c():
 #
 #    assert compare_strings(ans2c_ang, xyz, sys._getframe().f_code.co_name)
 
+
 def test_toxyz_2a():
     subject = subject2
     mol = qcdb.Molecule(subject)
@@ -145,6 +148,7 @@ def test_toxyz_2a():
     xyz = mol.to_string(dtype='xyz', units='Bohr')
 
     assert compare_strings(ans2_au, xyz, sys._getframe().f_code.co_name)
+
 
 def test_toxyz_2b():
     subject = subject2
@@ -154,6 +158,7 @@ def test_toxyz_2b():
 
     assert compare_strings(ans2_ang, xyz, sys._getframe().f_code.co_name)
 
+
 def test_toxyz_2c():
     subject = subject2
     mol = qcdb.Molecule(subject)
@@ -161,6 +166,7 @@ def test_toxyz_2c():
     xyz = mol.to_string(dtype='xyz', units='Angstrom', ghost_format='')
 
     assert compare_strings(ans2c_ang, xyz, sys._getframe().f_code.co_name)
+
 
 @using_psi4_molrec
 def test_toxyz_3a():
@@ -172,4 +178,3 @@ def test_toxyz_3a():
     xyz = mol.to_string(dtype='xyz', units='Bohr')
 
     assert compare_strings(ans2_au, xyz, sys._getframe().f_code.co_name)
-

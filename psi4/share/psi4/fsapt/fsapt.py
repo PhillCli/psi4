@@ -55,34 +55,34 @@ saptkeys_ = [
     'Total',
 ]
 
-
 # Map from atom name to charge, vDW radius, nfrozen
 atom_data_ = {
-'H'  :  [1.0,  0.402, 0],
-'HE' :  [2.0,  0.700, 0],
-'LI' :  [3.0,  1.230, 1],
-'BE' :  [4.0,  0.900, 1],
-'B'  :  [5.0,  1.000, 1],
-'C'  :  [6.0,  0.762, 1],
-'N'  :  [7.0,  0.676, 1],
-'O'  :  [8.0,  0.640, 1],
-'F'  :  [9.0,  0.630, 1],
-'NE' :  [10.0, 0.700, 1],
-'NA' :  [11.0, 1.540, 5],
-'MG' :  [12.0, 1.360, 5],
-'AL' :  [13.0, 1.180, 5],
-'SI' :  [14.0, 1.300, 5],
-'P'  :  [15.0, 1.094, 5],
-'S'  :  [16.0, 1.253, 5],
-'CL' :  [17.0, 1.033, 5],
-'AR' :  [18.0, 1.740, 5],
+    'H': [1.0, 0.402, 0],
+    'HE': [2.0, 0.700, 0],
+    'LI': [3.0, 1.230, 1],
+    'BE': [4.0, 0.900, 1],
+    'B': [5.0, 1.000, 1],
+    'C': [6.0, 0.762, 1],
+    'N': [7.0, 0.676, 1],
+    'O': [8.0, 0.640, 1],
+    'F': [9.0, 0.630, 1],
+    'NE': [10.0, 0.700, 1],
+    'NA': [11.0, 1.540, 5],
+    'MG': [12.0, 1.360, 5],
+    'AL': [13.0, 1.180, 5],
+    'SI': [14.0, 1.300, 5],
+    'P': [15.0, 1.094, 5],
+    'S': [16.0, 1.253, 5],
+    'CL': [17.0, 1.033, 5],
+    'AR': [18.0, 1.740, 5],
 }
 
 # => Standard Order-2 Analysis <= #
 
+
 def read_xyz(filename):
 
-    fh = open(filename,'r')
+    fh = open(filename, 'r')
     lines = fh.readlines()
     lines = lines[2:]
     fh.close()
@@ -96,6 +96,7 @@ def read_xyz(filename):
 
     return val
 
+
 def write_xyz(filename, geom):
 
     fh = open(filename, 'w')
@@ -104,7 +105,8 @@ def write_xyz(filename, geom):
         fh.write('%6s %14.10f %14.10f %14.10f\n' % (line[0], line[1], line[2], line[3]))
     fh.close()
 
-def read_list(filename, factor = 1.0):
+
+def read_list(filename, factor=1.0):
 
     fh = open(filename, 'r')
     lines = fh.readlines()
@@ -114,7 +116,8 @@ def read_list(filename, factor = 1.0):
 
     return val
 
-def read_block(filename, factor = 1.0):
+
+def read_block(filename, factor=1.0):
 
     fh = open(filename, 'r')
     lines = fh.readlines()
@@ -122,9 +125,10 @@ def read_block(filename, factor = 1.0):
 
     val = []
     for line in lines:
-        val.append([factor * float(x) for x in re.split(r'\s+',line.strip())])
+        val.append([factor * float(x) for x in re.split(r'\s+', line.strip())])
 
     return val
+
 
 def read_fragments(filename):
 
@@ -138,11 +142,12 @@ def read_fragments(filename):
     for line in lines:
         tokens = re.split(r'\s+', line.strip())
         key = tokens[0]
-        val = [int(token)-1 for token in tokens[1:]]
+        val = [int(token) - 1 for token in tokens[1:]]
         frags[key] = val
         fragkeys.append(key)
 
     return [frags, fragkeys]
+
 
 def get_natoms(frags: Dict[str, Dict[str, List[int]]]) -> Dict[str, int]:
     """Given dictionary with fragment information, returns dict with number of atoms in monomers
@@ -168,6 +173,7 @@ def get_natoms(frags: Dict[str, Dict[str, List[int]]]) -> Dict[str, int]:
         natoms[mono] = na
 
     return natoms
+
 
 def read_d3_fragments(dirname: Optional[str] = '.') -> Dict[str, Dict[str, List[int]]]:
     """Creates a dictionary of fragments from fsapt fragment files for post-analysis
@@ -201,6 +207,7 @@ def read_d3_fragments(dirname: Optional[str] = '.') -> Dict[str, Dict[str, List[
 
     return frags
 
+
 def collapse_rows(vals):
     vals2 = [0.0 for x in vals[0]]
     for row in vals:
@@ -209,9 +216,11 @@ def collapse_rows(vals):
 
     return vals2
 
+
 def collapse_columns(val):
     vals2 = [sum(x) for x in vals]
     return vals2
+
 
 def check_fragments(geom, Zs, frags):
 
@@ -220,17 +229,18 @@ def check_fragments(geom, Zs, frags):
     for key, value in frags.items():
         for index in value:
             if index in taken:
-                raise Exception('Atom %d is duplicated' % (index+1))
+                raise Exception('Atom %d is duplicated' % (index + 1))
             taken.append(index)
 
     # Cover/Exclusion
     for ind in range(len(geom)):
         if (ind in taken) and (Zs[ind] == 0.0):
-            raise Exception('Atom %d has charge 0.0, should not be in fragments.' % (ind+1))
+            raise Exception('Atom %d has charge 0.0, should not be in fragments.' % (ind + 1))
         elif (ind not in taken) and (Zs[ind] != 0.0):
-            raise Exception('Atom %d has charge >0.0, should be in fragments.' % (ind+1))
+            raise Exception('Atom %d has charge >0.0, should be in fragments.' % (ind + 1))
 
-def partition_fragments(fragkeys,frags,Z,Q,completeness = 0.85):
+
+def partition_fragments(fragkeys, frags, Z, Q, completeness=0.85):
 
     nA = len(Q)
     na = len(Q[0])
@@ -274,30 +284,30 @@ def partition_fragments(fragkeys,frags,Z,Q,completeness = 0.85):
                 sum += Q[A][a]
             sums.append(sum)
 
-        inds = sorted(range(len(sums)),key=lambda x:-sums[x])
+        inds = sorted(range(len(sums)), key=lambda x: -sums[x])
         sum = sums[inds[0]] + sums[inds[1]]
         if sum <= completeness:
-            raise Exception("Orbital %d is not complete over two fragments. " 
+            raise Exception("Orbital %d is not complete over two fragments. "
                             "To avoid this error, please try to avoid cutting "
                             "multiple bonds, aromatic rings, etc., in your "
-                            "definitions of fragments." % (a+1))
+                            "definitions of fragments." % (a + 1))
         key1 = fragkeys[inds[0]]
         key2 = fragkeys[inds[1]]
 
-        Ainds = sorted(range(nA),key = lambda x:-Q[x][a])
+        Ainds = sorted(range(nA), key=lambda x: -Q[x][a])
         sum = Q[Ainds[0]][a] + Q[Ainds[1]][a]
         if sum <= completeness:
             raise Exception("Orbital %d is not complete over two link atoms. "
                             "To avoid this error, please try to avoid cutting "
                             "multiple bonds, aromatic rings, etc., in your "
-                            "definitions of fragments." % (a+1))
+                            "definitions of fragments." % (a + 1))
         A1 = Ainds[0]
         A2 = Ainds[1]
 
         nuclear_ws[key1][A1] -= 1.0 / Z[A1]
         nuclear_ws[key2][A2] -= 1.0 / Z[A2]
 
-        linkname = 'Link-%d' % (linkindex+1)
+        linkname = 'Link-%d' % (linkindex + 1)
         linkindex += 1
 
         linkkeys.append(linkname)
@@ -321,22 +331,23 @@ def partition_fragments(fragkeys,frags,Z,Q,completeness = 0.85):
 
     return [fragkeys, frags, nuclear_ws, orbital_ws, total_ws]
 
+
 def print_fragments(geom, Z, Q, fragkeys, frags, nuclear_ws, orbital_ws, filename):
 
     fh = open(filename, 'w')
 
     fh.write('   => Geometry <=\n\n')
     for k in range(len(geom)):
-        fh.write('%4d %4s %11.3f %11.3f %11.3f\n' % (k+1, geom[k][0], geom[k][1], geom[k][2], geom[k][3]))
+        fh.write('%4d %4s %11.3f %11.3f %11.3f\n' % (k + 1, geom[k][0], geom[k][1], geom[k][2], geom[k][3]))
     fh.write('\n')
 
     fh.write('   => Fragments <=\n\n')
     for key in fragkeys:
         if len(key) > 4 and key[0:4] == 'Link':
             continue
-        fh.write('%10s: ' % (key),)
+        fh.write('%10s: ' % (key), )
         for val in frags[key]:
-            fh.write('%3d ' % (val+1),)
+            fh.write('%3d ' % (val + 1), )
         fh.write('\n')
     fh.write('\n')
 
@@ -344,28 +355,27 @@ def print_fragments(geom, Z, Q, fragkeys, frags, nuclear_ws, orbital_ws, filenam
     for key in fragkeys:
         if not (len(key) > 4 and key[0:4] == 'Link'):
             continue
-        fh.write('%10s: ' % (key),)
+        fh.write('%10s: ' % (key), )
         for val in frags[key]:
-            fh.write('%3d ' % (val+1),)
+            fh.write('%3d ' % (val + 1), )
         fh.write('\n')
     fh.write('\n')
 
     fh.write('   => Orbitals <=\n\n')
     for key in fragkeys:
-        fh.write('%10s: ' % (key),)
+        fh.write('%10s: ' % (key), )
         for k in range(len(orbital_ws[key])):
             if orbital_ws[key][k] != 0.0:
-                fh.write('%3d ' % (k+1),)
+                fh.write('%3d ' % (k + 1), )
         fh.write('\n')
     fh.write('\n')
 
-
     fh.write('   =>  Nuclear Weights <=\n\n')
     for key in fragkeys:
-        fh.write('%10s: ' % (key),)
+        fh.write('%10s: ' % (key), )
         for k in range(len(nuclear_ws[key])):
             if nuclear_ws[key][k] != 0.0:
-                fh.write('%3d (%11.3f) ' % ((k+1), nuclear_ws[key][k] * Z[k]))
+                fh.write('%3d (%11.3f) ' % ((k + 1), nuclear_ws[key][k] * Z[k]))
         fh.write('\n')
     fh.write('\n')
 
@@ -387,10 +397,11 @@ def print_fragments(geom, Z, Q, fragkeys, frags, nuclear_ws, orbital_ws, filenam
             for atom in frags[key]:
                 occ += Q[atom][k]
             loss = 1.0 - occ
-            fh.write('    %4d: %11.3f\n' % (k+1, loss))
+            fh.write('    %4d: %11.3f\n' % (k + 1, loss))
     fh.write('\n')
 
     fh.close()
+
 
 def extract_osapt_data(filepath):
     """ Reads the F-SAPT component files
@@ -408,20 +419,20 @@ def extract_osapt_data(filepath):
     """
 
     vals = {}
-    vals['Elst']  = np.array(read_block('%s/Elst.dat'  % filepath, H_to_kcal_))
-    vals['Exch']  = np.array(read_block('%s/Exch.dat'  % filepath, H_to_kcal_))
+    vals['Elst'] = np.array(read_block('%s/Elst.dat' % filepath, H_to_kcal_))
+    vals['Exch'] = np.array(read_block('%s/Exch.dat' % filepath, H_to_kcal_))
     vals['IndAB'] = np.array(read_block('%s/IndAB.dat' % filepath, H_to_kcal_))
     vals['IndBA'] = np.array(read_block('%s/IndBA.dat' % filepath, H_to_kcal_))
     # Read exact F-SAPT0 dispersion data
     try:
-        vals['Disp'] = read_block('%s/Disp.dat'  % filepath, H_to_kcal_)
+        vals['Disp'] = read_block('%s/Disp.dat' % filepath, H_to_kcal_)
     except FileNotFoundError:
         print('No exact dispersion present.  Copying & zeroing `Elst.dat`->`Disp.dat`, and proceeding.\n')
         vals['Disp'] = np.zeros_like(np.array(vals['Elst']))
 
     # Read empirical F-SAPT0-D dispersion data
     try:
-        vals['EDisp'] = read_block('%s/Empirical_Disp.dat'  % filepath, H_to_kcal_)
+        vals['EDisp'] = read_block('%s/Empirical_Disp.dat' % filepath, H_to_kcal_)
     except (FileNotFoundError, OSError):
         vals['EDisp'] = np.zeros_like(np.array(vals['Elst']))
 
@@ -434,7 +445,9 @@ def extract_osapt_data(filepath):
 
     return vals
 
-def fragment_d3_disp(d3disp: np.ndarray, frags: Dict[str, Dict[str, List[str]]]) -> Tuple[float, Dict[str, Dict[str, float]]]:
+
+def fragment_d3_disp(d3disp: np.ndarray,
+                     frags: Dict[str, Dict[str, List[str]]]) -> Tuple[float, Dict[str, Dict[str, float]]]:
     """Fragments atomic pairwise dispersion contributions from DFTD3 for inclusion in F-SAPT-D.
     Arguments
     ---------
@@ -468,6 +481,7 @@ def fragment_d3_disp(d3disp: np.ndarray, frags: Dict[str, Dict[str, List[str]]])
             # Energies read are already in kcal/mol!
             D3frags[fA][fB] = fe
     return D3frags
+
 
 def extract_order2_fsapt(osapt, wsA, wsB, frags):
     """Calculate the order 2 F-SAPT analysis
@@ -504,6 +518,7 @@ def extract_order2_fsapt(osapt, wsA, wsB, frags):
                     vals[key][keyA][keyB] = val
 
     return vals
+
 
 def collapse_links(order2, frags, Qs, orbital_ws, links5050):
 
@@ -693,10 +708,9 @@ def collapse_links(order2, frags, Qs, orbital_ws, links5050):
             for keyB in frags['B'].keys():
                 if keyB[:4] != 'Link':
                     vals['Total'][keyA][keyB] += vals['EDisp'][keyA][keyB]
-                
-    
-    
+
     return vals
+
 
 def print_order2(order2, fragkeys, saptkeys=saptkeys_):
 
@@ -768,6 +782,7 @@ def print_order2(order2, fragkeys, saptkeys=saptkeys_):
 
     print('')
 
+
 def diff_order2(order2P, order2M):
 
     vals = {}
@@ -780,7 +795,8 @@ def diff_order2(order2P, order2M):
 
     return vals
 
-def compute_fsapt(dirname, links5050, completeness = 0.85):
+
+def compute_fsapt(dirname, links5050, completeness=0.85):
 
     geom = read_xyz('%s/geom.xyz' % dirname)
 
@@ -817,8 +833,8 @@ def compute_fsapt(dirname, links5050, completeness = 0.85):
     fragkeys['A'] = holder1[0]
     fragkeys['B'] = holder2[0]
 
-    frags['A']    = holder1[1]
-    frags['B']    = holder2[1]
+    frags['A'] = holder1[1]
+    frags['B'] = holder2[1]
 
     nuclear_ws = {}
     nuclear_ws['A'] = holder1[2]
@@ -832,8 +848,10 @@ def compute_fsapt(dirname, links5050, completeness = 0.85):
     total_ws['A'] = holder1[4]
     total_ws['B'] = holder2[4]
 
-    print_fragments(geom, Zs['A'], Qs['A'], fragkeys['A'], frags['A'], nuclear_ws['A'], orbital_ws['A'], '%s/fragA.dat' % dirname)
-    print_fragments(geom, Zs['B'], Qs['B'], fragkeys['B'], frags['B'], nuclear_ws['B'], orbital_ws['B'], '%s/fragB.dat' % dirname)
+    print_fragments(geom, Zs['A'], Qs['A'], fragkeys['A'], frags['A'], nuclear_ws['A'], orbital_ws['A'],
+                    '%s/fragA.dat' % dirname)
+    print_fragments(geom, Zs['B'], Qs['B'], fragkeys['B'], frags['B'], nuclear_ws['B'], orbital_ws['B'],
+                    '%s/fragB.dat' % dirname)
 
     osapt = extract_osapt_data(dirname)
 
@@ -843,17 +861,17 @@ def compute_fsapt(dirname, links5050, completeness = 0.85):
     #   B (atomnumber)
     # to specify the numbers of atoms which are connected to C. We will now check if this file exists and read it.
     if os.path.exists("%s/link_siao.dat" % dirname):
-        (fragsiao,keyssiao) = read_fragments("%s/link_siao.dat" % dirname)
+        (fragsiao, keyssiao) = read_fragments("%s/link_siao.dat" % dirname)
         if ("A" not in keyssiao) or ("B" not in keyssiao):
             raise Exception('Invalid syntax of the link_siao.dat file')
         linkAC = fragsiao["A"][0]
         linkBC = fragsiao["B"][0]
-        print("\n Extra SAOn/SIAOn link orbitals assigned to atoms",linkAC,"and",linkBC,"\n")
- 
-    # We add zero entry for all the fragments, making place for the reassigned link orbital
+        print("\n Extra SAOn/SIAOn link orbitals assigned to atoms", linkAC, "and", linkBC, "\n")
+
+        # We add zero entry for all the fragments, making place for the reassigned link orbital
         for val in total_ws['A'].values():
             val.append(0.0)
- 
+
         for val in total_ws['B'].values():
             val.append(0.0)
 
@@ -910,8 +928,9 @@ def compute_fsapt(dirname, links5050, completeness = 0.85):
         for b in geom_extern_B:
             geom.append(b)
         if os.path.exists("%s/Extern_A.xyz" % dirname):
-            frags['B']['Extern-B'] = list(range(len(Zs['A']) + len(geom_extern_A),
-                                                len(Zs['A']) + len(geom_extern_A) + len(geom_extern_B)))
+            frags['B']['Extern-B'] = list(
+                range(len(Zs['A']) + len(geom_extern_A),
+                      len(Zs['A']) + len(geom_extern_A) + len(geom_extern_B)))
         else:
             frags['B']['Extern-B'] = list(range(len(Zs['B']), len(Zs['B']) + len(geom_extern_B)))
 
@@ -922,7 +941,7 @@ def compute_fsapt(dirname, links5050, completeness = 0.85):
         for c in geom_extern_C:
             geom.append(c)
 
-    order2  = extract_order2_fsapt(osapt, total_ws['A'], total_ws['B'], frags)
+    order2 = extract_order2_fsapt(osapt, total_ws['A'], total_ws['B'], frags)
     order2r = collapse_links(order2, frags, Qs, orbital_ws, links5050)
 
     stuff = {}
@@ -934,27 +953,28 @@ def compute_fsapt(dirname, links5050, completeness = 0.85):
     stuff['geom'] = geom
     return stuff
 
+
 # => Extra Order-2 Analysis <= #
 
+
 class PDBAtom:
+    def __init__(self, I, Z, x, y, z, T=0.0):
 
-    def __init__(self, I, Z, x, y, z, T = 0.0):
-
-        key_key        = 'HETATM'
-        key_serial     = I
-        key_name       = Z
-        key_altLoc     = ''
-        key_resName    = '001'
-        key_chainID    = 'A'
-        key_resSeq     = 1
-        key_iCode      = ''
-        key_x          = x
-        key_y          = y
-        key_z          = z
-        key_occupancy  = 1.0
+        key_key = 'HETATM'
+        key_serial = I
+        key_name = Z
+        key_altLoc = ''
+        key_resName = '001'
+        key_chainID = 'A'
+        key_resSeq = 1
+        key_iCode = ''
+        key_x = x
+        key_y = y
+        key_z = z
+        key_occupancy = 1.0
         key_tempFactor = T
-        key_element    = Z
-        key_charge     = 0
+        key_element = Z
+        key_charge = 0
 
         self.key = key_key.strip()
         self.serial = int(key_serial)
@@ -983,36 +1003,38 @@ class PDBAtom:
             else:
                 chargeStr += '-'
 
-        return '%-6s%5d %-4s%1s%3s %1s%4d%1s   %8.3f%8.3f%8.3f%6.2f%6.2f          %2s%2s\n' % (self.key, self.serial, self.name, self.altLoc, self.resName, self.chainID, self.resSeq, self.iCode, self.x, self.y, self.z, self.occupancy, self.tempFactor, self.element, chargeStr)
+        return '%-6s%5d %-4s%1s%3s %1s%4d%1s   %8.3f%8.3f%8.3f%6.2f%6.2f          %2s%2s\n' % (
+            self.key, self.serial, self.name, self.altLoc, self.resName, self.chainID, self.resSeq, self.iCode, self.x,
+            self.y, self.z, self.occupancy, self.tempFactor, self.element, chargeStr)
 
-    def xyz_line(self, form = '%8.3f '):
+    def xyz_line(self, form='%8.3f '):
         contents = '%-2s ' + form + form + form + '\n'
         return contents % (self.element, self.x, self.y, self.z)
 
     def frozen(self):
         return atom_data_[self.element.upper()][2]
 
-class PDB:
 
+class PDB:
     def __init__(self, atoms, name):
 
         self.name = name
         self.atoms = atoms
 
     @classmethod
-    def from_geom(cls,geom):
+    def from_geom(cls, geom):
 
         name = ''
         atoms = []
 
         for A in range(len(geom)):
             atoms.append(PDBAtom(
-                A+1,
+                A + 1,
                 geom[A][0],
                 geom[A][1],
                 geom[A][2],
                 geom[A][3],
-                ))
+            ))
 
         return cls(atoms, name)
 
@@ -1024,8 +1046,8 @@ class PDB:
         strval += '\n'
         return strval
 
-    def write(self,filename):
-        fh = open(filename,'w')
+    def write(self, filename):
+        fh = open(filename, 'w')
         for atom in self.atoms:
             fh.write('%s' % str(atom))
         fh.close()
@@ -1042,7 +1064,8 @@ class PDB:
             frozen += atom.frozen()
         return frozen
 
-def print_order1(dirname, order2, pdb, frags, reA = r'\S+', reB = r'\S+', saptkeys=saptkeys_):
+
+def print_order1(dirname, order2, pdb, frags, reA=r'\S+', reB=r'\S+', saptkeys=saptkeys_):
 
     for saptkey in saptkeys:
         E = [0.0 for x in pdb.atoms]
@@ -1062,6 +1085,7 @@ def print_order1(dirname, order2, pdb, frags, reA = r'\S+', reB = r'\S+', saptke
         for A in range(len(pdb.atoms)):
             pdb2.atoms[A].tempFactor = E[A]
         pdb2.write('%s/%s.pdb' % (dirname, saptkey))
+
 
 # => Driver Code <= #
 

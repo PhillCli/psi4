@@ -35,15 +35,15 @@
 
 typedef std::vector<std::vector<int>> SparseMap;
 
-namespace psi{
+namespace psi {
 
 /* Args: sorted lists l1 and l2
  * Returns: sorted union of l1 and l2
  */
 std::vector<int> merge_lists(const std::vector<int> &l1, const std::vector<int> &l2);
 
-/* Args: sorted list of y, sparse map from A to another list of y (assume sorted, each possible value of y appears exactly once in entire map)
- * Returns: the union of lists in A_to_y where at least one element is in y
+/* Args: sorted list of y, sparse map from A to another list of y (assume sorted, each possible value of y appears
+ * exactly once in entire map) Returns: the union of lists in A_to_y where at least one element is in y
  */
 std::vector<int> contract_lists(const std::vector<int> &y, const std::vector<std::vector<int>> &A_to_y);
 
@@ -67,7 +67,7 @@ SparseMap chain_maps(const SparseMap &x_to_y, const SparseMap &y_to_z);
 /* Args: SparseMap from x to y, list of pairs of type x
  * Returns: extended SparseMap from x to y
  */
-SparseMap extend_maps(const SparseMap &i_to_y, const std::vector<std::pair<int,int>> &ij_to_i_j);
+SparseMap extend_maps(const SparseMap &i_to_y, const std::vector<std::pair<int, int>> &ij_to_i_j);
 
 /* Args: Matrix, list of row indices */
 SharedMatrix submatrix_rows(const Matrix &mat, const std::vector<int> &row_inds);
@@ -76,8 +76,9 @@ SharedMatrix submatrix_rows(const Matrix &mat, const std::vector<int> &row_inds)
 SharedMatrix submatrix_cols(const Matrix &mat, const std::vector<int> &col_inds);
 
 /* Args: Matrix, list of row and column indices */
-SharedMatrix submatrix_rows_and_cols(const Matrix &mat, const std::vector<int> &row_inds, const std::vector<int> &col_inds);
+SharedMatrix submatrix_rows_and_cols(const Matrix &mat, const std::vector<int> &row_inds,
+                                     const std::vector<int> &col_inds);
 
-} // namespace psi
+}  // namespace psi
 
-#endif // PSI4_SRC_DLPNO_SPARSE_H_
+#endif  // PSI4_SRC_DLPNO_SPARSE_H_

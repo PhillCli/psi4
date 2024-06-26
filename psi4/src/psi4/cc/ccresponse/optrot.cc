@@ -188,8 +188,7 @@ void optrot(std::shared_ptr<Wavefunction> ref_wfn) {
         if (params.wfn == "CC2") {
             outfile->Printf("\n     CC2 Optical Rotation Tensor (Velocity Gauge): %s\n", lbl1);
             tag_tensor0 << "CC2 OPTICAL ROTATION TENSOR (VEL) @ 0NM";
-        }
-        else if (params.wfn == "CCSD") {
+        } else if (params.wfn == "CCSD") {
             outfile->Printf("\n    CCSD Optical Rotation Tensor (Velocity Gauge): %s\n", lbl1);
             tag_tensor0 << "CCSD OPTICAL ROTATION TENSOR (VEL) @ 0NM";
         }
@@ -200,7 +199,7 @@ void optrot(std::shared_ptr<Wavefunction> ref_wfn) {
         mat_print(tensor0, 3, 3, "outfile");
         auto tensor_mat0 = std::make_shared<Matrix>(3, 3);
         tensor_mat0->set(tensor0);
-        ref_wfn->set_array_variable(tag_tensor0.str(),tensor_mat0);
+        ref_wfn->set_array_variable(tag_tensor0.str(), tensor_mat0);
     }
 
     for (i = 0; i < params.nomega; i++) {
@@ -434,8 +433,7 @@ void optrot(std::shared_ptr<Wavefunction> ref_wfn) {
             if (params.wfn == "CC2") {
                 outfile->Printf("\n            CC2 Optical Rotation Tensor (Length Gauge):\n");
                 tag_tensor_rl << "CC2 OPTICAL ROTATION TENSOR (LEN) @ " << om_nm << "NM";
-            }
-            else if (params.wfn == "CCSD") {
+            } else if (params.wfn == "CCSD") {
                 outfile->Printf("\n           CCSD Optical Rotation Tensor (Length Gauge):\n");
                 tag_tensor_rl << "CCSD OPTICAL ROTATION TENSOR (LEN) @ " << om_nm << "NM";
             }
@@ -448,7 +446,7 @@ void optrot(std::shared_ptr<Wavefunction> ref_wfn) {
             mat_print(tensor_rl[i], 3, 3, "outfile");
             auto tensor_mat_rl = std::make_shared<Matrix>(3, 3);
             tensor_mat_rl->set(tensor_rl[i]);
-            ref_wfn->set_array_variable(tag_tensor_rl.str(),tensor_mat_rl);
+            ref_wfn->set_array_variable(tag_tensor_rl.str(), tensor_mat_rl);
 
             TrG_rl = -(tensor_rl[i][0][0] + tensor_rl[i][1][1] + tensor_rl[i][2][2]) / (3.0 * params.omega[i]);
 
@@ -475,8 +473,7 @@ void optrot(std::shared_ptr<Wavefunction> ref_wfn) {
             if (params.wfn == "CC2") {
                 outfile->Printf("\n          CC2 Optical Rotation Tensor (Velocity Gauge):\n");
                 tag_tensor_pl << "CC2 OPTICAL ROTATION TENSOR (VEL) @ " << om_nm << "NM";
-            }
-            else if (params.wfn == "CCSD") {
+            } else if (params.wfn == "CCSD") {
                 outfile->Printf("\n         CCSD Optical Rotation Tensor (Velocity Gauge):\n");
                 tag_tensor_pl << "CCSD OPTICAL ROTATION TENSOR (VEL) @ " << om_nm << "NM";
             }
@@ -489,7 +486,7 @@ void optrot(std::shared_ptr<Wavefunction> ref_wfn) {
             mat_print(tensor_pl[i], 3, 3, "outfile");
             auto tensor_mat_pl = std::make_shared<Matrix>(3, 3);
             tensor_mat_pl->set(tensor_pl[i]);
-            ref_wfn->set_array_variable(tag_tensor_pl.str(),tensor_mat_pl);
+            ref_wfn->set_array_variable(tag_tensor_pl.str(), tensor_mat_pl);
 
             TrG_pl = -(tensor_pl[i][0][0] + tensor_pl[i][1][1] + tensor_pl[i][2][2]) / (3.0 * params.omega[i]);
             TrG_pl /= params.omega[i];
@@ -516,8 +513,7 @@ void optrot(std::shared_ptr<Wavefunction> ref_wfn) {
             if (params.wfn == "CC2") {
                 outfile->Printf("\n        CC2 Optical Rotation Tensor (Modified Velocity Gauge):\n");
                 tag_tensor_pl2 << "CC2 OPTICAL ROTATION TENSOR (MVG) @ " << om_nm << "NM";
-            }
-            else if (params.wfn == "CCSD") {
+            } else if (params.wfn == "CCSD") {
                 outfile->Printf("\n        CCSD Optical Rotation Tensor (Modified Velocity Gauge):\n");
                 tag_tensor_pl2 << "CCSD OPTICAL ROTATION TENSOR (MVG) @ " << om_nm << "NM";
             }
@@ -530,7 +526,7 @@ void optrot(std::shared_ptr<Wavefunction> ref_wfn) {
             mat_print(tensor_pl[i], 3, 3, "outfile");
             auto tensor_mat_pl2 = std::make_shared<Matrix>(3, 3);
             tensor_mat_pl2->set(tensor_pl[i]);
-            ref_wfn->set_array_variable(tag_tensor_pl2.str(),tensor_mat_pl2);
+            ref_wfn->set_array_variable(tag_tensor_pl2.str(), tensor_mat_pl2);
 
             /* compute the specific rotation */
             TrG_pl = -(tensor_pl[i][0][0] + tensor_pl[i][1][1] + tensor_pl[i][2][2]) / (3.0 * params.omega[i]);
@@ -559,8 +555,8 @@ void optrot(std::shared_ptr<Wavefunction> ref_wfn) {
             delta->set(0, 2, prefactor * (tensor_rp[i][0][1] - tensor_rp[i][1][0]) * nu * nu / M);
             delta->scale(1 / (params.omega[i] * 6.0));
             outfile->Printf("\n   Origin-dependence vector for length-gauge rotation deg/[dm (g/cm^3)]/bohr.\n");
-            outfile->Printf("     Delta_x = %6.2f   Delta_y = %6.2f   Delta_z = %6.2f\n", delta->get(0, 0), delta->get(0, 1),
-                            delta->get(0, 2));
+            outfile->Printf("     Delta_x = %6.2f   Delta_y = %6.2f   Delta_z = %6.2f\n", delta->get(0, 0),
+                            delta->get(0, 1), delta->get(0, 2));
             std::stringstream temp;
             temp << params.wfn << " ROTATION (LEN) ORIGIN-DEPENDENCE @ " << om_nm << "NM";
             ref_wfn->set_array_variable(temp.str(), delta);
@@ -585,8 +581,8 @@ void optrot(std::shared_ptr<Wavefunction> ref_wfn) {
                 outfile->Printf("                                          x           y           z      \n");
                 for (i = 0; i < params.nomega; i++) {
                     outfile->Printf("   %5.3f   %6.2f      %10.5f    %10.5f  %10.5f  %10.5f\n", params.omega[i],
-                                    (pc_c * pc_h * 1e9) / (pc_hartree2J * params.omega[i]), rotation_rl[i], deltas[i]->get(0, 0),
-                                    deltas[i]->get(0, 1), deltas[i]->get(0, 2));
+                                    (pc_c * pc_h * 1e9) / (pc_hartree2J * params.omega[i]), rotation_rl[i],
+                                    deltas[i]->get(0, 0), deltas[i]->get(0, 1), deltas[i]->get(0, 2));
                 }
             } else {
                 outfile->Printf("       Omega           alpha\n");

@@ -59,7 +59,7 @@ namespace ccdensity {
 
 #define INDEX(i, j) ((i) >= (j) ? EXPLICIT_IOFF(i) + (j) : EXPLICIT_IOFF(j) + (i))
 
-void dump_UHF(struct iwlbuf *AA, struct iwlbuf *BB, struct iwlbuf *AB, const struct RHO_Params& rho_params) {
+void dump_UHF(struct iwlbuf* AA, struct iwlbuf* BB, struct iwlbuf* AB, const struct RHO_Params& rho_params) {
     int nirreps, nmo, h, row, col;
     int p, q, r, s, P, Q, R, S, pr, qs;
     double value;
@@ -77,8 +77,8 @@ void dump_UHF(struct iwlbuf *AA, struct iwlbuf *BB, struct iwlbuf *AB, const str
                sizeof(double)*nmo*nmo);
 psio_write_entry(PSIF_MO_OPDM, "MO-basis Beta OPDM", (char *) moinfo.opdm_b[0],
                sizeof(double)*nmo*nmo); */
-    psio_write_entry(PSIF_MO_OPDM, rho_params.opdm_a_lbl, (char *)moinfo.opdm_a[0], sizeof(double) * nmo * nmo);
-    psio_write_entry(PSIF_MO_OPDM, rho_params.opdm_b_lbl, (char *)moinfo.opdm_b[0], sizeof(double) * nmo * nmo);
+    psio_write_entry(PSIF_MO_OPDM, rho_params.opdm_a_lbl, (char*)moinfo.opdm_a[0], sizeof(double) * nmo * nmo);
+    psio_write_entry(PSIF_MO_OPDM, rho_params.opdm_b_lbl, (char*)moinfo.opdm_b[0], sizeof(double) * nmo * nmo);
     psio_close(PSIF_MO_OPDM, 1);
 
     if (!params.onepdm) {
@@ -493,5 +493,5 @@ psio_write_entry(PSIF_MO_OPDM, "MO-basis Beta OPDM", (char *) moinfo.opdm_b[0],
         global_dpd_->buf4_close(&G);
     }
 }
-}
+}  // namespace ccdensity
 }  // namespace psi

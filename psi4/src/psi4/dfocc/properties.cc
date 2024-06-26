@@ -88,7 +88,6 @@ void DFOCC::ekt_ip() {
 
     timer_on("ekt");
     if (reference_ == "RESTRICTED") {
-
         // Call EKT
         auto ektA = std::make_shared<Ektip>("Alpha EKT", noccA, nmo_, GF, G1, 1.0, 0.5);
 

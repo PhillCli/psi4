@@ -30,10 +30,10 @@
 #define SIEVE_H
 
 // need this for erfc^{-1} in the QQR sieve
-//#include <cfloat>
+// #include <cfloat>
 #include <vector>
 #include <memory>
-//#include <utility>
+// #include <utility>
 #include "psi4/pragma.h"
 #include "psi4/libmints/vector3.h"
 
@@ -93,10 +93,9 @@ class BasisSet;
  *
  */
 
-class PSI_API __attribute__((deprecated(
-    "ERISieve is deprecated in favor of TwoBodyAOInt, and "
-    "will be fully be removed as soon as Psi4 v1.9 releases. "
-))) ERISieve {
+class PSI_API
+    __attribute__((deprecated("ERISieve is deprecated in favor of TwoBodyAOInt, and "
+                              "will be fully be removed as soon as Psi4 v1.9 releases. "))) ERISieve {
    protected:
     /// Debug flag (defaults to 0)
     int debug_;
@@ -212,8 +211,7 @@ class PSI_API __attribute__((deprecated(
 
     // inline bool shell_significant(int M, int N, int R, int S) {
     bool shell_significant(int M, int N, int R, int S) {
-        bool schwarz_bound =
-            shell_pair_values_[N * nshell_ + M] * shell_pair_values_[R * nshell_ + S] >= sieve2_;
+        bool schwarz_bound = shell_pair_values_[N * nshell_ + M] * shell_pair_values_[R * nshell_ + S] >= sieve2_;
         if (do_qqr_ && schwarz_bound) {
             return shell_significant_qqr(M, N, R, S);
         } else if (do_csam_ && schwarz_bound) {
@@ -235,16 +233,13 @@ class PSI_API __attribute__((deprecated(
     }
 
     /// Is the shell pair (MN| ever significant according to sieve (no restriction on MN order)
-    inline bool shell_pair_significant(int M, int N) {
-        return shell_pair_values_[M * nshell_ + N] * max_ >= sieve2_;
-    }
+    inline bool shell_pair_significant(int M, int N) { return shell_pair_values_[M * nshell_ + N] * max_ >= sieve2_; }
 
     /// Is the function pair (mn| ever significant according to sieve (no restriction on mn order)
     inline bool function_pair_significant(int m, int n) {
         return function_pair_values_[m * nbf_ + n] * max_ >= sieve2_;
     }
     // => Indexing [these change after a call to sieve()] <= //
-
 
     // void shell_pair_values(std::vector<std::vector<std::pair<double, int> > >& values) const;
 

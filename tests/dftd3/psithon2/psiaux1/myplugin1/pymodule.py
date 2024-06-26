@@ -30,4 +30,3 @@ def exampleFN(name, **kwargs):
 
 # Integration with driver routines
 procedures['energy']['myplugin1'] = exampleFN
-

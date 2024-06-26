@@ -65,4 +65,3 @@ OverlapInt::OverlapInt(std::vector<SphericalTransform> &st, std::shared_ptr<Basi
 }
 
 OverlapInt::~OverlapInt() {}
-

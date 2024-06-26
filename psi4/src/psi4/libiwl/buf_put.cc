@@ -59,4 +59,4 @@ void iwl_buf_put(struct iwlbuf *Buf) {
     psio_write(Buf->itap, IWL_KEY_BUF, (char *)Buf->values, Buf->ints_per_buf * sizeof(Value), Buf->bufpos,
                &(Buf->bufpos));
 }
-}
+}  // namespace psi

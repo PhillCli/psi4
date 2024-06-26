@@ -194,7 +194,6 @@ void OCCWave::t2_2nd_general() {
         if (print_ > 1) global_dpd_->buf4_print(&Tnew, "outfile", 1);
         global_dpd_->buf4_close(&Tnew);
 
-
         psio_->close(PSIF_LIBTRANS_DPD, 1);
         psio_->close(PSIF_OCC_DPD, 1);
 
@@ -762,7 +761,6 @@ void OCCWave::t2_2nd_general() {
         if (print_ > 1) global_dpd_->buf4_print(&Tnew, "outfile", 1);
         global_dpd_->buf4_close(&Tnew);
 
-
         // close files
         psio_->close(PSIF_LIBTRANS_DPD, 1);
         psio_->close(PSIF_OCC_DPD, 1);
@@ -929,5 +927,5 @@ void OCCWave::iterative_mp_postdiis_amplitudes() {
     }
     psio_->close(PSIF_OCC_DPD, 1);
 }
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

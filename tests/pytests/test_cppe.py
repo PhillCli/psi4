@@ -527,14 +527,17 @@ def test_pe_adc1():
         'tdscf_states': 5,
         'tdscf_tda': True,
     })
-    
+
     _, wfn_tdhf = psi4.energy('td-hf', return_wfn=True)
-    _, wfn_adc = psi4.properties('adc(1)', properties=["oscillator_strength", "dipole"], environment='linear_response', return_wfn=True)
+    _, wfn_adc = psi4.properties('adc(1)',
+                                 properties=["oscillator_strength", "dipole"],
+                                 environment='linear_response',
+                                 return_wfn=True)
 
     for i in range(5):
         assert compare_values(wfn_tdhf.variable(f'TD-HF ROOT 0 -> ROOT {i+1} EXCITATION ENERGY'),
-                              wfn_adc.variable(f'ADC ROOT 0 -> ROOT {i+1} EXCITATION ENERGY'),
-                              5, f"PE-ADC(1) Excitation Energy Root {i+1}")
+                              wfn_adc.variable(f'ADC ROOT 0 -> ROOT {i+1} EXCITATION ENERGY'), 5,
+                              f"PE-ADC(1) Excitation Energy Root {i+1}")
 
 
 @uusing("cppe")
@@ -552,19 +555,21 @@ def test_pe_adc2():
         'pe__potfile': potfile,
         'roots_per_irrep': [5],
     })
-    _, wfn = psi4.properties('adc(2)', properties=["oscillator_strength", "dipole"],
-                             environment=True, return_wfn=True)
-    energies_uncorrected = [0.15963251547743104, 0.3125861355885466, 0.36222631191059046,
-                            0.37972031238708653, 0.4118959244399415]
-    pe_ptlr_correction = [-2.9325959339722013e-05, -0.0002702545175242051,
-                          -9.683446473705203e-05, -0.0001339512804427152,
-                          -0.00270463988662346]
-    pe_ptss_correction =  [-0.0005980584740534286, -0.00275711791912612,
-                           -0.0008560754671915091, -0.0017443433408762471,
-                           -0.0005800145567153289]
+    _, wfn = psi4.properties('adc(2)', properties=["oscillator_strength", "dipole"], environment=True, return_wfn=True)
+    energies_uncorrected = [
+        0.15963251547743104, 0.3125861355885466, 0.36222631191059046, 0.37972031238708653, 0.4118959244399415
+    ]
+    pe_ptlr_correction = [
+        -2.9325959339722013e-05, -0.0002702545175242051, -9.683446473705203e-05, -0.0001339512804427152,
+        -0.00270463988662346
+    ]
+    pe_ptss_correction = [
+        -0.0005980584740534286, -0.00275711791912612, -0.0008560754671915091, -0.0017443433408762471,
+        -0.0005800145567153289
+    ]
     ref_energies = np.array(energies_uncorrected)
     ref_energies += np.array(pe_ptlr_correction) + np.array(pe_ptss_correction)
-    
+
     for i in range(5):
         en = wfn.variable(f"ADC(2) ROOT 0 -> ROOT {i+1} EXCITATION ENERGY")
         assert compare_values(en, ref_energies[i], 5, f"pt-PE-ADC(2) Excitation Energy Root {i+1}")

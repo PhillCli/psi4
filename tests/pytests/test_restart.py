@@ -5,6 +5,7 @@ from os.path import isfile
 
 pytestmark = [pytest.mark.psi, pytest.mark.api]
 
+
 def test_serialize_wfn():
     """wfn serialization"""
 

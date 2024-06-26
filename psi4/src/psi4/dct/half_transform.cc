@@ -55,8 +55,8 @@ namespace dct {
  */
 
 void DCTSolver::half_transform(dpdbuf4 *SO, dpdbuf4 *MO, SharedMatrix &C1, SharedMatrix &C2, int *mospi_left,
-                                int *mospi_right, int **so_row, int **mo_row, bool backwards, double alpha,
-                                double beta) {
+                               int *mospi_right, int **so_row, int **mo_row, bool backwards, double alpha,
+                               double beta) {
     dct_timer_on("DCTSolver::half_transform");
 
     int Gc, Gd, cd, pq, ij;

@@ -483,7 +483,7 @@ void cc2_Zmbej_build() {
 
         global_dpd_->buf4_close(&ZMbeJ);
 
-    }                           /** RHF or ROHF **/
+    } /** RHF or ROHF **/
     else if (params.ref == 2) { /** UHF **/
 
         /* C & D -> Zmbej */

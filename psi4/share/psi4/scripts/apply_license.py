@@ -41,7 +41,7 @@ py_header = c_header.replace(' */', '#')
 py_header = py_header.replace('/*', '#')
 py_header = py_header.replace(' *', '#')
 
-c_header =  c_header.splitlines()
+c_header = c_header.splitlines()
 py_header = py_header.splitlines()
 
 
@@ -73,7 +73,7 @@ def check_header(infile):
         return
 
     # Make sure the block actually looks like a license
-    license = data[start:end+1]
+    license = data[start:end + 1]
     top = any("PSI4:" in x.upper() for x in license[:5])
     bot = any("51 Franklin Street" in x for x in license[5:])
     if not (top and bot):
@@ -83,22 +83,23 @@ def check_header(infile):
 
     # Replace license
     if filename.split('.')[-1] in ['cc', 'h']:
-        data[start:end + 1] = c_header 
+        data[start:end + 1] = c_header
     elif filename.split('.')[-1] in ['py']:
-        data[start:end + 1] = py_header 
+        data[start:end + 1] = py_header
     else:
         print('Did not understand infile end: %s' % infile)
         f.close()
         return
-   
-    # Write it out 
+
+    # Write it out
     f.seek(0)
     f.write("\n".join(data))
     f.truncate()
     f.close()
 
+
 avoid_strings = ['qcdb', 'libJKFactory']
-    
+
 walk = list(os.walk('../../src/'))
 walk += list(os.walk('../python'))
 

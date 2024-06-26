@@ -630,19 +630,19 @@ double ET_AAA() {
                                                 ET_AAA += (value_d + value_c) * value_c / denom;
 
                                             } /* c */
-                                        }     /* b */
-                                    }         /* a */
+                                        } /* b */
+                                    } /* a */
 
                                 } /* k */
-                            }     /* j */
-                        }         /* i */
+                            } /* j */
+                        } /* i */
 
                     } /* Gb */
-                }     /* Ga */
+                } /* Ga */
 
             } /* Gk */
-        }     /* Gj */
-    }         /* Gi */
+        } /* Gj */
+    } /* Gi */
 
     /*  outfile->Printf( "cnt = %d\n", cnt); */
     ET_AAA /= 36.0;

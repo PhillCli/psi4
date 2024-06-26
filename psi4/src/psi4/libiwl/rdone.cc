@@ -92,4 +92,4 @@ int iwl_rdone(int itap, const char *label, double *ints, int ntri, int erase, in
 
     return (1);
 }
-}
+}  // namespace psi

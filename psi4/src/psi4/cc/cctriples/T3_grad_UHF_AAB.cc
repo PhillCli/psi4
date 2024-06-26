@@ -299,8 +299,8 @@ double T3_grad_UHF_AAB() {
                                         ET += WABc[Gab][ab][c] * (WABc[Gab][ab][c] + VABc[Gab][ab][c]) * denom;
 
                                     } /* c */
-                                }     /* ab */
-                            }         /* Gab */
+                                } /* ab */
+                            } /* Gab */
 
                             /**** T3 --> S1 ****/
 
@@ -329,8 +329,8 @@ double T3_grad_UHF_AAB() {
                                                 0.25 * WABc[Gab][ab][c] * DAAints.matrix[Gij][ij][ab];
 
                                     } /* c */
-                                }     /* ab */
-                            }         /* Gab */
+                                } /* ab */
+                            } /* Gab */
 
                             /**** T3 --> S1 Complete ****/
 
@@ -393,7 +393,7 @@ double T3_grad_UHF_AAB() {
                                     global_dpd_->free_dpd_block(FBAints.matrix[Gkd], nrows, nlinks);
                                     free_block(Z);
                                 } /* nrows && ncols && nlinks */
-                            }     /* Gd */
+                            } /* Gd */
 
                             /*** S_LIAB <-- +t_IJkABc <Jk|Lc> ***/
                             /*** S_ILAB <-- -t_IJkABc <Jk|Lc> ***/
@@ -421,7 +421,7 @@ double T3_grad_UHF_AAB() {
                                     }
                                     free_block(Z);
                                 } /* nrows && ncols && nlinks */
-                            }     /* Gl */
+                            } /* Gl */
 
                             /* S_JkDc <-- 1/2 <ID||AB> X_IJkABc */
                             for (Gd = 0; Gd < nirreps; Gd++) {
@@ -451,7 +451,7 @@ double T3_grad_UHF_AAB() {
                                     global_dpd_->free_dpd_block(FAAints.matrix[Gid], nrows, nlinks);
                                     free_block(Z);
                                 } /* nrows && ncols && nlinks */
-                            }     /* Gd */
+                            } /* Gd */
 
                             /* S_JkBd <-- X_IJkABc <Id|Ac> */
                             /* sort X(AB,c) to Y2(B,Ac) */
@@ -499,7 +499,7 @@ double T3_grad_UHF_AAB() {
                                     free_block(Z);
 
                                 } /* nrows && ncols && nlinks */
-                            }     /* Gd */
+                            } /* Gd */
 
                             /* S_LkBc <-- 1/2 <IJ||LA> X_IJkABc */
                             /* sort X(AB,c) to Y2(A,Bc) */
@@ -515,8 +515,8 @@ double T3_grad_UHF_AAB() {
                                         bc = S2AB.params->colidx[B][C];
                                         Y2[Ga][a][bc] = XABc[Gab][ab][c];
                                     } /* c */
-                                }     /* ab */
-                            }         /* Gab */
+                                } /* ab */
+                            } /* Gab */
 
                             for (Gl = 0; Gl < nirreps; Gl++) {
                                 Glk = Gbc = Gl ^ Gk;
@@ -540,7 +540,7 @@ double T3_grad_UHF_AAB() {
 
                                     global_dpd_->free_dpd_block(Z, nrows, ncols);
                                 } /* nrows && ncols && nlinks */
-                            }     /* Gl */
+                            } /* Gl */
 
                             /* S_IlBc <-- <kJ|lA> X_IJkABc */
                             for (Gl = 0; Gl < nirreps; Gl++) {
@@ -564,7 +564,7 @@ double T3_grad_UHF_AAB() {
                                     }
                                     global_dpd_->free_dpd_block(Z, nrows, ncols);
                                 } /* nrows && ncols && nlinks */
-                            }     /* Gl */
+                            } /* Gl */
 
                             /**** T3 --> S2 Complete ****/
 
@@ -587,11 +587,11 @@ double T3_grad_UHF_AAB() {
                                                     DAB.matrix[Ga][b][a] +=
                                                         0.5 * WABc[Gac][ac][d] * (WABc[Gbc][bc][d] + VABc[Gbc][bc][d]);
                                                 } /* d */
-                                            }     /* c */
-                                        }         /* b */
-                                    }             /* a */
-                                }                 /* Gc */
-                            }                     /* Ga */
+                                            } /* c */
+                                        } /* b */
+                                    } /* a */
+                                } /* Gc */
+                            } /* Ga */
 
                             /**** T3 --> DAB complete ****/
 
@@ -608,7 +608,7 @@ double T3_grad_UHF_AAB() {
                                         }
                                     }
                                 } /* ab */
-                            }     /* Gc */
+                            } /* Gc */
 
                             /**** T3 --> Dab complete ****/
 
@@ -643,8 +643,8 @@ double T3_grad_UHF_AAB() {
                                         bc = S2AB.params->colidx[B][C];
                                         Y2[Ga][a][bc] = WABc[Gab][ab][c];
                                     } /* c */
-                                }     /* ab */
-                            }         /* Gab */
+                                } /* ab */
+                            } /* Gab */
 
                             Ga = Gi;
                             Gbc = Ga ^ Gijk;
@@ -672,8 +672,8 @@ double T3_grad_UHF_AAB() {
                                         cb = T2BA.params->colidx[C][B];
                                         Y1[Ga][a][cb] = 2 * WABc[Gab][ab][c] + VABc[Gab][ab][c];
                                     } /* c */
-                                }     /* ab */
-                            }         /* Gab */
+                                } /* ab */
+                            } /* Gab */
 
                             /* G_IJLA <-- t_kLcB Y_IJkABc */
                             for (Gl = 0; Gl < nirreps; Gl++) {
@@ -700,8 +700,8 @@ double T3_grad_UHF_AAB() {
                                     for (c = 0; c < bvirtpi[Gc]; c++) {
                                         XABc[Gab][ab][c] = 2 * WABc[Gab][ab][c] + VABc[Gab][ab][c];
                                     } /* c */
-                                }     /* ab */
-                            }         /* Gab */
+                                } /* ab */
+                            } /* Gab */
 
                             /* GIkLc <-- 1/2 t_JLAB X_IJkABc */
                             for (Gl = 0; Gl < nirreps; Gl++) {
@@ -734,8 +734,8 @@ double T3_grad_UHF_AAB() {
                                         bc = S2AB.params->colidx[B][C];
                                         Y2[Ga][a][bc] = 2 * WABc[Gab][ab][c] + VABc[Gab][ab][c];
                                     } /* c */
-                                }     /* ab */
-                            }         /* Gab */
+                                } /* ab */
+                            } /* Gab */
 
                             /* G_kIlA <-- -t_JlBc X_IJkABc **/
                             for (Gl = 0; Gl < nirreps; Gl++) {
@@ -825,8 +825,8 @@ double T3_grad_UHF_AAB() {
                             global_dpd_->file2_mat_close(&fia);
 
                         } /* k */
-                    }     /* j */
-                }         /* i */
+                    } /* j */
+                } /* i */
 
                 for (Gab = 0; Gab < nirreps; Gab++) {
                     Gc = Gab ^ Gijk;
@@ -841,8 +841,8 @@ double T3_grad_UHF_AAB() {
                 }
 
             } /* Gk */
-        }     /* Gj */
-    }         /* Gi */
+        } /* Gj */
+    } /* Gi */
 
     ET *= 0.25;
 
@@ -1008,11 +1008,11 @@ double T3_grad_UHF_AAB() {
                                                     DIJ.matrix[Gi][i][j] -=
                                                         0.5 * WIJk[Gik][ik][l] * (WIJk[Gjk][jk][l] + VIJk[Gjk][jk][l]);
                                                 } /* l */
-                                            }     /* k */
-                                        }         /* j */
-                                    }             /* i */
-                                }                 /* Gk */
-                            }                     /* Gi */
+                                            } /* k */
+                                        } /* j */
+                                    } /* i */
+                                } /* Gk */
+                            } /* Gi */
 
                             for (Gi = 0; Gi < nirreps; Gi++) {
                                 Gj = Gi;
@@ -1023,9 +1023,9 @@ double T3_grad_UHF_AAB() {
                                             Dij.matrix[Gi][i][j] -=
                                                 0.25 * WIJk[Gkl][kl][i] * (WIJk[Gkl][kl][j] + VIJk[Gkl][kl][j]);
                                         } /* j */
-                                    }     /* i */
-                                }         /* kl */
-                            }             /* Gi */
+                                    } /* i */
+                                } /* kl */
+                            } /* Gi */
 
                             // Deallocate the memory for connected and disconnected triples
                             for (Gij = 0; Gij < nirreps; ++Gij) {

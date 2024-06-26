@@ -46,7 +46,6 @@ class SphericalTransform;
  * Use an IntegralFactory to create this object.
  */
 class KineticInt : public OneBodyAOInt {
-
    public:
     //! Constructor. Do not call directly, use an IntegralFactory.
     KineticInt(std::vector<SphericalTransform>&, std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>, int deriv = 0);
@@ -58,7 +57,6 @@ class KineticInt : public OneBodyAOInt {
 
     /// Does the method provide first derivatives?
     bool has_deriv2() override { return true; }
-
 };
 
 }  // namespace psi

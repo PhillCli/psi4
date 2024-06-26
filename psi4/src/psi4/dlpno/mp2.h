@@ -40,7 +40,6 @@ namespace dlpno {
 
 class DLPNOMP2 : public Wavefunction {
    protected:
-
     /// threshold for PAO domain size
     double T_CUT_DO_;
 
@@ -61,80 +60,82 @@ class DLPNOMP2 : public Wavefunction {
     SharedMatrix S_pao_;
 
     /// differential overlap integrals (EQ 4)
-    SharedMatrix DOI_ij_; // LMO/LMO
-    SharedMatrix DOI_iu_; // LMO/PAO
+    SharedMatrix DOI_ij_;  // LMO/LMO
+    SharedMatrix DOI_iu_;  // LMO/PAO
 
     // approximate LMO/LMO pair energies from dipole integrals (EQ 17)
     // used to screen out and estimate weakly interacting LMO/LMO pairs
-    SharedMatrix dipole_pair_e_; ///< actual approximate pair energy (used in final energy calculation)
-    SharedMatrix dipole_pair_e_bound_; ///< upper bound to approximate pair energies (used for screening)
+    SharedMatrix dipole_pair_e_;        ///< actual approximate pair energy (used in final energy calculation)
+    SharedMatrix dipole_pair_e_bound_;  ///< upper bound to approximate pair energies (used for screening)
 
     /// LMO/PAO three-index integrals
     std::vector<SharedMatrix> qia_;
 
     /// pair natural orbitals (PNOs)
-    std::vector<SharedMatrix> K_iajb_;  ///< exchange operators (i.e. (ia|jb) integrals)
-    std::vector<SharedMatrix> T_iajb_;  ///< amplitudes
-    std::vector<SharedMatrix> Tt_iajb_; ///< antisymmetrized amplitudes
-    std::vector<SharedMatrix> X_pno_;   ///< global PAO -> canonical PNO transforms
-    std::vector<SharedVector> e_pno_;   ///< PNO orbital energies
-    std::vector<int> n_pno_;       ///< number of pnos
-    std::vector<double> de_pno_;   ///< PNO truncation energy error
-    std::vector<double> de_pno_os_;   ///< opposite-spin contributions to de_pno_
-    std::vector<double> de_pno_ss_;   ///< same-spin contributions to de_pno_
-    std::vector<std::vector<SharedMatrix>> S_pno_ij_kj_; ///< pno overlaps
-    std::vector<std::vector<SharedMatrix>> S_pno_ij_ik_; ///< pnooverlaps
+    std::vector<SharedMatrix> K_iajb_;                    ///< exchange operators (i.e. (ia|jb) integrals)
+    std::vector<SharedMatrix> T_iajb_;                    ///< amplitudes
+    std::vector<SharedMatrix> Tt_iajb_;                   ///< antisymmetrized amplitudes
+    std::vector<SharedMatrix> X_pno_;                     ///< global PAO -> canonical PNO transforms
+    std::vector<SharedVector> e_pno_;                     ///< PNO orbital energies
+    std::vector<int> n_pno_;                              ///< number of pnos
+    std::vector<double> de_pno_;                          ///< PNO truncation energy error
+    std::vector<double> de_pno_os_;                       ///< opposite-spin contributions to de_pno_
+    std::vector<double> de_pno_ss_;                       ///< same-spin contributions to de_pno_
+    std::vector<std::vector<SharedMatrix>> S_pno_ij_kj_;  ///< pno overlaps
+    std::vector<std::vector<SharedMatrix>> S_pno_ij_ik_;  ///< pnooverlaps
 
     // final energies
-    double de_dipole_; ///< energy correction for distant (LMO, LMO) pairs
-    double de_pno_total_; ///< energy correction for PNO truncation
-    double de_pno_total_os_; ///< energy correction for PNO truncation
-    double de_pno_total_ss_; ///< energy correction for PNO truncation
-    double e_lmp2_; ///< raw (uncorrected) local MP2 correlation energy
-    double e_lmp2_ss_; ///< same-spin component of e_lmp2_
-    double e_lmp2_os_; ///< opposite-spin component of e_lmp2_
+    double de_dipole_;        ///< energy correction for distant (LMO, LMO) pairs
+    double de_pno_total_;     ///< energy correction for PNO truncation
+    double de_pno_total_os_;  ///< energy correction for PNO truncation
+    double de_pno_total_ss_;  ///< energy correction for PNO truncation
+    double e_lmp2_;           ///< raw (uncorrected) local MP2 correlation energy
+    double e_lmp2_ss_;        ///< same-spin component of e_lmp2_
+    double e_lmp2_os_;        ///< opposite-spin component of e_lmp2_
 
     // => Sparse Maps <= //
 
     // orbital / aux bases
-    SparseMap atom_to_bf_; ///< which orbital BFs are on a given atom?
-    SparseMap atom_to_ribf_; ///< which aux BFs are on a given atom?
-    SparseMap atom_to_shell_; ///< which orbital basis shells are on a given atom?
-    SparseMap atom_to_rishell_; ///< which aux basis shells are on a given atom?
+    SparseMap atom_to_bf_;       ///< which orbital BFs are on a given atom?
+    SparseMap atom_to_ribf_;     ///< which aux BFs are on a given atom?
+    SparseMap atom_to_shell_;    ///< which orbital basis shells are on a given atom?
+    SparseMap atom_to_rishell_;  ///< which aux basis shells are on a given atom?
 
     // LMO domains
-    SparseMap lmo_to_ribfs_; ///< which aux BFs are needed for density-fitting a LMO?
-    SparseMap lmo_to_riatoms_; ///< aux BFs on which atoms are needed for density-fitting a LMO?
-    SparseMap lmo_to_paos_; ///< which PAOs span the virtual space of a LMO?
-    SparseMap lmo_to_paoatoms_; ///< PAOs on which atoms span the virtual space of a LMO?
-    std::vector<std::vector<int>> i_j_to_ij_; ///< LMO indices (i, j) to significant LMO pair index (ij); insignificant (i, j) maps to -1
-    std::vector<std::pair<int,int>> ij_to_i_j_; ///< LMO pair index (ij) to both LMO indices (i, j)
-    std::vector<int> ij_to_ji_; ///< LMO pair index (ij) to LMO pair index (ji)
+    SparseMap lmo_to_ribfs_;     ///< which aux BFs are needed for density-fitting a LMO?
+    SparseMap lmo_to_riatoms_;   ///< aux BFs on which atoms are needed for density-fitting a LMO?
+    SparseMap lmo_to_paos_;      ///< which PAOs span the virtual space of a LMO?
+    SparseMap lmo_to_paoatoms_;  ///< PAOs on which atoms span the virtual space of a LMO?
+    std::vector<std::vector<int>>
+        i_j_to_ij_;  ///< LMO indices (i, j) to significant LMO pair index (ij); insignificant (i, j) maps to -1
+    std::vector<std::pair<int, int>> ij_to_i_j_;  ///< LMO pair index (ij) to both LMO indices (i, j)
+    std::vector<int> ij_to_ji_;                   ///< LMO pair index (ij) to LMO pair index (ji)
 
     // LMO Pair Domains
-    SparseMap lmopair_to_ribfs_; ///< which aux BFs are needed for density-fitting a pair of LMOs?
-    SparseMap lmopair_to_riatoms_; ///< aux BFs on which atoms are needed for density-fitting a pair of LMOs?
-    SparseMap lmopair_to_paos_; ///< which PAOs span the virtual space of a pair of LMOs?
-    SparseMap lmopair_to_paoatoms_; ///< PAOs on which atoms span the virtual space of a pair of LMOs?
+    SparseMap lmopair_to_ribfs_;     ///< which aux BFs are needed for density-fitting a pair of LMOs?
+    SparseMap lmopair_to_riatoms_;   ///< aux BFs on which atoms are needed for density-fitting a pair of LMOs?
+    SparseMap lmopair_to_paos_;      ///< which PAOs span the virtual space of a pair of LMOs?
+    SparseMap lmopair_to_paoatoms_;  ///< PAOs on which atoms span the virtual space of a pair of LMOs?
 
-    // Extended LMO Domains 
-    SparseMap lmo_to_riatoms_ext_; ///< aux BFs on which atoms are needed for density-fitting a LMO and all connected LMOs
-    SparseMap riatom_to_lmos_ext_; ///< the extended DF domains of which LMOs include aux BFs on an atom
-    SparseMap riatom_to_paos_ext_; ///< the extended DF domains of which PAOs include aux BFs on an atom
-    SparseMap riatom_to_atoms1_; ///< orbital BFs on which atoms are needed for DF int transform (first index)
-    SparseMap riatom_to_shells1_; ///< which shells of orbital BFs are needed for DF int transform (first index)
-    SparseMap riatom_to_bfs1_; ///< which orbital BFs are needed for DF int transform (first index)
-    SparseMap riatom_to_atoms2_; ///< orbital BFs on which atoms are needed for DF int transform (second index)
-    SparseMap riatom_to_shells2_; ///< which shells of orbital BFs are needed for DF int transform (second index)
-    SparseMap riatom_to_bfs2_; ///< which orbital BFs are needed for DF int transform (second index)
+    // Extended LMO Domains
+    SparseMap
+        lmo_to_riatoms_ext_;  ///< aux BFs on which atoms are needed for density-fitting a LMO and all connected LMOs
+    SparseMap riatom_to_lmos_ext_;  ///< the extended DF domains of which LMOs include aux BFs on an atom
+    SparseMap riatom_to_paos_ext_;  ///< the extended DF domains of which PAOs include aux BFs on an atom
+    SparseMap riatom_to_atoms1_;    ///< orbital BFs on which atoms are needed for DF int transform (first index)
+    SparseMap riatom_to_shells1_;   ///< which shells of orbital BFs are needed for DF int transform (first index)
+    SparseMap riatom_to_bfs1_;      ///< which orbital BFs are needed for DF int transform (first index)
+    SparseMap riatom_to_atoms2_;    ///< orbital BFs on which atoms are needed for DF int transform (second index)
+    SparseMap riatom_to_shells2_;   ///< which shells of orbital BFs are needed for DF int transform (second index)
+    SparseMap riatom_to_bfs2_;      ///< which orbital BFs are needed for DF int transform (second index)
 
     // Dense analogues of some sparse maps for quick lookup
 
-    /* Takes an atom index and a global LMO index 
+    /* Takes an atom index and a global LMO index
     to return the sparse LMO index on that atom,
     (-1) if that LMO is not on the riatom's extended domain */
     std::vector<std::vector<int>> riatom_to_lmos_ext_dense_;
-    /* Takes an atom index and a global PAO index 
+    /* Takes an atom index and a global PAO index
     to return the sparse PAO index on that atom,
     (-1) if that PAO is not on the riatom's extended domain */
     std::vector<std::vector<int>> riatom_to_paos_ext_dense_;
@@ -147,7 +148,7 @@ class DLPNOMP2 : public Wavefunction {
 
     /// Form LMOs, PAOs, etc.
     void setup_orbitals();
-    
+
     /// Compute differential overlap integrals between LMO/LMO and LMO/PAO pairs (EQ 4), DOI_ij and DOI_iu
     void compute_overlap_ints();
 
@@ -171,7 +172,7 @@ class DLPNOMP2 : public Wavefunction {
     void compute_pno_overlaps();
 
     /// compute MP2 correlation energy w/ current amplitudes (EQ 14)
-    double compute_iteration_energy(const std::vector<SharedMatrix> &R_iajb);
+    double compute_iteration_energy(const std::vector<SharedMatrix>& R_iajb);
 
     /// iteratively solve local MP2 equations  (EQ 13)
     void lmp2_iterations();
@@ -195,4 +196,4 @@ class DLPNOMP2 : public Wavefunction {
 }  // namespace dlpno
 }  // namespace psi
 
-#endif //PSI4_SRC_DLPNO_MP2_H_
+#endif  // PSI4_SRC_DLPNO_MP2_H_

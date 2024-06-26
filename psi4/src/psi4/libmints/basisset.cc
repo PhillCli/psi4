@@ -562,7 +562,8 @@ std::string BasisSet::print_detail_cfour() const {
             // Write contraction coefficients for each shell
             for (size_t ep = 0; ep < exp_per_am[am].size(); ep++) {
                 for (size_t bf = 0; bf < shell_per_am[am].size(); bf++) {
-                    ss << std::setprecision(7) << std::setw(10) << coef_per_am[am][bf * exp_per_am[am].size() + ep] << ' ';
+                    ss << std::setprecision(7) << std::setw(10) << coef_per_am[am][bf * exp_per_am[am].size() + ep]
+                       << ' ';
                 }
                 ss << '\n';
             }
@@ -1250,7 +1251,7 @@ void BasisSet::compute_phi(double *phi_ao, double x, double y, double z) {
     }  // nshell
 }
 
-bool psi::fpeq(const double a, const double b, const double THR/* = 1.0E-14*/) {
+bool psi::fpeq(const double a, const double b, const double THR /* = 1.0E-14*/) {
     if (std::abs(a - b) < THR) {
         return true;
     } else {
@@ -1259,23 +1260,25 @@ bool psi::fpeq(const double a, const double b, const double THR/* = 1.0E-14*/) {
 }
 
 void BasisSet::convert_sap_contraction() {
-  if(max_am_ != 0) {
-    throw PSIEXCEPTION("SAP potentials should be composed of a single S function per atom, and not contain higher angular momentum!");
-  }
+    if (max_am_ != 0) {
+        throw PSIEXCEPTION(
+            "SAP potentials should be composed of a single S function per atom, and not contain higher angular "
+            "momentum!");
+    }
 
-  // Coefficients need to be scaled by (expn/pi)^1.5 to go from the
-  // original tabulated error function fits to two-electron integrals,
-  // see doi:10.1063/5.0004046
-  for (int i = 0; i < n_uprimitive_; i++) {
-    // A minus sign is necessary here since the coefficients are
-    // chosen to be negative because of V(r) = - Z(r)/r in the
-    // expansion
-    uoriginal_coefficients_[i] *= -std::pow(uexponents_[i]/M_PI,1.5);
-  }
-  ucoefficients_ = uoriginal_coefficients_;
-  uerd_coefficients_ = uoriginal_coefficients_;
+    // Coefficients need to be scaled by (expn/pi)^1.5 to go from the
+    // original tabulated error function fits to two-electron integrals,
+    // see doi:10.1063/5.0004046
+    for (int i = 0; i < n_uprimitive_; i++) {
+        // A minus sign is necessary here since the coefficients are
+        // chosen to be negative because of V(r) = - Z(r)/r in the
+        // expansion
+        uoriginal_coefficients_[i] *= -std::pow(uexponents_[i] / M_PI, 1.5);
+    }
+    ucoefficients_ = uoriginal_coefficients_;
+    uerd_coefficients_ = uoriginal_coefficients_;
 
-  // Now we just need to recreate the Libint2 data, telling it to skip
-  // the usual renormalization steps
-  update_l2_shells(false);
+    // Now we just need to recreate the Libint2 data, telling it to skip
+    // the usual renormalization steps
+    update_l2_shells(false);
 }

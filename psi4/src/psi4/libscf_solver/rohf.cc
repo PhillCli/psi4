@@ -543,16 +543,16 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
         auto Fbp = moFb_->pointer(h);
 
         // left_ov += 0.5 * x_op Fa_pv
-        C_DGEMM('N', 'N', occpi[h], virpi[h], pvir[h], 0.5, (xp[0] + socc[h]), virpi[h],
-                (Fap[occpi[h]] + docc[h]), nmopi_[h], 0.0, leftp[0], virpi[h]);
+        C_DGEMM('N', 'N', occpi[h], virpi[h], pvir[h], 0.5, (xp[0] + socc[h]), virpi[h], (Fap[occpi[h]] + docc[h]),
+                nmopi_[h], 0.0, leftp[0], virpi[h]);
 
         // left_ov -= Fa_oo x_ov
         C_DGEMM('N', 'N', occpi[h], virpi[h], occpi[h], -0.5, Fap[0], nmopi_[h], xp[0], virpi[h], 1.0, leftp[0],
                 virpi[h]);
 
         // right_ov += 0.5 * x_ov Fb_vv
-        C_DGEMM('N', 'N', occpi[h], virpi[h], virpi[h], 0.5, xp[0], virpi[h], (Fbp[docc[h]] + docc[h]), nmopi_[h],
-                0.0, rightp[0], virpi[h]);
+        C_DGEMM('N', 'N', occpi[h], virpi[h], virpi[h], 0.5, xp[0], virpi[h], (Fbp[docc[h]] + docc[h]), nmopi_[h], 0.0,
+                rightp[0], virpi[h]);
 
         // right_ov -= Fb_oi x_iv
         C_DGEMM('N', 'N', occpi[h], virpi[h], docc[h], -0.5, Fbp[0], nmopi_[h], xp[0], virpi[h], 1.0, rightp[0],
@@ -560,12 +560,12 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
         if (socc[h]) {
             // Socc terms
             // left_av += 0.5 * x_oa.T Fb_ov
-            C_DGEMM('T', 'N', socc[h], virpi[h], occpi[h], 0.5, xp[0], virpi[h], (Fbp[0] + docc[h]), nmopi_[h],
-                    1.0, leftp[docc[h]], virpi[h]);
+            C_DGEMM('T', 'N', socc[h], virpi[h], occpi[h], 0.5, xp[0], virpi[h], (Fbp[0] + docc[h]), nmopi_[h], 1.0,
+                    leftp[docc[h]], virpi[h]);
 
             // right_oa += 0.5 * Fb_op x_ap.T
-            C_DGEMM('N', 'T', occpi[h], socc[h], pvir[h], 0.5, (Fbp[0] + occpi[h]), nmopi_[h],
-                    (xp[docc[h]] + socc[h]), virpi[h], 1.0, rightp[0], virpi[h]);
+            C_DGEMM('N', 'T', occpi[h], socc[h], pvir[h], 0.5, (Fbp[0] + occpi[h]), nmopi_[h], (xp[docc[h]] + socc[h]),
+                    virpi[h], 1.0, rightp[0], virpi[h]);
         }
     }
 
@@ -598,8 +598,8 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
 
             if (docc[h] && pvir[h]) {
                 // C_lambda,i = C_lambda,p x_ip.T
-                C_DGEMM('N', 'T', nsopi_[h], docc[h], pvir[h], 1.0, Cp[0] + occpi[h], nmopi_[h],
-                        (xp[0] + socc[h]), virpi[h], 0.0, Cr_ip[0], docc[h]);
+                C_DGEMM('N', 'T', nsopi_[h], docc[h], pvir[h], 1.0, Cp[0] + occpi[h], nmopi_[h], (xp[0] + socc[h]),
+                        virpi[h], 0.0, Cr_ip[0], docc[h]);
             }
 
             if (socc[h] && pvir[h]) {
@@ -610,8 +610,8 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
 
             if (socc[h] && docc[h]) {
                 // C_lambda,a = C_lambda,i x_ia
-                C_DGEMM('N', 'N', nsopi_[h], socc[h], docc[h], 1.0, Cp[0], nmopi_[h], xp[0], virpi[h], 0.0,
-                        Cl_ap[0], socc[h]);
+                C_DGEMM('N', 'N', nsopi_[h], socc[h], docc[h], 1.0, Cp[0], nmopi_[h], xp[0], virpi[h], 0.0, Cl_ap[0],
+                        socc[h]);
             }
         }
 
@@ -692,8 +692,8 @@ void ROHF::Hx(SharedMatrix x, SharedMatrix ret) {
 
             if (docc[h] && virpi[h]) {
                 // C_lambda,i = C_lambda,p x_ip.T
-                C_DGEMM('N', 'T', nsopi_[h], docc[h], virpi[h], 1.0, Cp[0] + docc[h], nmopi_[h], xp[0], virpi[h],
-                        0.0, Cr_bp[0], docc[h]);
+                C_DGEMM('N', 'T', nsopi_[h], docc[h], virpi[h], 1.0, Cp[0] + docc[h], nmopi_[h], xp[0], virpi[h], 0.0,
+                        Cr_bp[0], docc[h]);
             }
         }
 
@@ -1265,7 +1265,7 @@ bool ROHF::stability_analysis() {
             auto* evals = new double[rank];
             double** evecs = block_matrix(rank, rank);
 
-            if (DSYEV_ascending(rank, A.matrix[h], evals, evecs) != 0){
+            if (DSYEV_ascending(rank, A.matrix[h], evals, evecs) != 0) {
                 throw PSIEXCEPTION("DSYEV diagonalizer failed in ROHF stability check!");
             }
             global_dpd_->buf4_mat_irrep_close(&A, h);

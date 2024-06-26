@@ -724,8 +724,8 @@ double ET_UHF_AAB() {
                                             WABc[Gab][ab][c] /= denom;
 
                                         } /* c */
-                                    }     /* ab */
-                                }         /* Gab */
+                                    } /* ab */
+                                } /* Gab */
 
                                 /* 1/2 Dot product of final V and W is the energy for this ijk triple */
                                 for (Gab = 0; Gab < nirreps; Gab++) {
@@ -743,12 +743,12 @@ double ET_UHF_AAB() {
                             } /* I >= J */
 
                         } /* k */
-                    }     /* j */
-                }         /* i */
+                    } /* j */
+                } /* i */
 
             } /* Gk */
-        }     /* Gj */
-    }         /* Gi */
+        } /* Gj */
+    } /* Gi */
 
     /*  outfile->Printf( "cnt = %d\n", cnt); */
     /*  outfile->Printf( "ET_AAB = %20.14f\n", ET_AAB); */

@@ -151,7 +151,6 @@ void CCEnergyWavefunction::get_moinfo() {
         psio_read_entry(PSIF_CC_INFO, "Active Occ Orb Offsets", (char *)moinfo_.occ_off, sizeof(int) * moinfo_.nirreps);
         psio_read_entry(PSIF_CC_INFO, "Active Virt Orb Offsets", (char *)moinfo_.vir_off,
                         sizeof(int) * moinfo_.nirreps);
-
     }
 
     /* Build sosym array (for AO-basis BT2) */

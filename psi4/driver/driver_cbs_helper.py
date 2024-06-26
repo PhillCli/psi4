@@ -100,7 +100,13 @@ def xtpl_highest_1(functionname: str, zHI: int, valueHI: Extrapolatable, verbose
         return valueHI
 
 
-def scf_xtpl_helgaker_2(functionname: str, zLO: int, valueLO: Extrapolatable, zHI: int, valueHI: Extrapolatable, verbose: int = 1, alpha: Optional[float] = None) -> Extrapolatable:
+def scf_xtpl_helgaker_2(functionname: str,
+                        zLO: int,
+                        valueLO: Extrapolatable,
+                        zHI: int,
+                        valueHI: Extrapolatable,
+                        verbose: int = 1,
+                        alpha: Optional[float] = None) -> Extrapolatable:
     r"""Extrapolation scheme using exponential form for reference energies with two adjacent
     zeta-level bases. Used by :py:func:`~psi4.driver.cbs`.
 
@@ -208,7 +214,13 @@ def scf_xtpl_helgaker_2(functionname: str, zLO: int, valueLO: Extrapolatable, zH
         raise ValidationError(f"scf_xtpl_helgaker_2: datatype is not recognized '{type(valueLO)}'.")
 
 
-def scf_xtpl_truhlar_2(functionname: str, zLO: int, valueLO: Extrapolatable, zHI: int, valueHI: Extrapolatable, verbose: int = 1, alpha: Optional[float] = None) -> Extrapolatable:
+def scf_xtpl_truhlar_2(functionname: str,
+                       zLO: int,
+                       valueLO: Extrapolatable,
+                       zHI: int,
+                       valueHI: Extrapolatable,
+                       verbose: int = 1,
+                       alpha: Optional[float] = None) -> Extrapolatable:
     r"""Extrapolation scheme using power form for reference energies with two adjacent
     zeta-level bases. Used by :py:func:`~psi4.driver.cbs`.
 
@@ -311,7 +323,13 @@ def scf_xtpl_truhlar_2(functionname: str, zLO: int, valueLO: Extrapolatable, zHI
         raise ValidationError(f"scf_xtpl_truhlar_2: datatype is not recognized '{type(valueLO)}'.")
 
 
-def scf_xtpl_karton_2(functionname: str, zLO: int, valueLO: Extrapolatable, zHI: int, valueHI: Extrapolatable, verbose: int = 1, alpha: Optional[float] = None) -> Extrapolatable:
+def scf_xtpl_karton_2(functionname: str,
+                      zLO: int,
+                      valueLO: Extrapolatable,
+                      zHI: int,
+                      valueHI: Extrapolatable,
+                      verbose: int = 1,
+                      alpha: Optional[float] = None) -> Extrapolatable:
     r"""Extrapolation scheme using root-power form for reference energies with two adjacent
     zeta-level bases. Used by :py:func:`~psi4.driver.cbs`.
 
@@ -416,7 +434,15 @@ def scf_xtpl_karton_2(functionname: str, zLO: int, valueLO: Extrapolatable, zHI:
         raise ValidationError(f"scf_xtpl_Karton_2: datatype is not recognized '{type(valueLO)}'.")
 
 
-def scf_xtpl_helgaker_3(functionname: str, zLO: int, valueLO: Extrapolatable, zMD: int, valueMD: Extrapolatable, zHI: int, valueHI: Extrapolatable, verbose: int = 1, alpha: Optional[float] = None) -> Extrapolatable:
+def scf_xtpl_helgaker_3(functionname: str,
+                        zLO: int,
+                        valueLO: Extrapolatable,
+                        zMD: int,
+                        valueMD: Extrapolatable,
+                        zHI: int,
+                        valueHI: Extrapolatable,
+                        verbose: int = 1,
+                        alpha: Optional[float] = None) -> Extrapolatable:
     r"""Extrapolation scheme for reference energies with three adjacent zeta-level bases.
     Used by :py:func:`~psi4.driver.cbs`.
 
@@ -547,7 +573,13 @@ def scf_xtpl_helgaker_3(functionname: str, zLO: int, valueLO: Extrapolatable, zM
         raise ValidationError(f"scf_xtpl_helgaker_3: datatype is not recognized '{type(valueLO)}'.")
 
 
-def corl_xtpl_helgaker_2(functionname: str, zLO: int, valueLO: Extrapolatable, zHI: int, valueHI: Extrapolatable, verbose: int = 1, alpha: Optional[float] = None) -> Extrapolatable:
+def corl_xtpl_helgaker_2(functionname: str,
+                         zLO: int,
+                         valueLO: Extrapolatable,
+                         zHI: int,
+                         valueHI: Extrapolatable,
+                         verbose: int = 1,
+                         alpha: Optional[float] = None) -> Extrapolatable:
     r"""Extrapolation scheme for correlation energies with two adjacent zeta-level bases.
     Used by :py:func:`~psi4.driver.cbs`.
 

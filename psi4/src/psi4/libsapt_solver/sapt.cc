@@ -273,7 +273,7 @@ void SAPT::initialize(SharedWavefunction MonomerA, SharedWavefunction MonomerB) 
     free_block(vIB);
     free_block(vAJ);
 
-//Konrad: extra stuff for nonapproximate E(30)ex-ind in AOs
+    // Konrad: extra stuff for nonapproximate E(30)ex-ind in AOs
     CoccA_ = MonomerA->Ca_subset("AO", "OCC");
     CoccB_ = MonomerB->Ca_subset("AO", "OCC");
     CvirA_ = MonomerA->Ca_subset("AO", "VIR");

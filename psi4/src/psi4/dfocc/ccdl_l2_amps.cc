@@ -142,25 +142,25 @@ void DFOCC::ccdl_l2_amps() {
             K.reset();
             EccdL = Escf + EcorrL;
         }
-    }// end if (reference_ == "RESTRICTED")
+    }  // end if (reference_ == "RESTRICTED")
 
     else if (reference_ == "UNRESTRICTED") {
         ccdl_l2AA_amps();
         ccdl_l2BB_amps();
         ccdl_l2AB_amps();
-    }// end else if (reference_ == "UNRESTRICTED")
+    }  // end else if (reference_ == "UNRESTRICTED")
 
 }  // end ccdl_l2_amps
 
 //======================================================================
 //    UHF L2AA
 //======================================================================
-void DFOCC::ccdl_l2AA_amps()
-{
+void DFOCC::ccdl_l2AA_amps() {
     SharedTensor2d J, W, I, K, X, Y, T, Z, L, U, V, Tau, Lnew, G, R, T2;
-    // l_IJ^AB = <IJ||AB> + P_(AB) \sum_{E} l_IJ^AE F_EB - P_(IJ) \sum_{M} l_IM^AB F_JM + 1/2 \sum_{MN} l_MN^AB W_IJMN + 1/2 \sum_{EF} l_IJ^EF W_EFAB
+    // l_IJ^AB = <IJ||AB> + P_(AB) \sum_{E} l_IJ^AE F_EB - P_(IJ) \sum_{M} l_IM^AB F_JM + 1/2 \sum_{MN} l_MN^AB W_IJMN +
+    // 1/2 \sum_{EF} l_IJ^EF W_EFAB
     //         + \sum_{MN} V_MNIJ <MN|AB> +   P_(IJ) P_(AB) \sum_{ME} l_IM^AE W_JEBM
-    //         +  P_(IJ) P_(AB) \sum_{me} l_Im^Ae W_JeBm + P_(IJ) P_(AB) \sum_{Q} (G_AI^Q - G_IA^Q) b_JB^Q                           (117)
+    //         +  P_(IJ) P_(AB) \sum_{me} l_Im^Ae W_JeBm + P_(IJ) P_(AB) \sum_{Q} (G_AI^Q - G_IA^Q) b_JB^Q (117)
 
     // l_IJ^AB += <IJ||AB>    (1)
     J = std::make_shared<Tensor2d>("J (IA|JB)", naoccA, navirA, naoccA, navirA);
@@ -224,7 +224,7 @@ void DFOCC::ccdl_l2AA_amps()
     X->gemm(false, false, W, L, 1.0, 0.0);
     L.reset();
     W.reset();
-    //Lnew->P_ijab(X);
+    // Lnew->P_ijab(X);
     Lnew->sort(3142, X, 1.0, 1.0);
     Lnew->sort(1342, X, -1.0, 1.0);
     Lnew->sort(3124, X, -1.0, 1.0);
@@ -243,7 +243,7 @@ void DFOCC::ccdl_l2AA_amps()
     X->gemm(false, false, W, L, 1.0, 0.0);
     L.reset();
     W.reset();
-    //Lnew->P_ijab(X);
+    // Lnew->P_ijab(X);
     Lnew->sort(3142, X, 1.0, 1.0);
     Lnew->sort(1342, X, -1.0, 1.0);
     Lnew->sort(3124, X, -1.0, 1.0);
@@ -263,7 +263,7 @@ void DFOCC::ccdl_l2AA_amps()
     X = std::make_shared<Tensor2d>("X (IA|JB)", naoccA, navirA, naoccA, navirA);
     X->gemm(true, false, T, bQiaA, 1.0, 0.0);
     T.reset();
-    //Lnew->P_ijab(X);
+    // Lnew->P_ijab(X);
     Lnew->sort(1324, X, 1.0, 1.0);
     Lnew->sort(3124, X, -1.0, 1.0);
     Lnew->sort(1342, X, -1.0, 1.0);
@@ -274,7 +274,7 @@ void DFOCC::ccdl_l2AA_amps()
     Lnew->apply_denom(nfrzc, noccA, FockA);
     // Write and close
     Lnew->write_anti_symm(psio_, PSIF_DFOCC_AMPS);
-    //Lnew->print();
+    // Lnew->print();
 
     // Error vector
     L = std::make_shared<Tensor2d>("L2 <IJ|AB>", naoccA, naoccA, navirA, navirA);
@@ -285,17 +285,17 @@ void DFOCC::ccdl_l2AA_amps()
     R->subtract(L);
     L.reset();
     R->write_anti_symm(psio_, PSIF_DFOCC_AMPS);
-} // end ccdl_l2AA_amps
+}  // end ccdl_l2AA_amps
 
 //======================================================================
 //    UHF L2BB
 //======================================================================
-void DFOCC::ccdl_l2BB_amps()
-{
+void DFOCC::ccdl_l2BB_amps() {
     SharedTensor2d G, J, W, I, K, X, Y, T, Z, L, U, V, Tau, Lnew, R, T2;
-    // l_ij^ab = <ij||ab> + P_(ab) \sum_{e} l_ij^ae F_eb - P_(ij) \sum_{m} l_im^ab F_jm + 1/2 \sum_{mn} l_mn^ab W_ijmn + 1/2 \sum_{ef} l_ij^ef W_efab
+    // l_ij^ab = <ij||ab> + P_(ab) \sum_{e} l_ij^ae F_eb - P_(ij) \sum_{m} l_im^ab F_jm + 1/2 \sum_{mn} l_mn^ab W_ijmn +
+    // 1/2 \sum_{ef} l_ij^ef W_efab
     //         + \sum_{mn} V_mnij <mn|ab> + P_(ij) P_(ab) \sum_{me} l_im^ae W_jebm
-    //         + P_(ij) P_(ab) \sum_{ME} l_Mi^Ea W_jEbM + P_(ij) P_(ab) \sum_{Q} (G_ai^Q - G_ia^Q) b_jb^Q                             (118)
+    //         + P_(ij) P_(ab) \sum_{ME} l_Mi^Ea W_jEbM + P_(ij) P_(ab) \sum_{Q} (G_ai^Q - G_ia^Q) b_jb^Q (118)
 
     // l_ij^ab +=  <ij||ab>    (1)
     J = std::make_shared<Tensor2d>("J (ia|jb)", naoccB, navirB, naoccB, navirB);
@@ -359,7 +359,7 @@ void DFOCC::ccdl_l2BB_amps()
     X->gemm(false, false, W, L, 1.0, 0.0);
     L.reset();
     W.reset();
-    //Lnew->P_ijab(X);
+    // Lnew->P_ijab(X);
     Lnew->sort(3142, X, 1.0, 1.0);
     Lnew->sort(1342, X, -1.0, 1.0);
     Lnew->sort(3124, X, -1.0, 1.0);
@@ -378,7 +378,7 @@ void DFOCC::ccdl_l2BB_amps()
     X->gemm(false, false, W, L, 1.0, 0.0);
     L.reset();
     W.reset();
-    //Lnew->P_ijab(X);
+    // Lnew->P_ijab(X);
     Lnew->sort(3142, X, 1.0, 1.0);
     Lnew->sort(1342, X, -1.0, 1.0);
     Lnew->sort(3124, X, -1.0, 1.0);
@@ -398,7 +398,7 @@ void DFOCC::ccdl_l2BB_amps()
     X = std::make_shared<Tensor2d>("X (ia|jb)", naoccB, navirB, naoccB, navirB);
     X->gemm(true, false, T, bQiaB, 1.0, 0.0);
     T.reset();
-    //Lnew->P_ijab(X);
+    // Lnew->P_ijab(X);
     Lnew->sort(1324, X, 1.0, 1.0);
     Lnew->sort(3124, X, -1.0, 1.0);
     Lnew->sort(1342, X, -1.0, 1.0);
@@ -409,7 +409,7 @@ void DFOCC::ccdl_l2BB_amps()
     Lnew->apply_denom(nfrzc, noccB, FockB);
     // Write and close
     Lnew->write_anti_symm(psio_, PSIF_DFOCC_AMPS);
-    //Lnew->print();
+    // Lnew->print();
 
     // Error vector
     L = std::make_shared<Tensor2d>("L2 <ij|ab>", naoccB, naoccB, navirB, navirB);
@@ -420,18 +420,19 @@ void DFOCC::ccdl_l2BB_amps()
     R->subtract(L);
     L.reset();
     R->write_anti_symm(psio_, PSIF_DFOCC_AMPS);
-} // end ccsdl_l2BB_amps
+}  // end ccsdl_l2BB_amps
 
 //======================================================================
 //    UHF L2AB
 //======================================================================
-void DFOCC::ccdl_l2AB_amps()
-{
+void DFOCC::ccdl_l2AB_amps() {
     SharedTensor2d G, J, W, I, K, X, Y, T, Z, L, U, V, Tau, Lnew, R, T2;
-    // l_Ij^Ab = <Ij|Ab> + \sum_{e} l_Ij^Ae Ft_eb + \sum_{E} l_Ij^Eb F_EA - \sum_{m} l_Im^Ab F_jm - \sum_{M} l_Mj^Ab Ft_IM + \sum_{Mn} l_Mn^Ab W_IjMn
+    // l_Ij^Ab = <Ij|Ab> + \sum_{e} l_Ij^Ae Ft_eb + \sum_{E} l_Ij^Eb F_EA - \sum_{m} l_Im^Ab F_jm - \sum_{M} l_Mj^Ab
+    // Ft_IM + \sum_{Mn} l_Mn^Ab W_IjMn
     //         + \sum_{Ef} l_Ij^Ef W_EfAb + \sum_{Mn} V_MnIj <Mn|Ab>
-    //         + \sum_{ME} l_IM^AE W_jEbM + \sum_{me} l_Im^Ae W_jebm + \sum_{Me} l_Mj^Ae W_IebM + \sum_{mE} l_Im^Eb W_jEAm + \sum_{me} l_jm^be W_IeAm
-    //         + \sum_{ME} l_Mj^Eb W_IEAM + \sum_{Q} (G_AI^Q - G_IA^Q) b_jb^Q + \sum_{Q} (G_bj^Q - G_jb^Q) b_IA^Q   (119)
+    //         + \sum_{ME} l_IM^AE W_jEbM + \sum_{me} l_Im^Ae W_jebm + \sum_{Me} l_Mj^Ae W_IebM + \sum_{mE} l_Im^Eb
+    //         W_jEAm + \sum_{me} l_jm^be W_IeAm
+    //         + \sum_{ME} l_Mj^Eb W_IEAM + \sum_{Q} (G_AI^Q - G_IA^Q) b_jb^Q + \sum_{Q} (G_bj^Q - G_jb^Q) b_IA^Q (119)
 
     // l_Ij^Ab += <Ij|Ab>    (1)
     J = std::make_shared<Tensor2d>("J (IA|jb)", naoccA, navirA, naoccB, navirB);
@@ -467,9 +468,9 @@ void DFOCC::ccdl_l2AB_amps()
     // l_Ij^Ab += \sum_{Mn} l_Mn^Ab W_IjMn     (6)
     X = std::make_shared<Tensor2d>("W <Mn|Ij>", naoccA, naoccB, naoccA, naoccB);
     X->read(psio_, PSIF_DFOCC_AMPS);
-    //W = std::make_shared<Tensor2d>("W <Ij|Mn>", naoccA, naoccB, naoccA, naoccB);
-    //W->trans(X);
-    //X.reset();
+    // W = std::make_shared<Tensor2d>("W <Ij|Mn>", naoccA, naoccB, naoccA, naoccB);
+    // W->trans(X);
+    // X.reset();
     L = std::make_shared<Tensor2d>("L2 <Ij|Ab>", naoccA, naoccB, navirA, navirB);
     L->read(psio_, PSIF_DFOCC_AMPS);
     Lnew->gemm(false, false, X, L, 1.0, 1.0);
@@ -504,7 +505,7 @@ void DFOCC::ccdl_l2AB_amps()
     W = std::make_shared<Tensor2d>("WL (me|JB)", naoccB, navirB, naoccA, navirA);
     W->read(psio_, PSIF_DFOCC_AMPS);
     X = std::make_shared<Tensor2d>("X (IA|jb)", naoccA, navirA, naoccB, navirB);
-    X->gemm(false, true, L, W, 1.0, 0.0); // X acik kalcak asagida kullaniyorum
+    X->gemm(false, true, L, W, 1.0, 0.0);  // X acik kalcak asagida kullaniyorum
     L.reset();
     W.reset();
 
@@ -520,14 +521,14 @@ void DFOCC::ccdl_l2AB_amps()
     L.reset();
     W.reset();
     Lnew->sort(1324, X, 1.0, 1.0);
-    //UB start
+    // UB start
     /*
     Y = std::make_shared<Tensor2d>("Y <Ij|Ab>", naoccA, naoccB, navirA, navirB);
     Y->sort(1324, X, 1.0, 0.0);
     Lnew->axpy(Y,1.0);
     Y.reset();
     */
-    //UB end
+    // UB end
     X.reset();
 
     // l_Ij^Ab += \sum_{Me} l_Mj^Ae W_IebM    (15)
@@ -541,7 +542,8 @@ void DFOCC::ccdl_l2AB_amps()
     W.reset();
 
     // l_Ij^Ab += \sum_{mE} l_Im^Eb W_jEAm    (16)
-    L = std::make_shared<Tensor2d>("L2p <Ib|mE>", naoccA, navirB, naoccB, navirA);     ///////////////////// hata vardı yeni sort ile düzelttim
+    L = std::make_shared<Tensor2d>("L2p <Ib|mE>", naoccA, navirB, naoccB,
+                                   navirA);  ///////////////////// hata vardı yeni sort ile düzelttim
     L->sort(1423, U, 1.0, 0.0);
     W = std::make_shared<Tensor2d>("WL (mE|jB)", naoccB, navirA, naoccB, navirA);
     W->read(psio_, PSIF_DFOCC_AMPS);
@@ -624,183 +626,181 @@ void DFOCC::ccdl_l2AB_amps()
     R->write(psio_, PSIF_DFOCC_AMPS);
     R.reset();
 
-
     // DIIS
-    //if (orb_opt_ == "FALSE" && do_diis_ == 1) {
+    // if (orb_opt_ == "FALSE" && do_diis_ == 1) {
     if (do_diis_ == 1) {
         SharedTensor2d RAA, LAA, RBB, LBB, RAB, LAB;
 
-            // RAA
-            RAA = std::make_shared<Tensor2d>("RL2 <IJ|AB>", ntri_anti_ijAA, ntri_anti_abAA);
-            RAA->read(psio_, PSIF_DFOCC_AMPS);
-            auto RL2AA = std::make_shared<Matrix>("RL2AA", ntri_anti_ijAA, ntri_anti_abAA);
-            RAA->to_matrix(RL2AA);
-            RAA.reset();
-            // TAA
-            LAA = std::make_shared<Tensor2d>("New L2 <IJ|AB>", ntri_anti_ijAA, ntri_anti_abAA);
-            LAA->read(psio_, PSIF_DFOCC_AMPS);
-            auto L2AA = std::make_shared<Matrix>("L2AA", ntri_anti_ijAA, ntri_anti_abAA);
-            LAA->to_matrix(L2AA);
+        // RAA
+        RAA = std::make_shared<Tensor2d>("RL2 <IJ|AB>", ntri_anti_ijAA, ntri_anti_abAA);
+        RAA->read(psio_, PSIF_DFOCC_AMPS);
+        auto RL2AA = std::make_shared<Matrix>("RL2AA", ntri_anti_ijAA, ntri_anti_abAA);
+        RAA->to_matrix(RL2AA);
+        RAA.reset();
+        // TAA
+        LAA = std::make_shared<Tensor2d>("New L2 <IJ|AB>", ntri_anti_ijAA, ntri_anti_abAA);
+        LAA->read(psio_, PSIF_DFOCC_AMPS);
+        auto L2AA = std::make_shared<Matrix>("L2AA", ntri_anti_ijAA, ntri_anti_abAA);
+        LAA->to_matrix(L2AA);
 
-            // RBB
-            RBB = std::make_shared<Tensor2d>("RL2 <ij|ab>", ntri_anti_ijBB, ntri_anti_abBB);
-            RBB->read(psio_, PSIF_DFOCC_AMPS);
-            auto RL2BB = std::make_shared<Matrix>("RL2BB", ntri_anti_ijBB, ntri_anti_abBB);
-            RBB->to_matrix(RL2BB);
-            RBB.reset();
-            // TBB
-            LBB = std::make_shared<Tensor2d>("New L2 <ij|ab>", ntri_anti_ijBB, ntri_anti_abBB);
-            LBB->read(psio_, PSIF_DFOCC_AMPS);
-            auto L2BB = std::make_shared<Matrix>("L2BB", ntri_anti_ijBB, ntri_anti_abBB);
-            LBB->to_matrix(L2BB);
+        // RBB
+        RBB = std::make_shared<Tensor2d>("RL2 <ij|ab>", ntri_anti_ijBB, ntri_anti_abBB);
+        RBB->read(psio_, PSIF_DFOCC_AMPS);
+        auto RL2BB = std::make_shared<Matrix>("RL2BB", ntri_anti_ijBB, ntri_anti_abBB);
+        RBB->to_matrix(RL2BB);
+        RBB.reset();
+        // TBB
+        LBB = std::make_shared<Tensor2d>("New L2 <ij|ab>", ntri_anti_ijBB, ntri_anti_abBB);
+        LBB->read(psio_, PSIF_DFOCC_AMPS);
+        auto L2BB = std::make_shared<Matrix>("L2BB", ntri_anti_ijBB, ntri_anti_abBB);
+        LBB->to_matrix(L2BB);
 
-            // RAB
-            RAB = std::make_shared<Tensor2d>("RL2 <Ij|Ab>", naoccA * naoccB, navirA * navirB);
-            RAB->read(psio_, PSIF_DFOCC_AMPS);
-            auto RL2AB = std::make_shared<Matrix>("RL2AB", naoccA * naoccB, navirA * navirB);
-            RAB->to_matrix(RL2AB);
-            RAB.reset();
-            // TAB
-            LAB = std::make_shared<Tensor2d>("New L2 <Ij|Ab>", naoccA * naoccB, navirA * navirB);
-            LAB->read(psio_, PSIF_DFOCC_AMPS);
-            auto L2AB = std::make_shared<Matrix>("L2AB", naoccA * naoccB, navirA * navirB);
-            LAB->to_matrix(L2AB);
+        // RAB
+        RAB = std::make_shared<Tensor2d>("RL2 <Ij|Ab>", naoccA * naoccB, navirA * navirB);
+        RAB->read(psio_, PSIF_DFOCC_AMPS);
+        auto RL2AB = std::make_shared<Matrix>("RL2AB", naoccA * naoccB, navirA * navirB);
+        RAB->to_matrix(RL2AB);
+        RAB.reset();
+        // TAB
+        LAB = std::make_shared<Tensor2d>("New L2 <Ij|Ab>", naoccA * naoccB, navirA * navirB);
+        LAB->read(psio_, PSIF_DFOCC_AMPS);
+        auto L2AB = std::make_shared<Matrix>("L2AB", naoccA * naoccB, navirA * navirB);
+        LAB->to_matrix(L2AB);
 
-            // add entry
-            //if (do_diis_ == 1)
-                ccsdlDiisManager->add_entry(RL2AA.get(), RL2BB.get(), RL2AB.get(), L2AA.get(), L2BB.get(), L2AB.get());
-            RL2AA.reset();
-            RL2BB.reset();
-            RL2BB.reset();
+        // add entry
+        // if (do_diis_ == 1)
+        ccsdlDiisManager->add_entry(RL2AA.get(), RL2BB.get(), RL2AB.get(), L2AA.get(), L2BB.get(), L2AB.get());
+        RL2AA.reset();
+        RL2BB.reset();
+        RL2BB.reset();
 
-            // extrapolate
-            //if (do_diis_ == 1) {
-                if (ccsdlDiisManager->subspace_size() >= cc_mindiis_)
-                    ccsdlDiisManager->extrapolate(L2AA.get(), L2BB.get(), L2AB.get());
-                LAA->set2(L2AA);
-                LBB->set2(L2BB);
-                LAB->set2(L2AB);
+        // extrapolate
+        // if (do_diis_ == 1) {
+        if (ccsdlDiisManager->subspace_size() >= cc_mindiis_)
+            ccsdlDiisManager->extrapolate(L2AA.get(), L2BB.get(), L2AB.get());
+        LAA->set2(L2AA);
+        LBB->set2(L2BB);
+        LAB->set2(L2AB);
 
-            //}
-            L2AA.reset();
-            L2BB.reset();
-            L2AB.reset();
+        //}
+        L2AA.reset();
+        L2BB.reset();
+        L2AB.reset();
 
-            LAA->write(psio_, PSIF_DFOCC_AMPS);
-            LBB->write(psio_, PSIF_DFOCC_AMPS);
-            LAB->write(psio_, PSIF_DFOCC_AMPS);
-            LAA.reset();
-            LBB.reset();
-            LAB.reset();
-    }// end diis
+        LAA->write(psio_, PSIF_DFOCC_AMPS);
+        LBB->write(psio_, PSIF_DFOCC_AMPS);
+        LAB->write(psio_, PSIF_DFOCC_AMPS);
+        LAA.reset();
+        LBB.reset();
+        LAB.reset();
+    }  // end diis
 
     //=========================
     // Reset & Energy
     //=========================
     ccd_lambda_energy();
 
-} // end ccdl_l2AB_amps
+}  // end ccdl_l2AB_amps
 
 void DFOCC::ccd_lambda_energy() {
     SharedTensor2d K, L, M, I, T, Tnew, T1, T2, U, Tau, W, X, Y;
     SharedTensor2d R, RAA, RBB, RAB, TAA, TBB, TAB;
 
-        // Reset T2AA
-        Tnew = std::make_shared<Tensor2d>("New L2 <IJ|AB>", naoccA, naoccA, navirA, navirA);
-        Tnew->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
-        T = std::make_shared<Tensor2d>("L2 <IJ|AB>", naoccA, naoccA, navirA, navirA);
-        T->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
-        rms_t2AA = Tnew->rms(T);
-        T->copy(Tnew);
-        Tnew.reset();
-        T->write_anti_symm(psio_, PSIF_DFOCC_AMPS);
+    // Reset T2AA
+    Tnew = std::make_shared<Tensor2d>("New L2 <IJ|AB>", naoccA, naoccA, navirA, navirA);
+    Tnew->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
+    T = std::make_shared<Tensor2d>("L2 <IJ|AB>", naoccA, naoccA, navirA, navirA);
+    T->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
+    rms_t2AA = Tnew->rms(T);
+    T->copy(Tnew);
+    Tnew.reset();
+    T->write_anti_symm(psio_, PSIF_DFOCC_AMPS);
 
-        // AA Energy
-        L = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints (IA|JB)", naoccA, navirA, naoccA, navirA);
-        L->gemm(true, false, bQiaA, bQiaA, 1.0, 0.0);
-        M = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints <IJ|AB>", naoccA, naoccA, navirA, navirA);
-        M->sort(1324, L, 1.0, 0.0);
-        L.reset();
-        K = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints <IJ||AB>", naoccA, naoccA, navirA, navirA);
-        tei_pqrs_anti_symm_direct(K, M);
-        M.reset();
-        EccdAA = 0.25 * T->vector_dot(K);
-        K.reset();
+    // AA Energy
+    L = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints (IA|JB)", naoccA, navirA, naoccA, navirA);
+    L->gemm(true, false, bQiaA, bQiaA, 1.0, 0.0);
+    M = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints <IJ|AB>", naoccA, naoccA, navirA, navirA);
+    M->sort(1324, L, 1.0, 0.0);
+    L.reset();
+    K = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints <IJ||AB>", naoccA, naoccA, navirA, navirA);
+    tei_pqrs_anti_symm_direct(K, M);
+    M.reset();
+    EccdAA = 0.25 * T->vector_dot(K);
+    K.reset();
 
-        // Form L2(IA|JB)
-        U = std::make_shared<Tensor2d>("L2 (IA|JB)", naoccA, navirA, naoccA, navirA);
-        U->sort(1324, T, 1.0, 0.0);
-        T.reset();
-        U->write_symm(psio_, PSIF_DFOCC_AMPS);
-        U.reset();
+    // Form L2(IA|JB)
+    U = std::make_shared<Tensor2d>("L2 (IA|JB)", naoccA, navirA, naoccA, navirA);
+    U->sort(1324, T, 1.0, 0.0);
+    T.reset();
+    U->write_symm(psio_, PSIF_DFOCC_AMPS);
+    U.reset();
 
-        // Reset T2BB
-        Tnew = std::make_shared<Tensor2d>("New L2 <ij|ab>", naoccB, naoccB, navirB, navirB);
-        Tnew->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
-        T = std::make_shared<Tensor2d>("L2 <ij|ab>", naoccB, naoccB, navirB, navirB);
-        T->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
-        rms_t2BB = Tnew->rms(T);
-        T->copy(Tnew);
-        Tnew.reset();
-        T->write_anti_symm(psio_, PSIF_DFOCC_AMPS);
+    // Reset T2BB
+    Tnew = std::make_shared<Tensor2d>("New L2 <ij|ab>", naoccB, naoccB, navirB, navirB);
+    Tnew->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
+    T = std::make_shared<Tensor2d>("L2 <ij|ab>", naoccB, naoccB, navirB, navirB);
+    T->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
+    rms_t2BB = Tnew->rms(T);
+    T->copy(Tnew);
+    Tnew.reset();
+    T->write_anti_symm(psio_, PSIF_DFOCC_AMPS);
 
-        // BB Energy
-        L = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints (ia|jb)", naoccB, navirB, naoccB, navirB);
-        L->gemm(true, false, bQiaB, bQiaB, 1.0, 0.0);
-        M = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints <ij|ab>", naoccB, naoccB, navirB, navirB);
-        M->sort(1324, L, 1.0, 0.0);
-        L.reset();
-        K = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints <ij||ab>", naoccB, naoccB, navirB, navirB);
-        tei_pqrs_anti_symm_direct(K, M);
-        M.reset();
-        EccdBB = 0.25 * T->vector_dot(K);
-        K.reset();
+    // BB Energy
+    L = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints (ia|jb)", naoccB, navirB, naoccB, navirB);
+    L->gemm(true, false, bQiaB, bQiaB, 1.0, 0.0);
+    M = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints <ij|ab>", naoccB, naoccB, navirB, navirB);
+    M->sort(1324, L, 1.0, 0.0);
+    L.reset();
+    K = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints <ij||ab>", naoccB, naoccB, navirB, navirB);
+    tei_pqrs_anti_symm_direct(K, M);
+    M.reset();
+    EccdBB = 0.25 * T->vector_dot(K);
+    K.reset();
 
-        // Form L2(ia|jb)
-        U = std::make_shared<Tensor2d>("L2 (ia|jb)", naoccB, navirB, naoccB, navirB);
-        U->sort(1324, T, 1.0, 0.0);
-        T.reset();
-        U->write_symm(psio_, PSIF_DFOCC_AMPS);
-        U.reset();
+    // Form L2(ia|jb)
+    U = std::make_shared<Tensor2d>("L2 (ia|jb)", naoccB, navirB, naoccB, navirB);
+    U->sort(1324, T, 1.0, 0.0);
+    T.reset();
+    U->write_symm(psio_, PSIF_DFOCC_AMPS);
+    U.reset();
 
-        // Reset L2AB
-        Tnew = std::make_shared<Tensor2d>("New L2 <Ij|Ab>", naoccA, naoccB, navirA, navirB);
-        Tnew->read(psio_, PSIF_DFOCC_AMPS);
-        T = std::make_shared<Tensor2d>("L2 <Ij|Ab>", naoccA, naoccB, navirA, navirB);
-        T->read(psio_, PSIF_DFOCC_AMPS);
-        rms_t2AB = Tnew->rms(T);
-        T->copy(Tnew);
-        Tnew.reset();
-        T->write(psio_, PSIF_DFOCC_AMPS);
+    // Reset L2AB
+    Tnew = std::make_shared<Tensor2d>("New L2 <Ij|Ab>", naoccA, naoccB, navirA, navirB);
+    Tnew->read(psio_, PSIF_DFOCC_AMPS);
+    T = std::make_shared<Tensor2d>("L2 <Ij|Ab>", naoccA, naoccB, navirA, navirB);
+    T->read(psio_, PSIF_DFOCC_AMPS);
+    rms_t2AB = Tnew->rms(T);
+    T->copy(Tnew);
+    Tnew.reset();
+    T->write(psio_, PSIF_DFOCC_AMPS);
 
-        // AB Energy
-        L = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints (IA|jb)", naoccA, navirA, naoccB, navirB);
-        L->gemm(true, false, bQiaA, bQiaB, 1.0, 0.0);
-        K = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints <Ij|Ab>", naoccA, naoccB, navirA, navirB);
-        K->sort(1324, L, 1.0, 0.0);
-        L.reset();
-        EccdAB = T->vector_dot(K);
-        K.reset();
+    // AB Energy
+    L = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints (IA|jb)", naoccA, navirA, naoccB, navirB);
+    L->gemm(true, false, bQiaA, bQiaB, 1.0, 0.0);
+    K = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints <Ij|Ab>", naoccA, naoccB, navirA, navirB);
+    K->sort(1324, L, 1.0, 0.0);
+    L.reset();
+    EccdAB = T->vector_dot(K);
+    K.reset();
 
-        // Overall energy
-        if (orb_opt_ == "FALSE") {
-            EcorrL = EccdAA + EccdBB + EccdAB;
-            EccdL = Eref + EcorrL;
-        }
+    // Overall energy
+    if (orb_opt_ == "FALSE") {
+        EcorrL = EccdAA + EccdBB + EccdAB;
+        EccdL = Eref + EcorrL;
+    }
 
-        // Form T2(IA|jb)
-        U = std::make_shared<Tensor2d>("T2 (IA|jb)", naoccA, navirA, naoccB, navirB);
-        U->sort(1324, T, 1.0, 0.0);
-        T.reset();
-        U->write(psio_, PSIF_DFOCC_AMPS);
-        U.reset();
+    // Form T2(IA|jb)
+    U = std::make_shared<Tensor2d>("T2 (IA|jb)", naoccA, navirA, naoccB, navirB);
+    U->sort(1324, T, 1.0, 0.0);
+    T.reset();
+    U->write(psio_, PSIF_DFOCC_AMPS);
+    U.reset();
 
-        // combined rms
-        double rms_ss = MAX0(rms_t2AA, rms_t2BB);
-        rms_l2 = MAX0(rms_ss, rms_t2AB);
+    // combined rms
+    double rms_ss = MAX0(rms_t2AA, rms_t2BB);
+    rms_l2 = MAX0(rms_ss, rms_t2AB);
 
 }  // end ccd_lambda_energy
-
 
 }  // namespace dfoccwave
 }  // namespace psi

@@ -50,7 +50,6 @@ namespace psi {
 namespace mcscf {
 
 void SCF::read_so_oei() {
-
     S_ = SharedMatrix(mintshelper()->so_overlap()->clone());
     H_ = SharedMatrix(mintshelper()->so_kinetic()->clone());
     H_->add(mintshelper()->so_potential());
@@ -59,7 +58,7 @@ void SCF::read_so_oei() {
     for (int h = 0; h < nirreps; h++) {
         for (int i = 0; i < S->get_rows(h); i++) {
             for (int j = 0; j < S->get_rows(h); j++) {
-                S->set(h, i, j, S_->get(h,i,j));
+                S->set(h, i, j, S_->get(h, i, j));
             }
         }
     }

@@ -85,15 +85,17 @@ class OrientMols(object):
         self.Catommap = []
 
         try:
-            if ((self.Pmol.nallatom() == self.Cmol.nallatom()) and
-               (abs(self.Pmol.nuclear_repulsion_energy() - self.Cmol.nuclear_repulsion_energy()) < 1.0e-3)):
+            if ((self.Pmol.nallatom() == self.Cmol.nallatom())
+                    and (abs(self.Pmol.nuclear_repulsion_energy() - self.Cmol.nuclear_repulsion_energy()) < 1.0e-3)):
                 self.create_orientation_from_molecules(self.Pmol, self.Cmol)
             else:
                 print('qcdb.orient.__init__ debug info')
                 self.Pmol.print_out()
-                print('natom', self.Pmol.natom(), 'NRE', self.Pmol.nuclear_repulsion_energy(), 'rotor', self.Pmol.rotor_type())
+                print('natom', self.Pmol.natom(), 'NRE', self.Pmol.nuclear_repulsion_energy(), 'rotor',
+                      self.Pmol.rotor_type())
                 self.Cmol.print_out()
-                print('natom', self.Cmol.natom(), 'NRE', self.Cmol.nuclear_repulsion_energy(), 'rotor', self.Cmol.rotor_type())
+                print('natom', self.Cmol.natom(), 'NRE', self.Cmol.nuclear_repulsion_energy(), 'rotor',
+                      self.Cmol.rotor_type())
                 raise ValidationError("""OrientMols Molecule arguments differ fatally.""")
         except AttributeError:
             raise ValidationError("""OrientMols must be instantiated with two qcdb.Molecule objects.""")
@@ -127,7 +129,7 @@ class OrientMols(object):
         eye3 = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
 
         # Find translation to CoM, straightforward
-#        com = [ x if abs(x) > NOISY_ZERO else 0.0 for x in com]
+        #        com = [ x if abs(x) > NOISY_ZERO else 0.0 for x in com]
         com = p4mol.center_of_charge()  # avoids trouble of ghost atoms w/center_of_mass
         p4mol.translate(scale(com, -1.0))
         self.Pshift = com
@@ -137,7 +139,7 @@ class OrientMols(object):
         self.Cshift = com
 
         # Find rotation to MoI frame, straightforward
-#        frame = [[ x if abs(x) > NOISY_ZERO else 0.0 for x in ax] for ax in frame]
+        #        frame = [[ x if abs(x) > NOISY_ZERO else 0.0 for x in ax] for ax in frame]
         moi, frame = p4mol.inertial_system(masswt=False, zero=NOISY_ZERO)  # avoids trouble of ghost atoms w/masswt'd
         Psort = sorted(range(3), key=lambda x: moi[x])
         p4mol.rotate(frame)
@@ -150,21 +152,21 @@ class OrientMols(object):
 
         # Find degrees of freedom among axis exchanges
         rotor = p4mol.rotor_type()
-#        if rotor != c4mol.rotor_type():
-#            raise ValidationError("""molPermanent (%s) and molChangeable (%s) of different rotor types.""" % \
-#                (rotor, c4mol.rotor_type()))
+        #        if rotor != c4mol.rotor_type():
+        #            raise ValidationError("""molPermanent (%s) and molChangeable (%s) of different rotor types.""" % \
+        #                (rotor, c4mol.rotor_type()))
         # TODO: is this safe? differences in masses of ghost atoms can cause different rotor types
         if rotor == 'RT_ATOM':
             freebytop = []
-        elif rotor == 'RT_LINEAR':                 # 0  <  IB == IC      inf > B == C
+        elif rotor == 'RT_LINEAR':  # 0  <  IB == IC      inf > B == C
             freebytop = [1, 2]
-        elif rotor == 'RT_SPHERICAL_TOP':          # IA == IB == IC       A == B == C
+        elif rotor == 'RT_SPHERICAL_TOP':  # IA == IB == IC       A == B == C
             freebytop = [0, 1, 2]
         elif rotor == 'RT_PROLATE_SYMMETRIC_TOP':  # IA <  IB == IC       A >  B == C
             freebytop = [1, 2]
-        elif rotor == 'RT_OBLATE_SYMMETRIC_TOP':   # IA == IB <  IC       A == B >  C
+        elif rotor == 'RT_OBLATE_SYMMETRIC_TOP':  # IA == IB <  IC       A == B >  C
             freebytop = [0, 1]
-        elif rotor == 'RT_ASYMMETRIC_TOP':         # IA <  IB <  IC       A >  B >  C
+        elif rotor == 'RT_ASYMMETRIC_TOP':  # IA <  IB <  IC       A >  B >  C
             freebytop = []
 
         # Find possible mappings of axis exchange and flipping that brings Cgeom into coincidence with Pgeom
@@ -194,10 +196,10 @@ class OrientMols(object):
 
             if len(axPhse[Psort[Paxs]]) == 0:
                 print('qcdb.orient.create_orientation_from_molecules debug info')
-                print('\nrotor', rotor, 'Paxs', Paxs, 'Caxs', Caxs,
-                    'allowed', allowed, 'P(axs)', Psort.index(Paxs), 'C(Caxs)', Csort.index(Caxs),
-                    '\nPcolS: ', PcolS, '\nCcolS: ', CcolS, '\nCcolMS: ', CcolMS,
-                    'axExch', axExch, 'axPhse', axPhse)
+                print('\nrotor', rotor,
+                      'Paxs', Paxs, 'Caxs', Caxs, 'allowed', allowed, 'P(axs)', Psort.index(Paxs), 'C(Caxs)',
+                      Csort.index(Caxs), '\nPcolS: ', PcolS, '\nCcolS: ', CcolS, '\nCcolMS: ', CcolMS, 'axExch',
+                      axExch, 'axPhse', axPhse)
                 print('\nPgeom: ')
                 for item in Pgeom:
                     print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
@@ -224,16 +226,18 @@ class OrientMols(object):
             Pwhite = list(range(Nat))
             Cwhite = list(range(Nat))
 
-#            print '\nPgeom: '
-#            for item in Pgeom:
-#                print '       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2])
-#            print '\nCgeom: '
-#            for item in Cgeom:
-#                print '       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2])
+            #            print '\nPgeom: '
+            #            for item in Pgeom:
+            #                print '       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2])
+            #            print '\nCgeom: '
+            #            for item in Cgeom:
+            #                print '       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2])
 
             while len(Pwhite) > 0:
                 Patm = Pwhite[0]
-                sameElem = [at for at in range(Nat) if ((c4mol.symbol(at) == p4mol.symbol(Patm)) or (c4mol.symbol(at) == 'GH'))]
+                sameElem = [
+                    at for at in range(Nat) if ((c4mol.symbol(at) == p4mol.symbol(Patm)) or (c4mol.symbol(at) == 'GH'))
+                ]
                 allowed = list(set(sameElem) & set(Cwhite))
 
                 for Catm in allowed:
@@ -241,21 +245,19 @@ class OrientMols(object):
                         mapMat[Patm] = Catm
                         Pwhite.remove(Patm)
                         Cwhite.remove(Catm)
-#                        print 'matchd on atom', 'Patm', Patm, 'Catm', Catm
+                        #                        print 'matchd on atom', 'Patm', Patm, 'Catm', Catm
                         break
                 else:
-#                    print 'failed on atom', 'Patm', Patm, 'rejecting', exfp
+                    #                    print 'failed on atom', 'Patm', Patm, 'rejecting', exfp
                     break
             else:
-#                print 'accept exchflp', exfp, 'with map', mapMat
+                #                print 'accept exchflp', exfp, 'with map', mapMat
                 break
         else:
             print('else of for', exfp, mapMat)
             print('qcdb.orient.create_orientation_from_molecules debug info')
-            print('\nPatm', Patm, 'Catm', Catm, 'Pwhite', Pwhite,
-                'Cwhite', Cwhite, 'sameElem', sameElem, 'allowed', allowed,
-                '\nCgeom[Catm]: ', Cgeom[Catm], '\nPgeom[Patm]: ', Pgeom[Patm],
-                '\nmapMat', mapMat)
+            print('\nPatm', Patm, 'Catm', Catm, 'Pwhite', Pwhite, 'Cwhite', Cwhite, 'sameElem', sameElem, 'allowed',
+                  allowed, '\nCgeom[Catm]: ', Cgeom[Catm], '\nPgeom[Patm]: ', Pgeom[Patm], '\nmapMat', mapMat)
             print('\nPgeom: ')
             for item in Pgeom:
                 print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
@@ -279,7 +281,8 @@ class OrientMols(object):
         Cgeom = c4mol.geometry()
 
         if not all([all([abs(Cgeom[at][ax] - Pgeom[at][ax]) < COORD_ZERO for ax in range(3)]) for at in range(Nat)]):
-            raise ValidationError("""Geometries unreconcilable between QC programs:\n  P4 %s\n  C4 %s""" % (Pgeom, Cgeom))
+            raise ValidationError("""Geometries unreconcilable between QC programs:\n  P4 %s\n  C4 %s""" %
+                                  (Pgeom, Cgeom))
 
     def transform_coordinates(self, coord):
         """
@@ -323,10 +326,10 @@ class OrientMols(object):
         """
         geom = coord.geometry()
 
-#        print self
-#        print "Original"
-#        for item in geom:
-#            print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
+        #        print self
+        #        print "Original"
+        #        for item in geom:
+        #            print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
 
         # ?????
         #coord.translate(scale(self.Cshift, -1.0))
@@ -334,53 +337,54 @@ class OrientMols(object):
         for item in geom:
             geom2.append(sub(item, self.Cshift))
         geom = geom2
-#        print "Shift"
-#        for item in geom:
-#            print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
+        #        print "Shift"
+        #        for item in geom:
+        #            print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
 
         #coord.rotate(self.Crotate)
         geom2 = mult(geom, self.Crotate)
         geom = geom2
-#        print "Rotate"
-#        for item in geom:
-#            print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
+        #        print "Rotate"
+        #        for item in geom:
+        #            print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
 
         #coord.rotate(self.Cexchflip)
         geom2 = mult(geom, self.Cexchflip)
         geom = geom2
- #       print "ExchFlip"
- #       for item in geom:
- #           print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
+        #       print "ExchFlip"
+        #       for item in geom:
+        #           print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
 
         geom2 = []
         for at in range(coord.natom()):
             geom2.append(geom[self.Catommap[at]])
         coord.set_geometry(geom2)
         geom = geom2
-#        print "AtomMap"
-#        for item in geom:
-#            print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
+        #        print "AtomMap"
+        #        for item in geom:
+        #            print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
 
         #coord.rotate(transpose(self.Protate))
         geom2 = mult(geom, transpose(self.Protate))
         geom = geom2
-#        print "P4 Rotate"
-#        for item in geom:
-#            print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
+        #        print "P4 Rotate"
+        #        for item in geom:
+        #            print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
 
         geom2 = []
         for item in geom:
             geom2.append(add(item, self.Pshift))
         geom = geom2
-#        print "P4 Shift"
-#        for item in geom:
-#            print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
+        #        print "P4 Shift"
+        #        for item in geom:
+        #            print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
 
         Pgeom = self.Pmol.geometry()
         Cgeom = geom
         Nat = len(geom)
         if not all([all([abs(Cgeom[at][ax] - Pgeom[at][ax]) < COORD_ZERO for ax in range(3)]) for at in range(Nat)]):
-            raise ValidationError("""Geometries unreconcilable between QC programs:\n  P4 %s\n  C4 %s""" % (Pgeom, Cgeom))
+            raise ValidationError("""Geometries unreconcilable between QC programs:\n  P4 %s\n  C4 %s""" %
+                                  (Pgeom, Cgeom))
         return geom
 
     def transform_gradient(self, arr):
@@ -393,27 +397,27 @@ class OrientMols(object):
 
         """
         arr = mult(arr, self.Crotate)
-#        print "Rotate"
-#        for item in arr:
-#            print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
+        #        print "Rotate"
+        #        for item in arr:
+        #            print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
 
         arr = mult(arr, self.Cexchflip)
-#        print "ExchFlip"
-#        for item in arr:
-#            print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
+        #        print "ExchFlip"
+        #        for item in arr:
+        #            print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
 
         arr2 = []
         for at in range(len(arr)):
             arr2.append(arr[self.Catommap[at]])
         arr = arr2
-#        print "AtomMap"
-#        for item in arr:
-#            print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
+        #        print "AtomMap"
+        #        for item in arr:
+        #            print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
 
         arr = mult(arr, transpose(self.Protate))
-#        print "P4 Rotate"
-#        for item in arr:
-#            print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
+        #        print "P4 Rotate"
+        #        for item in arr:
+        #            print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
 
         return arr
 

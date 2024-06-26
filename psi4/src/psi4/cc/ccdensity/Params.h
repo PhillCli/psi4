@@ -46,7 +46,7 @@ struct Params {
     int cachelev;
     int aobasis;
     int ref;
-    bool onepdm;            /* produce ONLY the onepdm for properties */
+    bool onepdm; /* produce ONLY the onepdm for properties */
     int relax_opdm;
     int use_zeta;
     int calc_xi;
@@ -118,8 +118,8 @@ struct RHO_Params {
 
 // Describes both an excited state and the transition to it, from the ground state.
 struct TD_Params {
-    int irrep;           // Irrep index of the transition between states.
-    int root;            // Index of the target root within irrep, excluding the ground state.
+    int irrep;  // Irrep index of the transition between states.
+    int root;   // Index of the target root within irrep, excluding the ground state.
     double R0;
     double cceom_energy;
     char L1A_lbl[32];

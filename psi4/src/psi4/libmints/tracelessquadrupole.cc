@@ -36,7 +36,7 @@
 using namespace psi;
 
 // Initialize overlap_recur_ to +2 basis set angular momentum
-TracelessQuadrupoleInt::TracelessQuadrupoleInt(std::vector<SphericalTransform>& st, std::shared_ptr<BasisSet> bs1,
+TracelessQuadrupoleInt::TracelessQuadrupoleInt(std::vector<SphericalTransform> &st, std::shared_ptr<BasisSet> bs1,
                                                std::shared_ptr<BasisSet> bs2)
     : OneBodyAOInt(st, bs1, bs2) {
     int max_am = std::max(basis1()->max_am(), basis2()->max_am());
@@ -54,7 +54,7 @@ TracelessQuadrupoleInt::TracelessQuadrupoleInt(std::vector<SphericalTransform>& 
     buffers_.resize(nchunk_);
 }
 
-TracelessQuadrupoleInt::~TracelessQuadrupoleInt() { }
+TracelessQuadrupoleInt::~TracelessQuadrupoleInt() {}
 
 void TracelessQuadrupoleInt::compute_pair(const libint2::Shell &s1, const libint2::Shell &s2) {
     engine0_->compute(s1, s2);
@@ -74,12 +74,12 @@ void TracelessQuadrupoleInt::compute_pair(const libint2::Shell &s1, const libint
         double Qyz = -engine0_->results()[8][i];
         double Qzz = -engine0_->results()[9][i];
         double R2 = (Qxx + Qyy + Qzz) / 3;
-        const_cast<double*>(engine0_->results()[0])[i] = 1.5 * (Qxx - R2);
-        const_cast<double*>(engine0_->results()[1])[i] = 1.5 * Qxy;
-        const_cast<double*>(engine0_->results()[2])[i] = 1.5 * Qxz;
-        const_cast<double*>(engine0_->results()[3])[i] = 1.5 * (Qyy - R2);
-        const_cast<double*>(engine0_->results()[4])[i] = 1.5 * Qyz;
-        const_cast<double*>(engine0_->results()[5])[i] = 1.5 * (Qzz - R2);
+        const_cast<double *>(engine0_->results()[0])[i] = 1.5 * (Qxx - R2);
+        const_cast<double *>(engine0_->results()[1])[i] = 1.5 * Qxy;
+        const_cast<double *>(engine0_->results()[2])[i] = 1.5 * Qxz;
+        const_cast<double *>(engine0_->results()[3])[i] = 1.5 * (Qyy - R2);
+        const_cast<double *>(engine0_->results()[4])[i] = 1.5 * Qyz;
+        const_cast<double *>(engine0_->results()[5])[i] = 1.5 * (Qzz - R2);
     }
 
     for (int chunk = 0; chunk < 6; ++chunk) {

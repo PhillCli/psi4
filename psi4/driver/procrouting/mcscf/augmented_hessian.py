@@ -26,7 +26,6 @@
 # @END LICENSE
 #
 
-
 import numpy as np
 
 from psi4 import core
@@ -146,8 +145,8 @@ def ah_iteration(mcscf_obj, tol=1e-3, max_iter=15, lindep=1e-14, print_micro=Tru
         norm_dx = (new_dx.sum_of_squares() / orb_grad_ssq)**0.5
 
         if print_micro:
-            core.print_out("      AH microiter %2d   % 18.12e   % 6.4e   % 6.4e\n" % (microi, evals[idx],
-                                                                                      diff_val / evals[idx], norm_dx))
+            core.print_out("      AH microiter %2d   % 18.12e   % 6.4e   % 6.4e\n" %
+                           (microi, evals[idx], diff_val / evals[idx], norm_dx))
 
         if abs(old_val - wlast) < tol and norm_dx < (tol**0.5):
             converged = True

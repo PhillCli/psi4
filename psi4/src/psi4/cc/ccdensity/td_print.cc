@@ -61,5 +61,5 @@ void td_print() {
     }
     outfile->Printf("\n");
 }
-}
+}  // namespace ccdensity
 }  // namespace psi

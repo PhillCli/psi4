@@ -64,4 +64,4 @@ void zero_mat(double **a, int n, int m) {
         memset(a[i], 0, sizeof(double) * m);
     }
 }
-}
+}  // namespace psi

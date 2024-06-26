@@ -214,5 +214,5 @@ void OCCWave::omp2_response_pdms() {
     // outfile->Printf("\n omp2_response_pdms done... \n");
 
 }  // end of omp2_response_pdms
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

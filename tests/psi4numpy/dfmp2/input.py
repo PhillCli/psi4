@@ -35,16 +35,14 @@ psi4.core.print_out('\nBuilding DF ERI tensor Qov...\n')
 t = time.time()
 
 # Build aux basis
-aux = psi4.core.BasisSet.build(wfn.molecule(), "DF_BASIS_MP2",
-                         psi4.core.get_option("DFMP2", "DF_BASIS_MP2"),
-                         "RIFIT", psi4.core.get_global_option('BASIS'))
+aux = psi4.core.BasisSet.build(wfn.molecule(), "DF_BASIS_MP2", psi4.core.get_option("DFMP2", "DF_BASIS_MP2"), "RIFIT",
+                               psi4.core.get_global_option('BASIS'))
 
 # Build and transform a OV basis
 print("Initializing DF_Helper object.")
 dfobj = psi4.core.DFHelper(wfn.basisset(), aux)
 dfobj.set_method("DIRECT")
 dfobj.initialize()
-
 
 print("Transforming the AO->MO integrals.\n")
 dfobj.add_space("O", wfn.Ca_subset("AO", "OCC"))
@@ -54,14 +52,14 @@ dfobj.add_transformation("Qov", "O", "V")
 dfobj.transform()
 Qov = dfobj.get_tensor("Qov")
 
-psi4.core.print_out('...Qov build in %.3f seconds with a shape of %s, %.3f GB.\n'
-                % (time.time() - t, str(Qov.shape), np.prod(Qov.shape) * 8.e-9))
+psi4.core.print_out('...Qov build in %.3f seconds with a shape of %s, %.3f GB.\n' %
+                    (time.time() - t, str(Qov.shape), np.prod(Qov.shape) * 8.e-9))
 
 psi4.core.print_out('\nComputing MP2 energy...\n')
 t = time.time()
 
 # This part of the denominator is identical for all i,j pairs
-vv_denom = - eps_vir.reshape(-1, 1) - eps_vir
+vv_denom = -eps_vir.reshape(-1, 1) - eps_vir
 
 MP2corr_OS = 0.0
 MP2corr_SS = 0.0

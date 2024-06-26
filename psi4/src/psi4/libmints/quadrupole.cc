@@ -39,7 +39,6 @@ using namespace psi;
 QuadrupoleInt::QuadrupoleInt(std::vector<SphericalTransform> &st, std::shared_ptr<BasisSet> bs1,
                              std::shared_ptr<BasisSet> bs2)
     : OneBodyAOInt(st, bs1, bs2) {
-
     int max_am = std::max(basis1()->max_am(), basis2()->max_am());
     int max_nprim = std::max(basis1()->max_nprimitive(), basis2()->max_nprimitive());
 
@@ -55,7 +54,7 @@ QuadrupoleInt::QuadrupoleInt(std::vector<SphericalTransform> &st, std::shared_pt
     buffers_.resize(nchunk_);
 }
 
-QuadrupoleInt::~QuadrupoleInt() { }
+QuadrupoleInt::~QuadrupoleInt() {}
 
 SharedVector QuadrupoleInt::nuclear_contribution(std::shared_ptr<Molecule> mol, const Vector3 &origin) {
     auto sret = std::make_shared<Vector>(6);
@@ -79,7 +78,7 @@ void QuadrupoleInt::compute_pair(const libint2::Shell &s1, const libint2::Shell 
 
     size_t nints = s1.size() * s2.size();
     for (int chunk = 4; chunk < 10; chunk++) {
-        double * ptr = const_cast<double*>(engine0_->results()[chunk]);
+        double *ptr = const_cast<double *>(engine0_->results()[chunk]);
         std::transform(ptr, ptr + nints, ptr, [](double val) -> double { return -val; });
         buffers_[chunk - 4] = engine0_->results()[chunk];
     }

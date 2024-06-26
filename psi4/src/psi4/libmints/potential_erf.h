@@ -55,7 +55,7 @@ class PotentialErfInt : public OneBodyAOInt {
     /// Constructor
     PotentialErfInt(std::vector<SphericalTransform>&, std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>,
                     double omega = 1.0, int deriv = 0);
-    ~PotentialErfInt() override{};
+    ~PotentialErfInt() override {};
 
     void set_origin(const Vector3& _origin) override;
 };
@@ -75,7 +75,7 @@ class PotentialErfComplementInt : public OneBodyAOInt {
     /// Constructor
     PotentialErfComplementInt(std::vector<SphericalTransform>&, std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>,
                               double omega = 1.0, int deriv = 0);
-    ~PotentialErfComplementInt() override{};
+    ~PotentialErfComplementInt() override {};
 
     void set_origin(const Vector3& _origin) override;
 };

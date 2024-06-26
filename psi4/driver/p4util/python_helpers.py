@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """
 Module with PsiAPI helpers for PSIthon `{...}` syntax.
 Also, many Python extensions to core classes:
@@ -47,7 +46,6 @@ __all__ = [
     "set_options",
     "set_module_options",
 ]
-
 
 import math
 import os
@@ -71,6 +69,7 @@ from .exceptions import TestComparisonError, UpgradeHelper, ValidationError
 
 ## Python basis helps
 
+
 @staticmethod
 def _pybuild_basis(
         mol: core.Molecule,
@@ -82,7 +81,7 @@ def _pybuild_basis(
         return_atomlist: bool = False,
         *,
         quiet: bool = False,
-    ) -> Union[core.BasisSet, List[core.BasisSet]]:
+) -> Union[core.BasisSet, List[core.BasisSet]]:
     """Build a primary or auxiliary basis set.
 
     Parameters
@@ -196,7 +195,7 @@ def _core_wavefunction_build(
         basis: Union[None, str, core.BasisSet] = None,
         *,
         quiet: bool = False,
-    ) -> core.Wavefunction:
+) -> core.Wavefunction:
     """Build a wavefunction from minimal inputs, molecule and basis set.
 
     Parameters
@@ -433,7 +432,7 @@ def _core_jk_build(
         jk_type: Optional[str] = None,
         do_wK: Optional[bool] = None,
         memory: Optional[int] = None,
-    ) -> core.JK:
+) -> core.JK:
     """
     Constructs a Psi4 JK object from an input basis.
 
@@ -577,7 +576,8 @@ def set_options(options_dict: Dict[str, Any], verbose: int = 1):
         option = mobj.group('option').upper()
 
         if module:
-            if ((module, option, v) not in [('SCF', 'GUESS', 'READ')]) and ((module, option) not in [('PCM', 'INPUT')]):
+            if ((module, option, v) not in [('SCF', 'GUESS', 'READ')]) and ((module, option) not in [('PCM', 'INPUT')
+                                                                                                     ]):
                 # TODO guess/read exception is for distributed driver. should be handled differently.
                 try:
                     core.set_local_option(module, option, v)
@@ -740,7 +740,7 @@ def basis_helper(block: str, name: str = '', key: str = 'BASIS', set_option: boo
 
 core.OEProp.valid_methods = [
     'DIPOLE', 'QUADRUPOLE', 'MULLIKEN_CHARGES', 'LOWDIN_CHARGES', 'WIBERG_LOWDIN_INDICES', 'MAYER_INDICES',
-    'MBIS_CHARGES','MBIS_VOLUME_RATIOS', 'MO_EXTENTS', 'GRID_FIELD', 'GRID_ESP', 'ESP_AT_NUCLEI', 'NO_OCCUPATIONS'
+    'MBIS_CHARGES', 'MBIS_VOLUME_RATIOS', 'MO_EXTENTS', 'GRID_FIELD', 'GRID_ESP', 'ESP_AT_NUCLEI', 'NO_OCCUPATIONS'
 ]
 
 ## Option helpers
@@ -795,8 +795,10 @@ _qcvar_transitions = {
     "COUNTERPOISE CORRECTED INTERACTION ENERGY": ("CP-CORRECTED INTERACTION ENERGY", 1.7),
     "NON-COUNTERPOISE CORRECTED TOTAL ENERGY": ("NOCP-CORRECTED TOTAL ENERGY", 1.7),
     "NON-COUNTERPOISE CORRECTED INTERACTION ENERGY": ("NOCP-CORRECTED INTERACTION ENERGY", 1.7),
-    "VALIRON-MAYER FUNCTION COUTERPOISE TOTAL ENERGY": ("VALIRON-MAYER FUNCTION COUNTERPOISE TOTAL ENERGY", 1.7),  # note misspelling
-    "VALIRON-MAYER FUNCTION COUTERPOISE INTERACTION ENERGY": ("VMFC-CORRECTED INTERACTION ENERGY", 1.7),  # note misspelling
+    "VALIRON-MAYER FUNCTION COUTERPOISE TOTAL ENERGY":
+    ("VALIRON-MAYER FUNCTION COUNTERPOISE TOTAL ENERGY", 1.7),  # note misspelling
+    "VALIRON-MAYER FUNCTION COUTERPOISE INTERACTION ENERGY":
+    ("VMFC-CORRECTED INTERACTION ENERGY", 1.7),  # note misspelling
 }
 
 _qcvar_cancellations = {
@@ -833,14 +835,14 @@ def _qcvar_warnings(key: str) -> str:
         return replacement
 
     if key.upper() in _qcvar_cancellations:
-        raise UpgradeHelper(key.upper(), "no direct replacement", 1.4, " Consult QCVariables " + ", ".join(_qcvar_cancellations[key.upper()]) + " to recompose the quantity.")
+        raise UpgradeHelper(
+            key.upper(), "no direct replacement", 1.4,
+            " Consult QCVariables " + ", ".join(_qcvar_cancellations[key.upper()]) + " to recompose the quantity.")
 
     return key
 
 
-def plump_qcvar(
-    key: str,
-    val: Union[float, str, List]) -> Union[float, np.ndarray]:
+def plump_qcvar(key: str, val: Union[float, str, List]) -> Union[float, np.ndarray]:
     """Prepare serialized QCVariables for QCSchema AtomicResult.extras["qcvars"] by
     converting flat arrays into numpy, shaped ones and floating strings.
     Unlike _qcvar_reshape_get/set, multipoles aren't compressed or plumped, only reshaped.
@@ -883,7 +885,9 @@ def plump_qcvar(
     elif any((key.upper().endswith(p) or f"{p} -" in key.upper()) for p in _multipole_order):
         p = [p for p in _multipole_order if (key.upper().endswith(p) or f"{p} -" in key.upper())]
         reshaper = tuple([3] * _multipole_order.index(p[0]))
-    elif key.upper() in ["MULLIKEN_CHARGES", "LOWDIN_CHARGES", "MULLIKEN CHARGES", "LOWDIN CHARGES", "SCF TOTAL ENERGIES"]:
+    elif key.upper() in [
+            "MULLIKEN_CHARGES", "LOWDIN_CHARGES", "MULLIKEN CHARGES", "LOWDIN CHARGES", "SCF TOTAL ENERGIES"
+    ]:
         reshaper = (-1, )
     elif "GRADIENT" in key.upper():
         reshaper = (-1, 3)
@@ -929,7 +933,9 @@ def _qcvar_reshape_set(key: str, val: np.ndarray) -> np.ndarray:
         p = [p for p in _multipole_order if (key.upper().endswith(p) or f"{p} -" in key.upper())]
         val = _multipole_compressor(val, _multipole_order.index(p[0]))
         reshaper = (1, -1)
-    elif key.upper() in ["MULLIKEN_CHARGES", "LOWDIN_CHARGES", "MULLIKEN CHARGES", "LOWDIN CHARGES", "SCF TOTAL ENERGIES"]:
+    elif key.upper() in [
+            "MULLIKEN_CHARGES", "LOWDIN_CHARGES", "MULLIKEN CHARGES", "LOWDIN CHARGES", "SCF TOTAL ENERGIES"
+    ]:
         reshaper = (1, -1)
 
     if reshaper:
@@ -965,7 +971,9 @@ def _qcvar_reshape_get(key: str, val: core.Matrix) -> Union[core.Matrix, np.ndar
     elif any((key.upper().endswith(p) or f"{p} -" in key.upper()) for p in _multipole_order):
         p = [p for p in _multipole_order if (key.upper().endswith(p) or f"{p} -" in key.upper())]
         return _multipole_plumper(val.np.reshape((-1, )), _multipole_order.index(p[0]))
-    elif key.upper() in ["MULLIKEN_CHARGES", "LOWDIN_CHARGES", "MULLIKEN CHARGES", "LOWDIN CHARGES", "SCF TOTAL ENERGIES"]:
+    elif key.upper() in [
+            "MULLIKEN_CHARGES", "LOWDIN_CHARGES", "MULLIKEN CHARGES", "LOWDIN CHARGES", "SCF TOTAL ENERGIES"
+    ]:
         reshaper = (-1, )
     if reshaper:
         return val.np.reshape(reshaper)
@@ -1213,7 +1221,8 @@ def _core_set_variable(key: str, val: Union[core.Matrix, np.ndarray, float]) -> 
     # TODO _qcvar_warnings(key)
 
 
-def _core_wavefunction_set_variable(self: core.Wavefunction, key: str, val: Union[core.Matrix, np.ndarray, float]) -> None:
+def _core_wavefunction_set_variable(self: core.Wavefunction, key: str,
+                                    val: Union[core.Matrix, np.ndarray, float]) -> None:
     """Sets scalar or array :ref:`QCVariable <sec:appendices:qcvars>` *key* to *val* on *self*.
 
     Parameters
@@ -1242,17 +1251,20 @@ def _core_wavefunction_set_variable(self: core.Wavefunction, key: str, val: Unio
     """
     if isinstance(val, core.Matrix):
         if self.has_scalar_variable(key):
-            raise ValidationError("psi4.core.Wavefunction.set_variable: Target variable '{key}' already a scalar variable!")
+            raise ValidationError(
+                "psi4.core.Wavefunction.set_variable: Target variable '{key}' already a scalar variable!")
         else:
             self.set_array_variable(key, val)
     elif isinstance(val, np.ndarray):
         if self.has_scalar_variable(key):
-            raise ValidationError("psi4.core.Wavefunction.set_variable: Target variable '{key}' already a scalar variable!")
+            raise ValidationError(
+                "psi4.core.Wavefunction.set_variable: Target variable '{key}' already a scalar variable!")
         else:
             self.set_array_variable(key, core.Matrix.from_array(_qcvar_reshape_set(key, val)))
     else:
         if self.has_array_variable(key):
-            raise ValidationError("psi4.core.Wavefunction.set_variable: Target variable '{key}' already an array variable!")
+            raise ValidationError(
+                "psi4.core.Wavefunction.set_variable: Target variable '{key}' already an array variable!")
         else:
             self.set_scalar_variable(key, val)
 
@@ -1324,7 +1336,8 @@ def _core_variables(include_deprecated_keys: bool = False) -> Dict[str, Union[fl
     return dicary
 
 
-def _core_wavefunction_variables(self, include_deprecated_keys: bool = False) -> Dict[str, Union[float, core.Matrix, np.ndarray]]:
+def _core_wavefunction_variables(self, include_deprecated_keys: bool = False
+                                 ) -> Dict[str, Union[float, core.Matrix, np.ndarray]]:
     """Return all scalar or array :ref:`QCVariables <sec:appendices:qcvars>`
     from *self*.
 
@@ -1380,7 +1393,8 @@ def _core_get_variable(key):
        Errors rather than warn-and-forward.
 
     """
-    raise UpgradeHelper("psi4.core.get_variable", "psi4.core.variable", 1.9, f" Replace `get_variable` with `variable` (or `scalar_variable` for scalar variables only).")
+    raise UpgradeHelper("psi4.core.get_variable", "psi4.core.variable", 1.9,
+                        f" Replace `get_variable` with `variable` (or `scalar_variable` for scalar variables only).")
 
 
 def _core_get_variables():
@@ -1391,7 +1405,10 @@ def _core_get_variables():
        Errors rather than warn-and-forward.
 
     """
-    raise UpgradeHelper("psi4.core.get_variables", "psi4.core.variables", 1.9, f" Replace `psi4.core.get_variables` with `psi4.core.variables` (or `psi4.core.scalar_variables` for scalar variables only).")
+    raise UpgradeHelper(
+        "psi4.core.get_variables", "psi4.core.variables", 1.9,
+        f" Replace `psi4.core.get_variables` with `psi4.core.variables` (or `psi4.core.scalar_variables` for scalar variables only)."
+    )
 
 
 def _core_get_array_variable(key):
@@ -1402,7 +1419,10 @@ def _core_get_array_variable(key):
        Errors rather than warn-and-forward.
 
     """
-    raise UpgradeHelper("psi4.core.get_array_variable", "psi4.core.variable", 1.9, f" Replace `psi4.core.get_array_variable` with `psi4.core.variable` (or `psi4.core.array_variable` for array variables only).")
+    raise UpgradeHelper(
+        "psi4.core.get_array_variable", "psi4.core.variable", 1.9,
+        f" Replace `psi4.core.get_array_variable` with `psi4.core.variable` (or `psi4.core.array_variable` for array variables only)."
+    )
 
 
 def _core_get_array_variables():
@@ -1413,7 +1433,10 @@ def _core_get_array_variables():
        Errors rather than warn-and-forward.
 
     """
-    raise UpgradeHelper("psi4.core.get_array_variables", "psi4.core.variables", 1.9, f" Replace `psi4.core.get_array_variables` with `psi4.core.variables` (or `psi4.core.array_variables` for array variables only).")
+    raise UpgradeHelper(
+        "psi4.core.get_array_variables", "psi4.core.variables", 1.9,
+        f" Replace `psi4.core.get_array_variables` with `psi4.core.variables` (or `psi4.core.array_variables` for array variables only)."
+    )
 
 
 core.get_variable = _core_get_variable
@@ -1430,7 +1453,10 @@ def _core_wavefunction_get_variable(cls, key):
        Errors rather than warn-and-forward.
 
     """
-    raise UpgradeHelper("psi4.core.Wavefunction.get_variable", "psi4.core.Wavefunction.variable", 1.9, f" Replace `psi4.core.Wavefunction.get_variable` with `psi4.core.Wavefunction.variable` (or `psi4.core.Wavefunction.scalar_variable` for scalar variables only).")
+    raise UpgradeHelper(
+        "psi4.core.Wavefunction.get_variable", "psi4.core.Wavefunction.variable", 1.9,
+        f" Replace `psi4.core.Wavefunction.get_variable` with `psi4.core.Wavefunction.variable` (or `psi4.core.Wavefunction.scalar_variable` for scalar variables only)."
+    )
 
 
 def _core_wavefunction_get_array(cls, key):
@@ -1441,7 +1467,10 @@ def _core_wavefunction_get_array(cls, key):
        Errors rather than warn-and-forward.
 
     """
-    raise UpgradeHelper("psi4.core.Wavefunction.get_array", "psi4.core.Wavefunction.variable", 1.9, f" Replace `psi4.core.Wavefunction.get_array` with `psi4.core.Wavefunction.variable` (or `psi4.core.Wavefunction.array_variable` for array variables only).")
+    raise UpgradeHelper(
+        "psi4.core.Wavefunction.get_array", "psi4.core.Wavefunction.variable", 1.9,
+        f" Replace `psi4.core.Wavefunction.get_array` with `psi4.core.Wavefunction.variable` (or `psi4.core.Wavefunction.array_variable` for array variables only)."
+    )
 
 
 def _core_wavefunction_set_array(cls, key, val):
@@ -1452,7 +1481,10 @@ def _core_wavefunction_set_array(cls, key, val):
        Errors rather than warn-and-forward.
 
     """
-    raise UpgradeHelper("psi4.core.Wavefunction.set_array", "psi4.core.Wavefunction.set_variable", 1.9, f" Replace `psi4.core.Wavefunction.set_array` with `psi4.core.Wavefunction.set_variable` (or `psi4.core.Wavefunction.set_array_variable` for array variables only).")
+    raise UpgradeHelper(
+        "psi4.core.Wavefunction.set_array", "psi4.core.Wavefunction.set_variable", 1.9,
+        f" Replace `psi4.core.Wavefunction.set_array` with `psi4.core.Wavefunction.set_variable` (or `psi4.core.Wavefunction.set_array_variable` for array variables only)."
+    )
 
 
 def _core_wavefunction_arrays(cls):
@@ -1463,7 +1495,10 @@ def _core_wavefunction_arrays(cls):
        Errors rather than warn-and-forward.
 
     """
-    raise UpgradeHelper("psi4.core.Wavefunction.arrays", "psi4.core.Wavefunction.variables", 1.9, f" Replace `psi4.core.Wavefunction.arrays` with `psi4.core.Wavefunction.variables` (or `psi4.core.Wavefunction.array_variables` for array variables only).")
+    raise UpgradeHelper(
+        "psi4.core.Wavefunction.arrays", "psi4.core.Wavefunction.variables", 1.9,
+        f" Replace `psi4.core.Wavefunction.arrays` with `psi4.core.Wavefunction.variables` (or `psi4.core.Wavefunction.array_variables` for array variables only)."
+    )
 
 
 core.Wavefunction.get_variable = _core_wavefunction_get_variable
@@ -1530,11 +1565,7 @@ core.Matrix.triplet = staticmethod(_core_triplet)
 
 
 @staticmethod
-def _core_erisieve_build(
-        orbital_basis: core.BasisSet,
-        cutoff: float = 0.0,
-        do_csam: bool = False
-    ) -> core.ERISieve:
+def _core_erisieve_build(orbital_basis: core.BasisSet, cutoff: float = 0.0, do_csam: bool = False) -> core.ERISieve:
     """
     This function previously constructed a Psi4 ERISieve object from an input basis set, with an optional cutoff threshold for
     ERI screening and an optional input to enable CSAM screening (over Schwarz screening).
@@ -1562,7 +1593,10 @@ def _core_erisieve_build(
     >>> sieve = psi4.core.ERISieve.build(bas, cutoff, csam)
     """
 
-    raise UpgradeHelper("ERISieve", "TwoBodyAOInt", 1.8, " The ERISieve class has been removed and replaced with the TwoBodyAOInt class. ERISieve.build(orbital_basis, cutoff, do_csam) can be replaced with the command sequence factory = psi4.core.IntegralFactory(basis); factory.eri(0).")
+    raise UpgradeHelper(
+        "ERISieve", "TwoBodyAOInt", 1.8,
+        " The ERISieve class has been removed and replaced with the TwoBodyAOInt class. ERISieve.build(orbital_basis, cutoff, do_csam) can be replaced with the command sequence factory = psi4.core.IntegralFactory(basis); factory.eri(0)."
+    )
 
 
 core.ERISieve.build = _core_erisieve_build

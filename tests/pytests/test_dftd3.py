@@ -7,18 +7,18 @@ import psi4
 
 pytestmark = [pytest.mark.psi, pytest.mark.api]
 
+
 @uusing("dftd3")
 def test_dftd3_dft_grad_lr3():
     """modified VV10-less B97 functional gradient wB97X-V -> wB97X-D3BJ"""
 
     # stored data from finite differences
-    FD_wb97x_d3 = psi4.core.Matrix.from_list([
-       [  0.03637802044642,    0.06718963272193,    0.00000000000000],
-       [  0.04955519892514,   -0.06340333481039,    0.00000000000000],
-       [ -0.07009043821383,   -0.00834477190196,    0.00000000000000],
-       [  0.02732425404378,   -0.05883094637658,    0.00000000000000],
-       [ -0.02158351760075,    0.03169471018350,    0.05342791683461],
-       [ -0.02158351760075,    0.03169471018350,   -0.05342791683461]])
+    FD_wb97x_d3 = psi4.core.Matrix.from_list([[0.03637802044642, 0.06718963272193, 0.00000000000000],
+                                              [0.04955519892514, -0.06340333481039, 0.00000000000000],
+                                              [-0.07009043821383, -0.00834477190196, 0.00000000000000],
+                                              [0.02732425404378, -0.05883094637658, 0.00000000000000],
+                                              [-0.02158351760075, 0.03169471018350, 0.05342791683461],
+                                              [-0.02158351760075, 0.03169471018350, -0.05342791683461]])
 
     psi4.geometry("""
     0 1
@@ -58,7 +58,7 @@ s16_hf3c_sdftd3 = np.array([-2.4367755433608E-02, -1.4320824084920E-02, -8.06606
 # grep 'Total Energy'
 s16_pbeh3c_xc_orca = np.array([-155.55536461, -78.40881605, -77.14361375])
 # grep 'Dispersion correction'
-s16_pbeh3c_disp_orca = np.array([-0.002717357, -0.001301388 -0.000698117])
+s16_pbeh3c_disp_orca = np.array([-0.002717357, -0.001301388 - 0.000698117])
 # grep 'gCP correction'
 s16_pbeh3c_gcp_orca = np.array([0.007221336, 0.004956005, 0.001998163])
 # grep 'FINAL SINGLE POINT ENERGY'
@@ -118,19 +118,23 @@ s16_r2scan50_psi4 = np.array([-155.6575747, -78.4586347, -77.1962996])
     pytest.param("abs", marks=pytest.mark.long),
     pytest.param("ie", marks=pytest.mark.quick),
 ])
-@pytest.mark.parametrize("mtdbas,ref", [
-    pytest.param("hf-3c/", s16_hf3c_final_orca, marks=[*using("dftd3"), *using("gcp")]),  # MINIX
-    pytest.param("pbeh-3c/", s16_pbeh3c_final_orca, marks=[*using("dftd3"), *using("gcp")]),  # def2-mSVP
-    pytest.param("b97-3c/", s16_b973c_final_orca, marks=[*using("dftd3"), *using("mctc-gcp")]),  # def2-mTZVP
-    pytest.param("r2scan0/def2-svp", s16_r2scan0_psi4),
-    pytest.param("r2scanh/def2-svp", s16_r2scanh_psi4),
-    pytest.param("r2scan50-d4/def2-svp", s16_r2scan50_psi4 + s16_r2scan50_dftd4, marks=using("dftd4")),
-    pytest.param("r2scan50/def2-svp", s16_r2scan50_psi4),
-    pytest.param("r2scan-d4/def2-mTZVPP", s16_r2scan_final_orca + s16_r2scan_dftd4, marks=using("dftd4")),
-    pytest.param("r2scan/def2-mTZVPP", s16_r2scan_final_orca),
-    pytest.param("r2scan-3c/", s16_r2scan_final_orca + s16_r2scan3c_dftd4 + s16_r2scan3c_mctcgcp, marks=[*using("dftd4_350"), *using("mctc-gcp")]),  # def2-mTZVPP
-    pytest.param("wb97x-3c/", s16_wb97x3c_xc_orca + s16_wb97x3c_dftd4, marks=using("dftd4")),  # vDZP
-])
+@pytest.mark.parametrize(
+    "mtdbas,ref",
+    [
+        pytest.param("hf-3c/", s16_hf3c_final_orca, marks=[*using("dftd3"), *using("gcp")]),  # MINIX
+        pytest.param("pbeh-3c/", s16_pbeh3c_final_orca, marks=[*using("dftd3"), *using("gcp")]),  # def2-mSVP
+        pytest.param("b97-3c/", s16_b973c_final_orca, marks=[*using("dftd3"), *using("mctc-gcp")]),  # def2-mTZVP
+        pytest.param("r2scan0/def2-svp", s16_r2scan0_psi4),
+        pytest.param("r2scanh/def2-svp", s16_r2scanh_psi4),
+        pytest.param("r2scan50-d4/def2-svp", s16_r2scan50_psi4 + s16_r2scan50_dftd4, marks=using("dftd4")),
+        pytest.param("r2scan50/def2-svp", s16_r2scan50_psi4),
+        pytest.param("r2scan-d4/def2-mTZVPP", s16_r2scan_final_orca + s16_r2scan_dftd4, marks=using("dftd4")),
+        pytest.param("r2scan/def2-mTZVPP", s16_r2scan_final_orca),
+        pytest.param("r2scan-3c/",
+                     s16_r2scan_final_orca + s16_r2scan3c_dftd4 + s16_r2scan3c_mctcgcp,
+                     marks=[*using("dftd4_350"), *using("mctc-gcp")]),  # def2-mTZVPP
+        pytest.param("wb97x-3c/", s16_wb97x3c_xc_orca + s16_wb97x3c_dftd4, marks=using("dftd4")),  # vDZP
+    ])
 def test_grimme_3c(mtdbas, ref, mode):
 
     s16di = psi4.geometry("""
@@ -184,4 +188,3 @@ def test_grimme_3c(mtdbas, ref, mode):
         psi4.set_options({'basis': 'cc-pvdz'})  # try to confuse method
         ene = psi4.energy(mtdbas, bsse_type='nocp')
         assert psi4.compare_values(kcal * (ref[0] - ref[1] - ref[2]), kcal * ene, 1.1e-3, mtdbas)
-

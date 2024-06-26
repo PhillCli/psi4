@@ -55,7 +55,7 @@ int dpdbuf4::axpy_matrix(const Matrix& MatX, double alpha) {
             throw PSIEXCEPTION("dpdbuf4 and Matrix have different size");
         }
         if (sizeX) {
-            auto X = MatX.pointer(h)[0]; 
+            auto X = MatX.pointer(h)[0];
             auto Y = &(matrix[h][0][0]);
             C_DAXPY(sizeX, alpha, X, 1, Y, 1);
         }
@@ -66,4 +66,4 @@ int dpdbuf4::axpy_matrix(const Matrix& MatX, double alpha) {
     return 0;
 }
 
-}
+}  // namespace psi

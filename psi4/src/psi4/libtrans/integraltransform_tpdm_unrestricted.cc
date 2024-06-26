@@ -143,7 +143,7 @@ void IntegralTransform::backtransform_tpdm_unrestricted() {
                         C_DGEMM('n', 'n', nrows, ncols, nlinks, 1.0, pca[0], nrows, TMP[0], nso_, 0.0,
                                 &K.matrix[h][pq][rs], ncols);
                 } /* Gr */
-            }     /* pq */
+            } /* pq */
             global_dpd_->buf4_mat_irrep_close_block(&J1, h, rowsPerBucket);
 
             global_dpd_->buf4_mat_irrep_init_block(&J2, h, rowsPerBucket);
@@ -171,7 +171,7 @@ void IntegralTransform::backtransform_tpdm_unrestricted() {
                         C_DGEMM('n', 'n', nrows, ncols, nlinks, 1.0, pcb[0], nrows, TMP[0], nso_, 1.0,
                                 &K.matrix[h][pq][rs], ncols);
                 } /* Gr */
-            }     /* pq */
+            } /* pq */
             global_dpd_->buf4_mat_irrep_wrt_block(&K, h, n * rowsPerBucket, thisBucketRows);
             global_dpd_->buf4_mat_irrep_close_block(&J2, h, rowsPerBucket);
         }
@@ -242,7 +242,7 @@ void IntegralTransform::backtransform_tpdm_unrestricted() {
                         C_DGEMM('n', 'n', nrows, ncols, nlinks, 1.0, pcb[0], nrows, TMP[0], nso_, 0.0,
                                 &K.matrix[h][pq][rs], ncols);
                 } /* Gr */
-            }     /* pq */
+            } /* pq */
             global_dpd_->buf4_mat_irrep_wrt_block(&K, h, n * rowsPerBucket, thisBucketRows);
             global_dpd_->buf4_mat_irrep_close_block(&J1, h, rowsPerBucket);
         }
@@ -340,7 +340,7 @@ void IntegralTransform::backtransform_tpdm_unrestricted() {
                         C_DGEMM('n', 'n', nrows, ncols, nlinks, 1.0, pca[0], nrows, TMP[0], nso_, 0.0,
                                 &K.matrix[h][pq][rs], ncols);
                 } /* Gr */
-            }     /* pq */
+            } /* pq */
             global_dpd_->buf4_mat_irrep_close_block(&J1, h, rowsPerBucket);
 
             global_dpd_->buf4_mat_irrep_init_block(&J2, h, rowsPerBucket);
@@ -369,7 +369,7 @@ void IntegralTransform::backtransform_tpdm_unrestricted() {
                         C_DGEMM('n', 'n', nrows, ncols, nlinks, 1.0, pcb[0], nrows, TMP[0], nso_, 1.0,
                                 &K.matrix[h][pq][rs], ncols);
                 } /* Gr */
-            }     /* pq */
+            } /* pq */
             global_dpd_->buf4_mat_irrep_close_block(&J2, h, rowsPerBucket);
             sort_so_tpdm(&K, h, n * rowsPerBucket, thisBucketRows, (h == 0 && n == 0));
             if (write_dpd_so_tpdm_) global_dpd_->buf4_mat_irrep_wrt_block(&K, h, n * rowsPerBucket, thisBucketRows);

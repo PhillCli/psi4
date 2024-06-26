@@ -34,7 +34,7 @@
 
 #include "integrals.h"
 #include <ambit/tensor.h>
-//#include <tensor/core/core.h>
+// #include <tensor/core/core.h>
 
 #include "psi4/libmints/basisset.h"
 #include "psi4/libmints/matrix.h"

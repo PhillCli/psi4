@@ -141,7 +141,7 @@ void stringlist(struct olsen_graph *Graph, struct stringwr **slist, int repl_otf
                               Graph->num_expl_cor_orbs, repl_otf);
             }
         } /* end loop over subgraph codes */
-    }     /* end loop over irreps */
+    } /* end loop over irreps */
 
     /* free the stringwr scratch space */
     if (!repl_otf) {
@@ -429,5 +429,5 @@ void free_stringwr_temps(int nsym) {
     free(Tidx);
     free(Tsgn);
 }
-}
+}  // namespace detci
 }  // namespace psi

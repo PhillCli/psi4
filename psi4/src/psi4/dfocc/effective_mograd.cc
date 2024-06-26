@@ -941,7 +941,7 @@ void DFOCC::oo_grad_terms() {
         // W_AI -= \sum_{Q} \sum_{L} b_LA^Q Z_LI^Q'
         IvoA->contract(true, false, nvirA, noccA, nQ_ref * noccA, M, Z, -0.5, 1.0);
         GFvoA->add(IvoA);
-        //WvoA->add(IvoA);
+        // WvoA->add(IvoA);
         WvoA->axpy(IvoA, 2.0);
         IvoA.reset();
         M.reset();
@@ -1008,7 +1008,7 @@ void DFOCC::oo_grad_terms() {
         // W_ai -= \sum_{Q} \sum_{l} b_la^Q Z_li^Q'
         IvoB->contract(true, false, nvirB, noccB, nQ_ref * noccB, M, Z, -0.5, 1.0);
         GFvoB->add(IvoB);
-        //WvoB->add(IvoB);
+        // WvoB->add(IvoB);
         WvoB->axpy(IvoB, 2.0);
         IvoB.reset();
         M.reset();
@@ -1166,7 +1166,7 @@ void DFOCC::vv_grad_terms() {
         // Z_Q'' = \sum_{CD} b_{CD}^{Q} Z_CD
         K = std::make_shared<Tensor2d>("DF_BASIS_SCF B (Q|VV)", nQ_ref, nvirA, nvirA);
         K->read(psio_, PSIF_DFOCC_INTS, true, true);
-        //K->print();
+        // K->print();
         SharedTensor1d Zq = std::make_shared<Tensor1d>("DF_BASIS_SCF Zp_Q", nQ_ref);
         Zq->gemv(false, K, ZcdA, 1.0, 0.0);
         K.reset();
@@ -1274,8 +1274,8 @@ void DFOCC::vv_grad_terms() {
         K->read(psio_, PSIF_DFOCC_INTS, true, true);
         IvoA->contract(true, false, nvirA, noccA, nQ_ref * nvirA, K, Z, -1.0, 1.0);
         GFvoA->add(IvoA);
-        //WvoA->add(IvoA);
-        WvoA->axpy(IvoA,2.0);
+        // WvoA->add(IvoA);
+        WvoA->axpy(IvoA, 2.0);
         IvoA.reset();
 
         // Clean
@@ -1380,8 +1380,8 @@ void DFOCC::vv_grad_terms() {
         K->read(psio_, PSIF_DFOCC_INTS, true, true);
         IvoB->contract(true, false, nvirB, noccB, nQ_ref * nvirB, K, Z, -1.0, 1.0);
         GFvoB->add(IvoB);
-        //WvoB->add(IvoB);
-        WvoB->axpy(IvoB,2.0);
+        // WvoB->add(IvoB);
+        WvoB->axpy(IvoB, 2.0);
         IvoB.reset();
 
         // Clean

@@ -6,7 +6,6 @@ import numpy as np
 import pytest
 import psi4
 
-
 pytestmark = [pytest.mark.psi, pytest.mark.api, pytest.mark.quick]
 
 
@@ -63,6 +62,6 @@ def test_elec_fields():
         field_ref[ipt] = [
             np.vdot(mock_dmat.np, np.asarray(p4_field_ints[0])),  # Ex
             np.vdot(mock_dmat.np, np.asarray(p4_field_ints[1])),  # Ey
-            np.vdot(mock_dmat.np, np.asarray(p4_field_ints[2]))   # Ez
+            np.vdot(mock_dmat.np, np.asarray(p4_field_ints[2]))  # Ez
         ]
     np.testing.assert_allclose(field_ref, field_val)

@@ -187,16 +187,16 @@ void cc3_t3x() {
                                             XLD.matrix[Gk][k], 1);
 
                             } /* k */
-                        }     /* j */
-                    }         /* i */
+                        } /* j */
+                    } /* i */
 
                     for (Gab = 0; Gab < nirreps; Gab++) {
                         Gc = Gab ^ Gijk; /* totally symmetric */
                         global_dpd_->free_dpd_block(W1[Gab], F.params->coltot[Gab], virtpi[Gc]);
                     }
                 } /* Gk */
-            }     /* Gj */
-        }         /* Gi */
+            } /* Gj */
+        } /* Gi */
 
         free(W1);
 

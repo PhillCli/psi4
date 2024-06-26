@@ -16,17 +16,17 @@ pytestmark = [pytest.mark.psi, pytest.mark.api]
 @pytest.mark.quick
 @pytest.mark.parametrize("distributed", [
     pytest.param(False, id="internal"),
-    pytest.param(True,  id="snowflake"),
+    pytest.param(True, id="snowflake"),
 ])
 def test_qcf_cbs_mbe(distributed, snowflake):
-    
+
     import psi4
     dimer = psi4.geometry("""
     He 2 0 0
     --
     He -2 0 0
     """)
-    
+
     # << pk >> (just to test options passing works)
     #psi4.set_options({"scf_type": "pk"}) #, "e_convergence": 10, "d_convergence": 9})
     #ref_ene = -5.725227008286358
@@ -48,7 +48,7 @@ def test_qcf_cbs_mbe(distributed, snowflake):
 
     assert compare_values(ref_ene, psi4.variable("CURRENT ENERGY"))
     assert compare_values(ref_grad, grad, atol=1.e-7)
-    
+
     if distributed:
         # `get_results` is a closer-to-internals alternative to `get_psi_results`.
         #   It grabs the AtomicResult-compliant QCSchema model directly, rather
@@ -59,10 +59,10 @@ def test_qcf_cbs_mbe(distributed, snowflake):
         print(f'Final gradient = {ret.extras["qcvars"]["CURRENT GRADIENT"]} [E_h/a0]')
         print(f'Final gradient = {ret.return_result} [E_h/a0]')
         print(f'Final energy   = {ret.properties.return_energy} [E_h]')
-    
+
         assert compare_values(ref_ene, ret.extras["qcvars"]["CURRENT ENERGY"], atol=1e-5)
         assert compare_values(ref_grad, ret.extras["qcvars"]["CURRENT GRADIENT"], atol=1e-4)
         assert compare_values(ref_ene, ret.properties.return_energy)
         assert compare_values(ref_grad, ret.return_result)
-    
+
         snowflake.stop()

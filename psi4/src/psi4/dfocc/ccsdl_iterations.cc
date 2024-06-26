@@ -45,14 +45,14 @@ void DFOCC::ccsdl_iterations() {
     SharedTensor2d U, T;
     if (reference_ == "RESTRICTED") {
         // 3-index intermediates
-        //timer_on("CCSD 3-index intr");
-        //ccsd_3index_intr();
-        //timer_off("CCSD 3-index intr");
+        // timer_on("CCSD 3-index intr");
+        // ccsd_3index_intr();
+        // timer_off("CCSD 3-index intr");
 
         // F intermediates
-        //timer_on("CCSD F intr");
-        //ccsd_F_intr();
-        //timer_off("CCSD F intr");
+        // timer_on("CCSD F intr");
+        // ccsd_F_intr();
+        // timer_off("CCSD F intr");
 
         // W intermediates
         ccsdl_Wmnij();
@@ -98,7 +98,7 @@ void DFOCC::ccsdl_iterations() {
         t2.reset();
         l1A->copy(t1A);
 
-    } // if restricted
+    }  // if restricted
     else if (reference_ == "UNRESTRICTED") {
         // W intermediates
         timer_on("CCSDL W intr");
@@ -170,7 +170,7 @@ void DFOCC::ccsdl_iterations() {
         T2.reset();
         L2->write(psio_, PSIF_DFOCC_AMPS);
         //=== END DFUCCSD ===
-    } // else if unrestricted
+    }  // else if unrestricted
 
     //==========================================================================================
     //========================= Title ==========================================================
@@ -195,12 +195,12 @@ void DFOCC::ccsdl_iterations() {
         if (reference_ == "RESTRICTED") {
             Matrix L2("L2", naoccA * navirA, naoccA * navirA);
             Matrix L1("L1", naoccA, navirA);
-            ccsdlDiisManager = std::make_shared<DIISManager>(
-                cc_maxdiis_, "CCSDL DIIS L Amps", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::OnDisk);
+            ccsdlDiisManager = std::make_shared<DIISManager>(cc_maxdiis_, "CCSDL DIIS L Amps",
+                                                             DIISManager::RemovalPolicy::LargestError,
+                                                             DIISManager::StoragePolicy::OnDisk);
             ccsdlDiisManager->set_error_vector_size(L2, L1);
             ccsdlDiisManager->set_vector_size(L2, L1);
-        }
-        else if (reference_ == "UNRESTRICTED") {
+        } else if (reference_ == "UNRESTRICTED") {
             //=== BEGIN DFUCCSD ===
             Matrix L2AA("L2AA", ntri_anti_ijAA, ntri_anti_abAA);
             Matrix L2BB("L2BB", ntri_anti_ijBB, ntri_anti_abBB);
@@ -208,8 +208,9 @@ void DFOCC::ccsdl_iterations() {
             Matrix L1A("L1A", naoccA, navirA);
             Matrix L1B("L1B", naoccB, navirB);
 
-            ccsdlDiisManager = std::make_shared<DIISManager>(
-                    cc_maxdiis_, "CCSDL DIIS L Amps", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::OnDisk);
+            ccsdlDiisManager = std::make_shared<DIISManager>(cc_maxdiis_, "CCSDL DIIS L Amps",
+                                                             DIISManager::RemovalPolicy::LargestError,
+                                                             DIISManager::StoragePolicy::OnDisk);
             ccsdlDiisManager->set_error_vector_size(L2AA, L2BB, L2AB, L1A, L1B);
             ccsdlDiisManager->set_vector_size(L2AA, L2BB, L2AB, L1A, L1B);
             //=== END DFUCCSD ===
@@ -296,9 +297,8 @@ void DFOCC::ccsdl_iterations() {
         bQijA.reset();
         bQiaA.reset();
         bQabA.reset();
-    } // if restricted
+    }  // if restricted
     else if (reference_ == "UNRESTRICTED") {
-
         // Global Tensors
         GtijA = std::make_shared<Tensor2d>("Gtilde Intermediate <I|J>", naoccA, naoccA);
         GtijB = std::make_shared<Tensor2d>("Gtilde Intermediate <i|j>", naoccB, naoccB);
@@ -311,9 +311,8 @@ void DFOCC::ccsdl_iterations() {
         if (dertype == "FIRST" && wfn_type_ != "DF-CCSD(AT)") {
             uccsd_pdm_3index_intr();
             uccsd_pdm_yQia();
-
         }
-    } // else if unrestricted
+    }  // else if unrestricted
 
 }  // end ccsdl_iterations
 }  // namespace dfoccwave

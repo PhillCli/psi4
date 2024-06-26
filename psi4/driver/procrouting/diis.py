@@ -14,9 +14,11 @@ class RemovalPolicy(Enum):
     LargestError = 1
     OldestAdded = 2
 
+
 class StoragePolicy(Enum):
     InCore = 1
     OnDisk = 2
+
 
 def axpy(y, alpha, x):
     if isinstance(y, (core.Matrix, core.Vector)):
@@ -31,6 +33,7 @@ def axpy(y, alpha, x):
             raise TypeError("Unrecognized object type for DIIS.")
     else:
         raise TypeError("Unrecognized object type for DIIS.")
+
 
 def template_helper(*args):
     """
@@ -59,9 +62,15 @@ def template_helper(*args):
 
     return template
 
-class DIIS:
 
-    def __init__(self, max_vecs: int, name: str, removal_policy = RemovalPolicy.LargestError, storage_policy = StoragePolicy.OnDisk, closed_shell = True, engines = {"diis"}):
+class DIIS:
+    def __init__(self,
+                 max_vecs: int,
+                 name: str,
+                 removal_policy=RemovalPolicy.LargestError,
+                 storage_policy=StoragePolicy.OnDisk,
+                 closed_shell=True,
+                 engines={"diis"}):
         # We don't have a good sense for how this class may need to expand, so the current structure is amorphous.
         # Currently supported storage types: ambit.BlockedTensor, Psi.Vector, Psi.Matrix, Psi.dpdfile2, Psi.dpdbuf4, float
 
@@ -78,9 +87,10 @@ class DIIS:
             raise TypeError(f"storage_policy must be a StoragePolicy, not a {type(storage_policy)}")
 
         if not which_import("scipy", return_bool=True) and ("ediis" in engines or "adiis" in engines):
-            raise ModuleNotFoundError("Python module scipy not found. Solve by\n" +
-                                      "    (1) installing it: `conda install scipy` or `pip install scipy`, or" +
-                                      "    (2) de-activating a/ediis with option: `set scf scf_initial_accelerator none`")
+            raise ModuleNotFoundError(
+                "Python module scipy not found. Solve by\n" +
+                "    (1) installing it: `conda install scipy` or `pip install scipy`, or" +
+                "    (2) de-activating a/ediis with option: `set scf scf_initial_accelerator none`")
         self.max_vecs = max_vecs
         self.name = name
         self.storage_policy = storage_policy
@@ -95,11 +105,11 @@ class DIIS:
         if self.storage_policy == StoragePolicy.OnDisk:
             psio = core.IO.shared_object()
             if not psio.open_check(psif.PSIF_LIBDIIS):
-                psio.open(psif.PSIF_LIBDIIS, 1) # 1 = PSIO_OPEN_OLD
+                psio.open(psif.PSIF_LIBDIIS, 1)  # 1 = PSIO_OPEN_OLD
                 self.opened_libdiis = True
         self.created_files = set()
 
-        self.closed_shell = closed_shell # Only needed for A/EDIIS, which doesn't allow ROHF anyways.
+        self.closed_shell = closed_shell  # Only needed for A/EDIIS, which doesn't allow ROHF anyways.
         self.engines = engines
 
     def __del__(self):
@@ -107,11 +117,11 @@ class DIIS:
         if self.opened_libdiis:
             psio = core.IO.shared_object()
             if psio.open_check(psif.PSIF_LIBDIIS):
-                psio.close(psif.PSIF_LIBDIIS, 1) # 1 = KEEP
+                psio.close(psif.PSIF_LIBDIIS, 1)  # 1 = KEEP
 
     def reset_subspace(self):
         """ Wipe all data from previous iterations. """
-        self.stored_vectors = [] # elt. i is entry i
+        self.stored_vectors = []  # elt. i is entry i
         self.iter_num = -1
         # At present, we only cache for DIIS, not EDIIS or ADIIS. In principle, we could, but
         # their quantities are N^2, so we assume the savings are negligible.
@@ -156,7 +166,7 @@ class DIIS:
         """ This is what we'll save an object to disk with."""
         return f"{self.name}: {name} Entry {entry_num}, Item {item_num}"
 
-    def load_quantity(self, name, entry_num, item_num, force_new = True):
+    def load_quantity(self, name, entry_num, item_num, force_new=True):
         """ Load quantity from wherever it's stored, constructing a new object if needed. """
         template_object = self.template[name][item_num]
         if isinstance(template_object, float) or self.storage_policy == StoragePolicy.InCore:
@@ -186,7 +196,6 @@ class DIIS:
 
         return quantity
 
-
     def get_dot_product(self, i: int, j: int):
         """ Get a DIIS dot product. i and j represent entry numbers. """
         key = frozenset([i, j])
@@ -202,7 +211,6 @@ class DIIS:
             self.cached_dot_products[key] = dot_product
             return dot_product
 
-
     def set_error_vector_size(self, *args):
         """ Set the template for the DIIS error. Kept mainly for backwards compatibility. """
         self.template["error"] = template_helper(*args)
@@ -212,7 +220,10 @@ class DIIS:
         self.template["target"] = template_helper(*args)
 
     def build_entry(self, entry, target_index):
-        return {key: [self.copier(elt, self.get_name(key, target_index, i)) for i, elt in enumerate(val)] for key, val in entry.items()}
+        return {
+            key: [self.copier(elt, self.get_name(key, target_index, i)) for i, elt in enumerate(val)]
+            for key, val in entry.items()
+        }
 
     def add_entry(self, *args):
         if self.max_vecs == 0:
@@ -238,9 +249,13 @@ class DIIS:
             elif self.removal_policy == RemovalPolicy.LargestError:
                 target_index = np.argmax([self.get_dot_product(i, i) for i in range(len(self.stored_vectors))])
             else:
-                raise Exception(f"RemovalPolicy {self.removal_policy} not recognized. This is a bug: contact developers.")
+                raise Exception(
+                    f"RemovalPolicy {self.removal_policy} not recognized. This is a bug: contact developers.")
             # Purge imminently-outdated values from cache.
-            self.cached_dot_products = {key: val for key, val in self.cached_dot_products.items() if target_index not in key}
+            self.cached_dot_products = {
+                key: val
+                for key, val in self.cached_dot_products.items() if target_index not in key
+            }
             # Set the new entry.
             self.stored_vectors[target_index] = self.build_entry(entry, target_index)
         else:
@@ -266,7 +281,7 @@ class DIIS:
         diagonals = B.diagonal().copy()
         diagonals[-1] = 1
         if np.all(diagonals > 0):
-            diagonals = diagonals ** (- 0.5)
+            diagonals = diagonals**(-0.5)
             B = np.einsum("i,ij,j -> ij", diagonals, B, diagonals)
             return np.linalg.lstsq(B, rhs, rcond=None)[0][:-1] * diagonals[:-1]
         else:
@@ -281,10 +296,18 @@ class DIIS:
     def adiis_coefficients(self):
         from scipy.optimize import minimize
         self.adiis_populate()
-        result = minimize(self.adiis_energy, np.ones(len(self.stored_vectors)), method="SLSQP",
-                          bounds = tuple((0, 1) for i in self.stored_vectors),
-                          constraints = [{"type": "eq", "fun": lambda x: sum(x) - 1, "jac": lambda x: np.ones_like(x)}],
-                          jac=self.adiis_gradient, tol=5e-6, options={"maxiter": 200})
+        result = minimize(self.adiis_energy,
+                          np.ones(len(self.stored_vectors)),
+                          method="SLSQP",
+                          bounds=tuple((0, 1) for i in self.stored_vectors),
+                          constraints=[{
+                              "type": "eq",
+                              "fun": lambda x: sum(x) - 1,
+                              "jac": lambda x: np.ones_like(x)
+                          }],
+                          jac=self.adiis_gradient,
+                          tol=5e-6,
+                          options={"maxiter": 200})
 
         if not result.success:
             raise Exception("ADIIS minimization failed. File a bug, and include your entire input and output files.")
@@ -315,7 +338,7 @@ class DIIS:
             self.adiis_linear[i] = sum(d.vector_dot(f) for d, f in zip(dD[i], latest_fock))
 
         self.adiis_quadratic = np.zeros((num_entries, num_entries))
-        for i, j in product(range(num_entries), repeat = 2):
+        for i, j in product(range(num_entries), repeat=2):
             self.adiis_quadratic[i][j] = sum(d.vector_dot(f) for d, f in zip(dD[i], dF[j]))
 
         if self.closed_shell:
@@ -334,10 +357,18 @@ class DIIS:
     def ediis_coefficients(self):
         from scipy.optimize import minimize
         self.ediis_populate()
-        result = minimize(self.ediis_energy, np.ones(len(self.stored_vectors)), method="SLSQP",
-                          bounds = tuple((0, 1) for i in self.stored_vectors),
-                          constraints = [{"type": "eq", "fun": lambda x: sum(x) - 1, "jac": lambda x: np.ones_like(x)}],
-                          jac=self.ediis_gradient, tol=5e-6, options={"maxiter": 200})
+        result = minimize(self.ediis_energy,
+                          np.ones(len(self.stored_vectors)),
+                          method="SLSQP",
+                          bounds=tuple((0, 1) for i in self.stored_vectors),
+                          constraints=[{
+                              "type": "eq",
+                              "fun": lambda x: sum(x) - 1,
+                              "jac": lambda x: np.ones_like(x)
+                          }],
+                          jac=self.ediis_gradient,
+                          tol=5e-6,
+                          options={"maxiter": 200})
 
         if not result.success:
             raise Exception("EDIIS minimization failed. File a bug, and include your entire input and output files.")
@@ -360,12 +391,12 @@ class DIIS:
         # D_i F_i + D_j F_j - D_i F_j - D_j F_i; First two terms use broadcasting tricks
         self.ediis_quadratic = diag[:, None] + diag - self.ediis_quadratic - self.ediis_quadratic.T
 
-        self.ediis_quadratic *= -1/2
+        self.ediis_quadratic *= -1 / 2
 
         if self.closed_shell:
             self.ediis_quadratic *= 2
 
-    def extrapolate(self, *args, Dnorm = None):
+    def extrapolate(self, *args, Dnorm=None):
         """ Perform extrapolation. Must be passed in an error metric to decide how to handle hybrid algorithms. """
 
         if {"adiis", "ediis"}.intersection(self.engines) and Dnorm is None:
@@ -425,12 +456,11 @@ class DIIS:
         # libpsio deletion
         psio = core.IO.shared_object()
         if not psio.open_check(psif.PSIF_LIBDIIS):
-            psio.open(psif.PSIF_LIBDIIS, 1) # 1 = PSIO_OPEN_OLD
-        psio.close(psif.PSIF_LIBDIIS, 0) # 0 = DELETE
+            psio.open(psif.PSIF_LIBDIIS, 1)  # 1 = PSIO_OPEN_OLD
+        psio.close(psif.PSIF_LIBDIIS, 0)  # 0 = DELETE
         # ambit deletion
         for filename in self.created_files:
             try:
                 os.remove(filename)
             except FileNotFoundError:
                 pass
-

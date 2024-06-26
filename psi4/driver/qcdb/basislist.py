@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 r"""Module to define a class :py:class:`~BasisFamily` that associates
 fitting basis sets to an orbital basis and to provide functions to
 query appropriate fitting bases for any orbital basis distributed
@@ -33,7 +32,6 @@ with Psi4.
 
 """
 import os
-
 
 basisfamily_list = []
 
@@ -201,6 +199,7 @@ def corresponding_zeta(name):
     for fam in basisfamily_list:
         if sanitize_basisname(fam.ornate) == sanitize_basisname(name):
             return fam.zeta
+
 
 def corresponding_basis(name, role='BASIS'):
     """Function to validate if the orbital basis *name* in coded or

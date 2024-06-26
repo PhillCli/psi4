@@ -5,7 +5,6 @@ import numpy as np
 import pytest
 import psi4
 
-
 pytestmark = pytest.mark.quick
 
 

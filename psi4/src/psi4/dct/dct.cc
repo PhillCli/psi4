@@ -115,8 +115,7 @@ void DCTSolver::dpd_buf4_add(dpdbuf4 *A, dpdbuf4 *B, double alpha) {
     }
 }
 
-DCTSolver::~DCTSolver() {
-}
+DCTSolver::~DCTSolver() {}
 
 }  // namespace dct
 }  // namespace psi

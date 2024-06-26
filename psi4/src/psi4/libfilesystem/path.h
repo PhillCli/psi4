@@ -116,7 +116,7 @@ class path {
 
 bool create_directory(const path &p);
 
-}  // filesystem
-}  // psi
+}  // namespace filesystem
+}  // namespace psi
 
 #endif  // PSI4_CORE_PATH_H

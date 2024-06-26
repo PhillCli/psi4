@@ -33,6 +33,7 @@ import numpy as np
 if TYPE_CHECKING:
     import qcportal
 
+
 def prepare_results(self, client: Optional["qcportal.FractalClient"] = None) -> Dict[str, Any]:
     """Use different levels of theory for different n-body levels.
 
@@ -58,22 +59,22 @@ def prepare_results(self, client: Optional["qcportal.FractalClient"] = None) -> 
     # Get numerical label (index) for supersystem tasks
     sup_level = 0
     levels = []
-    for n,i in enumerate(self.nbodies_per_mc_level):
+    for n, i in enumerate(self.nbodies_per_mc_level):
         if 'supersystem' not in i:
-            levels.append(int(n+1))
+            levels.append(int(n + 1))
         else:
-            sup_level = n+1
+            sup_level = n + 1
 
     nbody_list = self.nbodies_per_mc_level
     quiet = True
 
     for l in sorted(levels)[::-1]:
         self.quiet = quiet
-        self.max_nbody = nbody_list[l-1][-1]
+        self.max_nbody = nbody_list[l - 1][-1]
         results = {k: v for k, v in self.task_list.items() if k.startswith(str(l))}
         results = self.prepare_results(results=results, client=client)
 
-        for n in nbody_list[l-1][::-1]:
+        for n in nbody_list[l - 1][::-1]:
             energy_bsse_dict = {b: 0 for b in self.bsse_type}
 
             for m in range(n - 1, n + 1):
@@ -81,7 +82,7 @@ def prepare_results(self, client: Optional["qcportal.FractalClient"] = None) -> 
                 # Subtract the (n-1)-body contribution from the n-body contribution to get the n-body effect
                 sign = (-1)**(1 - m // n)
                 for b in self.bsse_type:
-                    energy_bsse_dict[b] += sign * results['%s_energy_body_dict' %b.lower()]['%i%s' %(m, b.lower())]
+                    energy_bsse_dict[b] += sign * results['%s_energy_body_dict' % b.lower()]['%i%s' % (m, b.lower())]
 
                 if ptype == 'hessian':
                     hessian_result += sign * results[f'{ptype}_body_dict'][m]
@@ -113,20 +114,21 @@ def prepare_results(self, client: Optional["qcportal.FractalClient"] = None) -> 
         energy_result += supersystem_result.properties.return_energy - components['energy_body_dict'][self.max_nbody]
         for b in self.bsse_type:
             energy_body_contribution[b][self.molecule.nfragments()] = (supersystem_result.properties.return_energy -
-            components['energy_body_dict'][self.max_nbody])
+                                                                       components['energy_body_dict'][self.max_nbody])
 
         if ptype == 'hessian':
-            gradient_result += supersystem_result.extras.qcvars['CURRENT GRADIENT'] - components['gradient_body_dict'][self.max_nbody]
+            gradient_result += supersystem_result.extras.qcvars['CURRENT GRADIENT'] - components['gradient_body_dict'][
+                self.max_nbody]
             hessian_result += supersystem_result.return_result - components[f'{ptype}_body_dict'][self.max_nbody]
 
         elif ptype == 'gradient':
-            gradient_result += np.array(supersystem_result.return_result).reshape((-1, 3)) - components[f'{ptype}_body_dict'][self.max_nbody]
-
+            gradient_result += np.array(supersystem_result.return_result).reshape(
+                (-1, 3)) - components[f'{ptype}_body_dict'][self.max_nbody]
 
     for b in self.bsse_type:
         for n in energy_body_contribution[b]:
             energy_body_dict[b][n] = sum(
-                    [energy_body_contribution[b][i] for i in range(1, n + 1) if i in energy_body_contribution[b]])
+                [energy_body_contribution[b][i] for i in range(1, n + 1) if i in energy_body_contribution[b]])
 
     is_embedded = self.embedding_charges
     for b in self.bsse_type:

@@ -62,7 +62,7 @@ std::map<std::string, SharedMatrix> CCEnergyWavefunction::get_amplitudes() {
             Dimension virtpi_ = nmopi_ - (occpi_ + frzcpi_);
             cachelist = cacheprep_rhf(options_.get_int("CACHELEVEL"), cachefiles.data());
             spaces = {DPDMOSpace{'o', "ijkl", occpi_}, DPDMOSpace{'v', "abcd", virtpi_}};
-        } else /*UHF*/{
+        } else /*UHF*/ {
             Dimension aoccpi_ = nalphapi_ - frzcpi_;
             Dimension boccpi_ = nbetapi_ - frzcpi_;
             Dimension avirtpi_ = nmopi_ - nalphapi_;

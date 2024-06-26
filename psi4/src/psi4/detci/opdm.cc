@@ -118,7 +118,7 @@ void CIWavefunction::form_opdm() {
             }
         }
         opdm_list = opdm(Ivec, Jvec, states_vec);
-        for (const auto& tdm : opdm_list) {
+        for (const auto &tdm : opdm_list) {
             opdm_map_[tdm[0]->name()] = tdm[0];
             opdm_map_[tdm[1]->name()] = tdm[1];
             opdm_map_[tdm[2]->name()] = tdm[2];
@@ -343,9 +343,9 @@ std::vector<std::vector<SharedMatrix> > CIWavefunction::opdm(SharedCIVector Ivec
                                        Jnbs, Jnas, Iac, Ibc, Inas, Inbs);
                         }
                     } /* end loop over Jbuf */
-                }     /* end loop over Ibuf transpose */
-            }         /* end loop over Ibuf */
-        }             /* end icore==0 */
+                } /* end loop over Ibuf transpose */
+            } /* end loop over Ibuf */
+        } /* end icore==0 */
 
         else if (Parameters_->icore == 1) { /* whole vectors in-core */
             Ivec->read(Iroot, 0);
@@ -366,7 +366,7 @@ std::vector<std::vector<SharedMatrix> > CIWavefunction::opdm(SharedCIVector Ivec
                                    Ivec->blocks_[Iblock], Jac, Jbc, Jnas, Jnbs, Iac, Ibc, Inas, Inbs);
                 }
             } /* end loop over Iblock */
-        }     /* end icore==1 */
+        } /* end icore==1 */
 
         else if (Parameters_->icore == 2) { /* icore==2 */
             for (Ibuf = 0; Ibuf < Ivec->buf_per_vect_; Ibuf++) {
@@ -432,12 +432,12 @@ std::vector<std::vector<SharedMatrix> > CIWavefunction::opdm(SharedCIVector Ivec
                                 }
 
                             } /* end loop over Jblock */
-                        }     /* end Ivec offdiag */
+                        } /* end Ivec offdiag */
 
                     } /* end loop over Iblock */
-                }     /* end loop over Jbuf */
-            }         /* end loop over Ibuf */
-        }             /* end icore==2 */
+                } /* end loop over Jbuf */
+            } /* end loop over Ibuf */
+        } /* end icore==2 */
 
         else {
             throw PSIEXCEPTION("CIWavefunction::opdm: unrecognized core option!\n");
@@ -500,7 +500,6 @@ std::vector<std::vector<SharedMatrix> > CIWavefunction::opdm(SharedCIVector Ivec
             opdm_root_vec = {alpha_transpose, beta_transpose, sum_transpose};
             opdm_list.push_back(opdm_root_vec);
         }
-
 
     } /* end loop over states_vec */
 
@@ -650,5 +649,5 @@ void CIWavefunction::ci_nat_orbs() {
 /*- Process::environment.globals["CI ROOT n QUADRUPOLE"] -*/
 /*- Process::environment.globals["CI ROOT n -> ROOT m DIPOLE"] -*/
 /*- Process::environment.globals["CI ROOT n -> ROOT m QUADRUPOLE"] -*/
-}
+}  // namespace detci
 }  // namespace psi

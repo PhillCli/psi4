@@ -252,7 +252,7 @@ void DCTSolver::transform_core_integrals_RHF() {
     global_dpd_->file2_close(&H);
 
     global_dpd_->file2_init(&H, PSIF_LIBTRANS_DPD, 0, ID('V'), ID('V'), "H <V|V>");
-    const auto &V_slice = slices_.at("ACTIVE_VIR_A");
+    const auto& V_slice = slices_.at("ACTIVE_VIR_A");
     temp = *aH.get_block(V_slice);
     temp.write_to_dpdfile2(&H);
     global_dpd_->file2_close(&H);

@@ -99,7 +99,7 @@ void CIWavefunction::transform_ci_integrals() {
     }
 
     auto act_space = std::make_shared<MOSpace>('X', orbitals, indices);
-    std::vector<std::shared_ptr<MOSpace>> spaces {act_space};
+    std::vector<std::shared_ptr<MOSpace>> spaces{act_space};
 
     IntegralTransform* ints =
         new IntegralTransform(H_, Cdrc, Cact, Cvir, Cfzv, spaces, IntegralTransform::TransformationType::Restricted,

@@ -79,7 +79,7 @@ def oeprop(wfn: core.Wavefunction, *args: List[str], **kwargs):
         # If we're doing MBIS, we want the free-atom volumes
         # in order to compute volume ratios,
         # but only if we're calling oeprop as the whole molecule
-        free_atom = kwargs.get('free_atom',False)
+        free_atom = kwargs.get('free_atom', False)
         if "MBIS_VOLUME_RATIOS" in prop.upper() and not free_atom:
             core.print_out("  Computing free-atom volumes\n")
             free_atom_volumes(wfn)
@@ -354,7 +354,12 @@ def libint2_configuration() -> Dict[str, List[int]]:
 
 def _l2_config_style_eri_llll():
     skel = {"onebody_": [], "eri_c4_": [], "eri_c3_": [], "eri_c2_": []}
-    skel_re = {"onebody_": r"onebody_\w_d\d", "eri_c4_": r"eri_\w..._d\d", "eri_c3_":  r"eri_\w.._d\d", "eri_c2_": r"eri_\w._d\d"}
+    skel_re = {
+        "onebody_": r"onebody_\w_d\d",
+        "eri_c4_": r"eri_\w..._d\d",
+        "eri_c3_": r"eri_\w.._d\d",
+        "eri_c2_": r"eri_\w._d\d"
+    }
 
     amstr = "SPDFGHIKLMNOQRTUVWXYZ"
     libint2_configuration = core._libint2_configuration()
@@ -409,12 +414,15 @@ def _l2_config_style_eri_c4():
 
 def libint2_print_out() -> None:
     ams = libint2_configuration()
-    core.print_out("   => Libint2 <=\n\n");
+    core.print_out("   => Libint2 <=\n\n")
     # when L2 is pure cmake core.print_out(core.libint2_citation());
 
-    core.print_out(f"    Primary   basis highest AM E, G, H:  {', '.join(('-' if d is None else str(d)) for d in ams['eri'])}\n")
-    core.print_out(f"    Auxiliary basis highest AM E, G, H:  {', '.join(('-' if d is None else str(d)) for d in ams['eri3'])}\n")
-    core.print_out(f"    Onebody   basis highest AM E, G, H:  {', '.join(('-' if d is None else str(d)) for d in ams['onebody'])}\n")
+    core.print_out(
+        f"    Primary   basis highest AM E, G, H:  {', '.join(('-' if d is None else str(d)) for d in ams['eri'])}\n")
+    core.print_out(
+        f"    Auxiliary basis highest AM E, G, H:  {', '.join(('-' if d is None else str(d)) for d in ams['eri3'])}\n")
+    core.print_out(
+        f"    Onebody   basis highest AM E, G, H:  {', '.join(('-' if d is None else str(d)) for d in ams['onebody'])}\n"
+    )
     # excluding sph_emultipole
     core.print_out(f"    Solid Harmonics ordering:            {core.libint2_solid_harmonics_ordering()}\n")
-

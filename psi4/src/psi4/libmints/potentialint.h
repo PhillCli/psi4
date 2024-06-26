@@ -52,8 +52,8 @@ class BasisSet;
  * NB: This code must be specified in the .h file in order for the compiler to properly in-line the functors. (TDC)
  */
 class PCMPotentialInt : public PotentialInt {
-
     std::vector<std::unique_ptr<libint2::Engine>> engines_;
+
    public:
     PCMPotentialInt(std::vector<SphericalTransform> &, std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>,
                     int deriv = 0);
@@ -91,7 +91,9 @@ class ContractOverDensityFunctor {
     void finalize(int num_threads) {}
     ContractOverDensityFunctor(size_t /*ncenters*/, double *charges, SharedMatrix D)
         : pD_(D->pointer()), charges_(charges) {}
-    void operator()(int bf1, int bf2, int center, double integral, int thread) { charges_[center] += pD_[bf1][bf2] * integral; }
+    void operator()(int bf1, int bf2, int center, double integral, int thread) {
+        charges_[center] += pD_[bf1][bf2] * integral;
+    }
 };
 
 class ContractOverChargesFunctor {

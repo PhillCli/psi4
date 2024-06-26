@@ -669,8 +669,8 @@ void L3_AAB(double ***W1, int nirreps, int I, int Gi, int J, int Gj, int K, int 
                 W1[Gab][ab][c] /= denom;
 
             } /* c */
-        }     /* ab */
-    }         /* Gab */
+        } /* ab */
+    } /* Gab */
 
     for (Gab = 0; Gab < nirreps; Gab++) {
         Gc = Gab ^ Gijk; /* assumes totally symmetric! */

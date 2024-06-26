@@ -47,21 +47,18 @@ def harvest_output(outtext):
 
     NUMBER = "((?:[-+]?\\d*\\.\\d+(?:[DdEe][-+]?\\d+)?)|(?:[-+]?\\d+\\.\\d*(?:[DdEe][-+]?\\d+)?))"
 
-#    # Process NRE
-#    mobj = re.search(r'^\s+' + r'(?:Nuclear Repulsion Energy =)' + r'\s+' + NUMBER + r'\s+hartrees\s*$',
-#        outtext, re.MULTILINE)
-#    if mobj:
-#        print('matched nre')
-#        psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(1)
+    #    # Process NRE
+    #    mobj = re.search(r'^\s+' + r'(?:Nuclear Repulsion Energy =)' + r'\s+' + NUMBER + r'\s+hartrees\s*$',
+    #        outtext, re.MULTILINE)
+    #    if mobj:
+    #        print('matched nre')
+    #        psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(1)
 
     # Process HF  UNTESTED
     mobj = re.search(
-        r'^\s+' + r'(?:Nuclear Repulsion Energy =)' + r'\s+' + NUMBER + r'\s+hartrees\s*' +
-        r'(?:.*?)' +
-        r'(?:Hartree-Fock SCF calculation)' +
-        r'(?:.*?)' +
-        r'^\s+\d+\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + 'Convergence criterion met' + r'\s*$',
-        outtext, re.MULTILINE | re.DOTALL)
+        r'^\s+' + r'(?:Nuclear Repulsion Energy =)' + r'\s+' + NUMBER + r'\s+hartrees\s*' + r'(?:.*?)' +
+        r'(?:Hartree-Fock SCF calculation)' + r'(?:.*?)' + r'^\s+\d+\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' +
+        'Convergence criterion met' + r'\s*$', outtext, re.MULTILINE | re.DOTALL)
     if mobj:
         print('matched hf')
         psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(1)
@@ -84,7 +81,7 @@ def harvest_output(outtext):
 #        psivar['DFT TOTAL ENERGY'] = mobj.group(3)
 #        psivar['DFT FUNCTIONAL TOTAL ENERGY'] = mobj.group(3) - mboj.group(2)
 
-    # Process DFT-D3  UNTESTED
+# Process DFT-D3  UNTESTED
 #    mobj = re.search(
 #        r'(?:grimme3)' + r'\s*' +
 #        r'(?:.*?)' +
@@ -103,16 +100,15 @@ def harvest_output(outtext):
 
 # /^((?!PART).)*$/
 
-    # Process DFT no-D or internal-D
+# Process DFT no-D or internal-D
     mobj = re.search(
-#        r'((?!grimme3).)*' + r'\s*' +  # severe negative performance impact
-#        r'(?:.*?)' +
-        r'^\s+' + r'(?:Nuclear Repulsion Energy =)' + r'\s+' + NUMBER + r'\s+hartrees\s*' +
-        r'(?:.*?)' +
-        r'(?:HF-DFT SCF calculation)' +
-        r'(?:.*?)' +
-        r'^\s+\d+\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + 'Convergence criterion met' + r'\s*$',
-        outtext, re.MULTILINE | re.DOTALL | re.IGNORECASE)
+        #        r'((?!grimme3).)*' + r'\s*' +  # severe negative performance impact
+        #        r'(?:.*?)' +
+        r'^\s+' + r'(?:Nuclear Repulsion Energy =)' + r'\s+' + NUMBER + r'\s+hartrees\s*' + r'(?:.*?)' +
+        r'(?:HF-DFT SCF calculation)' + r'(?:.*?)' + r'^\s+\d+\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' +
+        'Convergence criterion met' + r'\s*$',
+        outtext,
+        re.MULTILINE | re.DOTALL | re.IGNORECASE)
     if mobj:
         print('matched dft')
         psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(1)
@@ -128,14 +124,14 @@ def harvest_output(outtext):
         # negative grimme3 lookahead goes here
         #r'^\s+' + r'(?:Nuclear Repulsion Energy =)' + r'\s+' + NUMBER + r'\s+hartrees\s*' +
         #r'(?:.*?)' +
-        r'(?:HF-DFT SCF calculation)' +
-        r'(?:.*?)' +
+        r'(?:HF-DFT SCF calculation)' + r'(?:.*?)' +
         #r'^\s+\d+\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + 'Convergence criterion met' + r'\s*' +
         #r'(?:.*?)' +
         # need a not "Hartree-Fock SCF calculation" here so DFT @@@ MP2 not caught?
         r'^\s*' + r'(?:Total  (?:RI)?MP2   correlation energy =)' + r'\s+' + NUMBER + r'\s+' + r'au' + r'\s*' +
         r'^\s+' + r'(?:(?:RI)?MP2         total energy =)' + r'\s+' + NUMBER + r'\s+' + r'au' + r'\s*$',
-        outtext, re.MULTILINE | re.DOTALL | re.IGNORECASE)
+        outtext,
+        re.MULTILINE | re.DOTALL | re.IGNORECASE)
     if mobj:
         print('matched dhdft')
         #psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(1)
@@ -145,14 +141,14 @@ def harvest_output(outtext):
 
     # Process MP2
     mobj = re.search(
-        r'(?:Hartree-Fock SCF calculation)' +
-        r'(?:.*?)' +
+        r'(?:Hartree-Fock SCF calculation)' + r'(?:.*?)' +
         #r'^\s+\d+\s+' + NUMBER + r'\s+' + NUMBER + r'\s+' + 'Convergence criterion met' + r'\s*' +
         #r'(?:.*?)' +
         # need a not "Hartree-Fock SCF calculation" here so DFT @@@ MP2 not caught?
-        r'^\s*' + r'(?:Total  RIMP2   correlation energy =)' + r'\s+' + NUMBER + r'\s+' + r'au' + r'\s*' +
-        r'^\s+' + r'(?:RIMP2         total energy =)' + r'\s+' + NUMBER + r'\s+' + r'au' + r'\s*$',
-        outtext, re.MULTILINE | re.DOTALL | re.IGNORECASE)
+        r'^\s*' + r'(?:Total  RIMP2   correlation energy =)' + r'\s+' + NUMBER + r'\s+' + r'au' + r'\s*' + r'^\s+' +
+        r'(?:RIMP2         total energy =)' + r'\s+' + NUMBER + r'\s+' + r'au' + r'\s*$',
+        outtext,
+        re.MULTILINE | re.DOTALL | re.IGNORECASE)
     if mobj:
         print('matched mp2')
         #psivar['NUCLEAR REPULSION ENERGY'] = mobj.group(1)
@@ -161,6 +157,7 @@ def harvest_output(outtext):
         psivar['MP2 CORRELATION ENERGY'] = mobj.group(1)
         #psivar['DOUBLE-HYBRID CORRECTION ENERGY'] = mobj.group(1)
         print(psivar)
+
 
 # TODO: need to split on 'Q-Chem begins' or 'Quantum Leap' or something
 
@@ -194,9 +191,8 @@ def harvest_output(outtext):
 #            if submobj:
 #                psivar['%s' % (submobj.group(1))] = submobj.group(2)
 
-    # Process Completion
-    mobj = re.search(r'Thank you very much for using Q-Chem.  Have a nice day.',
-        outtext, re.MULTILINE)
+# Process Completion
+    mobj = re.search(r'Thank you very much for using Q-Chem.  Have a nice day.', outtext, re.MULTILINE)
     if mobj:
         psivar['SUCCESS'] = True
 
@@ -236,7 +232,6 @@ def muster_basis(bas):
 
 
 class Infile(qcformat.InputFormat2):
-
     def __init__(self, mem, mol, mtd, der, opt):
         qcformat.InputFormat2.__init__(self, mem, mol, mtd, der, opt)
 
@@ -270,7 +265,7 @@ class Infile(qcformat.InputFormat2):
         # Handle calc type and quantum chemical method
         mdccmd, mdckw = procedures['energy'][self.method](self.method, self.dertype)
 
-## make options from imdb only user options (currently non-existent). set basis and castup from here.
+        ## make options from imdb only user options (currently non-existent). set basis and castup from here.
         # Handle driver vs input/default keyword reconciliation
         userkw = self.options  # p4util.prepare_options_for_modules()
         userkw = options.reconcile_options2(userkw, memkw)
@@ -288,6 +283,7 @@ class Infile(qcformat.InputFormat2):
 
         # Assemble infile pieces
         return cmtcmd + memcmd + molcmd + optcmd + mdccmd + litcmd
+
 
 #'hf'
 #'df-hf'
@@ -313,9 +309,9 @@ class Infile(qcformat.InputFormat2):
 def muster_cdsgroup_options():
     text = ''
     options = defaultdict(lambda: defaultdict(dict))
-#    options['GLOBALS']['E_CONVERGENCE']['value'] = 8
-#    options['SCF']['GUESS']['value'] = 'sad'
-#    options['SCF']['MAXITER']['value'] = 200
+    #    options['GLOBALS']['E_CONVERGENCE']['value'] = 8
+    #    options['SCF']['GUESS']['value'] = 'sad'
+    #    options['SCF']['MAXITER']['value'] = 200
     options['QCHEM']['QCHEM_MEM_STATIC']['value'] = 512
     options['QCHEM']['QCHEM_XC_GRID']['value'] = '000100000302'
     options['QCHEM']['QCHEM_THRESH']['value'] = 12
@@ -453,6 +449,7 @@ def muster_modelchem(name, dertype):
     else:
         raise ValidationError("""Requested Psi4 computational methods %d is not available.""" % (lowername))
 
+
 #    # Set clobbering
 #    if 'CFOUR_DERIV_LEVEL' in options['CFOUR']:
 #        options['CFOUR']['CFOUR_DERIV_LEVEL']['clobber'] = True
@@ -467,7 +464,7 @@ def muster_modelchem(name, dertype):
 
 procedures = {
     'energy': {
-        'wb97x-v'       : muster_modelchem,
+        'wb97x-v': muster_modelchem,
     }
 }
 

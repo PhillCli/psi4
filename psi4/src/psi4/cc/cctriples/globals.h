@@ -26,8 +26,8 @@
  * @END LICENSE
  */
 
-#ifndef CCTRIPLES_GLOBALS_H  
-#define CCTRIPLES_GLOBALS_H  
+#ifndef CCTRIPLES_GLOBALS_H
+#define CCTRIPLES_GLOBALS_H
 
 /*! \file
     \ingroup CCTRIPLES
@@ -53,6 +53,6 @@ namespace cctriples {
 
 EXTERN struct MOInfo moinfo;
 EXTERN struct Params params;
-}
+}  // namespace cctriples
 }  // namespace psi
 #endif

@@ -27,7 +27,6 @@
 #
 # @END LICENSE
 #
-
 """Run on a single gbs file to get a periodic table printout or on two to compare gbs contents."""
 
 from __future__ import print_function
@@ -121,7 +120,8 @@ for el in elements:
                 tbs = bs.print_detail(out='tmpB.txt')
                 rtbs = rbs.print_detail(out='tmpR.txt')
                 try:
-                    outdiff = subprocess.check_output("diff -bwy -W 180 tmpB.txt tmpR.txt >> basisdunningdiffer.txt", shell=True)
+                    outdiff = subprocess.check_output("diff -bwy -W 180 tmpB.txt tmpR.txt >> basisdunningdiffer.txt",
+                                                      shell=True)
                     #outdiff = subprocess.check_output("diff -bw --context=1 tmpB.txt tmpR.txt >> basisdunningdiffer.txt", shell=True)
                 except subprocess.CalledProcessError:
                     pass

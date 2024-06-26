@@ -103,10 +103,10 @@ std::vector<std::pair<int, int>> build_shell_pair_list_no_spdata(std::shared_ptr
     std::vector<std::vector<std::pair<int, int>>> threads_sp_list(nthreads);
 
     threshold *= threshold;
-    //TODO: Eventually we need to make sure we set the threshold appropriately.  When set to zero, all pairs
-    // are considered, as they were previously.  Turning this to some function of the integral screening
-    // threshold will start to screen out some integrals, breaking some of the more sensitive test cases in
-    // the process.  Therefore this should be done separately from the integral rewrite.
+    // TODO: Eventually we need to make sure we set the threshold appropriately.  When set to zero, all pairs
+    //  are considered, as they were previously.  Turning this to some function of the integral screening
+    //  threshold will start to screen out some integrals, breaking some of the more sensitive test cases in
+    //  the process.  Therefore this should be done separately from the integral rewrite.
     threshold = 0.0;
 
 #pragma omp parallel num_threads(nthreads)

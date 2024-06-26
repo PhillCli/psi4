@@ -354,8 +354,8 @@ double SAPT2p::disp220t(int AAfile, const char *AAlabel, const char *ARlabel, co
 
 double SAPT2p::disp220tccd(int AAnum, const char *AA_label, int Rnum, const char *AR_label, const char *RR_label,
                            int BBnum, const char *BS_label, int ampnum, const char *tarar, const char *tbsar,
-                           double *evalsA, double *evalsB, size_t noccA, size_t nvirA, size_t foccA, size_t noccB, size_t nvirB,
-                           size_t foccB) {
+                           double *evalsA, double *evalsB, size_t noccA, size_t nvirA, size_t foccA, size_t noccB,
+                           size_t nvirB, size_t foccB) {
     double energy = 0.0;
 
     noccA -= foccA;

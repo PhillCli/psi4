@@ -47,8 +47,8 @@ using namespace psi;
 namespace psi {
 
 std::string LibXCFunctional::xclib_description() {
-    auto xclib = "   => LibXC <=\n\n    Version " + std::string(xc_version_string()) + "\n    " +
-                         xc_reference() + " (" + xc_reference_doi() + ")";
+    auto xclib = "   => LibXC <=\n\n    Version " + std::string(xc_version_string()) + "\n    " + xc_reference() +
+                 " (" + xc_reference_doi() + ")";
     return xclib;
 }
 
@@ -186,7 +186,9 @@ LibXCFunctional::LibXCFunctional(std::string xc_name, bool unpolarized) {
 LibXCFunctional::~LibXCFunctional() { xc_func_end(xc_functional_.get()); }
 std::shared_ptr<Functional> LibXCFunctional::build_polarized() {
     if (!unpolarized_) {
-        throw PSIEXCEPTION("LibXCFunctional: Trying to build_polarized_functional from a polarized functional. Are you sure you meant to?");
+        throw PSIEXCEPTION(
+            "LibXCFunctional: Trying to build_polarized_functional from a polarized functional. Are you sure you meant "
+            "to?");
     }
     // Build functional
     auto func = std::make_shared<LibXCFunctional>(xc_func_name_, false);

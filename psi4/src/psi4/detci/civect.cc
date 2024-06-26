@@ -372,7 +372,7 @@ void CIvect::set(size_t vl, int nb, int incor, int ms0, int *iac, int *ibc, int 
                 blocks_[i] = (double **)malloc(sizeof(double *));
         }
         buffer_size_ = vectlen_;
-    }                       /* end icore==1 */
+    } /* end icore==1 */
     else if (icore_ == 2) { /* one symmetry block is held at a time */
                             /* figure out which symmetry block is largest */
         for (i = 0, maxbufsize = 0; i < nirreps_; i++) {
@@ -388,7 +388,7 @@ void CIvect::set(size_t vl, int nb, int incor, int ms0, int *iac, int *ibc, int 
                 blocks_[i] = (double **)malloc(sizeof(double *));
         }
         buffer_size_ = maxbufsize;
-    }                       /* end icore==2 */
+    } /* end icore==2 */
     else if (icore_ == 0) { /* only one subblock in core at once */
         for (i = 0, maxbufsize = 0; i < num_blocks_; i++) {
             if (Ia_size_[i] > maxrows) maxrows = Ia_size_[i];
@@ -403,7 +403,7 @@ void CIvect::set(size_t vl, int nb, int incor, int ms0, int *iac, int *ibc, int 
         // CDS 11/5/97: Revise buffer_size, the size of the biggest buffer
         // buffer_size = maxrows * maxcols;   Made buffers too large
         buffer_size_ = maxbufsize;  // Why didn't I do it this way before?
-    }                               /* end icore==0 */
+    } /* end icore==0 */
     else {
         outfile->Printf("CIvect::set(): unrecognized option for icore = %d\n", icore_);
         return;
@@ -1189,7 +1189,7 @@ void CIvect::init_vals(int ivect, int nvals, int *alplist, int *alpidx, int *bet
             }
             write(ivect, buf);
         } /* end loop over buf */
-    }     /* end icore=0 */
+    } /* end icore=0 */
 }
 
 void CIvect::set_vals(int ivect, int nvals, int *alplist, int *alpidx, int *betlist, int *betidx, int *blknums,
@@ -1262,7 +1262,7 @@ void CIvect::set_vals(int ivect, int nvals, int *alplist, int *alpidx, int *betl
             }
             if (vec_modified) write(ivect, buf);
         } /* end loop over buf */
-    }     /* end icore=0 */
+    } /* end icore=0 */
 }
 
 void CIvect::extract_vals(int ivect, int nvals, int *alplist, int *alpidx, int *betlist, int *betidx, int *blknums,
@@ -1330,7 +1330,7 @@ void CIvect::extract_vals(int ivect, int nvals, int *alplist, int *alpidx, int *
             }
             if (vec_modified) write(ivect, buf);
         } /* end loop over buf */
-    }     /* end icore=0 */
+    } /* end icore=0 */
 }
 
 /*
@@ -1435,11 +1435,11 @@ void CIvect::symnorm(double a, int vecode, int gather_vec) {
                         }
                     }
                 } /* end loop over blocks */
-            }     /* end diagonal irrep case */
+            } /* end diagonal irrep case */
             if (gather_vec) h0block_gather_vec(vecode);
             write(cur_vect_, buf);
         } /* end loop over buffers */
-    }     /* end icore==2 */
+    } /* end icore==2 */
 
     else if (icore_ == 0) { /* one RAS block at a time */
         for (buf = 0; buf < buf_per_vect_; buf++) {
@@ -1676,7 +1676,7 @@ void CIvect::symmetrize(double phase, int iblock) {
                 }
             }
         } /* end loop over blocks */
-    }     /* end icore==2 */
+    } /* end icore==2 */
 
     else if (icore_ == 0) { /* one RAS block at a time */
         ac = Ia_code_[iblock];
@@ -2886,7 +2886,7 @@ void CIvect::h0block_buf_init() {
                 CI_H0block_->buf_member[buf][i] = tmparr[i];
             }
         } /* end loop over bufs */
-    }     /* end icore==2 */
+    } /* end icore==2 */
     else {
         CI_H0block_->buf_member = (int **)malloc(buf_per_vect_ * sizeof(int *));
         for (buf = 0; buf < buf_per_vect_; buf++) {
@@ -2903,7 +2903,7 @@ void CIvect::h0block_buf_init() {
                 CI_H0block_->buf_member[buf][i] = tmparr[i];
             }
         } /* end loop over bufs */
-    }     /* end icore==0 */
+    } /* end icore==0 */
 
     free(tmparr);
 }
@@ -4170,8 +4170,8 @@ double CIvect::ssq(struct stringwr *alplist, struct stringwr *betlist, double **
                 smin_spls += tval;
 
             } /* end loop over Ib */
-        }     /* end loop over Ia excitations */
-    }         /* end loop over Ia */
+        } /* end loop over Ia excitations */
+    } /* end loop over Ia */
 
     S2 = -smin_spls;
 

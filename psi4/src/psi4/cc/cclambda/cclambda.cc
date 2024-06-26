@@ -59,29 +59,29 @@
 namespace psi {
 namespace cclambda {
 
-double pseudoenergy(const struct L_Params& L_params);
+double pseudoenergy(const struct L_Params &L_params);
 void G_build(int L_irr);
-void L1_build(const struct L_Params& L_params);
-void L2_build(const struct L_Params& L_params);
+void L1_build(const struct L_Params &L_params);
+void L2_build(const struct L_Params &L_params);
 void sort_amps(int L_irr);
 void Lsave(int L_irr);
-void Lnorm(const struct L_Params& L_params);
+void Lnorm(const struct L_Params &L_params);
 void Lmag();
 double overlap(int L_irr);
-void Lsave_index(const struct L_Params& L_params);
-void Lamp_write(const struct L_Params& L_params);
+void Lsave_index(const struct L_Params &L_params);
+void Lamp_write(const struct L_Params &L_params);
 void check_ortho(struct L_Params *pL_params);
 void projections(struct L_Params *pL_params);
 void L_zero(int irrep);
 void c_clean(dpdfile2 *LIA, dpdfile2 *Lia, dpdbuf4 *LIJAB, dpdbuf4 *Lijab, dpdbuf4 *LIjAb);
-void L_clean(const struct L_Params& pL_params);
-void zeta_norm(const struct L_Params& pL_params);
+void L_clean(const struct L_Params &pL_params);
+void zeta_norm(const struct L_Params &pL_params);
 void spinad_amps();
 void hbar_extra();
 void ortho_Rs(struct L_Params *pL_params, int current_L);
 
-void cc2_L1_build(const struct L_Params& L_params);
-void cc2_L2_build(const struct L_Params& L_params);
+void cc2_L1_build(const struct L_Params &L_params);
+void cc2_L2_build(const struct L_Params &L_params);
 void cc2_Gai_build(int L_irr);
 void cc2_hbar_extra();
 
@@ -297,7 +297,7 @@ double CCLambdaWavefunction::compute_energy() {
         }
         if (pL_params[i].ground) {
             auto LR_overlap = overlap(pL_params[i].irrep);
-            std::string gs_name; // Which theory's lambda equations did we just solve?
+            std::string gs_name;  // Which theory's lambda equations did we just solve?
             if (params.wfn == "CC3" || params.wfn == "EOM_CC3") {
                 gs_name = "CC3";
             } else if (params.wfn == "CC2" || params.wfn == "EOM_CC2") {
@@ -346,10 +346,14 @@ double CCLambdaWavefunction::compute_energy() {
         // Run cctriples
         if (psi::cctriples::cctriples(reference_wavefunction_, options_) == Success) {
             energy_ = Process::environment.globals["CURRENT ENERGY"];
-            set_scalar_variable("A-(T) CORRECTION ENERGY", reference_wavefunction_->scalar_variable("A-(T) CORRECTION ENERGY"));
-            set_scalar_variable("A-CCSD(T) CORRELATION ENERGY", reference_wavefunction_->scalar_variable("A-CCSD(T) CORRELATION ENERGY"));
-            set_scalar_variable("A-CCSD(T) TOTAL ENERGY", reference_wavefunction_->scalar_variable("A-CCSD(T) TOTAL ENERGY"));
-            set_scalar_variable("CURRENT CORRELATION ENERGY", reference_wavefunction_->scalar_variable("A-CCSD(T) CORRELATION ENERGY"));
+            set_scalar_variable("A-(T) CORRECTION ENERGY",
+                                reference_wavefunction_->scalar_variable("A-(T) CORRECTION ENERGY"));
+            set_scalar_variable("A-CCSD(T) CORRELATION ENERGY",
+                                reference_wavefunction_->scalar_variable("A-CCSD(T) CORRELATION ENERGY"));
+            set_scalar_variable("A-CCSD(T) TOTAL ENERGY",
+                                reference_wavefunction_->scalar_variable("A-CCSD(T) TOTAL ENERGY"));
+            set_scalar_variable("CURRENT CORRELATION ENERGY",
+                                reference_wavefunction_->scalar_variable("A-CCSD(T) CORRELATION ENERGY"));
             set_scalar_variable("CURRENT ENERGY", reference_wavefunction_->scalar_variable("A-CCSD(T) TOTAL ENERGY"));
         } else {
             energy_ = 0.0;
@@ -411,7 +415,7 @@ void CCLambdaWavefunction::exit_io() {
 }
 
 /* put copies of L for excited states in LAMPS with irrep and index label */
-void Lsave_index(const struct L_Params& L_params) {
+void Lsave_index(const struct L_Params &L_params) {
     int L_irr;
     dpdfile2 L1;
     dpdbuf4 L2, LIjAb, LIjbA;
@@ -525,7 +529,7 @@ void L_zero(int L_irr) {
 }
 
 /* Cleaning out L vectors for open-shell cases  */
-void L_clean(const struct L_Params& L_params) {
+void L_clean(const struct L_Params &L_params) {
     int L_irr, i;
     dpdfile2 LIA, Lia;
     dpdbuf4 LIJAB, Lijab, LIjAb;
@@ -548,7 +552,7 @@ void L_clean(const struct L_Params& L_params) {
     global_dpd_->buf4_close(&LIjAb);
 }
 
-void zeta_norm(const struct L_Params& L_params) {
+void zeta_norm(const struct L_Params &L_params) {
     int Z_irr, i;
     dpdfile2 ZIA, Zia;
     dpdbuf4 ZIJAB, Zijab, ZIjAb;

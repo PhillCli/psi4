@@ -66,11 +66,13 @@ inline int64_t i_offset64(int64_t i) { return ((i * (i + 1)) >> 1); }
  *  \param mol Molecule to form mapping matrix from.
  *  \returns Integer matrix of dimension natoms X nirreps.
  */
-  std::vector<std::vector<int>> compute_atom_map(const std::shared_ptr<Molecule> &mol, double tol = 0.1, bool suppress_mol_print_in_exc = false);
-  std::vector<std::vector<int>> compute_atom_map(const Molecule *mol, double tol = 0.1, bool suppress_mol_print_in_exc = false);
+std::vector<std::vector<int>> compute_atom_map(const std::shared_ptr<Molecule> &mol, double tol = 0.1,
+                                               bool suppress_mol_print_in_exc = false);
+std::vector<std::vector<int>> compute_atom_map(const Molecule *mol, double tol = 0.1,
+                                               bool suppress_mol_print_in_exc = false);
 /// @}
 
-  ShellMapType compute_shell_map(const std::vector<std::vector<int>> & atom_map, const std::shared_ptr<BasisSet> &);
+ShellMapType compute_shell_map(const std::vector<std::vector<int>> &atom_map, const std::shared_ptr<BasisSet> &);
 
 /////////////////////////////////////////////////////////////////////////////
 
@@ -83,12 +85,12 @@ struct contribution {
 };
 
 struct SO {
-  std::vector<contribution> cont;
-  int len() const { return cont.size(); };
-  int length;
+    std::vector<contribution> cont;
+    int len() const { return cont.size(); };
+    int length;
 
-  SO();
-  SO(int);
+    SO();
+    SO(int);
 
     void set_length(int);
     void reset_length(int);
@@ -98,8 +100,8 @@ struct SO {
 };
 
 struct SO_block {
-  std::vector<SO> so;
-  int len() const {return so.size(); };
+    std::vector<SO> so;
+    int len() const { return so.size(); };
 
     SO_block();
     SO_block(int);

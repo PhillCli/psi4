@@ -52,7 +52,6 @@ psi4.compare_values(linear_dipole, json_ret.properties.scf_dipole_moment[2], 3, 
 dist = np.linalg.norm(json_ret.molecule.geometry[0] - json_ret.molecule.geometry[1])  #TEST
 psi4.compare_values(1.732, dist, 4, "HF Bond Distance")  #TEST
 
-
 json_ret = psi4.schema_wrapper.run_qcschema(noorient_data)
 
 # Orients to Z axis
@@ -63,4 +62,3 @@ psi4.compare_values(linear_dipole, json_ret.properties.scf_dipole_moment[1], 3, 
 psi4.compare_values(0.0, json_ret.properties.scf_dipole_moment[2], 3, "DIPOLE Z")  #TEST
 psi4.compare_arrays([0.0, 0.0, 0.0], json_ret.molecule.geometry[0], 3, "H Position")  #TEST
 psi4.compare_arrays([0.0, 1.732, 0.0], json_ret.molecule.geometry[1], 3, "F Position")  #TEST
-

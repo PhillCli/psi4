@@ -26,7 +26,6 @@
 # @END LICENSE
 #
 import re
-
 """
 Superfunctional builder function & handlers.
 The new definition of functionals is based on a dictionary with the following structure
@@ -101,6 +100,7 @@ dict_functionals.update(dh_functionals.functional_list)
 if new_d4_api is False:
     dict_functionals.pop("r2scan3c")
 
+
 def get_functional_aliases(functional_dict):
     if "alias" in functional_dict:
         aliases = [each.lower() for each in functional_dict["alias"]]
@@ -129,9 +129,9 @@ for functional_name in dict_functionals:
             # "bless" the original functional dft/*_functionals dispersion definition including aliases
             dashcoeff_supplement[disp['type']]['definitions'][formal] = disp
             # add omitted default parameters of the dispersion correction
-            for p,val in dashcoeff[disp['type']]['default'].items():
+            for p, val in dashcoeff[disp['type']]['default'].items():
                 if p not in dashcoeff_supplement[disp['type']]['definitions'][formal]['params'].keys():
-                    dashcoeff_supplement[disp['type']]['definitions'][formal]['params'][p]=val
+                    dashcoeff_supplement[disp['type']]['definitions'][formal]['params'][p] = val
             # generate dispersion aliases for every functional alias
             for nominal_dispersion_level, resolved_dispersion_level in _dispersion_aliases.items():
                 if resolved_dispersion_level == disp["type"]:
@@ -242,11 +242,13 @@ def check_consistency(func_dictionary):
         allowed_params = sorted(dashcoeff[_dispersion_aliases[disp["type"]]]["default"].keys())
         if "params" not in disp or sorted(disp["params"].keys()) != allowed_params:
             raise ValidationError(
-                f"SCF: Dispersion params for {name} ({list(disp['params'].keys())}) must include all ({allowed_params})")
+                f"SCF: Dispersion params for {name} ({list(disp['params'].keys())}) must include all ({allowed_params})"
+            )
     # 3d) check formatting for dispersion citation
         if "citation" in disp:
             cit = disp["citation"]
-            if cit and not ((cit.startswith('    ') and cit.endswith('\n')) or re.match(r"^10.\d{4,9}/[-._;()/:A-Z0-9]+$", cit)):
+            if cit and not (
+                (cit.startswith('    ') and cit.endswith('\n')) or re.match(r"^10.\d{4,9}/[-._;()/:A-Z0-9]+$", cit)):
                 raise ValidationError(
                     f"SCF: All citations should have the form '    A. Student, B. Prof, J. Goodstuff Vol, Page, Year\n', not : {cit}"
                 )
@@ -393,7 +395,8 @@ def build_superfunctional_from_dictionary(func_dictionary, npoints, deriv, restr
         sup.set_citation(func_dictionary["citation"])
     if "description" in func_dictionary:
         if "doi" in func_dictionary:
-            sup.set_description(func_dictionary["description"].replace("\n", "") + "  (" + func_dictionary["doi"].lstrip() + ")")
+            sup.set_description(func_dictionary["description"].replace("\n", "") + "  (" +
+                                func_dictionary["doi"].lstrip() + ")")
         else:
             sup.set_description(func_dictionary["description"])
 

@@ -10,10 +10,14 @@ pytestmark = [pytest.mark.psi, pytest.mark.api]
 @pytest.mark.cbs
 def test_allen_focal_point():
     be = psi4.geometry("Be")
-    
-    psi4.energy("allen_focal_point", scf_basis="cc-pV[TQ5]Z", corl_basis="cc-pV[Q5]Z", delta_basis="cc-pV[Q5]Z", delta2_basis="cc-pV[Q5]Z")
+
+    psi4.energy("allen_focal_point",
+                scf_basis="cc-pV[TQ5]Z",
+                corl_basis="cc-pV[Q5]Z",
+                delta_basis="cc-pV[Q5]Z",
+                delta2_basis="cc-pV[Q5]Z")
     psi4.core.print_variables()
-    
+
     assert compare_values(-14.57305004, psi4.variable("CBS REFERENCE ENERGY"), 7, "scf tq5")
     #ADD VAR assert compare_values(-0.06148737, psi4.variable("CBS CORL ENERGY"), 7, "corl mp2 q5")
     assert compare_values(-0.01767880, psi4.variable("CBS DELTA1 TOTAL ENERGY"), 7, "delta1 ccsd q5")
@@ -27,10 +31,11 @@ def test_allen_focal_point():
     # 5 tasks: (t)/tz, (t)/qz, (t)/5z, t/tz, t(q)/dz
     # lowering the basis sets keeps the test within packaged L2's AM bounds
 
+
 @pytest.mark.cbs
 @pytest.mark.parametrize("distributed", [
     pytest.param(False, id="internal"),
-    pytest.param(True,  id="snowflake", marks=using("qcfractal")),
+    pytest.param(True, id="snowflake", marks=using("qcfractal")),
 ])
 def test_cbs_with_managed_conditions(distributed, snowflake):
 

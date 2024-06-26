@@ -331,5 +331,5 @@ void DFCoupledCluster::T1Integrals() {
     delete[] rowdims;
     psio->close(PSIF_DCC_QSO, 1);
 }
-}
-}
+}  // namespace fnocc
+}  // namespace psi

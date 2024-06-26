@@ -97,4 +97,4 @@ void die_if_not_converged() {
         outfile->Printf("Iterations did not converge.");
     }
 }
-}
+}  // namespace psi

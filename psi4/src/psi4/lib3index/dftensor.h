@@ -172,8 +172,8 @@ class PSI_API DFTensor {
              int naocc, int navir, Options& options);
 
     /**
-    * Assumes all orbitals are active and pull options from enviroment
-    **/
+     * Assumes all orbitals are active and pull options from enviroment
+     **/
     DFTensor(std::shared_ptr<BasisSet> primary, std::shared_ptr<BasisSet> auxiliary, SharedMatrix C, int nocc,
              int nvir);
     ~DFTensor();
@@ -187,5 +187,5 @@ class PSI_API DFTensor {
     SharedMatrix Imo();
     SharedMatrix Idfmo();
 };
-}
+}  // namespace psi
 #endif

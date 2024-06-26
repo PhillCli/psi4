@@ -359,7 +359,7 @@ void HET1_Wmbej() {
         global_dpd_->file2_close(&tIA);
         global_dpd_->file2_close(&tia);
 
-    }                           /** ROHF **/
+    } /** ROHF **/
     else if (params.ref == 2) { /** UHF **/
 
         /* W(mb,je) <-- <mb||ej> */

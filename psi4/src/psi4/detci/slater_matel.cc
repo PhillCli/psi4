@@ -435,47 +435,47 @@ double CIWavefunction::matrix_element(SlaterDeterminant *I, SlaterDeterminant *J
     return (0.0);
 }
 
-//#ifdef STANDALONE
-// main() {
-//   unsigned char string1[2], string2[2], string3[2];
+// #ifdef STANDALONE
+//  main() {
+//    unsigned char string1[2], string2[2], string3[2];
 //
-//   SlaterDeterminant A;
-//   SlaterDeterminant B;
-//   SlaterDeterminant C;
-//   double value = 0.0 ;
+//    SlaterDeterminant A;
+//    SlaterDeterminant B;
+//    SlaterDeterminant C;
+//    double value = 0.0 ;
 //
-//   string1[0] = (unsigned char) 0;
-//   string1[1] = (unsigned char) 1;
-//   string2[0] = (unsigned char) 0;
-//   string2[1] = (unsigned char) 2;
-//   string3[0] = (unsigned char) 0;
-//   string3[1] = (unsigned char) 3;
+//    string1[0] = (unsigned char) 0;
+//    string1[1] = (unsigned char) 1;
+//    string2[0] = (unsigned char) 0;
+//    string2[1] = (unsigned char) 2;
+//    string3[0] = (unsigned char) 0;
+//    string3[1] = (unsigned char) 3;
 //
-//   A.set(2, string1, 2, string1);
-//   B.set(2, string1, 2, string3);
+//    A.set(2, string1, 2, string1);
+//    B.set(2, string1, 2, string3);
 //
-//  outfile->Printf("Slater determinant A \n");
-//   A.print() ;
-//  outfile->Printf("Slater determinant B \n");
-//   B.print() ;
-//  outfile->Printf("Matrix element = %lf\n", matrix_element(&A,&B));
-//}
+//   outfile->Printf("Slater determinant A \n");
+//    A.print() ;
+//   outfile->Printf("Slater determinant B \n");
+//    B.print() ;
+//   outfile->Printf("Matrix element = %lf\n", matrix_element(&A,&B));
+// }
 
-//#ifdef PRINT_INTS
-// double get_twoel(int i, int j, int k, int l)
+// #ifdef PRINT_INTS
+//  double get_twoel(int i, int j, int k, int l)
 //{
-//  outfile->Printf("(%d %d | %d %d) ", i, j, k, l);
-//   return(0.0);
-//}
+//   outfile->Printf("(%d %d | %d %d) ", i, j, k, l);
+//    return(0.0);
+// }
 //
-// double get_onel(int i, int j)
+//  double get_onel(int i, int j)
 //{
-//  outfile->Printf("(%d|h|%d) ", i, j);
-//   return(0.0) ;
-//}
-//#endif
+//   outfile->Printf("(%d|h|%d) ", i, j);
+//    return(0.0) ;
+// }
+// #endif
 
-//#endif
+// #endif
 
 }  // namespace detci
 }  // namespace psi

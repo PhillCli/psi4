@@ -213,13 +213,15 @@ def _write_nbo(self, name: str):
     with open(name, 'w') as f:
         f.write(NBO_file)
 
+
 core.Wavefunction.write_nbo = _write_nbo
 
+
 def _write_molden(
-    self: core.Wavefunction,
-    filename: Optional[str] = None,
-    do_virtual: Optional[bool] = None,
-    use_natural: bool = False,
+        self: core.Wavefunction,
+        filename: Optional[str] = None,
+        do_virtual: Optional[bool] = None,
+        use_natural: bool = False,
 ):
     """Writes wavefunction information in *wfn* to *filename* in
     molden format. Will write natural orbitals from *density* (MO basis) if supplied.
@@ -285,7 +287,7 @@ def _write_molden(
 
     if do_virtual is None:
         do_virtual = bool(core.get_option("SCF", "MOLDEN_WITH_VIRTUAL"))
-    
+
     basisset = self.basisset()
     mol = self.molecule()
     # Header and geometry (Atom, Atom #, Z, x, y, z)
@@ -304,14 +306,14 @@ def _write_molden(
             for prim in range(shell.nprimitive):
                 mol_string += f"{shell.exp(prim):20.10f} {shell.original_coef(prim):20.10f}\n"
         mol_string += '\n'
-    
-    # 
+
+    #
     if use_natural:
         # Alphas
         nmopi = self.nmopi()
         #MO_Da = core.Matrix("MO Alpha Density Matrix", nmopi, nmopi)
         #MO_Da.transform(self.Da(), self.Ca().transpose())
-        MO_Da = self.Da_subset("MO") #MO_Da.transform(self.Da(), self.Ca())
+        MO_Da = self.Da_subset("MO")  #MO_Da.transform(self.Da(), self.Ca())
         NO_Ra = core.Matrix("NO Alpha Rotation Matrix", nmopi, nmopi)
         occupation_a = core.Vector(nmopi)
         MO_Da.diagonalize(NO_Ra, occupation_a, core.DiagonalizeOrder.Descending)
@@ -335,7 +337,6 @@ def _write_molden(
         epsilon_a = self.epsilon_a()
         epsilon_b = self.epsilon_b()
 
-
     # Convert C matrices to AO MO basis. Ca_subset costs information about which symmetry an orbital originally had, which is why we can't use it.
     aotoso = self.aotoso()
     Ca_ao_mo = core.doublet(aotoso, Ca, False, False).nph
@@ -345,7 +346,7 @@ def _write_molden(
     ao_normalizer = ao_overlap.diagonal()**(-1 / 2)
     Ca_ao_mo = core.Matrix.from_array([(i.T / ao_normalizer).T for i in Ca_ao_mo])
     Cb_ao_mo = core.Matrix.from_array([(i.T / ao_normalizer).T for i in Cb_ao_mo])
-    
+
     # Reorder AO x MO matrix to fit Molden conventions
     '''
     Reordering expected by Molden
@@ -360,26 +361,26 @@ def _write_molden(
     Molden does not handle angular momenta higher than G
     '''
     molden_cartesian_order = [
-        [2,0,1,0,0,0,0,0,0,0,0,0,0,0,0], # p
-        [0,3,4,1,5,2,0,0,0,0,0,0,0,0,0], # d
-        [0,4,5,3,9,6,1,8,7,2,0,0,0,0,0], # f
-        [0,3,4,9,12,10,5,13,14,7,1,6,11,8,2] # g
+        [2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # p
+        [0, 3, 4, 1, 5, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # d
+        [0, 4, 5, 3, 9, 6, 1, 8, 7, 2, 0, 0, 0, 0, 0],  # f
+        [0, 3, 4, 9, 12, 10, 5, 13, 14, 7, 1, 6, 11, 8, 2]  # g
     ]
     nirrep = self.nirrep()
-    count = 0 # Keeps track of count for reordering
-    temp_a = Ca_ao_mo.clone() # Placeholders for original AO x MO matrices
+    count = 0  # Keeps track of count for reordering
+    temp_a = Ca_ao_mo.clone()  # Placeholders for original AO x MO matrices
     temp_b = Cb_ao_mo.clone()
 
     for i in range(basisset.nshell()):
         am = basisset.shell(i).am
         if (am == 1 and basisset.has_puream()) or (am > 1 and am < 5 and basisset.shell(i).is_cartesian()):
             for j in range(basisset.shell(i).nfunction):
-                for h in range(nirrep):        
+                for h in range(nirrep):
                     for k in range(Ca_ao_mo.coldim()[h]):
-                        Ca_ao_mo.set(h,count + molden_cartesian_order[am-1][j],k,temp_a.get(h,count+j,k))
-                        Cb_ao_mo.set(h,count + molden_cartesian_order[am-1][j],k,temp_b.get(h,count+j,k))
+                        Ca_ao_mo.set(h, count + molden_cartesian_order[am - 1][j], k, temp_a.get(h, count + j, k))
+                        Cb_ao_mo.set(h, count + molden_cartesian_order[am - 1][j], k, temp_b.get(h, count + j, k))
         count += basisset.shell(i).nfunction
-        
+
     # Dump MO information
     if basisset.has_puream():
         # For historical reasons, D and F can go on the same line, but setting D without F implicitly sets F. G must be on its own.
@@ -387,7 +388,7 @@ def _write_molden(
     ct = mol.point_group().char_table()
     mol_string += '[MO]\n'
     mo_dim = self.nmopi() if do_virtual else (self.doccpi() + self.soccpi())
-    
+
     # Alphas. If Alphas and Betas are the same, then only Alphas with double occupation will be written (see line marked "***")
     mos = []
     for h in range(nirrep):
@@ -397,6 +398,7 @@ def _write_molden(
     # Sort mos based on energy
     def mosSort(element):
         return element[0]
+
     mos.sort(key=mosSort)
 
     for i in range(len(mos)):
@@ -424,7 +426,8 @@ def _write_molden(
                 mol_string += f"{so+1:3d} {Cb_ao_mo.get(h, so, n):24.10e}\n"
 
     # Write Molden string to file
-    with open(filename,'w') as fn:
+    with open(filename, 'w') as fn:
         fn.write(mol_string)
+
 
 core.Wavefunction.write_molden = _write_molden

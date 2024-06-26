@@ -92,7 +92,7 @@ def banner(text: str, type: int = 1, width: int = 35, strNotOutfile: bool = Fals
         core.print_out(banner)
 
 
-def levenshtein(seq1: str, seq2:str) -> int:
+def levenshtein(seq1: str, seq2: str) -> int:
     """Compute the Levenshtein distance between two strings.
 
     Parameters

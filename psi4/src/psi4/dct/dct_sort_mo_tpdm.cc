@@ -159,7 +159,7 @@ void DCTSolver::presort_mo_tpdm_AB() {
                 int s = _ints->alpha_corr_to_pitzer()[(int)lblptr[labelIndex++]];
                 auto value = (double)valptr[index];
                 dpdFiller(p, q, r, s, value);
-            }               /* end loop through current buffer */
+            } /* end loop through current buffer */
         } while (!lastbuf); /* end loop over reading buffers */
         iwl->set_keep_flag(true);
         delete iwl;
@@ -313,7 +313,7 @@ void DCTSolver::presort_mo_tpdm_AA() {
                 auto value = (double)valptr[index];
                 dpdFiller(p, q, r, s, value);
 
-            }               /* end loop through current buffer */
+            } /* end loop through current buffer */
         } while (!lastbuf); /* end loop over reading buffers */
         iwl->set_keep_flag(true);
         delete iwl;

@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """Module with non-generic exceptions classes."""
 
 
@@ -39,6 +38,7 @@ class FeatureNotImplemented(QcdbException):
     Also for functions defined that will never be implemented.
 
     """
+
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
@@ -50,6 +50,7 @@ class ValidationError(QcdbException):
     error message *msg* to standard output stream.
 
     """
+
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
@@ -62,6 +63,7 @@ class IncompleteAtomError(QcdbException):
     so message not printed but appears as traceback when error persists.
 
     """
+
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
@@ -72,6 +74,7 @@ class ParsingValidationError(QcdbException):
     error message *msg* to standard output stream.
 
     """
+
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
@@ -83,6 +86,7 @@ class FragmentCountError(QcdbException):
     Prints error message *msg* to standard output stream.
 
     """
+
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
@@ -93,6 +97,7 @@ class BasisSetFileNotFound(QcdbException):
     """
 
     """
+
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
@@ -103,6 +108,7 @@ class BasisSetNotFound(QcdbException):
     """
 
     """
+
     def __init__(self, msg, silent=False):
         QcdbException.__init__(self, msg)
         self.msg = msg
@@ -114,6 +120,7 @@ class BasisSetNotDefined(QcdbException):
     """
 
     """
+
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
@@ -124,6 +131,7 @@ class Dftd3Error(QcdbException):
     """
 
     """
+
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
@@ -136,6 +144,7 @@ class TestComparisonError(QcdbException):
     output stream and output file.
 
     """
+
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
@@ -144,6 +153,7 @@ class TestComparisonError(QcdbException):
 
 class MoleculeFormatError(QcdbException):
     """Error called when a Molecule.from_string contains unparsable lines."""
+
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
@@ -154,6 +164,7 @@ class FeatureDeprecated(QcdbException):
     Should suggest a replacement.
 
     """
+
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg

@@ -28,7 +28,7 @@ def test_variables_deprecated():
 
 
 @pytest.mark.parametrize("call",
-    [psi4.energy, psi4.optimize, psi4.gradient, psi4.hessian, psi4.frequencies, psi4.properties])
+                         [psi4.energy, psi4.optimize, psi4.gradient, psi4.hessian, psi4.frequencies, psi4.properties])
 def test_typo_method_calls(call):
     psi4.geometry('He')
     err_substr = "Did you mean?"
@@ -48,7 +48,7 @@ def test_xtpl_fn_fn_error():
 
 
 @pytest.mark.parametrize("call",
-    [psi4.energy, psi4.optimize, psi4.gradient, psi4.hessian, psi4.frequencies, psi4.properties])
+                         [psi4.energy, psi4.optimize, psi4.gradient, psi4.hessian, psi4.frequencies, psi4.properties])
 def test_xtpl_cbs_fn_error(call):
     psi4.geometry('He')
 
@@ -111,6 +111,7 @@ def test_slash_in_molecule_name_plus_dfhelper():
 
 # <<<  TODO Deprecated! Delete in Psi4 v1.5  >>>
 
+
 @uusing("networkx")
 def test_deprecated_qcdb_align_b787():
 
@@ -137,23 +138,32 @@ def test_deprecated_qcdb_align_b787():
     oco12_geom_au = oco12['qm']['geom'].reshape((-1, 3)) / qcel.constants.bohr2angstroms
 
     with pytest.warns(FutureWarning) as err:
-        rmsd, mill = qcdb.align.B787(
-            oco10_geom_au, oco12_geom_au, np.array(['O', 'C', 'O']), np.array(['O', 'O', 'C']), verbose=4, do_plot=False)
+        rmsd, mill = qcdb.align.B787(oco10_geom_au,
+                                     oco12_geom_au,
+                                     np.array(['O', 'C', 'O']),
+                                     np.array(['O', 'O', 'C']),
+                                     verbose=4,
+                                     do_plot=False)
 
     assert compare_values(ref_rmsd, rmsd, 6, 'known rmsd B787')
 
 
-
 def test_deprecated_qcdb_align_scramble():
     with pytest.warns(FutureWarning) as err:
-        mill = qcdb.align.compute_scramble(4, do_resort=False, do_shift=False, do_rotate=False, deflection=1.0, do_mirror=False)
+        mill = qcdb.align.compute_scramble(4,
+                                           do_resort=False,
+                                           do_shift=False,
+                                           do_rotate=False,
+                                           deflection=1.0,
+                                           do_mirror=False)
 
-    assert compare_arrays([0,1,2,3], mill.atommap, 4, 'atommap')
+    assert compare_arrays([0, 1, 2, 3], mill.atommap, 4, 'atommap')
+
 
 # <<<  TODO Deprecated! Delete when the error messages are removed.  >>>
 
-@pytest.mark.parametrize("call",
-    [psi4.energy, psi4.optimize, psi4.gradient, psi4.hessian, psi4.frequencies])
+
+@pytest.mark.parametrize("call", [psi4.energy, psi4.optimize, psi4.gradient, psi4.hessian, psi4.frequencies])
 def test_deprecated_dcft_calls(call):
     psi4.geometry('He')
     err_substr = "All instances of 'dcft' should be replaced with 'dct'."
@@ -182,6 +192,7 @@ def test_deprecated_component_dipole():
 
     with pytest.raises(psi4.UpgradeHelper) as e:
         psi4.variable("current dipole x")
+
 
 def test_deprecated_set_module_options():
     err_substr = "instead of `psi4.set_options({<module>__<keys>: <vals>})`"

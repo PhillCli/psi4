@@ -67,7 +67,8 @@ bool DCTSolver::correct_mo_phases(bool dieOnError) {
     return error;
 }
 
-bool DCTSolver::correct_mo_phase_spincase(Matrix& temp, Matrix& overlap, const Matrix& old_C, Matrix& C, bool dieOnError) const {
+bool DCTSolver::correct_mo_phase_spincase(Matrix &temp, Matrix &overlap, const Matrix &old_C, Matrix &C,
+                                          bool dieOnError) const {
     temp.gemm(false, false, 1.0, ao_s_, C, 0.0);
     overlap.gemm(true, false, 1.0, old_C, temp, 0.0);
 
@@ -93,7 +94,8 @@ bool DCTSolver::correct_mo_phase_spincase(Matrix& temp, Matrix& overlap, const M
                     overlap.print();
                     old_C.print();
                     temp.print();
-                    throw SanityCheckError("Two new MOs most resemble the same old MO. This has to be a bug.", __FILE__, __LINE__);
+                    throw SanityCheckError("Two new MOs most resemble the same old MO. This has to be a bug.", __FILE__,
+                                           __LINE__);
                 } else {
                     // Copy Ca back from temp
                     C.copy(temp);

@@ -61,12 +61,12 @@ void DFOCC::ccsd_iterations() {
         if (reference_ == "RESTRICTED") {
             Matrix T2("T2", naoccA * navirA, naoccA * navirA);
             Matrix T1("T1", naoccA, navirA);
-            ccsdDiisManager = std::make_shared<DIISManager>(
-                cc_maxdiis_, "CCSD DIIS T Amps", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::OnDisk);
+            ccsdDiisManager =
+                std::make_shared<DIISManager>(cc_maxdiis_, "CCSD DIIS T Amps", DIISManager::RemovalPolicy::LargestError,
+                                              DIISManager::StoragePolicy::OnDisk);
             ccsdDiisManager->set_error_vector_size(T2, T1);
             ccsdDiisManager->set_vector_size(T2, T1);
-        }
-        else if (reference_ == "UNRESTRICTED") {
+        } else if (reference_ == "UNRESTRICTED") {
             //=== BEGIN DFUCCSD ===
             Matrix T2AA("T2AA", ntri_anti_ijAA, ntri_anti_abAA);
             Matrix T2BB("T2BB", ntri_anti_ijBB, ntri_anti_abBB);
@@ -74,8 +74,9 @@ void DFOCC::ccsd_iterations() {
             Matrix T1A("T1A", naoccA, navirA);
             Matrix T1B("T1B", naoccB, navirB);
 
-            ccsdDiisManager = std::make_shared<DIISManager>(
-                cc_maxdiis_, "CCSD DIIS T Amps", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::OnDisk);
+            ccsdDiisManager =
+                std::make_shared<DIISManager>(cc_maxdiis_, "CCSD DIIS T Amps", DIISManager::RemovalPolicy::LargestError,
+                                              DIISManager::StoragePolicy::OnDisk);
             ccsdDiisManager->set_error_vector_size(T2AA, T2BB, T2AB, T1A, T1B);
             ccsdDiisManager->set_vector_size(T2AA, T2BB, T2AB, T1A, T1B);
             //=== END DFUCCSD ===
@@ -122,7 +123,7 @@ void DFOCC::ccsd_iterations() {
         Eccsd_old = Eccsd;
 
         // RMS
-        //if (reference_ == "UNRESTRICTED") {
+        // if (reference_ == "UNRESTRICTED") {
         //    rms_t2 = MAX0(rms_t2AA, rms_t2BB);
         //    rms_t2 = MAX0(rms_t2, rms_t2AB);
         //    rms_t1 = MAX0(rms_t1A, rms_t1B);

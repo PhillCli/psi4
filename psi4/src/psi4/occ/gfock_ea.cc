@@ -1126,5 +1126,5 @@ void OCCWave::gfock_ea() {
     // outfile->Printf("\n gfock_ea done. \n");
 
 }  // End main
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

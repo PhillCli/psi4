@@ -36,7 +36,6 @@ namespace psi {
 namespace dfoccwave {
 
 void DFOCC::ccsdl_l1_amps() {
-
     // RHF
     if (reference_ == "RESTRICTED") {
         // defs
@@ -215,11 +214,15 @@ void DFOCC::ccsdl_l1_amps() {
     else if (reference_ == "UNRESTRICTED") {
         // Alpha Part
         SharedTensor2d J, W, I, K, X, Y, T, Z, L, U, V, Tau;
-        // l_I^A  = Ft_IA + \sum_{E} l_I^E Ft_EA - \sum_{M} l_M^A Ft_IM - \sum_{M} G_MI Ft_MA + \sum_{ME} l_M^E W_IEAM + \sum_{me} l_m^e W_IeAm
-        //        - \sum_{MN} G_MN W_MINA - \sum_{mn} G_mn W_mInA - 0.5 * \sum_{MN} \sum_{E} L_MN^AE W_IEMN - \sum_{Mn} \sum_{e} L_Mn^Ae W_IeMn
-        //        - \sum_{MN} \sum_{E} L_IMNE Z_NEAM - \sum_{mN} \sum_{e} L_ImNe Z_NeAm + \sum_{mn} \sum_{E} L_mInE Z_nEAm
-        //        + \sum_{Q,E} (L_IE^Q + Lt_IE^Q + 2V_EI^Q + Z_IE^Q) b_EA^Q + \sum_{Q,M} (V_MI^Q + Vt_MI^Q - 2Vp_MI^Q - Z_IM^Q) b_MA^Q
-        //        + \sum_{Q} (Gp_Q - G_Q) b_IA^Q + \sum_{Q,E} G_EI^Q (b_EA^Q - t_EA^Q)                                                              (115)
+        // l_I^A  = Ft_IA + \sum_{E} l_I^E Ft_EA - \sum_{M} l_M^A Ft_IM - \sum_{M} G_MI Ft_MA + \sum_{ME} l_M^E W_IEAM +
+        // \sum_{me} l_m^e W_IeAm
+        //        - \sum_{MN} G_MN W_MINA - \sum_{mn} G_mn W_mInA - 0.5 * \sum_{MN} \sum_{E} L_MN^AE W_IEMN - \sum_{Mn}
+        //        \sum_{e} L_Mn^Ae W_IeMn
+        //        - \sum_{MN} \sum_{E} L_IMNE Z_NEAM - \sum_{mN} \sum_{e} L_ImNe Z_NeAm + \sum_{mn} \sum_{E} L_mInE
+        //        Z_nEAm
+        //        + \sum_{Q,E} (L_IE^Q + Lt_IE^Q + 2V_EI^Q + Z_IE^Q) b_EA^Q + \sum_{Q,M} (V_MI^Q + Vt_MI^Q - 2Vp_MI^Q -
+        //        Z_IM^Q) b_MA^Q
+        //        + \sum_{Q} (Gp_Q - G_Q) b_IA^Q + \sum_{Q,E} G_EI^Q (b_EA^Q - t_EA^Q) (115)
 
         // l_I^A += Ft_IA  (1)
         l1newA->copy(FiaA);
@@ -379,7 +382,7 @@ void DFOCC::ccsdl_l1_amps() {
         gQp2->copy(gQp);
         gQp2->axpy(gQ, -1.0);
         l1newA->gemv(true, bQiaA, gQp2, 1.0, 1.0);
-        //gQp2.reset();
+        // gQp2.reset();
 
         // l_I^A +=  \sum_{Q,E} G_EI^Q (b_EA^Q - t_EA^Q)      (17)
         T = std::make_shared<Tensor2d>("T1 (Q|AB)", nQ, navirA, navirA);
@@ -409,11 +412,15 @@ void DFOCC::ccsdl_l1_amps() {
         }
 
         // Beta Part
-        // l_i^a = Ft_IA + \sum_{e} l_i^e Ft_ea - \sum_{e} l_m^a Ft_im - \sum_{m} G_mi Ft_ma  + \sum_{me} l_m^e W_ieam + \sum_{ME} l_M^E W_iEaM
-        //       - \sum_{mn} G_mn W_mina - \sum_{MN} G_MN W_MiNa - 0.5 * \sum_{mn} \sum_{e} L_mn^ae W_iemn - \sum_{Mn} \sum_{E} L_Mn^Ea W_iEnM
-        //       - \sum_{mn} \sum_{e} L_imne Z_neam  + \sum_{MN} \sum_{e} L_MiNe Z_NeaM - \sum_{Mn} \sum_{E} L_iMnE Z_nEaM
-        //       + \sum_{Q,e} (L_ie^Q + Lt_ie^Q + 2V_ei^Q + Z_ie^Q) b_ea^Q  + \sum_{Q,m} (V_mi^Q + Vt_mi^Q - 2Vp_mi^Q - Z_im^Q) b_ma^Q
-        //       + \sum_{Q} (Gp_Q - G_Q) b_ia^Q + \sum_{Q,e} G_ei^Q (b_ea^Q - t_ea^Q)                                                              (116)
+        // l_i^a = Ft_IA + \sum_{e} l_i^e Ft_ea - \sum_{e} l_m^a Ft_im - \sum_{m} G_mi Ft_ma  + \sum_{me} l_m^e W_ieam +
+        // \sum_{ME} l_M^E W_iEaM
+        //       - \sum_{mn} G_mn W_mina - \sum_{MN} G_MN W_MiNa - 0.5 * \sum_{mn} \sum_{e} L_mn^ae W_iemn - \sum_{Mn}
+        //       \sum_{E} L_Mn^Ea W_iEnM
+        //       - \sum_{mn} \sum_{e} L_imne Z_neam  + \sum_{MN} \sum_{e} L_MiNe Z_NeaM - \sum_{Mn} \sum_{E} L_iMnE
+        //       Z_nEaM
+        //       + \sum_{Q,e} (L_ie^Q + Lt_ie^Q + 2V_ei^Q + Z_ie^Q) b_ea^Q  + \sum_{Q,m} (V_mi^Q + Vt_mi^Q - 2Vp_mi^Q -
+        //       Z_im^Q) b_ma^Q
+        //       + \sum_{Q} (Gp_Q - G_Q) b_ia^Q + \sum_{Q,e} G_ei^Q (b_ea^Q - t_ea^Q) (116)
 
         // l_i^a += Ft_ia  (1)
         l1newB->copy(FiaB);
@@ -572,9 +579,9 @@ void DFOCC::ccsdl_l1_amps() {
         T.reset();
 
         // l_i^a += \sum_{Q} (Gp_Q - G_Q) b_ia^Q                               (16)
-        //SharedTensor1d gQp2 = std::make_shared<Tensor1d>("CCSDL G_Qp - G_Q", nQ);
-        //gQp2->copy(gQp);
-        //gQp2->axpy(gQ, -1.0);
+        // SharedTensor1d gQp2 = std::make_shared<Tensor1d>("CCSDL G_Qp - G_Q", nQ);
+        // gQp2->copy(gQp);
+        // gQp2->axpy(gQ, -1.0);
         l1newB->gemv(true, bQiaB, gQp2, 1.0, 1.0);
         gQp2.reset();
 
@@ -603,7 +610,7 @@ void DFOCC::ccsdl_l1_amps() {
                 l1newB->set(i, a, l1newB->get(i, a) / value);
             }
         }
-        //l1newB->print();
+        // l1newB->print();
 
     }  // else if (reference_ == "UNRESTRICTED")
 

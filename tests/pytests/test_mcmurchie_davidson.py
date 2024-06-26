@@ -8,7 +8,6 @@ import psi4
 from pathlib import Path
 import json
 
-
 pytestmark = [pytest.mark.psi, pytest.mark.api, pytest.mark.quick]
 
 
@@ -62,7 +61,7 @@ def fdiff_multipole_integral(mol, basis_name, origin, order, step=1e-4):
                 ints_pert = matlist_to_ndarray(mints.ao_multipoles(order, origin))
                 int_grad[i, c, :, :, :] += p * ints_pert / step
     return int_grad
-                
+
 
 def test_mcmurchie_davidson_consistency_angmom(reference_data):
     assert reference_data['version'] == '1.5'
@@ -100,7 +99,7 @@ def test_mcmurchie_davidson_multipoles(mol_h2o):
     # reference from l2
     dips = matlist_to_ndarray(mints.ao_dipole())
     quads = matlist_to_ndarray(mints.ao_quadrupole())
-    
+
     np.testing.assert_allclose(dips, Mnp[:3], atol=1e-14)
     np.testing.assert_allclose(quads, Mnp[3:9], atol=1e-14)
 
@@ -118,7 +117,7 @@ def test_mcmurchie_davidson_multipoles_gradient(mol_h2o):
     # test against finite differences
     grad = mints.multipole_grad(D=wfn.Da(), order=order, origin=[1.0, 2.0, 3.0])
     np.testing.assert_allclose(grad_fdiff, grad.np, atol=1e-7)
-    
+
     # test that we get the same result from the 'hard-wired' dipole_grad
     grad_dip = mints.dipole_grad(wfn.Da())
     grad = mints.multipole_grad(D=wfn.Da(), order=1, origin=[0.0, 0.0, 0.0])

@@ -723,7 +723,7 @@ void DLPNOMP2::compute_df_ints() {
                 }
 
             }  // N loop
-        }      // M loop
+        }  // M loop
 
         auto C_pao_slice = submatrix_rows_and_cols(*C_pao_, riatom_to_bfs2_[centerQ], riatom_to_paos_ext_[centerQ]);
 
@@ -732,8 +732,7 @@ void DLPNOMP2::compute_df_ints() {
         //// Boughton and Pulay 1992 JCC, Equation 3
 
         // Solve for C_lmo_slice such that S[local,local] @ C_lmo_slice ~= S[local,all] @ C_lmo_
-        auto C_lmo_slice =
-            submatrix_rows_and_cols(*SC_lmo, riatom_to_bfs1_[centerQ], riatom_to_lmos_ext_[centerQ]);
+        auto C_lmo_slice = submatrix_rows_and_cols(*SC_lmo, riatom_to_bfs1_[centerQ], riatom_to_lmos_ext_[centerQ]);
         auto S_aa =
             submatrix_rows_and_cols(*reference_wavefunction_->S(), riatom_to_bfs1_[centerQ], riatom_to_bfs1_[centerQ]);
         C_DGESV_wrapper(S_aa, C_lmo_slice);
@@ -769,8 +768,8 @@ void DLPNOMP2::pno_transform() {
     X_pno_.resize(n_lmo_pairs);    // global PAOs -> canonical PNOs
     e_pno_.resize(n_lmo_pairs);    // PNO orbital energies
 
-    n_pno_.resize(n_lmo_pairs);   // number of pnos
-    de_pno_.resize(n_lmo_pairs);  // PNO truncation error
+    n_pno_.resize(n_lmo_pairs);      // number of pnos
+    de_pno_.resize(n_lmo_pairs);     // PNO truncation error
     de_pno_os_.resize(n_lmo_pairs);  // opposite-spin contributions to de_pno_
     de_pno_ss_.resize(n_lmo_pairs);  // same-spin contributions to de_pno_
 
@@ -801,10 +800,12 @@ void DLPNOMP2::pno_transform() {
             for (int a_ij = 0; a_ij < npao_ij; a_ij++) {
                 int a = lmopair_to_paos_[ij][a_ij];
                 // riatom_to_lmos_ext_dense_ and riatom_to_paos_ext_dense are guaranteed to not be -1, by construction
-                // since the auxiliary index q is derived from the lmo pair ij, and corresponding PAOs of pair ij are guaranteed
-                // to be in the local, extended domain of the riatom
-                i_qa->set(q_ij, a_ij, qia_[q]->get(riatom_to_lmos_ext_dense_[centerq][i], riatom_to_paos_ext_dense_[centerq][a]));
-                j_qa->set(q_ij, a_ij, qia_[q]->get(riatom_to_lmos_ext_dense_[centerq][j], riatom_to_paos_ext_dense_[centerq][a]));
+                // since the auxiliary index q is derived from the lmo pair ij, and corresponding PAOs of pair ij are
+                // guaranteed to be in the local, extended domain of the riatom
+                i_qa->set(q_ij, a_ij,
+                          qia_[q]->get(riatom_to_lmos_ext_dense_[centerq][i], riatom_to_paos_ext_dense_[centerq][a]));
+                j_qa->set(q_ij, a_ij,
+                          qia_[q]->get(riatom_to_lmos_ext_dense_[centerq][j], riatom_to_paos_ext_dense_[centerq][a]));
             }
         }
 
@@ -833,8 +834,9 @@ void DLPNOMP2::pno_transform() {
         auto T_pao_ij = K_pao_ij->clone();
         for (int a = 0; a < npao_can_ij; ++a) {
             for (int b = 0; b < npao_can_ij; ++b) {
-                T_pao_ij->set(a, b, T_pao_ij->get(a, b) /
-                                        (-e_pao_ij->get(b) + -e_pao_ij->get(a) + F_lmo_->get(i, i) + F_lmo_->get(j, j)));
+                T_pao_ij->set(a, b,
+                              T_pao_ij->get(a, b) /
+                                  (-e_pao_ij->get(b) + -e_pao_ij->get(a) + F_lmo_->get(i, i) + F_lmo_->get(j, j)));
             }
         }
 
@@ -1005,7 +1007,8 @@ void DLPNOMP2::lmp2_iterations() {
     int iteration = 0, max_iteration = options_.get_int("DLPNO_MAXITER");
     double e_curr = 0.0, e_prev = 0.0, r_curr = 0.0;
     bool e_converged = false, r_converged = false;
-    DIISManager diis(options_.get_int("DIIS_MAX_VECS"), "LMP2 DIIS", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::InCore);
+    DIISManager diis(options_.get_int("DIIS_MAX_VECS"), "LMP2 DIIS", DIISManager::RemovalPolicy::LargestError,
+                     DIISManager::StoragePolicy::InCore);
 
     while (!(e_converged && r_converged)) {
         // RMS of residual per LMO pair, for assessing convergence
@@ -1024,9 +1027,9 @@ void DLPNOMP2::lmp2_iterations() {
             for (int a = 0; a < n_pno_[ij]; ++a) {
                 for (int b = 0; b < n_pno_[ij]; ++b) {
                     R_iajb[ij]->set(a, b,
-                                    K_iajb_[ij]->get(a, b) +
-                                        (e_pno_[ij]->get(a) + e_pno_[ij]->get(b) - F_lmo_->get(i, i) - F_lmo_->get(j, j)) *
-                                            T_iajb_[ij]->get(a, b));
+                                    K_iajb_[ij]->get(a, b) + (e_pno_[ij]->get(a) + e_pno_[ij]->get(b) -
+                                                              F_lmo_->get(i, i) - F_lmo_->get(j, j)) *
+                                                                 T_iajb_[ij]->get(a, b));
                 }
             }
 
@@ -1066,8 +1069,9 @@ void DLPNOMP2::lmp2_iterations() {
             std::tie(i, j) = ij_to_i_j_[ij];
             for (int a = 0; a < n_pno_[ij]; ++a) {
                 for (int b = 0; b < n_pno_[ij]; ++b) {
-                    T_iajb_[ij]->add(a, b, -R_iajb[ij]->get(a, b) / ((e_pno_[ij]->get(a) + e_pno_[ij]->get(b)) -
-                                                                    (F_lmo_->get(i, i) + F_lmo_->get(j, j))));
+                    T_iajb_[ij]->add(a, b,
+                                     -R_iajb[ij]->get(a, b) / ((e_pno_[ij]->get(a) + e_pno_[ij]->get(b)) -
+                                                               (F_lmo_->get(i, i) + F_lmo_->get(j, j))));
                 }
             }
         }
@@ -1097,7 +1101,7 @@ void DLPNOMP2::lmp2_iterations() {
 
         iteration++;
 
-        if(iteration > max_iteration) {
+        if (iteration > max_iteration) {
             throw PSIEXCEPTION("Maximum DLPNO iterations exceeded.");
         }
     }
@@ -1109,10 +1113,9 @@ void DLPNOMP2::lmp2_iterations() {
         e_lmp2_os_ += K_iajb_[ij]->vector_dot(T_iajb_[ij]);
     }
     e_lmp2_ss_ = e_curr - e_lmp2_os_;
-
 }
 
-double DLPNOMP2::compute_iteration_energy(const std::vector<SharedMatrix> &R_iajb) {
+double DLPNOMP2::compute_iteration_energy(const std::vector<SharedMatrix>& R_iajb) {
     double e_mp2 = 0.0;
     for (int ij = 0; ij < Tt_iajb_.size(); ++ij) {
         e_mp2 += K_iajb_[ij]->vector_dot(Tt_iajb_[ij]);
@@ -1252,16 +1255,10 @@ double DLPNOMP2::compute_energy() {
     set_scalar_variable("MP2 DOUBLES ENERGY", e_mp2_corr);
     set_scalar_variable("MP2 SAME-SPIN CORRELATION ENERGY", e_mp2_corr_ss);
     set_scalar_variable("MP2 OPPOSITE-SPIN CORRELATION ENERGY", e_mp2_corr_os);
-    set_scalar_variable("SCS-MP2 CORRELATION ENERGY", 6.0/5.0 * e_mp2_corr_os +
-                                                      1.0/3.0 * e_mp2_corr_ss);
-    set_scalar_variable("SCS-MP2 TOTAL ENERGY", e_scf +
-                                                6.0/5.0 * e_mp2_corr_os +
-                                                1.0/3.0 * e_mp2_corr_ss);
-    set_scalar_variable("CUSTOM SCS-MP2 CORRELATION ENERGY", oss * e_mp2_corr_os +
-                                                             sss * e_mp2_corr_ss);
-    set_scalar_variable("CUSTOM SCS-MP2 TOTAL ENERGY", e_scf +
-                                                       oss * e_mp2_corr_os +
-                                                       sss * e_mp2_corr_ss);
+    set_scalar_variable("SCS-MP2 CORRELATION ENERGY", 6.0 / 5.0 * e_mp2_corr_os + 1.0 / 3.0 * e_mp2_corr_ss);
+    set_scalar_variable("SCS-MP2 TOTAL ENERGY", e_scf + 6.0 / 5.0 * e_mp2_corr_os + 1.0 / 3.0 * e_mp2_corr_ss);
+    set_scalar_variable("CUSTOM SCS-MP2 CORRELATION ENERGY", oss * e_mp2_corr_os + sss * e_mp2_corr_ss);
+    set_scalar_variable("CUSTOM SCS-MP2 TOTAL ENERGY", e_scf + oss * e_mp2_corr_os + sss * e_mp2_corr_ss);
 
     return e_mp2_total;
 }
@@ -1288,14 +1285,14 @@ void DLPNOMP2::print_header() {
 
 void DLPNOMP2::print_aux_domains() {
     size_t total_atoms = 0, min_atoms = lmo_to_riatoms_[0].size(), max_atoms = 0;
-    for (const auto &atom_list : lmo_to_riatoms_) {
+    for (const auto& atom_list : lmo_to_riatoms_) {
         total_atoms += atom_list.size();
         min_atoms = std::min(min_atoms, atom_list.size());
         max_atoms = std::max(max_atoms, atom_list.size());
     }
 
     size_t total_bfs = 0, min_bfs = lmo_to_ribfs_[0].size(), max_bfs = 0;
-    for (const auto &bf_list : lmo_to_ribfs_) {
+    for (const auto& bf_list : lmo_to_ribfs_) {
         total_bfs += bf_list.size();
         min_bfs = std::min(min_bfs, bf_list.size());
         max_bfs = std::max(max_bfs, bf_list.size());
@@ -1311,14 +1308,14 @@ void DLPNOMP2::print_aux_domains() {
 
 void DLPNOMP2::print_pao_domains() {
     size_t total_atoms = 0, min_atoms = lmo_to_paoatoms_[0].size(), max_atoms = 0;
-    for (const auto &atom_list : lmo_to_paoatoms_) {
+    for (const auto& atom_list : lmo_to_paoatoms_) {
         total_atoms += atom_list.size();
         min_atoms = std::min(min_atoms, atom_list.size());
         max_atoms = std::max(max_atoms, atom_list.size());
     }
 
     size_t total_paos = 0, min_paos = lmo_to_paos_[0].size(), max_paos = 0;
-    for (const auto &pao_list : lmo_to_paos_) {
+    for (const auto& pao_list : lmo_to_paos_) {
         total_paos += pao_list.size();
         min_paos = std::min(min_paos, pao_list.size());
         max_paos = std::max(max_paos, pao_list.size());

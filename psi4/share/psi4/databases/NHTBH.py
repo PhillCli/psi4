@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """
 | Database (Truhlar) of non-hydrogen-transfer barrier height reactions.
 | Geometries and Reaction energies from Truhlar and coworkers at site http://t1.chem.umn.edu/misc/database_group/database_therm_bh/non_H.htm (broken link).
@@ -54,236 +53,260 @@ HRXN_SM = [3, 4, 31, 32]
 HRXN_LG = [36]
 
 # <<< Chemical Systems Involved >>>
-RXNM = {}     # reaction matrix of reagent contributions per reaction
-ACTV = {}     # order of active reagents per reaction
-ACTV['%s-%s' % (dbse,  1)] = ['%s-%s-reagent' % (dbse, 'H'     ),
-                              '%s-%s-reagent' % (dbse, 'N2O'   ),
-                              '%s-%s-reagent' % (dbse, 'N2OHts') ]
-RXNM['%s-%s' % (dbse,  1)] = dict(zip(ACTV['%s-%s' % (dbse,  1)], [-1, -1, +1]))
+RXNM = {}  # reaction matrix of reagent contributions per reaction
+ACTV = {}  # order of active reagents per reaction
+ACTV['%s-%s' %
+     (dbse, 1)] = ['%s-%s-reagent' % (dbse, 'H'),
+                   '%s-%s-reagent' % (dbse, 'N2O'),
+                   '%s-%s-reagent' % (dbse, 'N2OHts')]
+RXNM['%s-%s' % (dbse, 1)] = dict(zip(ACTV['%s-%s' % (dbse, 1)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse,  2)] = ['%s-%s-reagent' % (dbse, 'OH'    ),
-                              '%s-%s-reagent' % (dbse, 'N2'    ),
-                              '%s-%s-reagent' % (dbse, 'N2OHts') ]
-RXNM['%s-%s' % (dbse,  2)] = dict(zip(ACTV['%s-%s' % (dbse,  2)], [-1, -1, +1]))
+ACTV['%s-%s' %
+     (dbse, 2)] = ['%s-%s-reagent' % (dbse, 'OH'),
+                   '%s-%s-reagent' % (dbse, 'N2'),
+                   '%s-%s-reagent' % (dbse, 'N2OHts')]
+RXNM['%s-%s' % (dbse, 2)] = dict(zip(ACTV['%s-%s' % (dbse, 2)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse,  3)] = ['%s-%s-reagent' % (dbse, 'H'    ),
-                              '%s-%s-reagent' % (dbse, 'HF'   ),
-                              '%s-%s-reagent' % (dbse, 'HFHts') ]
-RXNM['%s-%s' % (dbse,  3)] = dict(zip(ACTV['%s-%s' % (dbse,  3)], [-1, -1, +1]))
+ACTV['%s-%s' %
+     (dbse, 3)] = ['%s-%s-reagent' % (dbse, 'H'),
+                   '%s-%s-reagent' % (dbse, 'HF'),
+                   '%s-%s-reagent' % (dbse, 'HFHts')]
+RXNM['%s-%s' % (dbse, 3)] = dict(zip(ACTV['%s-%s' % (dbse, 3)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse,  4)] = ['%s-%s-reagent' % (dbse, 'H'    ),
-                              '%s-%s-reagent' % (dbse, 'HF'   ),
-                              '%s-%s-reagent' % (dbse, 'HFHts') ]
-RXNM['%s-%s' % (dbse,  4)] = dict(zip(ACTV['%s-%s' % (dbse,  4)], [-1, -1, +1]))
+ACTV['%s-%s' %
+     (dbse, 4)] = ['%s-%s-reagent' % (dbse, 'H'),
+                   '%s-%s-reagent' % (dbse, 'HF'),
+                   '%s-%s-reagent' % (dbse, 'HFHts')]
+RXNM['%s-%s' % (dbse, 4)] = dict(zip(ACTV['%s-%s' % (dbse, 4)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse,  5)] = ['%s-%s-reagent' % (dbse, 'H'     ),
-                              '%s-%s-reagent' % (dbse, 'HCl'   ),
-                              '%s-%s-reagent' % (dbse, 'HClHts') ]
-RXNM['%s-%s' % (dbse,  5)] = dict(zip(ACTV['%s-%s' % (dbse,  5)], [-1, -1, +1]))
+ACTV['%s-%s' %
+     (dbse, 5)] = ['%s-%s-reagent' % (dbse, 'H'),
+                   '%s-%s-reagent' % (dbse, 'HCl'),
+                   '%s-%s-reagent' % (dbse, 'HClHts')]
+RXNM['%s-%s' % (dbse, 5)] = dict(zip(ACTV['%s-%s' % (dbse, 5)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse,  6)] = ['%s-%s-reagent' % (dbse, 'H'     ),
-                              '%s-%s-reagent' % (dbse, 'HCl'   ),
-                              '%s-%s-reagent' % (dbse, 'HClHts') ]
-RXNM['%s-%s' % (dbse,  6)] = dict(zip(ACTV['%s-%s' % (dbse,  6)], [-1, -1, +1]))
+ACTV['%s-%s' %
+     (dbse, 6)] = ['%s-%s-reagent' % (dbse, 'H'),
+                   '%s-%s-reagent' % (dbse, 'HCl'),
+                   '%s-%s-reagent' % (dbse, 'HClHts')]
+RXNM['%s-%s' % (dbse, 6)] = dict(zip(ACTV['%s-%s' % (dbse, 6)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse,  7)] = ['%s-%s-reagent' % (dbse, 'H'      ),
-                              '%s-%s-reagent' % (dbse, 'CH3F'   ),
-                              '%s-%s-reagent' % (dbse, 'HFCH3ts') ]
-RXNM['%s-%s' % (dbse,  7)] = dict(zip(ACTV['%s-%s' % (dbse,  7)], [-1, -1, +1]))
+ACTV['%s-%s' % (dbse, 7)] = [
+    '%s-%s-reagent' % (dbse, 'H'),
+    '%s-%s-reagent' % (dbse, 'CH3F'),
+    '%s-%s-reagent' % (dbse, 'HFCH3ts')
+]
+RXNM['%s-%s' % (dbse, 7)] = dict(zip(ACTV['%s-%s' % (dbse, 7)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse,  8)] = ['%s-%s-reagent' % (dbse, 'HF'     ),
-                              '%s-%s-reagent' % (dbse, 'CH3'    ),
-                              '%s-%s-reagent' % (dbse, 'HFCH3ts') ]
-RXNM['%s-%s' % (dbse,  8)] = dict(zip(ACTV['%s-%s' % (dbse,  8)], [-1, -1, +1]))
+ACTV['%s-%s' % (dbse, 8)] = [
+    '%s-%s-reagent' % (dbse, 'HF'),
+    '%s-%s-reagent' % (dbse, 'CH3'),
+    '%s-%s-reagent' % (dbse, 'HFCH3ts')
+]
+RXNM['%s-%s' % (dbse, 8)] = dict(zip(ACTV['%s-%s' % (dbse, 8)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse,  9)] = ['%s-%s-reagent' % (dbse, 'H'    ),
-                              '%s-%s-reagent' % (dbse, 'F2'   ),
-                              '%s-%s-reagent' % (dbse, 'HF2ts') ]
-RXNM['%s-%s' % (dbse,  9)] = dict(zip(ACTV['%s-%s' % (dbse,  9)], [-1, -1, +1]))
+ACTV['%s-%s' %
+     (dbse, 9)] = ['%s-%s-reagent' % (dbse, 'H'),
+                   '%s-%s-reagent' % (dbse, 'F2'),
+                   '%s-%s-reagent' % (dbse, 'HF2ts')]
+RXNM['%s-%s' % (dbse, 9)] = dict(zip(ACTV['%s-%s' % (dbse, 9)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse, 10)] = ['%s-%s-reagent' % (dbse, 'HF'   ),
-                              '%s-%s-reagent' % (dbse, 'F'    ),
-                              '%s-%s-reagent' % (dbse, 'HF2ts') ]
+ACTV['%s-%s' %
+     (dbse, 10)] = ['%s-%s-reagent' % (dbse, 'HF'),
+                    '%s-%s-reagent' % (dbse, 'F'),
+                    '%s-%s-reagent' % (dbse, 'HF2ts')]
 RXNM['%s-%s' % (dbse, 10)] = dict(zip(ACTV['%s-%s' % (dbse, 10)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse, 11)] = ['%s-%s-reagent' % (dbse, 'CH3'     ),
-                              '%s-%s-reagent' % (dbse, 'ClF'     ),
-                              '%s-%s-reagent' % (dbse, 'CH3FClts') ]
+ACTV['%s-%s' % (dbse, 11)] = [
+    '%s-%s-reagent' % (dbse, 'CH3'),
+    '%s-%s-reagent' % (dbse, 'ClF'),
+    '%s-%s-reagent' % (dbse, 'CH3FClts')
+]
 RXNM['%s-%s' % (dbse, 11)] = dict(zip(ACTV['%s-%s' % (dbse, 11)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse, 12)] = ['%s-%s-reagent' % (dbse, 'CH3F'    ),
-                              '%s-%s-reagent' % (dbse, 'Cl'      ),
-                              '%s-%s-reagent' % (dbse, 'CH3FClts') ]
+ACTV['%s-%s' % (dbse, 12)] = [
+    '%s-%s-reagent' % (dbse, 'CH3F'),
+    '%s-%s-reagent' % (dbse, 'Cl'),
+    '%s-%s-reagent' % (dbse, 'CH3FClts')
+]
 RXNM['%s-%s' % (dbse, 12)] = dict(zip(ACTV['%s-%s' % (dbse, 12)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse, 13)] = ['%s-%s-reagent' % (dbse, 'F_anion'),
-                              '%s-%s-reagent' % (dbse, 'CH3F'   ),
-                              '%s-%s-reagent' % (dbse, 'FCH3Fts') ]
+ACTV['%s-%s' % (dbse, 13)] = [
+    '%s-%s-reagent' % (dbse, 'F_anion'),
+    '%s-%s-reagent' % (dbse, 'CH3F'),
+    '%s-%s-reagent' % (dbse, 'FCH3Fts')
+]
 RXNM['%s-%s' % (dbse, 13)] = dict(zip(ACTV['%s-%s' % (dbse, 13)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse, 14)] = ['%s-%s-reagent' % (dbse, 'F_anion'),
-                              '%s-%s-reagent' % (dbse, 'CH3F'   ),
-                              '%s-%s-reagent' % (dbse, 'FCH3Fts') ]
+ACTV['%s-%s' % (dbse, 14)] = [
+    '%s-%s-reagent' % (dbse, 'F_anion'),
+    '%s-%s-reagent' % (dbse, 'CH3F'),
+    '%s-%s-reagent' % (dbse, 'FCH3Fts')
+]
 RXNM['%s-%s' % (dbse, 14)] = dict(zip(ACTV['%s-%s' % (dbse, 14)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse, 15)] = ['%s-%s-reagent' % (dbse, 'FCH3Fcomp'),
-                              '%s-%s-reagent' % (dbse, 'FCH3Fts'  ) ]
+ACTV['%s-%s' % (dbse, 15)] = ['%s-%s-reagent' % (dbse, 'FCH3Fcomp'), '%s-%s-reagent' % (dbse, 'FCH3Fts')]
 RXNM['%s-%s' % (dbse, 15)] = dict(zip(ACTV['%s-%s' % (dbse, 15)], [-1, +1]))
 
-ACTV['%s-%s' % (dbse, 16)] = ['%s-%s-reagent' % (dbse, 'FCH3Fcomp'),
-                              '%s-%s-reagent' % (dbse, 'FCH3Fts'  ) ]
+ACTV['%s-%s' % (dbse, 16)] = ['%s-%s-reagent' % (dbse, 'FCH3Fcomp'), '%s-%s-reagent' % (dbse, 'FCH3Fts')]
 RXNM['%s-%s' % (dbse, 16)] = dict(zip(ACTV['%s-%s' % (dbse, 16)], [-1, +1]))
 
-ACTV['%s-%s' % (dbse, 17)] = ['%s-%s-reagent' % (dbse, 'Cl_anion' ),
-                              '%s-%s-reagent' % (dbse, 'CH3Cl'    ),
-                              '%s-%s-reagent' % (dbse, 'ClCH3Clts') ]
+ACTV['%s-%s' % (dbse, 17)] = [
+    '%s-%s-reagent' % (dbse, 'Cl_anion'),
+    '%s-%s-reagent' % (dbse, 'CH3Cl'),
+    '%s-%s-reagent' % (dbse, 'ClCH3Clts')
+]
 RXNM['%s-%s' % (dbse, 17)] = dict(zip(ACTV['%s-%s' % (dbse, 17)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse, 18)] = ['%s-%s-reagent' % (dbse, 'Cl_anion' ),
-                              '%s-%s-reagent' % (dbse, 'CH3Cl'    ),
-                              '%s-%s-reagent' % (dbse, 'ClCH3Clts') ]
+ACTV['%s-%s' % (dbse, 18)] = [
+    '%s-%s-reagent' % (dbse, 'Cl_anion'),
+    '%s-%s-reagent' % (dbse, 'CH3Cl'),
+    '%s-%s-reagent' % (dbse, 'ClCH3Clts')
+]
 RXNM['%s-%s' % (dbse, 18)] = dict(zip(ACTV['%s-%s' % (dbse, 18)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse, 19)] = ['%s-%s-reagent' % (dbse, 'ClCH3Clcomp'),
-                              '%s-%s-reagent' % (dbse, 'ClCH3Clts'  ) ]
+ACTV['%s-%s' % (dbse, 19)] = ['%s-%s-reagent' % (dbse, 'ClCH3Clcomp'), '%s-%s-reagent' % (dbse, 'ClCH3Clts')]
 RXNM['%s-%s' % (dbse, 19)] = dict(zip(ACTV['%s-%s' % (dbse, 19)], [-1, +1]))
 
-ACTV['%s-%s' % (dbse, 20)] = ['%s-%s-reagent' % (dbse, 'ClCH3Clcomp'),
-                              '%s-%s-reagent' % (dbse, 'ClCH3Clts'  ) ]
+ACTV['%s-%s' % (dbse, 20)] = ['%s-%s-reagent' % (dbse, 'ClCH3Clcomp'), '%s-%s-reagent' % (dbse, 'ClCH3Clts')]
 RXNM['%s-%s' % (dbse, 20)] = dict(zip(ACTV['%s-%s' % (dbse, 20)], [-1, +1]))
 
-ACTV['%s-%s' % (dbse, 21)] = ['%s-%s-reagent' % (dbse, 'F_anion' ),
-                              '%s-%s-reagent' % (dbse, 'CH3Cl'   ),
-                              '%s-%s-reagent' % (dbse, 'FCH3Clts') ]
+ACTV['%s-%s' % (dbse, 21)] = [
+    '%s-%s-reagent' % (dbse, 'F_anion'),
+    '%s-%s-reagent' % (dbse, 'CH3Cl'),
+    '%s-%s-reagent' % (dbse, 'FCH3Clts')
+]
 RXNM['%s-%s' % (dbse, 21)] = dict(zip(ACTV['%s-%s' % (dbse, 21)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse, 22)] = ['%s-%s-reagent' % (dbse, 'CH3F'),
-                              '%s-%s-reagent' % (dbse, 'Cl_anion'),
-                              '%s-%s-reagent' % (dbse, 'FCH3Clts') ]
+ACTV['%s-%s' % (dbse, 22)] = [
+    '%s-%s-reagent' % (dbse, 'CH3F'),
+    '%s-%s-reagent' % (dbse, 'Cl_anion'),
+    '%s-%s-reagent' % (dbse, 'FCH3Clts')
+]
 RXNM['%s-%s' % (dbse, 22)] = dict(zip(ACTV['%s-%s' % (dbse, 22)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse, 23)] = ['%s-%s-reagent' % (dbse, 'FCH3Clcomp1'),
-                              '%s-%s-reagent' % (dbse, 'FCH3Clts'   ) ]
+ACTV['%s-%s' % (dbse, 23)] = ['%s-%s-reagent' % (dbse, 'FCH3Clcomp1'), '%s-%s-reagent' % (dbse, 'FCH3Clts')]
 RXNM['%s-%s' % (dbse, 23)] = dict(zip(ACTV['%s-%s' % (dbse, 23)], [-1, +1]))
 
-ACTV['%s-%s' % (dbse, 24)] = ['%s-%s-reagent' % (dbse, 'FCH3Clcomp2'),
-                              '%s-%s-reagent' % (dbse, 'FCH3Clts'   ) ]
+ACTV['%s-%s' % (dbse, 24)] = ['%s-%s-reagent' % (dbse, 'FCH3Clcomp2'), '%s-%s-reagent' % (dbse, 'FCH3Clts')]
 RXNM['%s-%s' % (dbse, 24)] = dict(zip(ACTV['%s-%s' % (dbse, 24)], [-1, +1]))
 
-ACTV['%s-%s' % (dbse, 25)] = ['%s-%s-reagent' % (dbse, 'OH_anion'),
-                              '%s-%s-reagent' % (dbse, 'CH3F'    ),
-                              '%s-%s-reagent' % (dbse, 'HOCH3Fts') ]
+ACTV['%s-%s' % (dbse, 25)] = [
+    '%s-%s-reagent' % (dbse, 'OH_anion'),
+    '%s-%s-reagent' % (dbse, 'CH3F'),
+    '%s-%s-reagent' % (dbse, 'HOCH3Fts')
+]
 RXNM['%s-%s' % (dbse, 25)] = dict(zip(ACTV['%s-%s' % (dbse, 25)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse, 26)] = ['%s-%s-reagent' % (dbse, 'CH3OH'   ),
-                              '%s-%s-reagent' % (dbse, 'F_anion' ),
-                              '%s-%s-reagent' % (dbse, 'HOCH3Fts') ]
+ACTV['%s-%s' % (dbse, 26)] = [
+    '%s-%s-reagent' % (dbse, 'CH3OH'),
+    '%s-%s-reagent' % (dbse, 'F_anion'),
+    '%s-%s-reagent' % (dbse, 'HOCH3Fts')
+]
 RXNM['%s-%s' % (dbse, 26)] = dict(zip(ACTV['%s-%s' % (dbse, 26)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse, 27)] = ['%s-%s-reagent' % (dbse, 'HOCH3Fcomp2'),
-                              '%s-%s-reagent' % (dbse, 'HOCH3Fts'   ) ]
+ACTV['%s-%s' % (dbse, 27)] = ['%s-%s-reagent' % (dbse, 'HOCH3Fcomp2'), '%s-%s-reagent' % (dbse, 'HOCH3Fts')]
 RXNM['%s-%s' % (dbse, 27)] = dict(zip(ACTV['%s-%s' % (dbse, 27)], [-1, +1]))
 
-ACTV['%s-%s' % (dbse, 28)] = ['%s-%s-reagent' % (dbse, 'HOCH3Fcomp1'),
-                              '%s-%s-reagent' % (dbse, 'HOCH3Fts'   ) ]
+ACTV['%s-%s' % (dbse, 28)] = ['%s-%s-reagent' % (dbse, 'HOCH3Fcomp1'), '%s-%s-reagent' % (dbse, 'HOCH3Fts')]
 RXNM['%s-%s' % (dbse, 28)] = dict(zip(ACTV['%s-%s' % (dbse, 28)], [-1, +1]))
 
-ACTV['%s-%s' % (dbse, 29)] = ['%s-%s-reagent' % (dbse, 'H'    ),
-                              '%s-%s-reagent' % (dbse, 'N2'   ),
-                              '%s-%s-reagent' % (dbse, 'HN2ts') ]
+ACTV['%s-%s' %
+     (dbse, 29)] = ['%s-%s-reagent' % (dbse, 'H'),
+                    '%s-%s-reagent' % (dbse, 'N2'),
+                    '%s-%s-reagent' % (dbse, 'HN2ts')]
 RXNM['%s-%s' % (dbse, 29)] = dict(zip(ACTV['%s-%s' % (dbse, 29)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse, 30)] = ['%s-%s-reagent' % (dbse, 'HN2'  ),
-                              '%s-%s-reagent' % (dbse, 'HN2ts') ]
+ACTV['%s-%s' % (dbse, 30)] = ['%s-%s-reagent' % (dbse, 'HN2'), '%s-%s-reagent' % (dbse, 'HN2ts')]
 RXNM['%s-%s' % (dbse, 30)] = dict(zip(ACTV['%s-%s' % (dbse, 30)], [-1, +1]))
 
-ACTV['%s-%s' % (dbse, 31)] = ['%s-%s-reagent' % (dbse, 'H'    ),
-                              '%s-%s-reagent' % (dbse, 'CO'   ),
-                              '%s-%s-reagent' % (dbse, 'HCOts') ]
+ACTV['%s-%s' %
+     (dbse, 31)] = ['%s-%s-reagent' % (dbse, 'H'),
+                    '%s-%s-reagent' % (dbse, 'CO'),
+                    '%s-%s-reagent' % (dbse, 'HCOts')]
 RXNM['%s-%s' % (dbse, 31)] = dict(zip(ACTV['%s-%s' % (dbse, 31)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse, 32)] = ['%s-%s-reagent' % (dbse, 'HCO'  ),
-                              '%s-%s-reagent' % (dbse, 'HCOts') ]
+ACTV['%s-%s' % (dbse, 32)] = ['%s-%s-reagent' % (dbse, 'HCO'), '%s-%s-reagent' % (dbse, 'HCOts')]
 RXNM['%s-%s' % (dbse, 32)] = dict(zip(ACTV['%s-%s' % (dbse, 32)], [-1, +1]))
 
-ACTV['%s-%s' % (dbse, 33)] = ['%s-%s-reagent' % (dbse, 'H'     ),
-                              '%s-%s-reagent' % (dbse, 'C2H4'  ),
-                              '%s-%s-reagent' % (dbse, 'C2H5ts') ]
+ACTV['%s-%s' % (dbse, 33)] = [
+    '%s-%s-reagent' % (dbse, 'H'),
+    '%s-%s-reagent' % (dbse, 'C2H4'),
+    '%s-%s-reagent' % (dbse, 'C2H5ts')
+]
 RXNM['%s-%s' % (dbse, 33)] = dict(zip(ACTV['%s-%s' % (dbse, 33)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse, 34)] = ['%s-%s-reagent' % (dbse, 'C2H5'  ),
-                              '%s-%s-reagent' % (dbse, 'C2H5ts') ]
+ACTV['%s-%s' % (dbse, 34)] = ['%s-%s-reagent' % (dbse, 'C2H5'), '%s-%s-reagent' % (dbse, 'C2H5ts')]
 RXNM['%s-%s' % (dbse, 34)] = dict(zip(ACTV['%s-%s' % (dbse, 34)], [-1, +1]))
 
-ACTV['%s-%s' % (dbse, 35)] = ['%s-%s-reagent' % (dbse, 'CH3'   ),
-                              '%s-%s-reagent' % (dbse, 'C2H4'  ),
-                              '%s-%s-reagent' % (dbse, 'C3H7ts') ]
+ACTV['%s-%s' % (dbse, 35)] = [
+    '%s-%s-reagent' % (dbse, 'CH3'),
+    '%s-%s-reagent' % (dbse, 'C2H4'),
+    '%s-%s-reagent' % (dbse, 'C3H7ts')
+]
 RXNM['%s-%s' % (dbse, 35)] = dict(zip(ACTV['%s-%s' % (dbse, 35)], [-1, -1, +1]))
 
-ACTV['%s-%s' % (dbse, 36)] = ['%s-%s-reagent' % (dbse, 'C3H7'  ),
-                              '%s-%s-reagent' % (dbse, 'C3H7ts') ]
+ACTV['%s-%s' % (dbse, 36)] = ['%s-%s-reagent' % (dbse, 'C3H7'), '%s-%s-reagent' % (dbse, 'C3H7ts')]
 RXNM['%s-%s' % (dbse, 36)] = dict(zip(ACTV['%s-%s' % (dbse, 36)], [-1, +1]))
 
-ACTV['%s-%s' % (dbse, 37)] = ['%s-%s-reagent' % (dbse, 'HCN'  ),
-                              '%s-%s-reagent' % (dbse, 'HCNts') ]
+ACTV['%s-%s' % (dbse, 37)] = ['%s-%s-reagent' % (dbse, 'HCN'), '%s-%s-reagent' % (dbse, 'HCNts')]
 RXNM['%s-%s' % (dbse, 37)] = dict(zip(ACTV['%s-%s' % (dbse, 37)], [-1, +1]))
 
-ACTV['%s-%s' % (dbse, 38)] = ['%s-%s-reagent' % (dbse, 'HNC'  ),
-                              '%s-%s-reagent' % (dbse, 'HCNts') ]
+ACTV['%s-%s' % (dbse, 38)] = ['%s-%s-reagent' % (dbse, 'HNC'), '%s-%s-reagent' % (dbse, 'HCNts')]
 RXNM['%s-%s' % (dbse, 38)] = dict(zip(ACTV['%s-%s' % (dbse, 38)], [-1, +1]))
 
 # <<< Reference Values >>>
 BIND = {}
-BIND['%s-%s' % (dbse,  1)] =  18.14
-BIND['%s-%s' % (dbse,  2)] =  83.22
-BIND['%s-%s' % (dbse,  3)] =  42.18
-BIND['%s-%s' % (dbse,  4)] =  42.18
-BIND['%s-%s' % (dbse,  5)] =  18.00
-BIND['%s-%s' % (dbse,  6)] =  18.00
-BIND['%s-%s' % (dbse,  7)] =  30.38
-BIND['%s-%s' % (dbse,  8)] =  57.02
-BIND['%s-%s' % (dbse,  9)] =   2.27
+BIND['%s-%s' % (dbse, 1)] = 18.14
+BIND['%s-%s' % (dbse, 2)] = 83.22
+BIND['%s-%s' % (dbse, 3)] = 42.18
+BIND['%s-%s' % (dbse, 4)] = 42.18
+BIND['%s-%s' % (dbse, 5)] = 18.00
+BIND['%s-%s' % (dbse, 6)] = 18.00
+BIND['%s-%s' % (dbse, 7)] = 30.38
+BIND['%s-%s' % (dbse, 8)] = 57.02
+BIND['%s-%s' % (dbse, 9)] = 2.27
 BIND['%s-%s' % (dbse, 10)] = 106.18
-BIND['%s-%s' % (dbse, 11)] =   7.43
-BIND['%s-%s' % (dbse, 12)] =  60.17
-BIND['%s-%s' % (dbse, 13)] =  -0.34
-BIND['%s-%s' % (dbse, 14)] =  -0.34
-BIND['%s-%s' % (dbse, 15)] =  13.38
-BIND['%s-%s' % (dbse, 16)] =  13.38
-BIND['%s-%s' % (dbse, 17)] =   3.10
-BIND['%s-%s' % (dbse, 18)] =   3.10
-BIND['%s-%s' % (dbse, 19)] =  13.61
-BIND['%s-%s' % (dbse, 20)] =  13.61
+BIND['%s-%s' % (dbse, 11)] = 7.43
+BIND['%s-%s' % (dbse, 12)] = 60.17
+BIND['%s-%s' % (dbse, 13)] = -0.34
+BIND['%s-%s' % (dbse, 14)] = -0.34
+BIND['%s-%s' % (dbse, 15)] = 13.38
+BIND['%s-%s' % (dbse, 16)] = 13.38
+BIND['%s-%s' % (dbse, 17)] = 3.10
+BIND['%s-%s' % (dbse, 18)] = 3.10
+BIND['%s-%s' % (dbse, 19)] = 13.61
+BIND['%s-%s' % (dbse, 20)] = 13.61
 BIND['%s-%s' % (dbse, 21)] = -12.54
-BIND['%s-%s' % (dbse, 22)] =  20.11
-BIND['%s-%s' % (dbse, 23)] =   2.89
-BIND['%s-%s' % (dbse, 24)] =  29.62
-BIND['%s-%s' % (dbse, 25)] =  -2.78
-BIND['%s-%s' % (dbse, 26)] =  17.33
-BIND['%s-%s' % (dbse, 27)] =  10.96
-BIND['%s-%s' % (dbse, 28)] =  47.20
-BIND['%s-%s' % (dbse, 29)] =  14.69
-BIND['%s-%s' % (dbse, 30)] =  10.72
-BIND['%s-%s' % (dbse, 31)] =   3.17
-BIND['%s-%s' % (dbse, 32)] =  22.68
-BIND['%s-%s' % (dbse, 33)] =   1.72
-BIND['%s-%s' % (dbse, 34)] =  41.75
-BIND['%s-%s' % (dbse, 35)] =   6.85
-BIND['%s-%s' % (dbse, 36)] =  32.97
-BIND['%s-%s' % (dbse, 37)] =  48.16
-BIND['%s-%s' % (dbse, 38)] =  33.11
+BIND['%s-%s' % (dbse, 22)] = 20.11
+BIND['%s-%s' % (dbse, 23)] = 2.89
+BIND['%s-%s' % (dbse, 24)] = 29.62
+BIND['%s-%s' % (dbse, 25)] = -2.78
+BIND['%s-%s' % (dbse, 26)] = 17.33
+BIND['%s-%s' % (dbse, 27)] = 10.96
+BIND['%s-%s' % (dbse, 28)] = 47.20
+BIND['%s-%s' % (dbse, 29)] = 14.69
+BIND['%s-%s' % (dbse, 30)] = 10.72
+BIND['%s-%s' % (dbse, 31)] = 3.17
+BIND['%s-%s' % (dbse, 32)] = 22.68
+BIND['%s-%s' % (dbse, 33)] = 1.72
+BIND['%s-%s' % (dbse, 34)] = 41.75
+BIND['%s-%s' % (dbse, 35)] = 6.85
+BIND['%s-%s' % (dbse, 36)] = 32.97
+BIND['%s-%s' % (dbse, 37)] = 48.16
+BIND['%s-%s' % (dbse, 38)] = 33.11
 
 # <<< Comment Lines >>>
 TAGL = {}
-TAGL['%s-%s' % (dbse,  1)] = '{ H + N2O <-- [HN2O] } --> OH + N2'
-TAGL['%s-%s' % (dbse,  2)] = 'H + N2O <-- { [HN2O] --> OH + N2 }'
-TAGL['%s-%s' % (dbse,  3)] = '{ H + FH <-- [HFH] } --> HF + H'
-TAGL['%s-%s' % (dbse,  4)] = 'H + FH <-- { [HFH] --> HF + H }'
-TAGL['%s-%s' % (dbse,  5)] = '{ H + ClH <-- [HClH] } --> HCl + H'
-TAGL['%s-%s' % (dbse,  6)] = 'H + ClH <-- { [HClH] --> HCl + H }'
-TAGL['%s-%s' % (dbse,  7)] = '{ H + FCH3 <-- [HFCH3] } --> HF + CH3'
-TAGL['%s-%s' % (dbse,  8)] = 'H + FCH3 <-- { [HFCH3] --> HF + CH3 }'
-TAGL['%s-%s' % (dbse,  9)] = '{ H + F2 <-- [HF2] } --> HF + F'
+TAGL['%s-%s' % (dbse, 1)] = '{ H + N2O <-- [HN2O] } --> OH + N2'
+TAGL['%s-%s' % (dbse, 2)] = 'H + N2O <-- { [HN2O] --> OH + N2 }'
+TAGL['%s-%s' % (dbse, 3)] = '{ H + FH <-- [HFH] } --> HF + H'
+TAGL['%s-%s' % (dbse, 4)] = 'H + FH <-- { [HFH] --> HF + H }'
+TAGL['%s-%s' % (dbse, 5)] = '{ H + ClH <-- [HClH] } --> HCl + H'
+TAGL['%s-%s' % (dbse, 6)] = 'H + ClH <-- { [HClH] --> HCl + H }'
+TAGL['%s-%s' % (dbse, 7)] = '{ H + FCH3 <-- [HFCH3] } --> HF + CH3'
+TAGL['%s-%s' % (dbse, 8)] = 'H + FCH3 <-- { [HFCH3] --> HF + CH3 }'
+TAGL['%s-%s' % (dbse, 9)] = '{ H + F2 <-- [HF2] } --> HF + F'
 TAGL['%s-%s' % (dbse, 10)] = 'H + F2 <-- { [HF2] --> HF + F }'
 TAGL['%s-%s' % (dbse, 11)] = '{ CH3 + FCl <-- [CH3FCl] } --> CH3F + Cl'
 TAGL['%s-%s' % (dbse, 12)] = 'CH3 + FCl <-- { [CH3FCl] --> CH3F + Cl }'
@@ -313,52 +336,52 @@ TAGL['%s-%s' % (dbse, 35)] = '{ CH3 + C2H4 <-- [CH3C2H4] } --> CH3CH2CH2'
 TAGL['%s-%s' % (dbse, 36)] = 'CH3 + C2H4 <-- { [CH3C2H4] --> CH3CH2CH2 }'
 TAGL['%s-%s' % (dbse, 37)] = '{ HCN <-- [HCN] } --> HNC'
 TAGL['%s-%s' % (dbse, 38)] = 'HCN <-- { [HCN] --> HNC }'
-TAGL['%s-%s-reagent' % (dbse, 'C2H4'       )] = 'Ethene'
-TAGL['%s-%s-reagent' % (dbse, 'C2H5ts'     )] = 'Transition State of H + C2H4 <--> CH3CH2'
-TAGL['%s-%s-reagent' % (dbse, 'C2H5'       )] = 'C2H5'
-TAGL['%s-%s-reagent' % (dbse, 'C3H7ts'     )] = 'Transition State of CH3 + C2H4 <--> CH3CH2CH2'
-TAGL['%s-%s-reagent' % (dbse, 'C3H7'       )] = 'C3H7'
-TAGL['%s-%s-reagent' % (dbse, 'CH3Cl'      )] = 'CH3Cl'
-TAGL['%s-%s-reagent' % (dbse, 'CH3FClts'   )] = 'Transition State of CH3 + FCL <--> CH3F + Cl'
-TAGL['%s-%s-reagent' % (dbse, 'CH3F'       )] = 'CH3F'
-TAGL['%s-%s-reagent' % (dbse, 'CH3OH'      )] = 'Methanol'
-TAGL['%s-%s-reagent' % (dbse, 'CH3'        )] = 'CH3'
+TAGL['%s-%s-reagent' % (dbse, 'C2H4')] = 'Ethene'
+TAGL['%s-%s-reagent' % (dbse, 'C2H5ts')] = 'Transition State of H + C2H4 <--> CH3CH2'
+TAGL['%s-%s-reagent' % (dbse, 'C2H5')] = 'C2H5'
+TAGL['%s-%s-reagent' % (dbse, 'C3H7ts')] = 'Transition State of CH3 + C2H4 <--> CH3CH2CH2'
+TAGL['%s-%s-reagent' % (dbse, 'C3H7')] = 'C3H7'
+TAGL['%s-%s-reagent' % (dbse, 'CH3Cl')] = 'CH3Cl'
+TAGL['%s-%s-reagent' % (dbse, 'CH3FClts')] = 'Transition State of CH3 + FCL <--> CH3F + Cl'
+TAGL['%s-%s-reagent' % (dbse, 'CH3F')] = 'CH3F'
+TAGL['%s-%s-reagent' % (dbse, 'CH3OH')] = 'Methanol'
+TAGL['%s-%s-reagent' % (dbse, 'CH3')] = 'CH3'
 TAGL['%s-%s-reagent' % (dbse, 'ClCH3Clcomp')] = 'Complex of Cl- + CH3Cl'
-TAGL['%s-%s-reagent' % (dbse, 'ClCH3Clts'  )] = 'Transition State of Cl- + CH3Cl <--> ClCH3 + Cl-'
-TAGL['%s-%s-reagent' % (dbse, 'ClF'        )] = 'ClF'
-TAGL['%s-%s-reagent' % (dbse, 'Cl_anion'   )] = 'Chloride Anion'
-TAGL['%s-%s-reagent' % (dbse, 'Cl'         )] = 'Chlorine Atom'
-TAGL['%s-%s-reagent' % (dbse, 'CO'         )] = 'Carbon Monoxide'
-TAGL['%s-%s-reagent' % (dbse, 'F2'         )] = 'Fluorine Molecule'
+TAGL['%s-%s-reagent' % (dbse, 'ClCH3Clts')] = 'Transition State of Cl- + CH3Cl <--> ClCH3 + Cl-'
+TAGL['%s-%s-reagent' % (dbse, 'ClF')] = 'ClF'
+TAGL['%s-%s-reagent' % (dbse, 'Cl_anion')] = 'Chloride Anion'
+TAGL['%s-%s-reagent' % (dbse, 'Cl')] = 'Chlorine Atom'
+TAGL['%s-%s-reagent' % (dbse, 'CO')] = 'Carbon Monoxide'
+TAGL['%s-%s-reagent' % (dbse, 'F2')] = 'Fluorine Molecule'
 TAGL['%s-%s-reagent' % (dbse, 'FCH3Clcomp1')] = 'Complex of F- + CH3Cl'
 TAGL['%s-%s-reagent' % (dbse, 'FCH3Clcomp2')] = 'Complex of FCH3 + Cl-'
-TAGL['%s-%s-reagent' % (dbse, 'FCH3Clts'   )] = 'Transition State of F- + CH3Cl <--> FCH3 + Cl-'
-TAGL['%s-%s-reagent' % (dbse, 'FCH3Fcomp'  )] = 'Complex of F- + CH3F'
-TAGL['%s-%s-reagent' % (dbse, 'FCH3Fts'    )] = 'Transition State of F- CH3F <--> FCH3 + F-'
-TAGL['%s-%s-reagent' % (dbse, 'F_anion'    )] = 'Fluoride Anion'
-TAGL['%s-%s-reagent' % (dbse, 'F'          )] = 'Fluorine Atom'
-TAGL['%s-%s-reagent' % (dbse, 'HClHts'     )] = 'Transition State of H + ClH <--> HCl + H'
-TAGL['%s-%s-reagent' % (dbse, 'HCl'        )] = 'Hydrogen Chloride'
-TAGL['%s-%s-reagent' % (dbse, 'HCNts'      )] = 'Transition State of HCN <--> HNC'
-TAGL['%s-%s-reagent' % (dbse, 'HCN'        )] = 'Hydrogen Cyanide'
-TAGL['%s-%s-reagent' % (dbse, 'HCOts'      )] = 'Transition State of H + CO <--> HCO'
-TAGL['%s-%s-reagent' % (dbse, 'HCO'        )] = 'HCO'
-TAGL['%s-%s-reagent' % (dbse, 'HF2ts'      )] = 'Transition State of H + F2 <--> HF + F'
-TAGL['%s-%s-reagent' % (dbse, 'HFCH3ts'    )] = 'Transition State of H + FCH3 <--> HF + CH3'
-TAGL['%s-%s-reagent' % (dbse, 'HFHts'      )] = 'Transition State of H + FH <--> HF + H'
-TAGL['%s-%s-reagent' % (dbse, 'HF'         )] = 'Hydrogen Fluoride'
-TAGL['%s-%s-reagent' % (dbse, 'HN2ts'      )] = 'Transition State of H + N2 <--> HN2'
-TAGL['%s-%s-reagent' % (dbse, 'HN2'        )] = 'HN2'
-TAGL['%s-%s-reagent' % (dbse, 'HNC'        )] = 'HNC'
+TAGL['%s-%s-reagent' % (dbse, 'FCH3Clts')] = 'Transition State of F- + CH3Cl <--> FCH3 + Cl-'
+TAGL['%s-%s-reagent' % (dbse, 'FCH3Fcomp')] = 'Complex of F- + CH3F'
+TAGL['%s-%s-reagent' % (dbse, 'FCH3Fts')] = 'Transition State of F- CH3F <--> FCH3 + F-'
+TAGL['%s-%s-reagent' % (dbse, 'F_anion')] = 'Fluoride Anion'
+TAGL['%s-%s-reagent' % (dbse, 'F')] = 'Fluorine Atom'
+TAGL['%s-%s-reagent' % (dbse, 'HClHts')] = 'Transition State of H + ClH <--> HCl + H'
+TAGL['%s-%s-reagent' % (dbse, 'HCl')] = 'Hydrogen Chloride'
+TAGL['%s-%s-reagent' % (dbse, 'HCNts')] = 'Transition State of HCN <--> HNC'
+TAGL['%s-%s-reagent' % (dbse, 'HCN')] = 'Hydrogen Cyanide'
+TAGL['%s-%s-reagent' % (dbse, 'HCOts')] = 'Transition State of H + CO <--> HCO'
+TAGL['%s-%s-reagent' % (dbse, 'HCO')] = 'HCO'
+TAGL['%s-%s-reagent' % (dbse, 'HF2ts')] = 'Transition State of H + F2 <--> HF + F'
+TAGL['%s-%s-reagent' % (dbse, 'HFCH3ts')] = 'Transition State of H + FCH3 <--> HF + CH3'
+TAGL['%s-%s-reagent' % (dbse, 'HFHts')] = 'Transition State of H + FH <--> HF + H'
+TAGL['%s-%s-reagent' % (dbse, 'HF')] = 'Hydrogen Fluoride'
+TAGL['%s-%s-reagent' % (dbse, 'HN2ts')] = 'Transition State of H + N2 <--> HN2'
+TAGL['%s-%s-reagent' % (dbse, 'HN2')] = 'HN2'
+TAGL['%s-%s-reagent' % (dbse, 'HNC')] = 'HNC'
 TAGL['%s-%s-reagent' % (dbse, 'HOCH3Fcomp1')] = 'Complex of HOCH3 + F-'
 TAGL['%s-%s-reagent' % (dbse, 'HOCH3Fcomp2')] = 'Complex of OH- + CH3F'
-TAGL['%s-%s-reagent' % (dbse, 'HOCH3Fts'   )] = 'Transition State of OH- + CH3F <--> HOCH3 + F-'
-TAGL['%s-%s-reagent' % (dbse, 'H'          )] = 'Hydrogen Atom'
-TAGL['%s-%s-reagent' % (dbse, 'N2OHts'     )] = 'Transition State of H + N2O <--> OH + N2'
-TAGL['%s-%s-reagent' % (dbse, 'N2O'        )] = 'N2O'
-TAGL['%s-%s-reagent' % (dbse, 'N2'         )] = 'Nitrogen Molecule'
-TAGL['%s-%s-reagent' % (dbse, 'OH_anion'   )] = 'Hydroxide Anion'
-TAGL['%s-%s-reagent' % (dbse, 'OH'         )] = 'OH'
+TAGL['%s-%s-reagent' % (dbse, 'HOCH3Fts')] = 'Transition State of OH- + CH3F <--> HOCH3 + F-'
+TAGL['%s-%s-reagent' % (dbse, 'H')] = 'Hydrogen Atom'
+TAGL['%s-%s-reagent' % (dbse, 'N2OHts')] = 'Transition State of H + N2O <--> OH + N2'
+TAGL['%s-%s-reagent' % (dbse, 'N2O')] = 'N2O'
+TAGL['%s-%s-reagent' % (dbse, 'N2')] = 'Nitrogen Molecule'
+TAGL['%s-%s-reagent' % (dbse, 'OH_anion')] = 'Hydroxide Anion'
+TAGL['%s-%s-reagent' % (dbse, 'OH')] = 'OH'
 
 # <<< Geometry Specification Strings >>>
 GEOS = {}
@@ -792,49 +815,49 @@ units angstrom
 DATA = {}
 
 DATA['NUCLEAR REPULSION ENERGY'] = {}
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-H-reagent'                ] =       0.00000000
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-N2O-reagent'              ] =      60.94607766
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-N2OHts-reagent'           ] =      65.68644495
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-OH-reagent'               ] =       4.36931115
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-N2-reagent'               ] =      23.63454766
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HF-reagent'               ] =       5.20285489
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HFHts-reagent'            ] =       8.60854029
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HCl-reagent'              ] =       7.05875275
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HClHts-reagent'           ] =      12.28739648
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-CH3F-reagent'             ] =      37.42304655
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HFCH3ts-reagent'          ] =      38.79779200
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-CH3-reagent'              ] =       9.69236444
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-F2-reagent'               ] =      30.72192369
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HF2ts-reagent'            ] =      33.44223409
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-F-reagent'                ] =       0.00000000
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-ClF-reagent'              ] =      49.66117442
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-CH3FClts-reagent'         ] =      95.59999471
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-Cl-reagent'               ] =       0.00000000
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-F_anion-reagent'          ] =       0.00000000
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-FCH3Fts-reagent'          ] =      66.36618410
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-FCH3Fcomp-reagent'        ] =      64.36230187
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-Cl_anion-reagent'         ] =       0.00000000
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-CH3Cl-reagent'            ] =      51.37857642
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-ClCH3Clts-reagent'        ] =     110.27962403
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-ClCH3Clcomp-reagent'      ] =     107.04230687
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-FCH3Clts-reagent'         ] =      86.10066616
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-FCH3Clcomp1-reagent'      ] =      86.07639241
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-FCH3Clcomp2-reagent'      ] =      79.90981772
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-OH_anion-reagent'         ] =       4.40044460
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HOCH3Fts-reagent'         ] =      69.00558005
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-CH3OH-reagent'            ] =      40.39337431
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HOCH3Fcomp2-reagent'      ] =      67.43072234
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HOCH3Fcomp1-reagent'      ] =      73.17394204
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HN2ts-reagent'            ] =      27.37488066
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HN2-reagent'              ] =      27.50439999
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-CO-reagent'               ] =      22.48612142
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HCOts-reagent'            ] =      25.76648888
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HCO-reagent'              ] =      26.50985233
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-C2H4-reagent'             ] =      33.42351838
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-C2H5ts-reagent'           ] =      36.85248528
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-C2H5-reagent'             ] =      36.97781691
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-C3H7ts-reagent'           ] =      70.26842595
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-C3H7-reagent'             ] =      75.86161869
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HCN-reagent'              ] =      23.92417344
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HCNts-reagent'            ] =      24.04634812
-DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HNC-reagent'              ] =      24.19729155
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-H-reagent'] = 0.00000000
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-N2O-reagent'] = 60.94607766
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-N2OHts-reagent'] = 65.68644495
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-OH-reagent'] = 4.36931115
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-N2-reagent'] = 23.63454766
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HF-reagent'] = 5.20285489
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HFHts-reagent'] = 8.60854029
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HCl-reagent'] = 7.05875275
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HClHts-reagent'] = 12.28739648
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-CH3F-reagent'] = 37.42304655
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HFCH3ts-reagent'] = 38.79779200
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-CH3-reagent'] = 9.69236444
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-F2-reagent'] = 30.72192369
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HF2ts-reagent'] = 33.44223409
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-F-reagent'] = 0.00000000
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-ClF-reagent'] = 49.66117442
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-CH3FClts-reagent'] = 95.59999471
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-Cl-reagent'] = 0.00000000
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-F_anion-reagent'] = 0.00000000
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-FCH3Fts-reagent'] = 66.36618410
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-FCH3Fcomp-reagent'] = 64.36230187
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-Cl_anion-reagent'] = 0.00000000
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-CH3Cl-reagent'] = 51.37857642
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-ClCH3Clts-reagent'] = 110.27962403
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-ClCH3Clcomp-reagent'] = 107.04230687
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-FCH3Clts-reagent'] = 86.10066616
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-FCH3Clcomp1-reagent'] = 86.07639241
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-FCH3Clcomp2-reagent'] = 79.90981772
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-OH_anion-reagent'] = 4.40044460
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HOCH3Fts-reagent'] = 69.00558005
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-CH3OH-reagent'] = 40.39337431
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HOCH3Fcomp2-reagent'] = 67.43072234
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HOCH3Fcomp1-reagent'] = 73.17394204
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HN2ts-reagent'] = 27.37488066
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HN2-reagent'] = 27.50439999
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-CO-reagent'] = 22.48612142
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HCOts-reagent'] = 25.76648888
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HCO-reagent'] = 26.50985233
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-C2H4-reagent'] = 33.42351838
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-C2H5ts-reagent'] = 36.85248528
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-C2H5-reagent'] = 36.97781691
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-C3H7ts-reagent'] = 70.26842595
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-C3H7-reagent'] = 75.86161869
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HCN-reagent'] = 23.92417344
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HCNts-reagent'] = 24.04634812
+DATA['NUCLEAR REPULSION ENERGY']['NHTBH-HNC-reagent'] = 24.19729155

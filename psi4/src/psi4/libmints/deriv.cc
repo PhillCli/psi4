@@ -187,9 +187,9 @@ Deriv::Deriv(const std::shared_ptr<Wavefunction> &wave, char needed_irreps, bool
  *  For SCF reference theories, these terms always come from the orbital Z-vector or the Fock matrix. For non-SCF
  *  reference theories, proceed with extra caution.
  */
-SharedMatrix Deriv::compute_df(const std::string& ref_aux_name, const std::string& cor_aux_name) {
+SharedMatrix Deriv::compute_df(const std::string &ref_aux_name, const std::string &cor_aux_name) {
     molecule_->print_in_bohr();
-    
+
     if (!wfn_) throw("In Deriv: The wavefunction passed in is empty!");
 
     if (natom_ == 1) {
@@ -207,7 +207,7 @@ SharedMatrix Deriv::compute_df(const std::string& ref_aux_name, const std::strin
     auto enuc = std::make_shared<Matrix>(molecule_->nuclear_repulsion_energy_deriv1(wfn_->get_dipole_field_strength()));
     gradient_terms->push_back(enuc);
 
-    const auto& mints = wfn_->mintshelper();
+    const auto &mints = wfn_->mintshelper();
 
     // One-electron derivatives.
     auto Da = wfn_->Da();
@@ -240,11 +240,12 @@ SharedMatrix Deriv::compute_df(const std::string& ref_aux_name, const std::strin
     gradient_terms->push_back(x_contr);
 
     // DF TEI derivatives
-    std::vector<std::pair<std::string, std::string>> aux_data{{ref_aux_name, "Reference"}, {cor_aux_name, "Correlation"}};
+    std::vector<std::pair<std::string, std::string>> aux_data{{ref_aux_name, "Reference"},
+                                                              {cor_aux_name, "Correlation"}};
     _default_psio_lib_->open(PSIF_AO_TPDM, PSIO_OPEN_OLD);
     bool separate_tei = wfn_->options().get_int("PRINT") > 2;
     auto tei_terms = separate_tei ? gradient_terms : std::make_shared<std::vector<SharedMatrix>>();
-    for (const auto& aux_datum: aux_data) {
+    for (const auto &aux_datum : aux_data) {
         auto naux = wfn_->get_basisset(aux_datum.first)->nbf();
         auto metric_density = std::make_shared<Matrix>("Metric " + aux_datum.second + " Density", naux, naux);
         metric_density->load(_default_psio_lib_, PSIF_AO_TPDM, Matrix::SaveType::LowerTriangle);
@@ -252,22 +253,23 @@ SharedMatrix Deriv::compute_df(const std::string& ref_aux_name, const std::strin
         std::map<std::string, SharedMatrix> densities;
         densities["Metric " + aux_datum.second] = metric_density;
         auto results = mints->metric_grad(densities, aux_datum.first);
-        for (const auto& kv: results) {
+        for (const auto &kv : results) {
             tei_terms->push_back(kv.second);
         }
-        auto result = mints->three_idx_grad(aux_datum.first, "3-Center " + aux_datum.second + " Density" , "3-Center " + aux_datum.second);
+        auto result = mints->three_idx_grad(aux_datum.first, "3-Center " + aux_datum.second + " Density",
+                                            "3-Center " + aux_datum.second);
         tei_terms->push_back(result);
     }
-    _default_psio_lib_->close(PSIF_AO_TPDM, 1); // 1 = keep contents of PSIF_AO_TPDM
+    _default_psio_lib_->close(PSIF_AO_TPDM, 1);  // 1 = keep contents of PSIF_AO_TPDM
 
     if (!separate_tei) {
-        for (const auto& tei_term : *tei_terms) {
+        for (const auto &tei_term : *tei_terms) {
             tpdm_contr_->add(tei_term);
         }
         gradient_terms->push_back(tpdm_contr_);
     }
 
-    for (auto gradient: *gradient_terms) {
+    for (auto gradient : *gradient_terms) {
         gradient->symmetrize_gradient(molecule_);
         if (wfn_->options().get_int("PRINT") > 1) gradient->print_atom_vector();
         gradient_->add(gradient);
@@ -297,10 +299,9 @@ SharedMatrix Deriv::compute(DerivCalcType deriv_calc_type) {
 
     // Initialize an ERI object requesting derivatives.
     int nthread = Process::environment.get_n_threads();
-    std::vector<std::shared_ptr<TwoBodyAOInt> > ao_eri(nthread);
+    std::vector<std::shared_ptr<TwoBodyAOInt>> ao_eri(nthread);
     ao_eri[0] = std::shared_ptr<TwoBodyAOInt>(integral_->eri(1));
-    for (int i = 1; i < nthread; ++i)
-        ao_eri[i] = std::shared_ptr<TwoBodyAOInt>(ao_eri.front()->clone());
+    for (int i = 1; i < nthread; ++i) ao_eri[i] = std::shared_ptr<TwoBodyAOInt>(ao_eri.front()->clone());
     TwoBodySOInt so_eri(ao_eri, integral_, cdsalcs_);
 
     // A certain optimization can be used if we know we only need totally symmetric
@@ -334,7 +335,8 @@ SharedMatrix Deriv::compute(DerivCalcType deriv_calc_type) {
     std::shared_ptr<Wavefunction> ref_wfn = wfn_->reference_wavefunction();
     // Whether the SCF contribution is separate from the correlated terms
     // This is currently a hack and should be improved.
-    bool reference_separate = (X) && ref_wfn && wfn_->module() != "dct" && wfn_->module() != "occ" && wfn_->module() != "ccenergy";
+    bool reference_separate =
+        (X) && ref_wfn && wfn_->module() != "dct" && wfn_->module() != "occ" && wfn_->module() != "ccenergy";
     bool reset_oneel = !(Da && (!wfn_->same_a_b_orbs() || Db) && X);
 
     // deriv_calc_type exists for historical reasons and should likely be removed.
@@ -350,7 +352,7 @@ SharedMatrix Deriv::compute(DerivCalcType deriv_calc_type) {
 
         if (!deriv_density_backtransformed_) {
             // Dial up an integral transformation object to backtransform the OPDM, TPDM and Lagrangian
-            std::vector<std::shared_ptr<MOSpace> > spaces;
+            std::vector<std::shared_ptr<MOSpace>> spaces;
             spaces.push_back(MOSpace::all);
             std::shared_ptr<IntegralTransform> ints_transform =
                 std::shared_ptr<IntegralTransform>(new IntegralTransform(
@@ -375,7 +377,7 @@ SharedMatrix Deriv::compute(DerivCalcType deriv_calc_type) {
                 X->load(_default_psio_lib_, PSIF_AO_OPDM);
                 // The CC lagrangian is defined with a different prefactor to SCF / MP2, so we account for it here
                 X->scale(0.5);
-                }
+            }
         }
 
         _default_psio_lib_->open(PSIF_AO_TPDM, PSIO_OPEN_OLD);
@@ -423,7 +425,7 @@ SharedMatrix Deriv::compute(DerivCalcType deriv_calc_type) {
     // B^t g_q^t = g_x^t -> g_q B = g_x
     C_DGEMM('n', 'n', 1, 3 * natom_, cdsalcs_.ncd(), 1.0, Xcont, cdsalcs_.ncd(), B[0], 3 * natom_, 0.0, cart,
             3 * natom_);
-    
+
     auto x_contr = factory_->create_shared_matrix("Lagrangian contribution to gradient", natom_, 3);
     for (int a = 0; a < natom_; ++a)
         for (int xyz = 0; xyz < 3; ++xyz) x_contr->set(a, xyz, cart[3 * a + xyz]);

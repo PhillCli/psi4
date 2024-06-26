@@ -644,8 +644,8 @@ void DFCoupledCluster::AllocateMemory() {
             isLowMemory = true;
             mem_t = 8. * (2L * o * o * v * v + o * o * o * v + o * v + 5L * o * o * o * nthreads);
         }
-        outfile->Printf("        (T) algorithm:                   %9.3lf [GiB] (%s-memory)\n", mem_t / (1024. * 1024. * 1024.), isLowMemory ? "low" : "high");
-
+        outfile->Printf("        (T) algorithm:                   %9.3lf [GiB] (%s-memory)\n",
+                        mem_t / (1024. * 1024. * 1024.), isLowMemory ? "low" : "high");
     }
     outfile->Printf("\n");
     outfile->Printf("  ==> Input parameters <==\n\n");

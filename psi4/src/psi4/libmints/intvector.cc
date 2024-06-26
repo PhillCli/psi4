@@ -38,4 +38,3 @@ IntVector IntVector::iota(const Dimension &dim) {
     }
     return vec;
 }
-

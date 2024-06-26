@@ -93,7 +93,7 @@ void OCCWave::gfock() {
                 if (wfn_type_ == "OREMP") {
                     global_dpd_->buf4_init(&X, PSIF_OCC_DENSITY, 0, ID("[O,O]"), ID("[O,V]"), ID("[O,O]"), ID("[O,V]"),
                                            0, "X <OO|OV>");
-                    global_dpd_->buf4_scm(&X, 1.0E0-remp_A);
+                    global_dpd_->buf4_scm(&X, 1.0E0 - remp_A);
                     global_dpd_->buf4_close(&X);
                 }
             }
@@ -431,7 +431,7 @@ void OCCWave::gfock() {
                 if (wfn_type_ == "OREMP") {
                     global_dpd_->buf4_init(&X, PSIF_OCC_DENSITY, 0, ID("[O,O]"), ID("[O,V]"), ID("[O,O]"), ID("[O,V]"),
                                            0, "X <OO|OV>");
-                    global_dpd_->buf4_scm(&X, 1.0E0-remp_A);
+                    global_dpd_->buf4_scm(&X, 1.0E0 - remp_A);
                     global_dpd_->buf4_close(&X);
                 }
 
@@ -463,7 +463,7 @@ void OCCWave::gfock() {
                 if (wfn_type_ == "OREMP") {
                     global_dpd_->buf4_init(&X, PSIF_OCC_DENSITY, 0, ID("[o,o]"), ID("[o,v]"), ID("[o,o]"), ID("[o,v]"),
                                            0, "X <oo|ov>");
-                    global_dpd_->buf4_scm(&X, 1.0E0-remp_A);
+                    global_dpd_->buf4_scm(&X, 1.0E0 - remp_A);
                     global_dpd_->buf4_close(&X);
                 }
 
@@ -495,7 +495,7 @@ void OCCWave::gfock() {
                 if (wfn_type_ == "OREMP") {
                     global_dpd_->buf4_init(&X, PSIF_OCC_DENSITY, 0, ID("[O,o]"), ID("[O,v]"), ID("[O,o]"), ID("[O,v]"),
                                            0, "X <Oo|Ov>");
-                    global_dpd_->buf4_scm(&X, 1.0E0-remp_A);
+                    global_dpd_->buf4_scm(&X, 1.0E0 - remp_A);
                     global_dpd_->buf4_close(&X);
                 }
 
@@ -527,12 +527,12 @@ void OCCWave::gfock() {
                 if (wfn_type_ == "OREMP") {
                     global_dpd_->buf4_init(&X, PSIF_OCC_DENSITY, 0, ID("[O,o]"), ID("[V,o]"), ID("[O,o]"), ID("[V,o]"),
                                            0, "X <Oo|Vo>");
-                    global_dpd_->buf4_scm(&X, 1.0E0-remp_A);
+                    global_dpd_->buf4_scm(&X, 1.0E0 - remp_A);
                     global_dpd_->buf4_close(&X);
                 }
 
             }  // end main if for X
-        }      // end if (wfn_type_ != "OMP2") {
+        }  // end if (wfn_type_ != "OMP2") {
 
         /********************************************************************************************/
         /************************** VO-Block ********************************************************/
@@ -1056,5 +1056,5 @@ void OCCWave::gfock() {
     // outfile->Printf("\n omp3_gfock done. \n");
 
 }  // End main
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

@@ -49,9 +49,9 @@ class LibXCFunctional : public Functional {
     std::unique_ptr<xc_func_type> xc_functional_;
     int func_id_;
     bool user_omega_;
-    bool exc_; // Can we compute functional at a point?
-    bool vxc_; // Can we compute first derivative at a point?
-    bool fxc_; // Can we compute second derivative at a point?
+    bool exc_;  // Can we compute functional at a point?
+    bool vxc_;  // Can we compute first derivative at a point?
+    bool fxc_;  // Can we compute second derivative at a point?
 
     // **ONLY** Used to pass information up the chain.
     // Exchange

@@ -44,6 +44,7 @@ from .bfs import BFS
 
 qcdbmol = "psi4.driver.qcdb.molecule.Molecule"
 
+
 class Molecule(LibmintsMolecule):
     """Class to store the elements, coordinates, fragmentation pattern,
     charge, multiplicity of a molecule. Largely replicates psi4's libmints
@@ -97,51 +98,49 @@ class Molecule(LibmintsMolecule):
                 molrec = molinit
 
             elif isinstance(molinit, str):
-                compound_molrec = qcel.molparse.from_string(
-                    molstr=molinit,
-                    dtype=dtype,
-                    name=name,
-                    fix_com=fix_com,
-                    fix_orientation=fix_orientation,
-                    fix_symmetry=fix_symmetry,
-                    return_processed=False,
-                    enable_qm=enable_qm,
-                    enable_efp=enable_efp,
-                    missing_enabled_return_qm=missing_enabled_return_qm,
-                    missing_enabled_return_efp=missing_enabled_return_efp,
-                    verbose=verbose)
+                compound_molrec = qcel.molparse.from_string(molstr=molinit,
+                                                            dtype=dtype,
+                                                            name=name,
+                                                            fix_com=fix_com,
+                                                            fix_orientation=fix_orientation,
+                                                            fix_symmetry=fix_symmetry,
+                                                            return_processed=False,
+                                                            enable_qm=enable_qm,
+                                                            enable_efp=enable_efp,
+                                                            missing_enabled_return_qm=missing_enabled_return_qm,
+                                                            missing_enabled_return_efp=missing_enabled_return_efp,
+                                                            verbose=verbose)
                 molrec = compound_molrec['qm']
 
             elif molinit is None and geom is not None:
-                molrec = qcel.molparse.from_arrays(
-                    geom=geom,
-                    elea=elea,
-                    elez=elez,
-                    elem=elem,
-                    mass=mass,
-                    real=real,
-                    elbl=elbl,
-                    name=name,
-                    units=units,
-                    input_units_to_au=input_units_to_au,
-                    fix_com=fix_com,
-                    fix_orientation=fix_orientation,
-                    fix_symmetry=fix_symmetry,
-                    fragment_separators=fragment_separators,
-                    fragment_charges=fragment_charges,
-                    fragment_multiplicities=fragment_multiplicities,
-                    molecular_charge=molecular_charge,
-                    molecular_multiplicity=molecular_multiplicity,
-                    comment=comment,
-                    provenance=provenance,
-                    connectivity=connectivity,
-                    domain='qm',
-                    missing_enabled_return=missing_enabled_return,
-                    tooclose=tooclose,
-                    zero_ghost_fragments=zero_ghost_fragments,
-                    nonphysical=nonphysical,
-                    mtol=mtol,
-                    verbose=verbose)
+                molrec = qcel.molparse.from_arrays(geom=geom,
+                                                   elea=elea,
+                                                   elez=elez,
+                                                   elem=elem,
+                                                   mass=mass,
+                                                   real=real,
+                                                   elbl=elbl,
+                                                   name=name,
+                                                   units=units,
+                                                   input_units_to_au=input_units_to_au,
+                                                   fix_com=fix_com,
+                                                   fix_orientation=fix_orientation,
+                                                   fix_symmetry=fix_symmetry,
+                                                   fragment_separators=fragment_separators,
+                                                   fragment_charges=fragment_charges,
+                                                   fragment_multiplicities=fragment_multiplicities,
+                                                   molecular_charge=molecular_charge,
+                                                   molecular_multiplicity=molecular_multiplicity,
+                                                   comment=comment,
+                                                   provenance=provenance,
+                                                   connectivity=connectivity,
+                                                   domain='qm',
+                                                   missing_enabled_return=missing_enabled_return,
+                                                   tooclose=tooclose,
+                                                   zero_ghost_fragments=zero_ghost_fragments,
+                                                   nonphysical=nonphysical,
+                                                   mtol=mtol,
+                                                   verbose=verbose)
 
             # ok, got the molrec dictionary; now build the thing
             self._internal_from_dict(molrec, verbose=verbose)
@@ -219,8 +218,8 @@ class Molecule(LibmintsMolecule):
             try:
                 infile = open(xyzfilename, 'r')
             except IOError:
-                raise ValidationError(
-                    """Molecule::init_with_mol2: given filename '%s' does not exist.""" % (xyzfilename))
+                raise ValidationError("""Molecule::init_with_mol2: given filename '%s' does not exist.""" %
+                                      (xyzfilename))
             if os.stat(xyzfilename).st_size == 0:
                 raise ValidationError("""Molecule::init_with_mol2: given filename '%s' is blank.""" % (xyzfilename))
             text = infile.readlines()
@@ -285,8 +284,8 @@ class Molecule(LibmintsMolecule):
                     raise ValidationError("Molecule::init_with_mol2: Malformed atom information line %d." % (i + 5))
 
             except IndexError:
-                raise ValidationError(
-                    "Molecule::init_with_mol2: Expected atom in file at line %d.\n%s" % (i + 5, text[i + 4]))
+                raise ValidationError("Molecule::init_with_mol2: Expected atom in file at line %d.\n%s" %
+                                      (i + 5, text[i + 4]))
 
         # We need to make 1 fragment with all atoms
         instance.fragments.append([0, fileNatom - 1])
@@ -333,8 +332,8 @@ class Molecule(LibmintsMolecule):
         for i in range(self.natom()):
             [x, y, z] = self.atoms[i].compute()
             if save_ghosts or self.Z(i):
-                text += '%2s %17.12f %17.12f %17.12f\n' % ((self.symbol(i) if self.Z(i) else "Gh"),
-                    x * factor, y * factor, z * factor)
+                text += '%2s %17.12f %17.12f %17.12f\n' % (
+                    (self.symbol(i) if self.Z(i) else "Gh"), x * factor, y * factor, z * factor)
         return text
 
     def save_xyz(self, filename, save_ghosts=True, save_natom=True):
@@ -471,8 +470,7 @@ class Molecule(LibmintsMolecule):
 
         for i in range(self.natom()):
             [x, y, z] = self.atoms[i].compute()
-            text += '%-2s %17.12f %17.12f %17.12f\n' % (self.symbol(i),
-                x * factor, y * factor, z * factor)
+            text += '%-2s %17.12f %17.12f %17.12f\n' % (self.symbol(i), x * factor, y * factor, z * factor)
             if not self.Z(i):
                 dummy.append(str(i + 1))  # Molpro atom number is 1-indexed
 
@@ -496,8 +494,8 @@ class Molecule(LibmintsMolecule):
         # append atoms and coordentries
         for i in range(self.natom()):
             [x, y, z] = self.atoms[i].compute()
-            text += '%-2s %17.12f %17.12f %17.12f\n' % ((self.symbol(i) if self.Z(i) else "GH"),
-                x * factor, y * factor, z * factor)
+            text += '%-2s %17.12f %17.12f %17.12f\n' % (
+                (self.symbol(i) if self.Z(i) else "GH"), x * factor, y * factor, z * factor)
 
         #for fr in range(self.nfragments()):
         #    if self.fragment_types[fr] == 'Absent':
@@ -582,10 +580,10 @@ class Molecule(LibmintsMolecule):
                     atom = self.symbol(at)
                     if n_frags > 1:
                         text += '    {:2s}({:d}) {:> 17.12f} {:> 17.12f} {:> 17.12f}\n'.format(
-                                atom, fr + 1, x * factor, y * factor, z * factor)
+                            atom, fr + 1, x * factor, y * factor, z * factor)
                     else:
                         text += '    {:2s} {:> 17.12f} {:> 17.12f} {:> 17.12f}\n'.format(
-                                atom, x * factor, y * factor, z * factor)
+                            atom, x * factor, y * factor, z * factor)
         text += '*'
 
         return text, options
@@ -737,8 +735,8 @@ class Molecule(LibmintsMolecule):
 
         for i in range(self.natom()):
             [x, y, z] = self.atoms[i].compute()
-            text += '%4s %17.12f %17.12f %17.12f\n' % (("" if self.Z(i) else 'Bq') + self.symbol(i),
-                x * factor, y * factor, z * factor)
+            text += '%4s %17.12f %17.12f %17.12f\n' % (
+                ("" if self.Z(i) else 'Bq') + self.symbol(i), x * factor, y * factor, z * factor)
         return text
         pass
 
@@ -856,8 +854,10 @@ class Molecule(LibmintsMolecule):
                 (evecs[0][midx], evecs[1][midx], evecs[2][midx])
             text += '  Normal Vector: %14.8f %14.8f %14.8f                  [unit]\n' % \
                 (evecs[0][midx] + cent[0], evecs[1][midx] + cent[1], evecs[2][midx] + cent[2])
-            xplane = [evecs[0][midx], evecs[1][midx], evecs[2][midx],
-                -1.0 * (evecs[0][midx] * cent[0] + evecs[1][midx] * cent[1] + evecs[2][midx] * cent[2])]
+            xplane = [
+                evecs[0][midx], evecs[1][midx], evecs[2][midx],
+                -1.0 * (evecs[0][midx] * cent[0] + evecs[1][midx] * cent[1] + evecs[2][midx] * cent[2])
+            ]
             text += '  Eqn. of Plane: %14.8f %14.8f %14.8f %14.8f   [Ai + Bj + Ck + D = 0]\n' % \
                 (xplane[0], xplane[1], xplane[2], xplane[3])
             dtemp = math.sqrt(evecs[0][midx] * evecs[0][midx] + evecs[1][midx] * evecs[1][midx] +
@@ -1060,7 +1060,8 @@ class Molecule(LibmintsMolecule):
 
         return ar
 
-    def to_arrays(self, dummy: bool = False, ghost_as_dummy: bool = False) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    def to_arrays(self, dummy: bool = False,
+                  ghost_as_dummy: bool = False) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         """Exports coordinate info into NumPy arrays.
 
         Parameters
@@ -1095,8 +1096,8 @@ class Molecule(LibmintsMolecule):
             else:
                 # psi4.core.Molecule
                 geom = np.array(self.full_geometry())
-            mass = np.asarray(
-                [(0. if (ghost_as_dummy and self.fZ(at) == 0) else self.fmass(at)) for at in range(self.nallatom())])
+            mass = np.asarray([(0. if (ghost_as_dummy and self.fZ(at) == 0) else self.fmass(at))
+                               for at in range(self.nallatom())])
             elem = np.asarray(
                 ['X' if (ghost_as_dummy and self.fZ(at) == 0) else self.fsymbol(at) for at in range(self.nallatom())])
             elez = np.asarray(
@@ -1134,19 +1135,18 @@ class Molecule(LibmintsMolecule):
                     missing_enabled_return_qm='none',
                     missing_enabled_return_efp='none',
                     verbose=1):
-        molrec = qcel.molparse.from_string(
-            molstr=molstr,
-            dtype=dtype,
-            name=name,
-            fix_com=fix_com,
-            fix_orientation=fix_orientation,
-            fix_symmetry=fix_symmetry,
-            return_processed=False,
-            enable_qm=enable_qm,
-            enable_efp=enable_efp,
-            missing_enabled_return_qm=missing_enabled_return_qm,
-            missing_enabled_return_efp=missing_enabled_return_efp,
-            verbose=verbose)
+        molrec = qcel.molparse.from_string(molstr=molstr,
+                                           dtype=dtype,
+                                           name=name,
+                                           fix_com=fix_com,
+                                           fix_orientation=fix_orientation,
+                                           fix_symmetry=fix_symmetry,
+                                           return_processed=False,
+                                           enable_qm=enable_qm,
+                                           enable_efp=enable_efp,
+                                           missing_enabled_return_qm=missing_enabled_return_qm,
+                                           missing_enabled_return_efp=missing_enabled_return_efp,
+                                           verbose=verbose)
         if return_dict:
             return Molecule.from_dict(molrec['qm']), molrec
         else:
@@ -1202,35 +1202,34 @@ class Molecule(LibmintsMolecule):
             Only provided if `return_dict` is True.
 
         """
-        molrec = qcel.molparse.from_arrays(
-            geom=geom,
-            elea=elea,
-            elez=elez,
-            elem=elem,
-            mass=mass,
-            real=real,
-            elbl=elbl,
-            name=name,
-            units=units,
-            input_units_to_au=input_units_to_au,
-            fix_com=fix_com,
-            fix_orientation=fix_orientation,
-            fix_symmetry=fix_symmetry,
-            fragment_separators=fragment_separators,
-            fragment_charges=fragment_charges,
-            fragment_multiplicities=fragment_multiplicities,
-            molecular_charge=molecular_charge,
-            molecular_multiplicity=molecular_multiplicity,
-            comment=comment,
-            provenance=provenance,
-            connectivity=connectivity,
-            domain='qm',
-            missing_enabled_return=missing_enabled_return,
-            tooclose=tooclose,
-            zero_ghost_fragments=zero_ghost_fragments,
-            nonphysical=nonphysical,
-            mtol=mtol,
-            verbose=verbose)
+        molrec = qcel.molparse.from_arrays(geom=geom,
+                                           elea=elea,
+                                           elez=elez,
+                                           elem=elem,
+                                           mass=mass,
+                                           real=real,
+                                           elbl=elbl,
+                                           name=name,
+                                           units=units,
+                                           input_units_to_au=input_units_to_au,
+                                           fix_com=fix_com,
+                                           fix_orientation=fix_orientation,
+                                           fix_symmetry=fix_symmetry,
+                                           fragment_separators=fragment_separators,
+                                           fragment_charges=fragment_charges,
+                                           fragment_multiplicities=fragment_multiplicities,
+                                           molecular_charge=molecular_charge,
+                                           molecular_multiplicity=molecular_multiplicity,
+                                           comment=comment,
+                                           provenance=provenance,
+                                           connectivity=connectivity,
+                                           domain='qm',
+                                           missing_enabled_return=missing_enabled_return,
+                                           tooclose=tooclose,
+                                           zero_ghost_fragments=zero_ghost_fragments,
+                                           nonphysical=nonphysical,
+                                           mtol=mtol,
+                                           verbose=verbose)
         if return_dict:
             return Molecule.from_dict(molrec), molrec
         else:
@@ -1244,17 +1243,21 @@ class Molecule(LibmintsMolecule):
         # flip zeros
         molrec['geom'][np.abs(molrec['geom']) < 5**(-(prec))] = 0
 
-        smol = qcel.molparse.to_string(
-            molrec,
-            dtype=dtype,
-            units=units,
-            atom_format=atom_format,
-            ghost_format=ghost_format,
-            width=width,
-            prec=prec)
+        smol = qcel.molparse.to_string(molrec,
+                                       dtype=dtype,
+                                       units=units,
+                                       atom_format=atom_format,
+                                       ghost_format=ghost_format,
+                                       width=width,
+                                       prec=prec)
         return smol
 
-    def run_dftd3(self, func: Optional[str] = None, dashlvl: Optional[str] = None, dashparam: Optional[Dict] = None, dertype: Union[int, str, None] = None, verbose: int = 1):
+    def run_dftd3(self,
+                  func: Optional[str] = None,
+                  dashlvl: Optional[str] = None,
+                  dashparam: Optional[Dict] = None,
+                  dertype: Union[int, str, None] = None,
+                  verbose: int = 1):
         """Compute dispersion correction via Grimme's DFTD3 program.
 
         Parameters
@@ -1337,7 +1340,12 @@ class Molecule(LibmintsMolecule):
         elif derint == 1:
             return jobrec['extras']['qcvars']['DISPERSION CORRECTION GRADIENT']
 
-    def run_dftd4(self, func: Optional[str] = None, dashlvl: Optional[str] = None, dashparam: Optional[Dict] = None, dertype: Union[int, str, None] = None, verbose: int = 1):
+    def run_dftd4(self,
+                  func: Optional[str] = None,
+                  dashlvl: Optional[str] = None,
+                  dashparam: Optional[Dict] = None,
+                  dertype: Union[int, str, None] = None,
+                  verbose: int = 1):
         """Compute dispersion correction via Grimme's DFTD4 program.
 
         Parameters
@@ -1652,7 +1660,11 @@ class Molecule(LibmintsMolecule):
             )
             molrec['fragment_charges'] = [None] * len(fragments)
             molrec['fragment_multiplicities'] = [None] * len(fragments)
-            validated_molrec = qcel.molparse.from_arrays(speclabel=False, nonphysical=True, verbose=0, domain='qm', **molrec)
+            validated_molrec = qcel.molparse.from_arrays(speclabel=False,
+                                                         nonphysical=True,
+                                                         verbose=0,
+                                                         domain='qm',
+                                                         **molrec)
             forgive.append('fragment_charges')
             forgive.append('fragment_multiplicities')
         compare_molrecs(validated_molrec, molrec, 'to_dict', atol=1.e-6, forgive=forgive, verbose=0)
@@ -1820,14 +1832,13 @@ class Molecule(LibmintsMolecule):
 
         if return_molecules:
             molrecs = [
-                qcel.molparse.from_arrays(
-                    geom=cgeom[fr],
-                    mass=cmass[fr],
-                    elem=celem[fr],
-                    elez=celez[fr],
-                    units='Bohr',
-                    fix_com=True,
-                    fix_orientation=True) for fr in frag_pattern
+                qcel.molparse.from_arrays(geom=cgeom[fr],
+                                          mass=cmass[fr],
+                                          elem=celem[fr],
+                                          elez=celez[fr],
+                                          units='Bohr',
+                                          fix_com=True,
+                                          fix_orientation=True) for fr in frag_pattern
             ]
             if isinstance(self, Molecule):
                 ret_mols = [Molecule.from_dict(molrec) for molrec in molrecs]
@@ -1837,8 +1848,11 @@ class Molecule(LibmintsMolecule):
             outputs.append(ret_mols)
 
         if return_molecule:
-            dcontig = qcel.molparse.contiguize_from_fragment_pattern(
-                frag_pattern, geom=cgeom, elez=celez, elem=celem, mass=cmass)
+            dcontig = qcel.molparse.contiguize_from_fragment_pattern(frag_pattern,
+                                                                     geom=cgeom,
+                                                                     elez=celez,
+                                                                     elem=celem,
+                                                                     mass=cmass)
             molrec = qcel.molparse.from_arrays(
                 geom=dcontig['geom'],
                 mass=dcontig['mass'],
@@ -1925,55 +1939,50 @@ class Molecule(LibmintsMolecule):
         rgeom, rmass, relem, relez, runiq = ref_mol.to_arrays()
         cgeom, cmass, celem, celez, cuniq = concern_mol.to_arrays()
 
-        rmsd, solution = qcel.molutil.B787(
-            cgeom=cgeom,
-            rgeom=rgeom,
-            cuniq=cuniq,
-            runiq=runiq,
-            do_plot=do_plot,
-            verbose=verbose,
-            atoms_map=atoms_map,
-            run_resorting=run_resorting,
-            mols_align=mols_align,
-            run_to_completion=run_to_completion,
-            run_mirror=run_mirror,
-            uno_cutoff=uno_cutoff)
+        rmsd, solution = qcel.molutil.B787(cgeom=cgeom,
+                                           rgeom=rgeom,
+                                           cuniq=cuniq,
+                                           runiq=runiq,
+                                           do_plot=do_plot,
+                                           verbose=verbose,
+                                           atoms_map=atoms_map,
+                                           run_resorting=run_resorting,
+                                           mols_align=mols_align,
+                                           run_to_completion=run_to_completion,
+                                           run_mirror=run_mirror,
+                                           uno_cutoff=uno_cutoff)
 
         ageom, amass, aelem, aelez, auniq = solution.align_system(cgeom, cmass, celem, celez, cuniq, reverse=False)
-        adict = qcel.molparse.from_arrays(
-            geom=ageom,
-            mass=amass,
-            elem=aelem,
-            elez=aelez,
-            units='Bohr',
-            molecular_charge=concern_mol.molecular_charge(),
-            molecular_multiplicity=concern_mol.multiplicity(),
-            fix_com=True,
-            fix_orientation=True)
+        adict = qcel.molparse.from_arrays(geom=ageom,
+                                          mass=amass,
+                                          elem=aelem,
+                                          elez=aelez,
+                                          units='Bohr',
+                                          molecular_charge=concern_mol.molecular_charge(),
+                                          molecular_multiplicity=concern_mol.multiplicity(),
+                                          fix_com=True,
+                                          fix_orientation=True)
         if isinstance(concern_mol, Molecule):
             amol = Molecule.from_dict(adict)
         else:
             from psi4 import core
             amol = core.Molecule.from_dict(adict)
 
-        compare_values(
-            concern_mol.nuclear_repulsion_energy(),
-            amol.nuclear_repulsion_energy(),
-            4,
-            'Q: concern_mol-->returned_mol NRE uncorrupted',
-            verbose=verbose - 1)
+        compare_values(concern_mol.nuclear_repulsion_energy(),
+                       amol.nuclear_repulsion_energy(),
+                       4,
+                       'Q: concern_mol-->returned_mol NRE uncorrupted',
+                       verbose=verbose - 1)
         if mols_align:
-            compare_values(
-                ref_mol.nuclear_repulsion_energy(),
-                amol.nuclear_repulsion_energy(),
-                4,
-                'Q: concern_mol-->returned_mol NRE matches ref_mol',
-                verbose=verbose - 1)
-            compare_integers(
-                True,
-                np.allclose(ref_mol.geometry(), amol.geometry(), atol=4),
-                'Q: concern_mol-->returned_mol geometry matches ref_mol',
-                verbose=verbose - 1)
+            compare_values(ref_mol.nuclear_repulsion_energy(),
+                           amol.nuclear_repulsion_energy(),
+                           4,
+                           'Q: concern_mol-->returned_mol NRE matches ref_mol',
+                           verbose=verbose - 1)
+            compare_integers(True,
+                             np.allclose(ref_mol.geometry(), amol.geometry(), atol=4),
+                             'Q: concern_mol-->returned_mol geometry matches ref_mol',
+                             verbose=verbose - 1)
 
         return rmsd, solution, amol
 
@@ -2028,47 +2037,45 @@ class Molecule(LibmintsMolecule):
         rgeom, rmass, relem, relez, runiq = ref_mol.to_arrays()
         nat = rgeom.shape[0]
 
-        perturbation = qcel.molutil.compute_scramble(
-            rgeom.shape[0],
-            do_shift=do_shift,
-            do_rotate=do_rotate,
-            deflection=deflection,
-            do_resort=do_resort,
-            do_mirror=do_mirror)
+        perturbation = qcel.molutil.compute_scramble(rgeom.shape[0],
+                                                     do_shift=do_shift,
+                                                     do_rotate=do_rotate,
+                                                     deflection=deflection,
+                                                     do_resort=do_resort,
+                                                     do_mirror=do_mirror)
         cgeom, cmass, celem, celez, cuniq = perturbation.align_system(rgeom, rmass, relem, relez, runiq, reverse=True)
-        cmol = Molecule.from_arrays(
-            geom=cgeom,
-            mass=cmass,
-            elem=celem,
-            elez=celez,
-            units='Bohr',
-            molecular_charge=ref_mol.molecular_charge(),
-            molecular_multiplicity=ref_mol.multiplicity(),
-            fix_com=True,
-            fix_orientation=True)
+        cmol = Molecule.from_arrays(geom=cgeom,
+                                    mass=cmass,
+                                    elem=celem,
+                                    elez=celez,
+                                    units='Bohr',
+                                    molecular_charge=ref_mol.molecular_charge(),
+                                    molecular_multiplicity=ref_mol.multiplicity(),
+                                    fix_com=True,
+                                    fix_orientation=True)
 
         rmsd = np.linalg.norm(cgeom - rgeom) * constants.bohr2angstroms / np.sqrt(nat)
         if verbose >= 1:
             print('Start RMSD = {:8.4f} [A]'.format(rmsd))
 
-        rmsd, solution, amol = cmol.B787(
-            ref_mol,
-            do_plot=do_plot,
-            atoms_map=(not do_resort),
-            run_resorting=run_resorting,
-            mols_align=True,
-            run_to_completion=run_to_completion,
-            run_mirror=do_mirror,
-            verbose=verbose)
+        rmsd, solution, amol = cmol.B787(ref_mol,
+                                         do_plot=do_plot,
+                                         atoms_map=(not do_resort),
+                                         run_resorting=run_resorting,
+                                         mols_align=True,
+                                         run_to_completion=run_to_completion,
+                                         run_mirror=do_mirror,
+                                         verbose=verbose)
 
-        compare_integers(
-            True, np.allclose(solution.shift, perturbation.shift, atol=6), 'shifts equiv', verbose=verbose - 1)
+        compare_integers(True,
+                         np.allclose(solution.shift, perturbation.shift, atol=6),
+                         'shifts equiv',
+                         verbose=verbose - 1)
         if not do_resort:
-            compare_integers(
-                True,
-                np.allclose(solution.rotation.T, perturbation.rotation),
-                'rotations transpose',
-                verbose=verbose - 1)
+            compare_integers(True,
+                             np.allclose(solution.rotation.T, perturbation.rotation),
+                             'rotations transpose',
+                             verbose=verbose - 1)
         if solution.mirror:
             compare_integers(True, do_mirror, 'mirror allowed', verbose=verbose - 1)
 

@@ -40,14 +40,19 @@
 
 namespace psi {
 
-ERISieve::ERISieve(std::shared_ptr<BasisSet> primary, double sieve, bool do_csam) : primary_(primary), sieve_(sieve), do_csam_(do_csam){
+ERISieve::ERISieve(std::shared_ptr<BasisSet> primary, double sieve, bool do_csam)
+    : primary_(primary), sieve_(sieve), do_csam_(do_csam) {
     common_init();
 }
 
 ERISieve::~ERISieve() {}
 
 void ERISieve::common_init() {
-    throw PSIEXCEPTION("Using `ERISieve` instead of `TwoBodyAOInt` is obsolete as of 1.8. The ERISieve class has been removed and replaced with the TwoBodyAOInt class. ERISieve(primary, sieve, do_csam) can be replaced with the command sequence IntegralFactory factory(primary, primary, primary, primary); auto eri_computer = std::shared_ptr<TwoBodyAOInt>(factory.eri());");
+    throw PSIEXCEPTION(
+        "Using `ERISieve` instead of `TwoBodyAOInt` is obsolete as of 1.8. The ERISieve class has been removed and "
+        "replaced with the TwoBodyAOInt class. ERISieve(primary, sieve, do_csam) can be replaced with the command "
+        "sequence IntegralFactory factory(primary, primary, primary, primary); auto eri_computer = "
+        "std::shared_ptr<TwoBodyAOInt>(factory.eri());");
 }
 
 void ERISieve::set_sieve(double sieve) {

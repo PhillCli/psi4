@@ -198,7 +198,8 @@ funcs.append({
 })
 
 funcs.append({
-    "name": "B97M-D3BJ",
+    "name":
+    "B97M-D3BJ",
     "xc_functionals": {
         "MGGA_XC_B97M_V": {}
     },
@@ -281,7 +282,8 @@ funcs.append({
         "MGGA_C_R2SCAN": {}
     },
     "description": '    r2SCAN Meta-GGA XC Functional\n',
-    "citation": '    J. W. Furness, A. D. Kaplan, J. Ning, J. P. Perdew, J. Sun  J. Phys. Chem. Lett.  11, 8208–8215, 2020\n',
+    "citation":
+    '    J. W. Furness, A. D. Kaplan, J. Ning, J. P. Perdew, J. Sun  J. Phys. Chem. Lett.  11, 8208–8215, 2020\n',
     "doi": "0.1021/acs.jpclett.0c02405",
 })
 

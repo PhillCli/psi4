@@ -73,7 +73,13 @@ def to_string(hess, handle, dtype='psi4'):
         second_number = (6 * nat) if dtype == 'intder' else (3 * nat)
         header = '{:5}{:5}'.format(nat, second_number)
 
-        np.savetxt(handle, hess.reshape((-1, 3)), fmt='%20.10f', delimiter='', newline='\n', header=header, comments='')
+        np.savetxt(handle,
+                   hess.reshape((-1, 3)),
+                   fmt='%20.10f',
+                   delimiter='',
+                   newline='\n',
+                   header=header,
+                   comments='')
 
         # Bounty! a Psi4 mug or similar gear to anyone who trace the `6 * nat` above to a pre-PSI/CCQC source.
         #   See discussion starting https://github.com/psi4/psi4/pull/953#issuecomment-381447849

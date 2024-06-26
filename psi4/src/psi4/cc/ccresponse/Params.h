@@ -63,4 +63,3 @@ struct Params {
 }  // namespace ccresponse
 }  // namespace psi
 #endif
-

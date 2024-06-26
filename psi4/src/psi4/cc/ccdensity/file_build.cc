@@ -175,7 +175,7 @@ int file_build(dpdfile4 *File, int inputfile, double tolerance, int perm_pr, int
             idx_permute(File, SortBuf, bucket_map, p, q, r, s, perm_pr, perm_qs, perm_prqs, value, "outfile");
 
         } /* end loop through current buffer */
-    }     /* end loop over reading buffers */
+    } /* end loop over reading buffers */
 
     iwl_buf_close(&InBuf, keep);
 

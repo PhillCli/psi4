@@ -82,12 +82,15 @@ void OCCWave::occ_iterations() {
     // If diis?
     // if (nooA + nooB != 1) {
     if (do_diis_ == 1) {
-        orbital_diis = DIISManager(maxdiis_, "Orbital Optimized DIIS", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::OnDisk);
-        std::string tensor_name = (wfn_type_ == "OCEPA" || wfn_type_ == "OREMP") ? "T2" : (wfn_type_ == "OMP2" ? "T" : "T2_1");
+        orbital_diis = DIISManager(maxdiis_, "Orbital Optimized DIIS", DIISManager::RemovalPolicy::LargestError,
+                                   DIISManager::StoragePolicy::OnDisk);
+        std::string tensor_name =
+            (wfn_type_ == "OCEPA" || wfn_type_ == "OREMP") ? "T2" : (wfn_type_ == "OMP2" ? "T" : "T2_1");
         if (reference_ == "RESTRICTED") {
             dpdbuf4 T;
             std::string temp1 = tensor_name + " <OO|VV>";
-            global_dpd_->buf4_init(&T, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0, temp1.c_str());
+            global_dpd_->buf4_init(&T, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
+                                   temp1.c_str());
             if (wfn_type_ == "OMP2.5" || wfn_type_ == "OMP3") {
                 orbital_diis.set_error_vector_size(kappa_bar_[SpinType::Alpha].get(), &T, &T);
                 orbital_diis.set_vector_size(kappa_bar_[SpinType::Alpha].get(), &T, &T);
@@ -98,31 +101,27 @@ void OCCWave::occ_iterations() {
             global_dpd_->buf4_close(&T);
         } else if (reference_ == "UNRESTRICTED") {
             dpdbuf4 Taa, Tab, Tbb;
-            // You're reading the below code right. The same-spin T amplitudes are stored on disk and in-memory without antisymmetry packing.
-            // I don't understand either. Don't you love legacy code?
+            // You're reading the below code right. The same-spin T amplitudes are stored on disk and in-memory without
+            // antisymmetry packing. I don't understand either. Don't you love legacy code?
             std::string temp1 = tensor_name + " <OO|VV>";
             global_dpd_->buf4_init(&Taa, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
-               temp1.c_str());
+                                   temp1.c_str());
             temp1 = tensor_name + " <Oo|Vv>";
             global_dpd_->buf4_init(&Tab, PSIF_OCC_DPD, 0, ID("[O,o]"), ID("[V,v]"), ID("[O,o]"), ID("[V,v]"), 0,
-                               temp1.c_str());
+                                   temp1.c_str());
             temp1 = tensor_name + " <oo|vv>";
             global_dpd_->buf4_init(&Tbb, PSIF_OCC_DPD, 0, ID("[o,o]"), ID("[v,v]"), ID("[o,o]"), ID("[v,v]"), 0,
-                               temp1.c_str());
+                                   temp1.c_str());
             if (wfn_type_ == "OMP2.5" || wfn_type_ == "OMP3") {
-                orbital_diis.set_error_vector_size(kappa_bar_[SpinType::Alpha].get(),
-                                                   kappa_bar_[SpinType::Beta].get(),
+                orbital_diis.set_error_vector_size(kappa_bar_[SpinType::Alpha].get(), kappa_bar_[SpinType::Beta].get(),
                                                    &Taa, &Tab, &Tbb, &Taa, &Tab, &Tbb);
-                orbital_diis.set_vector_size(kappa_bar_[SpinType::Alpha].get(),
-                                             kappa_bar_[SpinType::Beta].get(),
-                                             &Taa, &Tab, &Tbb, &Taa, &Tab, &Tbb);
+                orbital_diis.set_vector_size(kappa_bar_[SpinType::Alpha].get(), kappa_bar_[SpinType::Beta].get(), &Taa,
+                                             &Tab, &Tbb, &Taa, &Tab, &Tbb);
             } else {
-                orbital_diis.set_error_vector_size(kappa_bar_[SpinType::Alpha].get(),
-                                                   kappa_bar_[SpinType::Beta].get(),
+                orbital_diis.set_error_vector_size(kappa_bar_[SpinType::Alpha].get(), kappa_bar_[SpinType::Beta].get(),
                                                    &Taa, &Tab, &Tbb);
-                orbital_diis.set_vector_size(kappa_bar_[SpinType::Alpha].get(),
-                                             kappa_bar_[SpinType::Beta].get(),
-                                             &Taa, &Tab, &Tbb);
+                orbital_diis.set_vector_size(kappa_bar_[SpinType::Alpha].get(), kappa_bar_[SpinType::Beta].get(), &Taa,
+                                             &Tab, &Tbb);
             }
             global_dpd_->buf4_close(&Taa);
             global_dpd_->buf4_close(&Tab);
@@ -180,7 +179,7 @@ void OCCWave::occ_iterations() {
                 }
             }
         }  // pcg if
-    }      // orb_resp if
+    }  // orb_resp if
 
     // Construct initial orbital gradient. Assume the necessary intermediates were
     // constructed earlier. (From the computation with the starting orbitals.)
@@ -258,7 +257,7 @@ void OCCWave::occ_iterations() {
         }
 
         else if (wfn_type_ == "OCEPA" || wfn_type_ == "OREMP") {
-            if (compute_ccl == "TRUE" ) {
+            if (compute_ccl == "TRUE") {
                 timer_on("CEPAL Energy");
                 ccl_energy();
                 timer_off("CEPAL Energy");
@@ -379,7 +378,7 @@ void OCCWave::occ_iterations() {
             iterative_mp_postdiis_amplitudes();
         }
 
-    } while (true); // TODO: This is a very silly do while loop.
+    } while (true);  // TODO: This is a very silly do while loop.
     // while(std::fabs(DE) >= tol_Eod || rms_wog >= tol_grad || rms_kappa >= tol_grad || biggest_mograd >= mograd_max ||
     //      biggest_kappa >= mograd_max || rms_t2 >= tol_t2);
 
@@ -474,7 +473,7 @@ void OCCWave::response_pdms() {
         omp2_response_pdms();
     else if (wfn_type_ == "OMP3" || wfn_type_ == "OMP2.5")
         omp3_response_pdms();
-    else if (wfn_type_ == "OCEPA" || wfn_type_ == "OREMP" )
+    else if (wfn_type_ == "OCEPA" || wfn_type_ == "OREMP")
         ocepa_response_pdms();
 }
 
@@ -508,9 +507,9 @@ void OCCWave::oo_diis(DIISManager& orbital_diis) {
         if (wfn_type_ == "OMP2") {
             dpdbuf4 T, R;
             global_dpd_->buf4_init(&T, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
-                               "T <OO|VV>");
+                                   "T <OO|VV>");
             global_dpd_->buf4_init(&R, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
-                               "RT2_1 <OO|VV>");
+                                   "RT2_1 <OO|VV>");
             orbital_diis.add_entry(wogA_vec.get(), &R, kappa_bar_[SpinType::Alpha].get(), &T);
             if (orbital_diis.subspace_size() >= mindiis_) {
                 orbital_diis.extrapolate(kappa_bar_[SpinType::Alpha].get(), &T);
@@ -518,13 +517,13 @@ void OCCWave::oo_diis(DIISManager& orbital_diis) {
         } else if (wfn_type_ == "OMP2.5" || wfn_type_ == "OMP3") {
             dpdbuf4 T1, R1, T2, R2;
             global_dpd_->buf4_init(&T1, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
-                               "T2_1 <OO|VV>");
+                                   "T2_1 <OO|VV>");
             global_dpd_->buf4_init(&R1, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
-                               "RT2_1 <OO|VV>");
+                                   "RT2_1 <OO|VV>");
             global_dpd_->buf4_init(&T2, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
-                               "T2_2 <OO|VV>");
+                                   "T2_2 <OO|VV>");
             global_dpd_->buf4_init(&R2, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
-                               "RT2_2 <OO|VV>");
+                                   "RT2_2 <OO|VV>");
             orbital_diis.add_entry(wogA_vec.get(), &R1, &R2, kappa_bar_[SpinType::Alpha].get(), &T1, &T2);
             if (orbital_diis.subspace_size() >= mindiis_) {
                 orbital_diis.extrapolate(kappa_bar_[SpinType::Alpha].get(), &T1, &T2);
@@ -532,9 +531,9 @@ void OCCWave::oo_diis(DIISManager& orbital_diis) {
         } else if (wfn_type_ == "OCEPA" || wfn_type_ == "OREMP") {
             dpdbuf4 T, R;
             global_dpd_->buf4_init(&T, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
-                               "T2 <OO|VV>");
+                                   "T2 <OO|VV>");
             global_dpd_->buf4_init(&R, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
-                               "RT2 <OO|VV>");
+                                   "RT2 <OO|VV>");
             orbital_diis.add_entry(wogA_vec.get(), &R, kappa_bar_[SpinType::Alpha].get(), &T);
             if (orbital_diis.subspace_size() >= mindiis_) {
                 orbital_diis.extrapolate(kappa_bar_[SpinType::Alpha].get(), &T);
@@ -545,21 +544,23 @@ void OCCWave::oo_diis(DIISManager& orbital_diis) {
         if (wfn_type_ == "OMP2") {
             dpdbuf4 T1aa, T1ab, T1bb, R1aa, R1ab, R1bb;
             global_dpd_->buf4_init(&T1aa, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
-                               "T2_1 <OO|VV>");
+                                   "T2_1 <OO|VV>");
             global_dpd_->buf4_init(&R1aa, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
-                               "RT2_1 <OO|VV>");
+                                   "RT2_1 <OO|VV>");
             global_dpd_->buf4_init(&T1ab, PSIF_OCC_DPD, 0, ID("[O,o]"), ID("[V,v]"), ID("[O,o]"), ID("[V,v]"), 0,
-                               "T2_1 <Oo|Vv>");
+                                   "T2_1 <Oo|Vv>");
             global_dpd_->buf4_init(&R1ab, PSIF_OCC_DPD, 0, ID("[O,o]"), ID("[V,v]"), ID("[O,o]"), ID("[V,v]"), 0,
-                               "RT2_1 <Oo|Vv>");
+                                   "RT2_1 <Oo|Vv>");
             global_dpd_->buf4_init(&T1bb, PSIF_OCC_DPD, 0, ID("[o,o]"), ID("[v,v]"), ID("[o,o]"), ID("[v,v]"), 0,
-                               "T2_1 <oo|vv>");
+                                   "T2_1 <oo|vv>");
             global_dpd_->buf4_init(&R1bb, PSIF_OCC_DPD, 0, ID("[o,o]"), ID("[v,v]"), ID("[o,o]"), ID("[v,v]"), 0,
-                               "RT2_1 <oo|vv>");
+                                   "RT2_1 <oo|vv>");
             orbital_diis.add_entry(wogA_vec.get(), wogB_vec.get(), &R1aa, &R1ab, &R1bb,
-                    kappa_bar_[SpinType::Alpha].get(), kappa_bar_[SpinType::Beta].get(), &T1aa, &T1ab, &T1bb);
+                                   kappa_bar_[SpinType::Alpha].get(), kappa_bar_[SpinType::Beta].get(), &T1aa, &T1ab,
+                                   &T1bb);
             if (orbital_diis.subspace_size() >= mindiis_) {
-                orbital_diis.extrapolate(kappa_bar_[SpinType::Alpha].get(), kappa_bar_[SpinType::Beta].get(), &T1aa, &T1ab, &T1bb);
+                orbital_diis.extrapolate(kappa_bar_[SpinType::Alpha].get(), kappa_bar_[SpinType::Beta].get(), &T1aa,
+                                         &T1ab, &T1bb);
             }
             global_dpd_->buf4_close(&T1aa);
             global_dpd_->buf4_close(&T1ab);
@@ -570,33 +571,35 @@ void OCCWave::oo_diis(DIISManager& orbital_diis) {
         } else if (wfn_type_ == "OMP2.5" || wfn_type_ == "OMP3") {
             dpdbuf4 T1aa, T1ab, T1bb, R1aa, R1ab, R1bb, T2aa, T2ab, T2bb, R2aa, R2ab, R2bb;
             global_dpd_->buf4_init(&T1aa, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
-                               "T2_1 <OO|VV>");
+                                   "T2_1 <OO|VV>");
             global_dpd_->buf4_init(&R1aa, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
-                               "RT2_1 <OO|VV>");
+                                   "RT2_1 <OO|VV>");
             global_dpd_->buf4_init(&T1ab, PSIF_OCC_DPD, 0, ID("[O,o]"), ID("[V,v]"), ID("[O,o]"), ID("[V,v]"), 0,
-                               "T2_1 <Oo|Vv>");
+                                   "T2_1 <Oo|Vv>");
             global_dpd_->buf4_init(&R1ab, PSIF_OCC_DPD, 0, ID("[O,o]"), ID("[V,v]"), ID("[O,o]"), ID("[V,v]"), 0,
-                               "RT2_1 <Oo|Vv>");
+                                   "RT2_1 <Oo|Vv>");
             global_dpd_->buf4_init(&T1bb, PSIF_OCC_DPD, 0, ID("[o,o]"), ID("[v,v]"), ID("[o,o]"), ID("[v,v]"), 0,
-                               "T2_1 <oo|vv>");
+                                   "T2_1 <oo|vv>");
             global_dpd_->buf4_init(&R1bb, PSIF_OCC_DPD, 0, ID("[o,o]"), ID("[v,v]"), ID("[o,o]"), ID("[v,v]"), 0,
-                               "RT2_1 <oo|vv>");
+                                   "RT2_1 <oo|vv>");
             global_dpd_->buf4_init(&T2aa, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
-                               "T2_2 <OO|VV>");
+                                   "T2_2 <OO|VV>");
             global_dpd_->buf4_init(&R2aa, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
-                               "RT2_2 <OO|VV>");
+                                   "RT2_2 <OO|VV>");
             global_dpd_->buf4_init(&T2ab, PSIF_OCC_DPD, 0, ID("[O,o]"), ID("[V,v]"), ID("[O,o]"), ID("[V,v]"), 0,
-                               "T2_2 <Oo|Vv>");
+                                   "T2_2 <Oo|Vv>");
             global_dpd_->buf4_init(&R2ab, PSIF_OCC_DPD, 0, ID("[O,o]"), ID("[V,v]"), ID("[O,o]"), ID("[V,v]"), 0,
-                               "RT2_2 <Oo|Vv>");
+                                   "RT2_2 <Oo|Vv>");
             global_dpd_->buf4_init(&T2bb, PSIF_OCC_DPD, 0, ID("[o,o]"), ID("[v,v]"), ID("[o,o]"), ID("[v,v]"), 0,
-                               "T2_2 <oo|vv>");
+                                   "T2_2 <oo|vv>");
             global_dpd_->buf4_init(&R2bb, PSIF_OCC_DPD, 0, ID("[o,o]"), ID("[v,v]"), ID("[o,o]"), ID("[v,v]"), 0,
-                               "RT2_2 <oo|vv>");
+                                   "RT2_2 <oo|vv>");
             orbital_diis.add_entry(wogA_vec.get(), wogB_vec.get(), &R1aa, &R1ab, &R1bb, &R2aa, &R2ab, &R2bb,
-                    kappa_bar_[SpinType::Alpha].get(), kappa_bar_[SpinType::Beta].get(), &T1aa, &T1ab, &T1bb, &T2aa, &T2ab, &T2bb);
+                                   kappa_bar_[SpinType::Alpha].get(), kappa_bar_[SpinType::Beta].get(), &T1aa, &T1ab,
+                                   &T1bb, &T2aa, &T2ab, &T2bb);
             if (orbital_diis.subspace_size() >= mindiis_) {
-                orbital_diis.extrapolate(kappa_bar_[SpinType::Alpha].get(), kappa_bar_[SpinType::Beta].get(), &T1aa, &T1ab, &T1bb, &T2aa, &T2ab, &T2bb);
+                orbital_diis.extrapolate(kappa_bar_[SpinType::Alpha].get(), kappa_bar_[SpinType::Beta].get(), &T1aa,
+                                         &T1ab, &T1bb, &T2aa, &T2ab, &T2bb);
             }
             global_dpd_->buf4_close(&T1aa);
             global_dpd_->buf4_close(&T1ab);
@@ -613,21 +616,22 @@ void OCCWave::oo_diis(DIISManager& orbital_diis) {
         } else if (wfn_type_ == "OCEPA" || wfn_type_ == "OREMP") {
             dpdbuf4 Taa, Tab, Tbb, Raa, Rab, Rbb;
             global_dpd_->buf4_init(&Taa, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
-                               "T2 <OO|VV>");
+                                   "T2 <OO|VV>");
             global_dpd_->buf4_init(&Raa, PSIF_OCC_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
-                               "RT2 <OO|VV>");
+                                   "RT2 <OO|VV>");
             global_dpd_->buf4_init(&Tab, PSIF_OCC_DPD, 0, ID("[O,o]"), ID("[V,v]"), ID("[O,o]"), ID("[V,v]"), 0,
-                               "T2 <Oo|Vv>");
+                                   "T2 <Oo|Vv>");
             global_dpd_->buf4_init(&Rab, PSIF_OCC_DPD, 0, ID("[O,o]"), ID("[V,v]"), ID("[O,o]"), ID("[V,v]"), 0,
-                               "RT2 <Oo|Vv>");
+                                   "RT2 <Oo|Vv>");
             global_dpd_->buf4_init(&Tbb, PSIF_OCC_DPD, 0, ID("[o,o]"), ID("[v,v]"), ID("[o,o]"), ID("[v,v]"), 0,
-                               "T2 <oo|vv>");
+                                   "T2 <oo|vv>");
             global_dpd_->buf4_init(&Rbb, PSIF_OCC_DPD, 0, ID("[o,o]"), ID("[v,v]"), ID("[o,o]"), ID("[v,v]"), 0,
-                               "RT2 <oo|vv>");
-            orbital_diis.add_entry(wogA_vec.get(), wogB_vec.get(), &Raa, &Rab, &Rbb,
-                    kappa_bar_[SpinType::Alpha].get(), kappa_bar_[SpinType::Beta].get(), &Taa, &Tab, &Tbb);
+                                   "RT2 <oo|vv>");
+            orbital_diis.add_entry(wogA_vec.get(), wogB_vec.get(), &Raa, &Rab, &Rbb, kappa_bar_[SpinType::Alpha].get(),
+                                   kappa_bar_[SpinType::Beta].get(), &Taa, &Tab, &Tbb);
             if (orbital_diis.subspace_size() >= mindiis_) {
-                orbital_diis.extrapolate(kappa_bar_[SpinType::Alpha].get(), kappa_bar_[SpinType::Beta].get(), &Taa, &Tab, &Tbb);
+                orbital_diis.extrapolate(kappa_bar_[SpinType::Alpha].get(), kappa_bar_[SpinType::Beta].get(), &Taa,
+                                         &Tab, &Tbb);
             }
             global_dpd_->buf4_close(&Taa);
             global_dpd_->buf4_close(&Tab);
@@ -639,5 +643,5 @@ void OCCWave::oo_diis(DIISManager& orbital_diis) {
     }
     psio_->close(PSIF_OCC_DPD, 1);
 }
-}   // namespace occwave
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

@@ -146,7 +146,7 @@ void Libint2ERI::libint2_wrapper2(const libint2::Shell &sh1, const libint2::Shel
     }
 }
 
-Libint2ERI::~Libint2ERI(){}
+Libint2ERI::~Libint2ERI() {}
 
 Libint2ErfERI::Libint2ErfERI(double omega, const IntegralFactory *integral, double screening_threshold, int deriv,
                              bool use_shell_pairs, bool needs_exchange)
@@ -259,7 +259,7 @@ void Libint2ErfERI::libint2_wrapper2(const libint2::Shell &sh1, const libint2::S
     }
 }
 
-Libint2ErfERI::~Libint2ErfERI(){}
+Libint2ErfERI::~Libint2ErfERI() {}
 
 Libint2ErfComplementERI::Libint2ErfComplementERI(double omega, const IntegralFactory *integral,
                                                  double screening_threshold, int deriv, bool use_shell_pairs,
@@ -373,7 +373,7 @@ void Libint2ErfComplementERI::libint2_wrapper2(const libint2::Shell &sh1, const 
     }
 }
 
-Libint2ErfComplementERI::~Libint2ErfComplementERI(){}
+Libint2ErfComplementERI::~Libint2ErfComplementERI() {}
 
 //// Libint2 implementation
 Libint2YukawaERI::Libint2YukawaERI(double zeta, const IntegralFactory *integral, double screening_threshold, int deriv,
@@ -478,7 +478,7 @@ void Libint2YukawaERI::libint2_wrapper2(const libint2::Shell &sh1, const libint2
     }
 }
 
-Libint2YukawaERI::~Libint2YukawaERI(){}
+Libint2YukawaERI::~Libint2YukawaERI() {}
 
 /// F12
 
@@ -581,7 +581,7 @@ void Libint2F12::libint2_wrapper2(const libint2::Shell &sh1, const libint2::Shel
     }
 }
 
-Libint2F12::~Libint2F12(){}
+Libint2F12::~Libint2F12() {}
 
 /// F12G12
 
@@ -697,7 +697,7 @@ void Libint2F12G12::libint2_wrapper2(const libint2::Shell &sh1, const libint2::S
     }
 }
 
-Libint2F12G12::~Libint2F12G12(){}
+Libint2F12G12::~Libint2F12G12() {}
 
 /// F12DoubleCommutator
 
@@ -813,4 +813,4 @@ void Libint2F12DoubleCommutator::libint2_wrapper2(const libint2::Shell &sh1, con
     }
 }
 
-Libint2F12DoubleCommutator::~Libint2F12DoubleCommutator(){}
+Libint2F12DoubleCommutator::~Libint2F12DoubleCommutator() {}

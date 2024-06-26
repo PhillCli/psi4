@@ -105,4 +105,4 @@ void iwl_buf_flush(struct iwlbuf *Buf, int lastbuf) {
     iwl_buf_put(Buf);
     Buf->idx = 0;
 }
-}
+}  // namespace psi

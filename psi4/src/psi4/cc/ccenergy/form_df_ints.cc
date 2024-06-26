@@ -176,7 +176,7 @@ void CCEnergyWavefunction::form_df_ints(Options &options, int **cachelist, int *
                         C_DGEMM('t', 'n', nrows, ncols, nlinks, 1.0, pc3a[0], nrows, htints, nbf, 0.0,
                                 &I.matrix[h][pq][rs], ncols);
                 } /* Gr */
-            }     /* pq */
+            } /* pq */
             global_dpd_->buf4_mat_irrep_wrt(&I, h);
             global_dpd_->buf4_mat_irrep_close(&I, h);
         }
@@ -214,7 +214,7 @@ void CCEnergyWavefunction::form_df_ints(Options &options, int **cachelist, int *
                         C_DGEMM('t', 'n', nrows, ncols, nlinks, 1.0, pc3a[0], nrows, htints, nbf, 0.0,
                                 &OV.matrix[h][pq][rs], ncols);
                 } /* Gr */
-            }     /* pq */
+            } /* pq */
             global_dpd_->buf4_mat_irrep_wrt(&OV, h);
             global_dpd_->buf4_mat_irrep_close(&OV, h);
             global_dpd_->buf4_mat_irrep_close(&I, h);
@@ -253,7 +253,7 @@ void CCEnergyWavefunction::form_df_ints(Options &options, int **cachelist, int *
                         C_DGEMM('t', 'n', nrows, ncols, nlinks, 1.0, pc3a[0], nrows, htints, nbf, 0.0,
                                 &VV.matrix[h][pq][rs], ncols);
                 } /* Gr */
-            }     /* pq */
+            } /* pq */
             global_dpd_->buf4_mat_irrep_wrt(&VV, h);
             global_dpd_->buf4_mat_irrep_close(&VV, h);
             global_dpd_->buf4_mat_irrep_close(&I, h);
@@ -306,7 +306,7 @@ void CCEnergyWavefunction::form_df_ints(Options &options, int **cachelist, int *
                         C_DGEMM('t', 'n', nrows, ncols, nlinks, 1.0, pc3a[0], nrows, htints, nbf, 0.0,
                                 &OV.matrix[h][pq][rs], ncols);
                 } /* Gr */
-            }     /* pq */
+            } /* pq */
             global_dpd_->buf4_mat_irrep_wrt(&VV, h);
             global_dpd_->buf4_mat_irrep_close(&VV, h);
             global_dpd_->buf4_mat_irrep_wrt(&OV, h);

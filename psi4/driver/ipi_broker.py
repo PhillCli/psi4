@@ -120,7 +120,7 @@ class IPIBroker(Client):
 
         self._potential = psi4.variable('CURRENT ENERGY')
         self._force = -np.array(self.grd)
-        self._vir = np.array([[0.0,0.0,0.0],[0.0,0.0,0.0],[0.0,0.0,0.0]])
+        self._vir = np.array([[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]])
 
         return self._force, np.float64(self._potential)
 
@@ -135,12 +135,10 @@ class IPIBroker(Client):
         self.timing[LOT] = self.timing.get(LOT, []) + [time_needed]
 
 
-def ipi_broker(
-    LOT: str,
-    molecule: Optional[psi4.core.Molecule] = None,
-    serverdata: Union[str, bool] = False,
-    options: Optional[Dict] = None
-) -> IPIBroker:
+def ipi_broker(LOT: str,
+               molecule: Optional[psi4.core.Molecule] = None,
+               serverdata: Union[str, bool] = False,
+               options: Optional[Dict] = None) -> IPIBroker:
     """Runs :class:`~psi4.driver.ipi_broker.IPIBroker` to connect to i-PI (https://ipi-code.org/).
 
     Parameters

@@ -266,20 +266,20 @@ void DFOCC::formJ_ref(std::shared_ptr<BasisSet> auxiliary_, std::shared_ptr<Basi
 
     // First, diagonalize J
     // the C_DSYEV call replaces the original matrix J with its eigenvectors
-    int lwork = 1 + (6*nQ_ref) + (2*nQ_ref*nQ_ref);
-    int liwork = 3 + (5*nQ_ref);
-    double *eigval = new double[nQ_ref];
-    memset(eigval, 0.0, sizeof(double)*nQ_ref);
-    double *work = new double[lwork];
-    memset(work, 0.0, sizeof(double)*lwork);
-    int *iwork = new int[liwork];
-    memset(iwork, 0.0, sizeof(int)*liwork);
+    int lwork = 1 + (6 * nQ_ref) + (2 * nQ_ref * nQ_ref);
+    int liwork = 3 + (5 * nQ_ref);
+    double* eigval = new double[nQ_ref];
+    memset(eigval, 0.0, sizeof(double) * nQ_ref);
+    double* work = new double[lwork];
+    memset(work, 0.0, sizeof(double) * lwork);
+    int* iwork = new int[liwork];
+    memset(iwork, 0.0, sizeof(int) * liwork);
     int status = C_DSYEVD('v', 'u', nQ_ref, J[0], nQ_ref, eigval, work, lwork, iwork, liwork);
     if (status) {
         throw PsiException("Diagonalization of J failed", __FILE__, __LINE__);
     }
-    delete [] work;
-    delete [] iwork;
+    delete[] work;
+    delete[] iwork;
 
     // Now J contains the eigenvectors of the original J
     // Copy J to J_copy
@@ -294,7 +294,7 @@ void DFOCC::formJ_ref(std::shared_ptr<BasisSet> auxiliary_, std::shared_ptr<Basi
         // scale one set of eigenvectors by the diagonal elements j^{-1/2}
         C_DSCAL(nQ_ref, eigval[i], J[i], 1);
     }
-    delete [] eigval;
+    delete[] eigval;
 
     // J_mhalf = J_copy(T) * J
     C_DGEMM('t', 'n', nQ_ref, nQ_ref, nQ_ref, 1.0, J_copy[0], nQ_ref, J[0], nQ_ref, 0.0, J_mhalf[0], nQ_ref);
@@ -380,7 +380,7 @@ void DFOCC::b_so_ref(std::shared_ptr<BasisSet> primary_, std::shared_ptr<BasisSe
             int N = shell_pairs[MN].second;
 
             eri[thread]->compute_shell(P, 0, M, N);
-            const double *buf = eri[thread]->buffer();
+            const double* buf = eri[thread]->buffer();
 
             int nP = auxiliary_->shell(P).nfunction();
             int oP = auxiliary_->shell(P).function_index();

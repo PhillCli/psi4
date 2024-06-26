@@ -55,7 +55,7 @@ namespace detcas {
 #define MIN0(a, b) (((a) < (b)) ? (a) : (b))
 #define MAX0(a, b) (((a) > (b)) ? (a) : (b))
 #define MAX_COMMENT 10
-}
+}  // namespace detcas
 }  // namespace psi
 
 #endif  // header guard

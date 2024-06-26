@@ -166,5 +166,5 @@ void OCCWave::idp2() {
 
     }  // end if (reference_ == "UNRESTRICTED")
 }  // end of main
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

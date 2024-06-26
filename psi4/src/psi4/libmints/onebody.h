@@ -95,7 +95,7 @@ class PSI_API OneBodyAOInt {
     OneBodyAOInt(std::vector<SphericalTransform>&, std::shared_ptr<BasisSet> bs1, std::shared_ptr<BasisSet> bs2,
                  int deriv = 0);
     void set_chunks(int nchunk) { nchunk_ = nchunk; }
-    void pure_transform(const libint2::Shell &s1, const libint2::Shell &s2, int nchunks = 1);
+    void pure_transform(const libint2::Shell& s1, const libint2::Shell& s2, int nchunks = 1);
 
     /// Compute integrals for a given shell pair
     virtual void compute_pair(const libint2::Shell&, const libint2::Shell&);
@@ -105,7 +105,6 @@ class PSI_API OneBodyAOInt {
     virtual void compute_pair_deriv2(const libint2::Shell&, const libint2::Shell&);
     /// Whether the operator is antisymmetric with respect to interchange of the bra and ket
     virtual bool is_antisymmetric() const { return false; }
-
 
    public:
     virtual ~OneBodyAOInt();

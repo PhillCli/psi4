@@ -367,8 +367,7 @@ void MintsHelper::integrals_erfc(double w) {
     // Get ERI object
     std::vector<std::shared_ptr<TwoBodyAOInt>> tb(nthread_);
     tb[0] = std::shared_ptr<TwoBodyAOInt>(integral_->erf_complement_eri(omega));
-    for (int i = 1; i < nthread_; ++i)
-        tb[i] = std::shared_ptr<TwoBodyAOInt>(tb.front()->clone());
+    for (int i = 1; i < nthread_; ++i) tb[i] = std::shared_ptr<TwoBodyAOInt>(tb.front()->clone());
     auto erf = std::make_shared<TwoBodySOInt>(tb, integral_);
 
     // Let the user know what we're doing.
@@ -927,16 +926,16 @@ SharedMatrix MintsHelper::ao_f12_squared(std::vector<std::pair<double, double>> 
 std::vector<std::pair<double, double>> MintsHelper::f12_cgtg(double exponent) {
     // The fitting coefficients and the exponents
     std::vector<std::pair<double, double>> exp_coeff = {};
-    std::vector<double> coeffs = {-0.31442480597241274, -0.30369575353387201, -0.16806968430232927,
+    std::vector<double> coeffs = {-0.31442480597241274,  -0.30369575353387201,  -0.16806968430232927,
                                   -0.098115812152857612, -0.060246640234342785, -0.037263541968504843};
     std::vector<double> exps = {0.22085085450735284, 1.0040191632019282, 3.6212173098378728,
-                                12.162483236221904, 45.855332448029337, 254.23460688554644};
+                                12.162483236221904,  45.855332448029337, 254.23460688554644};
 
-    for (int i = 0; i < exps.size(); i++){
+    for (int i = 0; i < exps.size(); i++) {
         auto exp_scaled = (exponent * exponent) * exps[i];
         exp_coeff.push_back(std::make_pair(exp_scaled, coeffs[i]));
     }
-    
+
     return exp_coeff;
 }
 
@@ -995,9 +994,9 @@ SharedMatrix MintsHelper::ao_f12g12(std::vector<std::pair<double, double>> exp_c
     return ao_helper("AO F12G12 Tensor", ints);
 }
 
-SharedMatrix MintsHelper::ao_f12g12(std::vector<std::pair<double, double>> exp_coeff,
-                                    std::shared_ptr<BasisSet> bs1, std::shared_ptr<BasisSet> bs2,
-                                    std::shared_ptr<BasisSet> bs3, std::shared_ptr<BasisSet> bs4) {
+SharedMatrix MintsHelper::ao_f12g12(std::vector<std::pair<double, double>> exp_coeff, std::shared_ptr<BasisSet> bs1,
+                                    std::shared_ptr<BasisSet> bs2, std::shared_ptr<BasisSet> bs3,
+                                    std::shared_ptr<BasisSet> bs4) {
     IntegralFactory intf(bs1, bs2, bs3, bs4);
     std::shared_ptr<TwoBodyAOInt> ints(intf.f12g12(exp_coeff));
     return ao_helper("AO F12G12 Tensor", ints);
@@ -1009,8 +1008,8 @@ SharedMatrix MintsHelper::ao_f12_double_commutator(std::vector<std::pair<double,
 }
 
 SharedMatrix MintsHelper::ao_f12_double_commutator(std::vector<std::pair<double, double>> exp_coeff,
-                                         std::shared_ptr<BasisSet> bs1, std::shared_ptr<BasisSet> bs2,
-                                         std::shared_ptr<BasisSet> bs3, std::shared_ptr<BasisSet> bs4) {
+                                                   std::shared_ptr<BasisSet> bs1, std::shared_ptr<BasisSet> bs2,
+                                                   std::shared_ptr<BasisSet> bs3, std::shared_ptr<BasisSet> bs4) {
     IntegralFactory intf(bs1, bs2, bs3, bs4);
     std::shared_ptr<TwoBodyAOInt> ints(intf.f12_double_commutator(exp_coeff));
     return ao_helper("AO F12 Double Commutator Tensor", ints);
@@ -1736,7 +1735,8 @@ std::vector<SharedMatrix> MintsHelper::electric_field(const std::vector<double> 
 SharedMatrix MintsHelper::induction_operator(SharedMatrix coords, SharedMatrix moments) {
     SharedMatrix mat = std::make_shared<Matrix>("Induction operator", basisset_->nbf(), basisset_->nbf());
     ContractOverDipolesFunctor dipfun(moments, mat);
-    auto field_integrals_ = std::unique_ptr<ElectricFieldInt>(static_cast<ElectricFieldInt *>(integral_->electric_field().release()));
+    auto field_integrals_ =
+        std::unique_ptr<ElectricFieldInt>(static_cast<ElectricFieldInt *>(integral_->electric_field().release()));
     field_integrals_->compute_with_functor(dipfun, coords);
     mat->scale(-1.0);
 
@@ -1744,7 +1744,8 @@ SharedMatrix MintsHelper::induction_operator(SharedMatrix coords, SharedMatrix m
 }
 
 SharedMatrix MintsHelper::electric_field_value(SharedMatrix coords, SharedMatrix D) {
-    auto field_integrals_ = std::unique_ptr<ElectricFieldInt>(static_cast<ElectricFieldInt *>(integral_->electric_field().release()));
+    auto field_integrals_ =
+        std::unique_ptr<ElectricFieldInt>(static_cast<ElectricFieldInt *>(integral_->electric_field().release()));
 
     SharedMatrix efields = std::make_shared<Matrix>("efields", coords->nrow(), 3);
     auto fieldfun = ContractOverDensityFieldFunctor(efields, D);
@@ -1791,12 +1792,12 @@ SharedVector MintsHelper::electrostatic_potential_value(SharedVector charges, Sh
         throw PSIEXCEPTION("Dimension mismatch charges and coordinates.");
     }
 
-    auto potential_integrals_ = std::unique_ptr<PCMPotentialInt>(static_cast<PCMPotentialInt *>(integral_->pcm_potentialint().release()));
+    auto potential_integrals_ =
+        std::unique_ptr<PCMPotentialInt>(static_cast<PCMPotentialInt *>(integral_->pcm_potentialint().release()));
     std::vector<std::pair<double, std::array<double, 3>>> Zxyz;
     for (size_t i = 0; i < coords->nrow(); ++i) {
-        Zxyz.push_back({charges->pointer()[i], {coords->pointer()[i][0],
-                                                coords->pointer()[i][1],
-                                                coords->pointer()[i][2]}});
+        Zxyz.push_back(
+            {charges->pointer()[i], {coords->pointer()[i][0], coords->pointer()[i][1], coords->pointer()[i][2]}});
     }
     potential_integrals_->set_charge_field(Zxyz);
 
@@ -2164,7 +2165,7 @@ SharedMatrix MintsHelper::effective_core_potential_grad(SharedMatrix D) {
     std::vector<SharedMatrix> gradtemps;
     for (size_t i = 0; i < nthread_; i++) {
         gradtemps.push_back(grad->clone());
-        ecp_ints_vec.push_back(std::shared_ptr<ECPInt>(dynamic_cast<ECPInt*>(integral_->ao_ecp(1).release())));
+        ecp_ints_vec.push_back(std::shared_ptr<ECPInt>(dynamic_cast<ECPInt *>(integral_->ao_ecp(1).release())));
     }
 
     // Lower Triangle
@@ -2177,7 +2178,7 @@ SharedMatrix MintsHelper::effective_core_potential_grad(SharedMatrix D) {
 
     // Make a list of all ECP centers
     std::set<int> ecp_centers;
-    for (int ecp_shell = 0; ecp_shell < basisset_->n_ecp_shell(); ++ecp_shell){
+    for (int ecp_shell = 0; ecp_shell < basisset_->n_ecp_shell(); ++ecp_shell) {
         const GaussianShell &ecp = basisset_->ecp_shell(ecp_shell);
         ecp_centers.insert(ecp.ncenter());
     }
@@ -3770,7 +3771,8 @@ std::vector<SharedMatrix> MintsHelper::ao_tei_deriv2(int atom1, int atom2) {
 
     std::vector<std::shared_ptr<TwoBodyAOInt>> ints(nthreads);
     ints[0] = std::shared_ptr<TwoBodyAOInt>(integral_->eri(2));
-    for (int thread = 1; thread < nthreads; thread++) ints[thread] = std::shared_ptr<TwoBodyAOInt>(ints.front()->clone());
+    for (int thread = 1; thread < nthreads; thread++)
+        ints[thread] = std::shared_ptr<TwoBodyAOInt>(ints.front()->clone());
 
     std::shared_ptr<BasisSet> bs1 = ints[0]->basis1();
     std::shared_ptr<BasisSet> bs2 = ints[0]->basis2();

@@ -81,9 +81,7 @@ extern int dpd_close(int dpd_num) {
     return 0;
 }
 
-extern long int dpd_memfree() {
-    return dpd_main.memory - (dpd_main.memused - dpd_main.memcache + dpd_main.memlocked);
-}
+extern long int dpd_memfree() { return dpd_main.memory - (dpd_main.memused - dpd_main.memcache + dpd_main.memlocked); }
 
 extern void dpd_memset(long int memory) { dpd_main.memory = memory; }
 
@@ -614,11 +612,11 @@ int DPD::init(int dpd_num_in, int nirreps_in, long int memory_in, int cachetype_
                         if (params4[i][j].qpi[Gp ^ h]) params4[i][j].start13[h][offset + p] = nrows;
                         nrows += params4[i][j].qpi[Gp ^ h];
                     } /* p */
-                }     /* Gp */
-            }         /* h */
+                } /* Gp */
+            } /* h */
 
         } /* j */
-    }     /* i */
+    } /* i */
 
     /* Now generate the global list of one-electron DPD parameters */
     orbidx2 = (int **)malloc(num_subspaces * sizeof(int *));

@@ -327,5 +327,5 @@ std::string orb2lbl(int orbnum, struct calcinfo *Cinfo, int *orbs_per_irr) {
 //              (size_t) CIblks.Ib_size[blk]);
 //      }
 //}
-}
+}  // namespace detci
 }  // namespace psi

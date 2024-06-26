@@ -222,5 +222,5 @@ void OCCWave::set_t2_amplitudes_mp2() {
     }  // end if (reference_ == "UNRESTRICTED")
 
 }  // end t2_1st_sc
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

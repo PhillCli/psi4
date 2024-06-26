@@ -215,4 +215,4 @@ int DPD::contract444_df(dpdbuf4 *B, dpdbuf4 *tau_in, dpdbuf4 *tau_out, double al
 
     return 0;
 }
-}
+}  // namespace psi

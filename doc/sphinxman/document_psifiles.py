@@ -43,6 +43,7 @@ if (len(sys.argv) == 2):
 def pts(category, pyfile):
     print('Auto-documenting %s file %s' % (category, pyfile))
 
+
 # License file psi4/driver/source.template
 fhead = open(DriverPath + '../../psi4/driver/source.template')
 license = fhead.readlines()
@@ -84,25 +85,19 @@ while (ii < len(contents)):
 fpy.write('\n')
 fpy.close()
 
-
 frst = open('source/autodoc_psifiles.rst', 'w')
 frst.write('.. index:: psioh\n')
 frst.write('.. _`apdx:psiFiles`:\n\n')
 frst.write('PSIOH Intermediate Files\n')
 frst.write('========================\n\n')
 frst.write('.. table:: Auxiliary files in |PSIfour|\n\n')
-frst.write('   +-%-4s-+-%-27s-+-%-120s-+\n' %
-    (4 * '-', 27 * '-', 120 * '-'))
-frst.write('   | %-4s | %-27s | %-120s |\n' %
-    ('File', 'File Label', 'Contents'))
-frst.write('   +=%4s=+=%27s=+=%120s=+\n' %
-    (4 * '=', 27 * '=', 120 * '='))
+frst.write('   +-%-4s-+-%-27s-+-%-120s-+\n' % (4 * '-', 27 * '-', 120 * '-'))
+frst.write('   | %-4s | %-27s | %-120s |\n' % ('File', 'File Label', 'Contents'))
+frst.write('   +=%4s=+=%27s=+=%120s=+\n' % (4 * '=', 27 * '=', 120 * '='))
 
 for key in sorted(psifDict.keys()):
-    frst.write('   | %4d | %-27s | %-120s |\n' %
-        (key, psifDict[key]['label'], psifDict[key]['notes']))
-    frst.write('   +-%-4s-+-%-27s-+-%-120s-+\n' %
-        (4 * '-', 27 * '-', 120 * '-'))
+    frst.write('   | %4d | %-27s | %-120s |\n' % (key, psifDict[key]['label'], psifDict[key]['notes']))
+    frst.write('   +-%-4s-+-%-27s-+-%-120s-+\n' % (4 * '-', 27 * '-', 120 * '-'))
 
 frst.write('\n')
 frst.close()

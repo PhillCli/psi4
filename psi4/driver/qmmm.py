@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """Module with classes to integrate MM charges into
 a QM calculation.
 
@@ -38,7 +37,6 @@ from .p4util.exceptions import UpgradeHelper
 
 
 class Diffuse():
-
     def __init__(self, molecule, basisname, ribasisname):
 
         self.molecule = molecule
@@ -127,7 +125,10 @@ class QMMM():
     """Hold charges and :py:class:`psi4.core.ExternalPotential`. Use :py:class:`psi4.driver.QMMMbohr` instead."""
 
     def __init__(self):
-        raise UpgradeHelper(self.__class__.__name__, "QMMMbohr", 1.6, ' Replace object with a list of charges and locations in Bohr passed as keyword argument, e.g., `energy(..., external_potentials=[[0.5, [0, 0, 1]], [-0.5, [0, 0, -1]]])`.')
+        raise UpgradeHelper(
+            self.__class__.__name__, "QMMMbohr", 1.6,
+            ' Replace object with a list of charges and locations in Bohr passed as keyword argument, e.g., `energy(..., external_potentials=[[0.5, [0, 0, 1]], [-0.5, [0, 0, -1]]])`.'
+        )
 
 
 class QMMMbohr():
@@ -155,7 +156,8 @@ class QMMMbohr():
         position (*x*, *y*, *z*) Angstroms.
 
         """
-        self.charges.append([Q, x / constants.bohr2angstroms, y / constants.bohr2angstroms, z / constants.bohr2angstroms])
+        self.charges.append(
+            [Q, x / constants.bohr2angstroms, y / constants.bohr2angstroms, z / constants.bohr2angstroms])
 
     def __str__(self):
 
@@ -164,7 +166,8 @@ class QMMMbohr():
         s = s + '   => Charges (a.u.) <=\n\n'
         s = s + '    %11s %11s %11s %11s\n' % ('Z', 'x', 'y', 'z')
         for k in range(0, len(self.charges)):
-            s = s + '    %11.7f %11.3E %11.3E %11.3E\n' % (self.charges[k][0], self.charges[k][1], self.charges[k][2], self.charges[k][3])
+            s = s + '    %11.7f %11.3E %11.3E %11.3E\n' % (self.charges[k][0], self.charges[k][1], self.charges[k][2],
+                                                           self.charges[k][3])
         s = s + '\n'
 
         s = s + '    => Diffuses <=\n\n'

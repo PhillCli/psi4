@@ -701,8 +701,8 @@ void T3_UHF_AAB(double ***W, double ***V, int disc, int nirreps, int I, int Gi, 
                     }
 
                 } /* c */
-            }     /* ab */
-        }         /* Gab */
+            } /* ab */
+        } /* Gab */
     }
     /*** disconnected triples complete ***/
 
@@ -729,8 +729,8 @@ void T3_UHF_AAB(double ***W, double ***V, int disc, int nirreps, int I, int Gi, 
                 if (disc) V[Gab][ab][c] /= (denom + omega);
 
             } /* c */
-        }     /* ab */
-    }         /* Gab */
+        } /* ab */
+    } /* Gab */
 
     for (Gab = 0; Gab < nirreps; Gab++) {
         Gc = Gab ^ Gijk ^ GX3;

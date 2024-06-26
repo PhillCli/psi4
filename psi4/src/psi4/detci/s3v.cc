@@ -130,7 +130,7 @@ void s3_block_vdiag(struct stringwr *alplist, struct stringwr *betlist, double *
             } /* end loop over Ia */
 
         } /* end loop over j */
-    }     /* end loop over i */
+    } /* end loop over i */
 }
 
 /*
@@ -210,7 +210,7 @@ void s3_block_v(struct stringwr *alplist, struct stringwr *betlist, double **C, 
             timer_off("CIWave: s3_mt");
 
         } /* end loop over j */
-    }     /* end loop over i */
+    } /* end loop over i */
 }
 
 int form_ilist(struct stringwr *alplist, int Ja_list, int nas, int kl, int *L, int *R, double *Sgn) {
@@ -238,12 +238,12 @@ int form_ilist(struct stringwr *alplist, int Ja_list, int nas, int kl, int *L, i
             inum++;
         }
     } /* end loop over Ia */
-      /*  if(inum) {
-            outfile->Printf("form_ilist: nas = %d\n", nas);
-            outfile->Printf("form_ilist: jlen = %d\n", inum);
-  
-          }
-      */
+    /*  if(inum) {
+          outfile->Printf("form_ilist: nas = %d\n", nas);
+          outfile->Printf("form_ilist: jlen = %d\n", inum);
+
+        }
+    */
     return (inum);
 }
 
@@ -328,7 +328,7 @@ void s3_block_vdiag_rotf(int *Cnt[2], int **Ij[2], int **Ridx[2], signed char **
             } /* end loop over Ia */
 
         } /* end loop over j */
-    }     /* end loop over i */
+    } /* end loop over i */
 }
 
 /*
@@ -406,7 +406,7 @@ void s3_block_vrotf(int *Cnt[2], int **Ij[2], int **Ridx[2], signed char **Sn[2]
             } /* end loop over Ia */
 
         } /* end loop over j */
-    }     /* end loop over i */
+    } /* end loop over i */
 }
 
 int form_ilist_rotf(int *Cnt, int **Ridx, signed char **Sn, int **Ij, int nas, int kl, int *L, int *R, double *Sgn) {

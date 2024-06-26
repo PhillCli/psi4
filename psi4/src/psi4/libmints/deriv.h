@@ -52,8 +52,7 @@ class CdSalcList;
 // Enum used to specify the type of derivative computation
 // Default:     Use internal logic
 // Correlated:  Correlated methods that write RDMs and Lagrangian to disk
-enum class DerivCalcType { Default,
-    Correlated };
+enum class DerivCalcType { Default, Correlated };
 
 class PSI_API Deriv {
     const std::shared_ptr<Wavefunction> wfn_;

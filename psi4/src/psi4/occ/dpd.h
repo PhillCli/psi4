@@ -100,6 +100,6 @@ class SymBlockVector {
 
     friend class SymBlockMatrix;
 };
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi
 #endif  // _psi_src_bin_occ_dpd_h_

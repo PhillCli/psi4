@@ -45,9 +45,15 @@ PotentialInt::PotentialInt(std::vector<SphericalTransform> &st, std::shared_ptr<
                            std::shared_ptr<BasisSet> bs2, int deriv)
     : OneBodyAOInt(st, bs1, bs2, deriv) {
     if (bs1 != bs2) {
-        outfile->Printf("*********************************************************************************************************************\n");
-        outfile->Printf("When computing potential integrals with different bra and ket basis, the atom definition is taken from the bra basis.\n");
-        outfile->Printf("*********************************************************************************************************************\n");
+        outfile->Printf(
+            "**********************************************************************************************************"
+            "***********\n");
+        outfile->Printf(
+            "When computing potential integrals with different bra and ket basis, the atom definition is taken from "
+            "the bra basis.\n");
+        outfile->Printf(
+            "**********************************************************************************************************"
+            "***********\n");
     }
 
     int max_am = std::max(basis1()->max_am(), basis2()->max_am());
@@ -56,9 +62,8 @@ PotentialInt::PotentialInt(std::vector<SphericalTransform> &st, std::shared_ptr<
     // Setup the initial field of partial charges
     std::vector<std::pair<double, std::array<double, 3>>> params;
     for (int A = 0; A < bs1_->molecule()->natom(); A++) {
-        params.push_back({
-            (double)bs1_->molecule()->Z(A),
-            {bs1_->molecule()->x(A), bs1_->molecule()->y(A), bs1_->molecule()->z(A)}});
+        params.push_back(
+            {(double)bs1_->molecule()->Z(A), {bs1_->molecule()->x(A), bs1_->molecule()->y(A), bs1_->molecule()->z(A)}});
     }
 
     engine0_ = std::make_unique<libint2::Engine>(libint2::Operator::nuclear, max_nprim, max_am, 0);
@@ -92,15 +97,12 @@ PotentialInt::PotentialInt(std::vector<SphericalTransform> &st, std::shared_ptr<
 
 PotentialInt::~PotentialInt() {}
 
-
-
-void PotentialInt::set_charge_field(const std::vector<std::pair<double, std::array<double, 3>>>& Zxyz) {
+void PotentialInt::set_charge_field(const std::vector<std::pair<double, std::array<double, 3>>> &Zxyz) {
     engine0_->set_params(Zxyz);
     if (engine1_) engine1_->set_params(Zxyz);
     if (engine2_) engine2_->set_params(Zxyz);
     Zxyz_ = Zxyz;
 }
-
 
 PotentialSOInt::PotentialSOInt(const std::shared_ptr<OneBodyAOInt> &aoint, const std::shared_ptr<IntegralFactory> &fact)
     : OneBodySOInt(aoint, fact) {
@@ -113,7 +115,6 @@ PotentialSOInt::PotentialSOInt(const std::shared_ptr<OneBodyAOInt> &aoint, const
 }
 
 void PotentialSOInt::compute_deriv1(std::vector<SharedMatrix> result, const CdSalcList &cdsalcs) {
-
     // Do some checks:
     if (deriv_ < 1)
         throw SanityCheckError("OneBodySOInt::compute_deriv1: integral object not created to handle derivatives.",
@@ -145,7 +146,7 @@ void PotentialSOInt::compute_deriv1(std::vector<SharedMatrix> result, const CdSa
                     const SOTransformShell &s2 = t2.aoshell[j];
 
                     ob_->compute_shell_deriv1(s1.aoshell, s2.aoshell);
-                    const auto &buffers = ob_->buffers(); 
+                    const auto &buffers = ob_->buffers();
                     size_t nchunks = buffers.size();
                     int icenter = b1_->basis()->shell(s1.aoshell).ncenter();
                     int jcenter = b2_->basis()->shell(s2.aoshell).ncenter();
@@ -174,10 +175,10 @@ void PotentialSOInt::compute_deriv1(std::vector<SharedMatrix> result, const CdSa
                             int jirrep = jfunc.irrep;
 
                             for (int chunk = 0; chunk < nchunks; ++chunk) {
-                                int atom = (chunk < 1 ? icenter : (chunk < 2 ? jcenter : chunk-2) );
+                                int atom = (chunk < 1 ? icenter : (chunk < 2 ? jcenter : chunk - 2));
                                 const CdSalcWRTAtom &cdsalc1 = cdsalcs.atom_salc(atom);
 
-                                double jcoef_aobuf = jcoef * buffers[3*chunk + 0][jaooff];
+                                double jcoef_aobuf = jcoef * buffers[3 * chunk + 0][jaooff];
                                 for (int nx = 0; nx < cdsalc1.nx(); ++nx) {
                                     const CdSalcWRTAtom::Component element = cdsalc1.x(nx);
                                     double temp = jcoef_aobuf * element.coef;
@@ -186,7 +187,7 @@ void PotentialSOInt::compute_deriv1(std::vector<SharedMatrix> result, const CdSa
                                     }
                                 }
 
-                                jcoef_aobuf = jcoef * buffers[3*chunk+1][jaooff];
+                                jcoef_aobuf = jcoef * buffers[3 * chunk + 1][jaooff];
                                 for (int ny = 0; ny < cdsalc1.ny(); ++ny) {
                                     const CdSalcWRTAtom::Component element = cdsalc1.y(ny);
                                     double temp = jcoef_aobuf * element.coef;
@@ -195,7 +196,7 @@ void PotentialSOInt::compute_deriv1(std::vector<SharedMatrix> result, const CdSa
                                     }
                                 }
 
-                                jcoef_aobuf = jcoef * buffers[3*chunk+2][jaooff];
+                                jcoef_aobuf = jcoef * buffers[3 * chunk + 2][jaooff];
                                 for (int nz = 0; nz < cdsalc1.nz(); ++nz) {
                                     const CdSalcWRTAtom::Component element = cdsalc1.z(nz);
                                     double temp = jcoef_aobuf * element.coef;
@@ -211,5 +212,3 @@ void PotentialSOInt::compute_deriv1(std::vector<SharedMatrix> result, const CdSa
         }
     }
 }
-
-

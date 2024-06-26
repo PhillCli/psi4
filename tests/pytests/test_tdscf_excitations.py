@@ -98,6 +98,7 @@ def molecules():
 # In PySCF's sign convention, the velocity gauge electric and the magnetic dipole
 # both have flipped sign.
 
+
 def _oscillator_strength(e: float, tm: np.ndarray, gauge: str = "L") -> float:
     if gauge == "L":
         return ((2 * e) / 3) * np.sum(tm**2)
@@ -195,7 +196,15 @@ def _rotatory_strength(e: float, etm: np.ndarray, mtm: np.ndarray, gauge: str = 
 ]) # yapf: disable
 def test_tdscf(mol, ref, func, ptype, basis, molecules, reference_data):
     molecule = molecules[mol]
-    psi4.set_options({'scf_type': 'pk', 'e_convergence': 8, 'd_convergence': 8, 'save_jk': True, 'dft_radial_points': 99, 'dft_spherical_points': 590, 'dft_pruning_scheme': "None"})
+    psi4.set_options({
+        'scf_type': 'pk',
+        'e_convergence': 8,
+        'd_convergence': 8,
+        'save_jk': True,
+        'dft_radial_points': 99,
+        'dft_spherical_points': 590,
+        'dft_pruning_scheme': "None"
+    })
     if ref == "UHF":
         psi4.set_options({'reference': 'UHF'})
     molecule.reset_point_group('c1')

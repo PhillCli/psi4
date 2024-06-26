@@ -338,7 +338,7 @@ void CCEnergyWavefunction::WmbejT2() {
 
         global_dpd_->buf4_close(&T2new);
 
-    }                            /*** ROHF ***/
+    } /*** ROHF ***/
     else if (params_.ref == 2) { /*** UHF ***/
 
         /*** AA ***/

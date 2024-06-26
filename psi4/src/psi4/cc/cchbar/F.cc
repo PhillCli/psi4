@@ -457,7 +457,7 @@ void F_build() {
         global_dpd_->file2_mat_close(&FMIt);
         global_dpd_->file2_close(&FMIt);
 
-    }                           /** RHF or ROHF **/
+    } /** RHF or ROHF **/
     else if (params.ref == 2) { /** UHF **/
 
         /* FME and Fme */

@@ -5,8 +5,8 @@ import psi4
 
 psi4.set_output_file("output.dat", False)
 
-refnuc =  204.01995818061    #TEST
-refscf = -228.95763005900784 #TEST
+refnuc = 204.01995818061  #TEST
+refscf = -228.95763005900784  #TEST
 
 bz = psi4.geometry("""
     X
@@ -39,13 +39,13 @@ bz = psi4.geometry("""
 # [DZ]
 # spherical
 # ****
-# H     0 
+# H     0
 # S   3   1.00
-#      19.2406000              0.0328280        
-#       2.8992000              0.2312080        
-#       0.6534000              0.8172380        
+#      19.2406000              0.0328280
+#       2.8992000              0.2312080
+#       0.6534000              0.8172380
 # S   1   1.00
-#       0.1776000              1.0000000        
+#       0.1776000              1.0000000
 # ****
 # C     0
 # definition of carbon atom DZ basis...
@@ -113,11 +113,8 @@ psi4.basis_helper("""
     ****
 """)
 
-psi4.set_options({
-    'd_convergence': 11,
-    'e_convergence': 11,
-    'scf_type': 'pk'})
- 
+psi4.set_options({'d_convergence': 11, 'e_convergence': 11, 'scf_type': 'pk'})
+
 scfenergy = psi4.energy('scf')
 
 psi4.compare_strings("c2v", bz.schoenflies_symbol(), "Point group")  #TEST

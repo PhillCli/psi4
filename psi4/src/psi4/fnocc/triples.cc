@@ -174,8 +174,8 @@ PsiReturnType CoupledCluster::triples() {
     pct10 = pct20 = pct30 = pct40 = pct50 = pct60 = pct70 = pct80 = pct90 = 0;
 
 /**
-  *  if there is enough memory to explicitly thread, do so
-  */
+ *  if there is enough memory to explicitly thread, do so
+ */
 #pragma omp parallel for schedule(dynamic) num_threads(nthreads)
     for (long int ind = 0; ind < nijk; ind++) {
         long int i = ijk[ind][0];
@@ -418,5 +418,5 @@ PsiReturnType CoupledCluster::triples() {
 
     return Success;
 }
-}
-}  // end of namespaces
+}  // namespace fnocc
+}  // namespace psi

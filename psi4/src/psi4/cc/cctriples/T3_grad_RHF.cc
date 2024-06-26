@@ -599,8 +599,8 @@ void T3_grad_RHF() {
                                         }
 
                                     } /* c */
-                                }     /* ab */
-                            }         /* Gab */
+                                } /* ab */
+                            } /* Gab */
 
                             timer_off("T3(d) Terms(ijk)");
 
@@ -685,9 +685,9 @@ void T3_grad_RHF() {
                                             S1.matrix[Gi][i][a] += 0.5 * Dints.matrix[Gjk][jk][bc] * value;
 
                                         } /* c */
-                                    }     /* Gi == Ga && S1 rows and S1 cols */
-                                }         /* ab */
-                            }             /* Gab */
+                                    } /* Gi == Ga && S1 rows and S1 cols */
+                                } /* ab */
+                            } /* Gab */
 
                             /**** S1 contributions complete ****/
 
@@ -845,12 +845,12 @@ void T3_grad_RHF() {
                             timer_off("malloc");
 
                         } /* k */
-                    }     /* j */
-                }         /* i */
+                    } /* j */
+                } /* i */
 
             } /* Gk */
-        }     /* Gj */
-    }         /* Gi */
+        } /* Gj */
+    } /* Gi */
 
     // outfile->Printf( "\tE(T)(ijk) = %20.14f\n", ET1);
 
@@ -1363,8 +1363,8 @@ void T3_grad_RHF() {
                                         }
 
                                     } /* k */
-                                }     /* ij */
-                            }         /* Gij */
+                                } /* ij */
+                            } /* Gij */
 
                             timer_off("T3(d) Terms(abc)");
 
@@ -1469,8 +1469,8 @@ void T3_grad_RHF() {
                                     for (k = 0; k < occpi[Gk]; k++) {
                                         DIJ.matrix[Gi][i][i] -= 0.5 * W0[Gij][ij][k] * E[Gij][ij][k];
                                     } /* Gij */
-                                }     /* if Gi == Gj .....*/
-                            }         /* ij */
+                                } /* if Gi == Gj .....*/
+                            } /* ij */
 
                             /**** Compute S2 needed for lambda equations ****/
 
@@ -1513,12 +1513,12 @@ void T3_grad_RHF() {
                             timer_off("malloc");
 
                         } /* c */
-                    }     /* b */
-                }         /* a */
+                    } /* b */
+                } /* a */
 
             } /* Gc */
-        }     /* Gb */
-    }         /* Ga */
+        } /* Gb */
+    } /* Ga */
 
     // outfile->Printf( "\tE(T)(ijk) = %20.14f\n", ET1);
     // outfile->Printf( "\tE(T)(abc) = %20.14f\n", ET2);

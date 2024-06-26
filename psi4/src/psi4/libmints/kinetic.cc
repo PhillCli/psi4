@@ -36,7 +36,7 @@ using namespace psi;
 
 KineticInt::KineticInt(std::vector<SphericalTransform> &st, std::shared_ptr<BasisSet> bs1,
                        std::shared_ptr<BasisSet> bs2, int deriv)
-    : OneBodyAOInt(st, bs1, bs2, deriv)  {
+    : OneBodyAOInt(st, bs1, bs2, deriv) {
     if (deriv > 2) throw std::runtime_error("KineticInt: does not support deriv over 2.");
 
     int max_am = std::max(basis1()->max_am(), basis2()->max_am());

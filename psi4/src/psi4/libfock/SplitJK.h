@@ -65,7 +65,6 @@ class DFTGrid;
  */
 class PSI_API SplitJK {
    protected:
-
     /// The number of threads to be used for integral computation
     int nthreads_;
     /// Options object
@@ -101,8 +100,8 @@ class PSI_API SplitJK {
     /// Build either the coulomb (J) matrix or the exchange (K) matrix
     /// using a given algorithm
     virtual void build_G_component(std::vector<std::shared_ptr<Matrix> >& D,
-                 std::vector<std::shared_ptr<Matrix> >& G_comp,
-         std::vector<std::shared_ptr<TwoBodyAOInt> >& eri_computers) = 0;
+                                   std::vector<std::shared_ptr<Matrix> >& G_comp,
+                                   std::vector<std::shared_ptr<TwoBodyAOInt> >& eri_computers) = 0;
 
     // => Knobs <= //
 
@@ -112,24 +111,24 @@ class PSI_API SplitJK {
     int get_bench() const { return bench_; }
 
     /**
-    * Print header information regarding JK
-    * type on output file
-    */
+     * Print header information regarding JK
+     * type on output file
+     */
     virtual void print_header() const = 0;
 
     /**
-    * Return number of ERI shell quartets computed during the SplitJK build process.
-    */
+     * Return number of ERI shell quartets computed during the SplitJK build process.
+     */
     virtual size_t num_computed_shells();
 
     /**
-    * print name of method
-    */
+     * print name of method
+     */
     virtual std::string name() = 0;
 
     /**
-    * Method-specific knobs, if necessary
-    */
+     * Method-specific knobs, if necessary
+     */
     virtual void set_COSX_grid(std::string current_grid) {
         throw PSIEXCEPTION("SplitJK::set_COSX_grid was called, but COSX is not being used!");
     }
@@ -165,25 +164,24 @@ class PSI_API DirectDFJ : public SplitJK {
     /// Destructor
     ~DirectDFJ() override;
 
-    void build_G_component(std::vector<std::shared_ptr<Matrix> >& D,
-                 std::vector<std::shared_ptr<Matrix> >& G_comp,
-         std::vector<std::shared_ptr<TwoBodyAOInt> >& eri_computers) override;
+    void build_G_component(std::vector<std::shared_ptr<Matrix> >& D, std::vector<std::shared_ptr<Matrix> >& G_comp,
+                           std::vector<std::shared_ptr<TwoBodyAOInt> >& eri_computers) override;
 
     // => Knobs <= //
     /**
-    * Print header information regarding JK
-    * type on output file
-    */
+     * Print header information regarding JK
+     * type on output file
+     */
     void print_header() const override;
 
     /**
-    * Return number of ERI shell quartets computed during the SplitJK build process.
-    */
+     * Return number of ERI shell quartets computed during the SplitJK build process.
+     */
     size_t num_computed_shells() override;
 
     /**
-    * print name of method
-    */
+     * print name of method
+     */
     std::string name() override { return "DF-DirJ"; }
 };
 
@@ -216,26 +214,25 @@ class PSI_API LinK : public SplitJK {
     ~LinK() override;
 
     /// Build the exchange (K) matrix using LinK
-    void build_G_component(std::vector<std::shared_ptr<Matrix> >& D,
-                 std::vector<std::shared_ptr<Matrix> >& G_comp,
-         std::vector<std::shared_ptr<TwoBodyAOInt> >& eri_computers) override;
+    void build_G_component(std::vector<std::shared_ptr<Matrix> >& D, std::vector<std::shared_ptr<Matrix> >& G_comp,
+                           std::vector<std::shared_ptr<TwoBodyAOInt> >& eri_computers) override;
 
     // => Knobs <= //
 
     /**
-    * Print header information regarding SplitJK
-    * type on output file
-    */
+     * Print header information regarding SplitJK
+     * type on output file
+     */
     void print_header() const override;
 
     /**
-    * Return number of ERI shell quartets computed during the SplitJK build process.
-    */
+     * Return number of ERI shell quartets computed during the SplitJK build process.
+     */
     size_t num_computed_shells() override;
 
     /**
-    * print name of method
-    */
+     * print name of method
+     */
     std::string name() override { return "LinK"; }
 };
 
@@ -245,7 +242,6 @@ class PSI_API LinK : public SplitJK {
  * doi: 10.1016/j.chemphys.2008.10.036
  */
 class PSI_API COSK : public SplitJK {
-
     // => Semi-Numerical Stuff <= //
 
     /// COSX grids
@@ -285,25 +281,24 @@ class PSI_API COSK : public SplitJK {
     /// Build the exchange (K) matrix using COSX
     /// primary reference is https://doi.org/10.1016/j.chemphys.2008.10.036
     /// overlap fitting is discussed in https://doi.org/10.1063/1.3646921
-    void build_G_component(std::vector<std::shared_ptr<Matrix> >& D,
-                 std::vector<std::shared_ptr<Matrix> >& G_comp,
-         std::vector<std::shared_ptr<TwoBodyAOInt> >& eri_computers) override;
+    void build_G_component(std::vector<std::shared_ptr<Matrix> >& D, std::vector<std::shared_ptr<Matrix> >& G_comp,
+                           std::vector<std::shared_ptr<TwoBodyAOInt> >& eri_computers) override;
 
     // => Knobs <= //
     /**
-    * Print header information regarding JK
-    * type on output file
-    */
+     * Print header information regarding JK
+     * type on output file
+     */
     void print_header() const override;
 
     /**
-    * Return number of ERI shell quartets computed during the SplitJK build process.
-    */
+     * Return number of ERI shell quartets computed during the SplitJK build process.
+     */
     size_t num_computed_shells() override;
 
     /**
-    * print name of method
-    */
+     * print name of method
+     */
     std::string name() override { return "COSX"; }
 
     // setter/getter for the COSX grid used for this SCF iteration
@@ -311,7 +306,6 @@ class PSI_API COSK : public SplitJK {
     std::string get_COSX_grid() override { return current_grid_; };
 };
 
-}
+}  // namespace psi
 
 #endif
-

@@ -16,10 +16,7 @@ H 1 1.1 2 104
 symmetry c1
 """)
 
-psi4.set_options({"basis":         "aug-cc-pVDZ",
-                  "scf_type":      "df",
-                  "e_convergence": 1e-8
-                 })
+psi4.set_options({"basis": "aug-cc-pVDZ", "scf_type": "df", "e_convergence": 1e-8})
 
 # Set tolerances
 maxiter = 12
@@ -50,6 +47,7 @@ H.add(V)
 A = mints.ao_overlap()
 A.power(-0.5, 1.e-16)
 
+
 # Diagonalize routine
 def build_orbitals(diag):
     Fp = psi4.core.triplet(A, diag, A, True, False, True)
@@ -65,6 +63,7 @@ def build_orbitals(diag):
 
     D = psi4.core.doublet(Cocc, Cocc, False, True)
     return C, Cocc, D
+
 
 # Build core orbitals
 C, Cocc, D = build_orbitals(H)
@@ -114,8 +113,8 @@ for SCF_ITER in range(1, maxiter + 1):
 
     dRMS = diis_e.rms()
 
-    psi4.core.print_out('SCF Iteration %3d: Energy = %4.16f   dE = % 1.5E   dRMS = %1.5E\n'
-          % (SCF_ITER, SCF_E, (SCF_E - Eold), dRMS))
+    psi4.core.print_out('SCF Iteration %3d: Energy = %4.16f   dE = % 1.5E   dRMS = %1.5E\n' % (SCF_ITER, SCF_E,
+                                                                                               (SCF_E - Eold), dRMS))
     if (abs(SCF_E - Eold) < E_conv) and (dRMS < D_conv):
         break
 

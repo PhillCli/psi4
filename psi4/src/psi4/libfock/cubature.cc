@@ -2100,9 +2100,9 @@ void RadialGridMgr::getChebychevRootsKind2(int n, double r[], double w[]) {
         double x = cos(i * piOverNPlusOne);
         r[i - 1] = x;
         w[i - 1] = piOverNPlusOne * sqrt(1.0 - x * x);
-        // raw weight for 2nd Kind = piOverNPlusOne * sin^2 (i * piOverNPlusOne) = piOverNPlusOne * (1 - cos^2 (i * piOverNPlusOne)) = piOverNPlusOne * (1 - x^2)
-        // for unit form, scale weight by /= sqrt(1 - x^2):
-        // final weight = piOverNplusOne * sqrt(1 - x^2) = piOverNPlusOne * sin(i * piOverNPlusOne)
+        // raw weight for 2nd Kind = piOverNPlusOne * sin^2 (i * piOverNPlusOne) = piOverNPlusOne * (1 - cos^2 (i *
+        // piOverNPlusOne)) = piOverNPlusOne * (1 - x^2) for unit form, scale weight by /= sqrt(1 - x^2): final weight =
+        // piOverNplusOne * sqrt(1 - x^2) = piOverNPlusOne * sin(i * piOverNPlusOne)
     }
 }
 
@@ -4276,7 +4276,8 @@ DFTGrid::DFTGrid(std::shared_ptr<Molecule> molecule, std::shared_ptr<BasisSet> p
     buildGridFromOptions(int_opts_map, str_opts_map, float_opts_map);
 }
 DFTGrid::DFTGrid(std::shared_ptr<Molecule> molecule, std::shared_ptr<BasisSet> primary,
-                 std::map<std::string, int> int_opts_map, std::map<std::string, std::string> str_opts_map, Options &options)
+                 std::map<std::string, int> int_opts_map, std::map<std::string, std::string> str_opts_map,
+                 Options &options)
     : MolecularGrid(molecule), primary_(primary), options_(options) {
     std::map<std::string, double> float_opts_map;
     buildGridFromOptions(int_opts_map, str_opts_map, float_opts_map);
@@ -4322,12 +4323,9 @@ void DFTGrid::buildGridFromOptions(std::map<std::string, int> int_opts_map,
     }
 
     std::map<std::string, double> full_float_options;
-    std::vector<std::string> float_keys = {"DFT_BS_RADIUS_ALPHA",
-                                           "DFT_PRUNING_ALPHA",
-                                           "DFT_WEIGHTS_TOLERANCE",
-                                           "DFT_BLOCK_MAX_RADIUS",
-                                           "DFT_BASIS_TOLERANCE"};
-    for (const auto& key : float_keys) {
+    std::vector<std::string> float_keys = {"DFT_BS_RADIUS_ALPHA", "DFT_PRUNING_ALPHA", "DFT_WEIGHTS_TOLERANCE",
+                                           "DFT_BLOCK_MAX_RADIUS", "DFT_BASIS_TOLERANCE"};
+    for (const auto &key : float_keys) {
         if (float_opts_map.find(key) != float_opts_map.end()) {
             full_float_options[key] = float_opts_map[key];
         } else {
@@ -4449,11 +4447,14 @@ MolecularGrid::~MolecularGrid() {
 void MolecularGrid::block(int max_points, int min_points, double max_radius) {
     std::shared_ptr<GridBlocker> blocker;
     if (options_.blockscheme == "NAIVE") {
-        blocker = std::make_shared<NaiveGridBlocker>(npoints_, x_, y_, z_, w_, max_points, min_points, max_radius, extents_);
+        blocker =
+            std::make_shared<NaiveGridBlocker>(npoints_, x_, y_, z_, w_, max_points, min_points, max_radius, extents_);
     } else if (options_.blockscheme == "OCTREE") {
-        blocker = std::make_shared<OctreeGridBlocker>(npoints_, x_, y_, z_, w_, max_points, min_points, max_radius, extents_);
+        blocker =
+            std::make_shared<OctreeGridBlocker>(npoints_, x_, y_, z_, w_, max_points, min_points, max_radius, extents_);
     } else if (options_.blockscheme == "ATOMIC") {
-        blocker = std::make_shared<AtomicGridBlocker>(npoints_, x_, y_, z_, w_, max_points, min_points, max_radius, extents_, molecule_, atomic_grids_);
+        blocker = std::make_shared<AtomicGridBlocker>(npoints_, x_, y_, z_, w_, max_points, min_points, max_radius,
+                                                      extents_, molecule_, atomic_grids_);
     }
 
     blocker->set_print(options_.print);
@@ -4519,7 +4520,7 @@ void MolecularGrid::remove_distant_points(double Rmax) {
     npoints_ = npoints2;
     atomic_grids_ = temp_grids;
     // free up allocated storage capacity.
-    for (size_t i = 0; i < atomic_grids_.size(); i++){
+    for (size_t i = 0; i < atomic_grids_.size(); i++) {
         atomic_grids_[i].shrink_to_fit();
     }
 }
@@ -4659,7 +4660,6 @@ void AtomicGridBlocker::block() {
             max_functions_ = blocks_[A]->local_nbf();
         }
     }
-
 }
 
 NaiveGridBlocker::NaiveGridBlocker(const int npoints_ref, double const *x_ref, double const *y_ref, double const *z_ref,
@@ -4699,7 +4699,6 @@ void NaiveGridBlocker::block() {
             max_functions_ = blocks_[A]->local_nbf();
         }
     }
-
 }
 OctreeGridBlocker::OctreeGridBlocker(const int npoints_ref, double const *x_ref, double const *y_ref,
                                      double const *z_ref, double const *w_ref, const int max_points,
@@ -5066,12 +5065,10 @@ std::shared_ptr<RadialGrid> RadialGrid::build_treutler(int npoints, double alpha
 
 /// Grid npoints to order map
 std::map<int, int> SphericalGrid::lebedev_mapping_ = {
-    {6,1}, {14,2}, {26,3}, {38,4}, {50,5}, {74,6}, {86,7}, {110,8}, {146,9},
-    {170,10}, {194,11}, {230,12}, {266,13}, {302,14}, {350,15}, {434,17},
-    {590,20}, {770,23}, {974,26}, {1202,29}, {1454,32}, {1730,35}, {2030,38},
-    {2354,41}, {2702,44}, {3074,47}, {3470,50}, {3890,53}, {4334,56},
-    {4802,59}, {5294,62}, {5810,65}
-};
+    {6, 1},     {14, 2},    {26, 3},    {38, 4},    {50, 5},    {74, 6},    {86, 7},    {110, 8},
+    {146, 9},   {170, 10},  {194, 11},  {230, 12},  {266, 13},  {302, 14},  {350, 15},  {434, 17},
+    {590, 20},  {770, 23},  {974, 26},  {1202, 29}, {1454, 32}, {1730, 35}, {2030, 38}, {2354, 41},
+    {2702, 44}, {3074, 47}, {3470, 50}, {3890, 53}, {4334, 56}, {4802, 59}, {5294, 62}, {5810, 65}};
 
 SphericalGrid::SphericalGrid() : npoints_(0) {}
 SphericalGrid::~SphericalGrid() {

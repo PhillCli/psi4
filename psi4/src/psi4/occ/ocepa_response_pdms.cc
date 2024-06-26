@@ -189,15 +189,15 @@ void OCCWave::ocepa_response_pdms() {
     v_int();
     timer_off("V int");
     timer_on("TPDM OOVV");
-    tpdm_oovv();            // unscaled in OO-REMP theory
+    tpdm_oovv();  // unscaled in OO-REMP theory
     timer_off("TPDM OOVV");
     timer_on("TPDM OOOO");
-    tpdm_oooo();            // scaled by (1-A) in OO-REMP theory
+    tpdm_oooo();  // scaled by (1-A) in OO-REMP theory
     timer_off("TPDM OOOO");
 
     if (twopdm_abcd_type == "COMPUTE") {
         timer_on("TPDM VVVV");
-        ocepa_tpdm_vvvv();      // scaled by (1-A) in OO-REMP theory
+        ocepa_tpdm_vvvv();  // scaled by (1-A) in OO-REMP theory
         timer_off("TPDM VVVV");
     }
 
@@ -206,19 +206,19 @@ void OCCWave::ocepa_response_pdms() {
     timer_off("TPDM OVOV");
     if (reference_ == "UNRESTRICTED") {
         timer_on("TPDM VOVO");
-        tpdm_vovo();            // scaled by (1-A) in OO-REMP theory
+        tpdm_vovo();  // scaled by (1-A) in OO-REMP theory
         timer_off("TPDM VOVO");
         timer_on("TPDM OVVO");
-        tpdm_ovvo();            // scaled by (1-A) in OO-REMP theory
+        tpdm_ovvo();  // scaled by (1-A) in OO-REMP theory
         timer_off("TPDM OVVO");
     }
     timer_on("TPDM REF");
-    tpdm_ref();                 // unscaled in OO-REMP theory
+    tpdm_ref();  // unscaled in OO-REMP theory
     timer_off("TPDM REF");
     timer_on("TPDM CORR OPDM");
-    tpdm_corr_opdm();          // unscaled in OO-REMP theory
+    tpdm_corr_opdm();  // unscaled in OO-REMP theory
     timer_off("TPDM CORR OPDM");
-//    outfile->Printf("\n response_pdms done... \n");
+    //    outfile->Printf("\n response_pdms done... \n");
 }  // end of response_pdms
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

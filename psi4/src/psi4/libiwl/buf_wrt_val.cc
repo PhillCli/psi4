@@ -141,4 +141,4 @@ void iwl_buf_wrt_val(struct iwlbuf *Buf, int p, int q, int r, int s, double valu
         }
     }
 }
-}
+}  // namespace psi

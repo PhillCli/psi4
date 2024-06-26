@@ -749,5 +749,5 @@ void CoupledCluster::DefineQuadraticTasks() {
     QTasklist[nqtasks++].func = &psi::fnocc::CoupledCluster::CPU_I1pij_I1ia_lessmem_quadratic;
     QTasklist[nqtasks++].func = &psi::fnocc::CoupledCluster::I2iajb_quadratic;
 }
-}
+}  // namespace fnocc
 }  // end of namespace psi

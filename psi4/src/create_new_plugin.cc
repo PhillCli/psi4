@@ -99,7 +99,10 @@ class PluginFileManager {
         std::string psiDataDirWithPlugin = (filesystem::path(psiDataDirName) / filesystem::path("plugin")).str();
 
         if (!filesystem::path(psiDataDirWithPlugin).is_directory()) {
-            throw std::runtime_error("Unable to read the Psi4 plugin folder - check the PSIDATADIR environmental variable!\nCurrent value of PSIDATADIR is " + psiDataDirName + "\n");
+            throw std::runtime_error(
+                "Unable to read the Psi4 plugin folder - check the PSIDATADIR environmental variable!\nCurrent value "
+                "of PSIDATADIR is " +
+                psiDataDirName + "\n");
         }
 
         // Make a faux camel-case of the name

@@ -58,7 +58,7 @@ void write_blocks(const Matrix& mat);
 */
 
 void preppert(std::shared_ptr<BasisSet> primary) {
-    std::vector<std::string> cartstr {"X", "Y", "Z"};
+    std::vector<std::string> cartstr{"X", "Y", "Z"};
 
     MintsHelper mints(primary, Process::environment.options, 0);
     auto dipole = mints.so_dipole();

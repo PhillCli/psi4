@@ -10,8 +10,7 @@ from addons import using, uusing
 pytestmark = [pytest.mark.psi, pytest.mark.api]
 
 __geoms = {
-    "benzene":
-    """
+    "benzene": """
     C -0.886454    0.338645    0.000000
     C  0.508706    0.338645    0.000000
     C  1.206244    1.546396    0.000000
@@ -27,8 +26,7 @@ __geoms = {
     symmetry c1
     units angstrom
     """,
-    "fcm":
-    """
+    "fcm": """
     C   -0.502049    0.594262    0.000000
     H   -0.145376    1.098660    0.873652
     H   -1.572049    0.594275    0.000000
@@ -37,16 +35,14 @@ __geoms = {
     symmetry c1
     units angstrom
     """,
-    "h2o":
-    """
+    "h2o": """
     O -0.966135 0.119522 0
     H -0.006135 0.119522 0
     H -1.286590 1.024458 0
     symmetry c1
     units angstrom
     """,
-    "nh3":
-    """
+    "nh3": """
     N     -0.0000000001    -0.1040380466      0.0000000000
     H     -0.9015844116     0.4818470201     -1.5615900098
     H     -0.9015844116     0.4818470201      1.5615900098
@@ -56,15 +52,13 @@ __geoms = {
     no_com
     units bohr
     """,
-    "h2":
-    """
+    "h2": """
     H 0 0 0.5
     H 0 0 -0.5
     symmetry c1
     units angstrom
     """,
-    "h":
-    """
+    "h": """
     H 0 0 0
     1 1
     symmetry c1
@@ -90,31 +84,59 @@ def _base_test_fock(fock_term, density_matrix, eps=1e-4, tol=1e-8):
 @pytest.mark.smoke
 @pytest.mark.quick
 @uusing("ddx")
-@pytest.mark.parametrize("inp", [
-   pytest.param({
-       "geom": __geoms["h"],
-       "dm": core.Matrix.from_array(np.array([[0.]])),
-       "ddx": {"model": "cosmo", "solvent_epsilon": 1e8, "eta": 0, "radii": [1.0]},
-       "ref": -0.2645886054599999,  # from Gaussian
-   }, id='h'),
-   pytest.param({
-       "geom": __geoms["h2"],
-       "dm": core.Matrix.from_array(0.6682326961201372 * np.ones((2, 2))),
-       "ddx": {"model": "cosmo", "solvent_epsilon": 1e8, "eta": 0, "radii": [1.5873, 1.5873]},
-       "ref": -0.0002016948,  # from Gaussian
-   }, id='h2cosmo'),
-   pytest.param({
-       "geom": __geoms["h2"],
-       "dm": core.Matrix.from_array(0.6682326961201372 * np.ones((2, 2))),
-       "ddx": {"model": "pcm", "solvent_epsilon": 80, "radii": [1.5873, 1.5873]},
-   }, id='h2pcm'),
-   pytest.param({
-       "geom": __geoms["h2"],
-       "dm": core.Matrix.from_array(0.6682326961201372 * np.ones((2, 2))),
-       "ddx": {"model": "lpb", "solvent_epsilon": 80, "solvent_kappa": 1.5,
-               "radii": [1.5873, 1.5873]},
-   }, id='h2lpb'),
-])
+@pytest.mark.parametrize(
+    "inp",
+    [
+        pytest.param(
+            {
+                "geom": __geoms["h"],
+                "dm": core.Matrix.from_array(np.array([[0.]])),
+                "ddx": {
+                    "model": "cosmo",
+                    "solvent_epsilon": 1e8,
+                    "eta": 0,
+                    "radii": [1.0]
+                },
+                "ref": -0.2645886054599999,  # from Gaussian
+            },
+            id='h'),
+        pytest.param(
+            {
+                "geom": __geoms["h2"],
+                "dm": core.Matrix.from_array(0.6682326961201372 * np.ones((2, 2))),
+                "ddx": {
+                    "model": "cosmo",
+                    "solvent_epsilon": 1e8,
+                    "eta": 0,
+                    "radii": [1.5873, 1.5873]
+                },
+                "ref": -0.0002016948,  # from Gaussian
+            },
+            id='h2cosmo'),
+        pytest.param(
+            {
+                "geom": __geoms["h2"],
+                "dm": core.Matrix.from_array(0.6682326961201372 * np.ones((2, 2))),
+                "ddx": {
+                    "model": "pcm",
+                    "solvent_epsilon": 80,
+                    "radii": [1.5873, 1.5873]
+                },
+            },
+            id='h2pcm'),
+        pytest.param(
+            {
+                "geom": __geoms["h2"],
+                "dm": core.Matrix.from_array(0.6682326961201372 * np.ones((2, 2))),
+                "ddx": {
+                    "model": "lpb",
+                    "solvent_epsilon": 80,
+                    "solvent_kappa": 1.5,
+                    "radii": [1.5873, 1.5873]
+                },
+            },
+            id='h2lpb'),
+    ])
 def test_ddx_fock_build(inp):
     """
     Tests COSMO / LPB energy against reference from Gaussian
@@ -149,6 +171,7 @@ def test_ddx_fock_build(inp):
         E, _ = get_EV(inp["dm"])
         assert compare_values(inp["ref"], E, atol=1e-16, rtol=1e-2)
 
+
 @pytest.mark.quick
 @uusing("ddx")
 def test_ddx_limiting_cases():
@@ -175,8 +198,12 @@ def test_ddx_limiting_cases():
     density_matrix = core.Matrix.from_array(wfn.Da().np)
 
     def ddenergy(model, solvent_kappa=0.0, solvent_epsilon=80.0):
-        psi4.set_options({"ddx_solvent_kappa": solvent_kappa, "ddx_model": model,
-                          "ddx_solvent_epsilon": solvent_epsilon, "ddx_solvation_convergence": 1e-10})
+        psi4.set_options({
+            "ddx_solvent_kappa": solvent_kappa,
+            "ddx_model": model,
+            "ddx_solvent_epsilon": solvent_epsilon,
+            "ddx_solvation_convergence": 1e-10
+        })
         ddx_options = ddx.get_ddx_options(mol)
         ddx_iface = ddx.DdxInterface(mol, ddx_options, basis)
         E, V, _ = ddx_iface.get_solvation_contributions(density_matrix)
@@ -194,61 +221,88 @@ def test_ddx_limiting_cases():
     e_lpb0, v_lpb0 = ddenergy("lpb", solvent_kappa=1e-5, solvent_epsilon=80.0)
     e_lpbinf, v_lpbinf = ddenergy("lpb", solvent_kappa=10, solvent_epsilon=80.0)
 
-    assert abs(e_pcminf - e_cosmo)    / abs(e_cosmo)    < 1e-10  # noqa: E221
+    assert abs(e_pcminf - e_cosmo) / abs(e_cosmo) < 1e-10  # noqa: E221
     assert abs(e_pcminf - e_lpb_einf) / abs(e_lpb_einf) < 1e-10  # noqa: E221
-    assert abs(e_cosmo  - e_lpb_einf) / abs(e_lpb_einf) < 1e-10  # noqa: E221
-    assert abs(e_lpb0   - e_pcm)      / abs(e_pcm)      < 1e-5   # noqa: E221
-    assert abs(e_lpbinf - e_lpb_einf) / abs(e_lpb_einf) < 1e-4   # noqa: E221
-    assert abs(e_lpbinf - e_cosmo)    / abs(e_cosmo)    < 1e-4   # noqa: E221
-    assert abs(e_lpbinf - e_pcminf)   / abs(e_pcminf)   < 1e-4   # noqa: E221
+    assert abs(e_cosmo - e_lpb_einf) / abs(e_lpb_einf) < 1e-10  # noqa: E221
+    assert abs(e_lpb0 - e_pcm) / abs(e_pcm) < 1e-5  # noqa: E221
+    assert abs(e_lpbinf - e_lpb_einf) / abs(e_lpb_einf) < 1e-4  # noqa: E221
+    assert abs(e_lpbinf - e_cosmo) / abs(e_cosmo) < 1e-4  # noqa: E221
+    assert abs(e_lpbinf - e_pcminf) / abs(e_pcminf) < 1e-4  # noqa: E221
 
-    assert np.max(np.abs(v_pcminf.np - v_cosmo.np))    < 1e-10   # noqa: E221
-    assert np.max(np.abs(v_pcminf.np - v_lpb_einf.np)) < 1e-10   # noqa: E221
-    assert np.max(np.abs(v_cosmo.np  - v_lpb_einf.np)) < 1e-10   # noqa: E221
-    assert np.max(np.abs(v_lpb0.np   - v_pcm.np))      < 1e-5    # noqa: E221
-    assert np.max(np.abs(v_lpbinf.np - v_lpb_einf.np)) < 1e-4    # noqa: E221
-    assert np.max(np.abs(v_lpbinf.np - v_cosmo.np))    < 1e-4    # noqa: E221
-    assert np.max(np.abs(v_lpbinf.np - v_pcminf.np))   < 1e-4    # noqa: E221
+    assert np.max(np.abs(v_pcminf.np - v_cosmo.np)) < 1e-10  # noqa: E221
+    assert np.max(np.abs(v_pcminf.np - v_lpb_einf.np)) < 1e-10  # noqa: E221
+    assert np.max(np.abs(v_cosmo.np - v_lpb_einf.np)) < 1e-10  # noqa: E221
+    assert np.max(np.abs(v_lpb0.np - v_pcm.np)) < 1e-5  # noqa: E221
+    assert np.max(np.abs(v_lpbinf.np - v_lpb_einf.np)) < 1e-4  # noqa: E221
+    assert np.max(np.abs(v_lpbinf.np - v_cosmo.np)) < 1e-4  # noqa: E221
+    assert np.max(np.abs(v_lpbinf.np - v_pcminf.np)) < 1e-4  # noqa: E221
 
 
 @pytest.mark.quick
 @uusing("ddx")
-@pytest.mark.parametrize("inp", [
-    pytest.param({
-        "geom": __geoms["h2o"],
-        "ddx": {"solvent_epsilon": 1e8, "eta": 0, },
-        "ref": -75.5946789010,  # from Gaussian
-        "solvation": -0.009402,
-    }, id='h2o'),
-    #
-    pytest.param({
-        "geom": __geoms["fcm"],
-        "ddx": {"solvent_epsilon": 1e8, "eta": 0, },
-        "ref": -594.993575419,  # from Gaussian
-        "solvation": -0.006719,
-    }, id='fcm'),
-    #
-    pytest.param({
-        "geom": __geoms["fcm"],
-        "ddx": {"solvent_epsilon": 2.0, "eta": 0, },
-        "ref": -594.990420855,  # from Gaussian
-        "solvation": -0.002964,
-    }, id='fcmeps'),
-    #
-    pytest.param({
-        "geom": __geoms["fcm"],
-        "ddx": {"solvent_epsilon": 2.0, "eta": 0.2, },
-        "ref": -594.990487330,  # from Gaussian
-        "solvation": -0.003041,
-    }, id='fcmepseta'),
-    #
-    pytest.param({
-        "geom": __geoms["benzene"],
-        "ddx": {"solvent_epsilon": 1e8, "eta": 0, },
-        "ref": -229.420391688,  # from Gaussian
-        "solvation": -0.005182,
-    }, id='benzene'),
-])
+@pytest.mark.parametrize(
+    "inp",
+    [
+        pytest.param(
+            {
+                "geom": __geoms["h2o"],
+                "ddx": {
+                    "solvent_epsilon": 1e8,
+                    "eta": 0,
+                },
+                "ref": -75.5946789010,  # from Gaussian
+                "solvation": -0.009402,
+            },
+            id='h2o'),
+        #
+        pytest.param(
+            {
+                "geom": __geoms["fcm"],
+                "ddx": {
+                    "solvent_epsilon": 1e8,
+                    "eta": 0,
+                },
+                "ref": -594.993575419,  # from Gaussian
+                "solvation": -0.006719,
+            },
+            id='fcm'),
+        #
+        pytest.param(
+            {
+                "geom": __geoms["fcm"],
+                "ddx": {
+                    "solvent_epsilon": 2.0,
+                    "eta": 0,
+                },
+                "ref": -594.990420855,  # from Gaussian
+                "solvation": -0.002964,
+            },
+            id='fcmeps'),
+        #
+        pytest.param(
+            {
+                "geom": __geoms["fcm"],
+                "ddx": {
+                    "solvent_epsilon": 2.0,
+                    "eta": 0.2,
+                },
+                "ref": -594.990487330,  # from Gaussian
+                "solvation": -0.003041,
+            },
+            id='fcmepseta'),
+        #
+        pytest.param(
+            {
+                "geom": __geoms["benzene"],
+                "ddx": {
+                    "solvent_epsilon": 1e8,
+                    "eta": 0,
+                },
+                "ref": -229.420391688,  # from Gaussian
+                "solvation": -0.005182,
+            },
+            id='benzene'),
+    ])
 def test_ddx_rhf_reference(inp):
     mol = psi4.geometry(inp["geom"])
     psi4.set_options({
@@ -277,24 +331,43 @@ def test_ddx_rhf_reference(inp):
 @pytest.mark.quick
 @uusing("ddx")
 @pytest.mark.parametrize("inp", [
-    pytest.param({
-        "geom": __geoms["h2o"],
-        "basis": "cc-pvdz",
-        "ddx": {"model": "cosmo", "solvent": "water", "radii_set": "bondi", },
-        "ref": -76.0346355428018,
-    }, id='h2o-cosmo'),
-    pytest.param({
-        "geom": __geoms["fcm"],
-        "basis": "cc-pvdz",
-        "ddx": {"model": "pcm", "solvent": "water", "radii_set": "uff", },
-        "ref": -597.9718943192062,
-    }, id='fcm-pcm'),
-    pytest.param({
-        "geom": __geoms["nh3"],
-        "basis": "cc-pvdz",
-        "ddx": {"model": "lpb", "solvent": "water", "radii_set": "uff", "solvent_kappa": 0.11},
-        "ref": -56.1988043810054,
-    }, id='nh3-lpb'),
+    pytest.param(
+        {
+            "geom": __geoms["h2o"],
+            "basis": "cc-pvdz",
+            "ddx": {
+                "model": "cosmo",
+                "solvent": "water",
+                "radii_set": "bondi",
+            },
+            "ref": -76.0346355428018,
+        },
+        id='h2o-cosmo'),
+    pytest.param(
+        {
+            "geom": __geoms["fcm"],
+            "basis": "cc-pvdz",
+            "ddx": {
+                "model": "pcm",
+                "solvent": "water",
+                "radii_set": "uff",
+            },
+            "ref": -597.9718943192062,
+        },
+        id='fcm-pcm'),
+    pytest.param(
+        {
+            "geom": __geoms["nh3"],
+            "basis": "cc-pvdz",
+            "ddx": {
+                "model": "lpb",
+                "solvent": "water",
+                "radii_set": "uff",
+                "solvent_kappa": 0.11
+            },
+            "ref": -56.1988043810054,
+        },
+        id='nh3-lpb'),
 ])
 def test_ddx_rhf_consistency(inp):
     mol = psi4.geometry(inp["geom"])
@@ -334,6 +407,7 @@ def test_ddx_eri_algorithms(scf_type):
     scf_e = psi4.energy('SCF')
     assert compare_values(ref, scf_e, tol, "Total SCF energy with DDX versus reference data")
 
+
 @pytest.mark.quick
 @uusing("ddx")
 def test_ddx_tdscf_pcmsolver():
@@ -366,17 +440,17 @@ def test_ddx_tdscf_pcmsolver():
         """)
 
     psi4.set_options({
-        "reference":      "uhf",
-        "scf_type":       "pk",
-        "basis":          "def2-SVP",
-        "e_convergence":  10,
-        "maxiter":        50,
-        "tdscf_states":   5,
+        "reference": "uhf",
+        "scf_type": "pk",
+        "basis": "def2-SVP",
+        "e_convergence": 10,
+        "maxiter": 50,
+        "tdscf_states": 5,
         #
-        "ddx":            True,
-        "ddx_model":      "pcm",
-        "ddx_solvent":    "water",
-        "ddx_radii_set":  "uff",   # Make it compatible with pcmsolver
+        "ddx": True,
+        "ddx_model": "pcm",
+        "ddx_solvent": "water",
+        "ddx_radii_set": "uff",  # Make it compatible with pcmsolver
         'ddx_radii_scaling': 1.2,  # Make it compatible with pcmsolver
     })
 
@@ -397,7 +471,16 @@ def test_ddx_tdscf_pcmsolver():
 def test_ddx_tdscf_gaussian():
     # Reference test against Gaussian
     exc_energies = np.array([  # eV
-        9.7131, 11.6679, 11.9693, 14.0604, 16.0886, 20.3350, 33.4852, 34.1673, 35.3953, 35.6058,
+        9.7131,
+        11.6679,
+        11.9693,
+        14.0604,
+        16.0886,
+        20.3350,
+        33.4852,
+        34.1673,
+        35.3953,
+        35.6058,
     ])
     psi4.geometry("""
         O         0.00000000     0.00000000     0.11721877

@@ -65,8 +65,10 @@ def test_Molecule_BFS():
       [18]]  # yapf: disable
 
     qmol = qcdb.Molecule.from_string(iceIh, dtype='xyz')
-    frag, arrs, bmols, bmol = qmol.BFS(
-        seed_atoms=[[3, 16], [21]], return_arrays=True, return_molecule=True, return_molecules=True)
+    frag, arrs, bmols, bmol = qmol.BFS(seed_atoms=[[3, 16], [21]],
+                                       return_arrays=True,
+                                       return_molecule=True,
+                                       return_molecules=True)
 
     assert compare_integers(frag == ref_fragmentation, 1, 'Q: BFS from qcdb.Molecule')
     assert compare_arrays(qmol.geometry(np_out=True)[[1, 14, 19]], arrs[0][3], 4, 'Q: geom back from BFS')

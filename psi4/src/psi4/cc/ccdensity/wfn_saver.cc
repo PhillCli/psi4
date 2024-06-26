@@ -41,12 +41,13 @@
 namespace psi {
 namespace ccdensity {
 
-void scalar_saver_ground(ccenergy::CCEnergyWavefunction& wfn, struct TD_Params *S, const std::string suffix, double val) {
+void scalar_saver_ground(ccenergy::CCEnergyWavefunction &wfn, struct TD_Params *S, const std::string suffix,
+                         double val) {
     auto target_sym = moinfo.sym ^ S->irrep;
     auto idx_num = S->root + static_cast<int>(S->irrep == 0);
     auto total_idx = wfn.total_indices[{idx_num, target_sym}];
     auto trans_irr_lbl = moinfo.labels[moinfo.sym ^ target_sym];
-    std::unordered_set<std::string> names {"CC"};
+    std::unordered_set<std::string> names{"CC"};
     if (params.wfn == "EOM_CCSD") {
         names.insert("CCSD");
     } else if (params.wfn == "EOM_CC2") {
@@ -54,19 +55,23 @@ void scalar_saver_ground(ccenergy::CCEnergyWavefunction& wfn, struct TD_Params *
     } else {
         throw PSIEXCEPTION("Unknown wfn type");
     }
-    for (const auto name: names) {
-        auto varname = name + " ROOT 0 (" + moinfo.labels[moinfo.sym] + ") -> ROOT " + std::to_string(total_idx) + " (" + moinfo.labels[target_sym] + ") " + suffix;
+    for (const auto name : names) {
+        auto varname = name + " ROOT 0 (" + moinfo.labels[moinfo.sym] + ") -> ROOT " + std::to_string(total_idx) +
+                       " (" + moinfo.labels[target_sym] + ") " + suffix;
         wfn.set_scalar_variable(varname, val);
-        varname = name + " ROOT 0 (IN " + moinfo.labels[moinfo.sym] + ") -> ROOT " + std::to_string(idx_num) + " (IN " + moinfo.labels[target_sym] + ") " + suffix;
+        varname = name + " ROOT 0 (IN " + moinfo.labels[moinfo.sym] + ") -> ROOT " + std::to_string(idx_num) + " (IN " +
+                  moinfo.labels[target_sym] + ") " + suffix;
         wfn.set_scalar_variable(varname, val);
         varname = name + " ROOT 0 -> ROOT " + std::to_string(total_idx) + " " + suffix;
         wfn.set_scalar_variable(varname, val);
-        varname = name + " ROOT 0 -> ROOT " + std::to_string(total_idx) + " " + suffix + " - " + trans_irr_lbl + " TRANSITION";
+        varname = name + " ROOT 0 -> ROOT " + std::to_string(total_idx) + " " + suffix + " - " + trans_irr_lbl +
+                  " TRANSITION";
         wfn.set_scalar_variable(varname, val);
     }
 }
 
-void scalar_saver_excited(ccenergy::CCEnergyWavefunction& wfn, struct TD_Params *S, struct TD_Params *U, const std::string suffix, double val) {
+void scalar_saver_excited(ccenergy::CCEnergyWavefunction &wfn, struct TD_Params *S, struct TD_Params *U,
+                          const std::string suffix, double val) {
     auto S_sym = moinfo.sym ^ S->irrep;
     auto U_sym = moinfo.sym ^ U->irrep;
     auto S_idx = S->root + static_cast<int>(S->irrep == 0);
@@ -74,7 +79,7 @@ void scalar_saver_excited(ccenergy::CCEnergyWavefunction& wfn, struct TD_Params 
     auto S_total_idx = wfn.total_indices[{S_idx, S_sym}];
     auto U_total_idx = wfn.total_indices[{U_idx, U_sym}];
     auto trans_irr_lbl = moinfo.labels[S_sym ^ U_sym];
-    std::unordered_set<std::string> names {"CC"};
+    std::unordered_set<std::string> names{"CC"};
     if (params.wfn == "EOM_CCSD") {
         names.insert("CCSD");
     } else if (params.wfn == "EOM_CC2") {
@@ -82,24 +87,29 @@ void scalar_saver_excited(ccenergy::CCEnergyWavefunction& wfn, struct TD_Params 
     } else {
         throw PSIEXCEPTION("Unknown wfn type");
     }
-    for (const auto name: names) {
-        auto varname = name + " ROOT " + std::to_string(S_total_idx) + " (" + moinfo.labels[S_sym] + ") -> ROOT " + std::to_string(U_total_idx) + " (" + moinfo.labels[U_sym] + ") " + suffix;
+    for (const auto name : names) {
+        auto varname = name + " ROOT " + std::to_string(S_total_idx) + " (" + moinfo.labels[S_sym] + ") -> ROOT " +
+                       std::to_string(U_total_idx) + " (" + moinfo.labels[U_sym] + ") " + suffix;
         wfn.set_scalar_variable(varname, val);
-        varname = name + " ROOT " + std::to_string(S_idx) + " (IN " + moinfo.labels[S_sym] + ") -> ROOT " + std::to_string(U_idx) + " (IN " + moinfo.labels[U_sym] + ") " + suffix;
+        varname = name + " ROOT " + std::to_string(S_idx) + " (IN " + moinfo.labels[S_sym] + ") -> ROOT " +
+                  std::to_string(U_idx) + " (IN " + moinfo.labels[U_sym] + ") " + suffix;
         wfn.set_scalar_variable(varname, val);
-        varname = name + " ROOT " + std::to_string(S_total_idx) + " -> ROOT " + std::to_string(U_total_idx) + " " + suffix;
+        varname =
+            name + " ROOT " + std::to_string(S_total_idx) + " -> ROOT " + std::to_string(U_total_idx) + " " + suffix;
         wfn.set_scalar_variable(varname, val);
-        varname = name + " ROOT " + std::to_string(S_total_idx) + " -> ROOT " + std::to_string(U_total_idx) + " " + suffix + " - " + trans_irr_lbl + " TRANSITION";
+        varname = name + " ROOT " + std::to_string(S_total_idx) + " -> ROOT " + std::to_string(U_total_idx) + " " +
+                  suffix + " - " + trans_irr_lbl + " TRANSITION";
         wfn.set_scalar_variable(varname, val);
     }
 }
 
-void density_saver(ccenergy::CCEnergyWavefunction& wfn, struct RHO_Params *S, const std::string suffix, SharedMatrix val) {
+void density_saver(ccenergy::CCEnergyWavefunction &wfn, struct RHO_Params *S, const std::string suffix,
+                   SharedMatrix val) {
     auto target_sym = moinfo.sym ^ S->R_irr;
     auto idx_num = S->R_root + static_cast<int>(S->R_irr == 0);
     auto total_idx = wfn.total_indices[{idx_num, target_sym}];
     auto trans_irr_lbl = moinfo.labels[moinfo.sym ^ target_sym];
-    std::unordered_set<std::string> names {"CC"};
+    std::unordered_set<std::string> names{"CC"};
     if (params.wfn == "EOM_CCSD") {
         names.insert("CCSD");
     } else if (params.wfn == "EOM_CC2") {
@@ -108,7 +118,7 @@ void density_saver(ccenergy::CCEnergyWavefunction& wfn, struct RHO_Params *S, co
         throw PSIEXCEPTION("Unknown wfn type");
     }
 
-    for (const auto name: names) {
+    for (const auto name : names) {
         auto varname = name + " ROOT " + std::to_string(total_idx) + " (" + moinfo.labels[target_sym] + ") " + suffix;
         wfn.density_map_[varname] = val;
         varname = name + " ROOT " + std::to_string(idx_num) + " (IN " + moinfo.labels[target_sym] + ") " + suffix;
@@ -120,5 +130,5 @@ void density_saver(ccenergy::CCEnergyWavefunction& wfn, struct RHO_Params *S, co
     }
 }
 
-}
-}
+}  // namespace ccdensity
+}  // namespace psi

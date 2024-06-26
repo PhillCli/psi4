@@ -149,7 +149,7 @@ void polar(std::shared_ptr<Wavefunction> ref_wfn) {
             tag_tensor << "CC2 DIPOLE POLARIZABILITY TENSOR @ " << omega_nm_rd << "NM";
             auto tensor_mat = std::make_shared<Matrix>(3, 3);
             tensor_mat->set(tensor[i]);
-            ref_wfn->set_array_variable(tag_tensor.str(),tensor_mat);
+            ref_wfn->set_array_variable(tag_tensor.str(), tensor_mat);
         } else if (params.wfn == "CCSD") {
             std::stringstream tag;
             std::stringstream tag_tensor;
@@ -158,7 +158,7 @@ void polar(std::shared_ptr<Wavefunction> ref_wfn) {
             tag_tensor << "CCSD DIPOLE POLARIZABILITY TENSOR @ " << omega_nm_rd << "NM";
             auto tensor_mat = std::make_shared<Matrix>(3, 3);
             tensor_mat->set(tensor[i]);
-            ref_wfn->set_array_variable(tag_tensor.str(),tensor_mat);
+            ref_wfn->set_array_variable(tag_tensor.str(), tensor_mat);
         }
     }
 

@@ -19,9 +19,8 @@ TIA = amps['tIA'].to_array()
 tau_IjAb = TIjAb + np.einsum("ia,jb->ijab", TIA, TIA)
 
 mints = psi4.core.MintsHelper(wfn.basisset())
-D = mints.mo_eri(
-    wfn.Ca_subset("AO", "OCC"), wfn.Ca_subset("AO", "VIR"), wfn.Ca_subset("AO", "OCC"),
-    wfn.Ca_subset("AO", "VIR")).to_array()
+D = mints.mo_eri(wfn.Ca_subset("AO", "OCC"), wfn.Ca_subset("AO", "VIR"), wfn.Ca_subset("AO", "OCC"),
+                 wfn.Ca_subset("AO", "VIR")).to_array()
 D = D.swapaxes(1, 2)
 
 RHF_ccsd_corr_e = 2 * np.einsum("ijab,ijab->", tau_IjAb, D) - np.einsum("ijab,ijba->", tau_IjAb, D)

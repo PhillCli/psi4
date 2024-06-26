@@ -44,8 +44,8 @@ IWL::~IWL() { close(); }
 
 void IWL::close() {
     if (psio_->open_check(itap_)) psio_->close(itap_, keep_);
-    if (labels_) delete[](labels_);
-    if (values_) delete[](values_);
+    if (labels_) delete[] (labels_);
+    if (values_) delete[] (values_);
     labels_ = nullptr;
     values_ = nullptr;
 }
@@ -64,4 +64,4 @@ void PSI_API iwl_buf_close(struct iwlbuf *Buf, int keep) {
     free(Buf->labels);
     free(Buf->values);
 }
-}
+}  // namespace psi

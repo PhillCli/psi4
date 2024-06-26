@@ -48,7 +48,3 @@ expected_properties = {
 }
 
 json_ret = psi4.schema_wrapper.run_qcschema(json_data)
-
-
-
-

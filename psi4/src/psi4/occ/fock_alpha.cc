@@ -637,5 +637,5 @@ void OCCWave::fock_alpha() {
     }  // end if (reference_ == "UNRESTRICTED")
 
 }  // end of code
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

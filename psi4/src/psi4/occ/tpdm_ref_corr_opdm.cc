@@ -581,5 +581,5 @@ void OCCWave::tpdm_corr_opdm() {
     }  // end if (reference_ == "UNRESTRICTED")
     psio_->close(PSIF_OCC_DENSITY, 1);
 }
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

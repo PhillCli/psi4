@@ -231,5 +231,5 @@ double Normalize(long int o, long int v, double* t1, double* t2, int cepa_level)
 
     return 1.0 / nrm;
 }
-}
+}  // namespace fnocc
 }  // end of namespace psi

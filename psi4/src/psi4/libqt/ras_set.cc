@@ -323,7 +323,7 @@ int ras_set3(int nirreps, int nmo, int *orbspi, int *docc, int *socc, int *frdoc
                     docc[irrep] + socc[irrep])
                     outfile->Printf("ras_set3():Warning:Occupied electrons beyond ACTIVE orbs!\n");
             }
-        }       // end case where we found ACTIVE keyword
+        }  // end case where we found ACTIVE keyword
         else {  // we didn't find ACTIVE keyword, so we need to determine RAS 2
             for (irrep = 0; irrep < nirreps; irrep++) {
                 if (ras_type == 1) ras_opi[1][irrep] = 0;

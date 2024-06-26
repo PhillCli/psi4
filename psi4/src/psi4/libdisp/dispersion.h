@@ -30,11 +30,11 @@
 #define dispersion_h
 
 /**********************************************************
-* dispersion.h: declarations -D(1-3) for KS-DFT
-* Robert Parrish, robparrish@gmail.com
-* 09/01/2010
-*
-***********************************************************/
+ * dispersion.h: declarations -D(1-3) for KS-DFT
+ * Robert Parrish, robparrish@gmail.com
+ * 09/01/2010
+ *
+ ***********************************************************/
 #include "psi4/psi4-dec.h"
 #include <string>
 
@@ -76,7 +76,7 @@ class Dispersion {
     Dispersion();
     virtual ~Dispersion();
 
-    static std::shared_ptr<Dispersion> build(const std::string & type, double s6 = 0.0, double alpha6 = 0.0,
+    static std::shared_ptr<Dispersion> build(const std::string &type, double s6 = 0.0, double alpha6 = 0.0,
                                              double sr6 = 0.0);
 
     std::string name() const { return name_; }
@@ -115,6 +115,6 @@ class Dispersion {
     virtual void print(std::string out_fname = "outfile", int level = 1) const;
     void py_print() const { print("outfile", 1); }
 };
-}
+}  // namespace psi
 
 #endif

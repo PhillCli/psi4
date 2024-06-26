@@ -27,11 +27,11 @@
  */
 
 /**
-  * Frozen natural orbitals
-  * Eugene DePrince
-  * April 2013
-  *
-  */
+ * Frozen natural orbitals
+ * Eugene DePrince
+ * April 2013
+ *
+ */
 
 #include "psi4/psi4-dec.h"
 #include "psi4/psifiles.h"
@@ -756,7 +756,7 @@ void DFFrozenNO::ComputeNaturalOrbitals() {
     double emp2_os = 0.0;
     double emp2_ss = 0.0;
     for (long int i = 0; i < o; i++) {
-        double di = - Fo->get(i);
+        double di = -Fo->get(i);
         for (long int j = 0; j < o; j++) {
             double dij = di - Fo->get(j);
             double pair_os = 0;
@@ -769,8 +769,7 @@ void DFFrozenNO::ComputeNaturalOrbitals() {
                     double dijab = dija + Fv->get(b);
                     amps1[abij] = -amps2[iajb] / dijab;
                     pair_os -= amps2[iajb] * amps2[iajb] / dijab;
-                    pair_ss -=
-                        amps2[iajb] * (amps2[iajb] - amps2[j * o * v * v + a * o * v + i * v + b]) / dijab;
+                    pair_ss -= amps2[iajb] * (amps2[iajb] - amps2[j * o * v * v + a * o * v + i * v + b]) / dijab;
                 }
             }
             emp2_os += pair_os;
@@ -1066,5 +1065,5 @@ void DFFrozenNO::BuildFock(long int nQ, double* Qso, double* F) {
     free(temp2);
     free(temp3);
 }
-}
-}  // end of namespaces
+}  // namespace fnocc
+}  // namespace psi

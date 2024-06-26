@@ -8,13 +8,10 @@ from pathlib import Path
 import json
 from addons import using
 
-
 pytestmark = [pytest.mark.psi, pytest.mark.api]
-
 
 with open(Path(__file__).parent / "test_adcc/adcc_reference_data.json") as f:
     reference_data = json.load(f)
-
 
 pytestcases = []
 for case in reference_data:
@@ -24,13 +21,11 @@ for case in reference_data:
         marks.append(pytest.mark.quick)
     # for easier manual test selection
     casename = "_".join([
-        config['molname'], config['basis'],
-        config['method'].replace("(", "").replace(")", ""),
-        config['kind'], str(config['n_states'])
+        config['molname'], config['basis'], config['method'].replace("(", "").replace(")", ""), config['kind'],
+        str(config['n_states'])
     ])
-    pytestcases.append(
-        pytest.param(case, marks=marks, id=casename)
-    )
+    pytestcases.append(pytest.param(case, marks=marks, id=casename))
+
 
 @pytest.mark.parametrize('case', pytestcases)
 def test_adcc_reference_data(case):

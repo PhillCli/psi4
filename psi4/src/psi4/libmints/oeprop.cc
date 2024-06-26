@@ -815,15 +815,21 @@ void OEProp::compute() {
     }
     // print_header();  // Not by default, happens too often -CDS
     if (tasks_.count("ESP_AT_NUCLEI")) compute_esp_at_nuclei();
-    if (tasks_.count("QUADRUPOLE")) compute_multipoles(2, false);
-    else if (tasks_.count("DIPOLE")) compute_multipoles(1, false);
-    if (tasks_.count("TRANSITION_QUADRUPOLE")) compute_multipoles(2, true);
-    else if (tasks_.count("TRANSITION_DIPOLE")) compute_multipoles(1, true);
+    if (tasks_.count("QUADRUPOLE"))
+        compute_multipoles(2, false);
+    else if (tasks_.count("DIPOLE"))
+        compute_multipoles(1, false);
+    if (tasks_.count("TRANSITION_QUADRUPOLE"))
+        compute_multipoles(2, true);
+    else if (tasks_.count("TRANSITION_DIPOLE"))
+        compute_multipoles(1, true);
     if (tasks_.count("MO_EXTENTS")) compute_mo_extents();
     if (tasks_.count("MULLIKEN_CHARGES")) compute_mulliken_charges();
     if (tasks_.count("LOWDIN_CHARGES")) compute_lowdin_charges();
-    if (tasks_.count("MBIS_VOLUME_RATIOS")) compute_mbis_multipoles(true);
-    else if (tasks_.count("MBIS_CHARGES")) compute_mbis_multipoles(false);
+    if (tasks_.count("MBIS_VOLUME_RATIOS"))
+        compute_mbis_multipoles(true);
+    else if (tasks_.count("MBIS_CHARGES"))
+        compute_mbis_multipoles(false);
     if (tasks_.count("MAYER_INDICES")) compute_mayer_indices();
     if (tasks_.count("WIBERG_LOWDIN_INDICES")) compute_wiberg_lowdin_indices();
     if (tasks_.count("NO_OCCUPATIONS")) compute_no_occupations();
@@ -838,7 +844,6 @@ void OEProp::compute_multipoles(int order, bool transition) {
         int component = 0;
         int ncomponents = (l + 1) * (l + 2) / 2;
         auto multipole_array = std::make_shared<Matrix>(1, ncomponents);
-
 
         std::string mtdname;
         if (l == 1) {
@@ -881,7 +886,7 @@ void OEProp::compute_multipoles(int order, bool transition) {
             names = names_;
         }
 
-        for (auto name: names) {
+        for (auto name : names) {
             // TODO: Use fmt strings when Psi uses C++20.
             name.replace(name.find("{}"), sizeof("{}") - 1, mtdname);
             Process::environment.arrays[name] = multipole_array;
@@ -946,7 +951,7 @@ MultipolePropCalc::MultipoleOutputType MultipolePropCalc::compute_multipoles(int
         outfile->Printf(" ------------------------------------------------------------------------------------\n\n");
     }
     double convfac = pc_dipmom_au2debye;
-    int address = 0; // The index of the desired component in the mp_ints object, which covers _all_ orders.
+    int address = 0;  // The index of the desired component in the mp_ints object, which covers _all_ orders.
     for (int l = 1; l <= order; ++l) {
         int ncomponents = (l + 1) * (l + 2) / 2;
         std::stringstream ss, tt;
@@ -955,7 +960,8 @@ MultipolePropCalc::MultipoleOutputType MultipolePropCalc::compute_multipoles(int
         if (l > 2) ss << "^" << l - 1;
         std::string exp = ss.str();
         if (print_output) {
-            outfile->Printf(" L = %d.  Multiply by %.10f to convert [e a0%s] to [Debye%s]\n", l, convfac, tt.str().c_str(), exp.c_str());
+            outfile->Printf(" L = %d.  Multiply by %.10f to convert [e a0%s] to [Debye%s]\n", l, convfac,
+                            tt.str().c_str(), exp.c_str());
         }
         for (int component = 0; component < ncomponents; ++component) {
             auto mpmat = mp_ints[address];
@@ -972,10 +978,11 @@ MultipolePropCalc::MultipoleOutputType MultipolePropCalc::compute_multipoles(int
         }
         if (print_output) {
             // For historical reasons, we print dipole magnitudes now.
-            // Printing magnitudes of higher-order multipole tensors would be nice, but we don't have the C-side machinery
-            // to convert our vector of unique multipole components into a container of all components.
+            // Printing magnitudes of higher-order multipole tensors would be nice, but we don't have the C-side
+            // machinery to convert our vector of unique multipole components into a container of all components.
             if (l == 1) {
-                double tot = sqrt(pow(std::get<3>((*mot)[0]), 2) + pow(std::get<3>((*mot)[1]), 2) + pow(std::get<3>((*mot)[2]), 2));
+                double tot = sqrt(pow(std::get<3>((*mot)[0]), 2) + pow(std::get<3>((*mot)[1]), 2) +
+                                  pow(std::get<3>((*mot)[2]), 2));
                 outfile->Printf(" %-20s: %18s   %18s   %18.7f\n", "Magnitude", "", "", tot);
             }
             // For historical reasons, we print traceless quadrupole magnitudes now.
@@ -985,9 +992,12 @@ MultipolePropCalc::MultipoleOutputType MultipolePropCalc::compute_multipoles(int
                 double tr_n = (std::get<1>((*mot)[3]) + std::get<1>((*mot)[6]) + std::get<1>((*mot)[8])) / 3.0;
                 double tr_e = (std::get<2>((*mot)[3]) + std::get<2>((*mot)[6]) + std::get<2>((*mot)[8])) / 3.0;
                 double tr_t = (std::get<3>((*mot)[3]) + std::get<3>((*mot)[6]) + std::get<3>((*mot)[8])) / 3.0;
-                outfile->Printf(" %-20s: %18.7f   %18.7f   %18.7f\n", "Traceless XX", std::get<2>((*mot)[3]) - tr_e, std::get<1>((*mot)[3]) - tr_n, std::get<3>((*mot)[3]) - tr_t);
-                outfile->Printf(" %-20s: %18.7f   %18.7f   %18.7f\n", "Traceless YY", std::get<2>((*mot)[6]) - tr_e, std::get<1>((*mot)[6]) - tr_n, std::get<3>((*mot)[6]) - tr_t);
-                outfile->Printf(" %-20s: %18.7f   %18.7f   %18.7f\n", "Traceless ZZ", std::get<2>((*mot)[8]) - tr_e, std::get<1>((*mot)[8]) - tr_n, std::get<3>((*mot)[8]) - tr_t);
+                outfile->Printf(" %-20s: %18.7f   %18.7f   %18.7f\n", "Traceless XX", std::get<2>((*mot)[3]) - tr_e,
+                                std::get<1>((*mot)[3]) - tr_n, std::get<3>((*mot)[3]) - tr_t);
+                outfile->Printf(" %-20s: %18.7f   %18.7f   %18.7f\n", "Traceless YY", std::get<2>((*mot)[6]) - tr_e,
+                                std::get<1>((*mot)[6]) - tr_n, std::get<3>((*mot)[6]) - tr_t);
+                outfile->Printf(" %-20s: %18.7f   %18.7f   %18.7f\n", "Traceless ZZ", std::get<2>((*mot)[8]) - tr_e,
+                                std::get<1>((*mot)[8]) - tr_n, std::get<3>((*mot)[8]) - tr_t);
             }
             outfile->Printf("\n");
         }
@@ -1119,7 +1129,8 @@ SharedVector ESPPropCalc::compute_esp_over_grid_in_memory(SharedMatrix input_gri
 
     for (int thread = 0; thread < nthreads; thread++) {
         VtempT.push_back(std::make_shared<Matrix>("ints", nbf, nbf));
-        VintT.push_back(std::shared_ptr<ElectrostaticInt>(static_cast<ElectrostaticInt*>(integral_->electrostatic().release())));
+        VintT.push_back(
+            std::shared_ptr<ElectrostaticInt>(static_cast<ElectrostaticInt*>(integral_->electrostatic().release())));
     }
 
 #ifdef _OPENMP
@@ -1128,7 +1139,7 @@ SharedVector ESPPropCalc::compute_esp_over_grid_in_memory(SharedMatrix input_gri
     for (int i = 0; i < number_of_grid_points; ++i) {
         Vector3 origin(input_grid->get(i, 0), input_grid->get(i, 1), input_grid->get(i, 2));
         if (convert) origin /= pc_bohr2angstroms;
-         
+
         // Thread info
         int thread = 0;
 #ifdef _OPENMP
@@ -1136,8 +1147,8 @@ SharedVector ESPPropCalc::compute_esp_over_grid_in_memory(SharedMatrix input_gri
 #endif
         // => Electronic part <= //
         VtempT[thread]->zero();
-        VintT[thread]->compute(VtempT[thread],origin);
-        
+        VintT[thread]->compute(VtempT[thread], origin);
+
         double Velec = Dtot->vector_dot(VtempT[thread]);
 
         // => Nuclear part <= //
@@ -1172,7 +1183,8 @@ void ESPPropCalc::compute_field_over_grid(bool print_output) {
         Dtot->add(wfn_->matrix_subset_helper(Db_so_, Cb_so_, "AO", "D beta"));
     }
 
-    std::shared_ptr<ElectricFieldInt> field_ints(dynamic_cast<ElectricFieldInt*>(wfn_->integral()->electric_field().release()));
+    std::shared_ptr<ElectricFieldInt> field_ints(
+        dynamic_cast<ElectricFieldInt*>(wfn_->integral()->electric_field().release()));
 
     int nbf = basisset_->nbf();
     std::vector<SharedMatrix> intmats;
@@ -1223,7 +1235,8 @@ SharedMatrix ESPPropCalc::compute_field_over_grid_in_memory(SharedMatrix input_g
         Dtot->add(wfn_->Db_subset("AO"));
     }
 
-    std::shared_ptr<ElectricFieldInt> field_ints(dynamic_cast<ElectricFieldInt*>(wfn_->integral()->electric_field().release()));
+    std::shared_ptr<ElectricFieldInt> field_ints(
+        dynamic_cast<ElectricFieldInt*>(wfn_->integral()->electric_field().release()));
 
     // Scale the coordinates if needed
     auto coords = input_grid;

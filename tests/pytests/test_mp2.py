@@ -32,24 +32,38 @@ for mp2type in ["df", "conv"]:
     _ref_h2o_ccpvdz[mp2type]["SCF TOTAL ENERGY"] = _ref_h2o_ccpvdz[mp2type]["HF TOTAL ENERGY"]
     _ref_h2o_ccpvdz[mp2type]["CURRENT REFERENCE ENERGY"] = _ref_h2o_ccpvdz[mp2type]["HF TOTAL ENERGY"]
     _ref_h2o_ccpvdz[mp2type]["5050SCS-MP2 CORRELATION ENERGY"] = 0.5 * (
-        _ref_h2o_ccpvdz[mp2type]["MP2 SAME-SPIN CORRELATION ENERGY"]
-        + _ref_h2o_ccpvdz[mp2type]["MP2 OPPOSITE-SPIN CORRELATION ENERGY"]
-    )
+        _ref_h2o_ccpvdz[mp2type]["MP2 SAME-SPIN CORRELATION ENERGY"] +
+        _ref_h2o_ccpvdz[mp2type]["MP2 OPPOSITE-SPIN CORRELATION ENERGY"])
     _ref_h2o_ccpvdz[mp2type]["5050SCS-MP2 TOTAL ENERGY"] = (
-        _ref_h2o_ccpvdz[mp2type]["5050SCS-MP2 CORRELATION ENERGY"] + _ref_h2o_ccpvdz[mp2type]["HF TOTAL ENERGY"]
-    )
+        _ref_h2o_ccpvdz[mp2type]["5050SCS-MP2 CORRELATION ENERGY"] + _ref_h2o_ccpvdz[mp2type]["HF TOTAL ENERGY"])
 
 
 @pytest.mark.parametrize(
     "inp",
     [
-        pytest.param({"name": "Mp2", "custom": "SCS-MP2", "options": {"mp2_type": "df"}}, id="mp2 (df)"),
-        pytest.param({"name": "Mp2", "custom": "MP2", "options": {"mp2_type": "conv"}}, id="mp2 (conv)"),
+        pytest.param({
+            "name": "Mp2",
+            "custom": "SCS-MP2",
+            "options": {
+                "mp2_type": "df"
+            }
+        }, id="mp2 (df)"),
+        pytest.param({
+            "name": "Mp2",
+            "custom": "MP2",
+            "options": {
+                "mp2_type": "conv"
+            }
+        }, id="mp2 (conv)"),
         pytest.param(
             {
                 "name": "Mp2",
                 "custom": "SCS-MP2",
-                "options": {"mp2_type": "df", "mp2_os_scale": 1.2, "mp2_ss_scale": 0.33333333},
+                "options": {
+                    "mp2_type": "df",
+                    "mp2_os_scale": 1.2,
+                    "mp2_ss_scale": 0.33333333
+                },
             },
             id="explicit scs mp2 (df)",
         ),
@@ -57,7 +71,11 @@ for mp2type in ["df", "conv"]:
             {
                 "name": "Mp2",
                 "custom": "SCS-MP2",
-                "options": {"mp2_type": "conv", "os_scale": 1.2, "ss_scale": 0.33333333},
+                "options": {
+                    "mp2_type": "conv",
+                    "os_scale": 1.2,
+                    "ss_scale": 0.33333333
+                },
             },
             id="explicit scs mp2 (conv)",
         ),
@@ -65,12 +83,24 @@ for mp2type in ["df", "conv"]:
             {
                 "name": "Mp2",
                 "custom": "5050SCS-MP2",
-                "options": {"mp2_type": "df", "mp2_os_scale": 0.5, "mp2_ss_scale": 0.5},
+                "options": {
+                    "mp2_type": "df",
+                    "mp2_os_scale": 0.5,
+                    "mp2_ss_scale": 0.5
+                },
             },
             id="user-def scs mp2 (df)",
         ),
         pytest.param(
-            {"name": "Mp2", "custom": "5050SCS-MP2", "options": {"mp2_type": "conv", "os_scale": 0.5, "ss_scale": 0.5}},
+            {
+                "name": "Mp2",
+                "custom": "5050SCS-MP2",
+                "options": {
+                    "mp2_type": "conv",
+                    "os_scale": 0.5,
+                    "ss_scale": 0.5
+                }
+            },
             id="user-def scs mp2 (conv)",
         ),
     ],
@@ -78,13 +108,11 @@ for mp2type in ["df", "conv"]:
 def test_scsmp2(inp):
     """Formerly known as dfmp2-4"""
 
-    h2o = psi4.geometry(
-        """
+    h2o = psi4.geometry("""
         O
         H 1 1.0
         H 1 1.0 2 90.0
-    """
-    )
+    """)
 
     psi4.set_options({"basis": "cc-pvdz"})
     psi4.set_options(inp["options"])
@@ -101,23 +129,22 @@ def test_scsmp2(inp):
 
     for obj in [psi4.core, wfn]:
         for pv in [
-            "HF TOTAL ENERGY",
-            "SCF TOTAL ENERGY",
-            "MP2 SAME-SPIN CORRELATION ENERGY",
-            "MP2 OPPOSITE-SPIN CORRELATION ENERGY",
-            "MP2 CORRELATION ENERGY",
-            "MP2 TOTAL ENERGY",
-            "SCS-MP2 CORRELATION ENERGY",
-            "SCS-MP2 TOTAL ENERGY",
-            "CURRENT REFERENCE ENERGY",
+                "HF TOTAL ENERGY",
+                "SCF TOTAL ENERGY",
+                "MP2 SAME-SPIN CORRELATION ENERGY",
+                "MP2 OPPOSITE-SPIN CORRELATION ENERGY",
+                "MP2 CORRELATION ENERGY",
+                "MP2 TOTAL ENERGY",
+                "SCS-MP2 CORRELATION ENERGY",
+                "SCS-MP2 TOTAL ENERGY",
+                "CURRENT REFERENCE ENERGY",
         ]:
 
             assert compare_values(ref_block[pv], obj.variable(pv), 5, pv)
 
         if any((x in inp["options"] for x in ["os_scale", "ss_scale", "mp2_os_scale", "mp2_ss_scale"])):
-            assert compare_values(
-                ref_custom_corl, obj.variable("CUSTOM SCS-MP2 CORRELATION ENERGY"), 5, "custom scsmp2 corl"
-            )
+            assert compare_values(ref_custom_corl, obj.variable("CUSTOM SCS-MP2 CORRELATION ENERGY"), 5,
+                                  "custom scsmp2 corl")
             assert compare_values(ref_custom_tot, obj.variable("CUSTOM SCS-MP2 TOTAL ENERGY"), 5, "custom scsmp2 ")
 
         assert compare_values(ref_corl, obj.variable("CURRENT CORRELATION ENERGY"), 5, "current corl")

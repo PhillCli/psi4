@@ -8,8 +8,7 @@ pytestmark = [pytest.mark.psi, pytest.mark.api, pytest.mark.quick]
 def test_dft_atomic_blocking():
     """calculate XC energy per atom with psi4numpy"""
 
-    mol = psi4.geometry(
-        """
+    mol = psi4.geometry("""
     0 1
     O 0.000000000000  0.000000000000 -0.068516219310
     H 0.000000000000 -0.790689573744  0.543701060724
@@ -17,18 +16,15 @@ def test_dft_atomic_blocking():
     no_com
     no_reorient
     symmetry c1
-    """
-    )
-    psi4.set_options(
-        {
-            "BASIS": "def2-SVP",
-            "DFT_BLOCK_SCHEME": "ATOMIC",
-            "DFT_SPHERICAL_POINTS": 590,
-            "DFT_RADIAL_POINTS": 85,
-            "DFT_REMOVE_DISTANT_POINTS": 0,
-            "D_convergence": 1e-8,
-        }
-    )
+    """)
+    psi4.set_options({
+        "BASIS": "def2-SVP",
+        "DFT_BLOCK_SCHEME": "ATOMIC",
+        "DFT_SPHERICAL_POINTS": 590,
+        "DFT_RADIAL_POINTS": 85,
+        "DFT_REMOVE_DISTANT_POINTS": 0,
+        "D_convergence": 1e-8,
+    })
 
     svwn_w, wfn = psi4.energy("SVWN", return_wfn=True)
     xc_ref = -8.9396369264084168  # Default Octree blocking
@@ -58,7 +54,7 @@ def test_dft_atomic_blocking():
             w = np.array(block.w())
 
             # Compute phi!
-            phi = np.array(points_func.basis_values()["PHI"])[:npoints, : lpos.shape[0]]
+            phi = np.array(points_func.basis_values()["PHI"])[:npoints, :lpos.shape[0]]
 
             # Build a local slice of D
             lD = D[(lpos[:, None], lpos)]
@@ -89,8 +85,7 @@ def test_dft_block_schemes(scheme):
     """all DFT_BLOCK_SCHEME should give same results and number
     of grid points. Water dimer with ghost atoms"""
 
-    mol = psi4.geometry(
-        """
+    mol = psi4.geometry("""
     0 1
     O           -1.490196515110    -0.043256842172     0.000000000000
     H           -1.845932568294     0.844902886698     0.000000000000
@@ -101,17 +96,14 @@ def test_dft_block_schemes(scheme):
     no_com
     no_reorient
     symmetry c1
-    """
-    )
-    psi4.set_options(
-        {
-            "BASIS": "def2-SVPD",
-            "DFT_SPHERICAL_POINTS": 590,
-            "DFT_RADIAL_POINTS": 85,
-            "D_convergence": 1e-8,
-            "DFT_WEIGHTS_TOLERANCE": -1.0,
-        }
-    )
+    """)
+    psi4.set_options({
+        "BASIS": "def2-SVPD",
+        "DFT_SPHERICAL_POINTS": 590,
+        "DFT_RADIAL_POINTS": 85,
+        "D_convergence": 1e-8,
+        "DFT_WEIGHTS_TOLERANCE": -1.0,
+    })
     ref = {"XC GRID TOTAL POINTS": 300900, "DFT XC ENERGY": -9.218561399189895}
     psi4.set_options({"DFT_BLOCK_SCHEME": scheme})
     e, wfn = psi4.energy("pbe/def2-SVPD", return_wfn=True)
@@ -125,8 +117,7 @@ def test_dft_block_scheme_distantpoints():
     """Test removal of distant grid points. all DFT_BLOCK_SCHEME should give same results and number
     of grid points."""
 
-    mol = psi4.geometry(
-        """
+    mol = psi4.geometry("""
     0 1
     O  -1.551007  -0.114520   0.000000
     H  -1.934259   0.762503   0.000000
@@ -134,22 +125,19 @@ def test_dft_block_scheme_distantpoints():
     no_com
     no_reorient
     symmetry c1
-    """
-    )
-    psi4.set_options(
-        {
-            "BASIS": "sto-3g",
-            "maxiter": 1,
-            "FAIL_ON_MAXITER": False,
-            "DFT_PRUNING_SCHEME": "ROBUST",
-            "DFT_WEIGHTS_TOLERANCE": -1.0,
-        }
-    )
+    """)
+    psi4.set_options({
+        "BASIS": "sto-3g",
+        "maxiter": 1,
+        "FAIL_ON_MAXITER": False,
+        "DFT_PRUNING_SCHEME": "ROBUST",
+        "DFT_WEIGHTS_TOLERANCE": -1.0,
+    })
     ref = {"True": 45929, "False": 46890}
-    YESNO = [True,False]
+    YESNO = [True, False]
     SCHEMES = ["OCTREE", "NAIVE", "ATOMIC"]
     for YN in YESNO:
-        psi4.set_options({"DFT_REMOVE_DISTANT_POINTS":YN})
+        psi4.set_options({"DFT_REMOVE_DISTANT_POINTS": YN})
         for S in SCHEMES:
             psi4.set_options({"DFT_BLOCK_SCHEME": S})
             e, wfn = psi4.energy("pbe", return_wfn=True)

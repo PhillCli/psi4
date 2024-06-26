@@ -37,7 +37,6 @@ path = psi4.core.get_datadir()
 sys.path.append('%s/fsapt' % path)
 from fsapt import *  # isort:skip
 
-
 # => Driver Code <= #
 
 if __name__ == '__main__':
@@ -66,9 +65,9 @@ if __name__ == '__main__':
     print('  ==> F-ISAPT: Links by Charge <==\n')
     stuffA = compute_fsapt(dirA, False)
     print('   => Full Analysis <=\n')
-    print_order2(stuffA['order2'], stuffA['fragkeys']) 
+    print_order2(stuffA['order2'], stuffA['fragkeys'])
     print('   => Reduced Analysis <=\n')
-    print_order2(stuffA['order2r'], stuffA['fragkeysr']) 
+    print_order2(stuffA['order2r'], stuffA['fragkeysr'])
     fh, sys.stdout = sys.stdout, fh
     fh.close()
 
@@ -77,9 +76,9 @@ if __name__ == '__main__':
     print('  ==> F-ISAPT: Links by Charge <==\n')
     stuffB = compute_fsapt(dirB, False)
     print('   => Full Analysis <=\n')
-    print_order2(stuffB['order2'], stuffB['fragkeys']) 
+    print_order2(stuffB['order2'], stuffB['fragkeys'])
     print('   => Reduced Analysis <=\n')
-    print_order2(stuffB['order2r'], stuffB['fragkeysr']) 
+    print_order2(stuffB['order2r'], stuffB['fragkeysr'])
     fh, sys.stdout = sys.stdout, fh
     fh.close()
 
@@ -88,7 +87,7 @@ if __name__ == '__main__':
     print('  ==> F-ISAPT: Links by Charge <==\n')
     order2D = diff_order2(stuffA['order2r'], stuffB['order2r'])
     print('   => Reduced Analysis <=\n')
-    print_order2(order2D, stuffB['fragkeysr']) 
+    print_order2(order2D, stuffB['fragkeysr'])
     fh, sys.stdout = sys.stdout, fh
     fh.close()
 
@@ -97,9 +96,9 @@ if __name__ == '__main__':
     print('  ==> F-ISAPT: Links 50-50 <==\n')
     stuffA = compute_fsapt(dirA, True)
     print('   => Full Analysis <=\n')
-    print_order2(stuffA['order2'], stuffA['fragkeys']) 
+    print_order2(stuffA['order2'], stuffA['fragkeys'])
     print('   => Reduced Analysis <=\n')
-    print_order2(stuffA['order2r'], stuffA['fragkeysr']) 
+    print_order2(stuffA['order2r'], stuffA['fragkeysr'])
     fh, sys.stdout = sys.stdout, fh
     fh.close()
 
@@ -108,9 +107,9 @@ if __name__ == '__main__':
     print('  ==> F-ISAPT: Links 50-50 <==\n')
     stuffB = compute_fsapt(dirB, True)
     print('   => Full Analysis <=\n')
-    print_order2(stuffB['order2'], stuffB['fragkeys']) 
+    print_order2(stuffB['order2'], stuffB['fragkeys'])
     print('   => Reduced Analysis <=\n')
-    print_order2(stuffB['order2r'], stuffB['fragkeysr']) 
+    print_order2(stuffB['order2r'], stuffB['fragkeysr'])
     fh, sys.stdout = sys.stdout, fh
     fh.close()
 
@@ -119,7 +118,7 @@ if __name__ == '__main__':
     print('  ==> F-ISAPT: Links 50-50 <==\n')
     order2D = diff_order2(stuffA['order2r'], stuffB['order2r'])
     print('   => Reduced Analysis <=\n')
-    print_order2(order2D, stuffB['fragkeysr']) 
+    print_order2(order2D, stuffB['fragkeysr'])
     fh, sys.stdout = sys.stdout, fh
     fh.close()
 
@@ -133,6 +132,3 @@ if __name__ == '__main__':
 
     # Using A geometry
     print_order1(dirD, order2D, pdbA, stuffA['frags'])
-
-
-

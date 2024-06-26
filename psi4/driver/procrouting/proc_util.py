@@ -208,7 +208,8 @@ def print_ci_results(ciwfn, rname, scf_e, ci_e, print_opdm_no=False):
     dvec.close_io_files(True)
 
 
-def prepare_sapt_molecule(sapt_dimer: core.Molecule, sapt_basis: str) -> Tuple[core.Molecule, core.Molecule, core.Molecule]:
+def prepare_sapt_molecule(sapt_dimer: core.Molecule,
+                          sapt_basis: str) -> Tuple[core.Molecule, core.Molecule, core.Molecule]:
     """
     Prepares a dimer molecule for a SAPT computation. Returns the dimer, monomerA, and monomerB.
     """
@@ -281,7 +282,10 @@ def sapt_empirical_dispersion(name, dimer_wfn, **kwargs):
     save_pair = (saptd_name == "FISAPT0")
 
     from .proc import build_functional_and_disp
-    _, _disp_functor = build_functional_and_disp('hf-' + disp_name, restricted=True, save_pairwise_disp=save_pair, **kwargs)
+    _, _disp_functor = build_functional_and_disp('hf-' + disp_name,
+                                                 restricted=True,
+                                                 save_pairwise_disp=save_pair,
+                                                 **kwargs)
 
     ## Dimer dispersion
     dimer_disp_energy = _disp_functor.compute_energy(dimer_wfn.molecule(), dimer_wfn)
@@ -333,7 +337,8 @@ def sapt_empirical_dispersion(name, dimer_wfn, **kwargs):
         pw_disp = dimer_wfn.variable("PAIRWISE DISPERSION CORRECTION ANALYSIS")
         # fisapt-d was designed with classic dftd3 pairwise that was too large by a factor of 2 (satisfied sum(pairwise) = 2 * two-body-dispersion-energy)
         # by QCEngine v0.26.0, dftd3 interface corrected to match s-dftd3 and dftd4, so file dropped here changes, and fsapt.py script compensates
-        core.print_out("\n  Warning: Use the `Empirical_Disp.dat` file only with `fsapt.py` from Psi4 v1.7.0 or later.\n")
+        core.print_out(
+            "\n  Warning: Use the `Empirical_Disp.dat` file only with `fsapt.py` from Psi4 v1.7.0 or later.\n")
         pw_disp.name = 'Empirical_Disp'
         filepath = core.get_option("FISAPT", "FISAPT_FSAPT_FILEPATH")
         fisapt_proc._drop(pw_disp, filepath)

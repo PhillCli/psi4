@@ -1206,8 +1206,8 @@ void DFOCC::ccsd_Wabef2T2AA() {
             int ij = ij_idxAA->get(i, j);
             int ji = ij_idxAA->get(j, i);
             for (int a = 0; a < navirA; ++a) {
-                //int ia = ia_idxAA->get(i, a);
-                //int ja = ia_idxAA->get(j, a);
+                // int ia = ia_idxAA->get(i, a);
+                // int ja = ia_idxAA->get(j, a);
                 for (int b = 0; b <= a; ++b) {
                     double perm = (a == b ? 1.0 : 2.0);
                     int ab2 = index2(a, b);
@@ -1516,7 +1516,7 @@ void DFOCC::ccsd_Wabef2T2AB() {
     // malloc
     T = std::make_shared<Tensor2d>("T[A] <b|Ij>", navirB, naoccA * naoccB);
     K = std::make_shared<Tensor2d>("B[A] <E|Q>", navirA, nQ);
-    //J = std::make_shared<Tensor2d>("J[A] <E|bf>", navirA, navirB * navirB);
+    // J = std::make_shared<Tensor2d>("J[A] <E|bf>", navirA, navirB * navirB);
     J = std::make_shared<Tensor2d>("J[A] <E|b>=f>", navirA, ntri_abBB);
     I = std::make_shared<Tensor2d>("I[A] <b|Ef>", navirB, navirA * navirB);
     J2 = std::make_shared<Tensor2d>("J[A] <E|mf>", navirA, naoccB * navirB);
@@ -1528,9 +1528,8 @@ void DFOCC::ccsd_Wabef2T2AB() {
 
     // Main loop
     for (int a = 0; a < navirA; ++a) {
-
-        // Form B-T [A](E,Q)
-        #pragma omp parallel for
+// Form B-T [A](E,Q)
+#pragma omp parallel for
         for (int Q = 0; Q < nQ; ++Q) {
             for (int e = 0; e < navirA; ++e) {
                 int ae = ab_idxAA->get(a, e);
@@ -1542,21 +1541,21 @@ void DFOCC::ccsd_Wabef2T2AB() {
         // new: Form J[A](E,b>=f) = \sum_{Q} (B-T)[A](E,Q) * B(Q,b>=f)
         J->gemm(false, false, K, bQabB, 1.0, 0.0);
 
-        // Form I[A](b,Ef)
-        #pragma omp parallel for
+// Form I[A](b,Ef)
+#pragma omp parallel for
         for (int b = 0; b < navirB; ++b) {
             for (int e = 0; e < navirA; ++e) {
                 for (int f = 0; f < navirB; ++f) {
-                    //int bf = f + (b * navirB);
-                    int bf = index2(b,f);
+                    // int bf = f + (b * navirB);
+                    int bf = index2(b, f);
                     int ef = ab_idxAB->get(e, f);
                     I->set(b, ef, J->get(e, bf));
                 }
             }
         }
 
-        // Form B [A](E,Q)
-        #pragma omp parallel for
+// Form B [A](E,Q)
+#pragma omp parallel for
         for (int Q = 0; Q < nQ; ++Q) {
             for (int e = 0; e < navirA; ++e) {
                 int ae = ab_idxAA->get(a, e);
@@ -1567,8 +1566,8 @@ void DFOCC::ccsd_Wabef2T2AB() {
         // Form J[A](E,mf) = \sum_{Q} B(mf,Q)*B[A](E,Q) cost = OV^3N
         J2->gemm(false, false, K, bQiaB, 1.0, 0.0);
 
-        // Form J[A](m,Ef)
-        #pragma omp parallel for
+// Form J[A](m,Ef)
+#pragma omp parallel for
         for (int m = 0; m < naoccB; ++m) {
             for (int e = 0; e < navirA; ++e) {
                 for (int f = 0; f < navirB; ++f) {
@@ -1585,7 +1584,7 @@ void DFOCC::ccsd_Wabef2T2AB() {
         // Form T[A](b,Ij) = \sum_{Ef} I[A](b, Ef) T(Ij,Ef)
         T->gemm(false, true, I, Tau, 1.0, 0.0);
 
-        #pragma omp parallel for
+#pragma omp parallel for
         for (int b = 0; b < navirB; ++b) {
             int ab = ab_idxAB->get(a, b);
             for (int i = 0; i < naoccA; ++i) {
@@ -1596,7 +1595,7 @@ void DFOCC::ccsd_Wabef2T2AB() {
             }
         }
 
-    }//a
+    }  // a
     Tau.reset();
     K.reset();
     I.reset();

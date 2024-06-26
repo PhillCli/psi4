@@ -276,5 +276,5 @@ void OCCWave::v_int() {
     }  // end if (reference_ == "UNRESTRICTED")
 
 }  // end V_int
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

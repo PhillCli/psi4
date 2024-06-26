@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """Module with functions for Psi4/Cfour interface. Portions that require
 calls to Boost Python psi4 module are here, otherwise in qcdb module.
 Also calls to qcdb module are here and not elsewhere in driver.
@@ -115,8 +114,7 @@ def run_cfour(name, **kwargs):
     molecule = kwargs.pop('molecule', core.get_active_molecule())
     molecule.update_geometry()
 
-    optstash = p4util.OptionsState(
-            ['CFOUR', 'TRANSLATE_PSI4'])
+    optstash = p4util.OptionsState(['CFOUR', 'TRANSLATE_PSI4'])
 
     # Determine calling function and hence dertype
     calledby = inspect.stack()[1][3]
@@ -142,15 +140,20 @@ def run_cfour(name, **kwargs):
 
     # Find environment by merging PSIPATH and PATH environment variables
     lenv = {
-        'PATH': ':'.join([os.path.abspath(x) for x in os.environ.get('PSIPATH', '').split(':') if x != '']) +
-                ':' + os.environ.get('PATH') +
-                ':' + core.get_datadir() + '/basis',
-        'GENBAS_PATH': core.get_datadir() + '/basis',
-        'CFOUR_NUM_CORES': os.environ.get('CFOUR_NUM_CORES'),
-        'MKL_NUM_THREADS':  os.environ.get('MKL_NUM_THREADS'),
-        'OMP_NUM_THREADS':  os.environ.get('OMP_NUM_THREADS'),
-        'LD_LIBRARY_PATH': os.environ.get('LD_LIBRARY_PATH')
-        }
+        'PATH':
+        ':'.join([os.path.abspath(x) for x in os.environ.get('PSIPATH', '').split(':') if x != '']) + ':' +
+        os.environ.get('PATH') + ':' + core.get_datadir() + '/basis',
+        'GENBAS_PATH':
+        core.get_datadir() + '/basis',
+        'CFOUR_NUM_CORES':
+        os.environ.get('CFOUR_NUM_CORES'),
+        'MKL_NUM_THREADS':
+        os.environ.get('MKL_NUM_THREADS'),
+        'OMP_NUM_THREADS':
+        os.environ.get('OMP_NUM_THREADS'),
+        'LD_LIBRARY_PATH':
+        os.environ.get('LD_LIBRARY_PATH')
+    }
 
     if 'path' in kwargs:
         lenv['PATH'] = kwargs['path'] + ':' + lenv['PATH']
@@ -282,30 +285,27 @@ def run_cfour(name, **kwargs):
         #print '    <<<   [3] C4-GRD-GRAD   >>>'
         #mat.print()
 
+
 #    exit(1)
 
-    # # Things needed core.so module to do
-    # collect c4out string
-    # read GRD
-    # read FCMFINAL
-    # see if theres an active molecule
+# # Things needed core.so module to do
+# collect c4out string
+# read GRD
+# read FCMFINAL
+# see if theres an active molecule
 
-    # # Things delegatable to qcdb
-    # parsing c4out
-    # reading GRD and FCMFINAL strings
-    # reconciling p4 and c4 molecules (orient)
+# # Things delegatable to qcdb
+# parsing c4out
+# reading GRD and FCMFINAL strings
+# reconciling p4 and c4 molecules (orient)
 # reconciling c4out and GRD and FCMFINAL results
 # transforming frame of results back to p4
 
-    # # Things run_cfour needs to have back
-    # psivar
+# # Things run_cfour needs to have back
+# psivar
 # qcdb.Molecule of c4?
 # coordinates?
 # gradient in p4 frame
-
-
-
-
 
 #    # Process the cfour output
 #    psivar, c4coord, c4grad = qcdb.cfour.cfour_harvest(c4out)
@@ -336,32 +336,20 @@ def run_cfour(name, **kwargs):
 #    print('    <<<  P4 PSIVAR  >>>')
 #    for item in psivar:
 #        print('       %30s %16.8f' % (item, psivar[item]))
-    #print('    <<<  P4 COORD   >>>')
-    #for item in p4coord:
-    #    print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
+#print('    <<<  P4 COORD   >>>')
+#for item in p4coord:
+#    print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
 #    print('    <<<   P4 GRAD   >>>')
 #    for item in c4grad:
 #        print('       %16.8f %16.8f %16.8f' % (item[0], item[1], item[2]))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-    # Clean up cfour scratch directory unless user instructs otherwise
+# Clean up cfour scratch directory unless user instructs otherwise
     keep = yes.match(str(kwargs['keep'])) if 'keep' in kwargs else False
     os.chdir('..')
     try:
         if keep or ('path' in kwargs):
-            core.print_out('\n  CFOUR scratch files have been kept in %s\n' % (psioh.get_default_path() + cfour_tmpdir))
+            core.print_out('\n  CFOUR scratch files have been kept in %s\n' %
+                           (psioh.get_default_path() + cfour_tmpdir))
         else:
             shutil.rmtree(cfour_tmpdir)
     except OSError as e:

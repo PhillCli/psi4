@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """Module with commands building :py:class:`~basislist.BasisFamily` objects
 for Pople and other non-Dunning orbital basis sets. Some
 plausible fitting basis sets are supplied as defaults.
@@ -243,7 +242,7 @@ def load_basfam_other():
     basis_def2tzvpp.add_rifit('def2-TZVPP-RI')
     basis_def2tzvppd.add_rifit('def2-TZVPPD-RI')
     basis_def2qzvp.add_rifit('def2-QZVP-RI')
-#    basis_def2qzvpd.add_rifit('')
+    #    basis_def2qzvpd.add_rifit('')
     basis_def2qzvpp.add_rifit('def2-QZVPP-RI')
     basis_def2qzvppd.add_rifit('def2-QZVPPD-RI')
 
@@ -664,31 +663,31 @@ def load_basfam_other():
     basis_6311ppg_3df_3pd_.add_guess('3-21g')
 
     # Petersson's nZaPa-NR basis sets
-    basis_2zapa_nr = BasisFamily('2zapa-nr',zeta=2)
-    basis_3zapa_nr = BasisFamily('3zapa-nr',zeta=3)
-    basis_4zapa_nr = BasisFamily('4zapa-nr',zeta=4)
-    basis_5zapa_nr = BasisFamily('5zapa-nr',zeta=5)
-    basis_6zapa_nr = BasisFamily('6zapa-nr',zeta=6)
-    basis_7zapa_nr = BasisFamily('7zapa-nr',zeta=7)
+    basis_2zapa_nr = BasisFamily('2zapa-nr', zeta=2)
+    basis_3zapa_nr = BasisFamily('3zapa-nr', zeta=3)
+    basis_4zapa_nr = BasisFamily('4zapa-nr', zeta=4)
+    basis_5zapa_nr = BasisFamily('5zapa-nr', zeta=5)
+    basis_6zapa_nr = BasisFamily('6zapa-nr', zeta=6)
+    basis_7zapa_nr = BasisFamily('7zapa-nr', zeta=7)
 
     # fitting sets for nZaPa-NR
     # Dunnings zeta+1 to be safe, tested on water dimer
     # the full aug-JKFIT is possibly too much
-    #--------SCF-JKFIT error for nZaPa-NR 
+    #--------SCF-JKFIT error for nZaPa-NR
     # results for GS energies of water dimer:
     # delta_jk = E_conv - E_DFJK
-    # ZaPa zeta 2 : delta_jk = -0.000009 
-    # ZaPa zeta 3 : delta_jk = -0.000002 
-    # ZaPa zeta 4 : delta_jk = -0.000002 
-    # ZaPa zeta 5 : delta_jk = -0.000002 
-    # ZaPa zeta 6 : delta_jk =  0.000000 
-    # ZaPa zeta 7 : delta_jk =  0.000000 
+    # ZaPa zeta 2 : delta_jk = -0.000009
+    # ZaPa zeta 3 : delta_jk = -0.000002
+    # ZaPa zeta 4 : delta_jk = -0.000002
+    # ZaPa zeta 5 : delta_jk = -0.000002
+    # ZaPa zeta 6 : delta_jk =  0.000000
+    # ZaPa zeta 7 : delta_jk =  0.000000
     basis_2zapa_nr.add_jkfit('aug-cc-pvtz-jkfit')
     basis_3zapa_nr.add_jkfit('aug-cc-pvqz-jkfit')
     basis_4zapa_nr.add_jkfit('aug-cc-pv5z-jkfit')
     basis_5zapa_nr.add_jkfit('aug-cc-pv5z-jkfit')
     basis_6zapa_nr.add_jkfit('aug-cc-pv6z-ri')
-    basis_7zapa_nr.add_jkfit('aug-cc-pv6z-ri') 
+    basis_7zapa_nr.add_jkfit('aug-cc-pv6z-ri')
 
     basis_2zapa_nr.add_rifit('aug-cc-pvtz-ri')
     basis_3zapa_nr.add_rifit('aug-cc-pvqz-ri')
@@ -711,11 +710,10 @@ def load_basfam_other():
     basisfamily_list.append(basis_6zapa_nr)
     basisfamily_list.append(basis_7zapa_nr)
 
-
     # F12 basis sets
-    basis_cc_pvdz_f12 = BasisFamily('cc-pvdz-f12',zeta=2)
-    basis_cc_pvtz_f12 = BasisFamily('cc-pvtz-f12',zeta=3)
-    basis_cc_pvqz_f12 = BasisFamily('cc-pvqz-f12',zeta=4)
+    basis_cc_pvdz_f12 = BasisFamily('cc-pvdz-f12', zeta=2)
+    basis_cc_pvtz_f12 = BasisFamily('cc-pvtz-f12', zeta=3)
+    basis_cc_pvqz_f12 = BasisFamily('cc-pvqz-f12', zeta=4)
     # basis_cc_pv5z_f12 = BasisFamily('cc-pV5Z-F12')
 
     # ORCA manual suggests for F12 basis sets Dunning's zeta+1
@@ -740,4 +738,4 @@ def load_basfam_other():
     # was not giving correct result for iodine-containing molecules.
     basis_dzvp.add_jfit('dgauss-dzvp-autoabs')
     basis_dzvp.add_jkfit('dgauss-dzvp-mix')
-    basis_dzvp.add_rifit('dgauss-dzvp-autoaux')    
+    basis_dzvp.add_rifit('dgauss-dzvp-autoaux')

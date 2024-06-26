@@ -61,8 +61,9 @@ void DFOCC::ccsd_iterations_low() {
         if (reference_ == "RESTRICTED") {
             Matrix T2("T2", naoccA * navirA, naoccA * navirA);
             Matrix T1("T1", naoccA, navirA);
-            ccsdDiisManager = std::make_shared<DIISManager>(
-                cc_maxdiis_, "CCSD DIIS T Amps", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::OnDisk);
+            ccsdDiisManager =
+                std::make_shared<DIISManager>(cc_maxdiis_, "CCSD DIIS T Amps", DIISManager::RemovalPolicy::LargestError,
+                                              DIISManager::StoragePolicy::OnDisk);
             ccsdDiisManager->set_error_vector_size(T2, T1);
             ccsdDiisManager->set_vector_size(T2, T1);
         }

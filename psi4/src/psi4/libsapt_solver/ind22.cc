@@ -145,8 +145,8 @@ double SAPT2::ind202() {
 }
 
 double SAPT2::ind220_1(int intfile, const char *AAlabel, const char *ARlabel, const char *RRlabel, int ampfile,
-                       const char *tlabel, double **iAR, double **wBAA, double **wBRR, size_t foccA, size_t noccA, size_t nvirA,
-                       double *evalsA) {
+                       const char *tlabel, double **iAR, double **wBAA, double **wBRR, size_t foccA, size_t noccA,
+                       size_t nvirA, double *evalsA) {
     int aoccA = noccA - foccA;
 
     double **C_p_AR = block_matrix(aoccA * nvirA, ndf_ + 3);
@@ -271,8 +271,8 @@ double SAPT2::ind220_3(int ampfile, const char *AAlabel, const char *RRlabel, do
     return (energy);
 }
 
-double SAPT2::ind220_4(int ampfile, const char *thetalabel, int intfile, const char *ARlabel, double **iAR, size_t foccA,
-                       size_t noccA, size_t nvirA) {
+double SAPT2::ind220_4(int ampfile, const char *thetalabel, int intfile, const char *ARlabel, double **iAR,
+                       size_t foccA, size_t noccA, size_t nvirA) {
     size_t aoccA = noccA - foccA;
 
     double **xAA = block_matrix(aoccA, aoccA);
@@ -311,7 +311,8 @@ double SAPT2::ind220_4(int ampfile, const char *thetalabel, int intfile, const c
     return (energy);
 }
 
-double SAPT2::ind220_5(int ampfile, const char *tlabel, double **iAR, size_t foccA, size_t noccA, size_t nvirA, double *evalsA) {
+double SAPT2::ind220_5(int ampfile, const char *tlabel, double **iAR, size_t foccA, size_t noccA, size_t nvirA,
+                       double *evalsA) {
     size_t aoccA = noccA - foccA;
 
     double **tARAR = block_matrix(aoccA * nvirA, aoccA * nvirA);
@@ -398,7 +399,8 @@ double SAPT2::ind220_6(int intfile, const char *AAlabel, const char *ARlabel, co
 
 double SAPT2::ind220_7(int AAfile, const char *AAlabel, const char *ARlabel, const char *RRlabel, int BBfile,
                        const char *BSlabel, int ampfile, const char *tlabel, const char *pAAlabel, const char *pRRlabel,
-                       double **iBS, size_t foccA, size_t noccA, size_t nvirA, size_t foccB, size_t noccB, size_t nvirB) {
+                       double **iBS, size_t foccA, size_t noccA, size_t nvirA, size_t foccB, size_t noccB,
+                       size_t nvirB) {
     size_t aoccA = noccA - foccA;
     size_t aoccB = noccB - foccB;
 

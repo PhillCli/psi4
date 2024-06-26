@@ -98,9 +98,9 @@ void OCCWave::update_mo_spincase(const SpinType spin) {
                     }  // end 2b
 
                 }  // end 2
-            }      // end 1
-        }          // end loop-over nirrep_
-    }              // end main if
+            }  // end 1
+        }  // end loop-over nirrep_
+    }  // end main if
 
     else if (orth_type == "GS") {
         Uorb->schmidt();
@@ -116,5 +116,5 @@ void OCCWave::update_mo_spincase(const SpinType spin) {
         CS->print();
     }
 }  // end main
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

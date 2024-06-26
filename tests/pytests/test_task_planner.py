@@ -102,13 +102,11 @@ def test_cbs_extrapolation_gradient_1_0(mtd, kw):
 
 
 def test_nbody_dimer():
-    mol = psi4.geometry(
-        """
+    mol = psi4.geometry("""
                         He 0 0 -5
                         --
                         He 0 0 5
-                        units au"""
-    )
+                        units au""")
     plan = task_planner("energy", "MP2/cc-pVDZ", mol, bsse_type="cp")
 
     ghostiness = {
@@ -134,13 +132,11 @@ def test_nbody_dimer():
 
 
 def test_nbody_dimer_gradient():
-    mol = psi4.geometry(
-        """
+    mol = psi4.geometry("""
                         He 0 0 -5
                         --
                         He 0 0 5
-                        units au"""
-    )
+                        units au""")
     plan = task_planner("gradient", "MP2/cc-pVDZ", mol, bsse_type="cp")
 
     ghostiness = {
@@ -167,14 +163,12 @@ def test_nbody_dimer_gradient():
 
 @pytest.mark.parametrize("mtd, kw", [("mp2", {"dertype": 0}), ("mp5", {})])
 def test_nbody_dimer_gradient_1_0(mtd, kw):
-    mol = psi4.geometry(
-        """
+    mol = psi4.geometry("""
                         He 0 0 -5
                         --
                         He 0 0 5
                         units au
-                        """
-    )
+                        """)
     plan = task_planner(
         "gradient",
         f"{mtd}/cc-pVDZ",
@@ -192,8 +186,10 @@ def test_nbody_dimer_gradient_1_0(mtd, kw):
     }
 
     nbody_displacements = {
-        "1_((2,), (2,))": {k: v[1] for k, v in displacements.items()},
-        "1_((1,), (1,))": {k: v[0] for k, v in displacements.items()},
+        "1_((2,), (2,))": {k: v[1]
+                           for k, v in displacements.items()},
+        "1_((1,), (1,))": {k: v[0]
+                           for k, v in displacements.items()},
         "1_((1, 2), (1, 2))": displacements,
         "1_((1,), (1, 2))": displacements,
         "1_((2,), (1, 2))": displacements,
@@ -232,13 +228,11 @@ def test_nbody_dimer_gradient_1_0(mtd, kw):
 
 
 def test_nbody_dimer_cbs():
-    mol = psi4.geometry(
-        """
+    mol = psi4.geometry("""
                         He 0 0 -5
                         --
                         He 0 0 5
-                        units au"""
-    )
+                        units au""")
     plan = task_planner("energy", "MP2/cc-pV[D,T]Z", mol, bsse_type="cp")
 
     assert isinstance(plan, ManyBodyComputer)
@@ -256,13 +250,11 @@ def test_nbody_dimer_cbs():
 
 
 def test_nbody_dimer_cbs_gradient():
-    mol = psi4.geometry(
-        """
+    mol = psi4.geometry("""
                         He 0 0 -5
                         --
                         He 0 0 5
-                        units au"""
-    )
+                        units au""")
     plan = task_planner("gradient", "MP2/cc-pV[D,T]Z", mol, bsse_type="cp")
 
     assert isinstance(plan, ManyBodyComputer)
@@ -281,13 +273,11 @@ def test_nbody_dimer_cbs_gradient():
 
 @pytest.mark.parametrize("mtd, kw", [("mp2", {"dertype": 0}), ("mp5", {})])
 def test_nbody_dimer_cbs_gradient_1_0(mtd, kw):
-    mol = psi4.geometry(
-        """
+    mol = psi4.geometry("""
                         He 0 0 -5
                         --
                         He 0 0 5
-                        units au"""
-    )
+                        units au""")
     plan = task_planner(
         "gradient",
         f"{mtd}/cc-pV[D,T]Z",
@@ -305,8 +295,10 @@ def test_nbody_dimer_cbs_gradient_1_0(mtd, kw):
     }
 
     nbody_displacements = {
-        "1_((2,), (2,))": {k: v[1] for k, v in displacements.items()},
-        "1_((1,), (1,))": {k: v[0] for k, v in displacements.items()},
+        "1_((2,), (2,))": {k: v[1]
+                           for k, v in displacements.items()},
+        "1_((1,), (1,))": {k: v[0]
+                           for k, v in displacements.items()},
         "1_((1, 2), (1, 2))": displacements,
         "1_((1,), (1, 2))": displacements,
         "1_((2,), (1, 2))": displacements,

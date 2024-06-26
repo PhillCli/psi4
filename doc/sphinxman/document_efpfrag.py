@@ -73,8 +73,12 @@ def extract_xyz(pyfile):
 
         if efpAtomSymbol.search(line):
             sline = line.split()
-            atoms.append([efpAtomSymbol.search(line).group(1), 
-                float(sline[1]) * b2a, float(sline[2]) * b2a, float(sline[3]) * b2a])
+            atoms.append([
+                efpAtomSymbol.search(line).group(1),
+                float(sline[1]) * b2a,
+                float(sline[2]) * b2a,
+                float(sline[3]) * b2a
+            ])
 
         ii += 1
 
@@ -152,7 +156,7 @@ for pyfile in glob.glob(DriverPath + '../../psi4/share/psi4/efpfrag/*.efp'):
     if basename not in []:
 
         pts('efp fragment', basename)
-    
+
         fdriver.write(':srcefpfrag:`%s`\n%s\n\n' % (basename, '"' * (14 + len(basename))))
         molstr, molMstr, comment = extract_xyz(pyfile)
         fdriver.write(canvas(basename, molstr))
@@ -163,9 +167,8 @@ for pyfile in glob.glob(DriverPath + '../../psi4/share/psi4/efpfrag/*.efp'):
     fdriver.write('\n')
 fdriver.close()
 
-
-      #// create a synthetic arrow
-      #//var origin = mol.getCenter()
-      #//var ptX = new ChemDoodle.structures.Point(0.0, 0.1);
-      #//var axisX = new ChemDoodle.structures.d2.Line(origin, ptX);
-      #//axisX.arrowType = ChemDoodle.structures.d2.Line.ARROW_SYNTHETIC;
+#// create a synthetic arrow
+#//var origin = mol.getCenter()
+#//var ptX = new ChemDoodle.structures.Point(0.0, 0.1);
+#//var axisX = new ChemDoodle.structures.d2.Line(origin, ptX);
+#//axisX.arrowType = ChemDoodle.structures.d2.Line.ARROW_SYNTHETIC;

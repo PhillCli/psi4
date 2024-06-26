@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """
 | Database of Pulay corannulene structures. Subsumed into CFLOW.
 
@@ -43,74 +42,86 @@ import qcdb
 dbse = 'CORE'
 
 # <<< Database Members >>>
-HRXN = ['dimer3_54', 'dimer3_64', 'dimer3_73', 'dimer3_74', 'dimer3_84', ]
+HRXN = [
+    'dimer3_54',
+    'dimer3_64',
+    'dimer3_73',
+    'dimer3_74',
+    'dimer3_84',
+]
 HRXN_SM = []
 HRXN_LG = []
 
 # <<< Chemical Systems Involved >>>
-RXNM = {}     # reaction matrix of reagent contributions per reaction
-ACTV = {}     # order of active reagents per reaction
+RXNM = {}  # reaction matrix of reagent contributions per reaction
+ACTV = {}  # order of active reagents per reaction
 ACTV_CP = {}  # order of active reagents per counterpoise-corrected reaction
 ACTV_SA = {}  # order of active reagents for non-supermolecular calculations
 for rxn in HRXN:
 
-    RXNM[   '%s-%s' % (dbse, rxn)] = {'%s-%s-dimer'      % (dbse, rxn) : +1,
-                                      '%s-%s-monoA-CP'   % (dbse, rxn) : -1,
-                                      '%s-%s-monoB-CP'   % (dbse, rxn) : -1,
-                                      '%s-%s-monoA-unCP' % (dbse, rxn) : -1,
-                                      '%s-%s-monoB-unCP' % (dbse, rxn) : -1 }
+    RXNM['%s-%s' % (dbse, rxn)] = {
+        '%s-%s-dimer' % (dbse, rxn): +1,
+        '%s-%s-monoA-CP' % (dbse, rxn): -1,
+        '%s-%s-monoB-CP' % (dbse, rxn): -1,
+        '%s-%s-monoA-unCP' % (dbse, rxn): -1,
+        '%s-%s-monoB-unCP' % (dbse, rxn): -1
+    }
 
-    ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn) ]
+    ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn)]
 
-    ACTV_CP['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),
-                                      '%s-%s-monoA-CP'   % (dbse, rxn),
-                                      '%s-%s-monoB-CP'   % (dbse, rxn) ]
+    ACTV_CP['%s-%s' % (dbse, rxn)] = [
+        '%s-%s-dimer' % (dbse, rxn),
+        '%s-%s-monoA-CP' % (dbse, rxn),
+        '%s-%s-monoB-CP' % (dbse, rxn)
+    ]
 
-    ACTV[   '%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),
-                                      '%s-%s-monoA-unCP' % (dbse, rxn),
-                                      '%s-%s-monoB-unCP' % (dbse, rxn) ]
+    ACTV['%s-%s' % (dbse, rxn)] = [
+        '%s-%s-dimer' % (dbse, rxn),
+        '%s-%s-monoA-unCP' % (dbse, rxn),
+        '%s-%s-monoB-unCP' % (dbse, rxn)
+    ]
 
 # <<< Reference Values [kcal/mol] >>>
 # Taken from
 BIND = {}
-BIND['%s-%s'            % (dbse, 'dimer3_54'             )] =    -14.8000
-BIND['%s-%s'            % (dbse, 'dimer3_64'             )] =    -15.4000
-BIND['%s-%s'            % (dbse, 'dimer3_73'             )] =    -15.6000  # Bootstrapped, Pulay does not report
-BIND['%s-%s'            % (dbse, 'dimer3_74'             )] =    -15.4000
-BIND['%s-%s'            % (dbse, 'dimer3_84'             )] =    -15.0000
+BIND['%s-%s' % (dbse, 'dimer3_54')] = -14.8000
+BIND['%s-%s' % (dbse, 'dimer3_64')] = -15.4000
+BIND['%s-%s' % (dbse, 'dimer3_73')] = -15.6000  # Bootstrapped, Pulay does not report
+BIND['%s-%s' % (dbse, 'dimer3_74')] = -15.4000
+BIND['%s-%s' % (dbse, 'dimer3_84')] = -15.0000
 
 # <<< Comment Lines >>>
 TAGL = {}
-TAGL['%s-%s'            % (dbse, 'dimer3_54'             )] = """ """
-TAGL['%s-%s-dimer'      % (dbse, 'dimer3_54'             )] = """Dimer from  """
-TAGL['%s-%s-monoA-CP'   % (dbse, 'dimer3_54'             )] = """Monomer A from  """
-TAGL['%s-%s-monoB-CP'   % (dbse, 'dimer3_54'             )] = """Monomer B from  """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'dimer3_54'             )] = """Monomer A from  """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'dimer3_54'             )] = """Monomer B from  """
-TAGL['%s-%s'            % (dbse, 'dimer3_64'             )] = """ """
-TAGL['%s-%s-dimer'      % (dbse, 'dimer3_64'             )] = """Dimer from  """
-TAGL['%s-%s-monoA-CP'   % (dbse, 'dimer3_64'             )] = """Monomer A from  """
-TAGL['%s-%s-monoB-CP'   % (dbse, 'dimer3_64'             )] = """Monomer B from  """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'dimer3_64'             )] = """Monomer A from  """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'dimer3_64'             )] = """Monomer B from  """
-TAGL['%s-%s'            % (dbse, 'dimer3_73'             )] = """ """
-TAGL['%s-%s-dimer'      % (dbse, 'dimer3_73'             )] = """Dimer from  """
-TAGL['%s-%s-monoA-CP'   % (dbse, 'dimer3_73'             )] = """Monomer A from  """
-TAGL['%s-%s-monoB-CP'   % (dbse, 'dimer3_73'             )] = """Monomer B from  """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'dimer3_73'             )] = """Monomer A from  """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'dimer3_73'             )] = """Monomer B from  """
-TAGL['%s-%s'            % (dbse, 'dimer3_74'             )] = """ """
-TAGL['%s-%s-dimer'      % (dbse, 'dimer3_74'             )] = """Dimer from  """
-TAGL['%s-%s-monoA-CP'   % (dbse, 'dimer3_74'             )] = """Monomer A from  """
-TAGL['%s-%s-monoB-CP'   % (dbse, 'dimer3_74'             )] = """Monomer B from  """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'dimer3_74'             )] = """Monomer A from  """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'dimer3_74'             )] = """Monomer B from  """
-TAGL['%s-%s'            % (dbse, 'dimer3_84'             )] = """ """
-TAGL['%s-%s-dimer'      % (dbse, 'dimer3_84'             )] = """Dimer from  """
-TAGL['%s-%s-monoA-CP'   % (dbse, 'dimer3_84'             )] = """Monomer A from  """
-TAGL['%s-%s-monoB-CP'   % (dbse, 'dimer3_84'             )] = """Monomer B from  """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'dimer3_84'             )] = """Monomer A from  """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'dimer3_84'             )] = """Monomer B from  """
+TAGL['%s-%s' % (dbse, 'dimer3_54')] = """ """
+TAGL['%s-%s-dimer' % (dbse, 'dimer3_54')] = """Dimer from  """
+TAGL['%s-%s-monoA-CP' % (dbse, 'dimer3_54')] = """Monomer A from  """
+TAGL['%s-%s-monoB-CP' % (dbse, 'dimer3_54')] = """Monomer B from  """
+TAGL['%s-%s-monoA-unCP' % (dbse, 'dimer3_54')] = """Monomer A from  """
+TAGL['%s-%s-monoB-unCP' % (dbse, 'dimer3_54')] = """Monomer B from  """
+TAGL['%s-%s' % (dbse, 'dimer3_64')] = """ """
+TAGL['%s-%s-dimer' % (dbse, 'dimer3_64')] = """Dimer from  """
+TAGL['%s-%s-monoA-CP' % (dbse, 'dimer3_64')] = """Monomer A from  """
+TAGL['%s-%s-monoB-CP' % (dbse, 'dimer3_64')] = """Monomer B from  """
+TAGL['%s-%s-monoA-unCP' % (dbse, 'dimer3_64')] = """Monomer A from  """
+TAGL['%s-%s-monoB-unCP' % (dbse, 'dimer3_64')] = """Monomer B from  """
+TAGL['%s-%s' % (dbse, 'dimer3_73')] = """ """
+TAGL['%s-%s-dimer' % (dbse, 'dimer3_73')] = """Dimer from  """
+TAGL['%s-%s-monoA-CP' % (dbse, 'dimer3_73')] = """Monomer A from  """
+TAGL['%s-%s-monoB-CP' % (dbse, 'dimer3_73')] = """Monomer B from  """
+TAGL['%s-%s-monoA-unCP' % (dbse, 'dimer3_73')] = """Monomer A from  """
+TAGL['%s-%s-monoB-unCP' % (dbse, 'dimer3_73')] = """Monomer B from  """
+TAGL['%s-%s' % (dbse, 'dimer3_74')] = """ """
+TAGL['%s-%s-dimer' % (dbse, 'dimer3_74')] = """Dimer from  """
+TAGL['%s-%s-monoA-CP' % (dbse, 'dimer3_74')] = """Monomer A from  """
+TAGL['%s-%s-monoB-CP' % (dbse, 'dimer3_74')] = """Monomer B from  """
+TAGL['%s-%s-monoA-unCP' % (dbse, 'dimer3_74')] = """Monomer A from  """
+TAGL['%s-%s-monoB-unCP' % (dbse, 'dimer3_74')] = """Monomer B from  """
+TAGL['%s-%s' % (dbse, 'dimer3_84')] = """ """
+TAGL['%s-%s-dimer' % (dbse, 'dimer3_84')] = """Dimer from  """
+TAGL['%s-%s-monoA-CP' % (dbse, 'dimer3_84')] = """Monomer A from  """
+TAGL['%s-%s-monoB-CP' % (dbse, 'dimer3_84')] = """Monomer B from  """
+TAGL['%s-%s-monoA-unCP' % (dbse, 'dimer3_84')] = """Monomer A from  """
+TAGL['%s-%s-monoB-unCP' % (dbse, 'dimer3_84')] = """Monomer B from  """
 
 # <<< Geometry Specification Strings >>>
 GEOS = {}
@@ -454,8 +465,8 @@ units angstrom
 for rxn in HRXN:
     GEOS['%s-%s-monoA-unCP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(1)
     GEOS['%s-%s-monoB-unCP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(2)
-    GEOS['%s-%s-monoA-CP'   % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(1, 2)
-    GEOS['%s-%s-monoB-CP'   % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(2, 1)
+    GEOS['%s-%s-monoA-CP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(1, 2)
+    GEOS['%s-%s-monoB-CP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(2, 1)
 
 #########################################################################
 
@@ -463,28 +474,28 @@ for rxn in HRXN:
 DATA = {}
 
 DATA['NUCLEAR REPULSION ENERGY'] = {}
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_54-dimer'           ] =    4584.11459289
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_54-monoA-unCP'      ] =    1387.77369315
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_54-monoB-unCP'      ] =    1387.77369315
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_64-dimer'           ] =    4555.01239979
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_64-monoA-unCP'      ] =    1387.77369315
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_64-monoB-unCP'      ] =    1387.77369315
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_73-dimer'           ] =    4529.48976988
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_73-monoA-unCP'      ] =    1387.77369315
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_73-monoB-unCP'      ] =    1387.77369315
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_74-dimer'           ] =    4526.69216135
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_74-monoA-unCP'      ] =    1387.77369315
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_74-monoB-unCP'      ] =    1387.77369315
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_84-dimer'           ] =    4499.12706628
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_84-monoA-unCP'      ] =    1387.77369315
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_84-monoB-unCP'      ] =    1387.77369315
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_54-monoA-CP'        ] =    1387.77369315
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_54-monoB-CP'        ] =    1387.77369315
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_64-monoA-CP'        ] =    1387.77369315
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_64-monoB-CP'        ] =    1387.77369315
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_73-monoA-CP'        ] =    1387.77369315
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_73-monoB-CP'        ] =    1387.77369315
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_74-monoA-CP'        ] =    1387.77369315
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_74-monoB-CP'        ] =    1387.77369315
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_84-monoA-CP'        ] =    1387.77369315
-DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_84-monoB-CP'        ] =    1387.77369315
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_54-dimer'] = 4584.11459289
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_54-monoA-unCP'] = 1387.77369315
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_54-monoB-unCP'] = 1387.77369315
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_64-dimer'] = 4555.01239979
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_64-monoA-unCP'] = 1387.77369315
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_64-monoB-unCP'] = 1387.77369315
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_73-dimer'] = 4529.48976988
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_73-monoA-unCP'] = 1387.77369315
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_73-monoB-unCP'] = 1387.77369315
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_74-dimer'] = 4526.69216135
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_74-monoA-unCP'] = 1387.77369315
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_74-monoB-unCP'] = 1387.77369315
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_84-dimer'] = 4499.12706628
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_84-monoA-unCP'] = 1387.77369315
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_84-monoB-unCP'] = 1387.77369315
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_54-monoA-CP'] = 1387.77369315
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_54-monoB-CP'] = 1387.77369315
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_64-monoA-CP'] = 1387.77369315
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_64-monoB-CP'] = 1387.77369315
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_73-monoA-CP'] = 1387.77369315
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_73-monoB-CP'] = 1387.77369315
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_74-monoA-CP'] = 1387.77369315
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_74-monoB-CP'] = 1387.77369315
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_84-monoA-CP'] = 1387.77369315
+DATA['NUCLEAR REPULSION ENERGY']['CORE-dimer3_84-monoB-CP'] = 1387.77369315

@@ -258,7 +258,8 @@ class PopulationAnalysisCalc : public Prop {
     /// Compute Lowdin Charges
     std::tuple<SharedStdVector, SharedStdVector, SharedStdVector> compute_lowdin_charges(bool print_output = false);
     /// Compute MBIS Multipoles (doi:10.1021/acs.jctc.6b00456)
-    std::tuple<SharedMatrix, SharedMatrix, SharedMatrix, SharedMatrix> compute_mbis_multipoles(bool free_atom_volumes = false, bool print_output = false);
+    std::tuple<SharedMatrix, SharedMatrix, SharedMatrix, SharedMatrix> compute_mbis_multipoles(
+        bool free_atom_volumes = false, bool print_output = false);
     /// Compute Mayer Bond Indices (non-orthogoal basis)
     std::tuple<SharedMatrix, SharedMatrix, SharedMatrix, SharedVector> compute_mayer_indices(bool print_output = false);
     /// Compute Wiberg Bond Indices using Lowdin Orbitals (symmetrically orthogonal basis)
@@ -408,7 +409,10 @@ class PSI_API OEProp {
     void clear();
     /// Set title for use in printout. Set the same title to be the name for printout.
     /// We do both because in older OEProp, the same member variable was used for both tasks.
-    void set_title(const std::string& title) { names_ = {title + (title.empty() ? "" : " ") + "{}"}; title_ = title; }
+    void set_title(const std::string& title) {
+        names_ = {title + (title.empty() ? "" : " ") + "{}"};
+        title_ = title;
+    }
     /// Set titles for use in saving information
     void set_names(const std::unordered_set<std::string> names) { names_ = names; }
     /// Compute and print/save the properties

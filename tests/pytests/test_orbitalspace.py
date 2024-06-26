@@ -4,6 +4,7 @@ import psi4
 
 pytestmark = [pytest.mark.psi, pytest.mark.api, pytest.mark.quick]
 
+
 @pytest.fixture
 def spaces():
     h2o = psi4.geometry("""
@@ -17,18 +18,20 @@ def spaces():
     rhf_e, wfn = psi4.energy('SCF/cc-pVDZ-f12', molecule=h2o, return_wfn=True)
     obs = wfn.alpha_orbital_space('p', 'SO', 'ALL')
 
-    keys = ["BASIS","CABS_BASIS"]
-    targets = ["CC-PVDZ-F12","CC-PVDZ-F12-OPTRI"]
-    roles = ["ORBITAL","F12"]
+    keys = ["BASIS", "CABS_BASIS"]
+    targets = ["CC-PVDZ-F12", "CC-PVDZ-F12-OPTRI"]
+    roles = ["ORBITAL", "F12"]
     others = ["CC-PVDZ-F12", "CC-PVDZ-F12"]
 
-    combined = psi4.driver.qcdb.libmintsbasisset.BasisSet.pyconstruct_combined(h2o.save_string_xyz(), keys, targets, roles, others)
+    combined = psi4.driver.qcdb.libmintsbasisset.BasisSet.pyconstruct_combined(h2o.save_string_xyz(), keys, targets,
+                                                                               roles, others)
     combined = psi4.core.BasisSet.construct_from_pydict(h2o, combined, combined["puream"])
 
     ribs = psi4.core.OrbitalSpace.build_ri_space(combined)
     cabs = psi4.core.OrbitalSpace.build_cabs_space(obs, ribs)
 
     return [obs, cabs]
+
 
 @pytest.mark.parametrize("idx1,idx2", [(0, 0), (0, 1), (1, 0), (1, 1)])
 def test_orthonormality(spaces, idx1, idx2):

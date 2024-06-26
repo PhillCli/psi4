@@ -117,7 +117,7 @@ void HC1_F(int i, int C_irr) {
         global_dpd_->file2_close(&CME);
         global_dpd_->file2_close(&Cme);
 
-    }                           /** RHF or ROHF **/
+    } /** RHF or ROHF **/
     else if (params.ref == 2) { /** UHF **/
         /* HC1_F()  Fme = +C_n^f <mn||ef> */
 
@@ -207,7 +207,7 @@ void HC1_Wamef(int i, int C_irr) {
         global_dpd_->file2_close(&CME);
         global_dpd_->file2_close(&Cme);
 
-    }                           /** ROHF **/
+    } /** ROHF **/
     else if (params.ref == 2) { /** UHF **/
 
         global_dpd_->file2_init(&CME, PSIF_EOM_CME, C_irr, 0, 1, CME_lbl);
@@ -908,7 +908,7 @@ void HC1_Wmbej(int i, int C_irr) {
         global_dpd_->buf4_sort(&WmBEj, PSIF_CC3_HC1, psrq, 10, 10, "HC1 WmBEj (mE,jB)");
         global_dpd_->buf4_close(&WmBEj);
 
-    }                           /** ROHF **/
+    } /** ROHF **/
     else if (params.ref == 2) { /** UHF **/
 
         /* F -> Wmbej */ /* + Cjf <mb||ef> -> Wmbej*/

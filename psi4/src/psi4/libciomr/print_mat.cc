@@ -105,4 +105,4 @@ void print_mat(double **a, int m, int n, std::string out) {
     printer->Printf("\n\n");
     // R.I.P. goto statements - Aug 4th 2010 - MSM
 }
-}
+}  // namespace psi

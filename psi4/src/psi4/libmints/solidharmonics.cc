@@ -123,7 +123,7 @@ static inline int ipure(int l, int m) { return ipure_standard(l, m); }
 #elif psi4_SHGSHELL_ORDERING == LIBINT_SHGSHELL_ORDERING_GAUSSIAN
 static inline int ipure(int l, int m) { return ipure_gaussian(l, m); }
 #else
-#  error "unknown value of macro psi4_SHGSHELL_ORDERING"
+#error "unknown value of macro psi4_SHGSHELL_ORDERING"
 #endif
 
 void solidharmcontrib(int sign, const uint64_t &bin, const uint64_t &den, uint64_t norm2num, uint64_t norm2den, int r2,

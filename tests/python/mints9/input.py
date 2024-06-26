@@ -32,7 +32,6 @@ psi4.compare_strings('CC-PVDZ', wert.name(), 'callby')  #TEST
 psi4.compare_strings('CC-PVDZ', wert.blend(), 'blend')  #TEST
 mymol.print_out()
 
-
 print('[2]        <<<  RIFIT (default)  >>>')
 wert = psi4.core.BasisSet.build(mymol, 'DF_BASIS_MP2', '', 'RIFIT', psi4.core.get_global_option('BASIS'))
 psi4.compare_integers(140, wert.nbf(), 'nbf()')  #TEST
@@ -55,7 +54,6 @@ psi4.compare_strings('DZ_PLUS', wert.name(), 'callby')  #TEST
 psi4.compare_strings('AUG-CC-PVDZ + CC-PVDZ', wert.blend(), 'blend')  #TEST
 mymol.print_out()
 
-
 print('[4]        <<<  RIFIT (default)  >>>')
 wert = psi4.core.BasisSet.build(mymol, 'DF_BASIS_MP2', '', 'RIFIT', psi4.core.get_global_option('BASIS'))
 mymol.print_out()
@@ -67,15 +65,14 @@ psi4.compare_strings('(DZ_PLUS AUX)', wert.name(), 'callby')  #TEST
 psi4.compare_strings('AUG-CC-PVDZ-RI + CC-PVDZ-RI', wert.blend(), 'blend')  #TEST
 mymol.print_out()
 
-
 print('[5]    <<<  cc-pVDZ w/ aug-cc-pVDZ on C, H_R  >>>')
 psi4.basis_helper("""
     assign cc-pvdz
     assign c aug-cc-pvdz
     assign h_r aug-cc-pvdz
 """,
-name='dz_PLUSplus',
-key='BASis')
+                  name='dz_PLUSplus',
+                  key='BASis')
 wert = psi4.core.BasisSet.build(mymol, 'BASIS', psi4.core.get_global_option('BASIS'))
 psi4.compare_strings('DZ_PLUSPLUS', psi4.core.get_global_option('BASIS'), 'name')  #TEST
 psi4.compare_integers(51, wert.nbf(), 'nbf()')  #TEST
@@ -85,14 +82,12 @@ psi4.compare_strings('DZ_PLUSPLUS', wert.name(), 'callby')  #TEST
 psi4.compare_strings('AUG-CC-PVDZ + CC-PVDZ', wert.blend(), 'blend')  #TEST
 mymol.print_out()
 
-
 print('[6]    <<<  RIFIT (custom: force cc-pVDZ on H, default on C, O)  >>>')
 psi4.basis_helper("""
     assign h cc-pvdz-ri
-""",
-name='dz_PLUSplusRI',
-key='df_basis_mp2')
-wert = psi4.core.BasisSet.build(mymol, 'DF_BASIS_MP2', psi4.core.get_global_option('DF_BASIS_MP2'), 'RIFIT', psi4.core.get_global_option('BASIS'))
+""", name='dz_PLUSplusRI', key='df_basis_mp2')
+wert = psi4.core.BasisSet.build(mymol, 'DF_BASIS_MP2', psi4.core.get_global_option('DF_BASIS_MP2'), 'RIFIT',
+                                psi4.core.get_global_option('BASIS'))
 mymol.print_out()
 psi4.compare_integers(156, wert.nbf(), 'nbf()')  #TEST
 psi4.compare_integers(182, wert.nao(), 'nao()')  #TEST
@@ -101,14 +96,12 @@ psi4.compare_strings('DZ_PLUSPLUSRI', wert.name(), 'callby')  #TEST
 psi4.compare_strings('AUG-CC-PVDZ-RI + CC-PVDZ-RI', wert.blend(), 'blend')  #TEST
 mymol.print_out()
 
-
 print('[7]    <<<  cc-pVDZ w/ aug-cc-pVDZ on C, H  >>>')
 psi4.basis_helper("""
     assign cc-pvdz
     assign c aug-cc-pvdz
     assign h aug-cc-pvdz
-""",
-name = 'dz_PLUSplusplus')
+""", name='dz_PLUSplusplus')
 wert = psi4.core.BasisSet.build(mymol, 'BASIS', psi4.core.get_global_option('BASIS'))
 psi4.compare_integers(55, wert.nbf(), 'nbf()')  #TEST
 psi4.compare_integers(58, wert.nao(), 'nao()')  #TEST
@@ -116,7 +109,6 @@ psi4.compare_strings('c2v', mymol.schoenflies_symbol(), 'symm')  #TEST
 psi4.compare_strings('DZ_PLUSPLUSPLUS', wert.name(), 'callby')  #TEST
 psi4.compare_strings('AUG-CC-PVDZ + CC-PVDZ', wert.blend(), 'blend')  #TEST
 mymol.print_out()
-
 
 print('[8]        <<<  JKFIT (default)  >>>')
 wert = psi4.core.BasisSet.build(mymol, 'DF_BASIS_SCF', '', 'JKFIT', psi4.core.get_global_option('BASIS'))
@@ -138,7 +130,6 @@ psi4.compare_strings('AUG-CC-PVDZ', wert.name(), 'callby')  #TEST
 psi4.compare_strings('AUG-CC-PVDZ', wert.blend(), 'blend')  #TEST
 mymol.print_out()
 
-
 print('[10]       <<<  JKFIT (default)  >>>')
 wert = psi4.core.BasisSet.build(mymol, 'DF_BASIS_SCF', '', 'JKFIT', psi4.core.get_global_option('BASIS'))
 psi4.compare_integers(236, wert.nbf(), 'nbf()')  #TEST
@@ -147,7 +138,6 @@ psi4.compare_strings('c2v', mymol.schoenflies_symbol(), 'symm')  #TEST
 psi4.compare_strings('(AUG-CC-PVDZ AUX)', wert.name(), 'callby')  #TEST
 psi4.compare_strings('AUG-CC-PVDZ-JKFIT', wert.blend(), 'blend')  #TEST
 mymol.print_out()
-
 
 mymol2 = psi4.geometry("""
 0 2
@@ -215,4 +205,3 @@ psi4.compare_integers(169, wert.nbf(), 'nbf()')  #TEST
 psi4.compare_integers(241, wert.nao(), 'nao()')  #TEST
 psi4.compare_strings('UGGH', wert.name(), 'callby')  #TEST
 psi4.compare_strings('CC-PV5Z-JKFIT + DEF2-UNIVERSAL-JKFIT', wert.blend(), 'blend')  #TEST
-

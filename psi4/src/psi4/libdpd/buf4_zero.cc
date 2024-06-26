@@ -39,7 +39,6 @@
 namespace psi {
 
 int dpdbuf4::zero() {
-
     for (int h = 0; h < params->nirreps; ++h) {
         global_dpd_->buf4_mat_irrep_init(this, h);
         global_dpd_->buf4_mat_irrep_rd(this, h);
@@ -54,4 +53,4 @@ int dpdbuf4::zero() {
     return 0;
 }
 
-}
+}  // namespace psi

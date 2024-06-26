@@ -9,16 +9,15 @@
 
 namespace psi {
 
-    typedef std::vector<std::pair<int, int>> ShellPairBlock;
-    using ShellPairData = std::vector<std::shared_ptr<libint2::ShellPair>>;
+typedef std::vector<std::pair<int, int>> ShellPairBlock;
+using ShellPairData = std::vector<std::shared_ptr<libint2::ShellPair>>;
 
-    class ShellPair {
-
-    public:
+class ShellPair {
+   public:
     //! Form shell pair information
     static std::tuple<std::vector<ShellPairBlock>, ShellPairData> build_shell_pair_list(std::shared_ptr<BasisSet> bs1,
-                                                                                 std::shared_ptr<BasisSet> bs2,
-                                                                                 double threshold) {
+                                                                                        std::shared_ptr<BasisSet> bs2,
+                                                                                        double threshold) {
         const auto nsh1 = bs1->nshell();
         const auto nsh2 = bs2->nshell();
         const auto bs1_equiv_bs2 = (bs1 == bs2);
@@ -77,7 +76,7 @@ namespace psi {
         }  // end of compute
 
         // resort shell list in increasing order of angular momentum
-        std::sort(blocks.begin(), blocks.end(), [&](auto& l, auto& r) { 
+        std::sort(blocks.begin(), blocks.end(), [&](auto& l, auto& r) {
             const auto& lsh1 = bs1->shell(l[0].first);
             const auto& lsh2 = bs2->shell(l[0].second);
             const auto& rsh1 = bs1->shell(r[0].first);
@@ -109,7 +108,7 @@ namespace psi {
         }
         return std::make_tuple(blocks, spdata);
     }
-    };
+};
 
-} // namespace psi4
+}  // namespace psi
 #endif /* header guard */

@@ -36,7 +36,6 @@ namespace psi {
 namespace dfoccwave {
 
 void DFOCC::ccd_3index_intr() {
-
     // RHF
     if (reference_ == "RESTRICTED") {
         // defs
@@ -49,11 +48,11 @@ void DFOCC::ccd_3index_intr() {
         T->gemm(false, false, bQiaA, U, 1.0, 0.0);
         U.reset();
         T->write(psio_, PSIF_DFOCC_AMPS);
-    }// if (reference_ == "RESTRICTED")
+    }  // if (reference_ == "RESTRICTED")
 
     // UHF
     else if (reference_ == "UNRESTRICTED") {
-        //std::cout << "ccd_3index_intr is starting... \n";
+        // std::cout << "ccd_3index_intr is starting... \n";
         SharedTensor2d TQiaA, TQiaB, TautAA, TautBB, TautAB, TautQA, TautQB;
         SharedTensor2d tQovA, tQovB, tQooA, tQooB, tQvoA, tQvoB, tQvvA, tQvvB, ttQA, ttQB;
         SharedTensor2d L, M, N, X, Y, T, K, U, Tau, T2;
@@ -99,7 +98,7 @@ void DFOCC::ccd_3index_intr() {
         TQiaB->gemm(false, false, bQiaA, M, 1.0, 1.0);
         M.reset();
         TQiaB->write(psio_, PSIF_DFOCC_AMPS);
-    }// else if (reference_ == "UNRESTRICTED")
+    }  // else if (reference_ == "UNRESTRICTED")
 
     // outfile->Printf("\t3indices done.\n");
 

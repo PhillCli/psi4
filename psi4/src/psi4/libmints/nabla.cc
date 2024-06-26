@@ -41,7 +41,6 @@ using namespace psi;
 NablaInt::NablaInt(std::vector<SphericalTransform>& spherical_transforms, std::shared_ptr<BasisSet> bs1,
                    std::shared_ptr<BasisSet> bs2, int nderiv)
     : OneBodyAOInt(spherical_transforms, bs1, bs2, nderiv) {
-
     if (nderiv > 0) {
         throw std::runtime_error("NablaInt: does not support derivatives.");
     }
@@ -58,4 +57,4 @@ NablaInt::NablaInt(std::vector<SphericalTransform>& spherical_transforms, std::s
     buffers_.resize(nchunk_);
 }
 
-NablaInt::~NablaInt() { }
+NablaInt::~NablaInt() {}

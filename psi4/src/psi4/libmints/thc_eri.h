@@ -77,7 +77,6 @@ class THC_Computer {
     SharedMatrix get_x4() const { return x4_; }
     /// Returns the THC connecting factor
     SharedMatrix get_Z() const { return Z_PQ_; }
-
 };
 
 // Least Squares Tensor Hypercontraction
@@ -86,7 +85,7 @@ class LS_THC_Computer : public THC_Computer {
    protected:
     /// Use DF integrals to perform LS-THC ?
     bool use_df_;
-    
+
     /// Auxiliary basis set (null if not using DF approximation)
     std::shared_ptr<BasisSet> auxiliary_;
 
@@ -100,13 +99,14 @@ class LS_THC_Computer : public THC_Computer {
 
    public:
     LS_THC_Computer(std::shared_ptr<Molecule> molecule, std::shared_ptr<BasisSet> primary, Options& options);
-    LS_THC_Computer(std::shared_ptr<Molecule> molecule, std::shared_ptr<BasisSet> primary, std::shared_ptr<BasisSet> auxiliary, Options& options);
+    LS_THC_Computer(std::shared_ptr<Molecule> molecule, std::shared_ptr<BasisSet> primary,
+                    std::shared_ptr<BasisSet> auxiliary, Options& options);
     ~LS_THC_Computer() override;
 
     /// Compute THC Factors using LS-THC factorization
     void compute_thc_factorization() override;
 };
 
-}
+}  // namespace psi
 
 #endif

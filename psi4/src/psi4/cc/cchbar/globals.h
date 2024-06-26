@@ -51,7 +51,7 @@ namespace cchbar {
 
 EXTERN struct MOInfo moinfo;
 EXTERN struct Params params;
-}
+}  // namespace cchbar
 }  // namespace psi
 
 #endif

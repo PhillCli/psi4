@@ -1,15 +1,15 @@
 import pytest
 import psi4
 
-
 pytestmark = [pytest.mark.psi, pytest.mark.api, pytest.mark.quick]
+
 
 def test_dft_grid_threaded_raise():
     dimer = psi4.geometry("""
       1 1
       K -4.067042 -1.894214 0.002270
     """)
-    
+
     psi4.set_options({
         "dft_grid_name": "SG1",
         "dft_vv10_radial_points": 50,
@@ -18,11 +18,12 @@ def test_dft_grid_threaded_raise():
         "dft_radial_scheme": "EM",
         "basis": "def2-TZVPPD",
     })
-    
+
     with pytest.raises(RuntimeError) as e:
         ene = psi4.energy("wB97M-V")
 
     assert "There is no SG-1 grid defined for the requested atomic number" in str(e.value)
+
 
 def test_cc_uhf_raise1():
     psi4.geometry("""
@@ -40,6 +41,7 @@ def test_cc_uhf_raise1():
 
     assert "Non-RHF CC response properties are not implemented." in str(e.value)
 
+
 def test_cc_uhf_raise2():
     psi4.geometry("""
     0 1
@@ -53,4 +55,3 @@ def test_cc_uhf_raise2():
         psi4.properties("ccsd/sto-3g", properties=['polarizability'])
 
     assert "Non-RHF CC response properties are not implemented." in str(e.value)
-

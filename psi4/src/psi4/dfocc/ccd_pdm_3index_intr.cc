@@ -36,7 +36,6 @@ namespace psi {
 namespace dfoccwave {
 
 void DFOCC::ccd_pdm_3index_intr() {
-
     // RHF
     if (reference_ == "RESTRICTED") {
         // defs
@@ -214,14 +213,15 @@ void DFOCC::ccd_pdm_3index_intr() {
         Vab->gemm(false, false, bQijA, X, -1.0, 1.0);
         X.reset();
         Vab->write(psio_, PSIF_DFOCC_AMPS);
-    }// end if (reference_ == "RESTRICTED")
+    }  // end if (reference_ == "RESTRICTED")
 
     // UHF
     else if (reference_ == "UNRESTRICTED") {
         SharedTensor2d T, T2, L2, Tau, X, Y, Z, V, Vt, U, L, Lt, Vab, Vtab, Vij;
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Gtilde(Q) Intermediate ////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Gtilde(Q) Intermediate
+        // ////////////////////////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Gtilde(Q) = \sum{M,N} G(M,N) b(Q,MN) + \sum{m,n} G(m,n) b(Q,mn)       (81)
         gQt = std::make_shared<Tensor1d>("CCSD PDM G_Qt", nQ);
@@ -229,7 +229,8 @@ void DFOCC::ccd_pdm_3index_intr() {
         gQt->gemv(false, bQijB, GijB, 1.0, 1.0);
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // G(Q,IJ) Intermediates /////////////////////////////////////////////////////////////////////////////////////////////////////
+        // G(Q,IJ) Intermediates
+        // /////////////////////////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // G(Q,IJ) = \sum{M} G(I,M) b(Q,JM)        (83)
         T = std::make_shared<Tensor2d>("G (Q|IJ)", nQ, naoccA, naoccA);
@@ -241,10 +242,11 @@ void DFOCC::ccd_pdm_3index_intr() {
         T->contract233(false, false, naoccB, naoccB, GijB, bQijB, 1.0, 0.0);
         T->write(psio_, PSIF_DFOCC_AMPS);
         T.reset();
-        //std::cout << "I am here \n";
+        // std::cout << "I am here \n";
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // G(Q,AI) Intermediates ////////////////////////////////////////////////////////////////////////////////////////////////
+        // G(Q,AI) Intermediates
+        // ////////////////////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // G(Q,AI) = \sum{E} G(A,E) b(Q,IE)        (89)
         T = std::make_shared<Tensor2d>("Gt (Q|AI)", nQ, navirA, naoccA);
@@ -258,7 +260,8 @@ void DFOCC::ccd_pdm_3index_intr() {
         T.reset();
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // V(Q,AB) and Vtilde(Q,AB) Intermediates ////////////////////////////////////////////////////////////////////////////////////
+        // V(Q,AB) and Vtilde(Q,AB) Intermediates
+        // ////////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Alpha Block
 
@@ -306,46 +309,47 @@ void DFOCC::ccd_pdm_3index_intr() {
         Vab.reset();
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Nu(Q,IJ) Intermediates ////////////////////////////////////////////////////////////////////////////////////////////////////
+        // Nu(Q,IJ) Intermediates
+        // ////////////////////////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         //// Nu(Q,IJ) = \sum{M,E} V(IM,JE) b(Q,ME) + \sum{m,e} V(Im,Je) b(Q,me)       (98)
-        //V = std::make_shared<Tensor2d>("V <IJ|KA>", naoccA, naoccA, naoccA, navirA);
-        //V->read(psio_, PSIF_DFOCC_AMPS);
-        //X = std::make_shared<Tensor2d>("X (ME|IJ)", naoccA, navirA, naoccA, naoccA);
-        //X->sort(2413, V, 1.0, 0.0);
-        //V.reset();
-        //Vij = std::make_shared<Tensor2d>("calV (Q|IJ)", nQ, naoccA, naoccA);
-        //Vij->gemm(false, false, bQiaA, X, 1.0, 0.0);
-        //X.reset();
-        //V = std::make_shared<Tensor2d>("V <Ij|Ka>", naoccA, naoccB, naoccA, navirB);
-        //V->read(psio_, PSIF_DFOCC_AMPS);
-        //X = std::make_shared<Tensor2d>("X (me|IJ)", naoccB, navirB, naoccA, naoccA);
-        //X->sort(2413, V, 1.0, 0.0);
-        //V.reset();
-        //Vij->gemm(false, false, bQiaB, X, 1.0, 1.0);
-        //X.reset();
-        //Vij->write(psio_, PSIF_DFOCC_AMPS);
-        //Vij.reset();
+        // V = std::make_shared<Tensor2d>("V <IJ|KA>", naoccA, naoccA, naoccA, navirA);
+        // V->read(psio_, PSIF_DFOCC_AMPS);
+        // X = std::make_shared<Tensor2d>("X (ME|IJ)", naoccA, navirA, naoccA, naoccA);
+        // X->sort(2413, V, 1.0, 0.0);
+        // V.reset();
+        // Vij = std::make_shared<Tensor2d>("calV (Q|IJ)", nQ, naoccA, naoccA);
+        // Vij->gemm(false, false, bQiaA, X, 1.0, 0.0);
+        // X.reset();
+        // V = std::make_shared<Tensor2d>("V <Ij|Ka>", naoccA, naoccB, naoccA, navirB);
+        // V->read(psio_, PSIF_DFOCC_AMPS);
+        // X = std::make_shared<Tensor2d>("X (me|IJ)", naoccB, navirB, naoccA, naoccA);
+        // X->sort(2413, V, 1.0, 0.0);
+        // V.reset();
+        // Vij->gemm(false, false, bQiaB, X, 1.0, 1.0);
+        // X.reset();
+        // Vij->write(psio_, PSIF_DFOCC_AMPS);
+        // Vij.reset();
 
         //// Nu(Q,ij) = \sum{m,e} V(im,je) b(Q,me) + \sum{M,E} V(iM,jE) b(Q,ME)       (99)
-        //V = std::make_shared<Tensor2d>("V <ij|ka>", naoccB, naoccB, naoccB, navirB);
-        //V->read(psio_, PSIF_DFOCC_AMPS);
-        //X = std::make_shared<Tensor2d>("X (me|ij)", naoccB, navirB, naoccB, naoccB);
-        //X->sort(2413, V, 1.0, 0.0);
-        //V.reset();
-        //Vij = std::make_shared<Tensor2d>("calV (Q|ij)", nQ, naoccB, naoccB);
-        //Vij->gemm(false, false, bQiaB, X, 1.0, 0.0);
-        //X.reset();
-        //V = std::make_shared<Tensor2d>("V <iJ|kA>", naoccB, naoccA, naoccB, navirA);
-        //V->read(psio_, PSIF_DFOCC_AMPS);
-        //X = std::make_shared<Tensor2d>("X (ME|ij)", naoccA, navirA, naoccB, naoccB);
-        //X->sort(2413, V, 1.0, 0.0);
-        //V.reset();
-        //Vij->gemm(false, false, bQiaA, X, 1.0, 1.0);
-        //X.reset();
-        //Vij->write(psio_, PSIF_DFOCC_AMPS);
-        //Vij.reset();
-     }// end else if (reference_ == "UNRESTRICTED")
+        // V = std::make_shared<Tensor2d>("V <ij|ka>", naoccB, naoccB, naoccB, navirB);
+        // V->read(psio_, PSIF_DFOCC_AMPS);
+        // X = std::make_shared<Tensor2d>("X (me|ij)", naoccB, navirB, naoccB, naoccB);
+        // X->sort(2413, V, 1.0, 0.0);
+        // V.reset();
+        // Vij = std::make_shared<Tensor2d>("calV (Q|ij)", nQ, naoccB, naoccB);
+        // Vij->gemm(false, false, bQiaB, X, 1.0, 0.0);
+        // X.reset();
+        // V = std::make_shared<Tensor2d>("V <iJ|kA>", naoccB, naoccA, naoccB, navirA);
+        // V->read(psio_, PSIF_DFOCC_AMPS);
+        // X = std::make_shared<Tensor2d>("X (ME|ij)", naoccA, navirA, naoccB, naoccB);
+        // X->sort(2413, V, 1.0, 0.0);
+        // V.reset();
+        // Vij->gemm(false, false, bQiaA, X, 1.0, 1.0);
+        // X.reset();
+        // Vij->write(psio_, PSIF_DFOCC_AMPS);
+        // Vij.reset();
+    }  // end else if (reference_ == "UNRESTRICTED")
 
     // outfile->Printf("\t3indices done.\n");
 
@@ -355,7 +359,6 @@ void DFOCC::ccd_pdm_3index_intr() {
 //    Build y_ia^Q
 //======================================================================
 void DFOCC::ccd_pdm_yQia() {
-
     // RHF
     if (reference_ == "RESTRICTED") {
         // defs
@@ -475,20 +478,21 @@ void DFOCC::ccd_pdm_yQia() {
         Z->gemm(false, false, bQiaA, Y, 1.0, 0.0);
         Y.reset();
         Z->write(psio_, PSIF_DFOCC_AMPS);
-    }// end if (reference_ == "RESTRICTED")
+    }  // end if (reference_ == "RESTRICTED")
 
     // UHF
     else if (reference_ == "UNRESTRICTED") {
         SharedTensor2d T, T2, L2, Tau, X, Y, Z, V, Vt, U, L, Lt, Yt;
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Y (IA,JB)  Intermediates //////////////////////////////////////////////////////////////////////////////////////////////////
+        // Y (IA,JB)  Intermediates
+        // //////////////////////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // AAAA Block
         // Y(IA,JB) = \sum{M,E} [t(MI,AE)] * V(JE,MB) -  \sum{m,e} t(Im,Ae) * V(Je,mB)       (55)
-        //X = std::make_shared<Tensor2d>("X (MA|IE)", naoccA, navirA, naoccA, navirA);
-        //X->sort(1324, T2, 1.0, 0.0);
-        //U->sort(3214, X, 1.0, 0.0);
-        //X.reset();
+        // X = std::make_shared<Tensor2d>("X (MA|IE)", naoccA, navirA, naoccA, navirA);
+        // X->sort(1324, T2, 1.0, 0.0);
+        // U->sort(3214, X, 1.0, 0.0);
+        // X.reset();
         U = std::make_shared<Tensor2d>("X (IA|ME)", naoccA, navirA, naoccA, navirA);
         T2 = std::make_shared<Tensor2d>("T2 <IJ|AB>", naoccA, naoccA, navirA, navirA);
         T2->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
@@ -522,10 +526,10 @@ void DFOCC::ccd_pdm_yQia() {
 
         // BBBB Block
         // Y(ia,jb) = \sum{m,e} [t(mi,ae) ] * V(je,mb) -  \sum{M,E} t(Mi,Ea) * V(jE,Mb)       (56)
-        //X = std::make_shared<Tensor2d>("X (ma|ie)", naoccB, navirB, naoccB, navirB);
-        //X->sort(1324, T2, 1.0, 1.0);
-        //X.reset();
-        //U->sort(3214, X, 1.0, 0.0);
+        // X = std::make_shared<Tensor2d>("X (ma|ie)", naoccB, navirB, naoccB, navirB);
+        // X->sort(1324, T2, 1.0, 1.0);
+        // X.reset();
+        // U->sort(3214, X, 1.0, 0.0);
         T2 = std::make_shared<Tensor2d>("T2 <ij|ab>", naoccB, naoccB, navirB, navirB);
         T2->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
         U = std::make_shared<Tensor2d>("X (ia|me)", naoccB, navirB, naoccB, navirB);
@@ -559,10 +563,10 @@ void DFOCC::ccd_pdm_yQia() {
 
         // AABB Block
         // Y_{IAjb} = \sum_{M,E}(t_{MI,AE}) V_{jEMb} - \sum_{m,e} t_{Im}^{Ae} V_{jemb}
-        //X = std::make_shared<Tensor2d>("X (MA|IE)", naoccA, navirA, naoccA, navirA);
-        //X->sort(1324, T2, 1.0, 1.0);
-        //X.reset();
-        //U->sort(3214, X, 1.0, 0.0);
+        // X = std::make_shared<Tensor2d>("X (MA|IE)", naoccA, navirA, naoccA, navirA);
+        // X->sort(1324, T2, 1.0, 1.0);
+        // X.reset();
+        // U->sort(3214, X, 1.0, 0.0);
         T2 = std::make_shared<Tensor2d>("T2 <IJ|AB>", naoccA, naoccA, navirA, navirA);
         T2->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
         U = std::make_shared<Tensor2d>("X (IA|ME)", naoccA, navirA, naoccA, navirA);
@@ -597,10 +601,10 @@ void DFOCC::ccd_pdm_yQia() {
 
         // BBAA Block
         // Y_{iaJB} = \sum_{m,e} t_{mi,ae} {V}_{JemB} - \sum_{M,E}(t_{Mi}^{Ea} {V}_{JEMB}
-        //X = std::make_shared<Tensor2d>("X (ma|ie)", naoccB, navirB, naoccB, navirB);
-        //X->sort(1324, T2, 1.0, 1.0);
-        //U->sort(3214, X, 1.0, 0.0);
-        //X.reset();
+        // X = std::make_shared<Tensor2d>("X (ma|ie)", naoccB, navirB, naoccB, navirB);
+        // X->sort(1324, T2, 1.0, 1.0);
+        // U->sort(3214, X, 1.0, 0.0);
+        // X.reset();
         T2 = std::make_shared<Tensor2d>("T2 <ij|ab>", naoccB, naoccB, navirB, navirB);
         T2->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
         U = std::make_shared<Tensor2d>("X (ia|me)", naoccB, navirB, naoccB, navirB);
@@ -634,10 +638,10 @@ void DFOCC::ccd_pdm_yQia() {
 
         // ABBA Block
         // Y_{IajB} = \sum_{m,E} (t_{Im,Ea}) {V}_{jEmB}
-        //X = std::make_shared<Tensor2d>("X (ma|IE)", naoccB, navirB, naoccA, navirA);
-        //X->sort(2413, T2, 1.0, 1.0);
-        //X.reset();
-        //U->sort(3214, X, 1.0, 0.0);
+        // X = std::make_shared<Tensor2d>("X (ma|IE)", naoccB, navirB, naoccA, navirA);
+        // X->sort(2413, T2, 1.0, 1.0);
+        // X.reset();
+        // U->sort(3214, X, 1.0, 0.0);
         T2 = std::make_shared<Tensor2d>("T2 <Ij|Ab>", naoccA, naoccB, navirA, navirB);
         T2->read(psio_, PSIF_DFOCC_AMPS);
         U = std::make_shared<Tensor2d>("X (Ia|mE)", naoccA, navirB, naoccB, navirA);
@@ -657,10 +661,10 @@ void DFOCC::ccd_pdm_yQia() {
 
         // BAAB Block
         // Y_{iAJb} = \sum_{M,e} (t_{Mi,Ae}) {V}_{JeMb}
-        //X = std::make_shared<Tensor2d>("X (MA|ie)", naoccA, navirA, naoccB, navirB);
-        //X->sort(1324, T2, 1.0, 1.0);
-        //U->sort(3214, X, 1.0, 0.0);
-        //X.reset();
+        // X = std::make_shared<Tensor2d>("X (MA|ie)", naoccA, navirA, naoccB, navirB);
+        // X->sort(1324, T2, 1.0, 1.0);
+        // U->sort(3214, X, 1.0, 0.0);
+        // X.reset();
         T2 = std::make_shared<Tensor2d>("T2 <Ij|Ab>", naoccA, naoccB, navirA, navirB);
         T2->read(psio_, PSIF_DFOCC_AMPS);
         U = std::make_shared<Tensor2d>("X (iA|Me)", naoccB, navirA, naoccA, navirB);
@@ -679,7 +683,8 @@ void DFOCC::ccd_pdm_yQia() {
         Y.reset();
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Y (IJ,AB)  Intermediates //////////////////////////////////////////////////////////////////////////////////////////////////
+        // Y (IJ,AB)  Intermediates
+        // //////////////////////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Y(IJ,AB) = 0.5 * \sum{M,N} T(MN,AB) * V(IJ,MN)       (60)
         Tau = std::make_shared<Tensor2d>("T2 <IJ|AB>", naoccA, naoccA, navirA, navirA);
@@ -717,7 +722,8 @@ void DFOCC::ccd_pdm_yQia() {
         Y->write(psio_, PSIF_DFOCC_AMPS);
         Y.reset();
 
-        // Y(iJ,aB) = \sum{m,N} T(Nm,Ba) * V(iJ,mN) - 0.5 * \sum{M,n} T(Mn,Ba) * V(iJ,Mn)       (63)   // hatali sonucta kontrol et.
+        // Y(iJ,aB) = \sum{m,N} T(Nm,Ba) * V(iJ,mN) - 0.5 * \sum{M,n} T(Mn,Ba) * V(iJ,Mn)       (63)   // hatali sonucta
+        // kontrol et.
         Tau = std::make_shared<Tensor2d>("T2 <Ij|Ab>", naoccA, naoccB, navirA, navirB);
         Tau->read(psio_, PSIF_DFOCC_AMPS);
         X = std::make_shared<Tensor2d>("X <mN|aB>", naoccB, naoccA, navirB, navirA);
@@ -736,11 +742,12 @@ void DFOCC::ccd_pdm_yQia() {
         Y.reset();
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // Ytilde (IJ,AB)  Intermediates /////////////////////////////////////////////////////////////////////////////////////////////
+        // Ytilde (IJ,AB)  Intermediates
+        // /////////////////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // Ytilde(IJ,AB) = 0.5 * [Y(IJ,AB) - Y(IA,JB) + Y(JA,IB) + Y(IB,JA) - Y(JB,IA)]
-                        // + V(IB,JA) + V(JA,IB)    (65)
+        // + V(IB,JA) + V(JA,IB)    (65)
 
         Y = std::make_shared<Tensor2d>("Y <IJ|AB>", naoccA, naoccA, navirA, navirA);
         Y->read(psio_, PSIF_DFOCC_AMPS);
@@ -764,7 +771,7 @@ void DFOCC::ccd_pdm_yQia() {
         Yt.reset();
 
         // Ytilde(ij,ab) = 0.5 * [Y(ij,ab) - Y(ia,jb) + Y(ja,ib) + Y(ib,ja) - Y(jb,ia)]
-                        // + V(ib,ja) + V(ja,ib)    (66)
+        // + V(ib,ja) + V(ja,ib)    (66)
         Y = std::make_shared<Tensor2d>("Y <ij|ab>", naoccB, naoccB, navirB, navirB);
         Y->read(psio_, PSIF_DFOCC_AMPS);
         Yt = std::make_shared<Tensor2d>("Y2 <ij|ab>", naoccB, naoccB, navirB, navirB);
@@ -778,7 +785,7 @@ void DFOCC::ccd_pdm_yQia() {
         Yt->sort(3142, U, -0.5, 1.0);
         U.reset();
 
-        V  = std::make_shared<Tensor2d>("V (ia|jb)", naoccB, navirB, naoccB, navirB);
+        V = std::make_shared<Tensor2d>("V (ia|jb)", naoccB, navirB, naoccB, navirB);
         V->read(psio_, PSIF_DFOCC_AMPS);
         Yt->sort(1342, V, 1.0, 1.0);
         Yt->sort(3124, V, 1.0, 1.0);
@@ -787,7 +794,7 @@ void DFOCC::ccd_pdm_yQia() {
         Yt.reset();
 
         // Ytilde(Ij,Ab) = 0.5 * [Y(Ij,Ab) - Y(IA,jb) + Y(jA,Ib) + Y(Ib,jA) - Y(jb,IA)]
-                        // + V(Ib,jA) + V(jA,Ib)     (67)
+        // + V(Ib,jA) + V(jA,Ib)     (67)
         Y = std::make_shared<Tensor2d>("Y <Ij|Ab>", naoccA, naoccB, navirA, navirB);
         Y->read(psio_, PSIF_DFOCC_AMPS);
         Yt = std::make_shared<Tensor2d>("Y2 <Ij|Ab>", naoccA, naoccB, navirA, navirB);
@@ -822,7 +829,7 @@ void DFOCC::ccd_pdm_yQia() {
         Yt.reset();
 
         // Ytilde(iJ,aB) = 0.5 * [Y(iJ,aB) - Y(ia,JB) + Y(Ja,iB) + Y(iB,Ja) - Y(JB,ia)]
-                        // + V(iB,Ja) + V(Ja,iB)    (65)
+        // + V(iB,Ja) + V(Ja,iB)    (65)
         Y = std::make_shared<Tensor2d>("Y <iJ|aB>", naoccB, naoccA, navirB, navirA);
         Y->read(psio_, PSIF_DFOCC_AMPS);
         Yt = std::make_shared<Tensor2d>("Y2 <iJ|aB>", naoccB, naoccA, navirB, navirA);
@@ -861,7 +868,8 @@ void DFOCC::ccd_pdm_yQia() {
         Yt.reset();
 
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // y(Q,IA) Intermediates /////////////////////////////////////////////////////////////////////////////////////////////////////
+        // y(Q,IA) Intermediates
+        // /////////////////////////////////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         // y(Q,IA) = \sum{M,E} Ytilde(IM,AE) b(Q,ME) + \sum{m,e} Ytilde(Im,Ae) b(Q,me)       (113)
@@ -900,7 +908,7 @@ void DFOCC::ccd_pdm_yQia() {
         Z->gemm(false, false, bQiaA, X, 1.0, 1.0);
         X.reset();
         Z->write(psio_, PSIF_DFOCC_AMPS);
-    }// end else if (reference_ == "UNRESTRICTED")
+    }  // end else if (reference_ == "UNRESTRICTED")
 }  // end ccd_pdm_yQia
 
 }  // namespace dfoccwave

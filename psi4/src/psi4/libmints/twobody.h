@@ -185,7 +185,9 @@ class PSI_API TwoBodyAOInt {
 
     TwoBodyAOInt(const TwoBodyAOInt &rhs);
 
-    virtual size_t compute_shell_for_sieve(const std::shared_ptr<BasisSet> bs, int sh1, int sh2, int sh3, int sh4, bool is_bra) = 0;
+    virtual size_t compute_shell_for_sieve(const std::shared_ptr<BasisSet> bs, int sh1, int sh2, int sh3, int sh4,
+                                           bool is_bra) = 0;
+
    public:
     virtual ~TwoBodyAOInt();
 
@@ -204,7 +206,7 @@ class PSI_API TwoBodyAOInt {
      * Sieve information
      */
     /// Update max_dens_shell_pair_ given an updated density matrix (Haser 1989)
-    void update_density(const std::vector<SharedMatrix>& D);
+    void update_density(const std::vector<SharedMatrix> &D);
     /// Ask the built in sieve whether this quartet contributes
     bool shell_significant(int M, int N, int R, int S) const { return sieve_impl_(M, N, R, S); };
     /// Are any of the quartets within a given shellpair list significant
@@ -212,7 +214,7 @@ class PSI_API TwoBodyAOInt {
     /// Does a given shell pair contribute to any significant integrals?
     bool shell_pair_significant(int shell1, int shell2) const;
     /// Square of ceiling of shell quartet (MN|RS)
-     inline double shell_ceiling2(int M, int N, int R, int S) {
+    inline double shell_ceiling2(int M, int N, int R, int S) {
         return shell_pair_values_[N * nshell_ + M] * shell_pair_values_[R * nshell_ + S];
     }
     /// Is the function pair (mn| ever significant according to sieve (no restriction on mn order)
@@ -221,12 +223,13 @@ class PSI_API TwoBodyAOInt {
     }
     /// Is the integral (mn|rs) significant according to sieve? (no restriction on mnrs order)
     inline bool function_significant(const int m, const int n, const int r, const int s) {
-        return function_pair_values_[m * nbf_ + n] * function_pair_values_[r * nbf_ + s] >= screening_threshold_squared_;
+        return function_pair_values_[m * nbf_ + n] * function_pair_values_[r * nbf_ + s] >=
+               screening_threshold_squared_;
     }
     /// Return max(PQ|PQ)
     double max_integral() const { return max_integral_; }
     /// Square of ceiling of integral (mn|rs)
-     inline double function_ceiling2(int m, int n, int r, int s) {
+    inline double function_ceiling2(int m, int n, int r, int s) {
         return function_pair_values_[m * nbf_ + n] * function_pair_values_[r * nbf_ + s];
     }
     // the value of the bound for pair m and n
@@ -240,19 +243,20 @@ class PSI_API TwoBodyAOInt {
     virtual size_t first_RS_shell_block(size_t PQpair) const { return PQpair; }
 
     /// Significant unique function pair list, with only m>=n elements listed
-    const std::vector<std::pair<int, int> >& function_pairs() const { return function_pairs_; }
+    const std::vector<std::pair<int, int>> &function_pairs() const { return function_pairs_; }
     /// Significant unique shell pair pair list, with only M>=N elements listed
-    const std::vector<std::pair<int, int> >& shell_pairs() const { return shell_pairs_; }
+    const std::vector<std::pair<int, int>> &shell_pairs() const { return shell_pairs_; }
     /// Unique function pair indexing, element m*(m+1)/2 + n (where m>=n) gives the dense index or
     /// -1 if the function pair does not contribute
     const std::vector<long int> function_pairs_to_dense() const { return function_pairs_reverse_; }
     /// Unique shell pair indexing, element M*(M+1)/2 + N (where M>=N) gives the dense index or
     /// -1 if the shell pair does not contribute
     const std::vector<long int> shell_pairs_to_dense() const { return shell_pairs_reverse_; }
-    /// Significant function pairs; for each function it gives a list of functions that contribute to make a function pair
-    const std::vector<std::vector<int> >& significant_partners_per_function() const { return function_to_function_; }
+    /// Significant function pairs; for each function it gives a list of functions that contribute to make a function
+    /// pair
+    const std::vector<std::vector<int>> &significant_partners_per_function() const { return function_to_function_; }
     /// Significant shell pairs; for each shell it gives a list of shells that contribute to make a shell pair
-    const std::vector<std::vector<int> >& significant_parterns_per_shell() const { return shell_to_shell_; }
+    const std::vector<std::vector<int>> &significant_parterns_per_shell() const { return shell_to_shell_; }
 
     /// Returns the derivative level this object is setup for.
     int deriv() const { return deriv_; }
@@ -312,7 +316,7 @@ class PSI_API TwoBodyAOInt {
                       std::shared_ptr<GaussianShell>, int nchunk = 1);
 
     /// Returns a clone of this object. By default throws an exception
-    virtual TwoBodyAOInt *clone()  const = 0;
+    virtual TwoBodyAOInt *clone() const = 0;
 
     /// Results go back to buffer_
     void pure_transform(int, int, int, int, int nchunk, bool copy_to_source = true);

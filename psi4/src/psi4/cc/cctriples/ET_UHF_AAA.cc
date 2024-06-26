@@ -743,8 +743,8 @@ double ET_UHF_AAA() {
                                             WABC[Gab][ab][c] /= denom;
 
                                         } /* c */
-                                    }     /* ab */
-                                }         /* Gab */
+                                    } /* ab */
+                                } /* Gab */
 
                                 for (Gab = 0; Gab < nirreps; Gab++) {
                                     Gc = Gab ^ Gijk;
@@ -757,12 +757,12 @@ double ET_UHF_AAA() {
                             } /* I >= J >= K */
 
                         } /* k */
-                    }     /* j */
-                }         /* i */
+                    } /* j */
+                } /* i */
 
             } /* Gk */
-        }     /* Gj */
-    }         /* Gi */
+        } /* Gj */
+    } /* Gi */
 
     free(WABC);
     free(VABC);

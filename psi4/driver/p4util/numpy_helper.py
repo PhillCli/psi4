@@ -40,7 +40,6 @@ __all__ = [
     "block_diagonal_array",
 ]
 
-
 from typing import Any, Dict, Iterator, List, Optional, Tuple, Union
 
 import numpy as np
@@ -82,11 +81,11 @@ def _find_dim(arr, ndim):
 
 
 def array_to_matrix(
-    self: Union[core.Matrix, core.Vector],
-    arr: Union[np.ndarray, List[np.ndarray]],
-    name: str = "New Matrix",
-    dim1: Optional[Union[List, Tuple, core.Dimension]] = None,
-    dim2: Optional[core.Dimension] = None,
+        self: Union[core.Matrix, core.Vector],
+        arr: Union[np.ndarray, List[np.ndarray]],
+        name: str = "New Matrix",
+        dim1: Optional[Union[List, Tuple, core.Dimension]] = None,
+        dim2: Optional[core.Dimension] = None,
 ) -> Union[core.Matrix, core.Vector]:
     """
     Converts a `NumPy array
@@ -239,9 +238,9 @@ def array_to_matrix(
 
 
 def _to_array(
-    matrix: Union[core.Matrix, core.Vector],
-    copy: bool = True,
-    dense: bool = False,
+        matrix: Union[core.Matrix, core.Vector],
+        copy: bool = True,
+        dense: bool = False,
 ) -> Union[np.ndarray, List[np.ndarray]]:
     """
     Converts a |PSIfour| Matrix or Vector to a NumPy array. Either copies the
@@ -376,9 +375,9 @@ def _array_conversion(self):
 
 
 def _np_write(
-    self: Union[core.Matrix, core.Vector],
-    filename: Optional[str] = None,
-    prefix: str = "",
+        self: Union[core.Matrix, core.Vector],
+        filename: Optional[str] = None,
+        prefix: str = "",
 ) -> Optional[Dict[str, Any]]:
     """
     Writes the irrepped matrix to a NumPy uncompressed file using :func:`numpy.savez`.
@@ -425,9 +424,9 @@ def _np_write(
 
 
 def _np_read(
-    self: Union[core.Matrix, core.Vector],
-    filename: str,
-    prefix: str = "",
+        self: Union[core.Matrix, core.Vector],
+        filename: str,
+        prefix: str = "",
 ) -> Union[core.Matrix, core.Vector]:
     """Reads the data from a NumPy compressed or uncompressed file using :func:`numpy.load`.
 
@@ -630,9 +629,9 @@ core.CIVector.np = _civec_view
 
 @classmethod
 def _dimension_from_list(
-    self,
-    dims: Union[Tuple[int], List[int], np.ndarray, core.Dimension],
-    name="New Dimension",
+        self,
+        dims: Union[Tuple[int], List[int], np.ndarray, core.Dimension],
+        name="New Dimension",
 ) -> core.Dimension:
     """
     Builds a Dimension object from a Python list or tuple. If a :class:`~psi4.core.Dimension` object is passed, a copy will be returned.

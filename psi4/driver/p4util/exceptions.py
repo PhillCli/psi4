@@ -157,6 +157,7 @@ class UpgradeHelper(PsiException):
         Any additional message to convey. Should start with a space.
 
     """
+
     def __init__(self, old: str, new: str, version: str, elaboration: str):
         msg = "Using `{}` instead of `{}` is obsolete as of {}.{}".format(old, new, version, elaboration)
         PsiException.__init__(self, msg)
@@ -264,12 +265,12 @@ class SCFConvergenceError(ConvergenceError):
     d_conv: float
 
     def __init__(
-        self,
-        eqn_description: str,
-        iteration: int,
-        wfn: core.Wavefunction,
-        e_conv: float,
-        d_conv: float,
+            self,
+            eqn_description: str,
+            iteration: int,
+            wfn: core.Wavefunction,
+            e_conv: float,
+            d_conv: float,
     ):
         ConvergenceError.__init__(self, eqn_description, iteration)
         self.e_conv = e_conv
@@ -487,13 +488,19 @@ def sanitize_method(name: str) -> str:
     (both as-is) or HTML table link (replace underscore in returned string by dash).
 
     """
-    return name.lower(
-        ).replace("(", "_pr"  # ccsd(t)
-        ).replace(")", "_pr"
-        ).replace(".", "p"    # mp2.5
-        ).replace("+", "p"    # ccsd+t(ccsd)
-        ).replace("-", ""     # ccsdt-1a
-        )
+    return name.lower().replace(
+        "(",
+        "_pr"  # ccsd(t)
+    ).replace(")", "_pr").replace(
+        ".",
+        "p"  # mp2.5
+    ).replace(
+        "+",
+        "p"  # ccsd+t(ccsd)
+    ).replace(
+        "-",
+        ""  # ccsdt-1a
+    )
 
 
 def docs_table_link(name: str, mode: str) -> str:

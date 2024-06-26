@@ -50,7 +50,7 @@ namespace psi {
 **
 ** \ingroup CIOMR
 */
-    void eivout(double **a, const double *b, int m, int n, std::string out) {
+void eivout(double **a, const double *b, int m, int n, std::string out) {
     std::shared_ptr<psi::PsiOutStream> printer = (out == "outfile" ? outfile : std::make_shared<PsiOutStream>(out));
     int ii, jj, kk, nn;
     int i, j;
@@ -84,4 +84,4 @@ L200:
     ii = kk;
     goto L200;
 }
-}
+}  // namespace psi

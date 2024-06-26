@@ -37,7 +37,7 @@
 
 using namespace psi;
 
-ElectricFieldInt::ElectricFieldInt(std::vector<SphericalTransform>& spherical_transforms, std::shared_ptr<BasisSet> bs1,
+ElectricFieldInt::ElectricFieldInt(std::vector<SphericalTransform> &spherical_transforms, std::shared_ptr<BasisSet> bs1,
                                    std::shared_ptr<BasisSet> bs2, int nderiv)
     : OneBodyAOInt(spherical_transforms, bs1, bs2, nderiv) {
     int max_am = std::max(basis1()->max_am(), basis2()->max_am());
@@ -54,11 +54,12 @@ ElectricFieldInt::ElectricFieldInt(std::vector<SphericalTransform>& spherical_tr
     buffers_.resize(nchunk_);
 }
 
-ElectricFieldInt::~ElectricFieldInt() { }
+ElectricFieldInt::~ElectricFieldInt() {}
 
 void ElectricFieldInt::set_origin(const Vector3 &origin) {
     set_chunks(9);
-    engine0_->set_params(std::vector<std::pair<double, std::array<double,3>>>{{-1.0, {origin[0], origin[1], origin[2]}}});
+    engine0_->set_params(
+        std::vector<std::pair<double, std::array<double, 3>>>{{-1.0, {origin[0], origin[1], origin[2]}}});
 }
 
 void ElectricFieldInt::compute(std::vector<SharedMatrix> &result) {
@@ -100,9 +101,9 @@ void ElectricFieldInt::compute(std::vector<SharedMatrix> &result) {
             const double *location = buffers_[r];
             for (int p = 0; p < ni; ++p) {
                 for (int q = 0; q < nj; ++q) {
-                    result[r-6]->add(0, i_offset + p, j_offset + q, *location);
+                    result[r - 6]->add(0, i_offset + p, j_offset + q, *location);
                     if (bs1_equiv_bs2 && p1 != p2) {
-                        result[r-6]->add(0, j_offset + q, i_offset + p, *location);
+                        result[r - 6]->add(0, j_offset + q, i_offset + p, *location);
                     }
                     location++;
                 }
@@ -111,7 +112,7 @@ void ElectricFieldInt::compute(std::vector<SharedMatrix> &result) {
     }
 }
 
-Vector3 ElectricFieldInt::nuclear_contribution(const Vector3& origin, std::shared_ptr<Molecule> mol) {
+Vector3 ElectricFieldInt::nuclear_contribution(const Vector3 &origin, std::shared_ptr<Molecule> mol) {
     int natom = mol->natom();
 
     double Ex = 0.0;
@@ -135,7 +136,6 @@ Vector3 ElectricFieldInt::nuclear_contribution(const Vector3& origin, std::share
 
     return result;
 }
-
 
 template <typename ContractionFunctor>
 void ElectricFieldInt::compute_with_functor(ContractionFunctor functor, SharedMatrix coords) {
@@ -164,9 +164,9 @@ void ElectricFieldInt::compute_with_functor(ContractionFunctor functor, SharedMa
             // The +2 here is because we're using an L2 derivative engine, which gives us the
             // bra atom derivatives, then the ket atom derivatives, then the derivatives w.r.t.
             // atomic charge positions, which are what we want.
-            const double *bufferx = engine0_->results()[3 * (2+site) + 0];
-            const double *buffery = engine0_->results()[3 * (2+site) + 1];
-            const double *bufferz = engine0_->results()[3 * (2+site) + 2];
+            const double *bufferx = engine0_->results()[3 * (2 + site) + 0];
+            const double *buffery = engine0_->results()[3 * (2 + site) + 1];
+            const double *bufferz = engine0_->results()[3 * (2 + site) + 2];
             for (int bf1 = 0; bf1 < nbf1; ++bf1) {
                 for (int bf2 = 0; bf2 < nbf2; ++bf2) {
                     functor(bf1 + offset_1, bf2 + offset_2, site, *bufferx, *buffery, *bufferz);
@@ -176,9 +176,9 @@ void ElectricFieldInt::compute_with_functor(ContractionFunctor functor, SharedMa
                 }
             }
             if (s1 != s2 && bs1_is_bs2) {
-                bufferx = engine0_->results()[3 * (2+site) + 0];
-                buffery = engine0_->results()[3 * (2+site) + 1];
-                bufferz = engine0_->results()[3 * (2+site) + 2];
+                bufferx = engine0_->results()[3 * (2 + site) + 0];
+                buffery = engine0_->results()[3 * (2 + site) + 1];
+                bufferz = engine0_->results()[3 * (2 + site) + 2];
                 for (int bf1 = 0; bf1 < nbf1; ++bf1) {
                     for (int bf2 = 0; bf2 < nbf2; ++bf2) {
                         functor(bf2 + offset_2, bf1 + offset_1, site, *bufferx, *buffery, *bufferz);
@@ -194,4 +194,3 @@ void ElectricFieldInt::compute_with_functor(ContractionFunctor functor, SharedMa
 
 template void ElectricFieldInt::compute_with_functor(ContractOverDipolesFunctor, SharedMatrix);
 template void ElectricFieldInt::compute_with_functor(ContractOverDensityFieldFunctor, SharedMatrix);
-

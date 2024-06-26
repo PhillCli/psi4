@@ -251,7 +251,7 @@ void MRCCSD_T::compute_ooo_triples() {
                     }  // End loop over abc
                     newE += std::fabs(e4T[mu]) + std::fabs(e4ST[mu]) + std::fabs(e4DT[mu]);
                 }  // End loop over allowed ijk
-            }      // End of iterations
+            }  // End of iterations
         }
 
         // Compute the contributions to the off-diagonal elements of Heff
@@ -389,7 +389,7 @@ void MRCCSD_T::compute_OOO_triples() {
                     }  // End loop over abc
                     newE += std::fabs(e4T[mu]) + std::fabs(e4ST[mu]) + std::fabs(e4DT[mu]);
                 }  // End loop over allowed ijk
-            }      // End of iterations
+            }  // End of iterations
         }
 
         // Compute the contributions to the off-diagonal elements of Heff
@@ -561,7 +561,7 @@ void MRCCSD_T::compute_ooO_triples() {
                     }  // End loop over abc
                     newE += std::fabs(e4T[mu]) + std::fabs(e4ST[mu]) + std::fabs(e4DT[mu]);
                 }  // End loop over allowed ijk
-            }      // End of iterations
+            }  // End of iterations
         }
 
         // Compute the contributions to the off-diagonal elements of Heff
@@ -733,7 +733,7 @@ void MRCCSD_T::compute_oOO_triples() {
                     }  // End loop over abc
                     newE += std::fabs(e4T[mu]) + std::fabs(e4ST[mu]) + std::fabs(e4DT[mu]);
                 }  // End loop over allowed ijk
-            }      // End of iterations
+            }  // End of iterations
         }
 
         // Compute the contributions to the off-diagonal elements of Heff

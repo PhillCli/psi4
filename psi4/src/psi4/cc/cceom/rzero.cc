@@ -52,7 +52,7 @@ extern void scm_C(dpdfile2 *CME, dpdfile2 *Cme, dpdbuf4 *CMNEF, dpdbuf4 *Cmnef, 
  * with the ground state left eigenvector (1+lambda) */
 
 /* for ROHF and UHF */
-void rzero(int C_irr, const std::vector<bool>& converged) {
+void rzero(int C_irr, const std::vector<bool> &converged) {
     double rzero = 0.0, energy, norm, dotval;
     double dot_IA, dot_ia, dot_IJAB, dot_ijab, dot_IjAb;
     dpdfile2 RIA, Ria, RIA2, Ria2, FIA, Fia, LIA, Lia;
@@ -286,7 +286,7 @@ void rzero(int C_irr, const std::vector<bool>& converged) {
 /* normalizes R and produces copies of R that are ROHF-like */
 /* sort_amps then produces the others sorted versions of R */
 
-void rzero_rhf(int C_irr, const std::vector<bool>& converged) {
+void rzero_rhf(int C_irr, const std::vector<bool> &converged) {
     double r1, r2, rzero = 0.0, energy, norm, dotval;
     double dot_IA, dot_ia, dot_IJAB, dot_ijab, dot_IjAb;
     dpdfile2 RIA, FIA, LIA, Lia, Ria;
@@ -536,7 +536,7 @@ void rzero_rhf(int C_irr, const std::vector<bool>& converged) {
                                 eom_params.L0 * rzero + dot_IA + dot_ia + dot_IJAB + dot_ijab + dot_IjAb);
             }
         } /* end dot with L, <L|R> overlap checks */
-    }     /* end loop over Cs */
+    } /* end loop over Cs */
     return;
 }
 

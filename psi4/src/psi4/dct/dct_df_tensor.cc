@@ -40,7 +40,8 @@
 namespace psi {
 namespace dct {
 
-DFTensor::DFTensor(const std::string& name, const int nQ, const Dimension& idx2, const Dimension& idx3) : Matrix(name, std::vector<int>(idx2.n(), nQ), setup(idx2, idx3))  {
+DFTensor::DFTensor(const std::string& name, const int nQ, const Dimension& idx2, const Dimension& idx3)
+    : Matrix(name, std::vector<int>(idx2.n(), nQ), setup(idx2, idx3)) {
     nQ_ = nQ;
     dim2_ = idx2;
     dim3_ = idx3;
@@ -53,7 +54,8 @@ DFTensor::DFTensor(const std::string& name, const DFTensor& tensor) {
 const Dimension DFTensor::setup(const Dimension& idx2, const Dimension& idx3) {
     // Set up dimensions for b(Aux|PQ)
     if (idx2.n() != idx3.n())
-        throw PSIEXCEPTION("DCT::DFTensor initialization fail. Inconsistent number of irreps for the two primary dimensions.");
+        throw PSIEXCEPTION(
+            "DCT::DFTensor initialization fail. Inconsistent number of irreps for the two primary dimensions.");
     auto nirrep = idx2.n();
     Dimension LR(nirrep);
     for (int hL = 0; hL < nirrep; ++hL) {
@@ -77,14 +79,13 @@ DFTensor DFTensor::three_idx_primary_transform(const DFTensor& three_idx, const 
 // TODO: This should probably be migrated to/replaced with lib3index's DFHelper.
 // However, we need symmetry, and lib3index currently doesn't support it. JPM 01/2021
 void DFTensor::three_idx_primary_transform_gemm(const DFTensor& three_idx, const Matrix& left, const Matrix& right,
-                                                 double alpha, double beta) {
+                                                double alpha, double beta) {
     dct_timer_on("DCTSolver::Three-Index SO -> MO");
 
     if (three_idx.symmetry() || left.symmetry() || right.symmetry() || symmetry())
         throw PSIEXCEPTION("three_idx_primary_transform_gemm: Can only handle totally symmetric matrices.");
 
-    if (three_idx.nirrep() != left.nirrep() || three_idx.nirrep() != right.nirrep() ||
-        three_idx.nirrep() != nirrep()) {
+    if (three_idx.nirrep() != left.nirrep() || three_idx.nirrep() != right.nirrep() || three_idx.nirrep() != nirrep()) {
         throw PSIEXCEPTION("three_idx_primary_transform_gemm: Number of irreps don't equal.");
     }
 
@@ -245,7 +246,7 @@ void DFTensor::add_3idx_transpose_inplace() {
             offset += dim2_[i] * dim2_[j];
         }
         for (int i = 0; i < nirrep_; i++) {  // i = Irrep of first elt. in pair
-            int j = h ^ i;                      // j = Irrep of second elt. in pair
+            int j = h ^ i;                   // j = Irrep of second elt. in pair
             if (j < i) {
                 continue;
             }  // We already processed this pair.

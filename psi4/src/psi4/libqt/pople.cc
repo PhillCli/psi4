@@ -286,4 +286,4 @@ int pople(double **A, double *x, int dimen, int /*num_vecs*/, double tolerance, 
 
     return 0;
 }
-}
+}  // namespace psi

@@ -147,7 +147,6 @@ void OCCWave::omp2_manager() {
         variables_["SCS-OMP2 CORRELATION ENERGY"] = Escsmp2 - Escf;
         variables_["SOS-OMP2 CORRELATION ENERGY"] = Esosmp2 - Escf;
 
-
         variables_["CUSTOM SCS-OMP2 CORRELATION ENERGY"] = os_scale * Emp2AB + ss_scale * (Emp2AA + Emp2BB);
         variables_["CUSTOM SCS-OMP2 TOTAL ENERGY"] = Escf + variables_["CUSTOM SCS-OMP2 CORRELATION ENERGY"];
 
@@ -699,7 +698,6 @@ void OCCWave::cepa_manager() {
     }
 }  // end cepa_manager
 
-
 //======================================================================
 //             OREMP Manager
 //======================================================================
@@ -731,7 +729,7 @@ void OCCWave::oremp_manager() {
     // ordinary ROHF-MP2 not available in course of ROHF-OO
     mp2_postprocessing(reference == "ROHF", reference == "ROHF");
 
-    outfile->Printf("\tUsing A=%9.5g as REMP mixing parameter\n",remp_A);
+    outfile->Printf("\tUsing A=%9.5g as REMP mixing parameter\n", remp_A);
 
     occ_iterations();
 
@@ -801,7 +799,6 @@ void OCCWave::oremp_manager() {
     }  // end if (conver == 1)
 }  // end oremp_manager
 
-
 //======================================================================
 //             REMP Manager
 //======================================================================
@@ -824,7 +821,7 @@ void OCCWave::remp_manager() {
 
     mp2_postprocessing();
 
-    outfile->Printf("\tUsing A=%9.5g as REMP mixing parameter\n",remp_A);
+    outfile->Printf("\tUsing A=%9.5g as REMP mixing parameter\n", remp_A);
 
     // Perform REMP iterations
     remp_iterations();
@@ -1132,5 +1129,5 @@ void OCCWave::mp2_5_manager() {
     }
 
 }  // end omp2.5_manager
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

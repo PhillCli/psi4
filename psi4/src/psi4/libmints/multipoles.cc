@@ -36,7 +36,6 @@
 using namespace psi;
 using namespace mdintegrals;
 
-
 MultipoleInt::MultipoleInt(std::vector<SphericalTransform>& spherical_transforms, std::shared_ptr<BasisSet> bs1,
                            std::shared_ptr<BasisSet> bs2, int order, int nderiv)
     : OneBodyAOInt(spherical_transforms, bs1, bs2, nderiv),

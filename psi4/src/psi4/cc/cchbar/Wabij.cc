@@ -1128,7 +1128,7 @@ void WmbejT2() {
         global_dpd_->buf4_axpy(&T2, &T2new, 1);
         global_dpd_->buf4_close(&T2);
         global_dpd_->buf4_close(&T2new);
-    }                           /*** ROHF ***/
+    } /*** ROHF ***/
     else if (params.ref == 2) { /*** UHF ***/
         /*** AA ***/
         /* T2(IA,ME) * W(ME,JB) --> T2(IA,JB) */

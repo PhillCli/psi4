@@ -52,7 +52,7 @@ void psio_error(size_t unit, size_t errval, std::string prev_msg /* = ""*/) {
     // Try to save the TOCs for all open units
     // psio_tocwrite() may end up indirectly calling psio_error() again if a write keeps failing, possibly leading to
     // infinite recursion. To avoid this, the TOCs are not saved if psio_error() is called with a write error.
-    if (errval != PSIO_ERROR_WRITE){
+    if (errval != PSIO_ERROR_WRITE) {
         for (int i = 0; i < PSIO_MAXUNIT; i++) psio_tocwrite(i);
     }
     if ((prev_msg.length() > 0) && (prev_msg.back() != '\n')) {
@@ -75,7 +75,8 @@ void psio_error(size_t unit, size_t errval, std::string prev_msg /* = ""*/) {
             prev_msg += "PSIO_ERROR: " + std::to_string(PSIO_ERROR_IDENTVOLPATH) + " (two identical volume paths)\n";
             break;
         case PSIO_ERROR_OPEN:
-            prev_msg += "PSIO_ERROR: " + std::to_string(PSIO_ERROR_OPEN) + " (open call failed)\n\n"
+            prev_msg += "PSIO_ERROR: " + std::to_string(PSIO_ERROR_OPEN) +
+                        " (open call failed)\n\n"
                         " Check the location of your scratch directory which can be\n"
                         " specified via the $PSI_SCRATCH environment variable.\n"
                         " A fast, local (non-network) scratch disk is strongly preferred.\n\n"
@@ -133,9 +134,11 @@ void psio_error(size_t unit, size_t errval, std::string prev_msg /* = ""*/) {
     }
 
     prev_msg += "\n";
-    prev_msg += "Practical advice: This error is probably disk related. First, check that your scratch isn’t full.\n"; 
-    prev_msg += "Second, make sure that you’re setting scratch (\"psi4 -s\" or \"export PSI_SCRATCH\") rather than letting it \n"; 
-    prev_msg += "default to /tmp. Third, run the job again to see if the error is reproducible.\n"; 
+    prev_msg += "Practical advice: This error is probably disk related. First, check that your scratch isn’t full.\n";
+    prev_msg +=
+        "Second, make sure that you’re setting scratch (\"psi4 -s\" or \"export PSI_SCRATCH\") rather than letting it "
+        "\n";
+    prev_msg += "default to /tmp. Third, run the job again to see if the error is reproducible.\n";
     prev_msg += "If it persists, finally, file an issue.\n";
 
     std::cerr << prev_msg << std::endl;

@@ -6,6 +6,7 @@ import psi4
 
 pytestmark = [pytest.mark.psi, pytest.mark.quick]
 
+
 @pytest.mark.smoke
 def test_ls_thc_df():
     mol = psi4.geometry("""
@@ -16,12 +17,14 @@ def test_ls_thc_df():
     symmetry c1
     """)
 
-    psi4.set_options({'basis' : 'cc-pVDZ',
-                    'ls_thc_df' : True,
-                    'ls_thc_radial_points' : 10,
-                    'ls_thc_spherical_points' : 50,
-                    'ls_thc_basis_tolerance' : 1.0e-10,
-                    'ls_thc_weights_tolerance' : 1.0e-12})
+    psi4.set_options({
+        'basis': 'cc-pVDZ',
+        'ls_thc_df': True,
+        'ls_thc_radial_points': 10,
+        'ls_thc_spherical_points': 50,
+        'ls_thc_basis_tolerance': 1.0e-10,
+        'ls_thc_weights_tolerance': 1.0e-12
+    })
 
     e, wfn = psi4.energy('scf', return_wfn=True)
 
@@ -48,8 +51,9 @@ def test_ls_thc_df():
     # AO 4-index ERIs
     I = np.array(mints.ao_eri(primary, primary, primary, primary))
 
-    assert compare(True, np.sqrt(np.average(np.square(I_guess_thc-I))) < 3e-4, 'LS_THC_DF ERIs accurate')
-    assert compare(True, np.sqrt(np.average(np.square(I_guess_df-I))) < 3e-4, 'DF ERIs accurate')  
+    assert compare(True, np.sqrt(np.average(np.square(I_guess_thc - I))) < 3e-4, 'LS_THC_DF ERIs accurate')
+    assert compare(True, np.sqrt(np.average(np.square(I_guess_df - I))) < 3e-4, 'DF ERIs accurate')
+
 
 @pytest.mark.smoke
 def test_ls_thc_exact():
@@ -61,12 +65,14 @@ def test_ls_thc_exact():
     symmetry c1
     """)
 
-    psi4.set_options({'basis' : 'cc-pVDZ',
-                    'ls_thc_df' : False,
-                    'ls_thc_radial_points' : 10,
-                    'ls_thc_spherical_points' : 50,
-                    'ls_thc_basis_tolerance' : 1.0e-10,
-                    'ls_thc_weights_tolerance' : 1.0e-12})
+    psi4.set_options({
+        'basis': 'cc-pVDZ',
+        'ls_thc_df': False,
+        'ls_thc_radial_points': 10,
+        'ls_thc_spherical_points': 50,
+        'ls_thc_basis_tolerance': 1.0e-10,
+        'ls_thc_weights_tolerance': 1.0e-12
+    })
 
     e, wfn = psi4.energy('scf', return_wfn=True)
 
@@ -85,4 +91,4 @@ def test_ls_thc_exact():
     mints = psi4.core.MintsHelper(primary)
     I = np.array(mints.ao_eri(primary, primary, primary, primary))
 
-    assert compare(True, np.sqrt(np.average(np.square(I_guess_thc-I))) < 1e-4, 'LS_THC_exact ERIs accurate')
+    assert compare(True, np.sqrt(np.average(np.square(I_guess_thc - I))) < 1e-4, 'LS_THC_exact ERIs accurate')

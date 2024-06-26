@@ -99,5 +99,5 @@ void SVD(integer M, integer N, doublereal* A, doublereal* U, doublereal* VT, dou
     DGESVD(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK, LWORK, INFO);
     free(WORK);
 }
-}
-}
+}  // namespace fnocc
+}  // namespace psi

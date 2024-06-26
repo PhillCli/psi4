@@ -305,7 +305,7 @@ double* Taylor_Fjt::values(int l, double T) {
 #endif
                 ;
         }  // interpolation for F_j(T), jrecur<=j<=l
-    }      // if T < T_crit
+    }  // if T < T_crit
 
 /*------------------------------------
 And then do downward recursion in j

@@ -239,8 +239,8 @@ double SAPT2p::disp220d_1(int ampfile, const char *tlabel, const char *thetalabe
 }
 
 double SAPT2p::disp220d_2(int ampfile, const char *glabel, const char *thetalabel, int intfile, const char *BSlabel,
-                          size_t foccA, size_t noccA, size_t nvirA, size_t foccB, size_t noccB, size_t nvirB, double *evalsA,
-                          double *evalsB, const char trans) {
+                          size_t foccA, size_t noccA, size_t nvirA, size_t foccB, size_t noccB, size_t nvirB,
+                          double *evalsA, double *evalsB, const char trans) {
     size_t aoccA = noccA - foccA;
     size_t aoccB = noccB - foccB;
 
@@ -382,7 +382,8 @@ double SAPT2p::disp220q_2(int ampfile, const char *pAAlabel, const char *pRRlabe
 }
 
 double SAPT2p::disp220q_3(int ampfile, const char *tARARlabel, const char *tARBSlabel, const char trans, int intfile,
-                          const char *ARlabel, size_t foccA, size_t noccA, size_t nvirA, size_t foccB, size_t noccB, size_t nvirB) {
+                          const char *ARlabel, size_t foccA, size_t noccA, size_t nvirA, size_t foccB, size_t noccB,
+                          size_t nvirB) {
     size_t aoccA = noccA - foccA;
     size_t aoccB = noccB - foccB;
 
@@ -437,7 +438,8 @@ double SAPT2p::disp220q_3(int ampfile, const char *tARARlabel, const char *tARBS
 }
 
 double SAPT2p::disp220q_4(int ampfile, const char *tARARlabel, const char *tARBSlabel, const char trans, int intfile,
-                          const char *ARlabel, size_t foccA, size_t noccA, size_t nvirA, size_t foccB, size_t noccB, size_t nvirB) {
+                          const char *ARlabel, size_t foccA, size_t noccA, size_t nvirA, size_t foccB, size_t noccB,
+                          size_t nvirB) {
     size_t aoccA = noccA - foccA;
     int aoccB = noccB - foccB;
 

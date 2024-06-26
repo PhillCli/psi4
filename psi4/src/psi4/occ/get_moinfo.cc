@@ -691,5 +691,5 @@ void OCCWave::get_moinfo() {
     Hso = SharedMatrix(Tso->clone());
     Hso->add(Vso);
 }
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

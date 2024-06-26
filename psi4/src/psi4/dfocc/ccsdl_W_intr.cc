@@ -1378,7 +1378,6 @@ void DFOCC::ccsdl_WabefL2AA() {
         // Form L[a](b, i>=j) = \sum_{e>=f} L(i>=j,e>=f) V[a](b, e>=f)
         Ta->contract(false, true, nb, ntri_ijAA, ntri_abAA, Va, T, 1.0, 0.0);
 
-
 // Form S(ij,ab) & A(ij,ab)
 #pragma omp parallel for
         for (int b = 0; b <= a; ++b) {
@@ -1537,7 +1536,6 @@ void DFOCC::ccsdl_WabefL2BB() {
         // Form L[a](b, i>=j) = \sum_{e>=f} L(i>=j,e>=f) V[a](b, e>=f)
         Ta->contract(false, true, nb, ntri_ijBB, ntri_abBB, Va, T, 1.0, 0.0);
 
-
 // Form S(ij,ab) & A(ij,ab)
 #pragma omp parallel for
         for (int b = 0; b <= a; ++b) {
@@ -1617,7 +1615,7 @@ void DFOCC::ccsdl_WabefL2AB() {
     // malloc
     T = std::make_shared<Tensor2d>("T[A] <b|Ij>", navirB, naoccA * naoccB);
     K = std::make_shared<Tensor2d>("B[A] <E|Q>", navirA, nQ);
-    //J = std::make_shared<Tensor2d>("J[A] <E|bf>", navirA, navirB * navirB);
+    // J = std::make_shared<Tensor2d>("J[A] <E|bf>", navirA, navirB * navirB);
     J = std::make_shared<Tensor2d>("J[A] <E|b>=f>", navirA, ntri_abBB);
     I = std::make_shared<Tensor2d>("I[A] <b|Ef>", navirB, navirA * navirB);
     J2 = std::make_shared<Tensor2d>("J2[A] <E|mb>", navirA, naoccB * navirB);
@@ -1629,9 +1627,8 @@ void DFOCC::ccsdl_WabefL2AB() {
 
     // Main loop
     for (int a = 0; a < navirA; ++a) {
-
-        // Form B-T [A](E,Q)
-        #pragma omp parallel for
+// Form B-T [A](E,Q)
+#pragma omp parallel for
         for (int Q = 0; Q < nQ; ++Q) {
             for (int e = 0; e < navirA; ++e) {
                 int ea = ab_idxAA->get(e, a);
@@ -1643,21 +1640,21 @@ void DFOCC::ccsdl_WabefL2AB() {
         // new: Form J[A](E,b>=f) = \sum_{Q} (B-T)[A](E,Q) * B(Q,b>=f)
         J->gemm(false, false, K, bQabB, 1.0, 0.0);
 
-        // Form I[A](b,Ef)
-        #pragma omp parallel for
+// Form I[A](b,Ef)
+#pragma omp parallel for
         for (int b = 0; b < navirB; ++b) {
             for (int e = 0; e < navirA; ++e) {
                 for (int f = 0; f < navirB; ++f) {
-                    //int bf = f + (b * navirB);
-                    int bf = index2(b,f);
+                    // int bf = f + (b * navirB);
+                    int bf = index2(b, f);
                     int ef = ab_idxAB->get(e, f);
                     I->set(b, ef, J->get(e, bf));
                 }
             }
         }
 
-        // Form B [A](E,Q)
-        #pragma omp parallel for
+// Form B [A](E,Q)
+#pragma omp parallel for
         for (int Q = 0; Q < nQ; ++Q) {
             for (int e = 0; e < navirA; ++e) {
                 int ea = ab_idxAA->get(e, a);
@@ -1668,13 +1665,13 @@ void DFOCC::ccsdl_WabefL2AB() {
         // Form J2[A](E,mb) = \sum_{Q} B(mb,Q)*B[A](E,Q) cost = OV^3N
         J2->gemm(false, false, K, bQiaB, 1.0, 0.0);
 
-        // Form J[A](bE,m)
-        #pragma omp parallel for
+// Form J[A](bE,m)
+#pragma omp parallel for
         for (int m = 0; m < naoccB; ++m) {
             for (int e = 0; e < navirA; ++e) {
                 for (int b = 0; b < navirB; ++b) {
                     int mb = (m * navirB) + b;
-                    int be = (b*navirA) + e;
+                    int be = (b * navirA) + e;
                     J3->set(be, m, J2->get(e, mb));
                 }
             }
@@ -1686,7 +1683,7 @@ void DFOCC::ccsdl_WabefL2AB() {
         // Form T[A](b,Ij) = \sum_{Ef} I[A](b, Ef) T(Ij,Ef)
         T->gemm(false, true, I, L, 1.0, 0.0);
 
-        #pragma omp parallel for
+#pragma omp parallel for
         for (int b = 0; b < navirB; ++b) {
             int ab = ab_idxAB->get(a, b);
             for (int i = 0; i < naoccA; ++i) {
@@ -1697,7 +1694,7 @@ void DFOCC::ccsdl_WabefL2AB() {
             }
         }
 
-    }//a
+    }  // a
     L.reset();
     K.reset();
     I.reset();
@@ -1717,7 +1714,6 @@ void DFOCC::ccsdl_WabefL2AB() {
     timer_off("WabefL2");
 
 }  // end ccsdl_WabefL2BB
-
 
 }  // namespace dfoccwave
 }  // namespace psi

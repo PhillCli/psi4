@@ -1059,8 +1059,8 @@ double DCTSolver::compute_triples_aaa() {
 
                                 global_dpd_->sort_3d(WBCA, WABC, nirrep_, Gijk, I_OVVV.params->coltot,
                                                      I_OVVV.params->colidx, I_OVVV.params->colorb, I_OVVV.params->rsym,
-                                                     I_OVVV.params->ssym, avir_off_.data(), avir_off_.data(), navirpi_, avir_off_.data(),
-                                                     I_OVVV.params->colidx, cab, 1);
+                                                     I_OVVV.params->ssym, avir_off_.data(), avir_off_.data(), navirpi_,
+                                                     avir_off_.data(), I_OVVV.params->colidx, cab, 1);
 
                                 for (Gab = 0; Gab < nirrep_; Gab++) {
                                     Gc = Gab ^ Gijk;
@@ -1189,8 +1189,8 @@ double DCTSolver::compute_triples_aaa() {
 
                                 global_dpd_->sort_3d(WACB, WABC, nirrep_, Gijk, I_OVVV.params->coltot,
                                                      I_OVVV.params->colidx, I_OVVV.params->colorb, I_OVVV.params->rsym,
-                                                     I_OVVV.params->ssym, avir_off_.data(), avir_off_.data(), navirpi_, avir_off_.data(),
-                                                     I_OVVV.params->colidx, acb, 1);
+                                                     I_OVVV.params->ssym, avir_off_.data(), avir_off_.data(), navirpi_,
+                                                     avir_off_.data(), I_OVVV.params->colidx, acb, 1);
 
                                 for (Gab = 0; Gab < nirrep_; Gab++) {
                                     Gc = Gab ^ Gijk;
@@ -1234,8 +1234,8 @@ double DCTSolver::compute_triples_aaa() {
                                             LABC[Gab][ab][c] /= denom;
 
                                         } /* c */
-                                    }     /* ab */
-                                }         /* Gab */
+                                    } /* ab */
+                                } /* Gab */
 
                                 /* Compute the AAA energy contribution  */
                                 for (Gab = 0; Gab < nirrep_; Gab++) {
@@ -1249,12 +1249,12 @@ double DCTSolver::compute_triples_aaa() {
                             } /* I >= J >= K */
 
                         } /* k */
-                    }     /* j */
-                }         /* i */
+                    } /* j */
+                } /* i */
 
             } /* Gk */
-        }     /* Gj */
-    }         /* Gi */
+        } /* Gj */
+    } /* Gi */
 
     free(WABC);
     free(LABC);
@@ -1552,8 +1552,8 @@ double DCTSolver::compute_triples_aab() {
 
                                 global_dpd_->sort_3d(WBcA, WABc, nirrep_, Gijk, I_OvVv.params->coltot,
                                                      I_OvVv.params->colidx, I_OvVv.params->colorb, I_OvVv.params->rsym,
-                                                     I_OvVv.params->ssym, avir_off_.data(), bvir_off_.data(), navirpi_, avir_off_.data(),
-                                                     I_OVVV.params->colidx, cab, 1);
+                                                     I_OvVv.params->ssym, avir_off_.data(), bvir_off_.data(), navirpi_,
+                                                     avir_off_.data(), I_OVVV.params->colidx, cab, 1);
 
                                 for (Gab = 0; Gab < nirrep_; Gab++) {
                                     Gc = Gab ^ Gijk;
@@ -1644,8 +1644,8 @@ double DCTSolver::compute_triples_aab() {
 
                                 global_dpd_->sort_3d(WAcB, WABc, nirrep_, Gijk, I_OvVv.params->coltot,
                                                      I_OvVv.params->colidx, I_OvVv.params->colorb, I_OvVv.params->rsym,
-                                                     I_OvVv.params->ssym, avir_off_.data(), bvir_off_.data(), navirpi_, avir_off_.data(),
-                                                     I_OVVV.params->colidx, acb, 1);
+                                                     I_OvVv.params->ssym, avir_off_.data(), bvir_off_.data(), navirpi_,
+                                                     avir_off_.data(), I_OVVV.params->colidx, acb, 1);
 
                                 for (Gab = 0; Gab < nirrep_; Gab++) {
                                     Gc = Gab ^ Gijk;
@@ -1699,8 +1699,8 @@ double DCTSolver::compute_triples_aab() {
 
                                 global_dpd_->sort_3d(WcBA, WABc, nirrep_, Gijk, I_oVvV.params->coltot,
                                                      I_oVvV.params->colidx, I_oVvV.params->colorb, I_oVvV.params->rsym,
-                                                     I_oVvV.params->ssym, bvir_off_.data(), avir_off_.data(), navirpi_, avir_off_.data(),
-                                                     I_OVVV.params->colidx, cba, 1);
+                                                     I_oVvV.params->ssym, bvir_off_.data(), avir_off_.data(), navirpi_,
+                                                     avir_off_.data(), I_OVVV.params->colidx, cba, 1);
 
                                 for (Gab = 0; Gab < nirrep_; Gab++) {
                                     Gc = Gab ^ Gijk;
@@ -1753,8 +1753,8 @@ double DCTSolver::compute_triples_aab() {
 
                                 global_dpd_->sort_3d(WcAB, WABc, nirrep_, Gijk, I_oVvV.params->coltot,
                                                      I_oVvV.params->colidx, I_oVvV.params->colorb, I_oVvV.params->rsym,
-                                                     I_oVvV.params->ssym, bvir_off_.data(), avir_off_.data(), navirpi_, avir_off_.data(),
-                                                     I_OVVV.params->colidx, bca, 1);
+                                                     I_oVvV.params->ssym, bvir_off_.data(), avir_off_.data(), navirpi_,
+                                                     avir_off_.data(), I_OVVV.params->colidx, bca, 1);
 
                                 for (Gab = 0; Gab < nirrep_; Gab++) {
                                     Gc = Gab ^ Gijk;
@@ -1797,8 +1797,8 @@ double DCTSolver::compute_triples_aab() {
                                             LABc[Gab][ab][c] /= denom;
 
                                         } /* c */
-                                    }     /* ab */
-                                }         /* Gab */
+                                    } /* ab */
+                                } /* Gab */
 
                                 /* Compute the AAB energy contribution  */
                                 for (Gab = 0; Gab < nirrep_; Gab++) {
@@ -1816,12 +1816,12 @@ double DCTSolver::compute_triples_aab() {
                             } /* I >= J */
 
                         } /* k */
-                    }     /* j */
-                }         /* i */
+                    } /* j */
+                } /* i */
 
             } /* Gk */
-        }     /* Gj */
-    }         /* Gi */
+        } /* Gj */
+    } /* Gi */
 
     free(WABc);
     free(WBcA);
@@ -2056,8 +2056,8 @@ double DCTSolver::compute_triples_abb() {
 
                                 global_dpd_->sort_3d(WAcb, WAbc, nirrep_, Gijk, I_OvVv.params->coltot,
                                                      I_OvVv.params->colidx, I_OvVv.params->colorb, I_OvVv.params->rsym,
-                                                     I_OvVv.params->ssym, avir_off_.data(), bvir_off_.data(), nbvirpi_, bvir_off_.data(),
-                                                     I_OvVv.params->colidx, acb, 1);
+                                                     I_OvVv.params->ssym, avir_off_.data(), bvir_off_.data(), nbvirpi_,
+                                                     bvir_off_.data(), I_OvVv.params->colidx, acb, 1);
 
                                 for (Gab = 0; Gab < nirrep_; Gab++) {
                                     Gc = Gab ^ Gijk;
@@ -2148,8 +2148,8 @@ double DCTSolver::compute_triples_abb() {
 
                                 global_dpd_->sort_3d(WbcA, WAbc, nirrep_, Gijk, I_ovvv.params->coltot,
                                                      I_ovvv.params->colidx, I_ovvv.params->colorb, I_ovvv.params->rsym,
-                                                     I_ovvv.params->ssym, bvir_off_.data(), bvir_off_.data(), navirpi_, avir_off_.data(),
-                                                     I_OvVv.params->colidx, cab, 1);
+                                                     I_ovvv.params->ssym, bvir_off_.data(), bvir_off_.data(), navirpi_,
+                                                     avir_off_.data(), I_OvVv.params->colidx, cab, 1);
 
                                 for (Gab = 0; Gab < nirrep_; Gab++) {
                                     Gc = Gab ^ Gijk;
@@ -2240,8 +2240,8 @@ double DCTSolver::compute_triples_abb() {
 
                                 global_dpd_->sort_3d(WcAb, WAbc, nirrep_, Gijk, I_oVvV.params->coltot,
                                                      I_oVvV.params->colidx, I_oVvV.params->colorb, I_oVvV.params->rsym,
-                                                     I_oVvV.params->ssym, bvir_off_.data(), avir_off_.data(), nbvirpi_, bvir_off_.data(),
-                                                     I_OvVv.params->colidx, bca, 1);
+                                                     I_oVvV.params->ssym, bvir_off_.data(), avir_off_.data(), nbvirpi_,
+                                                     bvir_off_.data(), I_OvVv.params->colidx, bca, 1);
 
                                 for (Gab = 0; Gab < nirrep_; Gab++) {
                                     Gc = Gab ^ Gijk;
@@ -2332,8 +2332,8 @@ double DCTSolver::compute_triples_abb() {
 
                                 global_dpd_->sort_3d(WbAc, WAbc, nirrep_, Gijk, I_oVvV.params->coltot,
                                                      I_oVvV.params->colidx, I_oVvV.params->colorb, I_oVvV.params->rsym,
-                                                     I_oVvV.params->ssym, bvir_off_.data(), avir_off_.data(), nbvirpi_, bvir_off_.data(),
-                                                     I_OvVv.params->colidx, bac, 1);
+                                                     I_oVvV.params->ssym, bvir_off_.data(), avir_off_.data(), nbvirpi_,
+                                                     bvir_off_.data(), I_OvVv.params->colidx, bac, 1);
 
                                 for (Gab = 0; Gab < nirrep_; Gab++) {
                                     Gc = Gab ^ Gijk;
@@ -2376,8 +2376,8 @@ double DCTSolver::compute_triples_abb() {
                                             LAbc[Gab][ab][c] /= denom;
 
                                         } /* c */
-                                    }     /* ab */
-                                }         /* Gab */
+                                    } /* ab */
+                                } /* Gab */
 
                                 /* Compute the ABB energy contribution  */
                                 for (Gab = 0; Gab < nirrep_; Gab++) {
@@ -2391,12 +2391,12 @@ double DCTSolver::compute_triples_abb() {
                             } /* J >= K */
 
                         } /* k */
-                    }     /* j */
-                }         /* i */
+                    } /* j */
+                } /* i */
 
             } /* Gk */
-        }     /* Gj */
-    }         /* Gi */
+        } /* Gj */
+    } /* Gi */
 
     free(WAbc);
     free(LAbc);
@@ -2748,8 +2748,8 @@ double DCTSolver::compute_triples_bbb() {
 
                                 global_dpd_->sort_3d(WBCA, WABC, nirrep_, Gijk, I_ovvv.params->coltot,
                                                      I_ovvv.params->colidx, I_ovvv.params->colorb, I_ovvv.params->rsym,
-                                                     I_ovvv.params->ssym, bvir_off_.data(), bvir_off_.data(), nbvirpi_, bvir_off_.data(),
-                                                     I_ovvv.params->colidx, cab, 1);
+                                                     I_ovvv.params->ssym, bvir_off_.data(), bvir_off_.data(), nbvirpi_,
+                                                     bvir_off_.data(), I_ovvv.params->colidx, cab, 1);
 
                                 for (Gab = 0; Gab < nirrep_; Gab++) {
                                     Gc = Gab ^ Gijk;
@@ -2878,8 +2878,8 @@ double DCTSolver::compute_triples_bbb() {
 
                                 global_dpd_->sort_3d(WACB, WABC, nirrep_, Gijk, I_ovvv.params->coltot,
                                                      I_ovvv.params->colidx, I_ovvv.params->colorb, I_ovvv.params->rsym,
-                                                     I_ovvv.params->ssym, bvir_off_.data(), bvir_off_.data(), nbvirpi_, bvir_off_.data(),
-                                                     I_ovvv.params->colidx, acb, 1);
+                                                     I_ovvv.params->ssym, bvir_off_.data(), bvir_off_.data(), nbvirpi_,
+                                                     bvir_off_.data(), I_ovvv.params->colidx, acb, 1);
 
                                 for (Gab = 0; Gab < nirrep_; Gab++) {
                                     Gc = Gab ^ Gijk;
@@ -2923,8 +2923,8 @@ double DCTSolver::compute_triples_bbb() {
                                             LABC[Gab][ab][c] /= denom;
 
                                         } /* c */
-                                    }     /* ab */
-                                }         /* Gab */
+                                    } /* ab */
+                                } /* Gab */
 
                                 /* Compute the BBB energy contribution  */
                                 for (Gab = 0; Gab < nirrep_; Gab++) {
@@ -2938,12 +2938,12 @@ double DCTSolver::compute_triples_bbb() {
                             } /* I >= J >= K */
 
                         } /* k */
-                    }     /* j */
-                }         /* i */
+                    } /* j */
+                } /* i */
 
             } /* Gk */
-        }     /* Gj */
-    }         /* Gi */
+        } /* Gj */
+    } /* Gi */
 
     free(WABC);
     free(LABC);

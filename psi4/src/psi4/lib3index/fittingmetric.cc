@@ -114,7 +114,7 @@ void FittingMetric::form_fitting_metric() {
 
     // == (A|B) Block == //
     IntegralFactory rifactory_J(aux_, zero, aux_, zero);
-    std::vector<const double*> Jbuffer(nthread);  
+    std::vector<const double*> Jbuffer(nthread);
     std::vector<std::shared_ptr<TwoBodyAOInt>> Jint(nthread);
     for (int Q = 0; Q < nthread; Q++) {
         if (omega_ > 0.0) {
@@ -416,7 +416,6 @@ void FittingMetric::form_QR_inverse(double tol) {
 
         // Copy the top bit in
         C_DCOPY(n * (size_t)nsig, Qp[0], 1, J[0], 1);
-
     }
     metric_->set_name("SO Basis Fitting Inverse (QR)");
 }
@@ -514,4 +513,4 @@ void FittingMetric::pivot() {
         for (int i = 0; i < norbs; i++) R[P[i]] = i;
     }
 }
-}
+}  // namespace psi

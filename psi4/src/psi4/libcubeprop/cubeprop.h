@@ -104,8 +104,8 @@ class PSI_API CubeProperties {
     void compute_orbitals(std::shared_ptr<Matrix> C, const std::vector<int>& indices,
                           const std::vector<std::string>& labels, const std::string& key);
     /// Compute a difference task between two indices of matrix C
-    void compute_difference(std::shared_ptr<Matrix> C, const std::vector<int>& indices,
-                          const std::string& label, bool square);
+    void compute_difference(std::shared_ptr<Matrix> C, const std::vector<int>& indices, const std::string& label,
+                            bool square);
     /// Compute a basis function task (key_N.cube, for 0-based indices of basisset_)
     void compute_basis_functions(const std::vector<int>& indices, const std::string& key);
     /// Compute a LOL grid task (key.cube)

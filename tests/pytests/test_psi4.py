@@ -39,14 +39,14 @@ def test_psi4_cc():
 
     psi4.optimize('ccsd')
 
-    refnuc   =   9.1654609427539
-    refscf   = -76.0229427274435
-    refccsd  = -0.20823570806196
+    refnuc = 9.1654609427539
+    refscf = -76.0229427274435
+    refccsd = -0.20823570806196
     reftotal = -76.2311784355056
 
-    assert psi4.compare_values(refnuc,   h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")
-    assert psi4.compare_values(refscf,   psi4.variable("SCF total energy"), 5, "SCF energy")
-    assert psi4.compare_values(refccsd,  psi4.variable("CCSD correlation energy"), 4, "CCSD contribution")
+    assert psi4.compare_values(refnuc, h2o.nuclear_repulsion_energy(), 3, "Nuclear repulsion energy")
+    assert psi4.compare_values(refscf, psi4.variable("SCF total energy"), 5, "SCF energy")
+    assert psi4.compare_values(refccsd, psi4.variable("CCSD correlation energy"), 4, "CCSD contribution")
     assert psi4.compare_values(reftotal, psi4.variable("Current energy"), 7, "Total energy")
 
 
@@ -62,20 +62,19 @@ def test_psi4_cas():
     """)
 
     psi4.set_options({
-        "basis"           : '6-31G**',
-        "reference"       : 'rhf',
-        "scf_type"        : 'pk',
-        "mcscf_algorithm" : 'ah',
-        "qc_module"       : 'detci',
-        "nat_orbs"        : True})
+        "basis": '6-31G**',
+        "reference": 'rhf',
+        "scf_type": 'pk',
+        "mcscf_algorithm": 'ah',
+        "qc_module": 'detci',
+        "nat_orbs": True
+    })
 
     cisd_energy, cisd_wfn = psi4.energy("CISD", return_wfn=True)
 
     assert psi4.compare_values(-76.2198474477531, cisd_energy, 6, 'CISD Energy')
 
-    psi4.set_options({
-        "restricted_docc": [1, 0, 0, 0],
-        "active":          [3, 0, 1, 2]})
+    psi4.set_options({"restricted_docc": [1, 0, 0, 0], "active": [3, 0, 1, 2]})
 
     casscf_energy = psi4.energy('casscf', ref_wfn=cisd_wfn)
 
@@ -90,7 +89,7 @@ def test_psi4_dfmp2():
     #! using automatic counterpoise correction.  Monomers are specified using Cartesian coordinates.
 
     Enuc = 235.94662124
-    Ecp  = -0.0224119246
+    Ecp = -0.0224119246
 
     formic_dim = psi4.geometry("""
        0 1
@@ -111,13 +110,13 @@ def test_psi4_dfmp2():
     """)
 
     psi4.set_options({
-       'basis': 'cc-pvdz',
-       'df_basis_scf': 'cc-pvdz-jkfit',
-       'df_basis_mp2': 'cc-pvdz-ri',
-       # not necessary to specify df_basis* for most basis sets
-       'scf_type': 'df',
-       'guess': 'sad',
-       'd_convergence': 11,
+        'basis': 'cc-pvdz',
+        'df_basis_scf': 'cc-pvdz-jkfit',
+        'df_basis_mp2': 'cc-pvdz-ri',
+        # not necessary to specify df_basis* for most basis sets
+        'scf_type': 'df',
+        'guess': 'sad',
+        'd_convergence': 11,
     })
 
     e_cp = psi4.energy('mp2', bsse_type='cp')
@@ -132,8 +131,7 @@ def test_psi4_sapt():
     #! SAPT0 cc-pVDZ computation of the ethene-ethyne interaction energy, using the cc-pVDZ-JKFIT RI basis for SCF
     #! and cc-pVDZ-RI for SAPT.  Monomer geometries are specified using Cartesian coordinates.
 
-    Eref = [ 85.1890645313,  -0.00359915058,  0.00362911158,
-             -0.00083137117,      -0.00150542374, -0.00230683391 ]
+    Eref = [85.1890645313, -0.00359915058, 0.00362911158, -0.00083137117, -0.00150542374, -0.00230683391]
 
     ethene_ethyne = psi4.geometry("""
          0 1
@@ -166,15 +164,16 @@ def test_psi4_sapt():
         "sad_print": 2,
         "d_convergence": 11,
         "puream": True,
-        "print": 1})
+        "print": 1
+    })
 
     psi4.energy('sapt0', molecule=ethene_ethyne)
 
     Eelst = psi4.variable("SAPT ELST ENERGY")
     Eexch = psi4.variable("SAPT EXCH ENERGY")
-    Eind  = psi4.variable("SAPT IND ENERGY")
+    Eind = psi4.variable("SAPT IND ENERGY")
     Edisp = psi4.variable("SAPT DISP ENERGY")
-    ET    = psi4.variable("SAPT0 TOTAL ENERGY")
+    ET = psi4.variable("SAPT0 TOTAL ENERGY")
 
     assert psi4.compare_values(Eref[0], ethene_ethyne.nuclear_repulsion_energy(), 9, "Nuclear Repulsion Energy")
     assert psi4.compare_values(Eref[1], Eelst, 6, "SAPT0 Eelst")
@@ -217,15 +216,16 @@ def test_psi4_scfproperty():
         "e_convergence": 8,
         "docc": [2, 0, 0, 1],
         "socc": [1, 0, 1, 0],
-        "reference": "uhf"})
+        "reference": "uhf"
+    })
 
     ch2.update_geometry()
     assert psi4.compare_values(6.6484189450, ch2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
 
-    props = ['DIPOLE', 'QUADRUPOLE', 'MULLIKEN_CHARGES', 'LOWDIN_CHARGES',
-             'WIBERG_LOWDIN_INDICES', 'MAYER_INDICES', 'MAYER_INDICES',
-             'MO_EXTENTS', 'GRID_FIELD', 'GRID_ESP', 'ESP_AT_NUCLEI',
-             'MULTIPOLE(5)', 'NO_OCCUPATIONS']
+    props = [
+        'DIPOLE', 'QUADRUPOLE', 'MULLIKEN_CHARGES', 'LOWDIN_CHARGES', 'WIBERG_LOWDIN_INDICES', 'MAYER_INDICES',
+        'MAYER_INDICES', 'MO_EXTENTS', 'GRID_FIELD', 'GRID_ESP', 'ESP_AT_NUCLEI', 'MULTIPOLE(5)', 'NO_OCCUPATIONS'
+    ]
 
     psi4.properties('scf', properties=props)
 

@@ -154,5 +154,5 @@ void OCCWave::denominators_rmp2() {
 
     // outfile->Printf("\n denominators done. \n");
 }  // end denominators
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

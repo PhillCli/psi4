@@ -175,7 +175,8 @@ int DCTSolver::run_twostep_dct_cumulant_updates() {
                            "Amplitude <Oo|Vv>");
     global_dpd_->buf4_init(&Lbb, PSIF_DCT_DPD, 0, ID("[o>o]-"), ID("[v>v]-"), ID("[o>o]-"), ID("[v>v]-"), 0,
                            "Amplitude <oo|vv>");
-    DIISManager lambdaDiisManager(maxdiis_, "DCT DIIS Amplitudes", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::InCore);
+    DIISManager lambdaDiisManager(maxdiis_, "DCT DIIS Amplitudes", DIISManager::RemovalPolicy::LargestError,
+                                  DIISManager::StoragePolicy::InCore);
     if ((nalpha_ + nbeta_) > 1) {
         lambdaDiisManager.set_error_vector_size(&Laa, &Lab, &Lbb);
         lambdaDiisManager.set_vector_size(&Laa, &Lab, &Lbb);
@@ -264,7 +265,8 @@ void DCTSolver::run_twostep_dct_orbital_updates() {
     auto tmp = std::make_shared<Matrix>("temp", nirrep_, nsopi_, nsopi_);
 
     // Set up DIIS
-    DIISManager scfDiisManager(maxdiis_, "DCT DIIS Orbitals", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::InCore);
+    DIISManager scfDiisManager(maxdiis_, "DCT DIIS Orbitals", DIISManager::RemovalPolicy::LargestError,
+                               DIISManager::StoragePolicy::InCore);
     if ((nalpha_ + nbeta_) > 1) {
         scfDiisManager.set_error_vector_size(scf_error_a_.get(), scf_error_b_.get());
         scfDiisManager.set_vector_size(Fa_.get(), Fb_.get());
@@ -441,8 +443,8 @@ void DCTSolver::run_simult_dct() {
                                    "Amplitude <Oo|Vv>");
             global_dpd_->buf4_init(&Lbb, PSIF_DCT_DPD, 0, ID("[o>o]-"), ID("[v>v]-"), ID("[o>o]-"), ID("[v>v]-"), 0,
                                    "Amplitude <oo|vv>");
-            if (diisManager.add_entry(scf_error_a_.get(), scf_error_b_.get(), &Raa, &Rab, &Rbb, Fa_.get(),
-                                      Fb_.get(), &Laa, &Lab, &Lbb)) {
+            if (diisManager.add_entry(scf_error_a_.get(), scf_error_b_.get(), &Raa, &Rab, &Rbb, Fa_.get(), Fb_.get(),
+                                      &Laa, &Lab, &Lbb)) {
                 diisString += "S";
             }
             if (diisManager.subspace_size() > mindiisvecs_) {

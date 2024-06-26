@@ -27,8 +27,8 @@
  */
 
 #include "psi4/libmoinfo/libmoinfo.h"
-//#include "mrcc.h"
-//#include "matrix.h"
+// #include "mrcc.h"
+// #include "matrix.h"
 #include "psi4/libpsi4util/libpsi4util.h"
 
 #include "blas.h"

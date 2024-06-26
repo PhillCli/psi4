@@ -90,7 +90,7 @@ void IWL::write(int p, int q, int pq, int pqsym, double *arr, int rmax, int *iof
                 if (printflag) printer->Printf("<%d %d %d %d [%d] [%d] = %20.10f\n", p, q, r, s, pq, rs, value);
 
             } /* end if (fabs(value) > Buf->cutoff) ... */
-        }     /* end loop over s */
-    }         /* end loop over r */
+        } /* end loop over s */
+    } /* end loop over r */
 }
-}
+}  // namespace psi

@@ -38,7 +38,6 @@ if sys.version_info[0] == 2:
 elif sys.version_info[0] > 2:
     from io import StringIO
 
-
 _debug = False
 _verbose = False
 indent = "  "
@@ -76,9 +75,7 @@ def info(message, *args, **kwargs):
     cprint("@%s{==>} %s" % (fmt, cescape(str(message))), stream=stream)
     for arg in args:
         if wrap:
-            lines = textwrap.wrap(
-                str(arg), initial_indent=indent, subsequent_indent=indent
-            )
+            lines = textwrap.wrap(str(arg), initial_indent=indent, subsequent_indent=indent)
             for line in lines:
                 stream.write(line + '\n')
         else:
@@ -124,8 +121,7 @@ def hline(label=None, **kwargs):
     char = kwargs.pop('char', '-')
     max_width = kwargs.pop('max_width', 64)
     if kwargs:
-        raise TypeError("'%s' is an invalid keyword argument for this function."
-                        % next(kwargs.iterkeys()))
+        raise TypeError("'%s' is an invalid keyword argument for this function." % next(kwargs.iterkeys()))
 
     rows, cols = terminal_size()
     if not cols:

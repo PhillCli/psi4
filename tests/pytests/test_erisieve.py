@@ -15,8 +15,7 @@ def test_no_screening_schwarz():
         Ne 4.0 0.0 0.0
         Ne 8.0 0.0 0.0
     """)
-    psi4.set_options({ "ints_tolerance" : 0.0 ,
-                       "screening" : "schwarz" })
+    psi4.set_options({"ints_tolerance": 0.0, "screening": "schwarz"})
 
     basis = psi4.core.BasisSet.build(mol, target='cc-pVDZ')
     factory = psi4.core.IntegralFactory(basis)
@@ -42,8 +41,7 @@ def test_no_screening_csam():
         Ne 4.0 0.0 0.0
         Ne 8.0 0.0 0.0
     """)
-    psi4.set_options({ "ints_tolerance" : 0.0,
-                       "screening" : "csam" })
+    psi4.set_options({"ints_tolerance": 0.0, "screening": "csam"})
 
     basis = psi4.core.BasisSet.build(mol, target='cc-pVDZ')
     factory = psi4.core.IntegralFactory(basis)
@@ -59,6 +57,7 @@ def test_no_screening_csam():
 
     assert compare_integers(0, screen_count, 'Quartets CSAM Screened, Cutoff 0')
 
+
 def test_no_screening_density():
     """Checks the number of shell quartets screened with Density screening
     No shell quartets should be screened with a threshold of 0.0"""
@@ -67,9 +66,7 @@ def test_no_screening_density():
         Ne 4.0 0.0 0.0
         Ne 8.0 0.0 0.0
     """)
-    psi4.set_options({ "ints_tolerance" : 0.0,
-                       "screening": "density",
-                       "scf_type" : "direct" })
+    psi4.set_options({"ints_tolerance": 0.0, "screening": "density", "scf_type": "direct"})
 
     basis = psi4.core.BasisSet.build(mol, target='cc-pVDZ')
     factory = psi4.core.IntegralFactory(basis)
@@ -85,6 +82,7 @@ def test_no_screening_density():
 
     assert compare_integers(0, screen_count, 'Quartets Density Screened, Cutoff 0')
 
+
 def test_no_screening_none():
     """Checks the number of shell quartets screened with None screening
     No shell quartets should be screened"""
@@ -93,7 +91,7 @@ def test_no_screening_none():
         Ne 4.0 0.0 0.0
         Ne 8.0 0.0 0.0
     """)
-    psi4.set_options({ "screening": "none" })
+    psi4.set_options({"screening": "none"})
 
     basis = psi4.core.BasisSet.build(mol, target='cc-pVDZ')
     factory = psi4.core.IntegralFactory(basis)
@@ -121,14 +119,13 @@ def test_schwarz_vs_csam_quartets():
         Ne 8.0 0.0 0.0
     """)
 
-    psi4.set_options({ "ints_tolerance" : 1e-12})
+    psi4.set_options({"ints_tolerance": 1e-12})
     basis = psi4.core.BasisSet.build(mol, target='DZ')
 
     factory = psi4.core.IntegralFactory(basis)
-    psi4.set_options({ "ints_tolerance" : 1e-12,
-                       "screening" : 'csam' })
+    psi4.set_options({"ints_tolerance": 1e-12, "screening": 'csam'})
     eriCSAM = factory.eri(0)
-    psi4.set_options({ "screening" : 'schwarz', 'integral_package': 'libint2' })
+    psi4.set_options({"screening": 'schwarz', 'integral_package': 'libint2'})
     eriSchwarz = factory.eri(0)
 
     shell_inds = range(basis.nshell())
@@ -167,21 +164,16 @@ def test_schwarz_vs_csam_energy():
         Ne 8.0 0.0 0.0
     """)
 
-    psi4.set_options({'scf_type' : 'direct',
-                      'd_convergence' : 1e-12,
-                      'screening' : 'schwarz',
-                      'ints_tolerance' : 1.0e-12 })
+    psi4.set_options({'scf_type': 'direct', 'd_convergence': 1e-12, 'screening': 'schwarz', 'ints_tolerance': 1.0e-12})
     e_schwarz = psi4.energy('hf/DZ')
 
     psi4.core.clean()
 
-    psi4.set_options({'scf_type' : 'direct',
-                      'd_convergence' : 1e-12,
-                      'screening' : 'csam',
-                      'ints_tolerance' : 1.0e-12 })
+    psi4.set_options({'scf_type': 'direct', 'd_convergence': 1e-12, 'screening': 'csam', 'ints_tolerance': 1.0e-12})
     e_csam = psi4.energy('hf/DZ')
 
     assert compare_values(e_schwarz, e_csam, 11, 'Schwarz vs CSAM Screening, Cutoff 1.0e-12')
+
 
 def test_schwarz_vs_density_quartets():
     """Checks difference between the number of shell quartets computed with Schwarz and Density screening. 
@@ -201,27 +193,26 @@ def test_schwarz_vs_density_quartets():
     """)
 
     # run schwarz screening calculation
-    psi4.set_options({ 
-        "scf_type": "direct", 
-        "screening" : 'schwarz', 
-        "df_scf_guess" : False,
-        "integral_package": 'libint2', 
-        "ints_tolerance" : 1e-12, 
+    psi4.set_options({
+        "scf_type": "direct",
+        "screening": 'schwarz',
+        "df_scf_guess": False,
+        "integral_package": 'libint2',
+        "ints_tolerance": 1e-12,
         "save_jk": True,
-        "bench" : 1 
-
+        "bench": 1
     })
     schwarz_energy, schwarz_wfn = psi4.energy('hf/DZ', return_wfn=True)
 
     # run density screening calculation
-    psi4.set_options({ 
-        "scf_type": "direct", 
-        "screening" : 'density', 
-        "df_scf_guess" : False,
-        "integral_package": 'libint2', 
-        "ints_tolerance" : 1e-12,
+    psi4.set_options({
+        "scf_type": "direct",
+        "screening": 'density',
+        "df_scf_guess": False,
+        "integral_package": 'libint2',
+        "ints_tolerance": 1e-12,
         "save_jk": True,
-        "bench" : 1
+        "bench": 1
     })
     density_energy, density_wfn = psi4.energy('hf/DZ', return_wfn=True)
 
@@ -234,12 +225,15 @@ def test_schwarz_vs_density_quartets():
 
     # compare iteration counts of runs with computed shell quartet array lengths
     # iteration_+1 is used to account for computed_shells arrays including SAD guess results
-    assert len(schwarz_computed_shells_expected) == schwarz_wfn.iteration_+1
-    assert len(density_computed_shells_expected) == density_wfn.iteration_+1
+    assert len(schwarz_computed_shells_expected) == schwarz_wfn.iteration_ + 1
+    assert len(density_computed_shells_expected) == density_wfn.iteration_ + 1
 
     # actually compare results with expected values
-    assert compare(schwarz_computed_shells_expected, schwarz_computed_shells, 'Schwarz Computed Shells Count, Cutoff 1.0e-12')
-    assert compare(density_computed_shells_expected, density_computed_shells, 'Density Computed Shells Count, Cutoff 1.0e-12')
+    assert compare(schwarz_computed_shells_expected, schwarz_computed_shells,
+                   'Schwarz Computed Shells Count, Cutoff 1.0e-12')
+    assert compare(density_computed_shells_expected, density_computed_shells,
+                   'Density Computed Shells Count, Cutoff 1.0e-12')
+
 
 def test_rhf_vs_uhf_screening():
     """Checks difference between the number of shell quartets screened with Density screening in RHF vs UHF. 
@@ -258,48 +252,47 @@ def test_rhf_vs_uhf_screening():
         no_com
     """)
 
-    # run rhf calculation 
-    psi4.set_options({ 
-        "scf_type": "direct", 
-        "screening" : 'density', 
-        "df_scf_guess" : False,
-        "integral_package": 'libint2', 
-        "ints_tolerance" : 1e-12, 
-        "reference" : "rhf",
+    # run rhf calculation
+    psi4.set_options({
+        "scf_type": "direct",
+        "screening": 'density',
+        "df_scf_guess": False,
+        "integral_package": 'libint2',
+        "ints_tolerance": 1e-12,
+        "reference": "rhf",
         "save_jk": True,
-        "bench" : 1 
-
+        "bench": 1
     })
     rhf_energy, rhf_wfn = psi4.energy('hf/DZ', return_wfn=True)
 
-    # run uhf calculation 
-    psi4.set_options({ 
-        "scf_type": "direct", 
-        "screening" : 'density', 
-        "df_scf_guess" : False,
-        "integral_package": 'libint2', 
-        "ints_tolerance" : 1e-12, 
-        "reference" : "uhf",
+    # run uhf calculation
+    psi4.set_options({
+        "scf_type": "direct",
+        "screening": 'density',
+        "df_scf_guess": False,
+        "integral_package": 'libint2',
+        "ints_tolerance": 1e-12,
+        "reference": "uhf",
         "save_jk": True,
-        "bench" : 1
-
+        "bench": 1
     })
     uhf_energy, uhf_wfn = psi4.energy('hf/DZ', return_wfn=True)
 
     # prep for comparing results to expected values
     rhf_computed_shells = rhf_wfn.jk().computed_shells_per_iter("Quartets")
     uhf_computed_shells = uhf_wfn.jk().computed_shells_per_iter("Quartets")
-    
+
     computed_shells_expected = [13171, 19618, 19665, 19657, 19661, 19661, 19663, 19663, 19663]
 
     # compare iteration counts of runs with computed shell quartet array lengths
     # iteration_+1 is used to account for computed_shells arrays including SAD guess results
-    assert len(computed_shells_expected) == rhf_wfn.iteration_+1
-    assert len(computed_shells_expected) == uhf_wfn.iteration_+1
+    assert len(computed_shells_expected) == rhf_wfn.iteration_ + 1
+    assert len(computed_shells_expected) == uhf_wfn.iteration_ + 1
 
     # actually compare results with expected values
     assert compare(computed_shells_expected, rhf_computed_shells, 'Schwarz Computed Shells Count, Cutoff 1.0e-12')
     assert compare(computed_shells_expected, uhf_computed_shells, 'Density Computed Shells Count, Cutoff 1.0e-12')
+
 
 def test_schwarz_vs_density_energy():
     """Checks difference in Hartree-Fock energy between Schwarz and Density screening (with and without IFB), 
@@ -319,36 +312,43 @@ def test_schwarz_vs_density_energy():
         no_com
     """)
 
-    psi4.set_options({'scf_type' : 'direct',
-                      'd_convergence' : 1e-6,
-                      'df_scf_guess' : False,
-                      'screening' : 'schwarz',
-                      'ints_tolerance' : 1.0e-12 })
+    psi4.set_options({
+        'scf_type': 'direct',
+        'd_convergence': 1e-6,
+        'df_scf_guess': False,
+        'screening': 'schwarz',
+        'ints_tolerance': 1.0e-12
+    })
     e_schwarz = psi4.energy('hf/DZ')
 
     psi4.core.clean()
 
-    psi4.set_options({'scf_type' : 'direct',
-                      'd_convergence' : 1e-6,
-                      'df_scf_guess' : False,
-                      'screening' : 'density',
-                      'incfock' : False,
-                      'ints_tolerance' : 1.0e-12 })
+    psi4.set_options({
+        'scf_type': 'direct',
+        'd_convergence': 1e-6,
+        'df_scf_guess': False,
+        'screening': 'density',
+        'incfock': False,
+        'ints_tolerance': 1.0e-12
+    })
     e_density = psi4.energy('hf/DZ')
 
     psi4.core.clean()
 
-    psi4.set_options({'scf_type' : 'direct',
-                      'd_convergence' : 1e-6,
-                      'df_scf_guess' : False,
-                      'screening' : 'density',
-                      'incfock' : True,
-                      'ints_tolerance' : 1.0e-12 })
+    psi4.set_options({
+        'scf_type': 'direct',
+        'd_convergence': 1e-6,
+        'df_scf_guess': False,
+        'screening': 'density',
+        'incfock': True,
+        'ints_tolerance': 1.0e-12
+    })
 
     e_incfock = psi4.energy('hf/DZ')
 
     assert compare_values(e_schwarz, e_density, 10, 'Schwarz vs Density Screening, Cutoff 1.0e-12')
     assert compare_values(e_schwarz, e_incfock, 10, 'Schwarz vs Density Screening, Cutoff 1.0e-12')
+
 
 def test_schwarz_vs_none_energy():
     """Checks difference in Hartree-Fock energy between Schwarz screening and no screening, which should be
@@ -360,17 +360,12 @@ def test_schwarz_vs_none_energy():
         Ne 8.0 0.0 0.0
     """)
 
-    psi4.set_options({'d_convergence' : 1e-12,
-                      'screening' : 'schwarz',
-                      'ints_tolerance' : 1.0e-12 })
+    psi4.set_options({'d_convergence': 1e-12, 'screening': 'schwarz', 'ints_tolerance': 1.0e-12})
     e_schwarz = psi4.energy('hf/DZ')
 
     psi4.core.clean()
 
-    psi4.set_options({'d_convergence' : 1e-12,
-                      'screening' : 'none',
-                      'ints_tolerance' : 1.0e-12 })
+    psi4.set_options({'d_convergence': 1e-12, 'screening': 'none', 'ints_tolerance': 1.0e-12})
     e_none = psi4.energy('hf/DZ')
 
     assert compare_values(e_schwarz, e_none, 11, 'Schwarz vs None Screening, Cutoff 1.0e-12')
-

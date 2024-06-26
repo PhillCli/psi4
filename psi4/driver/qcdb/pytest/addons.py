@@ -63,7 +63,7 @@ def is_psi4_new_enough(version_feature_introduced):
 #                                reason='Not detecting module scipy. Install package if necessary and add to envvar PYTHONPATH')
 
 using_psi4 = pytest.mark.skipif(_plugin_import('psi4') is False,
-                                 reason='Not detecting module psi4. Install package and add to envvar PYTHONPATH')
+                                reason='Not detecting module psi4. Install package and add to envvar PYTHONPATH')
 
 #using_psi4_libxc = pytest.mark.skipif(is_psi4_new_enough("1.2a1.dev100") is False,
 #                                reason="Psi4 does not include DFT rewrite to use Libxc. Update to development head")
@@ -75,7 +75,7 @@ using_psi4 = pytest.mark.skipif(_plugin_import('psi4') is False,
 #                                reason="Psi4 does not include derivatives of integrals exported to python. Update to development head")
 
 using_psi4_molrec = pytest.mark.skipif(is_psi4_new_enough("1.2a1.dev999") is False,
-                                reason="Psi4 does not use the new Molecule parsing. Update to development head")
+                                       reason="Psi4 does not use the new Molecule parsing. Update to development head")
 
 #using_numpy_113 = pytest.mark.skipif(is_numpy_new_enough("1.13.0") is False,
 #                                reason='NumPy does not include 1.13 features. Update package and add to envvar PYTHONPATH')
@@ -83,6 +83,6 @@ using_psi4_molrec = pytest.mark.skipif(is_psi4_new_enough("1.2a1.dev999") is Fal
 #using_matplotlib = pytest.mark.skipif(_plugin_import('matplotlib') is False,
 #                                reason='Note detecting module matplotlib. Install package if necessary and add to envvar PYTHONPATH')
 
-using_pylibefp = pytest.mark.skipif(_plugin_import('pylibefp') is False,
-                                reason='Not detecting module pylibefp. Install package if necessary and add to envvar PYTHONPATH')
-
+using_pylibefp = pytest.mark.skipif(
+    _plugin_import('pylibefp') is False,
+    reason='Not detecting module pylibefp. Install package if necessary and add to envvar PYTHONPATH')

@@ -240,8 +240,8 @@ PsiReturnType CoupledCluster::lowmemory_triples() {
     outfile->Printf("        %% complete  total time\n");
 
     /**
-      *  if there is enough memory to explicitly thread, do so
-      */
+     *  if there is enough memory to explicitly thread, do so
+     */
 
     std::vector<std::shared_ptr<PSIO> > mypsio;
     for (int i = 0; i < nthreads; i++) {
@@ -573,5 +573,5 @@ PsiReturnType CoupledCluster::lowmemory_triples() {
 
     return Success;
 }
-}
-}  // end of namespaces
+}  // namespace fnocc
+}  // namespace psi

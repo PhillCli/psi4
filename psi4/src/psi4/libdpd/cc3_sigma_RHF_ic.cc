@@ -257,9 +257,9 @@ void DPD::cc3_sigma_RHF_ic(dpdbuf4 *CIjAb, dpdbuf4 *WAbEi, dpdbuf4 *WMbIj, int d
                         }
                     }
                 } /* end adding up S's */
-            }     /* Gk */
-        }         /* Gj */
-    }             /* Gi */
+            } /* Gk */
+        } /* Gj */
+    } /* Gi */
 
     /* close up files and update sigma vectors */
     file2_mat_close(&fIJ);
@@ -858,10 +858,10 @@ void cc3_sigma_RHF_ic_thread(thread_data &data) {
                             }
                         }
                     } /* oldtrips */
-                }     /* end do_doubles */
-            }         /* k */
-        }             /* j */
-    }                 /* i */
+                } /* end do_doubles */
+            } /* k */
+        } /* j */
+    } /* i */
 
     for (Gab = 0; Gab < nirreps; Gab++) {
         Gc = Gab ^ Gijk ^ GX3;

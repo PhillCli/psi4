@@ -75,7 +75,7 @@ def test_scf4():
     import math
 
     refENuc = [
-        9.78588587740,  9.780670144878629, 8.807297289661147, 8.802603130390768, 8.006633899691952,  8.002366482173423
+        9.78588587740, 9.780670144878629, 8.807297289661147, 8.802603130390768, 8.006633899691952, 8.002366482173423
     ]
 
     # Define the points on the potential energy surface using standard Python list functions
@@ -98,8 +98,8 @@ def test_scf4():
         for A in Avals:
             h2o.A = A  # alternately, h2o.set_variable('A', A)
             h2o.update_geometry()
-            assert compare_values(refENuc[count],
-                                  h2o.nuclear_repulsion_energy(), 10, "Nuclear repulsion energy %d" % count)
+            assert compare_values(refENuc[count], h2o.nuclear_repulsion_energy(), 10,
+                                  "Nuclear repulsion energy %d" % count)
             count = count + 1
 
     # And now the same thing, using Python's trigonometry functions, and Cartesian input.  This time
@@ -124,6 +124,6 @@ def test_scf4():
             h2o.RSinA = R * math.sin(math.radians(A))
             h2o.update_geometry()
 
-            assert compare_values(refENuc[count],
-                                  h2o.nuclear_repulsion_energy(), 10, "Nuclear repulsion energy %d" % count)
+            assert compare_values(refENuc[count], h2o.nuclear_repulsion_energy(), 10,
+                                  "Nuclear repulsion energy %d" % count)
             count = count + 1

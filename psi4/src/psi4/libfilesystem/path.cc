@@ -48,8 +48,8 @@
 #define S_IRUSR 0
 #define S_IWUSR 0
 #define S_IXUSR 0
-#define S_ISREG(m) (((m)&S_IFMT) == S_IFREG)
-#define S_ISDIR(m) (((m)&S_IFMT) == S_IFDIR)
+#define S_ISREG(m) (((m) & S_IFMT) == S_IFREG)
+#define S_ISDIR(m) (((m) & S_IFMT) == S_IFDIR)
 #define SYSTEM_GETCWD ::_getcwd
 #define SYSTEM_MKDIR(D, P) ::_mkdir((D))
 #define PATH_MAX _MAX_PATH
@@ -205,5 +205,5 @@ path path::getcwd() {
     return path(temp);
 }
 
-}  // filesystem
-}  // psi
+}  // namespace filesystem
+}  // namespace psi

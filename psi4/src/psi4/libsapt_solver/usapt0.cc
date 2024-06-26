@@ -976,7 +976,6 @@ void USAPT0::fock_terms() {
         J_Pb_A = J[jk_id];
     }
 
-
     // ==> Generalized ESP (Flat and Exchange) <== //
 
     std::map<std::string, std::shared_ptr<Matrix> > mapA;
@@ -1756,7 +1755,6 @@ void CPKS_USAPT0::preconditioner(std::shared_ptr<Matrix> r, std::shared_ptr<Matr
 
 std::map<std::string, std::shared_ptr<Matrix> > CPKS_USAPT0::product(
     std::map<std::string, std::shared_ptr<Matrix> >& b) {
-
     std::map<std::string, std::shared_ptr<Matrix> > s;
 
     bool do_A = b.count("Aa") || b.count("Ab");
@@ -2247,10 +2245,18 @@ void USAPT0::mp2_terms() {
     std::shared_ptr<Matrix> Qa_bs;
     std::shared_ptr<Matrix> Qb_bs;
 
-    if (naa > 0) { Qa_ar = linalg::triplet(Caocca_A_, El_pot_B, Cavira_A_, true, false, false); }
-    if (nba > 0) { Qb_ar = linalg::triplet(Caoccb_A_, El_pot_B, Cavirb_A_, true, false, false); }
-    if (nab > 0) { Qa_bs = linalg::triplet(Caocca_B_, El_pot_A, Cavira_B_, true, false, false); }
-    if (nbb > 0) { Qb_bs = linalg::triplet(Caoccb_B_, El_pot_A, Cavirb_B_, true, false, false); }
+    if (naa > 0) {
+        Qa_ar = linalg::triplet(Caocca_A_, El_pot_B, Cavira_A_, true, false, false);
+    }
+    if (nba > 0) {
+        Qb_ar = linalg::triplet(Caoccb_A_, El_pot_B, Cavirb_A_, true, false, false);
+    }
+    if (nab > 0) {
+        Qa_bs = linalg::triplet(Caocca_B_, El_pot_A, Cavira_B_, true, false, false);
+    }
+    if (nbb > 0) {
+        Qb_bs = linalg::triplet(Caoccb_B_, El_pot_A, Cavirb_B_, true, false, false);
+    }
 
     Ta_as.reset();
     Tb_as.reset();
@@ -2281,16 +2287,16 @@ void USAPT0::mp2_terms() {
     // transformation for necessary quantities
     std::vector<std::shared_ptr<Matrix> > Cs;
     if (naa > 0) {
-        Cs.push_back(Caocca_A_); // a_a
-        Cs.push_back(Cavira_A_); // a_r
-        Cs.push_back(Ca_r3); // a_r3
-        Cs.push_back(Ca_a4); // a_a4
+        Cs.push_back(Caocca_A_);  // a_a
+        Cs.push_back(Cavira_A_);  // a_r
+        Cs.push_back(Ca_r3);      // a_r3
+        Cs.push_back(Ca_a4);      // a_a4
     }
     if (nab > 0) {
-        Cs.push_back(Caocca_B_); // a_b
-        Cs.push_back(Cavira_B_); // a_s
-        Cs.push_back(Ca_s3); // a_s3
-        Cs.push_back(Ca_b4); // a_b4
+        Cs.push_back(Caocca_B_);  // a_b
+        Cs.push_back(Cavira_B_);  // a_s
+        Cs.push_back(Ca_s3);      // a_s3
+        Cs.push_back(Ca_b4);      // a_b4
     }
 
     if (alpha_exchange_) {
@@ -2305,16 +2311,16 @@ void USAPT0::mp2_terms() {
     }
 
     if (nba > 0) {
-        Cs.push_back(Caoccb_A_); // b_a
-        Cs.push_back(Cavirb_A_); // b_r
-        Cs.push_back(Cb_r3); // b_r3
-        Cs.push_back(Cb_a4); // b_a4
+        Cs.push_back(Caoccb_A_);  // b_a
+        Cs.push_back(Cavirb_A_);  // b_r
+        Cs.push_back(Cb_r3);      // b_r3
+        Cs.push_back(Cb_a4);      // b_a4
     }
     if (nbb > 0) {
-        Cs.push_back(Caoccb_B_); // b_b
-        Cs.push_back(Cavirb_B_); // b_s
-        Cs.push_back(Cb_s3); // b_s3
-        Cs.push_back(Cb_b4); // b_b4
+        Cs.push_back(Caoccb_B_);  // b_b
+        Cs.push_back(Cavirb_B_);  // b_s
+        Cs.push_back(Cb_s3);      // b_s3
+        Cs.push_back(Cb_b4);      // b_b4
     }
     if (beta_exchange_) {
         if (nba > 0) {
@@ -2479,7 +2485,7 @@ void USAPT0::mp2_terms() {
     maxa_b = (maxa_b > nab ? nab : maxa_b);
     maxb_a = (maxb_a > nba ? nba : maxb_a);
     maxb_b = (maxb_b > nbb ? nbb : maxb_b);
-    if ( (naa > 0 && maxa_a < 1L) || (nab > 0 && maxa_b < 1L) || (nba > 0 && maxb_a < 1L) || (nbb > 0 && maxb_b < 1L) ) {
+    if ((naa > 0 && maxa_a < 1L) || (nab > 0 && maxa_b < 1L) || (nba > 0 && maxb_a < 1L) || (nbb > 0 && maxb_b < 1L)) {
         throw PSIEXCEPTION("Too little dynamic memory for USAPT0::mp2_terms");
     }
 

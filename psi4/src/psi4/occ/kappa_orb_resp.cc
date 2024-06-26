@@ -77,7 +77,7 @@ void OCCWave::kappa_orb_resp() {
         int h = 0;
         global_dpd_->buf4_mat_irrep_init(&K, h);
         global_dpd_->buf4_mat_irrep_rd(&K, h);
-        //#pragma omp parallel for
+        // #pragma omp parallel for
         for (int ai = 0; ai < K.params->rowtot[h]; ++ai) {
             int a = K.params->roworb[h][ai][0];
             int i = K.params->roworb[h][ai][1];
@@ -96,7 +96,7 @@ void OCCWave::kappa_orb_resp() {
         h = 0;
         global_dpd_->buf4_mat_irrep_init(&K, h);
         global_dpd_->buf4_mat_irrep_rd(&K, h);
-        //#pragma omp parallel for
+        // #pragma omp parallel for
         for (int ai = 0; ai < K.params->rowtot[h]; ++ai) {
             int a = K.params->roworb[h][ai][0];
             int i = K.params->roworb[h][ai][1];
@@ -115,7 +115,7 @@ void OCCWave::kappa_orb_resp() {
         h = 0;
         global_dpd_->buf4_mat_irrep_init(&K, h);
         global_dpd_->buf4_mat_irrep_rd(&K, h);
-        //#pragma omp parallel for
+        // #pragma omp parallel for
         for (int ai = 0; ai < K.params->rowtot[h]; ++ai) {
             int a = K.params->roworb[h][ai][0];
             int i = K.params->roworb[h][ai][1];
@@ -143,7 +143,8 @@ void OCCWave::kappa_orb_resp() {
 
         // Solve the orb-resp equations
         std::vector<int> dummy(Aorb.nrow());
-        pcg_conver = C_DGESV(Aorb.nrow(), 1, Aorb.get_pointer(), Aorb.ncol(), dummy.data(), kappaA->nonconst_array(), Aorb.ncol());
+        pcg_conver = C_DGESV(Aorb.nrow(), 1, Aorb.get_pointer(), Aorb.ncol(), dummy.data(), kappaA->nonconst_array(),
+                             Aorb.ncol());
 
         // If LINEQ FAILED!
         if (pcg_conver != 0) {
@@ -248,7 +249,7 @@ void OCCWave::kappa_orb_resp() {
         int h = 0;
         global_dpd_->buf4_mat_irrep_init(&K, h);
         global_dpd_->buf4_mat_irrep_rd(&K, h);
-        //#pragma omp parallel for
+        // #pragma omp parallel for
         for (int ai = 0; ai < K.params->rowtot[h]; ++ai) {
             int a = K.params->roworb[h][ai][0];
             int i = K.params->roworb[h][ai][1];
@@ -267,7 +268,7 @@ void OCCWave::kappa_orb_resp() {
         h = 0;
         global_dpd_->buf4_mat_irrep_init(&K, h);
         global_dpd_->buf4_mat_irrep_rd(&K, h);
-        //#pragma omp parallel for
+        // #pragma omp parallel for
         for (int ai = 0; ai < K.params->rowtot[h]; ++ai) {
             int a = K.params->roworb[h][ai][0];
             int i = K.params->roworb[h][ai][1];
@@ -286,7 +287,7 @@ void OCCWave::kappa_orb_resp() {
         h = 0;
         global_dpd_->buf4_mat_irrep_init(&K, h);
         global_dpd_->buf4_mat_irrep_rd(&K, h);
-        //#pragma omp parallel for
+        // #pragma omp parallel for
         for (int ai = 0; ai < K.params->rowtot[h]; ++ai) {
             int a = K.params->roworb[h][ai][0];
             int i = K.params->roworb[h][ai][1];
@@ -328,7 +329,7 @@ void OCCWave::kappa_orb_resp() {
         h = 0;
         global_dpd_->buf4_mat_irrep_init(&K, h);
         global_dpd_->buf4_mat_irrep_rd(&K, h);
-        //#pragma omp parallel for
+        // #pragma omp parallel for
         for (int ai = 0; ai < K.params->rowtot[h]; ++ai) {
             int a = K.params->roworb[h][ai][0];
             int i = K.params->roworb[h][ai][1];
@@ -347,7 +348,7 @@ void OCCWave::kappa_orb_resp() {
         h = 0;
         global_dpd_->buf4_mat_irrep_init(&K, h);
         global_dpd_->buf4_mat_irrep_rd(&K, h);
-        //#pragma omp parallel for
+        // #pragma omp parallel for
         for (int ai = 0; ai < K.params->rowtot[h]; ++ai) {
             int a = K.params->roworb[h][ai][0];
             int i = K.params->roworb[h][ai][1];
@@ -366,7 +367,7 @@ void OCCWave::kappa_orb_resp() {
         h = 0;
         global_dpd_->buf4_mat_irrep_init(&K, h);
         global_dpd_->buf4_mat_irrep_rd(&K, h);
-        //#pragma omp parallel for
+        // #pragma omp parallel for
         for (int ai = 0; ai < K.params->rowtot[h]; ++ai) {
             int a = K.params->roworb[h][ai][0];
             int i = K.params->roworb[h][ai][1];
@@ -406,7 +407,7 @@ void OCCWave::kappa_orb_resp() {
         h = 0;
         global_dpd_->buf4_mat_irrep_init(&K, h);
         global_dpd_->buf4_mat_irrep_rd(&K, h);
-        //#pragma omp parallel for
+        // #pragma omp parallel for
         for (int ai = 0; ai < K.params->rowtot[h]; ++ai) {
             int a = K.params->roworb[h][ai][0];
             int i = K.params->roworb[h][ai][1];
@@ -448,7 +449,8 @@ void OCCWave::kappa_orb_resp() {
 
         // Solve the orb-resp equations
         std::vector<int> dummy(Aorb.nrow());
-        pcg_conver = C_DGESV(Aorb.nrow(), 1, Aorb.get_pointer(), Aorb.ncol(), dummy.data(), kappaA->nonconst_array(), Aorb.ncol());
+        pcg_conver = C_DGESV(Aorb.nrow(), 1, Aorb.get_pointer(), Aorb.ncol(), dummy.data(), kappaA->nonconst_array(),
+                             Aorb.ncol());
 
         // Build kappaA and kappaB
         // kappa->print();
@@ -534,5 +536,5 @@ void OCCWave::kappa_orb_resp() {
     }  // end if (reference_ == "UNRESTRICTED")
        // outfile->Printf("\n kappa_orb_resp done. \n");
 }  // end kappa_orb_resp
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

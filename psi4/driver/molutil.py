@@ -65,31 +65,30 @@ def molecule_get_attr(self, name):
 
 @classmethod
 def _molecule_from_string(cls,
-                         molstr,
-                         dtype=None,
-                         name=None,
-                         fix_com=None,
-                         fix_orientation=None,
-                         fix_symmetry=None,
-                         return_dict=False,
-                         enable_qm=True,
-                         enable_efp=True,
-                         missing_enabled_return_qm='none',
-                         missing_enabled_return_efp='none',
-                         verbose=1):
-    molrec = qcel.molparse.from_string(
-        molstr=molstr,
-        dtype=dtype,
-        name=name,
-        fix_com=fix_com,
-        fix_orientation=fix_orientation,
-        fix_symmetry=fix_symmetry,
-        return_processed=False,
-        enable_qm=enable_qm,
-        enable_efp=enable_efp,
-        missing_enabled_return_qm=missing_enabled_return_qm,
-        missing_enabled_return_efp=missing_enabled_return_efp,
-        verbose=verbose)
+                          molstr,
+                          dtype=None,
+                          name=None,
+                          fix_com=None,
+                          fix_orientation=None,
+                          fix_symmetry=None,
+                          return_dict=False,
+                          enable_qm=True,
+                          enable_efp=True,
+                          missing_enabled_return_qm='none',
+                          missing_enabled_return_efp='none',
+                          verbose=1):
+    molrec = qcel.molparse.from_string(molstr=molstr,
+                                       dtype=dtype,
+                                       name=name,
+                                       fix_com=fix_com,
+                                       fix_orientation=fix_orientation,
+                                       fix_symmetry=fix_symmetry,
+                                       return_processed=False,
+                                       enable_qm=enable_qm,
+                                       enable_efp=enable_efp,
+                                       missing_enabled_return_qm=missing_enabled_return_qm,
+                                       missing_enabled_return_efp=missing_enabled_return_efp,
+                                       verbose=verbose)
     if return_dict:
         return core.Molecule.from_dict(molrec['qm']), molrec
     else:
@@ -98,34 +97,34 @@ def _molecule_from_string(cls,
 
 @classmethod
 def _molecule_from_arrays(cls,
-                         geom=None,
-                         elea=None,
-                         elez=None,
-                         elem=None,
-                         mass=None,
-                         real=None,
-                         elbl=None,
-                         name=None,
-                         units='Angstrom',
-                         input_units_to_au=None,
-                         fix_com=None,
-                         fix_orientation=None,
-                         fix_symmetry=None,
-                         fragment_separators=None,
-                         fragment_charges=None,
-                         fragment_multiplicities=None,
-                         molecular_charge=None,
-                         molecular_multiplicity=None,
-                         comment=None,
-                         provenance=None,
-                         connectivity=None,
-                         missing_enabled_return='error',
-                         tooclose=0.1,
-                         zero_ghost_fragments=False,
-                         nonphysical=False,
-                         mtol=1.e-3,
-                         verbose=1,
-                         return_dict=False):
+                          geom=None,
+                          elea=None,
+                          elez=None,
+                          elem=None,
+                          mass=None,
+                          real=None,
+                          elbl=None,
+                          name=None,
+                          units='Angstrom',
+                          input_units_to_au=None,
+                          fix_com=None,
+                          fix_orientation=None,
+                          fix_symmetry=None,
+                          fragment_separators=None,
+                          fragment_charges=None,
+                          fragment_multiplicities=None,
+                          molecular_charge=None,
+                          molecular_multiplicity=None,
+                          comment=None,
+                          provenance=None,
+                          connectivity=None,
+                          missing_enabled_return='error',
+                          tooclose=0.1,
+                          zero_ghost_fragments=False,
+                          nonphysical=False,
+                          mtol=1.e-3,
+                          verbose=1,
+                          return_dict=False):
     """Construct Molecule from unvalidated arrays and variables.
 
     Light wrapper around :py:func:`~qcelemental.molparse.from_arrays`
@@ -142,35 +141,34 @@ def _molecule_from_arrays(cls,
     :py:class:`psi4.core.Molecule`
 
     """
-    molrec = qcel.molparse.from_arrays(
-        geom=geom,
-        elea=elea,
-        elez=elez,
-        elem=elem,
-        mass=mass,
-        real=real,
-        elbl=elbl,
-        name=name,
-        units=units,
-        input_units_to_au=input_units_to_au,
-        fix_com=fix_com,
-        fix_orientation=fix_orientation,
-        fix_symmetry=fix_symmetry,
-        fragment_separators=fragment_separators,
-        fragment_charges=fragment_charges,
-        fragment_multiplicities=fragment_multiplicities,
-        molecular_charge=molecular_charge,
-        molecular_multiplicity=molecular_multiplicity,
-        comment=comment,
-        provenance=provenance,
-        connectivity=connectivity,
-        domain='qm',
-        missing_enabled_return=missing_enabled_return,
-        tooclose=tooclose,
-        zero_ghost_fragments=zero_ghost_fragments,
-        nonphysical=nonphysical,
-        mtol=mtol,
-        verbose=verbose)
+    molrec = qcel.molparse.from_arrays(geom=geom,
+                                       elea=elea,
+                                       elez=elez,
+                                       elem=elem,
+                                       mass=mass,
+                                       real=real,
+                                       elbl=elbl,
+                                       name=name,
+                                       units=units,
+                                       input_units_to_au=input_units_to_au,
+                                       fix_com=fix_com,
+                                       fix_orientation=fix_orientation,
+                                       fix_symmetry=fix_symmetry,
+                                       fragment_separators=fragment_separators,
+                                       fragment_charges=fragment_charges,
+                                       fragment_multiplicities=fragment_multiplicities,
+                                       molecular_charge=molecular_charge,
+                                       molecular_multiplicity=molecular_multiplicity,
+                                       comment=comment,
+                                       provenance=provenance,
+                                       connectivity=connectivity,
+                                       domain='qm',
+                                       missing_enabled_return=missing_enabled_return,
+                                       tooclose=tooclose,
+                                       zero_ghost_fragments=zero_ghost_fragments,
+                                       nonphysical=nonphysical,
+                                       mtol=mtol,
+                                       verbose=verbose)
 
     qmol = core.Molecule.from_dict(molrec)
     geom = np.array(molrec["geom"]).reshape((-1, 3))
@@ -183,7 +181,8 @@ def _molecule_from_arrays(cls,
 
 
 @classmethod
-def _molecule_from_schema(cls, molschema: Dict, return_dict: bool = False, nonphysical: bool = False, verbose: int = 1) -> Union[core.Molecule, Tuple[core.Molecule, Dict]]:
+def _molecule_from_schema(cls, molschema: Dict, return_dict: bool = False, nonphysical: bool = False,
+                          verbose: int = 1) -> Union[core.Molecule, Tuple[core.Molecule, Dict]]:
     """Construct Molecule from non-Psi4 schema.
 
     Light wrapper around :py:func:`~psi4.core.Molecule.from_arrays`.
@@ -262,8 +261,11 @@ def geometry(geom: str, name: str = "default") -> core.Molecule:
     the string are filtered.
 
     """
-    molrec = qcel.molparse.from_string(
-        geom, enable_qm=True, missing_enabled_return_qm='minimal', enable_efp=True, missing_enabled_return_efp='none')
+    molrec = qcel.molparse.from_string(geom,
+                                       enable_qm=True,
+                                       missing_enabled_return_qm='minimal',
+                                       enable_efp=True,
+                                       missing_enabled_return_efp='none')
 
     molecule = core.Molecule.from_dict(molrec['qm'])
     if "geom" in molrec["qm"]:
@@ -278,7 +280,9 @@ def geometry(geom: str, name: str = "default") -> core.Molecule:
         try:
             import pylibefp
         except ImportError as e:  # py36 ModuleNotFoundError
-            raise ImportError("""Install pylibefp to use EFP functionality. `conda install pylibefp -c psi4` Or build with `-DENABLE_libefp=ON`""") from e
+            raise ImportError(
+                """Install pylibefp to use EFP functionality. `conda install pylibefp -c psi4` Or build with `-DENABLE_libefp=ON`"""
+            ) from e
         #print('Using pylibefp: {} (version {})'.format(pylibefp.__file__, pylibefp.__version__))
         efpobj = pylibefp.from_dict(molrec['efp'])
         # pylibefp.core.efp rides along on molecule

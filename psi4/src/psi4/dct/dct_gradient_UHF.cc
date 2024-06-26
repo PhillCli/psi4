@@ -1115,7 +1115,8 @@ void DCTSolver::iterate_orbital_response() {
     dpdfile2 zaa, zbb, raa, rbb;
     global_dpd_->file2_init(&zaa, PSIF_DCT_DPD, 0, ID('O'), ID('V'), "z <O|V>");
     global_dpd_->file2_init(&zbb, PSIF_DCT_DPD, 0, ID('o'), ID('v'), "z <o|v>");
-    DIISManager ZiaDiisManager(maxdiis_, "DCT DIIS Orbital Z", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::InCore);
+    DIISManager ZiaDiisManager(maxdiis_, "DCT DIIS Orbital Z", DIISManager::RemovalPolicy::LargestError,
+                               DIISManager::StoragePolicy::InCore);
     ZiaDiisManager.set_error_vector_size(&zaa, &zbb);
     ZiaDiisManager.set_vector_size(&zaa, &zbb);
     global_dpd_->file2_close(&zaa);
@@ -1910,7 +1911,8 @@ void DCTSolver::iterate_cumulant_response() {
     global_dpd_->buf4_init(&Zab, PSIF_DCT_DPD, 0, ID("[O,o]"), ID("[V,v]"), ID("[O,o]"), ID("[V,v]"), 0, "Z <Oo|Vv>");
     global_dpd_->buf4_init(&Zbb, PSIF_DCT_DPD, 0, ID("[o>o]-"), ID("[v>v]-"), ID("[o>o]-"), ID("[v>v]-"), 0,
                            "Z <oo|vv>");
-    DIISManager ZDiisManager(maxdiis_, "DCT DIIS Z", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::InCore);
+    DIISManager ZDiisManager(maxdiis_, "DCT DIIS Z", DIISManager::RemovalPolicy::LargestError,
+                             DIISManager::StoragePolicy::InCore);
     ZDiisManager.set_error_vector_size(&Zaa, &Zab, &Zbb);
     ZDiisManager.set_vector_size(&Zaa, &Zab, &Zbb);
     global_dpd_->buf4_close(&Zaa);

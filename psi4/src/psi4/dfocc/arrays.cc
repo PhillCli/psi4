@@ -799,7 +799,7 @@ void Array2d::mgs() {
                 A2d_[i][j] -= rmgs2 * A2d_[i][k];
             }
         }  // end 2
-    }      // end 1
+    }  // end 1
 
 }  //
 

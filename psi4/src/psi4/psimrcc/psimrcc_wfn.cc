@@ -120,5 +120,5 @@ double PSIMRCCWfn::compute_energy() {
 
     return energy;
 }
-}
-}
+}  // namespace psimrcc
+}  // namespace psi

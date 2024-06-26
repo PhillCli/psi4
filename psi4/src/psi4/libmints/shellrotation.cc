@@ -149,8 +149,7 @@ void ShellRotation::init(int a, SymmetryOperation& so, const IntegralFactory* in
             }
 
             for (k = 0; k < am_; ++k) {
-                for (iI = 0; lI[iI] == 0; iI++)
-                    ;
+                for (iI = 0; lI[iI] == 0; iI++);
                 lI[iI]--;
                 double contrib = so(J.axis(k), iI);
                 tmp *= contrib;
@@ -210,8 +209,7 @@ void ShellRotation::init_pure(int a, SymmetryOperation& so, const IntegralFactor
                 for (m = 0; m < 3; ++m) lI[m] = I.l(m);
 
                 for (m = 0; m < am_; ++m) {
-                    for (iI = 0; lI[iI] == 0; iI++)
-                        ;
+                    for (iI = 0; lI[iI] == 0; iI++);
                     lI[iI]--;
 
                     tmp2 *= so(K.axis(m), iI);

@@ -26,7 +26,6 @@
 # @END LICENSE
 #
 
-
 import numpy as np
 
 from psi4 import core
@@ -39,7 +38,8 @@ from .augmented_hessian import ah_iteration
 
 def print_iteration(mtype, niter, energy, de, orb_rms, ci_rms, nci, norb, stype):
     core.print_out("%s %2d:  % 18.12f   % 1.4e  %1.2e  %1.2e  %3d  %3d  %s\n" %
-                    (mtype, niter, energy, de, orb_rms, ci_rms, nci, norb, stype))
+                   (mtype, niter, energy, de, orb_rms, ci_rms, nci, norb, stype))
+
 
 def mcscf_solver(ref_wfn):
 
@@ -102,16 +102,17 @@ def mcscf_solver(ref_wfn):
     # Execute the rotate command
     for rot in mcscf_rotate:
         if len(rot) != 4:
-            raise p4util.PsiException("Each element of the MCSCF rotate command requires 4 arguements (irrep, orb1, orb2, theta).")
+            raise p4util.PsiException(
+                "Each element of the MCSCF rotate command requires 4 arguements (irrep, orb1, orb2, theta).")
 
         irrep, orb1, orb2, theta = rot
         if irrep > ciwfn.Ca().nirrep():
             raise p4util.PsiException("MCSCF_ROTATE: Expression %s irrep number is larger than the number of irreps" %
-                                    (str(rot)))
+                                      (str(rot)))
 
         if max(orb1, orb2) > ciwfn.Ca().coldim()[irrep]:
-            raise p4util.PsiException("MCSCF_ROTATE: Expression %s orbital number exceeds number of orbitals in irrep" %
-                                    (str(rot)))
+            raise p4util.PsiException(
+                "MCSCF_ROTATE: Expression %s orbital number exceeds number of orbitals in irrep" % (str(rot)))
 
         theta = np.deg2rad(theta)
 
@@ -123,7 +124,6 @@ def mcscf_solver(ref_wfn):
 
         ciwfn.Ca().nph[irrep][:, orb1] = xp
         ciwfn.Ca().nph[irrep][:, orb2] = yp
-
 
     # Limited RAS functionality
     if core.get_local_option("DETCI", "WFN") == "RASSCF" and mcscf_target_conv_type != "TS":
@@ -175,8 +175,8 @@ def mcscf_solver(ref_wfn):
         ediff = current_energy - eold
 
         # Print iterations
-        print_iteration(mtype, mcscf_iter, current_energy, ediff, orb_grad_rms, ci_grad_rms,
-                        nci_iter, norb_iter, mcscf_current_step_type)
+        print_iteration(mtype, mcscf_iter, current_energy, ediff, orb_grad_rms, ci_grad_rms, nci_iter, norb_iter,
+                        mcscf_current_step_type)
         eold = current_energy
 
         if mcscf_current_step_type == 'Initial CI':
@@ -189,7 +189,6 @@ def mcscf_solver(ref_wfn):
             core.print_out("\n       %s has converged!\n\n" % mtype)
             converged = True
             break
-
 
         # Which orbital convergence are we doing?
         if ah_step:
@@ -220,10 +219,8 @@ def mcscf_solver(ref_wfn):
 
             # Figure out DIIS error vector
             if mcscf_diis_error_type == "GRAD":
-                error = core.triplet(ciwfn.get_orbitals("OA"),
-                                            mcscf_obj.gradient(),
-                                            ciwfn.get_orbitals("AV"),
-                                            False, False, True)
+                error = core.triplet(ciwfn.get_orbitals("OA"), mcscf_obj.gradient(), ciwfn.get_orbitals("AV"), False,
+                                     False, True)
             else:
                 error = step
 
@@ -283,7 +280,7 @@ def mcscf_solver(ref_wfn):
         ciwfn.transform_mcscf_integrals(approx_integrals_only)
         ciwfn.set_print(1)
         ciwfn.set_ci_guess("H0_BLOCK")
-        nci_iter = ciwfn.diag_h(mcscf_e_conv, mcscf_e_conv ** 0.5)
+        nci_iter = ciwfn.diag_h(mcscf_e_conv, mcscf_e_conv**0.5)
 
         ciwfn.form_opdm()
         ciwfn.form_tpdm()
@@ -303,4 +300,3 @@ def mcscf_solver(ref_wfn):
     del diis_obj
     del mcscf_obj
     return ciwfn
-

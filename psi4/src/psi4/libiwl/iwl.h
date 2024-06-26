@@ -67,6 +67,6 @@ void iwl_buf_flush(struct iwlbuf *Buf, int lastbuf);
 void PSI_API iwl_buf_close(struct iwlbuf *Buf, int keep);
 void iwl_buf_wrt_val(struct iwlbuf *Buf, int p, int q, int r, int s, double value, int printflag, std::string out,
                      int dirac);
-}
+}  // namespace psi
 
 #endif /* end _psi_src_lib_libiwl_iwl_h */

@@ -46,8 +46,8 @@ class SAPT2p : public SAPT2 {
     double e_est_disp22t_;
     double e_sapt2p_;
 
-    void gARARxtARBS(int, const char *, const char, int, const char *, const char *, const char *, size_t, size_t, size_t, size_t,
-                     size_t, size_t, size_t, const char *);
+    void gARARxtARBS(int, const char *, const char, int, const char *, const char *, const char *, size_t, size_t,
+                     size_t, size_t, size_t, size_t, size_t, const char *);
 
     double disp21_1(int, const char *, const char *, size_t, size_t, size_t, size_t);
     double disp21_2(int, const char *, const char *, size_t, size_t);
@@ -55,15 +55,17 @@ class SAPT2p : public SAPT2 {
     double disp211();
     double disp220s(int, const char *, const char *, int, const char *, const char *, size_t, size_t, size_t);
     double disp220d_1(int, const char *, const char *, int, const char *, size_t, size_t, size_t);
-    double disp220d_2(int, const char *, const char *, int, const char *, size_t, size_t, size_t, size_t, size_t, size_t, double *,
-                      double *, const char);
+    double disp220d_2(int, const char *, const char *, int, const char *, size_t, size_t, size_t, size_t, size_t,
+                      size_t, double *, double *, const char);
     double disp220q_1(int, const char *, const char *, const char *, size_t, size_t);
     double disp220q_2(int, const char *, const char *, const char *, int, const char *, size_t, size_t, size_t);
-    double disp220q_3(int, const char *, const char *, const char, int, const char *, size_t, size_t, size_t, size_t, size_t, size_t);
-    double disp220q_4(int, const char *, const char *, const char, int, const char *, size_t, size_t, size_t, size_t, size_t, size_t);
+    double disp220q_3(int, const char *, const char *, const char, int, const char *, size_t, size_t, size_t, size_t,
+                      size_t, size_t);
+    double disp220q_4(int, const char *, const char *, const char, int, const char *, size_t, size_t, size_t, size_t,
+                      size_t, size_t);
 
-    double disp220t(int, const char *, const char *, const char *, int, const char *, int, const char *, size_t, size_t, size_t,
-                    size_t, size_t, size_t, double *, double *);
+    double disp220t(int, const char *, const char *, const char *, int, const char *, int, const char *, size_t, size_t,
+                    size_t, size_t, size_t, size_t, double *, double *);
 
     // CCD Dispersion Values
     double e_disp2d_ccd_;
@@ -103,11 +105,12 @@ class SAPT2p : public SAPT2 {
                          const char *, const char *, const char *, double *, int, int, int, std::shared_ptr<Matrix>);
     double s_ccd_amplitudes(const char *, const char *, const char *, const char *, const char *, const char *,
                             const char *, const char *, const char *, const char *, const char *, const char *,
-                            const char *, const char *, const char *, double *, size_t, size_t, size_t, std::shared_ptr<Matrix>);
+                            const char *, const char *, const char *, double *, size_t, size_t, size_t,
+                            std::shared_ptr<Matrix>);
 
     void ccd_prep(const char *, const char *, const char *, const char *, const char *, const char *, const char *,
-                  const char *, const char *, int, const char *, const char *, const char *, double *, size_t, size_t, size_t,
-                  std::shared_ptr<Matrix>, const char *);
+                  const char *, const char *, int, const char *, const char *, const char *, double *, size_t, size_t,
+                  size_t, std::shared_ptr<Matrix>, const char *);
     double ccd_energy(const char *, const char *, size_t, size_t);
     void ccd_iterate(const char *, const char *, const char *, const char *, const char *, const char *, const char *,
                      const char *, const char *, const char *, double *, int, int, int, std::shared_ptr<Matrix>);

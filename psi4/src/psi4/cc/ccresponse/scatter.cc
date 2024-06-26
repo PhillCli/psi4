@@ -37,9 +37,9 @@
 
   -TDC, August 2009
 */
-//#include <stdio.h>
-//#include <stdlib.h>
-//#include <math.h>
+// #include <stdio.h>
+// #include <stdlib.h>
+// #include <math.h>
 #include <cmath>
 #include <cstdio>
 #include <cstring>
@@ -61,8 +61,8 @@
 #include "psi4/liboptions/liboptions.h"
 #include "psi4/libpsi4util/PsiOutStream.h"
 
-//#include "oldphysconst.h"
-//#include "mass.h"
+// #include "oldphysconst.h"
+// #include "mass.h"
 
 using namespace psi;
 

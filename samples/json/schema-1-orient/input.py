@@ -44,9 +44,6 @@ json_ret = psi4.schema_wrapper.run_qcschema(json_data)
 
 # Orients to Z axis
 
-
-
 json_ret = psi4.schema_wrapper.run_qcschema(noorient_data)
 
 # Orients to Z axis
-

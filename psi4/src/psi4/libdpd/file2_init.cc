@@ -58,7 +58,7 @@ namespace psi {
 **      the labels currently used in in filenum and is quite useful for debugging.
 */
 
-int DPD::file2_init(dpdfile2 *File, int filenum, int irrep, int pnum, int qnum, const std::string& label) {
+int DPD::file2_init(dpdfile2 *File, int filenum, int irrep, int pnum, int qnum, const std::string &label) {
     auto label_ptr = label.c_str();
     int i, q, rs, nirreps;
     dpd_file2_cache_entry *this_entry;
@@ -85,8 +85,8 @@ int DPD::file2_init(dpdfile2 *File, int filenum, int irrep, int pnum, int qnum, 
     File->lfiles[0] = PSIO_ZERO;
     for (i = 1; i < File->params->nirreps; i++)
         File->lfiles[i] =
-            psio_get_address(File->lfiles[i - 1],
-                             (static_cast<size_t>(File->params->rowtot[i - 1]) * File->params->coltot[(i - 1) ^ irrep] * sizeof(double)));
+            psio_get_address(File->lfiles[i - 1], (static_cast<size_t>(File->params->rowtot[i - 1]) *
+                                                   File->params->coltot[(i - 1) ^ irrep] * sizeof(double)));
 
     /* Force all two-index files into cache */
     /*  dpd_file2_cache_add(File); */

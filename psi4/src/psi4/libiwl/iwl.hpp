@@ -92,6 +92,6 @@ class PSI_API IWL {
     void flush(int lastbuf);
     void to_end();
 };
-}
+}  // namespace psi
 
 #endif

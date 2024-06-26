@@ -57,18 +57,19 @@ void DFOCC::ccd_iterations() {
     if (do_diis_ == 1) {
         if (reference_ == "RESTRICTED") {
             Matrix T2("T2", naoccA * navirA, naoccA * navirA);
-            ccsdDiisManager = std::make_shared<DIISManager>(
-                cc_maxdiis_, "CCSD DIIS T Amps", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::OnDisk);
+            ccsdDiisManager =
+                std::make_shared<DIISManager>(cc_maxdiis_, "CCSD DIIS T Amps", DIISManager::RemovalPolicy::LargestError,
+                                              DIISManager::StoragePolicy::OnDisk);
             ccsdDiisManager->set_error_vector_size(T2);
             ccsdDiisManager->set_vector_size(T2);
-        }
-        else if (reference_ == "UNRESTRICTED") {
+        } else if (reference_ == "UNRESTRICTED") {
             Matrix T2AA("T2AA", ntri_anti_ijAA, ntri_anti_abAA);
             Matrix T2BB("T2BB", ntri_anti_ijBB, ntri_anti_abBB);
             Matrix T2AB("T2AB", naoccA * naoccB, navirA * navirB);
 
-            ccsdDiisManager = std::make_shared<DIISManager>(
-                cc_maxdiis_, "CCSD DIIS T Amps", DIISManager::RemovalPolicy::LargestError, DIISManager::StoragePolicy::OnDisk);
+            ccsdDiisManager =
+                std::make_shared<DIISManager>(cc_maxdiis_, "CCSD DIIS T Amps", DIISManager::RemovalPolicy::LargestError,
+                                              DIISManager::StoragePolicy::OnDisk);
             ccsdDiisManager->set_error_vector_size(T2AA, T2BB, T2AB);
             ccsdDiisManager->set_vector_size(T2AA, T2BB, T2AB);
         }
@@ -115,10 +116,10 @@ void DFOCC::ccd_iterations() {
     if (do_diis_ == 1) ccsdDiisManager->delete_diis_file();
 
     // Mem dealloc for DF ints
-    //if (df_ints_incore) {
-        if (cc_lambda_ == "FALSE") {
-            reset_mo_df_ints();
-        }
+    // if (df_ints_incore) {
+    if (cc_lambda_ == "FALSE") {
+        reset_mo_df_ints();
+    }
     //}
 
     // free t2 amps
@@ -161,7 +162,7 @@ void DFOCC::malloc_mo_df_ints() {
         bQiaB->read(psio_, PSIF_DFOCC_INTS);
         bQabB->read(psio_, PSIF_DFOCC_INTS, true, true);
     }
-}//
+}  //
 
 void DFOCC::reset_mo_df_ints() {
     bQijA.reset();
@@ -173,7 +174,7 @@ void DFOCC::reset_mo_df_ints() {
         bQiaB.reset();
         bQabB.reset();
     }
-}//
+}  //
 
 }  // namespace dfoccwave
 }  // namespace psi

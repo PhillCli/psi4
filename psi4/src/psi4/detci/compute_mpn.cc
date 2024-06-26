@@ -319,7 +319,7 @@ void CIWavefunction::mpn_generator(CIvect &Hd) {
 
         /* Compute k+1, 2k, and 2k+1 th order energies from kth order wavefunction */
         Sigma.read(0, 0); /* S_k is located in first Sigma space */
-// Sigma.print(outfile);
+                          // Sigma.print(outfile);
 
 #ifdef DEBUG
         tval = Sigma * Sigma;

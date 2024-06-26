@@ -362,5 +362,5 @@ void OCCWave::cepa_energy() {
     psio_->close(PSIF_OCC_DPD, 1);
 
 }  // end of cepa_energy
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

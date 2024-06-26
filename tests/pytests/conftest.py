@@ -3,9 +3,10 @@ import pytest
 
 
 def pytest_addoption(parser):
-    parser.addoption(
-        "--runnonroutine", action="store_true", default=False, help="run the nonroutine tests in stdsuite"
-    )
+    parser.addoption("--runnonroutine",
+                     action="store_true",
+                     default=False,
+                     help="run the nonroutine tests in stdsuite")
 
 
 def pytest_collection_modifyitems(config, items):

@@ -181,12 +181,13 @@ void DFOCC::common_init() {
     // title
     if (wfn_type_ == "DF-OREMP") {
         remp_title();
-    } else if (!((wfn_type_ == "DF-CCSD" || wfn_type_ == "DF-CCSD(T)" || wfn_type_ == "DF-OCCD" || wfn_type_ == "DF-OCCD(T)" || wfn_type_ == "DF-OCCD(AT)") && reference_ == "UNRESTRICTED")) {
+    } else if (!((wfn_type_ == "DF-CCSD" || wfn_type_ == "DF-CCSD(T)" || wfn_type_ == "DF-OCCD" ||
+                  wfn_type_ == "DF-OCCD(T)" || wfn_type_ == "DF-OCCD(AT)") &&
+                 reference_ == "UNRESTRICTED")) {
         title();
     } else {
         title_dfuccsd();
     }
-
 
     // Only ROHF-CC energy is available, not the gradients
     if (reference == "ROHF" && orb_opt_ == "FALSE" && dertype == "FIRST") {
@@ -340,16 +341,15 @@ void DFOCC::lambda_title() {
         outfile->Printf(" ============================================================================== \n");
         outfile->Printf(" ============================================================================== \n");
         outfile->Printf("\n");
-    }
-    else if (reference_ == "UNRESTRICTED") {
+    } else if (reference_ == "UNRESTRICTED") {
         outfile->Printf(" ============================================================================== \n");
         outfile->Printf(" ============================================================================== \n");
         outfile->Printf(" ============================================================================== \n");
         outfile->Printf("\n");
         if (wfn_type_ == "DF-CCSD") {
-            outfile->Printf("                              DF-CCSD-Lambda\n") ;
-            outfile->Printf("              Program Written by Ugur Bozkaya and Asli Unal\n") ;
-            outfile->Printf("              Latest Revision Sep 9, 2020\n") ;
+            outfile->Printf("                              DF-CCSD-Lambda\n");
+            outfile->Printf("              Program Written by Ugur Bozkaya and Asli Unal\n");
+            outfile->Printf("              Latest Revision Sep 9, 2020\n");
         }
         outfile->Printf("\n");
         outfile->Printf(" ============================================================================== \n");
@@ -408,15 +408,12 @@ void DFOCC::pdm_title() {
     outfile->Printf("               for Density-Fitted Methods       \n");
     if (reference_ == "RESTRICTED") {
         outfile->Printf("                   by Ugur Bozkaya\n");
-    }
-    else if (reference_ == "UNRESTRICTED") {
+    } else if (reference_ == "UNRESTRICTED") {
         if (wfn_type_ == "DF-CCSD") {
             outfile->Printf("               by Ugur Bozkaya and Asli Unal\n");
-        }
-        else if (wfn_type_ == "DF-CCSD(T)") {
+        } else if (wfn_type_ == "DF-CCSD(T)") {
             outfile->Printf("               by Ugur Bozkaya, Asli Unal & Yavuz Alagoz\n");
-        }
-        else {
+        } else {
             outfile->Printf("                   by Ugur Bozkaya\n");
         }
     }
@@ -513,7 +510,8 @@ double DFOCC::compute_energy() {
     else if (wfn_type_ == "DF-OLCCD")
         Etotal = ElccdL;
     else if (wfn_type_ == "DF-OREMP")
-        Etotal = ElccdL;        //CSB this might need adjustment // FIXME (behnle#1#14.06.2021): maybe replace by an own variable
+        Etotal =
+            ElccdL;  // CSB this might need adjustment // FIXME (behnle#1#14.06.2021): maybe replace by an own variable
     else if (wfn_type_ == "QCHF")
         Etotal = Eref;
 
@@ -544,7 +542,6 @@ void DFOCC::remp_title() {
 }
 
 void DFOCC::common_malloc() {
-
     if (reference_ == "RESTRICTED") {
         // Memory allocation
         HmoA = std::make_shared<Tensor2d>("MO-basis alpha one-electron ints", nmo_, nmo_);
@@ -672,9 +669,7 @@ void DFOCC::common_malloc() {
 
 }  // end of common_malloc
 
-
-void DFOCC::title_dfuccsd()
-{
+void DFOCC::title_dfuccsd() {
     outfile->Printf("\n");
     outfile->Printf(" ============================================================================== \n");
     outfile->Printf(" ============================================================================== \n");
@@ -686,14 +681,14 @@ void DFOCC::title_dfuccsd()
         outfile->Printf("                       DF-CCD   \n");
     else if ((wfn_type_ == "DF-OCCD" || wfn_type_ == "DF-OCCD(T)" || wfn_type_ == "DF-OCCD(AT)") && orb_opt_ == "TRUE")
         outfile->Printf("                       DF-OCCD   \n");
-    outfile->Printf("              Program Written by Ugur Bozkaya, Asli Unal & Yavuz Alagoz\n") ;
-    outfile->Printf("              Latest Revision Sep 9, 2020\n") ;
+    outfile->Printf("              Program Written by Ugur Bozkaya, Asli Unal & Yavuz Alagoz\n");
+    outfile->Printf("              Latest Revision Sep 9, 2020\n");
     outfile->Printf("\n");
     outfile->Printf(" ============================================================================== \n");
     outfile->Printf(" ============================================================================== \n");
     outfile->Printf(" ============================================================================== \n");
     outfile->Printf("\n");
-}//
+}  //
 
 }  // namespace dfoccwave
 }  // namespace psi

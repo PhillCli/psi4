@@ -408,7 +408,7 @@ void OCCWave::orb_resp_pcg_rhf() {
         global_dpd_->file2_close(&P);
 
         compute_sigma_vector();
-        
+
         // Build line search parameter alpha
         double alpha = delta_new / D_pcgA->dot(sigma_pcgA);
 
@@ -782,5 +782,5 @@ void OCCWave::compute_sigma_vector() {
     }
 }
 
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

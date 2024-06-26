@@ -154,5 +154,5 @@ void OCCWave::kappa_msd() {
        // outfile->Printf("\n kappa_msd done. \n");
 
 }  // end main
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

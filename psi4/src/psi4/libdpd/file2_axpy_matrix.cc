@@ -66,7 +66,7 @@ int dpdfile2::axpy_matrix(const Matrix& MatX, double alpha) {
             throw PSIEXCEPTION("dpdfile2 and Matrix have different size");
         }
         if (sizeX) {
-            auto X = MatX.pointer(h)[0]; 
+            auto X = MatX.pointer(h)[0];
             auto Y = &(matrix[h][0][0]);
             C_DAXPY(sizeX, alpha, X, 1, Y, 1);
         }

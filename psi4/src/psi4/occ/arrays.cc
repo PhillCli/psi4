@@ -794,8 +794,8 @@ int Array3i::get(int h, int i, int j) { return A3i_[h][i][j]; }  //
 
 /********************************************************************************************/
 /********************************************************************************************/
-}
+}  // namespace occwave
 Vector::Vector(const Dimension& dimpi, const occwave::Array1d& array) : Vector(dimpi) {
     v_ = std::vector<double>(array.array(), array.array() + array.dim1());
 }
-}  // End Namespaces
+}  // namespace psi

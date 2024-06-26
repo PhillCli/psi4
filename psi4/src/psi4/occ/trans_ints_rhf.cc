@@ -305,5 +305,5 @@ void OCCWave::denominators_rhf() {
 
     // outfile->Printf("\n denominators done. \n");
 }  // end denominators
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

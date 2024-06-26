@@ -7,6 +7,7 @@ from utils import compare_arrays
 
 pytestmark = [pytest.mark.psi, pytest.mark.api, pytest.mark.quick]
 
+
 def test_fock_subset_mo():
     h2o = psi4.geometry("""
         O

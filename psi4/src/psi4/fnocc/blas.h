@@ -159,7 +159,7 @@ inline void DGESVD(char &JOBU, char &JOBVT, integer &M, integer &N, doublereal *
                    integer &INFO) {
     dgesvd(JOBU, JOBVT, M, N, A, LDA, S, U, LDU, VT, LDVT, WORK, LWORK, INFO);
 }
-}
-}
+}  // namespace fnocc
+}  // namespace psi
 
 #endif

@@ -78,8 +78,8 @@ CoupledCluster::CoupledCluster(SharedWavefunction ref_wfn, Options &options) : W
 CoupledCluster::~CoupledCluster() {}
 
 /**
-  * initialize.  set variables and options_.
-  */
+ * initialize.  set variables and options_.
+ */
 void CoupledCluster::common_init() {
     module_ = "fnocc";
 
@@ -192,7 +192,6 @@ double CoupledCluster::compute_energy() {
         timer_on("FNOCC: CCSD");
         status = CCSDIterations();
         timer_off("FNOCC: CCSD");
-
 
         // ccsd energy
         if (isccsd) {
@@ -776,7 +775,8 @@ void CoupledCluster::AllocateMemory() {
                 isLowMemory = true;
                 tempmem = 8. * (2L * o * o * v * v + o * o * o * v + o * v + 5L * o * o * o * nthreads);
             }
-            outfile->Printf("        (T) algorithm:                             %9.2lf mb (%s-memory)\n", tempmem / 1024. / 1024., isLowMemory ? "low" : "high");
+            outfile->Printf("        (T) algorithm:                             %9.2lf mb (%s-memory)\n",
+                            tempmem / 1024. / 1024., isLowMemory ? "low" : "high");
             if (isccsd)
                 outfile->Printf("        memory requirements for CCSD(T) =          %9.2lf mb\n",
                                 tempmem / 1024. / 1024.);
@@ -876,8 +876,8 @@ void CoupledCluster::AllocateMemory() {
 ===================================================================*/
 
 /**
-  * t1 <-- (ma|ei)
-  */
+ * t1 <-- (ma|ei)
+ */
 void CoupledCluster::CPU_t1_vmeai(CCTaskParams params) {
     long int o = ndoccact;
     long int v = nvirt;
@@ -903,8 +903,8 @@ void CoupledCluster::CPU_t1_vmeai(CCTaskParams params) {
 }
 
 /**
-  * t1 <-- (mn|ei)
-  */
+ * t1 <-- (mn|ei)
+ */
 void CoupledCluster::CPU_t1_vmeni(CCTaskParams params) {
     long int m, e, n, a, id;
     long int o = ndoccact;
@@ -934,8 +934,8 @@ void CoupledCluster::CPU_t1_vmeni(CCTaskParams params) {
 }
 
 /**
-  *  t1 <-- (me|af)
-  */
+ *  t1 <-- (me|af)
+ */
 void CoupledCluster::CPU_t1_vmaef(CCTaskParams params) {
     long int m, e, i, f, a, id;
     long int o = ndoccact;
@@ -989,8 +989,8 @@ void CoupledCluster::CPU_t1_vmaef(CCTaskParams params) {
 }
 
 /**
-  * Build and use I(a,b)
-  */
+ * Build and use I(a,b)
+ */
 void CoupledCluster::CPU_I1ab(CCTaskParams params) {
     long int o = ndoccact;
     long int v = nvirt;
@@ -1143,8 +1143,8 @@ void CoupledCluster::CPU_I2p_abci_refactored_term2(CCTaskParams params) {
 }
 
 /**
-  * Build and use I(i,j), I'(i,j), and I(i,a)
-  */
+ * Build and use I(i,j), I'(i,j), and I(i,a)
+ */
 void CoupledCluster::CPU_I1pij_I1ia_lessmem(CCTaskParams params) {
     long int o = ndoccact;
     long int v = nvirt;
@@ -2296,5 +2296,5 @@ void CoupledCluster::MP4_SDQ() {
         C_DAXPY(o * o * v * v, 1.0, tempt, 1, tb, 1);
     }
 }
-}
-}  // end of namespaces
+}  // namespace fnocc
+}  // namespace psi

@@ -6,7 +6,6 @@ import psi4
 
 from utils import compare_values
 
-
 pytestmark = [pytest.mark.psi, pytest.mark.api, pytest.mark.quick, pytest.mark.scf]
 
 
@@ -214,9 +213,13 @@ def test_weird_basis(subject, bas, ans, mols, request):
 
     mol = mols[subject]
     ref = "rhf" if mol.multiplicity() == 1 else "uhf"
-    psi4.set_options(
-        {"reference": ref, "guess": "core", "scf_type": "pk", "df_scf_guess": "false", "basis": "anonymous1234",}
-    )
+    psi4.set_options({
+        "reference": ref,
+        "guess": "core",
+        "scf_type": "pk",
+        "df_scf_guess": "false",
+        "basis": "anonymous1234",
+    })
 
     def basisspec_psi4_yo__anonymous1234(mol, role):
         mol.set_basis_all_atoms("test", role=role)
@@ -383,20 +386,21 @@ I 1 1.0
 ****
 """
 
-
-_hijhik = pytest.mark.xfail(reason="HIJ/HIK convention uncertain", raises=psi4.driver.qcdb.exceptions.ValidationError, strict=True)
+_hijhik = pytest.mark.xfail(reason="HIJ/HIK convention uncertain",
+                            raises=psi4.driver.qcdb.exceptions.ValidationError,
+                            strict=True)
 
 
 @pytest.mark.parametrize(
     "subject,bas",
     [
         pytest.param("H", _av10z_feller_H.format(L7="L=7", L8="L=8", L9="L=9"), id="HI7_num"),
-        pytest.param("H", _av10z_feller_H.format(L7="K",   L8="L",   L9="L=9"), id="HIK_num"),
-        pytest.param("H", _av10z_feller_H.format(L7="J",   L8="K",   L9="L=9"), id="HIJ_num"),
-        pytest.param("H", _av10z_feller_H.format(L7="L=7", L8="L=8", L9="M"  ), id="HI7_charM", marks=_hijhik),
-        pytest.param("H", _av10z_feller_H.format(L7="L=7", L8="L=8", L9="L"  ), id="HI7_charL", marks=_hijhik),
-        pytest.param("H", _av10z_feller_H.format(L7="K",   L8="L",   L9="M"  ), id="HIK_char"),
-        pytest.param("H", _av10z_feller_H.format(L7="J",   L8="K",   L9="L"  ), id="HIJ_char"),
+        pytest.param("H", _av10z_feller_H.format(L7="K", L8="L", L9="L=9"), id="HIK_num"),
+        pytest.param("H", _av10z_feller_H.format(L7="J", L8="K", L9="L=9"), id="HIJ_num"),
+        pytest.param("H", _av10z_feller_H.format(L7="L=7", L8="L=8", L9="M"), id="HI7_charM", marks=_hijhik),
+        pytest.param("H", _av10z_feller_H.format(L7="L=7", L8="L=8", L9="L"), id="HI7_charL", marks=_hijhik),
+        pytest.param("H", _av10z_feller_H.format(L7="K", L8="L", L9="M"), id="HIK_char"),
+        pytest.param("H", _av10z_feller_H.format(L7="J", L8="K", L9="L"), id="HIJ_char"),
     ],
 )
 def test_high_angmom_basis(subject, bas, mols, request):
@@ -433,7 +437,6 @@ def test_high_angmom_basis(subject, bas, mols, request):
     ],
 )
 def test_skipped_angmom(subject, bas, mols, request):
-
     def fake_basis_string(seq):
         amchar = "SPDFGHIKLM"
 

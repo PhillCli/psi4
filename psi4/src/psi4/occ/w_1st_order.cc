@@ -233,5 +233,5 @@ void OCCWave::w_1st_order() {
     psio_->close(PSIF_OCC_DPD, 1);
 
 }  // end W_1st_order
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

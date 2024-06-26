@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """Module with high-level functions calling wrappers and driver.
 
 Place in this file quickly defined procedures such as
@@ -77,12 +76,12 @@ def fake_file11(wfn: "psi4.core.Wavefunction", filename: str = 'fake_file11.dat'
         handle.write('%d\n' % (molecule.natom()))
 
         for at in range(molecule.natom()):
-            handle.write('%6s %16.8f %16.8f %16.8f\n' % (molecule.symbol(
-                at), molecule.x(at), molecule.y(at), molecule.z(at)))
+            handle.write('%6s %16.8f %16.8f %16.8f\n' %
+                         (molecule.symbol(at), molecule.x(at), molecule.y(at), molecule.z(at)))
 
         for at in range(molecule.natom()):
-            handle.write('%6s %16.8f %16.8f %16.8f\n' % (
-                '', gradient.get(at, 0), gradient.get(at, 1), gradient.get(at, 2)))
+            handle.write('%6s %16.8f %16.8f %16.8f\n' %
+                         ('', gradient.get(at, 0), gradient.get(at, 1), gradient.get(at, 2)))
 
 
 def sherrill_gold_standard(**kwargs) -> CBSMetadata:

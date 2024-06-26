@@ -7,6 +7,7 @@ from utils import compare_arrays
 
 pytestmark = [pytest.mark.psi, pytest.mark.api]
 
+
 def test_overlap_obs():
     h2o = psi4.geometry("""
         O
@@ -17,7 +18,7 @@ def test_overlap_obs():
 
     psi4.set_options({'basis': 'aug-cc-pvdz'})
 
-    conv = psi4.core.BasisSet.build(h2o,'BASIS', psi4.core.get_global_option('BASIS'))
+    conv = psi4.core.BasisSet.build(h2o, 'BASIS', psi4.core.get_global_option('BASIS'))
 
     wfn = psi4.core.Wavefunction.build(h2o, psi4.core.get_global_option('BASIS'))
     mints = psi4.core.MintsHelper(wfn.basisset())
@@ -27,6 +28,7 @@ def test_overlap_obs():
 
     assert psi4.compare_matrices(case1, case2, 10, "OVERLAP_TEST")  # TEST
 
+
 def test_overlap_aux():
     h2o = psi4.geometry("""
         O
@@ -35,11 +37,10 @@ def test_overlap_aux():
         symmetry c1
     """)
 
-    psi4.set_options({'basis': 'aug-cc-pvdz',
-                      'df_basis_mp2':'aug-cc-pvdz-ri'})
+    psi4.set_options({'basis': 'aug-cc-pvdz', 'df_basis_mp2': 'aug-cc-pvdz-ri'})
 
-    conv = psi4.core.BasisSet.build(h2o,'BASIS', psi4.core.get_global_option('BASIS'))
-    aux = psi4.core.BasisSet.build(h2o,'DF_BASIS_MP2',"", "RIFIT", psi4.core.get_global_option('DF_BASIS_MP2'))
+    conv = psi4.core.BasisSet.build(h2o, 'BASIS', psi4.core.get_global_option('BASIS'))
+    aux = psi4.core.BasisSet.build(h2o, 'DF_BASIS_MP2', "", "RIFIT", psi4.core.get_global_option('DF_BASIS_MP2'))
 
     wfn = psi4.core.Wavefunction.build(h2o, psi4.core.get_global_option('BASIS'))
     mints = psi4.core.MintsHelper(wfn.basisset())
@@ -47,6 +48,7 @@ def test_overlap_aux():
     tr = mints.ao_overlap(aux, aux).trace()
 
     assert psi4.compare_values(118, tr, 12, 'Test that diagonal elements of AO Overlap are 1.0')  # TEST
+
 
 def test_export_ao_elec_dip_deriv():
     h2o = psi4.geometry("""
@@ -84,6 +86,7 @@ def test_export_ao_elec_dip_deriv():
     G_python_MU_mat = psi4.core.Matrix.from_array(MU_Gradient)
     assert psi4.compare_matrices(PSI4_MU_Grad, G_python_MU_mat, 10, "DIPOLE_GRADIENT_TEST")  # TEST
 
+
 def test_export_ao_overlap_half_deriv():
     h2o = psi4.geometry("""
         O
@@ -117,10 +120,10 @@ def test_export_ao_overlap_half_deriv():
             deriv1_np[map_key3] = np.asarray(deriv1_mat["S_" + str(atom)][atom_cart])
 
             # Test (S_ii)^x = 2 * < i^x | i >
-            assert compare_arrays(deriv1_np[map_key1].diagonal(), deriv1_np[map_key3].diagonal()/2)
+            assert compare_arrays(deriv1_np[map_key1].diagonal(), deriv1_np[map_key3].diagonal() / 2)
 
             # Test (S_ii)^x = 2 * < i | i^x >
-            assert compare_arrays(deriv1_np[map_key2].diagonal(), deriv1_np[map_key3].diagonal()/2)
+            assert compare_arrays(deriv1_np[map_key2].diagonal(), deriv1_np[map_key3].diagonal() / 2)
 
             # Test (S_ij)^x = < i^x | j > + < j^x | i >
             assert compare_arrays(deriv1_np[map_key1] + deriv1_np[map_key1].transpose(), deriv1_np[map_key3])

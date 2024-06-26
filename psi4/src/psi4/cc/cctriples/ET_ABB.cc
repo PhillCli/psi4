@@ -568,19 +568,19 @@ double ET_ABB() {
                                                 ET_ABB += (value_d + value_c) * value_c / denom;
 
                                             } /* c */
-                                        }     /* b */
-                                    }         /* a */
+                                        } /* b */
+                                    } /* a */
 
                                 } /* k */
-                            }     /* j */
-                        }         /* i */
+                            } /* j */
+                        } /* i */
 
                     } /* Gb */
-                }     /* Ga */
+                } /* Ga */
 
             } /* Gk */
-        }     /* Gj */
-    }         /* Gi */
+        } /* Gj */
+    } /* Gi */
 
     /*  outfile->Printf( "cnt = %d\n", cnt); */
     ET_ABB /= 4.0;

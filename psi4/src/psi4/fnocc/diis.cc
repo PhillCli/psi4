@@ -244,5 +244,5 @@ void CoupledCluster::DIISNewAmplitudes(int diis_iter, int& replace_diis_iter) {
 
     psio.reset();
 }
-}
-}
+}  // namespace fnocc
+}  // namespace psi

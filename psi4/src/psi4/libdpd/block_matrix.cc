@@ -56,7 +56,7 @@
 */
 
 #ifdef HAVE_MM_MALLOC_H
-//#include <mm_malloc.h>
+// #include <mm_malloc.h>
 #endif
 
 #include "dpd.h"
@@ -123,18 +123,18 @@ double **DPD::dpd_block_matrix(size_t n, size_t m) {
         outfile->Printf("n = %zd  m = %zd\n", n, m);
         throw PSIEXCEPTION(
             "dpd_block_matrix: trouble allocating memory \n"
-            "n = " + std::to_string(n) + " m = " + std::to_string(n)
-        );
+            "n = " +
+            std::to_string(n) + " m = " + std::to_string(n));
     }
 
     /* Allocate the main block here */
     /* NB: If we delete the entire cache and STILL get nullptr from malloc(), */
     /* we're either out of real memory or the heap is seriously fragmented */
-    //#ifdef HAVE_MM_MALLOC_H
-    //    while((B = (double *)_mm_malloc(size * sizeof(double), 64)) == nullptr) {
-    //#else
+    // #ifdef HAVE_MM_MALLOC_H
+    //     while((B = (double *)_mm_malloc(size * sizeof(double), 64)) == nullptr) {
+    // #else
     while ((B = (double *)malloc(size * sizeof(double))) == nullptr) {
-        //#endif
+        // #endif
         /* Priority-based cache */
         if (dpd_main.cachetype == 1) {
             if (file4_cache_del_low()) {
@@ -174,11 +174,11 @@ void DPD::free_dpd_block(double **array, size_t n, size_t m) {
     size_t size = m * n;
     if (array == nullptr) return;
 
-    //#ifdef HAVE_MM_MALLOC_H
-    //    _mm_free(array[0]);
-    //#else
+    // #ifdef HAVE_MM_MALLOC_H
+    //     _mm_free(array[0]);
+    // #else
     free(array[0]);
-    //#endif
+    // #endif
     free(array);
     /* Decrement the global memory counter */
     dpd_main.memused -= size;

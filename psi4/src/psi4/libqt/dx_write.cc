@@ -114,7 +114,8 @@ void dx_write(std::shared_ptr<Wavefunction> wfn, Options &options, double **D) {
 
     double cutoff = options.get_double("OPDM_GRID_CUTOFF");
     if (options["ONEPDM_GRID_CUTOFF"].has_changed()) {
-        outfile->Printf("\tWarning! ONEPDM_GRID_CUTOFF is deprecated and will be removed in 1.7. Use OPDM_GRID_CUTOFF instead.");
+        outfile->Printf(
+            "\tWarning! ONEPDM_GRID_CUTOFF is deprecated and will be removed in 1.7. Use OPDM_GRID_CUTOFF instead.");
         if (not options["OPDM_GRID_CUTOFF"].has_changed()) {
             cutoff = options.get_bool("ONEPDM_GRID_CUTOFF");
         }
@@ -122,7 +123,9 @@ void dx_write(std::shared_ptr<Wavefunction> wfn, Options &options, double **D) {
 
     double step_size = options.get_double("OPDM_GRID_STEPSIZE");
     if (options["ONEPDM_GRID_STEPSIZE"].has_changed()) {
-        outfile->Printf("\tWarning! ONEPDM_GRID_STEPSIZE is deprecated and will be removed in 1.7. Use OPDM_GRID_STEPSIZE instead.");
+        outfile->Printf(
+            "\tWarning! ONEPDM_GRID_STEPSIZE is deprecated and will be removed in 1.7. Use OPDM_GRID_STEPSIZE "
+            "instead.");
         if (not options["OPDM_GRID_STEPSIZE"].has_changed()) {
             step_size = options.get_bool("ONEPDM_GRID_STEPSIZE");
         }
@@ -236,8 +239,8 @@ void dx_write(std::shared_ptr<Wavefunction> wfn, Options &options, double **D) {
                 charge += dens * step_size * step_size * step_size;
 
             }  // z
-        }      // y
-    }          // x
+        }  // y
+    }  // x
 
     outfile->Printf("    Number of electrons = %20.12f?\n", charge);
 

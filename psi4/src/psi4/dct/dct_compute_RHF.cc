@@ -218,8 +218,8 @@ void DCTSolver::run_simult_dct_RHF() {
                                    "Amplitude SF <OO|VV>");  // Amplitude <Oo|Vv>
             global_dpd_->buf4_init(&Lbb, PSIF_DCT_DPD, 0, ID("[O,O]"), ID("[V,V]"), ID("[O,O]"), ID("[V,V]"), 0,
                                    "Amplitude <oo|vv>");
-            if (diisManager.add_entry(scf_error_a_.get(), scf_error_b_.get(), &Raa, &Rab, &Rbb, Fa_.get(),
-                                      Fb_.get(), &Laa, &Lab, &Lbb)) {
+            if (diisManager.add_entry(scf_error_a_.get(), scf_error_b_.get(), &Raa, &Rab, &Rbb, Fa_.get(), Fb_.get(),
+                                      &Laa, &Lab, &Lbb)) {
                 diisString += "S";
             }
             if (diisManager.subspace_size() > mindiisvecs_) {

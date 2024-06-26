@@ -253,7 +253,7 @@ int DPD::contract444(dpdbuf4 *X, dpdbuf4 *Y, dpdbuf4 *Z, int target_X, int targe
             buf4_mat_irrep_close(Z, Hz);
 
         }  // !incore
-    }      // Hx
+    }  // Hx
 
     return 0;
 }

@@ -63,7 +63,7 @@ class FDDS_Dispersion {
     std::map<std::string, SharedMatrix> matrix_cache_;
     std::map<std::string, SharedVector> vector_cache_;
 
-    // Is hybrid functional? 
+    // Is hybrid functional?
     bool is_hybrid_;
 
     // QR factorization result
@@ -95,7 +95,7 @@ class FDDS_Dispersion {
      * Forms the uncoupled amplitude Qia,Eia,Pia->PQ and projector Qia,Pia->PQ
      * @param  monomer Monomer "A" or "B"
      * @param  omega   Time dependent value
-     * @return         "PQ" amplitude 
+     * @return         "PQ" amplitude
      */
     SharedMatrix form_unc_amplitude(std::string monomer, double omega);
 
@@ -103,7 +103,7 @@ class FDDS_Dispersion {
      * Forms the uncoupled amplitude and other PQ matrices in hybrid FDDS dispersion
      * @param  monomer Monomer "A" or "B"
      * @param  omega   Time dependent value
-     * @return         Dictionary of PQ matrics 
+     * @return         Dictionary of PQ matrics
      * @return ret["amp"]  PQ uncoupled amplitude
      * @return ret["K1LD"]  K1(lambda * d) = (P|ar) LDar (ar|X+Y|Q)
      * @return ret["K2LD"]  K2(lambda * d) = (P|ar) LDar (ar|X-Y|Q)
@@ -162,7 +162,8 @@ class FDDS_Dispersion {
     SharedMatrix QR(std::string monomer);
 
     SharedMatrix get_tensor_pqQ(std::string name, std::tuple<size_t, size_t, size_t> dimensions);
-    void print_tensor_pqQ(std::string tensor_name, std::string file_name, std::tuple<size_t, size_t, size_t> dimensions);
+    void print_tensor_pqQ(std::string tensor_name, std::string file_name,
+                          std::tuple<size_t, size_t, size_t> dimensions);
 
 };  // End FDDS_Dispersion
 }  // namespace sapt

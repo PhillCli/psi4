@@ -522,7 +522,7 @@ void DCTSolver::form_density_weighted_fock() {
 
     auto a_evecs = std::make_shared<Matrix>("Tau Eigenvectors (Alpha)", nmopi_, nmopi_);
     auto b_evecs = std::make_shared<Matrix>("Tau Eigenvectors (Beta)", nmopi_, nmopi_);
-    auto a_evals = std::make_shared<Vector>("Tau Eigenvalues (Alpha)",  nmopi_);
+    auto a_evals = std::make_shared<Vector>("Tau Eigenvalues (Alpha)", nmopi_);
     auto b_evals = std::make_shared<Vector>("Tau Eigenvalues (Beta)", nmopi_);
 
     // Diagonalize Tau

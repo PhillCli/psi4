@@ -56,4 +56,4 @@ void tri_to_sq(double *amat, double **bmat, int size) {
         }
     }
 }
-}
+}  // namespace psi

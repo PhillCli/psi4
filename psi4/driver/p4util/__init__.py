@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """
 Miscellaneous tools for driver and users.
 """

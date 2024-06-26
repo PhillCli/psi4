@@ -45,11 +45,12 @@ using namespace psi;
 
 ///////////////////////////////////////////////////////////////////////////////
 
-SOTransform::SOTransform() {
-  naoshell = 0;
-}
+SOTransform::SOTransform() { naoshell = 0; }
 
-void SOTransform::set_naoshell(int n) { naoshell=0; aoshell.resize(n); }
+void SOTransform::set_naoshell(int n) {
+    naoshell = 0;
+    aoshell.resize(n);
+}
 
 void SOTransform::add_transform(int aoshellnum, int irrep, double coef, int aofunc, int sofunc) {
     //    outfile->Printf( "SOTransform::add_transform(aoshellnum = %d, irrep = %d, coef = %lf, aofunc = %d, sofunc =
@@ -64,7 +65,7 @@ void SOTransform::add_transform(int aoshellnum, int irrep, double coef, int aofu
     }
     aoshell[i].add_func(irrep, coef, aofunc, sofunc);
     aoshell[i].aoshell = aoshellnum;
-    if(i == naoshell) naoshell++;
+    if (i == naoshell) naoshell++;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -165,7 +166,7 @@ void SOBasisSet::init() {
         }
     }
 
-    naofunc_.assign(nshell_,0);
+    naofunc_.assign(nshell_, 0);
 
     nfunc_.resize(nshell_);
     funcoff_.resize(nshell_);
@@ -196,8 +197,8 @@ void SOBasisSet::init() {
     aotrans_.resize(basis_->nshell());  // we need the ao shell number here
 
     for (i = 0; i < nblocks; i++) {
-      for (j = 0; j < soblocks[i].len(); j++) {
-          if (soblocks[i].so[j].length == 0) continue;
+        for (j = 0; j < soblocks[i].len(); j++) {
+            if (soblocks[i].so[j].length == 0) continue;
             int bfn0 = soblocks[i].so[j].cont[0].bfn;
             int aoshell0 = include_pure_transform ? basis_->ao_to_shell(bfn0) : basis_->function_to_shell(bfn0);
             int soshell0 = aoshell_to_soshell[aoshell0];
@@ -382,7 +383,7 @@ void SOBasisSet::print(std::string out) const {
     for (i = 0; i < nshell_; i++) {
         if (i > 0) printer->Printf("\n");
         for (j = 0; j < sotrans_[i].naoshell; j++) {
-          for (k = 0; k < sotrans_[i].aoshell[j].nfunc(); k++) {
+            for (k = 0; k < sotrans_[i].aoshell[j].nfunc(); k++) {
                 printer->Printf("      SO(%3d %2d %d [%2d]) += %12.8f * AO(%3d %2d)\n", i,
                                 sotrans_[i].aoshell[j].func[k].sofunc, sotrans_[i].aoshell[j].func[k].irrep,
                                 function_offset_within_shell(i, sotrans_[i].aoshell[j].func[k].irrep) +

@@ -162,10 +162,7 @@ from psi4 import core
 from . import driver_util, p4util, qcdb
 from .constants import pp
 from .driver_cbs_helper import (  # lgtm[py/unused-import]
-    composite_procedures,
-    register_composite_function,
-    register_xtpl_function,
-    xtpl_procedures,
+    composite_procedures, register_composite_function, register_xtpl_function, xtpl_procedures,
 )
 from .driver_util import UpgradeHelper
 from .p4util.exceptions import ValidationError
@@ -218,7 +215,8 @@ def corl_xtpl_helgaker_2():
     pass
 
 
-def _expand_bracketed_basis(basisstring: str, molecule: Union["qcdb.Molecule", core.Molecule] = None) -> Tuple[List[str], List[int]]:
+def _expand_bracketed_basis(basisstring: str,
+                            molecule: Union["qcdb.Molecule", core.Molecule] = None) -> Tuple[List[str], List[int]]:
     """Function to transform and validate basis series specification for cbs().
 
     Parameters
@@ -1057,7 +1055,8 @@ complete_basis_set = cbs
 #    psioh.set_specific_retention(psif.PSIF_SCF_MOS, False)
 
 
-def _expand_scheme_orders(scheme: str, basisname: List[str], basiszeta: List[int], wfnname: str, options: Dict) -> Dict[str, Dict[str, Any]]:
+def _expand_scheme_orders(scheme: str, basisname: List[str], basiszeta: List[int], wfnname: str,
+                          options: Dict) -> Dict[str, Dict[str, Any]]:
     """Check that the length of *basiszeta* array matches the implied degree of
     extrapolation in *scheme* name. Return a dictionary of same length as
     basiszeta, with *basisname* and *basiszeta* distributed therein.
@@ -1071,7 +1070,9 @@ def _expand_scheme_orders(scheme: str, basisname: List[str], basiszeta: List[int
         raise UpgradeHelper(scheme, repr(scheme.__name__), 1.6, ' Replace extrapolation function with function name.')
 
     if scheme not in xtpl_procedures:
-        raise ValidationError(f"Extrapolation function ({scheme}) not among registered extrapolation schemes: {list(xtpl_procedures.keys())}. Use 'register_xtpl_function' function.")
+        raise ValidationError(
+            f"Extrapolation function ({scheme}) not among registered extrapolation schemes: {list(xtpl_procedures.keys())}. Use 'register_xtpl_function' function."
+        )
 
     if int(scheme.split("_")[-1]) != Nxtpl:
         raise ValidationError(f"""Call to '{scheme}' not valid with '{len(basiszeta)}' basis sets.""")
@@ -1253,7 +1254,8 @@ def _build_cbs_compute(metameta: Dict[str, Any], metadata: CBSMetadata):
 
     # Call schemes for each portion of total energy to 'place orders' for calculations needed
     d_fields = [
-        'd_stage', 'd_scheme', 'd_basis', 'd_wfn', 'd_alpha', 'd_need', 'd_coef', 'd_energy', 'd_gradient', 'd_hessian', 'd_dipole', 'd_dipder'
+        'd_stage', 'd_scheme', 'd_basis', 'd_wfn', 'd_alpha', 'd_need', 'd_coef', 'd_energy', 'd_gradient',
+        'd_hessian', 'd_dipole', 'd_dipder'
     ]
     GRAND_NEED = []
 
@@ -1326,8 +1328,7 @@ def _build_cbs_compute(metameta: Dict[str, Any], metadata: CBSMetadata):
             for wfn in VARH[mc['f_wfn']]:
                 for indx_job, job in enumerate(JOBS):
                     if ((VARH[mc['f_wfn']][wfn] == VARH[job['f_wfn']][job['f_wfn']])
-                            and (mc['f_basis'] == job['f_basis'])
-                            and not (mc['f_wfn'] == job['f_wfn'])
+                            and (mc['f_basis'] == job['f_basis']) and not (mc['f_wfn'] == job['f_wfn'])
                             and (mc['f_options'] == job['f_options'])):
                         del JOBS[indx_job]
 
@@ -1340,7 +1341,10 @@ def _build_cbs_compute(metameta: Dict[str, Any], metadata: CBSMetadata):
     TROVE = []
     for job in JOBS:
         for wfn in VARH[job['f_wfn']]:
-            TROVE.append(dict(zip(_f_fields, [wfn, job['f_basis'], job['f_zeta'], job['f_options'], 0.0, None, None, None, None])))
+            TROVE.append(
+                dict(
+                    zip(_f_fields,
+                        [wfn, job['f_basis'], job['f_zeta'], job['f_options'], 0.0, None, None, None, None])))
 
     instructions += """\n    Full listing of computations to be obtained (required and bonus).\n"""
     for mc in TROVE:
@@ -1708,7 +1712,8 @@ class CompositeComputer(BaseComputer):
             if idelta == 0:
                 continue
             dc = idelta * 2 + 1
-            qcvars[f"CBS {self.cbsrec[dc]['d_stage'].upper()} TOTAL ENERGY"] = self.cbsrec[dc]["d_energy"] - self.cbsrec[dc + 1]["d_energy"]
+            qcvars[f"CBS {self.cbsrec[dc]['d_stage'].upper()} TOTAL ENERGY"] = self.cbsrec[dc][
+                "d_energy"] - self.cbsrec[dc + 1]["d_energy"]
 
         G0 = assembled_results["gradient"]
         if G0 is not None:
@@ -1755,11 +1760,8 @@ class CompositeComputer(BaseComputer):
 
         return cbs_model
 
-    def get_psi_results(
-        self,
-        client: Optional["qcportal.FractalClient"] = None,
-        *,
-        return_wfn: bool = False) -> EnergyGradientHessianWfnReturn:
+    def get_psi_results(self, client: Optional["qcportal.FractalClient"] = None, *,
+                        return_wfn: bool = False) -> EnergyGradientHessianWfnReturn:
         """Called by driver to assemble results into Composite-flavored QCSchema,
         then reshape and return them in the customary Psi4 driver interface: ``(e/g/h, wfn)``.
 

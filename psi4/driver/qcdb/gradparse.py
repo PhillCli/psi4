@@ -28,7 +28,6 @@
 
 import numpy as np
 
-
 # TODO: Include gradient loading feature, analagously to hessian loading.
 
 
@@ -78,8 +77,13 @@ def to_string(grad, handle, dtype='file11', mol=None, energy=None):
         head += "{:5d}{:20.10f}".format(mol.natom(), energy)
         for atom in range(mol.natom()):
             head += ("\n" + 4 * "{:20.10f}").format(mol.Z(atom), mol.x(atom), mol.y(atom), mol.z(atom))
-        np.savetxt(
-            handle, grad, fmt=" " * 20 + "%20.10f%20.10f%20.10f", delimiter='', newline='\n', header=head, comments='')
+        np.savetxt(handle,
+                   grad,
+                   fmt=" " * 20 + "%20.10f%20.10f%20.10f",
+                   delimiter='',
+                   newline='\n',
+                   header=head,
+                   comments='')
 
     elif dtype in ['GRD']:
         head = '{:5}{:20.10f}'.format(mol.natom(), 0)

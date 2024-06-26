@@ -36,7 +36,6 @@ namespace psi {
 namespace dfoccwave {
 
 void DFOCC::ccsdl_l2_amps() {
-
     // RHF
     if (reference_ == "RESTRICTED") {
         // defs
@@ -117,15 +116,13 @@ void DFOCC::ccsdl_l2_amps() {
         if (Wabef_type_ == "AUTO") {
             if (!do_ppl_hm) {
                 ccsdl_WabefL2();
-            }
-            else {
+            } else {
                 ccsdl_LijmeL2_high_mem();
                 ccsdl_WabefL2_high_mem();
             }
         } else if (Wabef_type_ == "LOW_MEM") {
             ccsdl_WabefL2();
-        }
-        else if (Wabef_type_ == "HIGH_MEM") {
+        } else if (Wabef_type_ == "HIGH_MEM") {
             ccsdl_LijmeL2_high_mem();
             ccsdl_WabefL2_high_mem();
         }

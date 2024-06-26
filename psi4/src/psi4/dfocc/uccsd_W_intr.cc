@@ -35,14 +35,13 @@ namespace psi {
 namespace dfoccwave {
 
 // ccsd_W_MNIJT2AA
-void DFOCC::uccsd_W_MNIJT2AA()
-{
+void DFOCC::uccsd_W_MNIJT2AA() {
     SharedTensor2d J, W, I, X, Y, T;
     SharedTensor2d T2, Tau, T2new;
 
     // W_MNIJ Alpha Block
-    // W_MNIJ = <MN||IJ> + P_(MN) P_(IJ) \sum_(Q) t_IM^Q b_JN^Q + \sum_(EF) Tau(IJ,EF) * <MN|EF> 
-    // W_MNIJ = <MN||IJ> 
+    // W_MNIJ = <MN||IJ> + P_(MN) P_(IJ) \sum_(Q) t_IM^Q b_JN^Q + \sum_(EF) Tau(IJ,EF) * <MN|EF>
+    // W_MNIJ = <MN||IJ>
     J = std::make_shared<Tensor2d>("J (IM|JN)", naoccA, naoccA, naoccA, naoccA);
     J->gemm(true, false, bQijA, bQijA, 1.0, 0.0);
     W = std::make_shared<Tensor2d>("W <MN|IJ>", naoccA, naoccA, naoccA, naoccA);
@@ -58,14 +57,14 @@ void DFOCC::uccsd_W_MNIJT2AA()
     X = std::make_shared<Tensor2d>("X (IM|JN)", naoccA, naoccA, naoccA, naoccA);
     X->gemm(true, false, T, bQijA, 1.0, 0.0);
     T.reset();
-    //W->P_ijab(X);
+    // W->P_ijab(X);
     W->sort(2413, X, 1.0, 1.0);
     W->sort(4213, X, -1.0, 1.0);
     W->sort(2431, X, -1.0, 1.0);
     W->sort(4231, X, 1.0, 1.0);
     X.reset();
 
-    //W_MNIJ += \sum_(EF) Tau(IJ,EF) * <MN|EF> 
+    // W_MNIJ += \sum_(EF) Tau(IJ,EF) * <MN|EF>
     T2 = std::make_shared<Tensor2d>("T2 <IJ|AB>", naoccA, naoccA, navirA, navirA);
     T2->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
     Tau = std::make_shared<Tensor2d>("Tau <IJ|AB>", naoccA, naoccA, navirA, navirA);
@@ -85,17 +84,16 @@ void DFOCC::uccsd_W_MNIJT2AA()
     W.reset();
     Tau.reset();
     T2new->write_anti_symm(psio_, PSIF_DFOCC_AMPS);
-}// ccsd_W_MNIJT2AA
+}  // ccsd_W_MNIJT2AA
 
 // ccsd_W_mnijT2BB
-void DFOCC::uccsd_W_mnijT2BB()
-{
+void DFOCC::uccsd_W_mnijT2BB() {
     SharedTensor2d J, W, I, X, Y, T;
     SharedTensor2d T2, Tau, T2new;
 
     // W_mnij Beta Block
-    // W_mnij = <mn||ij> + P_(mn) P_(ij) \sum_(Q) t_im^Q b_jn^Q + \sum_(ef) Tau(ij,ef) * <mn|ef> 
-    // W_mnij = <mn||ij> 
+    // W_mnij = <mn||ij> + P_(mn) P_(ij) \sum_(Q) t_im^Q b_jn^Q + \sum_(ef) Tau(ij,ef) * <mn|ef>
+    // W_mnij = <mn||ij>
     J = std::make_shared<Tensor2d>("J (im|jn)", naoccB, naoccB, naoccB, naoccB);
     J->gemm(true, false, bQijB, bQijB, 1.0, 0.0);
     W = std::make_shared<Tensor2d>("W <mn|ij>", naoccB, naoccB, naoccB, naoccB);
@@ -111,14 +109,14 @@ void DFOCC::uccsd_W_mnijT2BB()
     X = std::make_shared<Tensor2d>("X (im|jn)", naoccB, naoccB, naoccB, naoccB);
     X->gemm(true, false, T, bQijB, 1.0, 0.0);
     T.reset();
-    //W->P_ijab(X);
+    // W->P_ijab(X);
     W->sort(2413, X, 1.0, 1.0);
     W->sort(4213, X, -1.0, 1.0);
     W->sort(2431, X, -1.0, 1.0);
     W->sort(4231, X, 1.0, 1.0);
     X.reset();
 
-    //W_mnij += \sum_(ef) Tau(ij,ef) * <mn|ef> 
+    // W_mnij += \sum_(ef) Tau(ij,ef) * <mn|ef>
     T2 = std::make_shared<Tensor2d>("T2 <ij|ab>", naoccB, naoccB, navirB, navirB);
     T2->read_anti_symm(psio_, PSIF_DFOCC_AMPS);
     Tau = std::make_shared<Tensor2d>("Tau <ij|ab>", naoccB, naoccB, navirB, navirB);
@@ -139,17 +137,16 @@ void DFOCC::uccsd_W_mnijT2BB()
     W.reset();
     Tau.reset();
     T2new->write_anti_symm(psio_, PSIF_DFOCC_AMPS);
-}// ccsd_W_mnijT2BB
+}  // ccsd_W_mnijT2BB
 
 // ccsd_W_MnIjT2AB
-void DFOCC::uccsd_W_MnIjT2AB()
-{
+void DFOCC::uccsd_W_MnIjT2AB() {
     SharedTensor2d J, W, I, X, Y, T;
     SharedTensor2d T2, Tau, T2new;
 
     // W_MnIj Alpha-Beta Block
-    // W_MnIj = <Mn|Ij> + \sum_(Q) t_IM^Q b_jn^Q + \sum_(Ef) Tau(Ij,Ef) * <Mn|Ef> 
-    // W_MnIj = <Mn|Ij> 
+    // W_MnIj = <Mn|Ij> + \sum_(Q) t_IM^Q b_jn^Q + \sum_(Ef) Tau(Ij,Ef) * <Mn|Ef>
+    // W_MnIj = <Mn|Ij>
     W = std::make_shared<Tensor2d>("W <Mn|Ij>", naoccA, naoccB, naoccA, naoccB);
     J = std::make_shared<Tensor2d>("J (MI|nj)", naoccA, naoccA, naoccB, naoccB);
     J->gemm(true, false, bQijA, bQijB, 1.0, 0.0);
@@ -176,7 +173,7 @@ void DFOCC::uccsd_W_MnIjT2AB()
     W->sort(2413, X, 1.0, 1.0);
     X.reset();
 
-    //W_MnIj += \sum_(Ef) Tau(Ij,Ef) * <Mn|Ef> 
+    // W_MnIj += \sum_(Ef) Tau(Ij,Ef) * <Mn|Ef>
     T2 = std::make_shared<Tensor2d>("T2 <Ij|Ab>", naoccA, naoccB, navirA, navirB);
     T2->read(psio_, PSIF_DFOCC_AMPS);
     Tau = std::make_shared<Tensor2d>("Tau <Ij|Ab>", naoccA, naoccB, navirA, navirB);
@@ -197,16 +194,14 @@ void DFOCC::uccsd_W_MnIjT2AB()
     W.reset();
     Tau.reset();
     T2new->write(psio_, PSIF_DFOCC_AMPS);
-}// ccsd_W_MnIjT2AB
+}  // ccsd_W_MnIjT2AB
 
 // ccsd_W_MBEJAAAA
-void DFOCC::uccsd_W_MBEJAAAA()
-{
+void DFOCC::uccsd_W_MBEJAAAA() {
     SharedTensor2d W, J, I, X, Y, Z, K, L, M, T;
 
-    // W (MB,EJ) = <MB||EJ> + \sum_(Q)[t(Qp,JB)+0.5*T(Q,JB)]*b(Q,ME) + \sum_(Q)t(Q,BE)*[t(Q,JM)+b(Q,JM)] - \sum_(Q)t(Q,JM)*b(Q,BE) - 0.5*\sum_(N,F)t(JN,BF)*<EM|NF>
-    // W_MBEJ = W(ME,JB)
-    // W(ME,JB) = (ME|JB) - <ME|JB>
+    // W (MB,EJ) = <MB||EJ> + \sum_(Q)[t(Qp,JB)+0.5*T(Q,JB)]*b(Q,ME) + \sum_(Q)t(Q,BE)*[t(Q,JM)+b(Q,JM)] -
+    // \sum_(Q)t(Q,JM)*b(Q,BE) - 0.5*\sum_(N,F)t(JN,BF)*<EM|NF> W_MBEJ = W(ME,JB) W(ME,JB) = (ME|JB) - <ME|JB>
     W = std::make_shared<Tensor2d>("W (ME|JB)", naoccA, navirA, naoccA, navirA);
     W->gemm(true, false, bQiaA, bQiaA, 1.0, 0.0);
     L = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints (IJ|AB)", naoccA, naoccA, navirA, navirA);
@@ -243,7 +238,7 @@ void DFOCC::uccsd_W_MBEJAAAA()
     W->sort(2413, I, 1.0, 1.0);
     I.reset();
 
-    // W (ME,JB) -= \sum_(Q) t(Q,JM) * b(Q,BE) 
+    // W (ME,JB) -= \sum_(Q) t(Q,JM) * b(Q,BE)
     T = std::make_shared<Tensor2d>("T1 (Q|IJ)", nQ, naoccA, naoccA);
     T->read(psio_, PSIF_DFOCC_AMPS);
     M = std::make_shared<Tensor2d>("M (JM|BE)", naoccA, naoccA, navirA, navirA);
@@ -269,16 +264,14 @@ void DFOCC::uccsd_W_MBEJAAAA()
     X.reset();
     L.reset();
     W->write(psio_, PSIF_DFOCC_AMPS);
-}// End ccsd_W_MBEJAAAA
+}  // End ccsd_W_MBEJAAAA
 
 // ccsd_W_mbejBBBB
-void DFOCC::uccsd_W_mbejBBBB()
-{
+void DFOCC::uccsd_W_mbejBBBB() {
     SharedTensor2d W, J, I, X, Y, Z, K, L, M, T;
 
-    // W (mb,ej) = <mb||ej> + \sum_(Q)[t(Qp,jb)+0.5*T(Q,jb)]*b(Q,me) + \sum_(Q)t(Q,be)*[t(Q,jm)+b(Q,jm)] - \sum_(Q)t(Q,jm)*b(Q,be) - 0.5*\sum_(n,f)t(jn,bf)*<em|nf>
-    // W_mbej = W(me,jb)
-    // W(me,jb) = (me|jb) - <me|jb>
+    // W (mb,ej) = <mb||ej> + \sum_(Q)[t(Qp,jb)+0.5*T(Q,jb)]*b(Q,me) + \sum_(Q)t(Q,be)*[t(Q,jm)+b(Q,jm)] -
+    // \sum_(Q)t(Q,jm)*b(Q,be) - 0.5*\sum_(n,f)t(jn,bf)*<em|nf> W_mbej = W(me,jb) W(me,jb) = (me|jb) - <me|jb>
     W = std::make_shared<Tensor2d>("W (me|jb)", naoccB, navirB, naoccB, navirB);
     W->gemm(true, false, bQiaB, bQiaB, 1.0, 0.0);
     L = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints (ij|ab)", naoccB, naoccB, navirB, navirB);
@@ -315,7 +308,7 @@ void DFOCC::uccsd_W_mbejBBBB()
     W->sort(2413, I, 1.0, 1.0);
     I.reset();
 
-    // W (me,jb) -= \sum_(Q) t(Q,jm) * b(Q,be) 
+    // W (me,jb) -= \sum_(Q) t(Q,jm) * b(Q,be)
     T = std::make_shared<Tensor2d>("T1 (Q|ij)", nQ, naoccB, naoccB);
     T->read(psio_, PSIF_DFOCC_AMPS);
     M = std::make_shared<Tensor2d>("M (jm|be)", naoccB, naoccB, navirB, navirB);
@@ -341,11 +334,10 @@ void DFOCC::uccsd_W_mbejBBBB()
     X.reset();
     L.reset();
     W->write(psio_, PSIF_DFOCC_AMPS);
-}// ccsd_W_mbejBBBB
+}  // ccsd_W_mbejBBBB
 
 // ccsd_W_MbEjABAB
-void DFOCC::uccsd_W_MbEjABAB()
-{
+void DFOCC::uccsd_W_MbEjABAB() {
     SharedTensor2d W, X, K, L, T;
     // W (Mb,Ej) = <Mb|Ej> + \sum_(Q) [t(Qp,jb) + 0.5 * T(Q,jb)] * b(Q,ME) - 0.5 * \sum_(N,F) t(Nj,Fb) * <EM|NF>
     // W_MbEj = W(ME,jb)
@@ -383,21 +375,20 @@ void DFOCC::uccsd_W_MbEjABAB()
     X.reset();
     L.reset();
     W->write(psio_, PSIF_DFOCC_AMPS);
-}// ccsd_W_MbEjABAB
+}  // ccsd_W_MbEjABAB
 
 // ccsd_W_mBeJBABA
-void DFOCC::uccsd_W_mBeJBABA()
-{
+void DFOCC::uccsd_W_mBeJBABA() {
     SharedTensor2d W, X, K, L, T;
 
     // W (mB,eJ) = <Bm|Je> + \sum_(Q) [t(Qp,JB) + 0.5 * T(Q,JB)] * b(Q,me) - 0.5 * \sum_(n,f) t(Jn,Bf) * <em|nf>
     // W_mBeJ = W(me,JB)
-    // W(me,JB) <= (me|JB) 
-    // <Bm|Je> = <mB|eJ> = (me|BJ) = (me|JB) 
+    // W(me,JB) <= (me|JB)
+    // <Bm|Je> = <mB|eJ> = (me|BJ) = (me|JB)
     W = std::make_shared<Tensor2d>("W (me|JB)", naoccB, navirB, naoccA, navirA);
     W->gemm(true, false, bQiaB, bQiaA, 1.0, 0.0);
 
-    // W (me,JB) += \sum_(Q) [t(Qp,JB) + 0.5 * T(Q,JB)] * b(Q,me) 
+    // W (me,JB) += \sum_(Q) [t(Qp,JB) + 0.5 * T(Q,JB)] * b(Q,me)
     T = std::make_shared<Tensor2d>("T1p (Q|IA)", nQ, naoccA, navirA);
     T->read(psio_, PSIF_DFOCC_AMPS);
     X = std::make_shared<Tensor2d>("T1A + T2/2 (Q|IA)", nQ, naoccA, navirA);
@@ -427,16 +418,14 @@ void DFOCC::uccsd_W_mBeJBABA()
     X.reset();
     L.reset();
     W->write(psio_, PSIF_DFOCC_AMPS);
-}// ccsd_W_mBeJBABA
+}  // ccsd_W_mBeJBABA
 
 // ccsd_W_MbeJABBA
-void DFOCC::uccsd_W_MbeJABBA()
-{
+void DFOCC::uccsd_W_MbeJABBA() {
     SharedTensor2d W, X, K, L, T, I, M;
 
-    // W(Me,Jb) = - <Mb|Je> + \sum_(Q) t(Q,be) * [t(Q,JM) + b(Q,JM)] - \sum_(Q) t(Q,JM) * b(Q,be) + 0.5 * \sum_(n,F) t(Jn,Fb) * <Me|Fn> 
-    // W_MbeJ = W (Me,Jb)
-    // W(Me,Jb) = - <Me|Jb> = -(MJ|be) = Y (Me,Jb) (sort: 1423)
+    // W(Me,Jb) = - <Mb|Je> + \sum_(Q) t(Q,be) * [t(Q,JM) + b(Q,JM)] - \sum_(Q) t(Q,JM) * b(Q,be) + 0.5 * \sum_(n,F)
+    // t(Jn,Fb) * <Me|Fn> W_MbeJ = W (Me,Jb) W(Me,Jb) = - <Me|Jb> = -(MJ|be) = Y (Me,Jb) (sort: 1423)
     W = std::make_shared<Tensor2d>("W (Me|Jb)", naoccA, navirB, naoccA, navirB);
     K = std::make_shared<Tensor2d>("Int (MJ|be)", naoccA, naoccA, navirB, navirB);
     K->gemm(true, false, bQijA, bQabB, 1.0, 0.0);
@@ -459,7 +448,7 @@ void DFOCC::uccsd_W_MbeJABBA()
     W->sort(2413, I, 1.0, 1.0);
     I.reset();
 
-    // W (Me,Jb) -= \sum_(Q) t(Q,JM) * b(Q,be) 
+    // W (Me,Jb) -= \sum_(Q) t(Q,JM) * b(Q,be)
     T = std::make_shared<Tensor2d>("T1 (Q|IJ)", nQ, naoccA, naoccA);
     T->read(psio_, PSIF_DFOCC_AMPS);
     M = std::make_shared<Tensor2d>("M (JM|be)", naoccA, naoccA, navirB, navirB);
@@ -468,7 +457,7 @@ void DFOCC::uccsd_W_MbeJABBA()
     W->sort(2413, M, -1.0, 1.0);
     M.reset();
 
-    // W (Me,Jb) += 0.5 * \sum_(n,F) t(Jn,Fb) * <Me|Fn>   
+    // W (Me,Jb) += 0.5 * \sum_(n,F) t(Jn,Fb) * <Me|Fn>
     // <Me|Fn> = (MF|en) = (MF|ne) = Y(Me,Fn) (sort: 1432)
     // t <Jn|Fb> = t (nF|Jb) (sort: 2314)
     K = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints (MF|ne)", naoccA, navirA, naoccB, navirB);
@@ -485,16 +474,14 @@ void DFOCC::uccsd_W_MbeJABBA()
     X.reset();
     L.reset();
     W->write(psio_, PSIF_DFOCC_AMPS);
-}// ccsd_W_MbeJABBA
+}  // ccsd_W_MbeJABBA
 
 // ccsd_W_mBEjBAAB
-void DFOCC::uccsd_W_mBEjBAAB()
-{
+void DFOCC::uccsd_W_mBEjBAAB() {
     SharedTensor2d W, X, K, L, T, I, M;
 
-    // W(mE,jB) = -<Bm|Ej> + \sum_(Q) t(Q,BE) * [t(Q,jm) + b(Q,jm)] - \sum_(Q) t(Q,jm) * b(Q,BE) - 0.5 * \sum_(N,f) t(Nj,Bf) * <Em|Nf>   
-    // W_mBEj = W(mE,jB)
-    // W(mE,jB) = - <mE|jB> = -(EB|mj)
+    // W(mE,jB) = -<Bm|Ej> + \sum_(Q) t(Q,BE) * [t(Q,jm) + b(Q,jm)] - \sum_(Q) t(Q,jm) * b(Q,BE) - 0.5 * \sum_(N,f)
+    // t(Nj,Bf) * <Em|Nf> W_mBEj = W(mE,jB) W(mE,jB) = - <mE|jB> = -(EB|mj)
     W = std::make_shared<Tensor2d>("W (mE|jB)", naoccB, navirA, naoccB, navirA);
     K = std::make_shared<Tensor2d>("Int (EB|mj)", navirA, navirA, naoccB, naoccB);
     K->gemm(true, false, bQabA, bQijB, 1.0, 0.0);
@@ -517,7 +504,7 @@ void DFOCC::uccsd_W_mBEjBAAB()
     W->sort(2413, I, 1.0, 1.0);
     I.reset();
 
-    // W (mE,jB) -= \sum_(Q) t(Q,jm) * b(Q,BE) 
+    // W (mE,jB) -= \sum_(Q) t(Q,jm) * b(Q,BE)
     T = std::make_shared<Tensor2d>("T1 (Q|ij)", nQ, naoccB, naoccB);
     T->read(psio_, PSIF_DFOCC_AMPS);
     M = std::make_shared<Tensor2d>("M (jm|BE)", naoccB, naoccB, navirA, navirA);
@@ -526,7 +513,7 @@ void DFOCC::uccsd_W_mBEjBAAB()
     W->sort(2413, M, -1.0, 1.0);
     M.reset();
 
-    // W (Me,Jb) += 0.5 * \sum_(n,F) t(Jn,Fb) * <Me|Fn>   
+    // W (Me,Jb) += 0.5 * \sum_(n,F) t(Jn,Fb) * <Me|Fn>
     // <Em|Nf> = <mE|fN> = (mf|NE) = Y(mE,Nf) (sort: 1432)
     // t <Nj|Bf> = t (Nf|jB) (sort: 1423)
     K = std::make_shared<Tensor2d>("DF_BASIS_CC MO Ints (ia|JB)", naoccB, navirB, naoccA, navirA);
@@ -543,7 +530,7 @@ void DFOCC::uccsd_W_mBEjBAAB()
     X.reset();
     L.reset();
     W->write(psio_, PSIF_DFOCC_AMPS);
-}// ccsd_W_mBEjBAAB
+}  // ccsd_W_mBEjBAAB
 
 }  // namespace dfoccwave
 }  // namespace psi

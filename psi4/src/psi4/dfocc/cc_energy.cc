@@ -273,7 +273,7 @@ void DFOCC::scs_mp2_energy() {
                 }
             }
         }  // end if (reference == "ROHF")
-    }      // else if (reference_ == "UNRESTRICTED")
+    }  // else if (reference_ == "UNRESTRICTED")
 
     Ecorr = Emp2AA + Emp2AB + Emp2BB + Emp2_t1;
     Emp2 = Eref + Ecorr;

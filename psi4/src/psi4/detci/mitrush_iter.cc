@@ -257,7 +257,7 @@ void CIWavefunction::mitrush_iter(CIvect &Hd, struct stringwr **alplist, struct 
     }
 
     // [30 Apr 2019] CDS commenting b/c unreachable and noncomputing
-    //if (Parameters_->precon >= PRECON_GEN_DAVIDSON && H0block_->size) {
+    // if (Parameters_->precon >= PRECON_GEN_DAVIDSON && H0block_->size) {
     //    detH0 = 1;
     //    /*
     //    detH0 = H0block_calc(E);

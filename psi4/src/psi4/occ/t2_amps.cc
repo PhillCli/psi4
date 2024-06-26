@@ -719,5 +719,5 @@ void OCCWave::t2_amps() {
        // outfile->Printf("\n t2_amps done. \n");
 
 }  // end t2_amps
-}
-}  // End Namespaces
+}  // namespace occwave
+}  // namespace psi

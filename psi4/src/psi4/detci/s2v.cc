@@ -118,7 +118,7 @@ void s2_block_vfci(struct stringwr **alplist, struct stringwr **betlist, double 
                     F[Ja_idx] += 0.5 * Ka_sgn * Ja_sgn * tei[ijkl];
                 }
             } /* end loop over Ia excitations */
-        }     /* end loop over Ka_list */
+        } /* end loop over Ka_list */
 
         /*
         for (Ib_idx=0; Ib_idx < nbs; Ib_idx++) {
@@ -220,7 +220,7 @@ void s2_block_vras(struct stringwr **alplist, struct stringwr **betlist, double 
                         F[Ja_idx] += 0.5 * Ka_sgn * Ja_sgn * tei[ijkl];
                 }
             } /* end loop over Ia excitations */
-        }     /* end loop over Ka_list */
+        } /* end loop over Ka_list */
 
         /*
         for (Ib_idx=0; Ib_idx < nbs; Ib_idx++) {
@@ -350,7 +350,7 @@ void s2_block_vras_rotf(int *Cnt[2], int **Ij[2], int **Oij[2], int **Ridx[2], s
             }
 
         } /* end loop over Ia */
-    }     /* end loop over Ka_list */
+    } /* end loop over Ka_list */
 }
 }  // namespace detci
 }  // namespace psi

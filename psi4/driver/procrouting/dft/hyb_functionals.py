@@ -178,10 +178,8 @@ funcs.append({
             's9': 1.000,
         },
     },
-    "description":
-    '    wB97X basied 3C composite method with a small basis set, gCP and D4\n',
-    "citation":
-    '    M. Muller, A. Hansen, S. Grimme, J. Chem. Phys. 158, 014103 (2023)\n',
+    "description": '    wB97X basied 3C composite method with a small basis set, gCP and D4\n',
+    "citation": '    M. Muller, A. Hansen, S. Grimme, J. Chem. Phys. 158, 014103 (2023)\n',
     "doi": "10.1063/5.0133026",
 })
 
@@ -552,7 +550,8 @@ funcs.append({
 })
 
 funcs.append({
-    "name": "wB97M-D3BJ",
+    "name":
+    "wB97M-D3BJ",
     "xc_functionals": {
         "HYB_MGGA_XC_WB97M_V": {}
     },
@@ -575,7 +574,8 @@ funcs.append({
 })
 
 funcs.append({
-    "name": "wB97X-D3BJ",
+    "name":
+    "wB97X-D3BJ",
     "xc_functionals": {
         "HYB_GGA_XC_WB97X_V": {}
     },

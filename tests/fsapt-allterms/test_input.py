@@ -2,6 +2,7 @@ from pathlib import Path
 import psi4
 from addons import *
 
+
 @ctest_labeler("sapt;cart;fsapt")
 def test_fsapt_allterms():
     fsaptpy_installed = (Path(psi4.core.get_datadir()) / "fsapt" / "fsapt.py").resolve()
@@ -9,4 +10,3 @@ def test_fsapt_allterms():
     ctest_runner(__file__, extra_infiles=[
         fsaptpy_installed,
     ])
-

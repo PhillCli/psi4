@@ -66,7 +66,7 @@ namespace ccdensity {
 ** I really need to give an example of this problem using specific
 ** elements of GIJKA so that the code below will be clearer.*/
 
-void dump_ROHF(struct iwlbuf *OutBuf, const struct RHO_Params& rho_params) {
+void dump_ROHF(struct iwlbuf* OutBuf, const struct RHO_Params& rho_params) {
     int nirreps, nmo, nfzv;
     int h, row, col, p, q, r, s;
     dpdbuf4 G;
@@ -79,7 +79,7 @@ void dump_ROHF(struct iwlbuf *OutBuf, const struct RHO_Params& rho_params) {
 
     psio_open(PSIF_MO_OPDM, PSIO_OPEN_OLD);
     /*  psio_write_entry(PSIF_MO_OPDM, "MO-basis OPDM", (char *) moinfo.opdm[0], */
-    psio_write_entry(PSIF_MO_OPDM, rho_params.opdm_lbl, (char *)moinfo.opdm[0],
+    psio_write_entry(PSIF_MO_OPDM, rho_params.opdm_lbl, (char*)moinfo.opdm[0],
                      sizeof(double) * (nmo - nfzv) * (nmo - nfzv));
     psio_close(PSIF_MO_OPDM, 1);
 

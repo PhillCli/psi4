@@ -236,11 +236,12 @@ class PSI_API MintsHelper {
     /// AO F12G12 Integrals
     SharedMatrix ao_f12g12(std::vector<std::pair<double, double>> exp_coeff);
     SharedMatrix ao_f12g12(std::vector<std::pair<double, double>> exp_coeff, std::shared_ptr<BasisSet> bs1,
-                        std::shared_ptr<BasisSet> bs2, std::shared_ptr<BasisSet> bs3, std::shared_ptr<BasisSet> bs4);
+                           std::shared_ptr<BasisSet> bs2, std::shared_ptr<BasisSet> bs3, std::shared_ptr<BasisSet> bs4);
     /// AO F12 double commutator Integrals
     SharedMatrix ao_f12_double_commutator(std::vector<std::pair<double, double>> exp_coeff);
-    SharedMatrix ao_f12_double_commutator(std::vector<std::pair<double, double>> exp_coeff, std::shared_ptr<BasisSet> bs1,
-                        std::shared_ptr<BasisSet> bs2, std::shared_ptr<BasisSet> bs3, std::shared_ptr<BasisSet> bs4);
+    SharedMatrix ao_f12_double_commutator(std::vector<std::pair<double, double>> exp_coeff,
+                                          std::shared_ptr<BasisSet> bs1, std::shared_ptr<BasisSet> bs2,
+                                          std::shared_ptr<BasisSet> bs3, std::shared_ptr<BasisSet> bs4);
     /// F12 Fitted Slater Correlation Factor
     std::vector<std::pair<double, double>> f12_cgtg(double exponent = 1.0);
 
@@ -250,9 +251,9 @@ class PSI_API MintsHelper {
                               std::shared_ptr<BasisSet> bs3);
 
     /// Erf-attenuated Coulomb potential on origin
-    SharedMatrix ao_potential_erf(const std::vector<double> &origin, double omega = 0.0, int deriv = 0);
+    SharedMatrix ao_potential_erf(const std::vector<double>& origin, double omega = 0.0, int deriv = 0);
     /// Erfc-attenuated Coulomb potential on origin
-    SharedMatrix ao_potential_erf_complement(const std::vector<double> &origin, double omega = 0.0, int deriv = 0);
+    SharedMatrix ao_potential_erf_complement(const std::vector<double>& origin, double omega = 0.0, int deriv = 0);
 
     /// Symmetric MO ERI Integrals, (ov|ov) type  (Full matrix, N^5, not recommended for large systems)
     /// Pass C_ C_ for (aa|aa) type, Cocc_, Cocc_ for (oo|oo) type, or Cvir_, Cvir_ for (vv|vv) type
@@ -314,8 +315,7 @@ class PSI_API MintsHelper {
     /// Vector AO Multipole Integrals up to given order (in CCA lexicographic order)
     std::vector<SharedMatrix> ao_multipoles(int order, const std::vector<double>& origin);
     /// AO EFP Multipole Potential Integrals
-    std::vector<SharedMatrix> ao_efp_multipole_potential(const std::vector<double>& origin,
-                                                         int deriv = 0);
+    std::vector<SharedMatrix> ao_efp_multipole_potential(const std::vector<double>& origin, int deriv = 0);
     // AO Multipole Potential Integrals up to given order (in CCA lexicographic order)
     std::vector<SharedMatrix> ao_multipole_potential(int order, const std::vector<double>& origin, int deriv = 0);
     /// Electric Field Integrals

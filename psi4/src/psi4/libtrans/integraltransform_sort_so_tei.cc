@@ -151,8 +151,8 @@ std::vector<SharedMatrix> IntegralTransform::compute_fock_like_matrices(SharedMa
                             F->add(qsym, qrel, rrel, -0.5 * D->get(psym, prel, srel) * value);
                         }
                     } /* N */
-                }     /* rs */
-            }         /* pq */
+                } /* rs */
+            } /* pq */
         }
         global_dpd_->buf4_mat_irrep_close_block(&J, h, rowsPerBucket);
     } /* h */
@@ -184,7 +184,7 @@ void IntegralTransform::presort_so_tei() {
     }
 
     /// Initialize frozen core density
-    auto aFzcD = std::vector<double>(nTriSo_); // Density matrix from core orbitals only
+    auto aFzcD = std::vector<double>(nTriSo_);  // Density matrix from core orbitals only
     std::vector<double> bFzcD, bFzcOp;
     if (transformationType_ != TransformationType::Restricted) {
         bFzcD = std::vector<double>(nTriSo_);
@@ -208,7 +208,7 @@ void IntegralTransform::presort_so_tei() {
 
     // Copy the OEI into the frozen core operator
     auto aoH = H_->to_lower_triangle();
-    std::vector<double> aFzcOp(aoH, aoH + nTriSo_); // The frozen core operator. Not complete yet.
+    std::vector<double> aFzcOp(aoH, aoH + nTriSo_);  // The frozen core operator. Not complete yet.
     if (transformationType_ != TransformationType::Restricted) {
         bFzcOp = std::vector<double>(aoH, aoH + nTriSo_);
     }

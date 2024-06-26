@@ -317,8 +317,8 @@ void AOFctSieveIterator::next() {
     reorder_inds();
 }
 
-PKWorker::PKWorker(std::shared_ptr<BasisSet> primary, SharedInt eri, std::shared_ptr<AIOHandler> AIO,
-                   int target_file, size_t buf_size) {
+PKWorker::PKWorker(std::shared_ptr<BasisSet> primary, SharedInt eri, std::shared_ptr<AIOHandler> AIO, int target_file,
+                   size_t buf_size) {
     AIO_ = AIO;
     eri_ = eri;
     target_file_ = target_file;
@@ -487,15 +487,15 @@ PKWrkrReord::~PKWrkrReord() {
     // Deallocate all memory cleanly
     std::vector<double *>::iterator it;
     for (it = J_bufs_.begin(); it != J_bufs_.end(); ++it) {
-        delete[] * it;
+        delete[] *it;
     }
     J_bufs_.clear();
     for (it = K_bufs_.begin(); it != K_bufs_.end(); ++it) {
-        delete[] * it;
+        delete[] *it;
     }
     K_bufs_.clear();
     for (it = wK_bufs_.begin(); it != wK_bufs_.end(); ++it) {
-        delete[] * it;
+        delete[] *it;
     }
     wK_bufs_.clear();
     for (int i = 0; i < labels_J_.size(); ++i) {
@@ -845,9 +845,8 @@ void PKWrkrInCore::finalize_ints_wK(size_t pk_pairs) {
     }
 }
 
-PKWrkrIWL::PKWrkrIWL(std::shared_ptr<BasisSet> primary, SharedInt eri, std::shared_ptr<AIOHandler> AIOp,
-                     int targetfile, int K_file, size_t buf_size, std::vector<int> &bufforpq,
-                     std::shared_ptr<std::vector<size_t>> pos)
+PKWrkrIWL::PKWrkrIWL(std::shared_ptr<BasisSet> primary, SharedInt eri, std::shared_ptr<AIOHandler> AIOp, int targetfile,
+                     int K_file, size_t buf_size, std::vector<int> &bufforpq, std::shared_ptr<std::vector<size_t>> pos)
     : PKWorker(primary, eri, AIOp, targetfile, buf_size) {
     K_file_ = K_file;
     buf_for_pq_ = bufforpq;

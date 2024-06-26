@@ -122,7 +122,6 @@ class VariableValue : public CoordValue {
 };
 
 class CoordEntry {
-
    protected:
     int entry_number_;
     bool computed_;
@@ -201,9 +200,7 @@ class CoordEntry {
     /// Whether this atom has the same mass and basis sets as another atom
     bool is_equivalent_to(const std::shared_ptr<CoordEntry>& other) const;
     /// Flags the current coordinates as being outdated.
-    void invalidate() {
-        computed_ = false;
-    }
+    void invalidate() { computed_ = false; }
     /// Clones the current object, using a user-provided variable array, for deep copying
     virtual std::shared_ptr<CoordEntry> clone(std::vector<std::shared_ptr<CoordEntry> >& atoms,
                                               std::map<std::string, double>& map) = 0;
@@ -288,7 +285,7 @@ class CartesianEntry : public CoordEntry {
         std::shared_ptr<CoordEntry> temp =
             std::make_shared<CartesianEntry>(entry_number_, Z_, charge_, mass_, symbol_, label_, A_, x_->clone(map),
                                              y_->clone(map), z_->clone(map), basissets_, shells_);
-        if (computed_) temp->compute(); // The constructor sets the coords we want, so this just sets computed_.
+        if (computed_) temp->compute();  // The constructor sets the coords we want, so this just sets computed_.
         return temp;
     }
 };

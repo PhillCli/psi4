@@ -25,7 +25,6 @@
 #
 # @END LICENSE
 #
-
 """
 | Database (Sherrill) of interaction energies for dissociation curves of dispersion-bound bimolecular complexes.
 | Geometries and Reference interaction energies from the following articles:
@@ -126,142 +125,160 @@ HRXN = sum(temp, [])
 
 HRXN_SM = ['BzMe-6.0', 'MeMe-5.0']
 HRXN_LG = ['BzBz_T-5.0']
-HRXN_EQ = ['BzBz_S-3.9', 'BzBz_T-5.0', 'BzBz_PD34-1.8', 'BzH2S-3.8', 'BzMe-3.8',
-           'MeMe-3.6', 'PyPy_S2-3.7', 'PyPy_T3-4.9', 'BzBz_PD32-1.9', 'BzBz_PD36-1.7']
+HRXN_EQ = [
+    'BzBz_S-3.9', 'BzBz_T-5.0', 'BzBz_PD34-1.8', 'BzH2S-3.8', 'BzMe-3.8', 'MeMe-3.6', 'PyPy_S2-3.7', 'PyPy_T3-4.9',
+    'BzBz_PD32-1.9', 'BzBz_PD36-1.7'
+]
 
 # <<< Chemical Systems Involved >>>
-RXNM = {}     # reaction matrix of reagent contributions per reaction
-ACTV = {}     # order of active reagents per reaction
+RXNM = {}  # reaction matrix of reagent contributions per reaction
+ACTV = {}  # order of active reagents per reaction
 ACTV_CP = {}  # order of active reagents per counterpoise-corrected reaction
 ACTV_SA = {}  # order of active reagents for non-supramolecular calculations
 for rxn in HRXN:
 
     if (rxn in BzBz_S) or (rxn in BzBz_PD34) or (rxn in BzBz_PD32) or (rxn in BzBz_PD36):
-        RXNM[   '%s-%s' % (dbse, rxn)] = {'%s-%s-dimer'      % (dbse, rxn) : +1,
-                                          '%s-%s-monoA-CP'   % (dbse, rxn) : -2,
-                                          '%s-Bz-mono-unCP'  % (dbse)      : -2 }
+        RXNM['%s-%s' % (dbse, rxn)] = {
+            '%s-%s-dimer' % (dbse, rxn): +1,
+            '%s-%s-monoA-CP' % (dbse, rxn): -2,
+            '%s-Bz-mono-unCP' % (dbse): -2
+        }
 
-        ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn) ]
+        ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn)]
 
-        ACTV_CP['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),
-                                          '%s-%s-monoA-CP'   % (dbse, rxn) ]
+        ACTV_CP['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn), '%s-%s-monoA-CP' % (dbse, rxn)]
 
-        ACTV[   '%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),
-                                          '%s-Bz-mono-unCP'  % (dbse) ]
+        ACTV['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn), '%s-Bz-mono-unCP' % (dbse)]
 
     elif rxn in BzBz_T:
-        RXNM[   '%s-%s' % (dbse, rxn)] = {'%s-%s-dimer'      % (dbse, rxn) : +1,
-                                          '%s-%s-monoA-CP'   % (dbse, rxn) : -1,
-                                          '%s-%s-monoB-CP'   % (dbse, rxn) : -1,
-                                          '%s-Bz-mono-unCP'  % (dbse)      : -2 }
+        RXNM['%s-%s' % (dbse, rxn)] = {
+            '%s-%s-dimer' % (dbse, rxn): +1,
+            '%s-%s-monoA-CP' % (dbse, rxn): -1,
+            '%s-%s-monoB-CP' % (dbse, rxn): -1,
+            '%s-Bz-mono-unCP' % (dbse): -2
+        }
 
-        ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn) ]
+        ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn)]
 
-        ACTV_CP['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),
-                                          '%s-%s-monoA-CP'   % (dbse, rxn),
-                                          '%s-%s-monoB-CP'   % (dbse, rxn) ]
+        ACTV_CP['%s-%s' % (dbse, rxn)] = [
+            '%s-%s-dimer' % (dbse, rxn),
+            '%s-%s-monoA-CP' % (dbse, rxn),
+            '%s-%s-monoB-CP' % (dbse, rxn)
+        ]
 
-        ACTV[   '%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),
-                                          '%s-Bz-mono-unCP'  % (dbse) ]
+        ACTV['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn), '%s-Bz-mono-unCP' % (dbse)]
 
     elif rxn in BzH2S:
-        RXNM[   '%s-%s' % (dbse, rxn)] = {'%s-%s-dimer'      % (dbse, rxn) : +1,
-                                          '%s-%s-monoA-CP'   % (dbse, rxn) : -1,
-                                          '%s-%s-monoB-CP'   % (dbse, rxn) : -1,
-                                          '%s-Bz-mono-unCP'  % (dbse)      : -1,
-                                          '%s-H2S-mono-unCP' % (dbse)      : -1 }
+        RXNM['%s-%s' % (dbse, rxn)] = {
+            '%s-%s-dimer' % (dbse, rxn): +1,
+            '%s-%s-monoA-CP' % (dbse, rxn): -1,
+            '%s-%s-monoB-CP' % (dbse, rxn): -1,
+            '%s-Bz-mono-unCP' % (dbse): -1,
+            '%s-H2S-mono-unCP' % (dbse): -1
+        }
 
-        ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn) ]
+        ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn)]
 
-        ACTV_CP['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),
-                                          '%s-%s-monoA-CP'   % (dbse, rxn),
-                                          '%s-%s-monoB-CP'   % (dbse, rxn) ]
+        ACTV_CP['%s-%s' % (dbse, rxn)] = [
+            '%s-%s-dimer' % (dbse, rxn),
+            '%s-%s-monoA-CP' % (dbse, rxn),
+            '%s-%s-monoB-CP' % (dbse, rxn)
+        ]
 
-        ACTV[   '%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),
-                                          '%s-Bz-mono-unCP'  % (dbse),
-                                          '%s-H2S-mono-unCP' % (dbse) ]
+        ACTV['%s-%s' %
+             (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn),
+                             '%s-Bz-mono-unCP' % (dbse),
+                             '%s-H2S-mono-unCP' % (dbse)]
 
     elif rxn in BzMe:
-        RXNM[   '%s-%s' % (dbse, rxn)] = {'%s-%s-dimer'      % (dbse, rxn) : +1,
-                                          '%s-%s-monoA-CP'   % (dbse, rxn) : -1,
-                                          '%s-%s-monoB-CP'   % (dbse, rxn) : -1,
-                                          '%s-Bz2-mono-unCP' % (dbse)      : -1,
-                                          '%s-Me-mono-unCP'  % (dbse)      : -1 }
+        RXNM['%s-%s' % (dbse, rxn)] = {
+            '%s-%s-dimer' % (dbse, rxn): +1,
+            '%s-%s-monoA-CP' % (dbse, rxn): -1,
+            '%s-%s-monoB-CP' % (dbse, rxn): -1,
+            '%s-Bz2-mono-unCP' % (dbse): -1,
+            '%s-Me-mono-unCP' % (dbse): -1
+        }
 
-        ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn) ]
+        ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn)]
 
-        ACTV_CP['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),
-                                          '%s-%s-monoA-CP'   % (dbse, rxn),
-                                          '%s-%s-monoB-CP'   % (dbse, rxn) ]
+        ACTV_CP['%s-%s' % (dbse, rxn)] = [
+            '%s-%s-dimer' % (dbse, rxn),
+            '%s-%s-monoA-CP' % (dbse, rxn),
+            '%s-%s-monoB-CP' % (dbse, rxn)
+        ]
 
-        ACTV[   '%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),
-                                          '%s-Bz2-mono-unCP' % (dbse),
-                                          '%s-Me-mono-unCP'  % (dbse) ]
+        ACTV['%s-%s' %
+             (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn),
+                             '%s-Bz2-mono-unCP' % (dbse),
+                             '%s-Me-mono-unCP' % (dbse)]
 
     elif rxn in MeMe:
-        RXNM[   '%s-%s' % (dbse, rxn)] = {'%s-%s-dimer'      % (dbse, rxn) : +1,
-                                          '%s-%s-monoA-CP'   % (dbse, rxn) : -2,
-                                          '%s-Me-mono-unCP'  % (dbse)      : -2 }
+        RXNM['%s-%s' % (dbse, rxn)] = {
+            '%s-%s-dimer' % (dbse, rxn): +1,
+            '%s-%s-monoA-CP' % (dbse, rxn): -2,
+            '%s-Me-mono-unCP' % (dbse): -2
+        }
 
-        ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn) ]
+        ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn)]
 
-        ACTV_CP['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),
-                                          '%s-%s-monoA-CP'   % (dbse, rxn) ]
+        ACTV_CP['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn), '%s-%s-monoA-CP' % (dbse, rxn)]
 
-        ACTV[   '%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),
-                                          '%s-Me-mono-unCP'  % (dbse) ]
+        ACTV['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn), '%s-Me-mono-unCP' % (dbse)]
 
     elif rxn in PyPy_S2:
-        RXNM[   '%s-%s' % (dbse, rxn)] = {'%s-%s-dimer'      % (dbse, rxn) : +1,
-                                          '%s-%s-monoA-CP'   % (dbse, rxn) : -2,
-                                          '%s-Py-mono-unCP'  % (dbse)      : -2 }
+        RXNM['%s-%s' % (dbse, rxn)] = {
+            '%s-%s-dimer' % (dbse, rxn): +1,
+            '%s-%s-monoA-CP' % (dbse, rxn): -2,
+            '%s-Py-mono-unCP' % (dbse): -2
+        }
 
-        ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn) ]
+        ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn)]
 
-        ACTV_CP['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),
-                                          '%s-%s-monoA-CP'   % (dbse, rxn) ]
+        ACTV_CP['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn), '%s-%s-monoA-CP' % (dbse, rxn)]
 
-        ACTV[   '%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),
-                                          '%s-Py-mono-unCP'  % (dbse) ]
+        ACTV['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn), '%s-Py-mono-unCP' % (dbse)]
 
     elif rxn in PyPy_T3:
-        RXNM[   '%s-%s' % (dbse, rxn)] = {'%s-%s-dimer'      % (dbse, rxn) : +1,
-                                          '%s-%s-monoA-CP'   % (dbse, rxn) : -1,
-                                          '%s-%s-monoB-CP'   % (dbse, rxn) : -1,
-                                          '%s-Py-mono-unCP'  % (dbse)      : -2 }
+        RXNM['%s-%s' % (dbse, rxn)] = {
+            '%s-%s-dimer' % (dbse, rxn): +1,
+            '%s-%s-monoA-CP' % (dbse, rxn): -1,
+            '%s-%s-monoB-CP' % (dbse, rxn): -1,
+            '%s-Py-mono-unCP' % (dbse): -2
+        }
 
-        ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn) ]
+        ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn)]
 
-        ACTV_CP['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),
-                                          '%s-%s-monoA-CP'   % (dbse, rxn),
-                                          '%s-%s-monoB-CP'   % (dbse, rxn) ]
+        ACTV_CP['%s-%s' % (dbse, rxn)] = [
+            '%s-%s-dimer' % (dbse, rxn),
+            '%s-%s-monoA-CP' % (dbse, rxn),
+            '%s-%s-monoB-CP' % (dbse, rxn)
+        ]
 
-        ACTV[   '%s-%s' % (dbse, rxn)] = ['%s-%s-dimer'      % (dbse, rxn),
-                                          '%s-Py-mono-unCP'  % (dbse) ]
+        ACTV['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn), '%s-Py-mono-unCP' % (dbse)]
 
 # <<< Reference Values >>>
 BIND = {}
 # Original publication
 BIND_NBC100 = {}
-BIND_NBC100['%s-BzBz_S-3.2'  % (dbse)] =  3.522
-BIND_NBC100['%s-BzBz_S-3.3'  % (dbse)] =  1.535
-BIND_NBC100['%s-BzBz_S-3.4'  % (dbse)] =  0.189
-BIND_NBC100['%s-BzBz_S-3.5'  % (dbse)] = -0.689
-BIND_NBC100['%s-BzBz_S-3.6'  % (dbse)] = -1.231
-BIND_NBC100['%s-BzBz_S-3.7'  % (dbse)] = -1.535
-BIND_NBC100['%s-BzBz_S-3.8'  % (dbse)] = -1.674
-BIND_NBC100['%s-BzBz_S-3.9'  % (dbse)] = -1.701  # BzBz_S minimum
-BIND_NBC100['%s-BzBz_S-4.0'  % (dbse)] = -1.655
-BIND_NBC100['%s-BzBz_S-4.1'  % (dbse)] = -1.565
-BIND_NBC100['%s-BzBz_S-4.2'  % (dbse)] = -1.448
-BIND_NBC100['%s-BzBz_S-4.5'  % (dbse)] = -1.058
-BIND_NBC100['%s-BzBz_S-5.0'  % (dbse)] = -0.542
-BIND_NBC100['%s-BzBz_S-5.5'  % (dbse)] = -0.248
-BIND_NBC100['%s-BzBz_S-6.0'  % (dbse)] = -0.099
-BIND_NBC100['%s-BzBz_S-6.5'  % (dbse)] = -0.028
-BIND_NBC100['%s-BzBz_S-10.0' % (dbse)] =  0.018
+BIND_NBC100['%s-BzBz_S-3.2' % (dbse)] = 3.522
+BIND_NBC100['%s-BzBz_S-3.3' % (dbse)] = 1.535
+BIND_NBC100['%s-BzBz_S-3.4' % (dbse)] = 0.189
+BIND_NBC100['%s-BzBz_S-3.5' % (dbse)] = -0.689
+BIND_NBC100['%s-BzBz_S-3.6' % (dbse)] = -1.231
+BIND_NBC100['%s-BzBz_S-3.7' % (dbse)] = -1.535
+BIND_NBC100['%s-BzBz_S-3.8' % (dbse)] = -1.674
+BIND_NBC100['%s-BzBz_S-3.9' % (dbse)] = -1.701  # BzBz_S minimum
+BIND_NBC100['%s-BzBz_S-4.0' % (dbse)] = -1.655
+BIND_NBC100['%s-BzBz_S-4.1' % (dbse)] = -1.565
+BIND_NBC100['%s-BzBz_S-4.2' % (dbse)] = -1.448
+BIND_NBC100['%s-BzBz_S-4.5' % (dbse)] = -1.058
+BIND_NBC100['%s-BzBz_S-5.0' % (dbse)] = -0.542
+BIND_NBC100['%s-BzBz_S-5.5' % (dbse)] = -0.248
+BIND_NBC100['%s-BzBz_S-6.0' % (dbse)] = -0.099
+BIND_NBC100['%s-BzBz_S-6.5' % (dbse)] = -0.028
+BIND_NBC100['%s-BzBz_S-10.0' % (dbse)] = 0.018
 
-BIND_NBC100['%s-BzBz_T-4.4' % (dbse)] =  0.626
+BIND_NBC100['%s-BzBz_T-4.4' % (dbse)] = 0.626
 BIND_NBC100['%s-BzBz_T-4.5' % (dbse)] = -0.760
 BIND_NBC100['%s-BzBz_T-4.6' % (dbse)] = -1.673
 BIND_NBC100['%s-BzBz_T-4.7' % (dbse)] = -2.239
@@ -280,7 +297,7 @@ BIND_NBC100['%s-BzBz_T-7.0' % (dbse)] = -0.468
 BIND_NBC100['%s-BzBz_T-7.5' % (dbse)] = -0.302
 BIND_NBC100['%s-BzBz_T-8.0' % (dbse)] = -0.203
 
-BIND_NBC100['%s-BzBz_PD34-0.2' % (dbse)] =  0.070
+BIND_NBC100['%s-BzBz_PD34-0.2' % (dbse)] = 0.070
 BIND_NBC100['%s-BzBz_PD34-0.4' % (dbse)] = -0.257
 BIND_NBC100['%s-BzBz_PD34-0.6' % (dbse)] = -0.728
 BIND_NBC100['%s-BzBz_PD34-0.8' % (dbse)] = -1.260
@@ -299,27 +316,27 @@ BIND_NBC100['%s-BzBz_PD34-2.6' % (dbse)] = -2.242
 BIND_NBC100['%s-BzBz_PD34-2.8' % (dbse)] = -2.147
 BIND_NBC100['%s-BzBz_PD34-3.0' % (dbse)] = -2.079
 
-BIND_NBC100['%s-BzH2S-3.2'  % (dbse)] =  1.250
-BIND_NBC100['%s-BzH2S-3.4'  % (dbse)] = -1.570
-BIND_NBC100['%s-BzH2S-3.5'  % (dbse)] = -2.256
-BIND_NBC100['%s-BzH2S-3.6'  % (dbse)] = -2.638
-BIND_NBC100['%s-BzH2S-3.7'  % (dbse)] = -2.808
-BIND_NBC100['%s-BzH2S-3.8'  % (dbse)] = -2.834  # BzH2S minimum
-BIND_NBC100['%s-BzH2S-3.9'  % (dbse)] = -2.766
-BIND_NBC100['%s-BzH2S-4.0'  % (dbse)] = -2.639
-BIND_NBC100['%s-BzH2S-4.1'  % (dbse)] = -2.478
-BIND_NBC100['%s-BzH2S-4.2'  % (dbse)] = -2.301
-BIND_NBC100['%s-BzH2S-4.5'  % (dbse)] = -1.770
+BIND_NBC100['%s-BzH2S-3.2' % (dbse)] = 1.250
+BIND_NBC100['%s-BzH2S-3.4' % (dbse)] = -1.570
+BIND_NBC100['%s-BzH2S-3.5' % (dbse)] = -2.256
+BIND_NBC100['%s-BzH2S-3.6' % (dbse)] = -2.638
+BIND_NBC100['%s-BzH2S-3.7' % (dbse)] = -2.808
+BIND_NBC100['%s-BzH2S-3.8' % (dbse)] = -2.834  # BzH2S minimum
+BIND_NBC100['%s-BzH2S-3.9' % (dbse)] = -2.766
+BIND_NBC100['%s-BzH2S-4.0' % (dbse)] = -2.639
+BIND_NBC100['%s-BzH2S-4.1' % (dbse)] = -2.478
+BIND_NBC100['%s-BzH2S-4.2' % (dbse)] = -2.301
+BIND_NBC100['%s-BzH2S-4.5' % (dbse)] = -1.770
 BIND_NBC100['%s-BzH2S-4.75' % (dbse)] = -1.393
-BIND_NBC100['%s-BzH2S-5.0'  % (dbse)] = -1.093
+BIND_NBC100['%s-BzH2S-5.0' % (dbse)] = -1.093
 BIND_NBC100['%s-BzH2S-5.25' % (dbse)] = -0.861
-BIND_NBC100['%s-BzH2S-5.5'  % (dbse)] = -0.684
-BIND_NBC100['%s-BzH2S-6.0'  % (dbse)] = -0.446
-BIND_NBC100['%s-BzH2S-6.5'  % (dbse)] = -0.302
-BIND_NBC100['%s-BzH2S-7.0'  % (dbse)] = -0.214
-BIND_NBC100['%s-BzH2S-7.5'  % (dbse)] = -0.155
+BIND_NBC100['%s-BzH2S-5.5' % (dbse)] = -0.684
+BIND_NBC100['%s-BzH2S-6.0' % (dbse)] = -0.446
+BIND_NBC100['%s-BzH2S-6.5' % (dbse)] = -0.302
+BIND_NBC100['%s-BzH2S-7.0' % (dbse)] = -0.214
+BIND_NBC100['%s-BzH2S-7.5' % (dbse)] = -0.155
 
-BIND_NBC100['%s-BzMe-3.2' % (dbse)] =  0.717
+BIND_NBC100['%s-BzMe-3.2' % (dbse)] = 0.717
 BIND_NBC100['%s-BzMe-3.3' % (dbse)] = -0.183
 BIND_NBC100['%s-BzMe-3.4' % (dbse)] = -0.774
 BIND_NBC100['%s-BzMe-3.5' % (dbse)] = -1.135
@@ -339,7 +356,7 @@ BIND_NBC100['%s-BzMe-5.4' % (dbse)] = -0.286
 BIND_NBC100['%s-BzMe-5.6' % (dbse)] = -0.230
 BIND_NBC100['%s-BzMe-6.0' % (dbse)] = -0.141
 
-BIND_NBC100['%s-MeMe-3.2' % (dbse)] =  0.069
+BIND_NBC100['%s-MeMe-3.2' % (dbse)] = 0.069
 BIND_NBC100['%s-MeMe-3.3' % (dbse)] = -0.239
 BIND_NBC100['%s-MeMe-3.4' % (dbse)] = -0.417
 BIND_NBC100['%s-MeMe-3.5' % (dbse)] = -0.508
@@ -358,7 +375,7 @@ BIND_NBC100['%s-MeMe-5.0' % (dbse)] = -0.130
 BIND_NBC100['%s-MeMe-5.4' % (dbse)] = -0.080
 BIND_NBC100['%s-MeMe-5.8' % (dbse)] = -0.050
 
-BIND_NBC100['%s-PyPy_S2-3.1' % (dbse)] =  2.442
+BIND_NBC100['%s-PyPy_S2-3.1' % (dbse)] = 2.442
 BIND_NBC100['%s-PyPy_S2-3.3' % (dbse)] = -1.125
 BIND_NBC100['%s-PyPy_S2-3.4' % (dbse)] = -2.016
 BIND_NBC100['%s-PyPy_S2-3.5' % (dbse)] = -2.534
@@ -379,8 +396,8 @@ BIND_NBC100['%s-PyPy_S2-6.0' % (dbse)] = -0.402
 BIND_NBC100['%s-PyPy_S2-6.5' % (dbse)] = -0.277
 BIND_NBC100['%s-PyPy_S2-7.0' % (dbse)] = -0.200
 
-BIND_NBC100['%s-PyPy_T3-4.1' % (dbse)] =  9.340
-BIND_NBC100['%s-PyPy_T3-4.3' % (dbse)] =  1.991
+BIND_NBC100['%s-PyPy_T3-4.1' % (dbse)] = 9.340
+BIND_NBC100['%s-PyPy_T3-4.3' % (dbse)] = 1.991
 BIND_NBC100['%s-PyPy_T3-4.5' % (dbse)] = -1.377
 BIND_NBC100['%s-PyPy_T3-4.6' % (dbse)] = -2.203
 BIND_NBC100['%s-PyPy_T3-4.7' % (dbse)] = -2.673
@@ -399,10 +416,10 @@ BIND_NBC100['%s-PyPy_T3-7.0' % (dbse)] = -0.574
 BIND_NBC100['%s-PyPy_T3-8.0' % (dbse)] = -0.296
 BIND_NBC100['%s-PyPy_T3-9.0' % (dbse)] = -0.175
 
-BIND_NBC100['%s-BzBz_PD32-0.2' % (dbse)] =  3.301
-BIND_NBC100['%s-BzBz_PD32-0.4' % (dbse)] =  2.678
-BIND_NBC100['%s-BzBz_PD32-0.6' % (dbse)] =  1.783
-BIND_NBC100['%s-BzBz_PD32-0.8' % (dbse)] =  0.781
+BIND_NBC100['%s-BzBz_PD32-0.2' % (dbse)] = 3.301
+BIND_NBC100['%s-BzBz_PD32-0.4' % (dbse)] = 2.678
+BIND_NBC100['%s-BzBz_PD32-0.6' % (dbse)] = 1.783
+BIND_NBC100['%s-BzBz_PD32-0.8' % (dbse)] = 0.781
 BIND_NBC100['%s-BzBz_PD32-1.0' % (dbse)] = -0.171
 BIND_NBC100['%s-BzBz_PD32-1.2' % (dbse)] = -0.954
 BIND_NBC100['%s-BzBz_PD32-1.4' % (dbse)] = -1.508
@@ -438,25 +455,25 @@ BIND_NBC100['%s-BzBz_PD36-2.8' % (dbse)] = -2.130
 BIND_NBC100['%s-BzBz_PD36-3.0' % (dbse)] = -2.035
 # Current revision
 BIND_NBC10A = {}
-BIND_NBC10A['%s-BzBz_S-3.2'  % (dbse)] =  3.462
-BIND_NBC10A['%s-BzBz_S-3.3'  % (dbse)] =  1.484
-BIND_NBC10A['%s-BzBz_S-3.4'  % (dbse)] =  0.147
-BIND_NBC10A['%s-BzBz_S-3.5'  % (dbse)] = -0.724
-BIND_NBC10A['%s-BzBz_S-3.6'  % (dbse)] = -1.259
-BIND_NBC10A['%s-BzBz_S-3.7'  % (dbse)] = -1.558
-BIND_NBC10A['%s-BzBz_S-3.8'  % (dbse)] = -1.693
-BIND_NBC10A['%s-BzBz_S-3.9'  % (dbse)] = -1.717  # BzBz_S minimum
-BIND_NBC10A['%s-BzBz_S-4.0'  % (dbse)] = -1.669
-BIND_NBC10A['%s-BzBz_S-4.1'  % (dbse)] = -1.577
-BIND_NBC10A['%s-BzBz_S-4.2'  % (dbse)] = -1.459
-BIND_NBC10A['%s-BzBz_S-4.5'  % (dbse)] = -1.066
-BIND_NBC10A['%s-BzBz_S-5.0'  % (dbse)] = -0.546
-BIND_NBC10A['%s-BzBz_S-5.5'  % (dbse)] = -0.251
-BIND_NBC10A['%s-BzBz_S-6.0'  % (dbse)] = -0.101
-BIND_NBC10A['%s-BzBz_S-6.5'  % (dbse)] = -0.029
-BIND_NBC10A['%s-BzBz_S-10.0' % (dbse)] =  0.018
+BIND_NBC10A['%s-BzBz_S-3.2' % (dbse)] = 3.462
+BIND_NBC10A['%s-BzBz_S-3.3' % (dbse)] = 1.484
+BIND_NBC10A['%s-BzBz_S-3.4' % (dbse)] = 0.147
+BIND_NBC10A['%s-BzBz_S-3.5' % (dbse)] = -0.724
+BIND_NBC10A['%s-BzBz_S-3.6' % (dbse)] = -1.259
+BIND_NBC10A['%s-BzBz_S-3.7' % (dbse)] = -1.558
+BIND_NBC10A['%s-BzBz_S-3.8' % (dbse)] = -1.693
+BIND_NBC10A['%s-BzBz_S-3.9' % (dbse)] = -1.717  # BzBz_S minimum
+BIND_NBC10A['%s-BzBz_S-4.0' % (dbse)] = -1.669
+BIND_NBC10A['%s-BzBz_S-4.1' % (dbse)] = -1.577
+BIND_NBC10A['%s-BzBz_S-4.2' % (dbse)] = -1.459
+BIND_NBC10A['%s-BzBz_S-4.5' % (dbse)] = -1.066
+BIND_NBC10A['%s-BzBz_S-5.0' % (dbse)] = -0.546
+BIND_NBC10A['%s-BzBz_S-5.5' % (dbse)] = -0.251
+BIND_NBC10A['%s-BzBz_S-6.0' % (dbse)] = -0.101
+BIND_NBC10A['%s-BzBz_S-6.5' % (dbse)] = -0.029
+BIND_NBC10A['%s-BzBz_S-10.0' % (dbse)] = 0.018
 
-BIND_NBC10A['%s-BzBz_T-4.4' % (dbse)] =  0.617
+BIND_NBC10A['%s-BzBz_T-4.4' % (dbse)] = 0.617
 BIND_NBC10A['%s-BzBz_T-4.5' % (dbse)] = -0.769
 BIND_NBC10A['%s-BzBz_T-4.6' % (dbse)] = -1.682
 BIND_NBC10A['%s-BzBz_T-4.7' % (dbse)] = -2.246
@@ -475,7 +492,7 @@ BIND_NBC10A['%s-BzBz_T-7.0' % (dbse)] = -0.468
 BIND_NBC10A['%s-BzBz_T-7.5' % (dbse)] = -0.302
 BIND_NBC10A['%s-BzBz_T-8.0' % (dbse)] = -0.203
 
-BIND_NBC10A['%s-BzBz_PD34-0.2' % (dbse)] =  0.029
+BIND_NBC10A['%s-BzBz_PD34-0.2' % (dbse)] = 0.029
 BIND_NBC10A['%s-BzBz_PD34-0.4' % (dbse)] = -0.298
 BIND_NBC10A['%s-BzBz_PD34-0.6' % (dbse)] = -0.768
 BIND_NBC10A['%s-BzBz_PD34-0.8' % (dbse)] = -1.298
@@ -494,27 +511,27 @@ BIND_NBC10A['%s-BzBz_PD34-2.6' % (dbse)] = -2.260
 BIND_NBC10A['%s-BzBz_PD34-2.8' % (dbse)] = -2.163
 BIND_NBC10A['%s-BzBz_PD34-3.0' % (dbse)] = -2.093
 
-BIND_NBC10A['%s-BzH2S-3.2'  % (dbse)] =  1.236
-BIND_NBC10A['%s-BzH2S-3.4'  % (dbse)] = -1.584
-BIND_NBC10A['%s-BzH2S-3.5'  % (dbse)] = -2.269
-BIND_NBC10A['%s-BzH2S-3.6'  % (dbse)] = -2.649
-BIND_NBC10A['%s-BzH2S-3.7'  % (dbse)] = -2.818
-BIND_NBC10A['%s-BzH2S-3.8'  % (dbse)] = -2.843  # BzH2S minimum
-BIND_NBC10A['%s-BzH2S-3.9'  % (dbse)] = -2.773
-BIND_NBC10A['%s-BzH2S-4.0'  % (dbse)] = -2.645
-BIND_NBC10A['%s-BzH2S-4.1'  % (dbse)] = -2.483
-BIND_NBC10A['%s-BzH2S-4.2'  % (dbse)] = -2.305
-BIND_NBC10A['%s-BzH2S-4.5'  % (dbse)] = -1.771
+BIND_NBC10A['%s-BzH2S-3.2' % (dbse)] = 1.236
+BIND_NBC10A['%s-BzH2S-3.4' % (dbse)] = -1.584
+BIND_NBC10A['%s-BzH2S-3.5' % (dbse)] = -2.269
+BIND_NBC10A['%s-BzH2S-3.6' % (dbse)] = -2.649
+BIND_NBC10A['%s-BzH2S-3.7' % (dbse)] = -2.818
+BIND_NBC10A['%s-BzH2S-3.8' % (dbse)] = -2.843  # BzH2S minimum
+BIND_NBC10A['%s-BzH2S-3.9' % (dbse)] = -2.773
+BIND_NBC10A['%s-BzH2S-4.0' % (dbse)] = -2.645
+BIND_NBC10A['%s-BzH2S-4.1' % (dbse)] = -2.483
+BIND_NBC10A['%s-BzH2S-4.2' % (dbse)] = -2.305
+BIND_NBC10A['%s-BzH2S-4.5' % (dbse)] = -1.771
 BIND_NBC10A['%s-BzH2S-4.75' % (dbse)] = -1.393
-BIND_NBC10A['%s-BzH2S-5.0'  % (dbse)] = -1.092
+BIND_NBC10A['%s-BzH2S-5.0' % (dbse)] = -1.092
 BIND_NBC10A['%s-BzH2S-5.25' % (dbse)] = -0.859
-BIND_NBC10A['%s-BzH2S-5.5'  % (dbse)] = -0.682
-BIND_NBC10A['%s-BzH2S-6.0'  % (dbse)] = -0.444
-BIND_NBC10A['%s-BzH2S-6.5'  % (dbse)] = -0.301
-BIND_NBC10A['%s-BzH2S-7.0'  % (dbse)] = -0.212
-BIND_NBC10A['%s-BzH2S-7.5'  % (dbse)] = -0.154
+BIND_NBC10A['%s-BzH2S-5.5' % (dbse)] = -0.682
+BIND_NBC10A['%s-BzH2S-6.0' % (dbse)] = -0.444
+BIND_NBC10A['%s-BzH2S-6.5' % (dbse)] = -0.301
+BIND_NBC10A['%s-BzH2S-7.0' % (dbse)] = -0.212
+BIND_NBC10A['%s-BzH2S-7.5' % (dbse)] = -0.154
 
-BIND_NBC10A['%s-BzMe-3.2' % (dbse)] =  0.686
+BIND_NBC10A['%s-BzMe-3.2' % (dbse)] = 0.686
 BIND_NBC10A['%s-BzMe-3.3' % (dbse)] = -0.213
 BIND_NBC10A['%s-BzMe-3.4' % (dbse)] = -0.805
 BIND_NBC10A['%s-BzMe-3.5' % (dbse)] = -1.173
@@ -534,7 +551,7 @@ BIND_NBC10A['%s-BzMe-5.4' % (dbse)] = -0.332
 BIND_NBC10A['%s-BzMe-5.6' % (dbse)] = -0.268
 BIND_NBC10A['%s-BzMe-6.0' % (dbse)] = -0.177
 
-BIND_NBC10A['%s-MeMe-3.2' % (dbse)] =  0.069
+BIND_NBC10A['%s-MeMe-3.2' % (dbse)] = 0.069
 BIND_NBC10A['%s-MeMe-3.3' % (dbse)] = -0.239
 BIND_NBC10A['%s-MeMe-3.4' % (dbse)] = -0.417
 BIND_NBC10A['%s-MeMe-3.5' % (dbse)] = -0.508
@@ -553,7 +570,7 @@ BIND_NBC10A['%s-MeMe-5.0' % (dbse)] = -0.130
 BIND_NBC10A['%s-MeMe-5.4' % (dbse)] = -0.080
 BIND_NBC10A['%s-MeMe-5.8' % (dbse)] = -0.050
 
-BIND_NBC10A['%s-PyPy_S2-3.1' % (dbse)] =  2.387
+BIND_NBC10A['%s-PyPy_S2-3.1' % (dbse)] = 2.387
 BIND_NBC10A['%s-PyPy_S2-3.3' % (dbse)] = -1.165
 BIND_NBC10A['%s-PyPy_S2-3.4' % (dbse)] = -2.050
 BIND_NBC10A['%s-PyPy_S2-3.5' % (dbse)] = -2.562
@@ -574,8 +591,8 @@ BIND_NBC10A['%s-PyPy_S2-6.0' % (dbse)] = -0.402
 BIND_NBC10A['%s-PyPy_S2-6.5' % (dbse)] = -0.276
 BIND_NBC10A['%s-PyPy_S2-7.0' % (dbse)] = -0.200
 
-BIND_NBC10A['%s-PyPy_T3-4.1' % (dbse)] =  9.341
-BIND_NBC10A['%s-PyPy_T3-4.3' % (dbse)] =  1.991
+BIND_NBC10A['%s-PyPy_T3-4.1' % (dbse)] = 9.341
+BIND_NBC10A['%s-PyPy_T3-4.3' % (dbse)] = 1.991
 BIND_NBC10A['%s-PyPy_T3-4.5' % (dbse)] = -1.377
 BIND_NBC10A['%s-PyPy_T3-4.6' % (dbse)] = -2.203
 BIND_NBC10A['%s-PyPy_T3-4.7' % (dbse)] = -2.673
@@ -594,10 +611,10 @@ BIND_NBC10A['%s-PyPy_T3-7.0' % (dbse)] = -0.573
 BIND_NBC10A['%s-PyPy_T3-8.0' % (dbse)] = -0.296
 BIND_NBC10A['%s-PyPy_T3-9.0' % (dbse)] = -0.174
 
-BIND_NBC10A['%s-BzBz_PD32-0.2' % (dbse)] =  3.241
-BIND_NBC10A['%s-BzBz_PD32-0.4' % (dbse)] =  2.619
-BIND_NBC10A['%s-BzBz_PD32-0.6' % (dbse)] =  1.726
-BIND_NBC10A['%s-BzBz_PD32-0.8' % (dbse)] =  0.726
+BIND_NBC10A['%s-BzBz_PD32-0.2' % (dbse)] = 3.241
+BIND_NBC10A['%s-BzBz_PD32-0.4' % (dbse)] = 2.619
+BIND_NBC10A['%s-BzBz_PD32-0.6' % (dbse)] = 1.726
+BIND_NBC10A['%s-BzBz_PD32-0.8' % (dbse)] = 0.726
 BIND_NBC10A['%s-BzBz_PD32-1.0' % (dbse)] = -0.222
 BIND_NBC10A['%s-BzBz_PD32-1.2' % (dbse)] = -1.002
 BIND_NBC10A['%s-BzBz_PD32-1.4' % (dbse)] = -1.553
@@ -640,73 +657,82 @@ rxnpattern = re.compile(r'^(.+)-(.+)$')
 
 for item in BzBz_S:
     distance = rxnpattern.match(item)
-    TAGL['%s-%s'          % (dbse, item)] = 'Sandwich Benzene Dimer at %s A' % (distance.group(2))
-    TAGL['%s-%s-dimer'    % (dbse, item)] = 'Sandwich Benzene Dimer at %s A' % (distance.group(2))
+    TAGL['%s-%s' % (dbse, item)] = 'Sandwich Benzene Dimer at %s A' % (distance.group(2))
+    TAGL['%s-%s-dimer' % (dbse, item)] = 'Sandwich Benzene Dimer at %s A' % (distance.group(2))
     TAGL['%s-%s-monoA-CP' % (dbse, item)] = 'Benzene from Sandwich Benzene Dimer at %s A' % (distance.group(2))
 
 for item in BzBz_T:
     distance = rxnpattern.match(item)
-    TAGL['%s-%s'          % (dbse, item)] = 'T-shaped Benzene Dimer at %s A' % (distance.group(2))
-    TAGL['%s-%s-dimer'    % (dbse, item)] = 'T-shaped Benzene Dimer at %s A' % (distance.group(2))
+    TAGL['%s-%s' % (dbse, item)] = 'T-shaped Benzene Dimer at %s A' % (distance.group(2))
+    TAGL['%s-%s-dimer' % (dbse, item)] = 'T-shaped Benzene Dimer at %s A' % (distance.group(2))
     TAGL['%s-%s-monoA-CP' % (dbse, item)] = 'Benzene from T-shaped Benzene Dimer at %s A' % (distance.group(2))
     TAGL['%s-%s-monoB-CP' % (dbse, item)] = 'Benzene from T-shaped Benzene Dimer at %s A' % (distance.group(2))
 
 for item in BzBz_PD34:
     distance = rxnpattern.match(item)
-    TAGL['%s-%s'          % (dbse, item)] = 'Parallel Displaced Benzene Dimer Interplane 3.4 at %s A' % (distance.group(2))
-    TAGL['%s-%s-dimer'    % (dbse, item)] = 'Parallel Displaced Benzene Dimer Interplane 3.4 at %s A' % (distance.group(2))
-    TAGL['%s-%s-monoA-CP' % (dbse, item)] = 'Benzene from Parallel Displaced Benzene Dimer Interplane 3.4 at %s A' % (distance.group(2))
+    TAGL['%s-%s' % (dbse, item)] = 'Parallel Displaced Benzene Dimer Interplane 3.4 at %s A' % (distance.group(2))
+    TAGL['%s-%s-dimer' %
+         (dbse, item)] = 'Parallel Displaced Benzene Dimer Interplane 3.4 at %s A' % (distance.group(2))
+    TAGL['%s-%s-monoA-CP' %
+         (dbse, item)] = 'Benzene from Parallel Displaced Benzene Dimer Interplane 3.4 at %s A' % (distance.group(2))
 
 for item in BzH2S:
     distance = rxnpattern.match(item)
-    TAGL['%s-%s'          % (dbse, item)] = 'Benzene-H2S at %s A' % (distance.group(2))
-    TAGL['%s-%s-dimer'    % (dbse, item)] = 'Benzene-H2S at %s A' % (distance.group(2))
+    TAGL['%s-%s' % (dbse, item)] = 'Benzene-H2S at %s A' % (distance.group(2))
+    TAGL['%s-%s-dimer' % (dbse, item)] = 'Benzene-H2S at %s A' % (distance.group(2))
     TAGL['%s-%s-monoA-CP' % (dbse, item)] = 'Benzene from Benzene-Methane at %s A' % (distance.group(2))
     TAGL['%s-%s-monoB-CP' % (dbse, item)] = 'Hydrogen Sulfide from Benzene-Methane at %s A' % (distance.group(2))
 
 for item in BzMe:
     distance = rxnpattern.match(item)
-    TAGL['%s-%s'          % (dbse, item)] = 'Benzene-Methane at %s A' % (distance.group(2))
-    TAGL['%s-%s-dimer'    % (dbse, item)] = 'Benzene-Methane at %s A' % (distance.group(2))
+    TAGL['%s-%s' % (dbse, item)] = 'Benzene-Methane at %s A' % (distance.group(2))
+    TAGL['%s-%s-dimer' % (dbse, item)] = 'Benzene-Methane at %s A' % (distance.group(2))
     TAGL['%s-%s-monoA-CP' % (dbse, item)] = 'Benzene from Benzene-Methane at %s A' % (distance.group(2))
     TAGL['%s-%s-monoB-CP' % (dbse, item)] = 'Methane from Benzene-Methane at %s A' % (distance.group(2))
 
 for item in MeMe:
     distance = rxnpattern.match(item)
-    TAGL['%s-%s'          % (dbse, item)] = 'Methane Dimer at %s A' % (distance.group(2))
-    TAGL['%s-%s-dimer'    % (dbse, item)] = 'Methane Dimer at %s A' % (distance.group(2))
+    TAGL['%s-%s' % (dbse, item)] = 'Methane Dimer at %s A' % (distance.group(2))
+    TAGL['%s-%s-dimer' % (dbse, item)] = 'Methane Dimer at %s A' % (distance.group(2))
     TAGL['%s-%s-monoA-CP' % (dbse, item)] = 'Methane from Methane Dimer at %s A' % (distance.group(2))
 
 for item in PyPy_S2:
     distance = rxnpattern.match(item)
-    TAGL['%s-%s'          % (dbse, item)] = 'Pyridine Dimer S2 Configuration at %s A' % (distance.group(2))
-    TAGL['%s-%s-dimer'    % (dbse, item)] = 'Pyridine Dimer S2 Configuration at %s A' % (distance.group(2))
-    TAGL['%s-%s-monoA-CP' % (dbse, item)] = 'Pyridine from Pyridine Dimer S2 Configuration at %s A' % (distance.group(2))
+    TAGL['%s-%s' % (dbse, item)] = 'Pyridine Dimer S2 Configuration at %s A' % (distance.group(2))
+    TAGL['%s-%s-dimer' % (dbse, item)] = 'Pyridine Dimer S2 Configuration at %s A' % (distance.group(2))
+    TAGL['%s-%s-monoA-CP' %
+         (dbse, item)] = 'Pyridine from Pyridine Dimer S2 Configuration at %s A' % (distance.group(2))
 
 for item in PyPy_T3:
     distance = rxnpattern.match(item)
-    TAGL['%s-%s'          % (dbse, item)] = 'Pyridine Dimer T3 Configuration at %s A' % (distance.group(2))
-    TAGL['%s-%s-dimer'    % (dbse, item)] = 'Pyridine Dimer T3 Configuration at %s A' % (distance.group(2))
-    TAGL['%s-%s-monoA-CP' % (dbse, item)] = 'Pyridine from Pyridine Dimer T3 Configuration at %s A' % (distance.group(2))
-    TAGL['%s-%s-monoB-CP' % (dbse, item)] = 'Pyridine from Pyridine Dimer T3 Configuration at %s A' % (distance.group(2))
+    TAGL['%s-%s' % (dbse, item)] = 'Pyridine Dimer T3 Configuration at %s A' % (distance.group(2))
+    TAGL['%s-%s-dimer' % (dbse, item)] = 'Pyridine Dimer T3 Configuration at %s A' % (distance.group(2))
+    TAGL['%s-%s-monoA-CP' %
+         (dbse, item)] = 'Pyridine from Pyridine Dimer T3 Configuration at %s A' % (distance.group(2))
+    TAGL['%s-%s-monoB-CP' %
+         (dbse, item)] = 'Pyridine from Pyridine Dimer T3 Configuration at %s A' % (distance.group(2))
 
 for item in BzBz_PD32:
     distance = rxnpattern.match(item)
-    TAGL['%s-%s'          % (dbse, item)] = 'Parallel Displaced Benzene Dimer Interplane 3.2 at %s A' % (distance.group(2))
-    TAGL['%s-%s-dimer'    % (dbse, item)] = 'Parallel Displaced Benzene Dimer Interplane 3.2 at %s A' % (distance.group(2))
-    TAGL['%s-%s-monoA-CP' % (dbse, item)] = 'Benzene from Parallel Displaced Benzene Dimer Interplane 3.2 at %s A' % (distance.group(2))
+    TAGL['%s-%s' % (dbse, item)] = 'Parallel Displaced Benzene Dimer Interplane 3.2 at %s A' % (distance.group(2))
+    TAGL['%s-%s-dimer' %
+         (dbse, item)] = 'Parallel Displaced Benzene Dimer Interplane 3.2 at %s A' % (distance.group(2))
+    TAGL['%s-%s-monoA-CP' %
+         (dbse, item)] = 'Benzene from Parallel Displaced Benzene Dimer Interplane 3.2 at %s A' % (distance.group(2))
 
 for item in BzBz_PD36:
     distance = rxnpattern.match(item)
-    TAGL['%s-%s'          % (dbse, item)] = 'Parallel Displaced Benzene Dimer Interplane 3.6 at %s A' % (distance.group(2))
-    TAGL['%s-%s-dimer'    % (dbse, item)] = 'Parallel Displaced Benzene Dimer Interplane 3.6 at %s A' % (distance.group(2))
-    TAGL['%s-%s-monoA-CP' % (dbse, item)] = 'Benzene from Parallel Displaced Benzene Dimer Interplane 3.6 at %s A' % (distance.group(2))
+    TAGL['%s-%s' % (dbse, item)] = 'Parallel Displaced Benzene Dimer Interplane 3.6 at %s A' % (distance.group(2))
+    TAGL['%s-%s-dimer' %
+         (dbse, item)] = 'Parallel Displaced Benzene Dimer Interplane 3.6 at %s A' % (distance.group(2))
+    TAGL['%s-%s-monoA-CP' %
+         (dbse, item)] = 'Benzene from Parallel Displaced Benzene Dimer Interplane 3.6 at %s A' % (distance.group(2))
 
-TAGL['%s-Bz-mono-unCP'  % (dbse)] = 'Benzene'
+TAGL['%s-Bz-mono-unCP' % (dbse)] = 'Benzene'
 TAGL['%s-H2S-mono-unCP' % (dbse)] = 'Hydrogen Sulfide'
 TAGL['%s-Bz2-mono-unCP' % (dbse)] = 'Benzene (alt. geometry)'
-TAGL['%s-Me-mono-unCP'  % (dbse)] = 'Methane'
-TAGL['%s-Py-mono-unCP'  % (dbse)] = 'Pyridine'
+TAGL['%s-Me-mono-unCP' % (dbse)] = 'Methane'
+TAGL['%s-Py-mono-unCP' % (dbse)] = 'Pyridine'
 
 #<<< Geometry Specification Strings >>>
 GEOS = {}
@@ -1128,8 +1154,8 @@ units angstrom
 
 # <<< Derived Geometry Strings >>>
 for rxn in HRXN:
-    GEOS['%s-%s-monoA-CP'   % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(1, 2)
-    GEOS['%s-%s-monoB-CP'   % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(2, 1)
+    GEOS['%s-%s-monoA-CP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(1, 2)
+    GEOS['%s-%s-monoB-CP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(2, 1)
 
 #########################################################################
 
@@ -1137,635 +1163,635 @@ for rxn in HRXN:
 DATA = {}
 
 DATA['NUCLEAR REPULSION ENERGY'] = {}
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.2-dimer'          ] =     652.58240326
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-Bz-mono-unCP'              ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.3-dimer'          ] =     647.08083072
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.4-dimer'          ] =     641.79881504
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.5-dimer'          ] =     636.72435401
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.6-dimer'          ] =     631.84627841
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.7-dimer'          ] =     627.15417831
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.8-dimer'          ] =     622.63833806
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.9-dimer'          ] =     618.28967853
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.0-dimer'          ] =     614.09970566
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.1-dimer'          ] =     610.06046424
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.2-dimer'          ] =     606.16449631
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.5-dimer'          ] =     595.26834684
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-5.0-dimer'          ] =     579.39688238
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-5.5-dimer'          ] =     565.87021271
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-6.0-dimer'          ] =     554.22625379
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-6.5-dimer'          ] =     544.11253672
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-10.0-dimer'         ] =     499.16037479
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.4-dimer'          ] =     613.04854518
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.5-dimer'          ] =     608.81636557
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.6-dimer'          ] =     604.74550671
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.7-dimer'          ] =     600.82787505
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.8-dimer'          ] =     597.05577907
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.9-dimer'          ] =     593.42192782
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.0-dimer'          ] =     589.91942332
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.1-dimer'          ] =     586.54174882
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.2-dimer'          ] =     583.28275414
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.3-dimer'          ] =     580.13663931
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.4-dimer'          ] =     577.09793714
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.5-dimer'          ] =     574.16149552
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.6-dimer'          ] =     571.32245963
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-6.0-dimer'          ] =     560.85272572
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-6.5-dimer'          ] =     549.47925556
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-7.0-dimer'          ] =     539.65622514
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-7.5-dimer'          ] =     531.09189940
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-8.0-dimer'          ] =     523.56205991
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.2-dimer'       ] =     641.59153721
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.4-dimer'       ] =     640.97218086
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.6-dimer'       ] =     639.94808010
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.8-dimer'       ] =     638.53114770
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.0-dimer'       ] =     636.73745247
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.2-dimer'       ] =     634.58670201
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.4-dimer'       ] =     632.10168144
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.5-dimer'       ] =     630.74164257
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.6-dimer'       ] =     629.30768985
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.7-dimer'       ] =     627.80329032
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.8-dimer'       ] =     626.23200316
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.9-dimer'       ] =     624.59746513
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.0-dimer'       ] =     622.90337667
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.2-dimer'       ] =     619.35158842
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.4-dimer'       ] =     615.60701452
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.6-dimer'       ] =     611.70022314
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.8-dimer'       ] =     607.66157487
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-3.0-dimer'       ] =     603.52082284
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.2-dimer'           ] =     332.50866690
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-H2S-mono-unCP'             ] =      12.95382185
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.4-dimer'           ] =     326.76493049
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.5-dimer'           ] =     324.08312886
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.6-dimer'           ] =     321.51823084
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.7-dimer'           ] =     319.06348175
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.8-dimer'           ] =     316.71257239
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.9-dimer'           ] =     314.45961051
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.0-dimer'           ] =     312.29909326
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.1-dimer'           ] =     310.22588084
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.2-dimer'           ] =     308.23517159
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.5-dimer'           ] =     302.71463310
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.75-dimer'          ] =     298.57449040
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.0-dimer'           ] =     294.79763877
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.25-dimer'          ] =     291.34045574
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.5-dimer'           ] =     288.16568982
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-6.0-dimer'           ] =     282.54011405
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-6.5-dimer'           ] =     277.71464354
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-7.0-dimer'           ] =     273.53417452
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-7.5-dimer'           ] =     269.88029141
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.2-dimer'            ] =     277.70122037
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-Bz2-mono-unCP'             ] =     201.83853774
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-Me-mono-unCP'              ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.3-dimer'            ] =     276.14505886
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.4-dimer'            ] =     274.65657480
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.5-dimer'            ] =     273.23211647
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.6-dimer'            ] =     271.86820659
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.7-dimer'            ] =     270.56154682
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.8-dimer'            ] =     269.30901798
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.9-dimer'            ] =     268.10767718
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.0-dimer'            ] =     266.95475267
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.1-dimer'            ] =     265.84763738
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.2-dimer'            ] =     264.78388141
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.4-dimer'            ] =     262.77738579
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.6-dimer'            ] =     260.91850385
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.8-dimer'            ] =     259.19247204
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.0-dimer'            ] =     257.58628148
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.2-dimer'            ] =     256.08845607
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.4-dimer'            ] =     254.68885527
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.6-dimer'            ] =     253.37850109
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-6.0-dimer'            ] =     250.99455064
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.2-dimer'            ] =      42.94051671
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.3-dimer'            ] =      42.46449704
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.4-dimer'            ] =      42.01471911
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.5-dimer'            ] =      41.58914043
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.6-dimer'            ] =      41.18591734
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.7-dimer'            ] =      40.80338247
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.8-dimer'            ] =      40.44002498
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.9-dimer'            ] =      40.09447330
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.0-dimer'            ] =      39.76547998
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.1-dimer'            ] =      39.45190844
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.2-dimer'            ] =      39.15272123
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.3-dimer'            ] =      38.86696980
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.4-dimer'            ] =      38.59378540
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.6-dimer'            ] =      38.08199453
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.8-dimer'            ] =      37.61171219
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-5.0-dimer'            ] =      37.17815187
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-5.4-dimer'            ] =      36.40542136
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-5.8-dimer'            ] =      35.73746090
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.1-dimer'         ] =     664.74968142
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-Py-mono-unCP'              ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.3-dimer'         ] =     653.28897360
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.4-dimer'         ] =     647.90584891
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.5-dimer'         ] =     642.73711461
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.6-dimer'         ] =     637.77107423
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.7-dimer'         ] =     632.99683541
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.8-dimer'         ] =     628.40424073
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.9-dimer'         ] =     623.98380628
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.0-dimer'         ] =     619.72666684
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.1-dimer'         ] =     615.62452662
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.2-dimer'         ] =     611.66961499
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.3-dimer'         ] =     607.85464633
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.4-dimer'         ] =     604.17278378
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.5-dimer'         ] =     600.61760611
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.7-dimer'         ] =     593.86352067
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-5.0-dimer'         ] =     584.54275675
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-5.5-dimer'         ] =     570.86466240
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-6.0-dimer'         ] =     559.10620798
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-6.5-dimer'         ] =     548.90465922
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-7.0-dimer'         ] =     539.98032943
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.1-dimer'         ] =     631.74018099
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.3-dimer'         ] =     622.28221702
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.5-dimer'         ] =     613.57422251
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.6-dimer'         ] =     609.47520868
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.7-dimer'         ] =     605.53368830
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.8-dimer'         ] =     601.74111111
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.9-dimer'         ] =     598.08951503
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.0-dimer'         ] =     594.57147649
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.1-dimer'         ] =     591.18006603
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.2-dimer'         ] =     587.90880856
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.3-dimer'         ] =     584.75164753
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.4-dimer'         ] =     581.70291245
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.5-dimer'         ] =     578.75728949
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.7-dimer'         ] =     573.15574951
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-6.0-dimer'         ] =     565.41165299
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-6.5-dimer'         ] =     554.01089095
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-7.0-dimer'         ] =     544.16644693
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-8.0-dimer'         ] =     528.04095562
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-9.0-dimer'         ] =     515.40150653
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.2-dimer'       ] =     652.35026383
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.4-dimer'       ] =     651.65685475
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.6-dimer'       ] =     650.51106101
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.8-dimer'       ] =     648.92723975
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.0-dimer'       ] =     646.92462020
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.2-dimer'       ] =     644.52659143
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.4-dimer'       ] =     641.75995892
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.5-dimer'       ] =     640.24755050
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.6-dimer'       ] =     638.65423207
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.7-dimer'       ] =     636.98400901
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.8-dimer'       ] =     635.24097954
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.9-dimer'       ] =     633.42931896
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.0-dimer'       ] =     631.55326486
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.2-dimer'       ] =     627.62515488
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.4-dimer'       ] =     623.49127864
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.6-dimer'       ] =     619.18640729
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.8-dimer'       ] =     614.74502815
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-3.0-dimer'       ] =     610.20089775
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.2-dimer'       ] =     631.66053374
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.4-dimer'       ] =     631.10536715
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.6-dimer'       ] =     630.18691177
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.8-dimer'       ] =     628.91516711
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.0-dimer'       ] =     627.30369102
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.2-dimer'       ] =     625.36921338
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.4-dimer'       ] =     623.13120361
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.5-dimer'       ] =     621.90509666
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.6-dimer'       ] =     620.61142042
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.7-dimer'       ] =     619.25317914
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.8-dimer'       ] =     617.83346514
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.9-dimer'       ] =     616.35544587
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.0-dimer'       ] =     614.82235130
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.2-dimer'       ] =     611.60409513
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.4-dimer'       ] =     608.20532569
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.6-dimer'       ] =     604.65291019
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.8-dimer'       ] =     600.97358989
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-3.0-dimer'       ] =     597.19362514
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.2-dimer'          ] =     652.58240326
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.2-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.3-dimer'          ] =     647.08083072
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.3-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.4-dimer'          ] =     641.79881504
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.4-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.5-dimer'          ] =     636.72435401
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.5-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.6-dimer'          ] =     631.84627841
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.6-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.7-dimer'          ] =     627.15417831
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.7-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.8-dimer'          ] =     622.63833806
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.8-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.9-dimer'          ] =     618.28967853
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.9-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.0-dimer'          ] =     614.09970566
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.0-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.1-dimer'          ] =     610.06046424
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.1-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.2-dimer'          ] =     606.16449631
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.2-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.5-dimer'          ] =     595.26834684
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.5-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-5.0-dimer'          ] =     579.39688238
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-5.0-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-5.5-dimer'          ] =     565.87021271
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-5.5-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-6.0-dimer'          ] =     554.22625379
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-6.0-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-6.5-dimer'          ] =     544.11253672
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-6.5-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-10.0-dimer'         ] =     499.16037479
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-10.0-monoA-CP'      ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.4-dimer'          ] =     613.04854518
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.4-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.4-monoB-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.5-dimer'          ] =     608.81636557
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.5-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.5-monoB-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.6-dimer'          ] =     604.74550671
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.6-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.6-monoB-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.7-dimer'          ] =     600.82787505
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.7-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.7-monoB-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.8-dimer'          ] =     597.05577907
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.8-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.8-monoB-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.9-dimer'          ] =     593.42192782
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.9-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.9-monoB-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.0-dimer'          ] =     589.91942332
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.0-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.0-monoB-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.1-dimer'          ] =     586.54174882
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.1-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.1-monoB-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.2-dimer'          ] =     583.28275414
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.2-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.2-monoB-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.3-dimer'          ] =     580.13663931
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.3-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.3-monoB-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.4-dimer'          ] =     577.09793714
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.4-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.4-monoB-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.5-dimer'          ] =     574.16149552
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.5-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.5-monoB-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.6-dimer'          ] =     571.32245963
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.6-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.6-monoB-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-6.0-dimer'          ] =     560.85272572
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-6.0-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-6.0-monoB-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-6.5-dimer'          ] =     549.47925556
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-6.5-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-6.5-monoB-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-7.0-dimer'          ] =     539.65622514
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-7.0-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-7.0-monoB-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-7.5-dimer'          ] =     531.09189940
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-7.5-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-7.5-monoB-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-8.0-dimer'          ] =     523.56205991
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-8.0-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-8.0-monoB-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.2-dimer'       ] =     641.59153721
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.2-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.4-dimer'       ] =     640.97218086
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.4-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.6-dimer'       ] =     639.94808010
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.6-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.8-dimer'       ] =     638.53114770
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.8-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.0-dimer'       ] =     636.73745247
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.0-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.2-dimer'       ] =     634.58670201
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.2-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.4-dimer'       ] =     632.10168144
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.4-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.5-dimer'       ] =     630.74164257
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.5-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.6-dimer'       ] =     629.30768985
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.6-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.7-dimer'       ] =     627.80329032
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.7-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.8-dimer'       ] =     626.23200316
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.8-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.9-dimer'       ] =     624.59746513
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.9-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.0-dimer'       ] =     622.90337667
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.0-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.2-dimer'       ] =     619.35158842
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.2-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.4-dimer'       ] =     615.60701452
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.4-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.6-dimer'       ] =     611.70022314
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.6-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.8-dimer'       ] =     607.66157487
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.8-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-3.0-dimer'       ] =     603.52082284
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-3.0-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.2-dimer'           ] =     332.50866690
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.2-monoA-CP'        ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.2-monoB-CP'        ] =      12.95382185
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.4-dimer'           ] =     326.76493049
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.4-monoA-CP'        ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.4-monoB-CP'        ] =      12.95382185
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.5-dimer'           ] =     324.08312886
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.5-monoA-CP'        ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.5-monoB-CP'        ] =      12.95382185
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.6-dimer'           ] =     321.51823084
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.6-monoA-CP'        ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.6-monoB-CP'        ] =      12.95382185
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.7-dimer'           ] =     319.06348175
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.7-monoA-CP'        ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.7-monoB-CP'        ] =      12.95382185
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.8-dimer'           ] =     316.71257239
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.8-monoA-CP'        ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.8-monoB-CP'        ] =      12.95382185
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.9-dimer'           ] =     314.45961051
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.9-monoA-CP'        ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.9-monoB-CP'        ] =      12.95382185
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.0-dimer'           ] =     312.29909326
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.0-monoA-CP'        ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.0-monoB-CP'        ] =      12.95382185
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.1-dimer'           ] =     310.22588084
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.1-monoA-CP'        ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.1-monoB-CP'        ] =      12.95382185
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.2-dimer'           ] =     308.23517159
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.2-monoA-CP'        ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.2-monoB-CP'        ] =      12.95382185
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.5-dimer'           ] =     302.71463310
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.5-monoA-CP'        ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.5-monoB-CP'        ] =      12.95382185
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.75-dimer'          ] =     298.57449040
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.75-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.75-monoB-CP'       ] =      12.95382185
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.0-dimer'           ] =     294.79763877
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.0-monoA-CP'        ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.0-monoB-CP'        ] =      12.95382185
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.25-dimer'          ] =     291.34045574
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.25-monoA-CP'       ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.25-monoB-CP'       ] =      12.95382185
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.5-dimer'           ] =     288.16568982
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.5-monoA-CP'        ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.5-monoB-CP'        ] =      12.95382185
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-6.0-dimer'           ] =     282.54011405
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-6.0-monoA-CP'        ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-6.0-monoB-CP'        ] =      12.95382185
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-6.5-dimer'           ] =     277.71464354
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-6.5-monoA-CP'        ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-6.5-monoB-CP'        ] =      12.95382185
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-7.0-dimer'           ] =     273.53417452
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-7.0-monoA-CP'        ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-7.0-monoB-CP'        ] =      12.95382185
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-7.5-dimer'           ] =     269.88029141
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-7.5-monoA-CP'        ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-7.5-monoB-CP'        ] =      12.95382185
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.2-dimer'            ] =     277.70122037
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.2-monoA-CP'         ] =     201.83853774
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.2-monoB-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.3-dimer'            ] =     276.14505886
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.3-monoA-CP'         ] =     201.83853774
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.3-monoB-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.4-dimer'            ] =     274.65657480
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.4-monoA-CP'         ] =     201.83853774
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.4-monoB-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.5-dimer'            ] =     273.23211647
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.5-monoA-CP'         ] =     201.83853774
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.5-monoB-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.6-dimer'            ] =     271.86820659
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.6-monoA-CP'         ] =     201.83853774
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.6-monoB-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.7-dimer'            ] =     270.56154682
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.7-monoA-CP'         ] =     201.83853774
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.7-monoB-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.8-dimer'            ] =     269.30901798
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.8-monoA-CP'         ] =     201.83853774
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.8-monoB-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.9-dimer'            ] =     268.10767718
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.9-monoA-CP'         ] =     201.83853774
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.9-monoB-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.0-dimer'            ] =     266.95475267
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.0-monoA-CP'         ] =     201.83853774
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.0-monoB-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.1-dimer'            ] =     265.84763738
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.1-monoA-CP'         ] =     201.83853774
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.1-monoB-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.2-dimer'            ] =     264.78388141
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.2-monoA-CP'         ] =     201.83853774
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.2-monoB-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.4-dimer'            ] =     262.77738579
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.4-monoA-CP'         ] =     201.83853774
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.4-monoB-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.6-dimer'            ] =     260.91850385
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.6-monoA-CP'         ] =     201.83853774
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.6-monoB-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.8-dimer'            ] =     259.19247204
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.8-monoA-CP'         ] =     201.83853774
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.8-monoB-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.0-dimer'            ] =     257.58628148
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.0-monoA-CP'         ] =     201.83853774
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.0-monoB-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.2-dimer'            ] =     256.08845607
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.2-monoA-CP'         ] =     201.83853774
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.2-monoB-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.4-dimer'            ] =     254.68885527
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.4-monoA-CP'         ] =     201.83853774
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.4-monoB-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.6-dimer'            ] =     253.37850109
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.6-monoA-CP'         ] =     201.83853774
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.6-monoB-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-6.0-dimer'            ] =     250.99455064
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-6.0-monoA-CP'         ] =     201.83853774
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-6.0-monoB-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.2-dimer'            ] =      42.94051671
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.2-monoA-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.3-dimer'            ] =      42.46449704
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.3-monoA-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.4-dimer'            ] =      42.01471911
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.4-monoA-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.5-dimer'            ] =      41.58914043
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.5-monoA-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.6-dimer'            ] =      41.18591734
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.6-monoA-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.7-dimer'            ] =      40.80338247
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.7-monoA-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.8-dimer'            ] =      40.44002498
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.8-monoA-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.9-dimer'            ] =      40.09447330
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.9-monoA-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.0-dimer'            ] =      39.76547998
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.0-monoA-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.1-dimer'            ] =      39.45190844
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.1-monoA-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.2-dimer'            ] =      39.15272123
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.2-monoA-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.3-dimer'            ] =      38.86696980
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.3-monoA-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.4-dimer'            ] =      38.59378540
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.4-monoA-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.6-dimer'            ] =      38.08199453
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.6-monoA-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.8-dimer'            ] =      37.61171219
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.8-monoA-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-5.0-dimer'            ] =      37.17815187
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-5.0-monoA-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-5.4-dimer'            ] =      36.40542136
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-5.4-monoA-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-5.8-dimer'            ] =      35.73746090
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-5.8-monoA-CP'         ] =      13.31926457
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.1-dimer'         ] =     664.74968142
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.1-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.3-dimer'         ] =     653.28897360
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.3-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.4-dimer'         ] =     647.90584891
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.4-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.5-dimer'         ] =     642.73711461
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.5-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.6-dimer'         ] =     637.77107423
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.6-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.7-dimer'         ] =     632.99683541
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.7-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.8-dimer'         ] =     628.40424073
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.8-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.9-dimer'         ] =     623.98380628
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.9-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.0-dimer'         ] =     619.72666684
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.0-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.1-dimer'         ] =     615.62452662
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.1-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.2-dimer'         ] =     611.66961499
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.2-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.3-dimer'         ] =     607.85464633
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.3-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.4-dimer'         ] =     604.17278378
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.4-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.5-dimer'         ] =     600.61760611
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.5-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.7-dimer'         ] =     593.86352067
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.7-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-5.0-dimer'         ] =     584.54275675
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-5.0-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-5.5-dimer'         ] =     570.86466240
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-5.5-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-6.0-dimer'         ] =     559.10620798
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-6.0-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-6.5-dimer'         ] =     548.90465922
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-6.5-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-7.0-dimer'         ] =     539.98032943
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-7.0-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.1-dimer'         ] =     631.74018099
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.1-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.1-monoB-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.3-dimer'         ] =     622.28221702
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.3-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.3-monoB-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.5-dimer'         ] =     613.57422251
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.5-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.5-monoB-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.6-dimer'         ] =     609.47520868
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.6-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.6-monoB-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.7-dimer'         ] =     605.53368830
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.7-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.7-monoB-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.8-dimer'         ] =     601.74111111
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.8-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.8-monoB-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.9-dimer'         ] =     598.08951503
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.9-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.9-monoB-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.0-dimer'         ] =     594.57147649
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.0-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.0-monoB-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.1-dimer'         ] =     591.18006603
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.1-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.1-monoB-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.2-dimer'         ] =     587.90880856
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.2-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.2-monoB-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.3-dimer'         ] =     584.75164753
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.3-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.3-monoB-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.4-dimer'         ] =     581.70291245
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.4-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.4-monoB-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.5-dimer'         ] =     578.75728949
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.5-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.5-monoB-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.7-dimer'         ] =     573.15574951
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.7-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.7-monoB-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-6.0-dimer'         ] =     565.41165299
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-6.0-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-6.0-monoB-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-6.5-dimer'         ] =     554.01089095
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-6.5-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-6.5-monoB-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-7.0-dimer'         ] =     544.16644693
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-7.0-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-7.0-monoB-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-8.0-dimer'         ] =     528.04095562
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-8.0-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-8.0-monoB-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-9.0-dimer'         ] =     515.40150653
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-9.0-monoA-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-9.0-monoB-CP'      ] =     206.21910131
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.2-dimer'       ] =     652.35026383
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.2-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.4-dimer'       ] =     651.65685475
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.4-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.6-dimer'       ] =     650.51106101
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.6-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.8-dimer'       ] =     648.92723975
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.8-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.0-dimer'       ] =     646.92462020
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.0-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.2-dimer'       ] =     644.52659143
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.2-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.4-dimer'       ] =     641.75995892
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.4-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.5-dimer'       ] =     640.24755050
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.5-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.6-dimer'       ] =     638.65423207
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.6-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.7-dimer'       ] =     636.98400901
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.7-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.8-dimer'       ] =     635.24097954
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.8-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.9-dimer'       ] =     633.42931896
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.9-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.0-dimer'       ] =     631.55326486
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.0-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.2-dimer'       ] =     627.62515488
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.2-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.4-dimer'       ] =     623.49127864
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.4-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.6-dimer'       ] =     619.18640729
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.6-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.8-dimer'       ] =     614.74502815
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.8-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-3.0-dimer'       ] =     610.20089775
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-3.0-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.2-dimer'       ] =     631.66053374
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.2-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.4-dimer'       ] =     631.10536715
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.4-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.6-dimer'       ] =     630.18691177
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.6-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.8-dimer'       ] =     628.91516711
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.8-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.0-dimer'       ] =     627.30369102
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.0-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.2-dimer'       ] =     625.36921338
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.2-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.4-dimer'       ] =     623.13120361
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.4-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.5-dimer'       ] =     621.90509666
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.5-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.6-dimer'       ] =     620.61142042
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.6-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.7-dimer'       ] =     619.25317914
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.7-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.8-dimer'       ] =     617.83346514
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.8-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.9-dimer'       ] =     616.35544587
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.9-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.0-dimer'       ] =     614.82235130
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.0-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.2-dimer'       ] =     611.60409513
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.2-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.4-dimer'       ] =     608.20532569
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.4-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.6-dimer'       ] =     604.65291019
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.6-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.8-dimer'       ] =     600.97358989
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.8-monoA-CP'    ] =     204.01997321
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-3.0-dimer'       ] =     597.19362514
-DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-3.0-monoA-CP'    ] =     204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.2-dimer'] = 652.58240326
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-Bz-mono-unCP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.3-dimer'] = 647.08083072
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.4-dimer'] = 641.79881504
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.5-dimer'] = 636.72435401
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.6-dimer'] = 631.84627841
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.7-dimer'] = 627.15417831
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.8-dimer'] = 622.63833806
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.9-dimer'] = 618.28967853
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.0-dimer'] = 614.09970566
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.1-dimer'] = 610.06046424
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.2-dimer'] = 606.16449631
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.5-dimer'] = 595.26834684
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-5.0-dimer'] = 579.39688238
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-5.5-dimer'] = 565.87021271
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-6.0-dimer'] = 554.22625379
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-6.5-dimer'] = 544.11253672
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-10.0-dimer'] = 499.16037479
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.4-dimer'] = 613.04854518
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.5-dimer'] = 608.81636557
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.6-dimer'] = 604.74550671
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.7-dimer'] = 600.82787505
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.8-dimer'] = 597.05577907
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.9-dimer'] = 593.42192782
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.0-dimer'] = 589.91942332
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.1-dimer'] = 586.54174882
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.2-dimer'] = 583.28275414
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.3-dimer'] = 580.13663931
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.4-dimer'] = 577.09793714
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.5-dimer'] = 574.16149552
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.6-dimer'] = 571.32245963
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-6.0-dimer'] = 560.85272572
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-6.5-dimer'] = 549.47925556
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-7.0-dimer'] = 539.65622514
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-7.5-dimer'] = 531.09189940
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-8.0-dimer'] = 523.56205991
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.2-dimer'] = 641.59153721
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.4-dimer'] = 640.97218086
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.6-dimer'] = 639.94808010
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.8-dimer'] = 638.53114770
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.0-dimer'] = 636.73745247
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.2-dimer'] = 634.58670201
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.4-dimer'] = 632.10168144
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.5-dimer'] = 630.74164257
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.6-dimer'] = 629.30768985
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.7-dimer'] = 627.80329032
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.8-dimer'] = 626.23200316
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.9-dimer'] = 624.59746513
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.0-dimer'] = 622.90337667
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.2-dimer'] = 619.35158842
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.4-dimer'] = 615.60701452
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.6-dimer'] = 611.70022314
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.8-dimer'] = 607.66157487
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-3.0-dimer'] = 603.52082284
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.2-dimer'] = 332.50866690
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-H2S-mono-unCP'] = 12.95382185
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.4-dimer'] = 326.76493049
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.5-dimer'] = 324.08312886
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.6-dimer'] = 321.51823084
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.7-dimer'] = 319.06348175
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.8-dimer'] = 316.71257239
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.9-dimer'] = 314.45961051
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.0-dimer'] = 312.29909326
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.1-dimer'] = 310.22588084
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.2-dimer'] = 308.23517159
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.5-dimer'] = 302.71463310
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.75-dimer'] = 298.57449040
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.0-dimer'] = 294.79763877
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.25-dimer'] = 291.34045574
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.5-dimer'] = 288.16568982
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-6.0-dimer'] = 282.54011405
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-6.5-dimer'] = 277.71464354
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-7.0-dimer'] = 273.53417452
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-7.5-dimer'] = 269.88029141
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.2-dimer'] = 277.70122037
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-Bz2-mono-unCP'] = 201.83853774
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-Me-mono-unCP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.3-dimer'] = 276.14505886
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.4-dimer'] = 274.65657480
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.5-dimer'] = 273.23211647
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.6-dimer'] = 271.86820659
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.7-dimer'] = 270.56154682
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.8-dimer'] = 269.30901798
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.9-dimer'] = 268.10767718
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.0-dimer'] = 266.95475267
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.1-dimer'] = 265.84763738
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.2-dimer'] = 264.78388141
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.4-dimer'] = 262.77738579
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.6-dimer'] = 260.91850385
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.8-dimer'] = 259.19247204
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.0-dimer'] = 257.58628148
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.2-dimer'] = 256.08845607
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.4-dimer'] = 254.68885527
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.6-dimer'] = 253.37850109
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-6.0-dimer'] = 250.99455064
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.2-dimer'] = 42.94051671
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.3-dimer'] = 42.46449704
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.4-dimer'] = 42.01471911
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.5-dimer'] = 41.58914043
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.6-dimer'] = 41.18591734
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.7-dimer'] = 40.80338247
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.8-dimer'] = 40.44002498
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.9-dimer'] = 40.09447330
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.0-dimer'] = 39.76547998
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.1-dimer'] = 39.45190844
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.2-dimer'] = 39.15272123
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.3-dimer'] = 38.86696980
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.4-dimer'] = 38.59378540
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.6-dimer'] = 38.08199453
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.8-dimer'] = 37.61171219
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-5.0-dimer'] = 37.17815187
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-5.4-dimer'] = 36.40542136
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-5.8-dimer'] = 35.73746090
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.1-dimer'] = 664.74968142
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-Py-mono-unCP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.3-dimer'] = 653.28897360
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.4-dimer'] = 647.90584891
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.5-dimer'] = 642.73711461
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.6-dimer'] = 637.77107423
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.7-dimer'] = 632.99683541
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.8-dimer'] = 628.40424073
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.9-dimer'] = 623.98380628
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.0-dimer'] = 619.72666684
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.1-dimer'] = 615.62452662
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.2-dimer'] = 611.66961499
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.3-dimer'] = 607.85464633
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.4-dimer'] = 604.17278378
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.5-dimer'] = 600.61760611
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.7-dimer'] = 593.86352067
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-5.0-dimer'] = 584.54275675
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-5.5-dimer'] = 570.86466240
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-6.0-dimer'] = 559.10620798
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-6.5-dimer'] = 548.90465922
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-7.0-dimer'] = 539.98032943
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.1-dimer'] = 631.74018099
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.3-dimer'] = 622.28221702
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.5-dimer'] = 613.57422251
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.6-dimer'] = 609.47520868
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.7-dimer'] = 605.53368830
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.8-dimer'] = 601.74111111
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.9-dimer'] = 598.08951503
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.0-dimer'] = 594.57147649
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.1-dimer'] = 591.18006603
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.2-dimer'] = 587.90880856
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.3-dimer'] = 584.75164753
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.4-dimer'] = 581.70291245
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.5-dimer'] = 578.75728949
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.7-dimer'] = 573.15574951
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-6.0-dimer'] = 565.41165299
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-6.5-dimer'] = 554.01089095
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-7.0-dimer'] = 544.16644693
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-8.0-dimer'] = 528.04095562
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-9.0-dimer'] = 515.40150653
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.2-dimer'] = 652.35026383
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.4-dimer'] = 651.65685475
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.6-dimer'] = 650.51106101
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.8-dimer'] = 648.92723975
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.0-dimer'] = 646.92462020
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.2-dimer'] = 644.52659143
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.4-dimer'] = 641.75995892
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.5-dimer'] = 640.24755050
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.6-dimer'] = 638.65423207
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.7-dimer'] = 636.98400901
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.8-dimer'] = 635.24097954
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.9-dimer'] = 633.42931896
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.0-dimer'] = 631.55326486
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.2-dimer'] = 627.62515488
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.4-dimer'] = 623.49127864
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.6-dimer'] = 619.18640729
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.8-dimer'] = 614.74502815
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-3.0-dimer'] = 610.20089775
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.2-dimer'] = 631.66053374
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.4-dimer'] = 631.10536715
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.6-dimer'] = 630.18691177
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.8-dimer'] = 628.91516711
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.0-dimer'] = 627.30369102
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.2-dimer'] = 625.36921338
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.4-dimer'] = 623.13120361
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.5-dimer'] = 621.90509666
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.6-dimer'] = 620.61142042
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.7-dimer'] = 619.25317914
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.8-dimer'] = 617.83346514
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.9-dimer'] = 616.35544587
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.0-dimer'] = 614.82235130
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.2-dimer'] = 611.60409513
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.4-dimer'] = 608.20532569
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.6-dimer'] = 604.65291019
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.8-dimer'] = 600.97358989
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-3.0-dimer'] = 597.19362514
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.2-dimer'] = 652.58240326
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.2-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.3-dimer'] = 647.08083072
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.3-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.4-dimer'] = 641.79881504
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.4-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.5-dimer'] = 636.72435401
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.5-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.6-dimer'] = 631.84627841
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.6-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.7-dimer'] = 627.15417831
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.7-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.8-dimer'] = 622.63833806
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.8-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.9-dimer'] = 618.28967853
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-3.9-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.0-dimer'] = 614.09970566
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.0-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.1-dimer'] = 610.06046424
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.1-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.2-dimer'] = 606.16449631
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.2-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.5-dimer'] = 595.26834684
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-4.5-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-5.0-dimer'] = 579.39688238
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-5.0-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-5.5-dimer'] = 565.87021271
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-5.5-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-6.0-dimer'] = 554.22625379
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-6.0-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-6.5-dimer'] = 544.11253672
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-6.5-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-10.0-dimer'] = 499.16037479
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_S-10.0-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.4-dimer'] = 613.04854518
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.4-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.4-monoB-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.5-dimer'] = 608.81636557
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.5-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.5-monoB-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.6-dimer'] = 604.74550671
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.6-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.6-monoB-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.7-dimer'] = 600.82787505
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.7-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.7-monoB-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.8-dimer'] = 597.05577907
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.8-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.8-monoB-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.9-dimer'] = 593.42192782
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.9-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-4.9-monoB-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.0-dimer'] = 589.91942332
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.0-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.0-monoB-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.1-dimer'] = 586.54174882
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.1-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.1-monoB-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.2-dimer'] = 583.28275414
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.2-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.2-monoB-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.3-dimer'] = 580.13663931
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.3-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.3-monoB-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.4-dimer'] = 577.09793714
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.4-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.4-monoB-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.5-dimer'] = 574.16149552
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.5-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.5-monoB-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.6-dimer'] = 571.32245963
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.6-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-5.6-monoB-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-6.0-dimer'] = 560.85272572
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-6.0-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-6.0-monoB-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-6.5-dimer'] = 549.47925556
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-6.5-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-6.5-monoB-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-7.0-dimer'] = 539.65622514
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-7.0-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-7.0-monoB-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-7.5-dimer'] = 531.09189940
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-7.5-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-7.5-monoB-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-8.0-dimer'] = 523.56205991
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-8.0-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_T-8.0-monoB-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.2-dimer'] = 641.59153721
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.2-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.4-dimer'] = 640.97218086
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.4-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.6-dimer'] = 639.94808010
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.6-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.8-dimer'] = 638.53114770
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-0.8-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.0-dimer'] = 636.73745247
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.0-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.2-dimer'] = 634.58670201
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.2-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.4-dimer'] = 632.10168144
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.4-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.5-dimer'] = 630.74164257
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.5-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.6-dimer'] = 629.30768985
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.6-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.7-dimer'] = 627.80329032
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.7-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.8-dimer'] = 626.23200316
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.8-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.9-dimer'] = 624.59746513
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-1.9-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.0-dimer'] = 622.90337667
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.0-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.2-dimer'] = 619.35158842
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.2-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.4-dimer'] = 615.60701452
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.4-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.6-dimer'] = 611.70022314
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.6-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.8-dimer'] = 607.66157487
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-2.8-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-3.0-dimer'] = 603.52082284
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD34-3.0-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.2-dimer'] = 332.50866690
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.2-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.2-monoB-CP'] = 12.95382185
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.4-dimer'] = 326.76493049
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.4-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.4-monoB-CP'] = 12.95382185
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.5-dimer'] = 324.08312886
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.5-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.5-monoB-CP'] = 12.95382185
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.6-dimer'] = 321.51823084
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.6-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.6-monoB-CP'] = 12.95382185
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.7-dimer'] = 319.06348175
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.7-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.7-monoB-CP'] = 12.95382185
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.8-dimer'] = 316.71257239
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.8-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.8-monoB-CP'] = 12.95382185
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.9-dimer'] = 314.45961051
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.9-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-3.9-monoB-CP'] = 12.95382185
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.0-dimer'] = 312.29909326
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.0-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.0-monoB-CP'] = 12.95382185
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.1-dimer'] = 310.22588084
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.1-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.1-monoB-CP'] = 12.95382185
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.2-dimer'] = 308.23517159
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.2-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.2-monoB-CP'] = 12.95382185
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.5-dimer'] = 302.71463310
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.5-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.5-monoB-CP'] = 12.95382185
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.75-dimer'] = 298.57449040
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.75-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-4.75-monoB-CP'] = 12.95382185
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.0-dimer'] = 294.79763877
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.0-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.0-monoB-CP'] = 12.95382185
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.25-dimer'] = 291.34045574
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.25-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.25-monoB-CP'] = 12.95382185
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.5-dimer'] = 288.16568982
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.5-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-5.5-monoB-CP'] = 12.95382185
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-6.0-dimer'] = 282.54011405
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-6.0-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-6.0-monoB-CP'] = 12.95382185
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-6.5-dimer'] = 277.71464354
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-6.5-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-6.5-monoB-CP'] = 12.95382185
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-7.0-dimer'] = 273.53417452
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-7.0-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-7.0-monoB-CP'] = 12.95382185
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-7.5-dimer'] = 269.88029141
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-7.5-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzH2S-7.5-monoB-CP'] = 12.95382185
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.2-dimer'] = 277.70122037
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.2-monoA-CP'] = 201.83853774
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.2-monoB-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.3-dimer'] = 276.14505886
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.3-monoA-CP'] = 201.83853774
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.3-monoB-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.4-dimer'] = 274.65657480
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.4-monoA-CP'] = 201.83853774
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.4-monoB-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.5-dimer'] = 273.23211647
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.5-monoA-CP'] = 201.83853774
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.5-monoB-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.6-dimer'] = 271.86820659
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.6-monoA-CP'] = 201.83853774
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.6-monoB-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.7-dimer'] = 270.56154682
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.7-monoA-CP'] = 201.83853774
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.7-monoB-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.8-dimer'] = 269.30901798
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.8-monoA-CP'] = 201.83853774
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.8-monoB-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.9-dimer'] = 268.10767718
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.9-monoA-CP'] = 201.83853774
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-3.9-monoB-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.0-dimer'] = 266.95475267
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.0-monoA-CP'] = 201.83853774
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.0-monoB-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.1-dimer'] = 265.84763738
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.1-monoA-CP'] = 201.83853774
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.1-monoB-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.2-dimer'] = 264.78388141
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.2-monoA-CP'] = 201.83853774
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.2-monoB-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.4-dimer'] = 262.77738579
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.4-monoA-CP'] = 201.83853774
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.4-monoB-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.6-dimer'] = 260.91850385
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.6-monoA-CP'] = 201.83853774
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.6-monoB-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.8-dimer'] = 259.19247204
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.8-monoA-CP'] = 201.83853774
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-4.8-monoB-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.0-dimer'] = 257.58628148
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.0-monoA-CP'] = 201.83853774
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.0-monoB-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.2-dimer'] = 256.08845607
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.2-monoA-CP'] = 201.83853774
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.2-monoB-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.4-dimer'] = 254.68885527
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.4-monoA-CP'] = 201.83853774
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.4-monoB-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.6-dimer'] = 253.37850109
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.6-monoA-CP'] = 201.83853774
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-5.6-monoB-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-6.0-dimer'] = 250.99455064
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-6.0-monoA-CP'] = 201.83853774
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzMe-6.0-monoB-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.2-dimer'] = 42.94051671
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.2-monoA-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.3-dimer'] = 42.46449704
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.3-monoA-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.4-dimer'] = 42.01471911
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.4-monoA-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.5-dimer'] = 41.58914043
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.5-monoA-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.6-dimer'] = 41.18591734
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.6-monoA-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.7-dimer'] = 40.80338247
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.7-monoA-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.8-dimer'] = 40.44002498
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.8-monoA-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.9-dimer'] = 40.09447330
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-3.9-monoA-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.0-dimer'] = 39.76547998
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.0-monoA-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.1-dimer'] = 39.45190844
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.1-monoA-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.2-dimer'] = 39.15272123
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.2-monoA-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.3-dimer'] = 38.86696980
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.3-monoA-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.4-dimer'] = 38.59378540
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.4-monoA-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.6-dimer'] = 38.08199453
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.6-monoA-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.8-dimer'] = 37.61171219
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-4.8-monoA-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-5.0-dimer'] = 37.17815187
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-5.0-monoA-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-5.4-dimer'] = 36.40542136
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-5.4-monoA-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-5.8-dimer'] = 35.73746090
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-MeMe-5.8-monoA-CP'] = 13.31926457
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.1-dimer'] = 664.74968142
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.1-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.3-dimer'] = 653.28897360
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.3-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.4-dimer'] = 647.90584891
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.4-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.5-dimer'] = 642.73711461
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.5-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.6-dimer'] = 637.77107423
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.6-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.7-dimer'] = 632.99683541
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.7-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.8-dimer'] = 628.40424073
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.8-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.9-dimer'] = 623.98380628
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-3.9-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.0-dimer'] = 619.72666684
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.0-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.1-dimer'] = 615.62452662
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.1-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.2-dimer'] = 611.66961499
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.2-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.3-dimer'] = 607.85464633
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.3-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.4-dimer'] = 604.17278378
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.4-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.5-dimer'] = 600.61760611
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.5-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.7-dimer'] = 593.86352067
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-4.7-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-5.0-dimer'] = 584.54275675
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-5.0-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-5.5-dimer'] = 570.86466240
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-5.5-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-6.0-dimer'] = 559.10620798
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-6.0-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-6.5-dimer'] = 548.90465922
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-6.5-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-7.0-dimer'] = 539.98032943
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_S2-7.0-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.1-dimer'] = 631.74018099
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.1-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.1-monoB-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.3-dimer'] = 622.28221702
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.3-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.3-monoB-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.5-dimer'] = 613.57422251
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.5-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.5-monoB-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.6-dimer'] = 609.47520868
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.6-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.6-monoB-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.7-dimer'] = 605.53368830
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.7-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.7-monoB-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.8-dimer'] = 601.74111111
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.8-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.8-monoB-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.9-dimer'] = 598.08951503
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.9-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-4.9-monoB-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.0-dimer'] = 594.57147649
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.0-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.0-monoB-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.1-dimer'] = 591.18006603
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.1-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.1-monoB-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.2-dimer'] = 587.90880856
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.2-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.2-monoB-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.3-dimer'] = 584.75164753
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.3-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.3-monoB-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.4-dimer'] = 581.70291245
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.4-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.4-monoB-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.5-dimer'] = 578.75728949
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.5-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.5-monoB-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.7-dimer'] = 573.15574951
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.7-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-5.7-monoB-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-6.0-dimer'] = 565.41165299
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-6.0-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-6.0-monoB-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-6.5-dimer'] = 554.01089095
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-6.5-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-6.5-monoB-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-7.0-dimer'] = 544.16644693
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-7.0-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-7.0-monoB-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-8.0-dimer'] = 528.04095562
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-8.0-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-8.0-monoB-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-9.0-dimer'] = 515.40150653
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-9.0-monoA-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-PyPy_T3-9.0-monoB-CP'] = 206.21910131
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.2-dimer'] = 652.35026383
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.2-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.4-dimer'] = 651.65685475
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.4-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.6-dimer'] = 650.51106101
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.6-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.8-dimer'] = 648.92723975
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-0.8-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.0-dimer'] = 646.92462020
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.0-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.2-dimer'] = 644.52659143
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.2-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.4-dimer'] = 641.75995892
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.4-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.5-dimer'] = 640.24755050
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.5-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.6-dimer'] = 638.65423207
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.6-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.7-dimer'] = 636.98400901
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.7-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.8-dimer'] = 635.24097954
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.8-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.9-dimer'] = 633.42931896
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-1.9-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.0-dimer'] = 631.55326486
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.0-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.2-dimer'] = 627.62515488
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.2-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.4-dimer'] = 623.49127864
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.4-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.6-dimer'] = 619.18640729
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.6-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.8-dimer'] = 614.74502815
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-2.8-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-3.0-dimer'] = 610.20089775
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD32-3.0-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.2-dimer'] = 631.66053374
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.2-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.4-dimer'] = 631.10536715
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.4-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.6-dimer'] = 630.18691177
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.6-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.8-dimer'] = 628.91516711
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-0.8-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.0-dimer'] = 627.30369102
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.0-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.2-dimer'] = 625.36921338
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.2-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.4-dimer'] = 623.13120361
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.4-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.5-dimer'] = 621.90509666
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.5-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.6-dimer'] = 620.61142042
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.6-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.7-dimer'] = 619.25317914
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.7-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.8-dimer'] = 617.83346514
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.8-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.9-dimer'] = 616.35544587
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-1.9-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.0-dimer'] = 614.82235130
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.0-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.2-dimer'] = 611.60409513
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.2-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.4-dimer'] = 608.20532569
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.4-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.6-dimer'] = 604.65291019
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.6-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.8-dimer'] = 600.97358989
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-2.8-monoA-CP'] = 204.01997321
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-3.0-dimer'] = 597.19362514
+DATA['NUCLEAR REPULSION ENERGY']['NBC1-BzBz_PD36-3.0-monoA-CP'] = 204.01997321

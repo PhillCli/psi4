@@ -112,8 +112,7 @@ void DFOCC::cd_omp2_manager() {
         variables_["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp2AB;
         variables_["MP2 SAME-SPIN CORRELATION ENERGY"] = Emp2AA + Emp2BB;
         variables_["MP2 DOUBLES ENERGY"] = Emp2AB + Emp2AA + Emp2BB;
-    }
-    else {
+    } else {
         variables_["MP2 DOUBLES ENERGY"] = Ecorr - Emp2_t1;
     }
     variables_["MP2 SINGLES ENERGY"] = Emp2_t1;
@@ -334,8 +333,7 @@ void DFOCC::cd_mp2_manager() {
         variables_["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp2AB;
         variables_["MP2 SAME-SPIN CORRELATION ENERGY"] = Emp2AA + Emp2BB;
         variables_["MP2 DOUBLES ENERGY"] = Emp2AB + Emp2AA + Emp2BB;
-    }
-    else {
+    } else {
         variables_["MP2 DOUBLES ENERGY"] = Ecorr - Emp2_t1;
     }
     variables_["MP2 SINGLES ENERGY"] = Emp2_t1;
@@ -586,18 +584,16 @@ void DFOCC::ccsd_manager_cd() {
         variables_["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp2AB;
         variables_["MP2 SAME-SPIN CORRELATION ENERGY"] = Emp2AA + Emp2BB;
         variables_["MP2 DOUBLES ENERGY"] = Emp2AB + Emp2AA + Emp2BB;
-    }
-    else {
+    } else {
         Process::environment.globals["MP2 DOUBLES ENERGY"] = Ecorr - Emp2_t1;
         variables_["MP2 DOUBLES ENERGY"] = Ecorr - Emp2_t1;
     }
     Process::environment.globals["MP2 SINGLES ENERGY"] = Emp2_t1;
     variables_["MP2 SINGLES ENERGY"] = Emp2_t1;
 
-
     if (reference_ == "UNRESTRICTED") {
         // Read DF integrals
-        malloc_mo_df_ints() ;
+        malloc_mo_df_ints();
     }
 
     // Perform CCSD iterations
@@ -610,7 +606,7 @@ void DFOCC::ccsd_manager_cd() {
 
     if (reference_ == "UNRESTRICTED" && cc_lambda_ == "FALSE") {
         // Free ints
-        reset_mo_df_ints() ;
+        reset_mo_df_ints();
     }
 
     outfile->Printf("\n");
@@ -684,8 +680,7 @@ void DFOCC::ccsd_manager_cd() {
             outfile->Printf("\tComputing unrelaxed response density matrices...\n");
             ccsd_opdm();
             ccsd_tpdm();
-        }
-        else if (reference_ == "UNRESTRICTED") {
+        } else if (reference_ == "UNRESTRICTED") {
             G1c_ooA = std::make_shared<Tensor2d>("Correlation OPDM <O|O>", noccA, noccA);
             G1c_ooB = std::make_shared<Tensor2d>("Correlation OPDM <o|o>", noccB, noccB);
             G1c_ovA = std::make_shared<Tensor2d>("Correlation OPDM <O|V>", noccA, nvirA);
@@ -711,7 +706,7 @@ void DFOCC::ccsd_manager_cd() {
         // if (ekt_ip_ == "TRUE") ekt_ip();
     }  // if (dertype == "FIRST" || ekt_ip_ == "TRUE")
 
-   if (reference_ == "UNRESTRICTED") {
+    if (reference_ == "UNRESTRICTED") {
         // Free ints
         bQijA.reset();
         bQijB.reset();
@@ -857,9 +852,11 @@ void DFOCC::ccsd_t_manager_cd() {
         cost_amp1 *= sizeof(double);
         // Memory: OV^3 + 2*O^2V^2 + 2*V^3 + O^3V + V^2N
         cost_triples_iabc = 0.0;
-        cost_triples_iabc = 2.0 * (long long int)naoccA * (long long int)naoccA * (long long int)navirA * (long long int)navirA;
+        cost_triples_iabc =
+            2.0 * (long long int)naoccA * (long long int)naoccA * (long long int)navirA * (long long int)navirA;
         cost_triples_iabc += 5.0 * (long long int)naoccA * (long long int)navirA * (long long int)navirA;
-        cost_triples_iabc += (long long int)naoccA * (long long int)naoccA * (long long int)naoccA * (long long int)navirA;
+        cost_triples_iabc +=
+            (long long int)naoccA * (long long int)naoccA * (long long int)naoccA * (long long int)navirA;
         cost_triples_iabc += (long long int)nQ * (long long int)navirA * (long long int)navirA;
         cost_triples_iabc /= 1024.0 * 1024.0;
         cost_amp2 = 0.0;
@@ -999,8 +996,7 @@ void DFOCC::ccsd_t_manager_cd() {
         variables_["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp2AB;
         variables_["MP2 SAME-SPIN CORRELATION ENERGY"] = Emp2AA + Emp2BB;
         variables_["MP2 DOUBLES ENERGY"] = Emp2AB + Emp2AA + Emp2BB;
-    }
-    else {
+    } else {
         Process::environment.globals["MP2 DOUBLES ENERGY"] = Ecorr - Emp2_t1;
         variables_["MP2 DOUBLES ENERGY"] = Ecorr - Emp2_t1;
     }
@@ -1009,7 +1005,7 @@ void DFOCC::ccsd_t_manager_cd() {
 
     if (reference_ == "UNRESTRICTED") {
         // Read DF integrals
-        malloc_mo_df_ints() ;
+        malloc_mo_df_ints();
     }
 
     // Perform CCSD iterations
@@ -1056,12 +1052,10 @@ void DFOCC::ccsd_t_manager_cd() {
         if (reference_ == "RESTRICTED") {
             // ccsd_canonic_triples_grad();
             ccsd_canonic_triples_grad2();
-        }
-        else if (reference_ == "UNRESTRICTED") {
+        } else if (reference_ == "UNRESTRICTED") {
             uccsd_triples_grad_hm();
         }
-    }
-    else {
+    } else {
         if (reference_ == "RESTRICTED") {
             if (triples_iabc_type_ == "DISK")
                 ccsd_canonic_triples_disk();
@@ -1076,10 +1070,10 @@ void DFOCC::ccsd_t_manager_cd() {
                 ccsd_canonic_triples();
             else if (triples_iabc_type_ == "DISK")
                 ccsd_canonic_triples_disk();
-        } // if restricted
+        }  // if restricted
         if (reference_ == "UNRESTRICTED") {
             uccsd_triples_hm();
-        } // if unrestricted
+        }  // if unrestricted
     }
     timer_off("(T)");
     outfile->Printf("\t(T) Correction (a.u.)              : %20.14f\n", E_t);
@@ -1173,10 +1167,10 @@ void DFOCC::ccsd_t_manager_cd() {
             uccsd_tpdm();
         }
 
-        //ccl_energy();
-        //prepare4grad();
-        //if (oeprop_ == "TRUE") oeprop();
-        //if (dertype == "FIRST") dfgrad();
+        // ccl_energy();
+        // prepare4grad();
+        // if (oeprop_ == "TRUE") oeprop();
+        // if (dertype == "FIRST") dfgrad();
 
     }  // if (dertype == "FIRST" || ekt_ip_ == "TRUE")
 
@@ -1470,15 +1464,14 @@ void DFOCC::ccsdl_t_manager_cd() {
         variables_["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp2AB;
         variables_["MP2 SAME-SPIN CORRELATION ENERGY"] = Emp2AA + Emp2BB;
         variables_["MP2 DOUBLES ENERGY"] = Emp2AB + Emp2AA + Emp2BB;
-    }
-    else {
+    } else {
         variables_["MP2 DOUBLES ENERGY"] = Ecorr - Emp2_t1;
     }
     variables_["MP2 SINGLES ENERGY"] = Emp2_t1;
 
     if (reference_ == "UNRESTRICTED") {
         // Read DF integrals
-        malloc_mo_df_ints() ;
+        malloc_mo_df_ints();
     }
 
     // Perform CCSD iterations
@@ -1531,8 +1524,7 @@ void DFOCC::ccsdl_t_manager_cd() {
     timer_on("(AT)");
     if (reference_ == "RESTRICTED") {
         ccsdl_canonic_triples_disk();
-    }
-    else if (reference_ == "UNRESTRICTED") {
+    } else if (reference_ == "UNRESTRICTED") {
         uccsdl_triples_hm();
     }
     timer_off("(AT)");
@@ -1696,8 +1688,8 @@ void DFOCC::ccd_manager_cd() {
         }
 
         // Mem alloc for DF ints
-        //if (df_ints_incore) {
-            malloc_mo_df_ints();
+        // if (df_ints_incore) {
+        malloc_mo_df_ints();
         //}
 
         //  Malloc
@@ -1786,8 +1778,7 @@ void DFOCC::ccd_manager_cd() {
         variables_["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp2AB;
         variables_["MP2 SAME-SPIN CORRELATION ENERGY"] = Emp2AA + Emp2BB;
         variables_["MP2 DOUBLES ENERGY"] = Emp2AB + Emp2AA + Emp2BB;
-    }
-    else {
+    } else {
         variables_["MP2 DOUBLES ENERGY"] = Ecorr - Emp2_t1;
     }
     variables_["MP2 SINGLES ENERGY"] = Emp2_t1;
@@ -2023,8 +2014,7 @@ void DFOCC::omp3_manager_cd() {
         variables_["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp2AB;
         variables_["MP2 SAME-SPIN CORRELATION ENERGY"] = Emp2AA + Emp2BB;
         variables_["MP2 DOUBLES ENERGY"] = Emp2AB + Emp2AA + Emp2BB;
-    }
-    else {
+    } else {
         variables_["MP2 DOUBLES ENERGY"] = Ecorr - Emp2_t1;
     }
     variables_["MP2 SINGLES ENERGY"] = Emp2_t1;
@@ -2036,24 +2026,24 @@ void DFOCC::omp3_manager_cd() {
 
     if (reference != "ROHF") {
         // LAB: dfocc can't compute a ROHF-MP3 explicitly, so it's unlikely to be a correct byproduct
-    outfile->Printf("\n");
-    outfile->Printf("\tComputing CD-MP3 energy using SCF MOs (Canonical CD-MP3)... \n");
-    outfile->Printf("\t======================================================================= \n");
-    outfile->Printf("\tNuclear Repulsion Energy (a.u.)    : %20.14f\n", Enuc);
-    outfile->Printf("\tSCF Energy (a.u.)                  : %20.14f\n", Escf);
-    outfile->Printf("\tREF Energy (a.u.)                  : %20.14f\n", Eref);
-    if (reference_ == "UNRESTRICTED") outfile->Printf("\tAlpha-Alpha Contribution (a.u.)    : %20.14f\n", Emp3AA);
-    if (reference_ == "UNRESTRICTED") outfile->Printf("\tAlpha-Beta Contribution (a.u.)     : %20.14f\n", Emp3AB);
-    if (reference_ == "UNRESTRICTED") outfile->Printf("\tBeta-Beta Contribution (a.u.)      : %20.14f\n", Emp3BB);
-    outfile->Printf("\t3rd Order Energy (a.u.)            : %20.14f\n", Emp3 - Emp2);
-    outfile->Printf("\tCD-MP2.5 Correlation Energy (a.u.) : %20.14f\n", (Emp2 - Escf) + 0.5 * (Emp3 - Emp2));
-    outfile->Printf("\tCD-MP2.5 Total Energy (a.u.)       : %20.14f\n", 0.5 * (Emp3 + Emp2));
-    outfile->Printf("\tCD-MP3 Correlation Energy (a.u.)   : %20.14f\n", Ecorr);
-    outfile->Printf("\tCD-MP3 Total Energy (a.u.)         : %20.14f\n", Emp3);
-    outfile->Printf("\t======================================================================= \n");
+        outfile->Printf("\n");
+        outfile->Printf("\tComputing CD-MP3 energy using SCF MOs (Canonical CD-MP3)... \n");
+        outfile->Printf("\t======================================================================= \n");
+        outfile->Printf("\tNuclear Repulsion Energy (a.u.)    : %20.14f\n", Enuc);
+        outfile->Printf("\tSCF Energy (a.u.)                  : %20.14f\n", Escf);
+        outfile->Printf("\tREF Energy (a.u.)                  : %20.14f\n", Eref);
+        if (reference_ == "UNRESTRICTED") outfile->Printf("\tAlpha-Alpha Contribution (a.u.)    : %20.14f\n", Emp3AA);
+        if (reference_ == "UNRESTRICTED") outfile->Printf("\tAlpha-Beta Contribution (a.u.)     : %20.14f\n", Emp3AB);
+        if (reference_ == "UNRESTRICTED") outfile->Printf("\tBeta-Beta Contribution (a.u.)      : %20.14f\n", Emp3BB);
+        outfile->Printf("\t3rd Order Energy (a.u.)            : %20.14f\n", Emp3 - Emp2);
+        outfile->Printf("\tCD-MP2.5 Correlation Energy (a.u.) : %20.14f\n", (Emp2 - Escf) + 0.5 * (Emp3 - Emp2));
+        outfile->Printf("\tCD-MP2.5 Total Energy (a.u.)       : %20.14f\n", 0.5 * (Emp3 + Emp2));
+        outfile->Printf("\tCD-MP3 Correlation Energy (a.u.)   : %20.14f\n", Ecorr);
+        outfile->Printf("\tCD-MP3 Total Energy (a.u.)         : %20.14f\n", Emp3);
+        outfile->Printf("\t======================================================================= \n");
 
-    variables_["MP3 TOTAL ENERGY"] = Emp3;
-    variables_["MP3 CORRELATION ENERGY"] = Emp3 - Escf;
+        variables_["MP3 TOTAL ENERGY"] = Emp3;
+        variables_["MP3 CORRELATION ENERGY"] = Emp3 - Escf;
         if (reference_ == "UNRESTRICTED") {
             variables_["MP3 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp3AB;
             variables_["MP3 SAME-SPIN CORRELATION ENERGY"] = Emp3AA + Emp3BB;
@@ -2353,8 +2343,7 @@ void DFOCC::mp3_manager_cd() {
         Process::environment.globals["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp2AB;
         Process::environment.globals["MP2 SAME-SPIN CORRELATION ENERGY"] = Emp2AA + Emp2BB;
         Process::environment.globals["MP2 DOUBLES ENERGY"] = Emp2AB + Emp2AA + Emp2BB;
-    }
-    else {
+    } else {
         Process::environment.globals["MP2 DOUBLES ENERGY"] = Ecorr - Emp2_t1;
     }
     Process::environment.globals["MP2 SINGLES ENERGY"] = Emp2_t1;
@@ -2446,7 +2435,6 @@ void DFOCC::mp3_manager_cd() {
     energy_ = Emp3;
     name_ = "CD-MP3";
     Emp3L = Emp3;
-
 
 }  // end mp3_manager_cd
 
@@ -2602,8 +2590,7 @@ void DFOCC::omp2_5_manager_cd() {
         variables_["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp2AB;
         variables_["MP2 SAME-SPIN CORRELATION ENERGY"] = Emp2AA + Emp2BB;
         variables_["MP2 DOUBLES ENERGY"] = Emp2AB + Emp2AA + Emp2BB;
-    }
-    else {
+    } else {
         variables_["MP2 DOUBLES ENERGY"] = Ecorr - Emp2_t1;
     }
     variables_["MP2 SINGLES ENERGY"] = Emp2_t1;
@@ -2615,38 +2602,39 @@ void DFOCC::omp2_5_manager_cd() {
 
     if (reference != "ROHF") {
         // LAB: dfocc can't compute a ROHF-MP3 explicitly, so it's unlikely to be a correct byproduct
-    outfile->Printf("\n");
-    outfile->Printf("\tComputing CD-MP2.5 energy using SCF MOs (Canonical CD-MP2.5)... \n");
-    outfile->Printf("\t======================================================================= \n");
-    outfile->Printf("\tNuclear Repulsion Energy (a.u.)    : %20.14f\n", Enuc);
-    outfile->Printf("\tSCF Energy (a.u.)                  : %20.14f\n", Escf);
-    outfile->Printf("\tREF Energy (a.u.)                  : %20.14f\n", Eref);
-    if (reference_ == "UNRESTRICTED") outfile->Printf("\tAlpha-Alpha Contribution (a.u.)    : %20.14f\n", Emp3AA);
-    if (reference_ == "UNRESTRICTED") outfile->Printf("\tAlpha-Beta Contribution (a.u.)     : %20.14f\n", Emp3AB);
-    if (reference_ == "UNRESTRICTED") outfile->Printf("\tBeta-Beta Contribution (a.u.)      : %20.14f\n", Emp3BB);
-    outfile->Printf("\tCD-MP3 Correlation Energy (a.u.)   : %20.14f\n", (Emp2 - Escf) + 2.0 * (Emp3 - Emp2));
-    outfile->Printf("\tCD-MP3 Total Energy (a.u.)         : %20.14f\n", Emp2 + 2.0 * (Emp3 - Emp2));
-    outfile->Printf("\tCD-MP2.5 Correlation Energy (a.u.) : %20.14f\n", Ecorr);
-    outfile->Printf("\tCD-MP2.5 Total Energy (a.u.)       : %20.14f\n", Emp3);
-    outfile->Printf("\t======================================================================= \n");
+        outfile->Printf("\n");
+        outfile->Printf("\tComputing CD-MP2.5 energy using SCF MOs (Canonical CD-MP2.5)... \n");
+        outfile->Printf("\t======================================================================= \n");
+        outfile->Printf("\tNuclear Repulsion Energy (a.u.)    : %20.14f\n", Enuc);
+        outfile->Printf("\tSCF Energy (a.u.)                  : %20.14f\n", Escf);
+        outfile->Printf("\tREF Energy (a.u.)                  : %20.14f\n", Eref);
+        if (reference_ == "UNRESTRICTED") outfile->Printf("\tAlpha-Alpha Contribution (a.u.)    : %20.14f\n", Emp3AA);
+        if (reference_ == "UNRESTRICTED") outfile->Printf("\tAlpha-Beta Contribution (a.u.)     : %20.14f\n", Emp3AB);
+        if (reference_ == "UNRESTRICTED") outfile->Printf("\tBeta-Beta Contribution (a.u.)      : %20.14f\n", Emp3BB);
+        outfile->Printf("\tCD-MP3 Correlation Energy (a.u.)   : %20.14f\n", (Emp2 - Escf) + 2.0 * (Emp3 - Emp2));
+        outfile->Printf("\tCD-MP3 Total Energy (a.u.)         : %20.14f\n", Emp2 + 2.0 * (Emp3 - Emp2));
+        outfile->Printf("\tCD-MP2.5 Correlation Energy (a.u.) : %20.14f\n", Ecorr);
+        outfile->Printf("\tCD-MP2.5 Total Energy (a.u.)       : %20.14f\n", Emp3);
+        outfile->Printf("\t======================================================================= \n");
 
-    variables_["MP2.5 TOTAL ENERGY"] = Emp3;
-    variables_["MP2.5 CORRELATION ENERGY"] = Emp3 - Escf;
-    variables_["MP2.5 SINGLES ENERGY"] = 0.0;
-    variables_["MP2.5 DOUBLES ENERGY"] = variables_["MP2.5 CORRELATION ENERGY"];  // RHF & UHF only
-    if (reference_ == "UNRESTRICTED") {
-        variables_["MP2.5 SAME-SPIN CORRELATION ENERGY"] = Emp3AA + Emp3BB;
-        variables_["MP2.5 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp3AB;
-    }
+        variables_["MP2.5 TOTAL ENERGY"] = Emp3;
+        variables_["MP2.5 CORRELATION ENERGY"] = Emp3 - Escf;
+        variables_["MP2.5 SINGLES ENERGY"] = 0.0;
+        variables_["MP2.5 DOUBLES ENERGY"] = variables_["MP2.5 CORRELATION ENERGY"];  // RHF & UHF only
+        if (reference_ == "UNRESTRICTED") {
+            variables_["MP2.5 SAME-SPIN CORRELATION ENERGY"] = Emp3AA + Emp3BB;
+            variables_["MP2.5 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp3AB;
+        }
 
-    variables_["MP3 TOTAL ENERGY"] = Emp2 + 2.0 * (Emp3 - Emp2);
-    variables_["MP3 CORRELATION ENERGY"] = Emp2 + 2.0 * (Emp3 - Emp2) - Escf;
-    variables_["MP3 DOUBLES ENERGY"] = variables_["MP3 CORRELATION ENERGY"];  // RHF & UHF only
-    variables_["MP3 SINGLES ENERGY"] = 0.0;  // RHF & UHF only
-    if (reference_ == "UNRESTRICTED") {
-        variables_["MP3 SAME-SPIN CORRELATION ENERGY"] = Emp2AA + Emp2BB + 2.0 * (Emp3AA + Emp3BB - Emp2AA - Emp2BB);
-        variables_["MP3 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp2AB + 2.0 * (Emp3AB - Emp2AB);
-    }
+        variables_["MP3 TOTAL ENERGY"] = Emp2 + 2.0 * (Emp3 - Emp2);
+        variables_["MP3 CORRELATION ENERGY"] = Emp2 + 2.0 * (Emp3 - Emp2) - Escf;
+        variables_["MP3 DOUBLES ENERGY"] = variables_["MP3 CORRELATION ENERGY"];  // RHF & UHF only
+        variables_["MP3 SINGLES ENERGY"] = 0.0;                                   // RHF & UHF only
+        if (reference_ == "UNRESTRICTED") {
+            variables_["MP3 SAME-SPIN CORRELATION ENERGY"] =
+                Emp2AA + Emp2BB + 2.0 * (Emp3AA + Emp3BB - Emp2AA - Emp2BB);
+            variables_["MP3 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp2AB + 2.0 * (Emp3AB - Emp2AB);
+        }
     }
     Emp3L = Emp3;
     EcorrL = Emp3L - Escf;
@@ -2917,8 +2905,7 @@ void DFOCC::mp2_5_manager_cd() {
         Process::environment.globals["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp2AB;
         Process::environment.globals["MP2 SAME-SPIN CORRELATION ENERGY"] = Emp2AA + Emp2BB;
         Process::environment.globals["MP2 DOUBLES ENERGY"] = Emp2AB + Emp2AA + Emp2BB;
-    }
-    else {
+    } else {
         Process::environment.globals["MP2 DOUBLES ENERGY"] = Ecorr - Emp2_t1;
     }
     Process::environment.globals["MP2 SINGLES ENERGY"] = Emp2_t1;
@@ -2969,7 +2956,7 @@ void DFOCC::mp2_5_manager_cd() {
     variables_["MP3 TOTAL ENERGY"] = Emp2 + 2.0 * (Emp3 - Emp2);
     variables_["MP3 CORRELATION ENERGY"] = Emp2 + 2.0 * (Emp3 - Emp2) - Escf;
     variables_["MP3 DOUBLES ENERGY"] = variables_["MP3 CORRELATION ENERGY"];  // RHF & UHF only
-    variables_["MP3 SINGLES ENERGY"] = 0.0;  // RHF & UHF only
+    variables_["MP3 SINGLES ENERGY"] = 0.0;                                   // RHF & UHF only
     if (reference_ == "UNRESTRICTED") {
         variables_["MP3 SAME-SPIN CORRELATION ENERGY"] = Emp2AA + Emp2BB + 2.0 * (Emp3AA + Emp3BB - Emp2AA - Emp2BB);
         variables_["MP3 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp2AB + 2.0 * (Emp3AB - Emp2AB);
@@ -2988,7 +2975,8 @@ void DFOCC::mp2_5_manager_cd() {
     Process::environment.globals["MP2.5 TOTAL ENERGY"] = Emp3;
     Process::environment.globals["MP2.5 CORRELATION ENERGY"] = Emp3 - Escf;
     Process::environment.globals["MP2.5 SINGLES ENERGY"] = 0.0;
-    Process::environment.globals["MP2.5 DOUBLES ENERGY"] = Process::environment.globals["MP2.5 CORRELATION ENERGY"];  // RHF & UHF only
+    Process::environment.globals["MP2.5 DOUBLES ENERGY"] =
+        Process::environment.globals["MP2.5 CORRELATION ENERGY"];  // RHF & UHF only
     if (reference_ == "UNRESTRICTED") {
         Process::environment.globals["MP2.5 SAME-SPIN CORRELATION ENERGY"] = Emp3AA + Emp3BB;
         Process::environment.globals["MP2.5 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp3AB;
@@ -2996,10 +2984,12 @@ void DFOCC::mp2_5_manager_cd() {
 
     Process::environment.globals["MP3 TOTAL ENERGY"] = Emp2 + 2.0 * (Emp3 - Emp2);
     Process::environment.globals["MP3 CORRELATION ENERGY"] = Emp2 + 2.0 * (Emp3 - Emp2) - Escf;
-    Process::environment.globals["MP3 DOUBLES ENERGY"] = Process::environment.globals["MP3 CORRELATION ENERGY"];  // RHF & UHF only
-    Process::environment.globals["MP3 SINGLES ENERGY"] = 0.0;  // RHF & UHF only
+    Process::environment.globals["MP3 DOUBLES ENERGY"] =
+        Process::environment.globals["MP3 CORRELATION ENERGY"];  // RHF & UHF only
+    Process::environment.globals["MP3 SINGLES ENERGY"] = 0.0;    // RHF & UHF only
     if (reference_ == "UNRESTRICTED") {
-        Process::environment.globals["MP3 SAME-SPIN CORRELATION ENERGY"] = Emp2AA + Emp2BB + 2.0 * (Emp3AA + Emp3BB - Emp2AA - Emp2BB);
+        Process::environment.globals["MP3 SAME-SPIN CORRELATION ENERGY"] =
+            Emp2AA + Emp2BB + 2.0 * (Emp3AA + Emp3BB - Emp2AA - Emp2BB);
         Process::environment.globals["MP3 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp2AB + 2.0 * (Emp3AB - Emp2AB);
     }
 
@@ -3164,8 +3154,7 @@ void DFOCC::olccd_manager_cd() {
         variables_["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp2AB;
         variables_["MP2 SAME-SPIN CORRELATION ENERGY"] = Emp2AA + Emp2BB;
         variables_["MP2 DOUBLES ENERGY"] = Emp2AB + Emp2AA + Emp2BB;
-    }
-    else {
+    } else {
         variables_["MP2 DOUBLES ENERGY"] = Ecorr - Emp2_t1;
     }
     variables_["MP2 SINGLES ENERGY"] = Emp2_t1;
@@ -3446,8 +3435,7 @@ void DFOCC::lccd_manager_cd() {
         variables_["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp2AB;
         variables_["MP2 SAME-SPIN CORRELATION ENERGY"] = Emp2AA + Emp2BB;
         variables_["MP2 DOUBLES ENERGY"] = Emp2AB + Emp2AA + Emp2BB;
-    }
-    else {
+    } else {
         variables_["MP2 DOUBLES ENERGY"] = Ecorr - Emp2_t1;
     }
     variables_["MP2 SINGLES ENERGY"] = Emp2_t1;
@@ -3483,8 +3471,7 @@ void DFOCC::lccd_manager_cd() {
         variables_["LCCD OPPOSITE-SPIN CORRELATION ENERGY"] = ElccdAB;
         variables_["LCCD SAME-SPIN CORRELATION ENERGY"] = ElccdAA + ElccdBB;
         variables_["LCCD DOUBLES ENERGY"] = ElccdAB + ElccdAA + ElccdBB;
-    }
-    else {
+    } else {
         variables_["LCCD DOUBLES ENERGY"] = Ecorr;  // no ROHF
     }
     variables_["LCCD SINGLES ENERGY"] = 0.0;  // no ROHF
@@ -3500,8 +3487,7 @@ void DFOCC::lccd_manager_cd() {
         Process::environment.globals["LCCD OPPOSITE-SPIN CORRELATION ENERGY"] = ElccdAB;
         Process::environment.globals["LCCD SAME-SPIN CORRELATION ENERGY"] = ElccdAA + ElccdBB;
         Process::environment.globals["LCCD DOUBLES ENERGY"] = ElccdAB + ElccdAA + ElccdBB;
-    }
-    else {
+    } else {
         Process::environment.globals["LCCD DOUBLES ENERGY"] = Ecorr;  // no ROHF
     }
     Process::environment.globals["LCCD SINGLES ENERGY"] = 0.0;  // no ROHF
@@ -3513,7 +3499,6 @@ void DFOCC::lccd_manager_cd() {
     name_ = "CD-LCCD";
 
 }  // end lccd_manager_cd
-
 
 //======================================================================
 //             OREMP Manager
@@ -3531,12 +3516,12 @@ void DFOCC::oremp_manager_cd() {
     timer_off("CD Integrals");
 
     // memalloc for density intermediates
-    Jc = std::make_shared<Tensor1d>("DF_BASIS_SCF J_Q", nQ_ref); //CSB J_Q formed from the DF-REF basis, eq. (36)
-    g1Qc = std::make_shared<Tensor1d>("DF_BASIS_SCF G1_Q", nQ_ref); //CSB intermediate gamma_Q, eq. (40)
-    g1Qt = std::make_shared<Tensor1d>("DF_BASIS_SCF G1t_Q", nQ_ref); //CSB intermediate gamma_Q~, eq. (41)
-    g1Qp = std::make_shared<Tensor1d>("DF_BASIS_SCF G1p_Q", nQ_ref); //CSB ???
-    g1Q = std::make_shared<Tensor1d>("DF_BASIS_CC G1_Q", nQ);         //CSB ???
-    g1Qt2 = std::make_shared<Tensor1d>("DF_BASIS_CC G1t_Q", nQ);      //CSB ???
+    Jc = std::make_shared<Tensor1d>("DF_BASIS_SCF J_Q", nQ_ref);      // CSB J_Q formed from the DF-REF basis, eq. (36)
+    g1Qc = std::make_shared<Tensor1d>("DF_BASIS_SCF G1_Q", nQ_ref);   // CSB intermediate gamma_Q, eq. (40)
+    g1Qt = std::make_shared<Tensor1d>("DF_BASIS_SCF G1t_Q", nQ_ref);  // CSB intermediate gamma_Q~, eq. (41)
+    g1Qp = std::make_shared<Tensor1d>("DF_BASIS_SCF G1p_Q", nQ_ref);  // CSB ???
+    g1Q = std::make_shared<Tensor1d>("DF_BASIS_CC G1_Q", nQ);         // CSB ???
+    g1Qt2 = std::make_shared<Tensor1d>("DF_BASIS_CC G1t_Q", nQ);      // CSB ???
 
     // avaliable mem
     memory = Process::environment.get_memory();
@@ -3668,8 +3653,7 @@ void DFOCC::oremp_manager_cd() {
         variables_["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp2AB;
         variables_["MP2 SAME-SPIN CORRELATION ENERGY"] = Emp2AA + Emp2BB;
         variables_["MP2 DOUBLES ENERGY"] = Emp2AB + Emp2AA + Emp2BB;
-    }
-    else {
+    } else {
         variables_["MP2 DOUBLES ENERGY"] = Ecorr - Emp2_t1;
     }
     variables_["MP2 SINGLES ENERGY"] = Emp2_t1;
@@ -3686,8 +3670,8 @@ void DFOCC::oremp_manager_cd() {
         G1c_voB = std::make_shared<Tensor2d>("Correlation OPDM <v|o>", nvirB, noccB);
     }
 
-    lccd_pdm_3index_intr(); //CSB form three-index intermediates T_ia^Q, V_ij^Q, V_ij^Q', V_ab^Q, y_ia^Q
-    omp3_opdm();            //CSB form the OPDMs; n o action required for REMP/OO-REMP
+    lccd_pdm_3index_intr();  // CSB form three-index intermediates T_ia^Q, V_ij^Q, V_ij^Q', V_ab^Q, y_ia^Q
+    omp3_opdm();             // CSB form the OPDMs; n o action required for REMP/OO-REMP
     oremp_tpdm();
     sep_tpdm_cc();
     gfock_cc_vo();
@@ -3946,8 +3930,7 @@ void DFOCC::remp_manager_cd() {
         variables_["MP2 OPPOSITE-SPIN CORRELATION ENERGY"] = Emp2AB;
         variables_["MP2 SAME-SPIN CORRELATION ENERGY"] = Emp2AA + Emp2BB;
         variables_["MP2 DOUBLES ENERGY"] = Emp2AB + Emp2AA + Emp2BB;
-    }
-    else {
+    } else {
         variables_["MP2 DOUBLES ENERGY"] = Ecorr - Emp2_t1;
     }
     variables_["MP2 SINGLES ENERGY"] = Emp2_t1;
@@ -3986,8 +3969,7 @@ void DFOCC::remp_manager_cd() {
         variables_["REMP2 OPPOSITE-SPIN CORRELATION ENERGY"] = ErempAB;
         variables_["REMP2 SAME-SPIN CORRELATION ENERGY"] = ErempAA + ErempBB;
         variables_["REMP2 DOUBLES ENERGY"] = ErempAB + ErempAA + ErempBB;
-    }
-    else {
+    } else {
         variables_["REMP2 DOUBLES ENERGY"] = Ecorr;  // no ROHF
     }
     variables_["REMP2 SINGLES ENERGY"] = 0.0;  // no ROHF

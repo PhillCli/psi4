@@ -48,8 +48,8 @@ namespace psi {
 namespace fnocc {
 
 /**
-  * Build and use I(a,b)
-  */
+ * Build and use I(a,b)
+ */
 void CoupledCluster::CPU_I1ab_quadratic(CCTaskParams params) {
     long int o = ndoccact;
     long int v = nvirt;
@@ -122,8 +122,8 @@ void CoupledCluster::CPU_I1ab_quadratic(CCTaskParams params) {
 }
 
 /**
-  * Build and use I(i,j), I'(i,j), and I(i,a)
-  */
+ * Build and use I(i,j), I'(i,j), and I(i,a)
+ */
 void CoupledCluster::CPU_I1pij_I1ia_lessmem_quadratic(CCTaskParams params) {
     long int o = ndoccact;
     long int v = nvirt;
@@ -516,5 +516,5 @@ void CoupledCluster::I2iajb_quadratic(CCTaskParams params) {
 
     psio.reset();
 }
-}
-}  // end of namespaces
+}  // namespace fnocc
+}  // namespace psi

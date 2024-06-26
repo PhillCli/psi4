@@ -48,7 +48,7 @@
 namespace psi {
 namespace ccdensity {
 
-void transp(const MintsHelper &mints, double sign) {
+void transp(const MintsHelper& mints, double sign) {
     /*** Transform the SO nabla integrals to the MO basis ***/
     moinfo.nabla = mints.so_nabla();
     for (auto& i : moinfo.nabla) {

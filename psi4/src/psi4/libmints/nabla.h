@@ -45,7 +45,6 @@ class SphericalTransform;
  *
  * Use an IntegralFactory to create this object. */
 class NablaInt : public OneBodyAOInt {
-
    public:
     //! Constructor. Do not call directly use an IntegralFactory.
     NablaInt(std::vector<SphericalTransform>&, std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>, int deriv = 0);
