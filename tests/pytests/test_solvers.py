@@ -1,9 +1,9 @@
 import numpy as np
 import pytest
+from utils import compare_arrays
 
 import psi4
 from psi4.driver.p4util.solvers import davidson_solver, hamiltonian_solver
-from utils import compare_arrays
 
 pytestmark = [pytest.mark.psi, pytest.mark.api]
 
@@ -41,7 +41,7 @@ class SimulateBase:
         return X.copy()
 
     def new_vector(self):
-        return np.zeros((self.size, ))
+        return np.zeros((self.size,))
 
 
 class DSProblemSimulate(SimulateBase):
@@ -91,11 +91,12 @@ def test_davidson_solver_numpy():
         engine=test_engine,
         guess=guess,
         nroot=nroot,
-        #Don't let the ss grow to size of real thing
+        # Don't let the ss grow to size of real thing
         max_ss_size=20,
         # Don't assault stdout with logging
         verbose=0,
-        maxiter=100)
+        maxiter=100,
+    )
 
     test_vals = ret["eigvals"]
     assert test_vals is not None, "Solver Failed to converge"
@@ -117,7 +118,7 @@ def test_davidson_solver_numpy():
 def test_hamiltonian_solver():
     BIGDIM = 100
     nroot = 3
-    guess = list(np.eye(BIGDIM)[:, :nroot * 2].T)
+    guess = list(np.eye(BIGDIM)[:, : nroot * 2].T)
     test_engine = HSProblemSimulate(BIGDIM)
     ret = hamiltonian_solver(
         engine=test_engine,
@@ -127,7 +128,8 @@ def test_hamiltonian_solver():
         max_ss_size=20,
         # Don't assault stdout with logging
         verbose=0,
-        maxiter=100)
+        maxiter=100,
+    )
 
     test_vals = ret["eigvals"]
     assert test_vals is not None, "The solver failed to converge"
@@ -155,20 +157,20 @@ def test_hamiltonian_solver():
     test_rvecs = [x[0] for x in ret["eigvecs"]]
     compare_arrays(ref_rvecs, np.column_stack(test_rvecs), 6, "Hamiltonian Right Eigenvectors")
 
-    #Can't compute LH eigenvectors with numpy but we have the RH, and the matrix
+    # Can't compute LH eigenvectors with numpy but we have the RH, and the matrix
     # solver computed Vl^T * H
     test_lvecs = [x[1] for x in ret["eigvecs"]]
     vl_T_H = np.column_stack([np.dot(test_lvecs[i], ref_H) for i in range(nroot)])
     # value * right_vector (should not matter which one since we just checked them equal)
     w_Vr = np.column_stack([test_rvecs[i] * test_vals[i] for i in range(nroot)])
-    #compare
+    # compare
     compare_arrays(vl_T_H, w_Vr, 6, "Hamiltonian Left Eigenvectors")
 
 
-@pytest.mark.xfail(True, reason='Stress Testing', run=True)
+@pytest.mark.xfail(True, reason="Stress Testing", run=True)
 @pytest.mark.solver
 @pytest.mark.stress
-@pytest.mark.parametrize("sparsity", [10**(-x) for x in range(4, -2, -1)])
+@pytest.mark.parametrize("sparsity", [10 ** (-x) for x in range(4, -2, -1)])
 def test_davidson_solver_stress_sparsity(sparsity):
     BIGDIM = 100
     nroot = 3
@@ -178,11 +180,12 @@ def test_davidson_solver_stress_sparsity(sparsity):
         engine=test_engine,
         guess=guess,
         nroot=nroot,
-        #Don't let the ss grow to size of real thing
+        # Don't let the ss grow to size of real thing
         max_vecs_per_root=20,
         # Don't assault stdout with logging
         verbose=0,
-        maxiter=1000)
+        maxiter=1000,
+    )
     assert test_vals is not None, "Solver Failed to converge"
 
     ref_vals, ref_vectors = np.linalg.eigh(test_engine.A)
@@ -196,10 +199,10 @@ def test_davidson_solver_stress_sparsity(sparsity):
     compare_arrays(ref_vectors, np.column_stack(test_vectors), 8, "Davidson eigenvectors")
 
 
-@pytest.mark.xfail(True, reason='Stress Testing', run=True)
+@pytest.mark.xfail(True, reason="Stress Testing", run=True)
 @pytest.mark.solver
 @pytest.mark.stress
-@pytest.mark.parametrize("sep", [10**(-x) for x in range(0, 8)])
+@pytest.mark.parametrize("sep", [10 ** (-x) for x in range(0, 8)])
 def test_davidson_solver_stress_eigval_sep(sep):
     """Solver can miss "skip" a root if they are close in the range we are looking at"""
     BIGDIM = 100
@@ -210,11 +213,12 @@ def test_davidson_solver_stress_eigval_sep(sep):
         engine=test_engine,
         guess=guess,
         nroot=nroot,
-        #Don't let the ss grow to size of real thing
+        # Don't let the ss grow to size of real thing
         max_vecs_per_root=20,
         # Don't assault stdout with logging
         verbose=0,
-        maxiter=1000)
+        maxiter=1000,
+    )
 
     assert test_vals is not None, "Solver Failed to converge"
     ref_vals, ref_vectors = np.linalg.eigh(test_engine.A)
@@ -228,10 +232,10 @@ def test_davidson_solver_stress_eigval_sep(sep):
     compare_arrays(ref_vectors, np.column_stack(test_vectors), 8, "Davidson eigenvectors")
 
 
-@pytest.mark.xfail(True, reason='Stress Testing', run=True)
+@pytest.mark.xfail(True, reason="Stress Testing", run=True)
 @pytest.mark.solver
 @pytest.mark.stress
-@pytest.mark.parametrize("sparsity", [10**(-x) for x in range(4, -2, -1)])
+@pytest.mark.parametrize("sparsity", [10 ** (-x) for x in range(4, -2, -1)])
 def test_hamiltonian_solver_stress_sparsity(sparsity):
     """Algorithm is challenged as the off diagonal elements approach the magnitude of the diagonal elements"""
     BIGDIM = 100
@@ -246,7 +250,8 @@ def test_hamiltonian_solver_stress_sparsity(sparsity):
         max_vecs_per_root=20,
         # Don't assault stdout with logging
         verbose=0,
-        maxiter=1000)
+        maxiter=1000,
+    )
 
     assert test_vals is not None, "The solver failed to converge"
 
@@ -268,10 +273,10 @@ def test_hamiltonian_solver_stress_sparsity(sparsity):
     compare_arrays(ref_vals, test_vals, 5, "Hamiltonian Eigenvalues")
 
 
-@pytest.mark.xfail(True, reason='Stress Testing', run=True)
+@pytest.mark.xfail(True, reason="Stress Testing", run=True)
 @pytest.mark.solver
 @pytest.mark.stress
-@pytest.mark.parametrize("b_sep", [10**(-x) for x in range(8, -1, -1)])
+@pytest.mark.parametrize("b_sep", [10 ** (-x) for x in range(8, -1, -1)])
 def test_hamiltonian_solver_stress_b_diag_grows(b_sep):
     """Solver encounters problems when the B diagonal elements approach A"""
     BIGDIM = 100
@@ -286,7 +291,8 @@ def test_hamiltonian_solver_stress_b_diag_grows(b_sep):
         max_vecs_per_root=20,
         # Don't assault stdout with logging
         verbose=0,
-        maxiter=1000)
+        maxiter=1000,
+    )
 
     assert test_vals is not None, "The solver failed to converge"
 
@@ -308,10 +314,10 @@ def test_hamiltonian_solver_stress_b_diag_grows(b_sep):
     compare_arrays(ref_vals, test_vals, 5, "Hamiltonian Eigenvalues")
 
 
-@pytest.mark.xfail(True, reason='Stress Testing', run=True)
+@pytest.mark.xfail(True, reason="Stress Testing", run=True)
 @pytest.mark.solver
 @pytest.mark.stress
-@pytest.mark.parametrize("a_sep", [10**(-x) for x in range(0, 8)])
+@pytest.mark.parametrize("a_sep", [10 ** (-x) for x in range(0, 8)])
 def test_hamiltonian_solver_stress_eigval_sep(a_sep):
     BIGDIM = 100
     nroot = 3
@@ -325,7 +331,8 @@ def test_hamiltonian_solver_stress_eigval_sep(a_sep):
         max_vecs_per_root=20,
         # Don't assault stdout with logging
         verbose=0,
-        maxiter=1000)
+        maxiter=1000,
+    )
 
     assert test_vals is not None, "The solver failed to converge"
 

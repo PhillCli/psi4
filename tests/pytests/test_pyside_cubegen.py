@@ -1,9 +1,11 @@
 """
 Test Python-side generation of cube files
 """
+
 import pytest
-import psi4
 from utils import compare_cubes
+
+import psi4
 
 pytestmark = [pytest.mark.psi, pytest.mark.api]
 
@@ -18,8 +20,8 @@ def test_pyside_cubegen():
         """)
 
     psi4.core.be_quiet()
-    psi4.set_options({'basis': "sto-3g", 'scf_type': 'pk', 'cubeprop_tasks': ['density', 'orbitals']})
-    scf_e, wfn = psi4.energy('SCF', return_wfn=True, molecule=mol)
+    psi4.set_options({"basis": "sto-3g", "scf_type": "pk", "cubeprop_tasks": ["density", "orbitals"]})
+    scf_e, wfn = psi4.energy("SCF", return_wfn=True, molecule=mol)
     psi4.cubeprop(wfn)
 
     cubegen = psi4.core.CubeProperties(wfn)

@@ -1,9 +1,10 @@
 import json
+import os
+import pprint
+from shutil import copytree
+
 import numpy as np
 import pytest
-import pprint
-import os
-from shutil import copytree
 
 import psi4
 
@@ -47,7 +48,7 @@ def test_psi4_basic(datadir):
         jatin = json.load(f)
 
     atres = psi4.schema_wrapper.run_qcschema(jatin)
-    assert psi4.compare_values(-76.0266327341067125, atres.return_result, 6, 'SCF energy')
+    assert psi4.compare_values(-76.0266327341067125, atres.return_result, 6, "SCF energy")
 
 
 def test_psi4_cc(datadir):
@@ -85,14 +86,14 @@ def test_psi4_cas(datadir):
         jatin = json.load(f)
 
     atres = psi4.schema_wrapper.run_qcschema(jatin)
-    assert psi4.compare_values(-76.2198474477531, atres.return_result, 6, 'CISD Energy')
+    assert psi4.compare_values(-76.2198474477531, atres.return_result, 6, "CISD Energy")
 
     ref_file = datadir.join(f"jatin4.ref")
     with open(ref_file) as f:
         jatin = json.load(f)
 
     atres = psi4.schema_wrapper.run_qcschema(jatin)
-    assert psi4.compare_values(-76.073865006902, atres.return_result, 6, 'CASSCF Energy')
+    assert psi4.compare_values(-76.073865006902, atres.return_result, 6, "CASSCF Energy")
 
 
 @pytest.mark.nbody
@@ -145,8 +146,19 @@ def test_psi4_scfproperty(datadir):
     ref_b3lyp_quad_au = np.array([[-5.66266837697, 0.0, 0.0], [0.0, -4.46523692003, 0.0], [0.0, 0.0, -5.22054902407]])
 
     props = [
-        'DIPOLE', 'QUADRUPOLE', 'MULLIKEN_CHARGES', 'LOWDIN_CHARGES', 'WIBERG_LOWDIN_INDICES', 'MAYER_INDICES',
-        'MAYER_INDICES', 'MO_EXTENTS', 'GRID_FIELD', 'GRID_ESP', 'ESP_AT_NUCLEI', 'MULTIPOLE(5)', 'NO_OCCUPATIONS'
+        "DIPOLE",
+        "QUADRUPOLE",
+        "MULLIKEN_CHARGES",
+        "LOWDIN_CHARGES",
+        "WIBERG_LOWDIN_INDICES",
+        "MAYER_INDICES",
+        "MAYER_INDICES",
+        "MO_EXTENTS",
+        "GRID_FIELD",
+        "GRID_ESP",
+        "ESP_AT_NUCLEI",
+        "MULTIPOLE(5)",
+        "NO_OCCUPATIONS",
     ]
 
     ref_file = datadir.join(f"jatin7.ref")

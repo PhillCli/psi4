@@ -30,7 +30,7 @@
 | Geometries taken from https://gitlab.com/piotr.zuchowski/o24x5/-/tree/4ec3cae0546b6ae4f4f2cf28482cd164c8323cc6.
 | Reference interaction energies taken from J. Chem. Phys. 154, 134106 (2021) https://doi.org/10.1063/5.0043793.
 | Variant with ghosted hydrogen as midbonds in the COM.
-| 
+|
 | no | name           | subset
 |  1 | CN   - He      | DD
 |  2 | NH   - He      | DD
@@ -76,8 +76,8 @@ isOS = "True"
 # <<< Database Members >>>
 DIST = ["0.9", "1.0", "1.2", "1.5", "2.0"]
 HRXN = [f"{rxn}-{dist}" for rxn in range(1, 25) for dist in DIST]
-#HRXN_SM = []
-#HRXN_LG = []
+# HRXN_SM = []
+# HRXN_LG = []
 HRXN_DD = [f"{rxn}-{dist}" for rxn in [1, 2, 3, 4, 5, 6, 7, 8, 9] for dist in DIST]
 HRXN_ED = [f"{rxn}-{dist}" for rxn in [10, 11, 12, 13, 14, 15] for dist in DIST]
 HRXN_MX = [f"{rxn}-{dist}" for rxn in [16, 17, 18, 19, 20, 21, 22, 23, 24] for dist in DIST]
@@ -2059,7 +2059,7 @@ for rxn in HRXN:
     cp_monoB = (2, (1, 3))
     GEOS[f"{dbse}-{rxn}-monoA-CP"] = GEOS[f"{dbse}-{rxn}-dimer"].extract_fragments(*cp_monoA)
     GEOS[f"{dbse}-{rxn}-monoB-CP"] = GEOS[f"{dbse}-{rxn}-dimer"].extract_fragments(*cp_monoB)
-    uncp_monoA = (1, (3, ))
-    uncp_monoB = (2, (3, ))
+    uncp_monoA = (1, (3,))
+    uncp_monoB = (2, (3,))
     GEOS[f"{dbse}-{rxn}-monoA-unCP"] = GEOS[f"{dbse}-{rxn}-dimer"].extract_fragments(*uncp_monoA)
     GEOS[f"{dbse}-{rxn}-monoB-unCP"] = GEOS[f"{dbse}-{rxn}-dimer"].extract_fragments(*uncp_monoB)

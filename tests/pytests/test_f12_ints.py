@@ -1,11 +1,14 @@
 """
 This file tests the F12 two-electron integrals from libmints
 """
+
+import json
+from pathlib import Path
+
 import numpy as np
 import pytest
+
 import psi4
-from pathlib import Path
-import json
 
 pytestmark = [pytest.mark.api, pytest.mark.quick]
 
@@ -23,18 +26,18 @@ def matlist_to_ndarray(mats):
 
 
 def test_f12_integrals(reference_data):
-    assert reference_data['version'] == '1.5'
-    refdata = reference_data['data']
-    moldata = refdata['h2o']
-    mol = psi4.core.Molecule.from_string(moldata.pop('psi4string'))
+    assert reference_data["version"] == "1.5"
+    refdata = reference_data["data"]
+    moldata = refdata["h2o"]
+    mol = psi4.core.Molecule.from_string(moldata.pop("psi4string"))
 
-    basis = psi4.core.BasisSet.build(mol, 'orbital', '6-31G*')
+    basis = psi4.core.BasisSet.build(mol, "orbital", "6-31G*")
     mints = psi4.core.MintsHelper(basis)
     f12 = mints.f12_cgtg(1.0)
 
-    for int_type in ['F', 'F2', 'FG', 'Uf']:
+    for int_type in ["F", "F2", "FG", "Uf"]:
         ref = moldata[int_type]
-        shape = ref[f'shape']
+        shape = ref[f"shape"]
         integral_ref = np.array(ref["I"]).reshape(shape)
 
         mapping = {
@@ -46,4 +49,4 @@ def test_f12_integrals(reference_data):
         libint2 = mapping[int_type](f12)
 
         libint2_np = matlist_to_ndarray(libint2)
-        np.testing.assert_allclose(libint2_np, integral_ref, atol=1.e-14)
+        np.testing.assert_allclose(libint2_np, integral_ref, atol=1.0e-14)

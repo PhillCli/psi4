@@ -33,52 +33,54 @@ import os
 import re
 import sys
 
-DriverPath = ''
-InsertPath = '/../../../'
-if (len(sys.argv) == 2):
-    DriverPath = sys.argv[1] + '/'
+DriverPath = ""
+InsertPath = "/../../../"
+if len(sys.argv) == 2:
+    DriverPath = sys.argv[1] + "/"
     sys.path.insert(0, os.path.abspath(os.getcwd()))
 
 
 def pts(category, pyfile):
-    print('Auto-documenting %s file %s' % (category, pyfile))
+    print("Auto-documenting %s file %s" % (category, pyfile))
 
 
 def extract_xyz(pyfile):
-    text1line = ''
-    textMline = ''
-    comment = ''
+    text1line = ""
+    textMline = ""
+    comment = ""
     b2a = 0.52917720859
     efpCoord = re.compile(r"\s*COORDINATES\s+\(BOHR\)\s*")
     efpAtomSymbol = re.compile(r"^\s*A\d*([A-Z]{1,2})\d*")
     pastComment = False
 
-    ffrag = open(pyfile, 'r')
+    ffrag = open(pyfile, "r")
     contents = ffrag.readlines()
     ffrag.close()
 
     atoms = []
     ii = 0
-    while (ii < len(contents)):
+    while ii < len(contents):
         line = contents[ii]
 
         if efpCoord.search(line):
             pastComment = True
 
         if ii > 0 and not pastComment:
-            comment += '   ' + line
+            comment += "   " + line
 
-        if 'STOP' in line:
+        if "STOP" in line:
             break
 
         if efpAtomSymbol.search(line):
             sline = line.split()
-            atoms.append([
-                efpAtomSymbol.search(line).group(1),
-                float(sline[1]) * b2a,
-                float(sline[2]) * b2a,
-                float(sline[3]) * b2a
-            ])
+            atoms.append(
+                [
+                    efpAtomSymbol.search(line).group(1),
+                    float(sline[1]) * b2a,
+                    float(sline[2]) * b2a,
+                    float(sline[3]) * b2a,
+                ]
+            )
 
         ii += 1
 
@@ -143,32 +145,31 @@ def canvas(fragname, molxyz):
 
 
 # Available fragments in psi4/share/psi4/efpfrag
-fdriver = open('source/autodoc_available_efpfrag.rst', 'w')
-fdriver.write('\n\n')
+fdriver = open("source/autodoc_available_efpfrag.rst", "w")
+fdriver.write("\n\n")
 fdriver.write(chemdoodle)
-fdriver.write('\n\n')
+fdriver.write("\n\n")
 
-for pyfile in glob.glob(DriverPath + '../../psi4/share/psi4/efpfrag/*.efp'):
+for pyfile in glob.glob(DriverPath + "../../psi4/share/psi4/efpfrag/*.efp"):
     filename = os.path.split(pyfile)[1]
     basename = os.path.splitext(filename)[0]
-    div = '=' * len(basename)
+    div = "=" * len(basename)
 
     if basename not in []:
+        pts("efp fragment", basename)
 
-        pts('efp fragment', basename)
-
-        fdriver.write(':srcefpfrag:`%s`\n%s\n\n' % (basename, '"' * (14 + len(basename))))
+        fdriver.write(":srcefpfrag:`%s`\n%s\n\n" % (basename, '"' * (14 + len(basename))))
         molstr, molMstr, comment = extract_xyz(pyfile)
         fdriver.write(canvas(basename, molstr))
-        fdriver.write('\n\nComment ::\n\n%s\n\n' % (comment))
-        fdriver.write('\n\nFull Geometry in Angstroms ::\n\n%s\n\n' % (molMstr))
-        fdriver.write('----\n')
+        fdriver.write("\n\nComment ::\n\n%s\n\n" % (comment))
+        fdriver.write("\n\nFull Geometry in Angstroms ::\n\n%s\n\n" % (molMstr))
+        fdriver.write("----\n")
 
-    fdriver.write('\n')
+    fdriver.write("\n")
 fdriver.close()
 
-#// create a synthetic arrow
-#//var origin = mol.getCenter()
-#//var ptX = new ChemDoodle.structures.Point(0.0, 0.1);
-#//var axisX = new ChemDoodle.structures.d2.Line(origin, ptX);
-#//axisX.arrowType = ChemDoodle.structures.d2.Line.ARROW_SYNTHETIC;
+# // create a synthetic arrow
+# //var origin = mol.getCenter()
+# //var ptX = new ChemDoodle.structures.Point(0.0, 0.1);
+# //var axisX = new ChemDoodle.structures.d2.Line(origin, ptX);
+# //axisX.arrowType = ChemDoodle.structures.d2.Line.ARROW_SYNTHETIC;

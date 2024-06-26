@@ -27,6 +27,7 @@
 #
 
 import math
+
 from .exceptions import *
 
 
@@ -35,43 +36,43 @@ def format_option_for_cfour(opt, val):
     into cfour-speak. Arrays are the primary target.
 
     """
-    text = ''
+    text = ""
 
     # Transform list from [[3, 0, 1, 1], [2, 0, 1, 0]] --> 3-0-1-1/2-0-1-0
     if isinstance(val, list):
-        if type(val[0]).__name__ == 'list':
-            if type(val[0][0]).__name__ == 'list':
-                raise ValidationError('Option has level of array nesting inconsistent with CFOUR.')
+        if type(val[0]).__name__ == "list":
+            if type(val[0][0]).__name__ == "list":
+                raise ValidationError("Option has level of array nesting inconsistent with CFOUR.")
             else:
                 # option is 2D array
                 for no in range(len(val)):
                     for ni in range(len(val[no])):
                         text += str(val[no][ni])
                         if ni < (len(val[no]) - 1):
-                            text += '-'
+                            text += "-"
                     if no < (len(val) - 1):
-                        text += '/'
+                        text += "/"
         else:
             # option is plain 1D array
-            if opt == 'CFOUR_ESTATE_SYM':
+            if opt == "CFOUR_ESTATE_SYM":
                 # [3, 1, 0, 2] --> 3/1/0/2
-                text += '/'.join(map(str, val))
-            elif opt == 'CFOUR_DROPMO':
-                text += '-'.join(map(str, val))
+                text += "/".join(map(str, val))
+            elif opt == "CFOUR_DROPMO":
+                text += "-".join(map(str, val))
                 # NOTE: some versions of cfour (or maybe it's psi) need comma, not dash
-                #text += ','.join(map(str, val))
+                # text += ','.join(map(str, val))
             else:
                 # [3, 1, 0, 2] --> 3-1-0-2
-                text += '-'.join(map(str, val))
+                text += "-".join(map(str, val))
 
     # Transform booleans into integers
-    elif str(val) == 'True':
-        text += '1'
-    elif str(val) == 'False':
-        text += '0'
+    elif str(val) == "True":
+        text += "1"
+    elif str(val) == "False":
+        text += "0"
 
     # Transform the basis sets that *must* be lowercase (dratted c4 input)
-    elif (opt == 'CFOUR_BASIS') and (val.upper() in ['SVP', 'DZP', 'TZP', 'TZP2P', 'QZ2P', 'PZ3D2F', '13S9P4D3F']):
+    elif (opt == "CFOUR_BASIS") and (val.upper() in ["SVP", "DZP", "TZP", "TZP2P", "QZ2P", "PZ3D2F", "13S9P4D3F"]):
         text += str(val.lower())
 
     # No Transform
@@ -88,16 +89,16 @@ def prepare_options_for_cfour(options):
     a CFOUR deck with those options.
 
     """
-    text = ''
+    text = ""
 
-    for opt, val in options['CFOUR'].items():
-        if opt.startswith('CFOUR_'):
-            if val['has_changed']:
+    for opt, val in options["CFOUR"].items():
+        if opt.startswith("CFOUR_"):
+            if val["has_changed"]:
                 if not text:
                     text += """*CFOUR("""
-                text += """%s=%s\n""" % (format_option_for_cfour(opt, val['value']))
+                text += """%s=%s\n""" % (format_option_for_cfour(opt, val["value"]))
     if text:
-        text = text[:-1] + ')\n\n'
+        text = text[:-1] + ")\n\n"
 
     return text
 
@@ -109,18 +110,18 @@ def prepare_options_for_orca(options):
     an ORCA deck with those options.
 
     """
-    text = ''
+    text = ""
 
-    for opt, val in options['ORCA'].items():
-        if opt.startswith('ORCA_'):
-            if val['has_changed']:
+    for opt, val in options["ORCA"].items():
+        if opt.startswith("ORCA_"):
+            if val["has_changed"]:
                 if not text:
                     text += """! """
-                text += """%s """ % (val['value'])
-                #text += """%s=%s\n""" % (format_option_for_cfour(opt, val['value']))
+                text += """%s """ % (val["value"])
+                # text += """%s=%s\n""" % (format_option_for_cfour(opt, val['value']))
     if text:
-        #text = text[:-1] + ')\n\n'
-        text += '\n'
+        # text = text[:-1] + ')\n\n'
+        text += "\n"
 
     return text
 
@@ -133,19 +134,19 @@ def prepare_options_for_psi4(options):
     Note that unlike the cfour version, this uses complete options deck.
 
     """
-    text = ''
+    text = ""
 
     for mod, moddict in options.items():
         for opt, val in moddict.items():
-            #print mod, opt, val['value']
+            # print mod, opt, val['value']
             if not text:
                 text += """\n"""
-            if mod == 'GLOBALS':
-                text += """set %s %s\n""" % (opt.lower(), val['value'])
+            if mod == "GLOBALS":
+                text += """set %s %s\n""" % (opt.lower(), val["value"])
             else:
-                text += """set %s %s %s\n""" % (mod.lower(), opt.lower(), val['value'])
+                text += """set %s %s %s\n""" % (mod.lower(), opt.lower(), val["value"])
     if text:
-        text += '\n'
+        text += "\n"
 
     return text
 
@@ -157,15 +158,15 @@ def prepare_options_for_qchem(options):
     a Q-Chem deck with those options.
 
     """
-    text = ''
+    text = ""
 
-    for opt, val in options['QCHEM'].items():
-        if opt.startswith('QCHEM_'):
-            if val['has_changed']:
+    for opt, val in options["QCHEM"].items():
+        if opt.startswith("QCHEM_"):
+            if val["has_changed"]:
                 if not text:
                     text += """$rem\n"""
-                text += """%-20s %s\n""" % (opt[6:], val['value'])
-                #text += """%s=%s\n""" % (format_option_for_cfour(opt, val['value']))
+                text += """%-20s %s\n""" % (opt[6:], val["value"])
+                # text += """%s=%s\n""" % (format_option_for_cfour(opt, val['value']))
     if text:
         text += """$end\n\n"""
 
@@ -183,20 +184,23 @@ def reconcile_options(full, partial):
     try:
         for module, modopts in partial.items():
             for kw, kwprop in modopts.items():
-                if full[module][kw]['has_changed']:
-                    if full[module][kw]['value'] != kwprop['value']:
-                        if 'clobber' in kwprop and kwprop['clobber']:
-                            if 'superclobber' in kwprop and kwprop['superclobber']:
+                if full[module][kw]["has_changed"]:
+                    if full[module][kw]["value"] != kwprop["value"]:
+                        if "clobber" in kwprop and kwprop["clobber"]:
+                            if "superclobber" in kwprop and kwprop["superclobber"]:
                                 # kw in full is touched, conflicts with value in partial,
                                 #   but value in partial is paramount, overwrite full with
                                 #   value in partial
-                                full[module][kw]['value'] = kwprop['value']
-                                full[module][kw]['has_changed'] = True
-                                #print '@P4C4 Overwriting %s with %s' % (kw, kwprop['value'])
+                                full[module][kw]["value"] = kwprop["value"]
+                                full[module][kw]["has_changed"] = True
+                                # print '@P4C4 Overwriting %s with %s' % (kw, kwprop['value'])
                             else:
-                                raise ValidationError("""
+                                raise ValidationError(
+                                    """
     Option %s value `%s` set by options block incompatible with
-    value `%s` in memory/molecule/command/psi4options block.""" % (kw, full[module][kw]['value'], kwprop['value']))
+    value `%s` in memory/molecule/command/psi4options block."""
+                                    % (kw, full[module][kw]["value"], kwprop["value"])
+                                )
                         else:
                             # kw in full is touched, conflicts with value in partial,
                             #   but value in partial is recommended, not required, no change
@@ -206,9 +210,9 @@ def reconcile_options(full, partial):
                         pass
                 else:
                     # If kw in full is untouched, overwrite it with value in partial
-                    full[module][kw]['value'] = kwprop['value']
-                    full[module][kw]['has_changed'] = True
-                    #print '@P4C4 Overwriting %s with %s' % (kw, kwprop['value'])
+                    full[module][kw]["value"] = kwprop["value"]
+                    full[module][kw]["has_changed"] = True
+                    # print '@P4C4 Overwriting %s with %s' % (kw, kwprop['value'])
 
     except KeyError as e:  # not expected but want to trap
         raise ValidationError("""Unexpected KeyError reconciling keywords: %s.""" % (repr(e)))
@@ -231,21 +235,24 @@ def reconcile_options2(full, partial):
     try:
         for module, modopts in partial.items():
             for kw, kwprop in modopts.items():
-                #if full[module][kw]['has_changed']:
+                # if full[module][kw]['has_changed']:
                 if full[module][kw]:
-                    if full[module][kw]['value'] != kwprop['value']:
-                        if 'clobber' in kwprop and kwprop['clobber']:
-                            if 'superclobber' in kwprop and kwprop['superclobber']:
+                    if full[module][kw]["value"] != kwprop["value"]:
+                        if "clobber" in kwprop and kwprop["clobber"]:
+                            if "superclobber" in kwprop and kwprop["superclobber"]:
                                 # kw in full is touched, conflicts with value in partial,
                                 #   but value in partial is paramount, overwrite full with
                                 #   value in partial
-                                full[module][kw]['value'] = kwprop['value']
-                                full[module][kw]['has_changed'] = True
-                                #print '@P4C4 Overwriting %s with %s' % (kw, kwprop['value'])
+                                full[module][kw]["value"] = kwprop["value"]
+                                full[module][kw]["has_changed"] = True
+                                # print '@P4C4 Overwriting %s with %s' % (kw, kwprop['value'])
                             else:
-                                raise ValidationError("""
+                                raise ValidationError(
+                                    """
     Option %s value `%s` set by options block incompatible with
-    value `%s` in memory/molecule/command/psi4options block.""" % (kw, full[module][kw]['value'], kwprop['value']))
+    value `%s` in memory/molecule/command/psi4options block."""
+                                    % (kw, full[module][kw]["value"], kwprop["value"])
+                                )
                         else:
                             # kw in full is touched, conflicts with value in partial,
                             #   but value in partial is recommended, not required, no change
@@ -255,9 +262,9 @@ def reconcile_options2(full, partial):
                         pass
                 else:
                     # If kw in full is absent, overwrite it with value in partial
-                    full[module][kw]['value'] = kwprop['value']
-                    full[module][kw]['has_changed'] = True
-                    #print '@P4C4 Overwriting %s with %s' % (kw, kwprop['value'])
+                    full[module][kw]["value"] = kwprop["value"]
+                    full[module][kw]["has_changed"] = True
+                    # print '@P4C4 Overwriting %s with %s' % (kw, kwprop['value'])
 
     except KeyError as e:  # not expected but want to trap
         raise ValidationError("""Unexpected KeyError reconciling keywords: %s.""" % (repr(e)))

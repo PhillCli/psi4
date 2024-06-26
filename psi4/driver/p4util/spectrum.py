@@ -60,6 +60,7 @@ class Lineshape:
     Why do we use a callable broadening factor?
     For plots in the *wavelength domain*, the broadening factor depends on the location of the band's maximum.
     """
+
     domain: Union[np.ndarray, List[float]]
     gamma: Callable[[float], float]
 
@@ -103,7 +104,7 @@ class Gaussian(Lineshape):
 
         """
         prefactor = 2.0 / (self.gamma(x_0) * np.sqrt(2.0 * np.pi))
-        exponent = -2.0 * ((self.domain - x_0) / self.gamma(x_0))**2
+        exponent = -2.0 * ((self.domain - x_0) / self.gamma(x_0)) ** 2
 
         return prefactor * np.exp(exponent)
 
@@ -150,7 +151,7 @@ class Lorentzian(Lineshape):
         """
         prefactor = 1.0 / np.pi
         numerator = self.gamma(x_0) / 2.0
-        denominator = (self.domain - x_0)**2 + numerator**2
+        denominator = (self.domain - x_0) ** 2 + numerator**2
 
         return prefactor * (numerator / denominator)
 
@@ -189,8 +190,9 @@ def prefactor_opa() -> float:
     c = constants.get("speed of light in vacuum")
     hbar = constants.get("Planck constant over 2 pi")
     e_0 = constants.get("electric constant")
-    au_to_Coulomb_centimeter = constants.get("elementary charge") * constants.get(
-        "Bohr radius") * constants.conversion_factor("m", "cm")
+    au_to_Coulomb_centimeter = (
+        constants.get("elementary charge") * constants.get("Bohr radius") * constants.conversion_factor("m", "cm")
+    )
 
     numerator = 4.0 * np.pi**2 * N_A
     denominator = 3 * 1000 * np.log(10) * (4 * np.pi * e_0) * hbar * c
@@ -223,8 +225,9 @@ def prefactor_ecd() -> float:
     hbar = constants.get("Planck constant over 2 pi")
     e_0 = constants.get("electric constant")
 
-    au_to_Coulomb_centimeter = constants.get("elementary charge") * constants.get(
-        "Bohr radius") * constants.conversion_factor("m", "cm")
+    au_to_Coulomb_centimeter = (
+        constants.get("elementary charge") * constants.get("Bohr radius") * constants.conversion_factor("m", "cm")
+    )
     au_to_Joule_inverse_Tesla = 2.0 * constants.get("Bohr magneton") * constants.conversion_factor("m", "cm")
     conversion = au_to_Coulomb_centimeter * au_to_Joule_inverse_Tesla
 
@@ -234,14 +237,16 @@ def prefactor_ecd() -> float:
     return (numerator / denominator) * conversion
 
 
-def spectrum(*,
-             poles: Union[List[float], np.ndarray],
-             residues: Union[List[float], np.ndarray],
-             kind: str = "opa",
-             lineshape: str = "gaussian",
-             gamma: float = 0.2,
-             npoints: int = 5000,
-             out_units: str = "nm") -> Dict[str, np.ndarray]:
+def spectrum(
+    *,
+    poles: Union[List[float], np.ndarray],
+    residues: Union[List[float], np.ndarray],
+    kind: str = "opa",
+    lineshape: str = "gaussian",
+    gamma: float = 0.2,
+    npoints: int = 5000,
+    out_units: str = "nm",
+) -> Dict[str, np.ndarray]:
     r"""One-photon absorption (OPA) or electronic circular dichroism (ECD)
     spectra with phenomenological line broadening.
 

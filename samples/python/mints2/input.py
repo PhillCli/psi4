@@ -110,6 +110,6 @@ psi4.basis_helper("""
     ****
 """)
 
-psi4.set_options({'d_convergence': 11, 'e_convergence': 11, 'scf_type': 'pk'})
+psi4.set_options({"d_convergence": 11, "e_convergence": 11, "scf_type": "pk"})
 
-scfenergy = psi4.energy('scf')
+scfenergy = psi4.energy("scf")

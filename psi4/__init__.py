@@ -35,6 +35,7 @@ isort:skip_file
 # * note that all path entities are directories except for "executable" that is a file
 import os
 from pathlib import Path
+
 psi4_module_loc = Path(__file__).resolve().parent
 
 prefix = Path(r"@CMAKE_INSTALL_PREFIX@".replace("\\", "/"))
@@ -69,9 +70,10 @@ if not data_dir.is_dir():
 data_dir = str(data_dir)
 
 # Init core
+from psi4.core import get_num_threads, set_num_threads
+
 from . import core
 
-from psi4.core import get_num_threads, set_num_threads
 core.initialize()
 
 if "PSI_SCRATCH" in os.environ.keys():
@@ -86,6 +88,7 @@ del psi4_module_loc, prefix, full_pymod, full_data, full_bin, rel_data, rel_bin,
 
 # Cleanup core at exit
 import atexit
+
 atexit.register(core.clean_options)
 atexit.register(core.clean)
 atexit.register(core.finalize)
@@ -97,19 +100,24 @@ from .driver import endorsed_plugins
 core.set_num_threads(1, quiet=True)
 
 # Load driver and outfile paraphernalia
-from .driver import *
-from .header import print_header
-from .metadata import __version__, version_formatter
-
-# A few extraneous functions
-from .extras import get_input_directory, addons, test, set_output_file
-from psi4.core import get_variable  # kill off in 1.4
-from psi4.core import variable, set_variable
-
 # Python portions of compiled-in Add-Ons
 # * Note that this is a "battening down the hatches" for the many
 #   rather than letting PYTHONPATH rule for the few.
 import sys
+
+from psi4.core import (
+    get_variable,  # kill off in 1.4
+    set_variable,
+    variable,
+)
+
+from .driver import *
+
+# A few extraneous functions
+from .extras import addons, get_input_directory, set_output_file, test
+from .header import print_header
+from .metadata import __version__, version_formatter
+
 if "@ENABLE_PCMSolver@".upper() in ["1", "ON", "YES", "TRUE", "Y"]:  # PCMSolver
     sys.path.insert(1, r"@PCMSolver_PYMOD@")
 if "@ENABLE_cppe@".upper() in ["1", "ON", "YES", "TRUE", "Y"]:  # cppe
@@ -125,4 +133,5 @@ if "@ENABLE_bse@".upper() in ["1", "ON", "YES", "TRUE", "Y"]:  # bse
 
 # Create a custom logger
 import logging
+
 logger = logging.getLogger(__name__)  # create initial psi4 from root to be configured later in extras

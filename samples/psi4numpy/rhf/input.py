@@ -3,6 +3,7 @@
 import time
 
 import numpy as np
+
 import psi4
 
 psi4.set_output_file("output.dat", False)
@@ -20,8 +21,8 @@ psi4.set_options({"basis": "aug-cc-pVDZ", "scf_type": "df", "e_convergence": 1e-
 
 # Set tolerances
 maxiter = 12
-E_conv = 1.0E-6
-D_conv = 1.0E-5
+E_conv = 1.0e-6
+D_conv = 1.0e-5
 
 # Integral generation from Psi4's MintsHelper
 wfn = psi4.core.Wavefunction.build(mol, psi4.core.get_global_option("BASIS"))
@@ -34,8 +35,8 @@ ndocc = wfn.nalpha()
 if wfn.nalpha() != wfn.nbeta():
     raise PsiException("Only valid for RHF wavefunctions!")
 
-psi4.core.print_out('\nNumber of occupied orbitals: %d\n' % ndocc)
-psi4.core.print_out('Number of basis functions:   %d\n\n' % nbf)
+psi4.core.print_out("\nNumber of occupied orbitals: %d\n" % ndocc)
+psi4.core.print_out("Number of basis functions:   %d\n\n" % nbf)
 
 # Build H_core
 V = mints.ao_potential()
@@ -45,7 +46,7 @@ H.add(V)
 
 # Orthogonalizer A = S^(-1/2)
 A = mints.ao_overlap()
-A.power(-0.5, 1.e-16)
+A.power(-0.5, 1.0e-16)
 
 
 # Diagonalize routine
@@ -82,13 +83,12 @@ jk.print_header()
 
 diis_obj = psi4.p4util.solvers.DIIS(max_vec=3, removal_policy="largest")
 
-psi4.core.print_out('\nTotal time taken for setup: %.3f seconds\n' % (time.time() - t))
+psi4.core.print_out("\nTotal time taken for setup: %.3f seconds\n" % (time.time() - t))
 
-psi4.core.print_out('\nStart SCF iterations:\n\n')
+psi4.core.print_out("\nStart SCF iterations:\n\n")
 t = time.time()
 
 for SCF_ITER in range(1, maxiter + 1):
-
     # Compute JK
     jk.C_left_add(Cocc)
     jk.compute()
@@ -113,8 +113,9 @@ for SCF_ITER in range(1, maxiter + 1):
 
     dRMS = diis_e.rms()
 
-    psi4.core.print_out('SCF Iteration %3d: Energy = %4.16f   dE = % 1.5E   dRMS = %1.5E\n' % (SCF_ITER, SCF_E,
-                                                                                               (SCF_E - Eold), dRMS))
+    psi4.core.print_out(
+        "SCF Iteration %3d: Energy = %4.16f   dE = % 1.5E   dRMS = %1.5E\n" % (SCF_ITER, SCF_E, (SCF_E - Eold), dRMS)
+    )
     if (abs(SCF_E - Eold) < E_conv) and (dRMS < D_conv):
         break
 
@@ -130,8 +131,8 @@ for SCF_ITER in range(1, maxiter + 1):
         psi4.clean()
         raise Exception("Maximum number of SCF cycles exceeded.\n")
 
-psi4.core.print_out('Total time for SCF iterations: %.3f seconds \n\n' % (time.time() - t))
-#print(psi4.energy("SCF"))
+psi4.core.print_out("Total time for SCF iterations: %.3f seconds \n\n" % (time.time() - t))
+# print(psi4.energy("SCF"))
 
-psi4.core.print_out('Final SCF energy: %.8f hartree\n' % SCF_E)
-psi4.compare_values(-76.0033389840197202, SCF_E, 6, 'SCF Energy')
+psi4.core.print_out("Final SCF energy: %.8f hartree\n" % SCF_E)
+psi4.compare_values(-76.0033389840197202, SCF_E, 6, "SCF Energy")

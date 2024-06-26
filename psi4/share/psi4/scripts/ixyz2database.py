@@ -32,7 +32,7 @@ import glob
 import os
 import sys
 
-sys.path.append(os.path.dirname(__file__) + '/../../../driver')
+sys.path.append(os.path.dirname(__file__) + "/../../../driver")
 try:
     import qcdb
 except ImportError:
@@ -71,7 +71,7 @@ print("""
 """)
 user_obedient = False
 while not user_obedient:
-    dbse = input('    dbse = ').strip()
+    dbse = input("    dbse = ").strip()
     if dbse.isalnum():
         user_obedient = True
 
@@ -81,9 +81,9 @@ print("""
     All files with this extension in the current directory will be processed
     Additionally, all files with extension p4m in the current dir will be processed as psi4 mol format
 """)
-fext = input('    fext = [xyz] ').strip()
+fext = input("    fext = [xyz] ").strip()
 if fext == "":
-    fext = 'xyz'
+    fext = "xyz"
 
 # query xyz file comment line
 print("""
@@ -94,17 +94,17 @@ print("""
 """)
 user_obedient = False
 while not user_obedient:
-    line2 = input('    line2 = [cgmp] ').strip().lower()
+    line2 = input("    line2 = [cgmp] ").strip().lower()
     if line2 == "":
-        line2 = 'cgmp'
-    if line2 == 'comment' or line2 == 'cgmp' or line2 == 'trash':
+        line2 = "cgmp"
+    if line2 == "comment" or line2 == "cgmp" or line2 == "trash":
         user_obedient = True
 
 # query closed shell
 print("""
  Are open-shell or non-singlets are present among your systems (or subsystems in the case of dimers)?
 """)
-isOS = qcdb.query_yes_no('    isOS =', False)
+isOS = qcdb.query_yes_no("    isOS =", False)
 
 # query database type
 print("""
@@ -120,7 +120,7 @@ print("""
 """)
 user_obedient = False
 while not user_obedient:
-    route = input('    route = ').strip().lower()
+    route = input("    route = ").strip().lower()
     if route.isdigit():
         route = int(route)
         if route == 1 or route == 2 or route == 3:
@@ -134,7 +134,7 @@ if route == 2:
 """)
     user_obedient = False
     while not user_obedient:
-        Nrxn = input('    Nrxn = ').strip().lower()
+        Nrxn = input("    Nrxn = ").strip().lower()
         if Nrxn.isdigit():
             Nrxn = int(Nrxn)
             user_obedient = True
@@ -150,7 +150,7 @@ BINDRXN = {}
 TAGLRXN = {}
 for rxn in HRXN:
     BINDRXN[rxn] = None  # "nan" ? TODO
-    TAGLRXN[rxn] = 'Reaction %s' % (rxn)
+    TAGLRXN[rxn] = "Reaction %s" % (rxn)
 
 # reagent geometry section
 gpy += "\n# <<< Geometry Specification Strings >>>\n"
@@ -160,33 +160,34 @@ HRGT = []
 TAGLRGT = {}
 BINDRGT = {}
 
-print("\n%-25s %6s %6s %6s %6s %6s\t\t%s\n" %
-      ("system", "CHGsyst", "MLPsyst", "Natom", "Nmol1", "Nmol2", "Fragmentation Pattern"))
+print(
+    "\n%-25s %6s %6s %6s %6s %6s\t\t%s\n"
+    % ("system", "CHGsyst", "MLPsyst", "Natom", "Nmol1", "Nmol2", "Fragmentation Pattern")
+)
 
-for xyzfile in (glob.glob('*.' + fext) + glob.glob('*.p4m')):
-
+for xyzfile in glob.glob("*." + fext) + glob.glob("*.p4m"):
     # ascertain system name and open file
     system = os.path.splitext(xyzfile)[0]
     HRGT.append(system)
 
-    f = open(xyzfile, 'r')
+    f = open(xyzfile, "r")
     text = f.readlines()
     f.close()
 
     # use Molecule object to read geometry in xyz file
-    mol = qcdb.Molecule.from_string(''.join(text), fix_com=True, fix_orientation=True)
+    mol = qcdb.Molecule.from_string("".join(text), fix_com=True, fix_orientation=True)
     Nsyst = mol.natom()
 
     # alter second line
-    if line2 == 'cgmp':
+    if line2 == "cgmp":
         pass
-    elif line2 == 'comment':
+    elif line2 == "comment":
         mol.set_molecular_charge(0)
         mol.fragment_charges[0] = 0
         mol.set_multiplicity(1)
         mol.fragment_multiplicities[0] = 1
         mol.tagline = text[1].strip()
-    elif line2 == 'trash':
+    elif line2 == "trash":
         mol.set_molecular_charge(0)
         mol.fragment_charges[0] = 0
         mol.set_multiplicity(1)
@@ -199,7 +200,6 @@ for xyzfile in (glob.glob('*.' + fext) + glob.glob('*.p4m')):
     BINDRGT[system] = None  # "nan" ?  # TODO
 
     if route == 3 and mol.nfragments() == 1:
-
         frag_pattern, mol = mol.BFS(return_molecule=True)
         Nmol1 = mol.fragments[0][1] - mol.fragments[0][0] + 1
         Nmol2 = mol.fragments[1][1] - mol.fragments[1][0] + 1
@@ -213,7 +213,6 @@ for xyzfile in (glob.glob('*.' + fext) + glob.glob('*.p4m')):
             sys.exit()
 
     else:
-
         print("%-25s %6d %6d %6d %6d %6d" % (system, CHGsyst, MLPsyst, Nsyst, Nsyst, 0))
         gpy += "GEOS['%%s-%%s-%%s' %% (dbse, '%s', 'reagent')] = qcdb.Molecule(\"\"\"\n" % (str(system))
 
@@ -257,8 +256,8 @@ docstring += """
 """
 
 spy += docstring
-spy += 'import re\n'
-spy += 'import qcdb\n'
+spy += "import re\n"
+spy += "import qcdb\n"
 
 spy += "\n# <<< %s Database Module >>>\n" % (dbse)
 spy += "dbse = %s\n" % ("'" + dbse + "'")
@@ -326,7 +325,7 @@ elif route == 3:
 
 spy += "# <<< Reference Values [kcal/mol] >>>\n"
 spy += "BIND = {}\n"
-#print SPY_OUT "nan = float('NaN')\n";
+# print SPY_OUT "nan = float('NaN')\n";
 if route == 1:
     for rgt in HRGT:
         spy += """BIND['%%s-%%s'            %% (dbse, %-23s )] = """ % ("'" + rgt + "'")
@@ -361,20 +360,19 @@ elif route == 2:
         spy += """\"\"\"%s \"\"\"\n""" % (TAGLRGT[rgt])
 
 elif route == 3:
-
     for rgt in HRGT:
         spy += """TAGL['%%s-%%s'            %% (dbse, %-23s )] = """ % ("'" + rgt + "'")
         spy += """\"\"\"%s \"\"\"\n""" % (TAGLRGT[rgt])
         spy += """TAGL['%%s-%%s-dimer'      %% (dbse, %-23s )] = """ % ("'" + rgt + "'")
-        spy += """\"\"\"%s \"\"\"\n""" % ('Dimer from ' + TAGLRGT[rgt])
+        spy += """\"\"\"%s \"\"\"\n""" % ("Dimer from " + TAGLRGT[rgt])
         spy += """TAGL['%%s-%%s-monoA-CP'   %% (dbse, %-23s )] = """ % ("'" + rgt + "'")
-        spy += """\"\"\"%s \"\"\"\n""" % ('Monomer A from ' + TAGLRGT[rgt])
+        spy += """\"\"\"%s \"\"\"\n""" % ("Monomer A from " + TAGLRGT[rgt])
         spy += """TAGL['%%s-%%s-monoB-CP'   %% (dbse, %-23s )] = """ % ("'" + rgt + "'")
-        spy += """\"\"\"%s \"\"\"\n""" % ('Monomer B from ' + TAGLRGT[rgt])
+        spy += """\"\"\"%s \"\"\"\n""" % ("Monomer B from " + TAGLRGT[rgt])
         spy += """TAGL['%%s-%%s-monoA-unCP' %% (dbse, %-23s )] = """ % ("'" + rgt + "'")
-        spy += """\"\"\"%s \"\"\"\n""" % ('Monomer A from ' + TAGLRGT[rgt])
+        spy += """\"\"\"%s \"\"\"\n""" % ("Monomer A from " + TAGLRGT[rgt])
         spy += """TAGL['%%s-%%s-monoB-unCP' %% (dbse, %-23s )] = """ % ("'" + rgt + "'")
-        spy += """\"\"\"%s \"\"\"\n""" % ('Monomer B from ' + TAGLRGT[rgt])
+        spy += """\"\"\"%s \"\"\"\n""" % ("Monomer B from " + TAGLRGT[rgt])
 
 # write subset geometry section
 if route == 3:
@@ -390,7 +388,7 @@ if route == 3:
     gpy += "GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(2, 1)\n"
 
 # arrange intermediate strings into final database file
-fpy = open('%s.py' % (dbse), 'w')
+fpy = open("%s.py" % (dbse), "w")
 fpy.write(spy)
 fpy.write(gpy)
 fpy.close()
@@ -402,18 +400,18 @@ final = """
    **  To have a minimally functioning database, do the following:
 """ % (dbse)
 
-if line2 == 'comment' and isOS:
+if line2 == "comment" and isOS:
     final += """
        *  If not all neutral singlets, fill in correct charge and
           multiplicity for all reagents.
     """
 
-if line2 == 'comment' and not isOS:
+if line2 == "comment" and not isOS:
     final += """
        *  If not all neutral, fill in correct charge for all reagents.
     """
 
-if route == 3 and line2 == 'cgmp':
+if route == 3 and line2 == "cgmp":
     final += """
        *  The charge and multiplicity read in from line2 of the xyz files
           has been assigned to fragmentA, leaving fragmentB as a neutral
@@ -421,7 +419,7 @@ if route == 3 and line2 == 'cgmp':
           charge and multiplicity correctly between fragments A & B.
     """
 
-if route == 3 and line2 == 'comment':
+if route == 3 and line2 == "comment":
     final += """
        *  If dimer and both subsystems are not neutral singlets, fill in
           correct charge and multiplicity for each subsystem.

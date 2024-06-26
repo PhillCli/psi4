@@ -1,12 +1,12 @@
 import os
+
 import pytest
 
 
 def pytest_addoption(parser):
-    parser.addoption("--runnonroutine",
-                     action="store_true",
-                     default=False,
-                     help="run the nonroutine tests in stdsuite")
+    parser.addoption(
+        "--runnonroutine", action="store_true", default=False, help="run the nonroutine tests in stdsuite"
+    )
 
 
 def pytest_collection_modifyitems(config, items):
@@ -39,8 +39,9 @@ def set_up():
 
 
 def tear_down():
-    import os
     import glob
+    import os
+
     import psi4
 
     psi4.core.close_outfile()
@@ -73,10 +74,12 @@ def tear_down():
 def snowflake():
     try:
         from qcfractal import FractalSnowflake
+
         qca_next_branch = False
     except ImportError:
         try:
             from qcfractal.snowflake import FractalSnowflake
+
             qca_next_branch = True
         except ImportError:
             return None

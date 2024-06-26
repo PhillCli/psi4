@@ -1,12 +1,17 @@
 from pathlib import Path
-import psi4
+
 from addons import *
+
+import psi4
 
 
 @ctest_labeler("quick;sapt;cart;extern")
 def test_fsapt_ext_abc_au():
     fsaptpy_installed = (Path(psi4.core.get_datadir()) / "fsapt" / "fsapt.py").resolve()
 
-    ctest_runner(__file__, extra_infiles=[
-        fsaptpy_installed,
-    ])
+    ctest_runner(
+        __file__,
+        extra_infiles=[
+            fsaptpy_installed,
+        ],
+    )

@@ -1,41 +1,32 @@
-import pytest
 import numpy as np
+import pytest
+from addons import uusing
+from utils import compare_values
 
 import psi4
-from utils import compare_values
-from addons import uusing
 
 pytestmark = [pytest.mark.psi, pytest.mark.api]
 
 data = {
-    'hf': {
-        'Ba2': {
-            'grad': np.array([[0, 0, 2.08544743e-02], [0, 0, -2.08544743e-02]]),
-            'energy': -50.12131931846057
+    "hf": {
+        "Ba2": {"grad": np.array([[0, 0, 2.08544743e-02], [0, 0, -2.08544743e-02]]), "energy": -50.12131931846057},
+        "In2": {"grad": np.array([[0, 0, -1.46964113e-02], [0, 0, 1.46964113e-02]]), "energy": -378.3986291158715},
+        "Sr2": {"grad": np.array([[0, 0, 9.74576806e-03], [0, 0, -9.74576806e-03]]), "energy": -60.66907844700816},
+    },
+    "mp2": {
+        "Ba2": {
+            "grad": np.array([[0, 0, 1.6421392746403734e-02], [0, 0, -1.6421392746403734e-02]]),
+            "energy": -50.34353063117147,
         },
-        'In2': {
-            'grad': np.array([[0, 0, -1.46964113e-02], [0, 0, 1.46964113e-02]]),
-            'energy': -378.3986291158715
+        "In2": {
+            "grad": np.array([[0, 0, -1.4464867319381867e-02], [0, 0, 1.4464867319381867e-02]]),
+            "energy": -378.5493603721844,
         },
-        'Sr2': {
-            'grad': np.array([[0, 0, 9.74576806e-03], [0, 0, -9.74576806e-03]]),
-            'energy': -60.66907844700816
+        "Sr2": {
+            "grad": np.array([[0, 0, 6.469022590311186e-03], [0, 0, -6.469022590311186e-03]]),
+            "energy": -60.83705034568311,
         },
     },
-    'mp2': {
-        'Ba2': {
-            'grad': np.array([[0, 0, 1.6421392746403734e-02], [0, 0, -1.6421392746403734e-02]]),
-            'energy': -50.34353063117147
-        },
-        'In2': {
-            'grad': np.array([[0, 0, -1.4464867319381867e-02], [0, 0, 1.4464867319381867e-02]]),
-            'energy': -378.5493603721844
-        },
-        'Sr2': {
-            'grad': np.array([[0, 0, 6.469022590311186e-03], [0, 0, -6.469022590311186e-03]]),
-            'energy': -60.83705034568311
-        },
-    }
 }
 
 
@@ -62,40 +53,29 @@ units bohr
     return {k: psi4.core.Molecule.from_string(v) for k, v in smols.items()}
 
 
-@pytest.mark.parametrize('inp', [
-    pytest.param({
-        'name': 'hf',
-        'method': 'hf',
-        'options': {
-            'basis': 'def2-svp'
-        },
-        'ref': data['hf']
-    }, id='rhf(df)'),
-    pytest.param(
-        {
-            'name': 'mp2',
-            'method': 'mp2',
-            'options': {
-                'basis': 'def2-svp',
-                'mp2_type': 'df'
-            },
-            'ref': data['mp2']
-        },
-        id='mp2(df)'),
-])
-@pytest.mark.parametrize('mol',
-                         [pytest.param('Ba2', id='Ba2'),
-                          pytest.param('In2', id='In2'),
-                          pytest.param('Sr2', id='Sr2')])
+@pytest.mark.parametrize(
+    "inp",
+    [
+        pytest.param(
+            {"name": "hf", "method": "hf", "options": {"basis": "def2-svp"}, "ref": data["hf"]}, id="rhf(df)"
+        ),
+        pytest.param(
+            {"name": "mp2", "method": "mp2", "options": {"basis": "def2-svp", "mp2_type": "df"}, "ref": data["mp2"]},
+            id="mp2(df)",
+        ),
+    ],
+)
+@pytest.mark.parametrize(
+    "mol", [pytest.param("Ba2", id="Ba2"), pytest.param("In2", id="In2"), pytest.param("Sr2", id="Sr2")]
+)
 @uusing("ecpint")
 def test_large_atoms(inp, mol, mols):
+    ref_e = inp["ref"][mol]["energy"]
+    ref_grad = inp["ref"][mol]["grad"]
 
-    ref_e = inp['ref'][mol]['energy']
-    ref_grad = inp['ref'][mol]['grad']
-
-    psi4.set_options(inp['options'])
-    psi4.set_options({'points': 5})
-    method = inp['method']
+    psi4.set_options(inp["options"])
+    psi4.set_options({"points": 5})
+    method = inp["method"]
     analytic_grad, wfn = psi4.gradient(method, molecule=mols[mol], dertype=1, return_wfn=True)
     findif_grad = psi4.gradient(method, molecule=mols[mol], dertype=0)
     energy = wfn.energy()

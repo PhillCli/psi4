@@ -41,11 +41,11 @@ def genset_MXuDD(dbinstance):
 
     """
     try:
-        ssA = set(dbinstance.sset['mx'].keys())
+        ssA = set(dbinstance.sset["mx"].keys())
     except KeyError:
         ssA = set()
     try:
-        ssB = set(dbinstance.sset['dd'].keys())
+        ssB = set(dbinstance.sset["dd"].keys())
     except KeyError:
         ssB = set()
     return ssA.union(ssB)
@@ -57,11 +57,11 @@ def genset_HBn5min(dbinstance):
 
     """
     try:
-        ssA = set(dbinstance.sset['hb'].keys())
+        ssA = set(dbinstance.sset["hb"].keys())
     except KeyError:
         ssA = set()
     try:
-        ssB = set(dbinstance.sset['5min'].keys())
+        ssB = set(dbinstance.sset["5min"].keys())
     except KeyError:
         ssB = set()
     return ssA.intersection(ssB)
@@ -73,11 +73,11 @@ def genset_MXn5min(dbinstance):
 
     """
     try:
-        ssA = set(dbinstance.sset['mx'].keys())
+        ssA = set(dbinstance.sset["mx"].keys())
     except KeyError:
         ssA = set()
     try:
-        ssB = set(dbinstance.sset['5min'].keys())
+        ssB = set(dbinstance.sset["5min"].keys())
     except KeyError:
         ssB = set()
     return ssA.intersection(ssB)
@@ -89,11 +89,11 @@ def genset_DDn5min(dbinstance):
 
     """
     try:
-        ssA = set(dbinstance.sset['dd'].keys())
+        ssA = set(dbinstance.sset["dd"].keys())
     except KeyError:
         ssA = set()
     try:
-        ssB = set(dbinstance.sset['5min'].keys())
+        ssB = set(dbinstance.sset["5min"].keys())
     except KeyError:
         ssB = set()
     return ssA.intersection(ssB)
@@ -105,11 +105,11 @@ def genset_MXDDPPn5min(dbinstance):
 
     """
     try:
-        ssA = set(dbinstance.sset['mxddpp'].keys())
+        ssA = set(dbinstance.sset["mxddpp"].keys())
     except KeyError:
         ssA = set()
     try:
-        ssB = set(dbinstance.sset['5min'].keys())
+        ssB = set(dbinstance.sset["5min"].keys())
     except KeyError:
         ssB = set()
     return ssA.intersection(ssB)
@@ -121,11 +121,11 @@ def genset_MXDDNPn5min(dbinstance):
 
     """
     try:
-        ssA = set(dbinstance.sset['mxddnp'].keys())
+        ssA = set(dbinstance.sset["mxddnp"].keys())
     except KeyError:
         ssA = set()
     try:
-        ssB = set(dbinstance.sset['5min'].keys())
+        ssB = set(dbinstance.sset["5min"].keys())
     except KeyError:
         ssB = set()
     return ssA.intersection(ssB)
@@ -138,7 +138,7 @@ def genset_allneutral(dbinstance):
     """
     eligible = []
     for rxn, orxn in dbinstance.hrxn.items():
-        if all([True if rgt.charge == 0 else False for rgt in orxn.rxnm['default'].keys()]):
+        if all([True if rgt.charge == 0 else False for rgt in orxn.rxnm["default"].keys()]):
             eligible.append(rxn)
     return eligible
 
@@ -150,7 +150,7 @@ def genset_anyanion(dbinstance):
     """
     eligible = []
     for rxn, orxn in dbinstance.hrxn.items():
-        for rgt in orxn.rxnm['default'].keys():
+        for rgt in orxn.rxnm["default"].keys():
             if rgt.charge < 0:
                 eligible.append(rxn)
                 break
@@ -164,7 +164,7 @@ def genset_anycation(dbinstance):
     """
     eligible = []
     for rxn, orxn in dbinstance.hrxn.items():
-        for rgt in orxn.rxnm['default'].keys():
+        for rgt in orxn.rxnm["default"].keys():
             if rgt.charge > 0:
                 eligible.append(rxn)
                 break

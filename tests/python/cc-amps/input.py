@@ -9,22 +9,23 @@ Ne = psi4.geometry("""
 Ne 0.0 0.0 0.0
 symmetry c1
 """)
-psi4.set_options({'basis': 'cc-pvdz', 'freeze_core': 'false'})
+psi4.set_options({"basis": "cc-pvdz", "freeze_core": "false"})
 
-_, wfn = psi4.energy('ccsd', return_wfn=True, molecule=Ne)
+_, wfn = psi4.energy("ccsd", return_wfn=True, molecule=Ne)
 amps = wfn.get_amplitudes()
 
-TIjAb = amps['tIjAb'].to_array()
-TIA = amps['tIA'].to_array()
+TIjAb = amps["tIjAb"].to_array()
+TIA = amps["tIA"].to_array()
 tau_IjAb = TIjAb + np.einsum("ia,jb->ijab", TIA, TIA)
 
 mints = psi4.core.MintsHelper(wfn.basisset())
-D = mints.mo_eri(wfn.Ca_subset("AO", "OCC"), wfn.Ca_subset("AO", "VIR"), wfn.Ca_subset("AO", "OCC"),
-                 wfn.Ca_subset("AO", "VIR")).to_array()
+D = mints.mo_eri(
+    wfn.Ca_subset("AO", "OCC"), wfn.Ca_subset("AO", "VIR"), wfn.Ca_subset("AO", "OCC"), wfn.Ca_subset("AO", "VIR")
+).to_array()
 D = D.swapaxes(1, 2)
 
 RHF_ccsd_corr_e = 2 * np.einsum("ijab,ijab->", tau_IjAb, D) - np.einsum("ijab,ijba->", tau_IjAb, D)
-psi4.compare_values(psi4.variable('CCSD CORRELATION ENERGY'), RHF_ccsd_corr_e, 8, "RHF CCSD CORRELATION ENERGY")
+psi4.compare_values(psi4.variable("CCSD CORRELATION ENERGY"), RHF_ccsd_corr_e, 8, "RHF CCSD CORRELATION ENERGY")
 
 # END RHF
 
@@ -32,23 +33,25 @@ psi4.core.clean()
 
 # UHF
 
-psi4.set_options({
-    'basis': 'cc-pvdz',
-    'freeze_core': 'false',
-    'reference': 'UHF',
-})
+psi4.set_options(
+    {
+        "basis": "cc-pvdz",
+        "freeze_core": "false",
+        "reference": "UHF",
+    }
+)
 
-_, wfn = psi4.energy('ccsd', return_wfn=True, molecule=Ne)
+_, wfn = psi4.energy("ccsd", return_wfn=True, molecule=Ne)
 amps = wfn.get_amplitudes()
-TIJAB = amps['tIJAB'].to_array()
-Tijab = amps['tijab'].to_array()
-TIjAb = amps['tIjAb'].to_array()
-Tia = amps['tia'].to_array()
-TIA = amps['tIA'].to_array()
+TIJAB = amps["tIJAB"].to_array()
+Tijab = amps["tijab"].to_array()
+TIjAb = amps["tIjAb"].to_array()
+Tia = amps["tia"].to_array()
+TIA = amps["tIA"].to_array()
 
-tauIJAB = TIJAB + np.einsum('IA,JB->IJAB', TIA, TIA) - np.einsum("IA,JB->IJBA", TIA, TIA)
-tauijab = Tijab + np.einsum('ia,jb->ijab', Tia, Tia) - np.einsum("ia,jb->ijba", Tia, Tia)
-tauIjAb = TIjAb + np.einsum('IA,jb->IjAb', TIA, Tia)
+tauIJAB = TIJAB + np.einsum("IA,JB->IJAB", TIA, TIA) - np.einsum("IA,JB->IJBA", TIA, TIA)
+tauijab = Tijab + np.einsum("ia,jb->ijab", Tia, Tia) - np.einsum("ia,jb->ijba", Tia, Tia)
+tauIjAb = TIjAb + np.einsum("IA,jb->IjAb", TIA, Tia)
 
 CO = wfn.Ca_subset("AO", "OCC")
 Co = wfn.Cb_subset("AO", "OCC")
@@ -82,24 +85,26 @@ CN = psi4.geometry("""
   symmetry c1
 """)
 
-psi4.set_options({
-    'basis': 'cc-pvdz',
-    'freeze_core': 'false',
-    'reference': 'ROHF',
-    'semicanonical': 'True',
-})
+psi4.set_options(
+    {
+        "basis": "cc-pvdz",
+        "freeze_core": "false",
+        "reference": "ROHF",
+        "semicanonical": "True",
+    }
+)
 
-_, wfn = psi4.energy('ccsd', return_wfn=True, molecule=CN)
+_, wfn = psi4.energy("ccsd", return_wfn=True, molecule=CN)
 amps = wfn.get_amplitudes()
-TIJAB = amps['tIJAB'].to_array()
-Tijab = amps['tijab'].to_array()
-TIjAb = amps['tIjAb'].to_array()
-Tia = amps['tia'].to_array()
-TIA = amps['tIA'].to_array()
+TIJAB = amps["tIJAB"].to_array()
+Tijab = amps["tijab"].to_array()
+TIjAb = amps["tIjAb"].to_array()
+Tia = amps["tia"].to_array()
+TIA = amps["tIA"].to_array()
 
-tauIJAB = TIJAB + np.einsum('IA,JB->IJAB', TIA, TIA) - np.einsum("IA,JB->IJBA", TIA, TIA)
-tauijab = Tijab + np.einsum('ia,jb->ijab', Tia, Tia) - np.einsum("ia,jb->ijba", Tia, Tia)
-tauIjAb = TIjAb + np.einsum('IA,jb->IjAb', TIA, Tia)
+tauIJAB = TIJAB + np.einsum("IA,JB->IJAB", TIA, TIA) - np.einsum("IA,JB->IJBA", TIA, TIA)
+tauijab = Tijab + np.einsum("ia,jb->ijab", Tia, Tia) - np.einsum("ia,jb->ijba", Tia, Tia)
+tauIjAb = TIjAb + np.einsum("IA,jb->IjAb", TIA, Tia)
 
 CO = wfn.Ca_subset("AO", "OCC")
 Co = wfn.Cb_subset("AO", "OCC")

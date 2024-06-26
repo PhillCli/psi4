@@ -2,9 +2,10 @@ import itertools
 
 import numpy as np
 import pytest
-from psi4.core import Dimension, Matrix, Slice, doublet
-import psi4
 from utils import compare_arrays
+
+import psi4
+from psi4.core import Dimension, Matrix, Slice, doublet
 
 pytestmark = [pytest.mark.psi, pytest.mark.api, pytest.mark.quick]
 
@@ -196,31 +197,35 @@ for group_size in [1, 2, 4, 8]:
     for aargs, bargs, at, bt in itertools.product(a11_set, b11_set, [True, False], [True, False]):
         adl, adr, Ga = aargs
         bdl, bdr, Gb = bargs
-        doublet_args.append((group_size, adl, adr, Ga, bdl, bdr, Gb, at, bt, 'square'))
+        doublet_args.append((group_size, adl, adr, Ga, bdl, bdr, Gb, at, bt, "square"))
     a12_set = [(d1, d2, H) for H in range(group_size)]
     b12_set = [(d1, d2, H) for H in range(group_size)]
     b21_set = [(d2, d1, H) for H in range(group_size)]
 
     for aargs, bargs, t in itertools.product(a12_set, b21_set, [False, True]):
-        doublet_args.append((group_size, *aargs, *bargs, t, t, 'rectangular'))
+        doublet_args.append((group_size, *aargs, *bargs, t, t, "rectangular"))
 
     for aargs, bargs, at in itertools.product(a12_set, b12_set, [False, True]):
         bt = not at
-        doublet_args.append((group_size, *aargs, *bargs, at, bt, 'rectangular'))
+        doublet_args.append((group_size, *aargs, *bargs, at, bt, "rectangular"))
 
 
 # If I try to prebuild the mats I run out of memory very fast, so I build the params, and create the mat w/in the test
-@pytest.mark.parametrize("adl,adr,Ga,bdl,bdr,Gb,at,bt", [
-    pytest.param(adl, adr, Ga, bdl, bdr, Gb, at, bt, id=name_doublet_test(ni, Ga, Gb, at, bt, sqrec))
-    for ni, adl, adr, Ga, bdl, bdr, Gb, at, bt, sqrec in doublet_args
-])
+@pytest.mark.parametrize(
+    "adl,adr,Ga,bdl,bdr,Gb,at,bt",
+    [
+        pytest.param(adl, adr, Ga, bdl, bdr, Gb, at, bt, id=name_doublet_test(ni, Ga, Gb, at, bt, sqrec))
+        for ni, adl, adr, Ga, bdl, bdr, Gb, at, bt, sqrec in doublet_args
+    ],
+)
 def test_doublets(adl, adr, Ga, bdl, bdr, Gb, at, bt):
     a = build_random_mat(adl, adr, Ga)
     b = build_random_mat(bdl, bdr, Gb)
     res = doublet(a, b, at, bt)
     expected = generate_result(a, b, at, bt)
-    assert res.symmetry(
-    ) == a.symmetry() ^ b.symmetry(), f"Symm mismatch {a.symmetry()} x {b.symmetry()} != {res.symmetry()}"
+    assert (
+        res.symmetry() == a.symmetry() ^ b.symmetry()
+    ), f"Symm mismatch {a.symmetry()} x {b.symmetry()} != {res.symmetry()}"
     res_blocks = res.to_array()
     if isinstance(res_blocks, np.ndarray):
         res_blocks = [res_blocks]

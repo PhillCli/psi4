@@ -1,9 +1,8 @@
-import pytest
-
 import numpy as np
-import psi4
-
+import pytest
 from utils import compare_arrays
+
+import psi4
 
 pytestmark = [pytest.mark.psi, pytest.mark.api]
 
@@ -16,11 +15,11 @@ def test_overlap_obs():
         symmetry c1
     """)
 
-    psi4.set_options({'basis': 'aug-cc-pvdz'})
+    psi4.set_options({"basis": "aug-cc-pvdz"})
 
-    conv = psi4.core.BasisSet.build(h2o, 'BASIS', psi4.core.get_global_option('BASIS'))
+    conv = psi4.core.BasisSet.build(h2o, "BASIS", psi4.core.get_global_option("BASIS"))
 
-    wfn = psi4.core.Wavefunction.build(h2o, psi4.core.get_global_option('BASIS'))
+    wfn = psi4.core.Wavefunction.build(h2o, psi4.core.get_global_option("BASIS"))
     mints = psi4.core.MintsHelper(wfn.basisset())
 
     case1 = mints.ao_overlap()
@@ -37,17 +36,17 @@ def test_overlap_aux():
         symmetry c1
     """)
 
-    psi4.set_options({'basis': 'aug-cc-pvdz', 'df_basis_mp2': 'aug-cc-pvdz-ri'})
+    psi4.set_options({"basis": "aug-cc-pvdz", "df_basis_mp2": "aug-cc-pvdz-ri"})
 
-    conv = psi4.core.BasisSet.build(h2o, 'BASIS', psi4.core.get_global_option('BASIS'))
-    aux = psi4.core.BasisSet.build(h2o, 'DF_BASIS_MP2', "", "RIFIT", psi4.core.get_global_option('DF_BASIS_MP2'))
+    conv = psi4.core.BasisSet.build(h2o, "BASIS", psi4.core.get_global_option("BASIS"))
+    aux = psi4.core.BasisSet.build(h2o, "DF_BASIS_MP2", "", "RIFIT", psi4.core.get_global_option("DF_BASIS_MP2"))
 
-    wfn = psi4.core.Wavefunction.build(h2o, psi4.core.get_global_option('BASIS'))
+    wfn = psi4.core.Wavefunction.build(h2o, psi4.core.get_global_option("BASIS"))
     mints = psi4.core.MintsHelper(wfn.basisset())
 
     tr = mints.ao_overlap(aux, aux).trace()
 
-    assert psi4.compare_values(118, tr, 12, 'Test that diagonal elements of AO Overlap are 1.0')  # TEST
+    assert psi4.compare_values(118, tr, 12, "Test that diagonal elements of AO Overlap are 1.0")  # TEST
 
 
 def test_export_ao_elec_dip_deriv():
@@ -58,12 +57,12 @@ def test_export_ao_elec_dip_deriv():
         symmetry c1
     """)
 
-    rhf_e, wfn = psi4.energy('SCF/cc-pVDZ', molecule=h2o, return_wfn=True)
+    rhf_e, wfn = psi4.energy("SCF/cc-pVDZ", molecule=h2o, return_wfn=True)
 
     mints = psi4.core.MintsHelper(wfn.basisset())
 
     natoms = h2o.natom()
-    cart = ['_X', '_Y', '_Z']
+    cart = ["_X", "_Y", "_Z"]
 
     D = wfn.Da()
     D.add(wfn.Db())
@@ -95,13 +94,13 @@ def test_export_ao_overlap_half_deriv():
         symmetry c1
     """)
 
-    rhf_e, wfn = psi4.energy('SCF/cc-PVDZ', molecule=h2o, return_wfn=True)
+    rhf_e, wfn = psi4.energy("SCF/cc-PVDZ", molecule=h2o, return_wfn=True)
     C = wfn.Ca_subset("AO", "ALL")
 
     mints = psi4.core.MintsHelper(wfn.basisset())
 
     natoms = h2o.natom()
-    cart = ['_X', '_Y', '_Z']
+    cart = ["_X", "_Y", "_Z"]
 
     deriv1_mat = {}
     deriv1_np = {}

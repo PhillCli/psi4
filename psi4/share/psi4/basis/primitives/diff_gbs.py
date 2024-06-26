@@ -35,7 +35,7 @@ import os
 import subprocess
 import sys
 
-qcdb_module = os.path.normpath(os.path.dirname(os.path.abspath(__file__)) + '../../../../../driver')
+qcdb_module = os.path.normpath(os.path.dirname(os.path.abspath(__file__)) + "../../../../../driver")
 sys.path.append(qcdb_module)
 import qcdb
 import qcelemental as qcel
@@ -43,44 +43,44 @@ from qcdb.libmintsbasissetparser import Gaussian94BasisSetParser
 
 
 class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
+    HEADER = "\033[95m"
+    OKBLUE = "\033[94m"
+    OKGREEN = "\033[92m"
+    WARNING = "\033[93m"
+    FAIL = "\033[91m"
+    ENDC = "\033[0m"
+    BOLD = "\033[1m"
+    UNDERLINE = "\033[4m"
 
 
 def bas_sanitize(fl):
-    if fl[-4] == '.gbs':
+    if fl[-4] == ".gbs":
         fl = fl[:-4]
-    return fl.lower().replace('+', 'p').replace('*', 's').replace('(', '_').replace(')', '_').replace(',', '_')
+    return fl.lower().replace("+", "p").replace("*", "s").replace("(", "_").replace(")", "_").replace(",", "_")
 
 
 parser = Gaussian94BasisSetParser()
 elements = qcel.periodictable.E
 os.system("echo '#differing basis sets' > basisdunningdiffer.txt")
 
-with open(sys.argv[1], 'r') as basfile:
+with open(sys.argv[1], "r") as basfile:
     bascontents = basfile.readlines()
 bname = bas_sanitize(sys.argv[1])
 
 isdiff = False
 if len(sys.argv) > 2:
     isdiff = True
-    with open(sys.argv[2], 'r') as reffile:
+    with open(sys.argv[2], "r") as reffile:
         refcontents = reffile.readlines()
     rname = bas_sanitize(os.path.basename(sys.argv[2]))
 
 if isdiff:
     if bname != rname:
-        print('%s / %s' % (bname, rname), end='')
+        print("%s / %s" % (bname, rname), end="")
     else:
-        print('%-40s' % (bname), end='')
+        print("%-40s" % (bname), end="")
 else:
-    print('%-40s' % (bname), end='')
+    print("%-40s" % (bname), end="")
 
 anychange = False
 forbiddenchange = False
@@ -94,42 +94,43 @@ for el in elements:
     if isdiff:
         rshells, rmsg, recp_shells, recp_msg, recp_ncore = parser.parse(el.upper(), refcontents)
         if not shells and not rshells:
-            print('%s' % ('' if postKr else '   '), end='')
+            print("%s" % ("" if postKr else "   "), end="")
             continue
         if shells and not rshells:
-            print(bcolors.OKBLUE + '{:3}'.format(el.upper()) + bcolors.ENDC, end='')
+            print(bcolors.OKBLUE + "{:3}".format(el.upper()) + bcolors.ENDC, end="")
             anychange = True
         if not shells and rshells:
-            print(bcolors.FAIL + '{:3}'.format(el.upper()) + bcolors.ENDC, end='')
+            print(bcolors.FAIL + "{:3}".format(el.upper()) + bcolors.ENDC, end="")
             anychange = True
             forbiddenchange = True
         if shells and rshells:
             mol = qcdb.Molecule("""\n{}\n""".format(el))
             mol.update_geometry()
-            mol.set_basis_all_atoms(bname, role='BASIS')
-            bdict = {bname: ''.join(bascontents)}
-            rdict = {bname: ''.join(refcontents)}
-            bs, msg, ecp = qcdb.BasisSet.construct(parser, mol, 'BASIS', None, bdict, False)
-            rbs, rmsg, recp = qcdb.BasisSet.construct(parser, mol, 'BASIS', None, rdict, False)
-            #if bs.allclose(rbs, verbose=2):   # see changed coeff/exp
+            mol.set_basis_all_atoms(bname, role="BASIS")
+            bdict = {bname: "".join(bascontents)}
+            rdict = {bname: "".join(refcontents)}
+            bs, msg, ecp = qcdb.BasisSet.construct(parser, mol, "BASIS", None, bdict, False)
+            rbs, rmsg, recp = qcdb.BasisSet.construct(parser, mol, "BASIS", None, rdict, False)
+            # if bs.allclose(rbs, verbose=2):   # see changed coeff/exp
             if bs.allclose(rbs):  # one line per BS
-                print('{:3}'.format(el.lower()), end='')
+                print("{:3}".format(el.lower()), end="")
             else:
-                print(bcolors.WARNING + '{:3}'.format(el.upper()) + bcolors.ENDC, end='')
+                print(bcolors.WARNING + "{:3}".format(el.upper()) + bcolors.ENDC, end="")
                 anychange = True
-                tbs = bs.print_detail(out='tmpB.txt')
-                rtbs = rbs.print_detail(out='tmpR.txt')
+                tbs = bs.print_detail(out="tmpB.txt")
+                rtbs = rbs.print_detail(out="tmpR.txt")
                 try:
-                    outdiff = subprocess.check_output("diff -bwy -W 180 tmpB.txt tmpR.txt >> basisdunningdiffer.txt",
-                                                      shell=True)
-                    #outdiff = subprocess.check_output("diff -bw --context=1 tmpB.txt tmpR.txt >> basisdunningdiffer.txt", shell=True)
+                    outdiff = subprocess.check_output(
+                        "diff -bwy -W 180 tmpB.txt tmpR.txt >> basisdunningdiffer.txt", shell=True
+                    )
+                    # outdiff = subprocess.check_output("diff -bw --context=1 tmpB.txt tmpR.txt >> basisdunningdiffer.txt", shell=True)
                 except subprocess.CalledProcessError:
                     pass
     else:
         if not shells:
-            print('%s' % ('' if postKr else '   '), end='')
+            print("%s" % ("" if postKr else "   "), end="")
         else:
-            print('{:3}'.format(el.lower()), end='')
-print('')
+            print("{:3}".format(el.lower()), end="")
+print("")
 if anychange and not forbiddenchange:
     os.system("echo 'mv {} ../' >> basisdunningfiles.txt".format(sys.argv[1]))

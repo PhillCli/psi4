@@ -36,61 +36,247 @@
 - **rlxd** ``'off'``
 
 """
+
 import re
 
 import qcdb
 
 # <<< BBI Database Module >>>
-dbse = 'BBI'
+dbse = "BBI"
 
 # <<< Database Members >>>
 HRXN = [
-    '004GLU-063LEU-2', '005ASP-008SER-2', '005LEU-008VAL-2', '007GLN-010ASN-1', '007VAL-041VAL-1', '008ILE-012LEU-1',
-    '008TRP-251HIE-2', '011ILE-014PHE-1', '012LEU-085ASP-1', '014LYS-018GLU-1', '014VAL-017GLU-1', '015GLN-018LEU-1',
-    '015LEU-026LEU-1', '017ASN-021LYS-2', '017LEU-025ILE-1', '019LEU-022MET-1', '023LYS-146SER-2', '024PHE-028ALA-1',
-    '024THR-041GLU-2', '025GLY-029SER-2', '025ILE-070TRP-1', '027VAL-031LEU-1', '027VAL-068GLU-2', '029GLU-032VAL-1',
-    '030TRP-178GLY-2', '033ASN-036TRP-2', '033VAL-115VAL-1', '035TRP-056ILE-1', '037PRO-041ALA-1', '038ALA-041GLY-1',
-    '038GLU-047GLU-2', '039SER-046MET-1', '040THR-048VAL-2', '040THR-049GLN-2', '041GLY-045LEU-2', '041LEU-045LEU-1',
-    '042LEU-047ILE-2', '044SER-047GLU-1', '044TRP-054LEU-1', '048GLU-052LYS-1', '051ALA-054VAL-1', '051ALA-055ASN-1',
-    '052CYS-056ALA-1', '054ARG-062GLN-1', '055ASN-058GLU-2', '060LEU-064TYR-1', '060TYR-064LEU-2', '061VAL-064TYR-2',
-    '062LEU-066LYS-2', '064GLN-067ARG-1', '064TYR-067GLU-1', '066PHE-072THR-1', '068ASP-072GLN-1', '071GLU-075ASP-1',
-    '072ASN-075ARG-2', '072THR-075PRO-1', '081ASN-084GLY-1', '081LEU-084LYS-1', '082LEU-106LEU-2', '084LEU-088MET-2',
-    '087ALA-171PRO-2', '087LEU-090TYR-1', '088PHE-091ALA-1', '089MET-093GLY-1', '092SER-096ARG-2', '095GLN-183ILE-1',
-    '095LYS-107ILE-2', '097GLU-100THR-2', '102GLN-106ILE-1', '104VAL-108ILE-1', '108LYS-112TYR-1', '108TYR-129TRP-1',
-    '112SER-115ALA-2', '112TRP-115ARG-1', '113TRP-124HIE-2', '115GLN-118ARG-2', '119MET-122VAL-1', '121LYS-125ALA-1',
-    '121VAL-155THR-2', '126VAL-129ALA-1', '133LYS-137ASN-1', '134GLU-138ARG-1', '135ARG-152ALA-2', '137SER-144LYS-1',
-    '140SER-144THR-2', '142ALA-146PHE-1', '143VAL-147GLU-1', '146PHE-150LEU-1', '150LYS-158LEU-2', '157LYS-160VAL-1',
-    '162ALA-176GLY-1', '167GLY-232GLY-1', '168GLY-172LYS-2', '171ALA-175GLU-1', '172GLY-175TRP-1', '197TYR-201LEU-2',
-    '199SER-202TYR-1', '205THR-208GLU-1', '205THR-209LEU-2', '228ARG-232GLU-1'
+    "004GLU-063LEU-2",
+    "005ASP-008SER-2",
+    "005LEU-008VAL-2",
+    "007GLN-010ASN-1",
+    "007VAL-041VAL-1",
+    "008ILE-012LEU-1",
+    "008TRP-251HIE-2",
+    "011ILE-014PHE-1",
+    "012LEU-085ASP-1",
+    "014LYS-018GLU-1",
+    "014VAL-017GLU-1",
+    "015GLN-018LEU-1",
+    "015LEU-026LEU-1",
+    "017ASN-021LYS-2",
+    "017LEU-025ILE-1",
+    "019LEU-022MET-1",
+    "023LYS-146SER-2",
+    "024PHE-028ALA-1",
+    "024THR-041GLU-2",
+    "025GLY-029SER-2",
+    "025ILE-070TRP-1",
+    "027VAL-031LEU-1",
+    "027VAL-068GLU-2",
+    "029GLU-032VAL-1",
+    "030TRP-178GLY-2",
+    "033ASN-036TRP-2",
+    "033VAL-115VAL-1",
+    "035TRP-056ILE-1",
+    "037PRO-041ALA-1",
+    "038ALA-041GLY-1",
+    "038GLU-047GLU-2",
+    "039SER-046MET-1",
+    "040THR-048VAL-2",
+    "040THR-049GLN-2",
+    "041GLY-045LEU-2",
+    "041LEU-045LEU-1",
+    "042LEU-047ILE-2",
+    "044SER-047GLU-1",
+    "044TRP-054LEU-1",
+    "048GLU-052LYS-1",
+    "051ALA-054VAL-1",
+    "051ALA-055ASN-1",
+    "052CYS-056ALA-1",
+    "054ARG-062GLN-1",
+    "055ASN-058GLU-2",
+    "060LEU-064TYR-1",
+    "060TYR-064LEU-2",
+    "061VAL-064TYR-2",
+    "062LEU-066LYS-2",
+    "064GLN-067ARG-1",
+    "064TYR-067GLU-1",
+    "066PHE-072THR-1",
+    "068ASP-072GLN-1",
+    "071GLU-075ASP-1",
+    "072ASN-075ARG-2",
+    "072THR-075PRO-1",
+    "081ASN-084GLY-1",
+    "081LEU-084LYS-1",
+    "082LEU-106LEU-2",
+    "084LEU-088MET-2",
+    "087ALA-171PRO-2",
+    "087LEU-090TYR-1",
+    "088PHE-091ALA-1",
+    "089MET-093GLY-1",
+    "092SER-096ARG-2",
+    "095GLN-183ILE-1",
+    "095LYS-107ILE-2",
+    "097GLU-100THR-2",
+    "102GLN-106ILE-1",
+    "104VAL-108ILE-1",
+    "108LYS-112TYR-1",
+    "108TYR-129TRP-1",
+    "112SER-115ALA-2",
+    "112TRP-115ARG-1",
+    "113TRP-124HIE-2",
+    "115GLN-118ARG-2",
+    "119MET-122VAL-1",
+    "121LYS-125ALA-1",
+    "121VAL-155THR-2",
+    "126VAL-129ALA-1",
+    "133LYS-137ASN-1",
+    "134GLU-138ARG-1",
+    "135ARG-152ALA-2",
+    "137SER-144LYS-1",
+    "140SER-144THR-2",
+    "142ALA-146PHE-1",
+    "143VAL-147GLU-1",
+    "146PHE-150LEU-1",
+    "150LYS-158LEU-2",
+    "157LYS-160VAL-1",
+    "162ALA-176GLY-1",
+    "167GLY-232GLY-1",
+    "168GLY-172LYS-2",
+    "171ALA-175GLU-1",
+    "172GLY-175TRP-1",
+    "197TYR-201LEU-2",
+    "199SER-202TYR-1",
+    "205THR-208GLU-1",
+    "205THR-209LEU-2",
+    "228ARG-232GLU-1",
 ]
 HRXN_SHB = [
-    '004GLU-063LEU-2', '005LEU-008VAL-2', '007VAL-041VAL-1', '008ILE-012LEU-1', '008TRP-251HIE-2', '012LEU-085ASP-1',
-    '014LYS-018GLU-1', '014VAL-017GLU-1', '015LEU-026LEU-1', '017ASN-021LYS-2', '017LEU-025ILE-1', '019LEU-022MET-1',
-    '023LYS-146SER-2', '024PHE-028ALA-1', '024THR-041GLU-2', '025GLY-029SER-2', '025ILE-070TRP-1', '027VAL-031LEU-1',
-    '027VAL-068GLU-2', '030TRP-178GLY-2', '033ASN-036TRP-2', '033VAL-115VAL-1', '035TRP-056ILE-1', '037PRO-041ALA-1',
-    '038GLU-047GLU-2', '039SER-046MET-1', '040THR-048VAL-2', '040THR-049GLN-2', '041GLY-045LEU-2', '041LEU-045LEU-1',
-    '042LEU-047ILE-2', '044TRP-054LEU-1', '048GLU-052LYS-1', '051ALA-054VAL-1', '051ALA-055ASN-1', '052CYS-056ALA-1',
-    '054ARG-062GLN-1', '055ASN-058GLU-2', '060LEU-064TYR-1', '060TYR-064LEU-2', '061VAL-064TYR-2', '062LEU-066LYS-2',
-    '064TYR-067GLU-1', '068ASP-072GLN-1', '071GLU-075ASP-1', '081ASN-084GLY-1', '082LEU-106LEU-2', '084LEU-088MET-2',
-    '087ALA-171PRO-2', '087LEU-090TYR-1', '089MET-093GLY-1', '092SER-096ARG-2', '095GLN-183ILE-1', '095LYS-107ILE-2',
-    '097GLU-100THR-2', '102GLN-106ILE-1', '104VAL-108ILE-1', '108LYS-112TYR-1', '108TYR-129TRP-1', '113TRP-124HIE-2',
-    '115GLN-118ARG-2', '121LYS-125ALA-1', '121VAL-155THR-2', '133LYS-137ASN-1', '134GLU-138ARG-1', '135ARG-152ALA-2',
-    '137SER-144LYS-1', '140SER-144THR-2', '142ALA-146PHE-1', '143VAL-147GLU-1', '146PHE-150LEU-1', '150LYS-158LEU-2',
-    '157LYS-160VAL-1', '162ALA-176GLY-1', '167GLY-232GLY-1', '168GLY-172LYS-2', '172GLY-175TRP-1', '197TYR-201LEU-2',
-    '205THR-209LEU-2', '228ARG-232GLU-1'
+    "004GLU-063LEU-2",
+    "005LEU-008VAL-2",
+    "007VAL-041VAL-1",
+    "008ILE-012LEU-1",
+    "008TRP-251HIE-2",
+    "012LEU-085ASP-1",
+    "014LYS-018GLU-1",
+    "014VAL-017GLU-1",
+    "015LEU-026LEU-1",
+    "017ASN-021LYS-2",
+    "017LEU-025ILE-1",
+    "019LEU-022MET-1",
+    "023LYS-146SER-2",
+    "024PHE-028ALA-1",
+    "024THR-041GLU-2",
+    "025GLY-029SER-2",
+    "025ILE-070TRP-1",
+    "027VAL-031LEU-1",
+    "027VAL-068GLU-2",
+    "030TRP-178GLY-2",
+    "033ASN-036TRP-2",
+    "033VAL-115VAL-1",
+    "035TRP-056ILE-1",
+    "037PRO-041ALA-1",
+    "038GLU-047GLU-2",
+    "039SER-046MET-1",
+    "040THR-048VAL-2",
+    "040THR-049GLN-2",
+    "041GLY-045LEU-2",
+    "041LEU-045LEU-1",
+    "042LEU-047ILE-2",
+    "044TRP-054LEU-1",
+    "048GLU-052LYS-1",
+    "051ALA-054VAL-1",
+    "051ALA-055ASN-1",
+    "052CYS-056ALA-1",
+    "054ARG-062GLN-1",
+    "055ASN-058GLU-2",
+    "060LEU-064TYR-1",
+    "060TYR-064LEU-2",
+    "061VAL-064TYR-2",
+    "062LEU-066LYS-2",
+    "064TYR-067GLU-1",
+    "068ASP-072GLN-1",
+    "071GLU-075ASP-1",
+    "081ASN-084GLY-1",
+    "082LEU-106LEU-2",
+    "084LEU-088MET-2",
+    "087ALA-171PRO-2",
+    "087LEU-090TYR-1",
+    "089MET-093GLY-1",
+    "092SER-096ARG-2",
+    "095GLN-183ILE-1",
+    "095LYS-107ILE-2",
+    "097GLU-100THR-2",
+    "102GLN-106ILE-1",
+    "104VAL-108ILE-1",
+    "108LYS-112TYR-1",
+    "108TYR-129TRP-1",
+    "113TRP-124HIE-2",
+    "115GLN-118ARG-2",
+    "121LYS-125ALA-1",
+    "121VAL-155THR-2",
+    "133LYS-137ASN-1",
+    "134GLU-138ARG-1",
+    "135ARG-152ALA-2",
+    "137SER-144LYS-1",
+    "140SER-144THR-2",
+    "142ALA-146PHE-1",
+    "143VAL-147GLU-1",
+    "146PHE-150LEU-1",
+    "150LYS-158LEU-2",
+    "157LYS-160VAL-1",
+    "162ALA-176GLY-1",
+    "167GLY-232GLY-1",
+    "168GLY-172LYS-2",
+    "172GLY-175TRP-1",
+    "197TYR-201LEU-2",
+    "205THR-209LEU-2",
+    "228ARG-232GLU-1",
 ]
 HRXN_UA = [
-    '005ASP-008SER-2', '007GLN-010ASN-1', '011ILE-014PHE-1', '015GLN-018LEU-1', '029GLU-032VAL-1', '038ALA-041GLY-1',
-    '044SER-047GLU-1', '064GLN-067ARG-1', '066PHE-072THR-1', '072ASN-075ARG-2', '072THR-075PRO-1', '081LEU-084LYS-1',
-    '088PHE-091ALA-1', '112SER-115ALA-2', '112TRP-115ARG-1', '119MET-122VAL-1', '126VAL-129ALA-1', '171ALA-175GLU-1',
-    '199SER-202TYR-1', '205THR-208GLU-1'
+    "005ASP-008SER-2",
+    "007GLN-010ASN-1",
+    "011ILE-014PHE-1",
+    "015GLN-018LEU-1",
+    "029GLU-032VAL-1",
+    "038ALA-041GLY-1",
+    "044SER-047GLU-1",
+    "064GLN-067ARG-1",
+    "066PHE-072THR-1",
+    "072ASN-075ARG-2",
+    "072THR-075PRO-1",
+    "081LEU-084LYS-1",
+    "088PHE-091ALA-1",
+    "112SER-115ALA-2",
+    "112TRP-115ARG-1",
+    "119MET-122VAL-1",
+    "126VAL-129ALA-1",
+    "171ALA-175GLU-1",
+    "199SER-202TYR-1",
+    "205THR-208GLU-1",
 ]
 HRXN_BBI25 = [
-    '007VAL-041VAL-1', '008TRP-251HIE-2', '012LEU-085ASP-1', '015LEU-026LEU-1', '017ASN-021LYS-2', '030TRP-178GLY-2',
-    '033ASN-036TRP-2', '033VAL-115VAL-1', '038ALA-041GLY-1', '040THR-049GLN-2', '041GLY-045LEU-2', '044SER-047GLU-1',
-    '044TRP-054LEU-1', '061VAL-064TYR-2', '072THR-075PRO-1', '081LEU-084LYS-1', '084LEU-088MET-2', '087LEU-090TYR-1',
-    '108LYS-112TYR-1', '108TYR-129TRP-1', '112SER-115ALA-2', '121VAL-155THR-2', '171ALA-175GLU-1', '197TYR-201LEU-2',
-    '228ARG-232GLU-1'
+    "007VAL-041VAL-1",
+    "008TRP-251HIE-2",
+    "012LEU-085ASP-1",
+    "015LEU-026LEU-1",
+    "017ASN-021LYS-2",
+    "030TRP-178GLY-2",
+    "033ASN-036TRP-2",
+    "033VAL-115VAL-1",
+    "038ALA-041GLY-1",
+    "040THR-049GLN-2",
+    "041GLY-045LEU-2",
+    "044SER-047GLU-1",
+    "044TRP-054LEU-1",
+    "061VAL-064TYR-2",
+    "072THR-075PRO-1",
+    "081LEU-084LYS-1",
+    "084LEU-088MET-2",
+    "087LEU-090TYR-1",
+    "108LYS-112TYR-1",
+    "108TYR-129TRP-1",
+    "112SER-115ALA-2",
+    "121VAL-155THR-2",
+    "171ALA-175GLU-1",
+    "197TYR-201LEU-2",
+    "228ARG-232GLU-1",
 ]
 
 # <<< Chemical Systems Involved >>>
@@ -99,261 +285,263 @@ ACTV = {}  # order of active reagents per reaction
 ACTV_CP = {}  # order of active reagents per counterpoise-corrected reaction
 ACTV_SA = {}  # order of active reagents for non-supermolecular calculations
 for rxn in HRXN:
-
-    RXNM['%s-%s' % (dbse, rxn)] = {
-        '%s-%s-dimer' % (dbse, rxn): +1,
-        '%s-%s-monoA-CP' % (dbse, rxn): -1,
-        '%s-%s-monoB-CP' % (dbse, rxn): -1,
-        '%s-%s-monoA-unCP' % (dbse, rxn): -1,
-        '%s-%s-monoB-unCP' % (dbse, rxn): -1
+    RXNM["%s-%s" % (dbse, rxn)] = {
+        "%s-%s-dimer" % (dbse, rxn): +1,
+        "%s-%s-monoA-CP" % (dbse, rxn): -1,
+        "%s-%s-monoB-CP" % (dbse, rxn): -1,
+        "%s-%s-monoA-unCP" % (dbse, rxn): -1,
+        "%s-%s-monoB-unCP" % (dbse, rxn): -1,
     }
 
-    ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn)]
+    ACTV_SA["%s-%s" % (dbse, rxn)] = ["%s-%s-dimer" % (dbse, rxn)]
 
-    ACTV_CP['%s-%s' % (dbse, rxn)] = [
-        '%s-%s-dimer' % (dbse, rxn),
-        '%s-%s-monoA-CP' % (dbse, rxn),
-        '%s-%s-monoB-CP' % (dbse, rxn)
+    ACTV_CP["%s-%s" % (dbse, rxn)] = [
+        "%s-%s-dimer" % (dbse, rxn),
+        "%s-%s-monoA-CP" % (dbse, rxn),
+        "%s-%s-monoB-CP" % (dbse, rxn),
     ]
 
-    ACTV['%s-%s' % (dbse, rxn)] = [
-        '%s-%s-dimer' % (dbse, rxn),
-        '%s-%s-monoA-unCP' % (dbse, rxn),
-        '%s-%s-monoB-unCP' % (dbse, rxn)
+    ACTV["%s-%s" % (dbse, rxn)] = [
+        "%s-%s-dimer" % (dbse, rxn),
+        "%s-%s-monoA-unCP" % (dbse, rxn),
+        "%s-%s-monoB-unCP" % (dbse, rxn),
     ]
 
 # <<< Reference Values [kcal/mol] >>>
 BIND = {}
 # Bronze
 BIND_BRONZE = {}
-BIND_BRONZE['%s-%s' % (dbse, '004GLU-063LEU-2')] = -8.393
-BIND_BRONZE['%s-%s' % (dbse, '005ASP-008SER-2')] = -1.518
-BIND_BRONZE['%s-%s' % (dbse, '005LEU-008VAL-2')] = -6.233
-BIND_BRONZE['%s-%s' % (dbse, '007GLN-010ASN-1')] = -1.442
-BIND_BRONZE['%s-%s' % (dbse, '007VAL-041VAL-1')] = -6.114
-BIND_BRONZE['%s-%s' % (dbse, '008ILE-012LEU-1')] = -7.172
-BIND_BRONZE['%s-%s' % (dbse, '008TRP-251HIE-2')] = -7.615
-BIND_BRONZE['%s-%s' % (dbse, '011ILE-014PHE-1')] = -1.098
-BIND_BRONZE['%s-%s' % (dbse, '012LEU-085ASP-1')] = -8.072
-BIND_BRONZE['%s-%s' % (dbse, '014LYS-018GLU-1')] = -7.073
-BIND_BRONZE['%s-%s' % (dbse, '014VAL-017GLU-1')] = -7.550
-BIND_BRONZE['%s-%s' % (dbse, '015GLN-018LEU-1')] = -1.272
-BIND_BRONZE['%s-%s' % (dbse, '015LEU-026LEU-1')] = -7.406
-BIND_BRONZE['%s-%s' % (dbse, '017ASN-021LYS-2')] = -6.291
-BIND_BRONZE['%s-%s' % (dbse, '017LEU-025ILE-1')] = -6.664
-BIND_BRONZE['%s-%s' % (dbse, '019LEU-022MET-1')] = -5.842
-BIND_BRONZE['%s-%s' % (dbse, '023LYS-146SER-2')] = -7.712
-BIND_BRONZE['%s-%s' % (dbse, '024PHE-028ALA-1')] = -7.167
-BIND_BRONZE['%s-%s' % (dbse, '024THR-041GLU-2')] = -7.294
-BIND_BRONZE['%s-%s' % (dbse, '025GLY-029SER-2')] = -6.834
-BIND_BRONZE['%s-%s' % (dbse, '025ILE-070TRP-1')] = -7.910
-BIND_BRONZE['%s-%s' % (dbse, '027VAL-031LEU-1')] = -7.772
-BIND_BRONZE['%s-%s' % (dbse, '027VAL-068GLU-2')] = -7.712
-BIND_BRONZE['%s-%s' % (dbse, '029GLU-032VAL-1')] = -1.399
-BIND_BRONZE['%s-%s' % (dbse, '030TRP-178GLY-2')] = -8.039
-BIND_BRONZE['%s-%s' % (dbse, '033ASN-036TRP-2')] = 1.328
-BIND_BRONZE['%s-%s' % (dbse, '033VAL-115VAL-1')] = -7.858
-BIND_BRONZE['%s-%s' % (dbse, '035TRP-056ILE-1')] = -7.840
-BIND_BRONZE['%s-%s' % (dbse, '037PRO-041ALA-1')] = -6.672
-BIND_BRONZE['%s-%s' % (dbse, '038ALA-041GLY-1')] = -1.134
-BIND_BRONZE['%s-%s' % (dbse, '038GLU-047GLU-2')] = -4.753
-BIND_BRONZE['%s-%s' % (dbse, '039SER-046MET-1')] = -7.258
-BIND_BRONZE['%s-%s' % (dbse, '040THR-048VAL-2')] = -7.407
-BIND_BRONZE['%s-%s' % (dbse, '040THR-049GLN-2')] = -8.172
-BIND_BRONZE['%s-%s' % (dbse, '041GLY-045LEU-2')] = -7.460
-BIND_BRONZE['%s-%s' % (dbse, '041LEU-045LEU-1')] = -7.310
-BIND_BRONZE['%s-%s' % (dbse, '042LEU-047ILE-2')] = -7.191
-BIND_BRONZE['%s-%s' % (dbse, '044SER-047GLU-1')] = -2.585
-BIND_BRONZE['%s-%s' % (dbse, '044TRP-054LEU-1')] = -7.819
-BIND_BRONZE['%s-%s' % (dbse, '048GLU-052LYS-1')] = -6.567
-BIND_BRONZE['%s-%s' % (dbse, '051ALA-054VAL-1')] = 2.681
-BIND_BRONZE['%s-%s' % (dbse, '051ALA-055ASN-1')] = -6.170
-BIND_BRONZE['%s-%s' % (dbse, '052CYS-056ALA-1')] = -6.957
-BIND_BRONZE['%s-%s' % (dbse, '054ARG-062GLN-1')] = -6.344
-BIND_BRONZE['%s-%s' % (dbse, '055ASN-058GLU-2')] = -5.542
-BIND_BRONZE['%s-%s' % (dbse, '060LEU-064TYR-1')] = -6.335
-BIND_BRONZE['%s-%s' % (dbse, '060TYR-064LEU-2')] = -7.322
-BIND_BRONZE['%s-%s' % (dbse, '061VAL-064TYR-2')] = -5.629
-BIND_BRONZE['%s-%s' % (dbse, '062LEU-066LYS-2')] = -7.169
-BIND_BRONZE['%s-%s' % (dbse, '064GLN-067ARG-1')] = -1.442
-BIND_BRONZE['%s-%s' % (dbse, '064TYR-067GLU-1')] = -6.343
-BIND_BRONZE['%s-%s' % (dbse, '066PHE-072THR-1')] = -1.684
-BIND_BRONZE['%s-%s' % (dbse, '068ASP-072GLN-1')] = -3.610
-BIND_BRONZE['%s-%s' % (dbse, '071GLU-075ASP-1')] = -7.049
-BIND_BRONZE['%s-%s' % (dbse, '072ASN-075ARG-2')] = -1.244
-BIND_BRONZE['%s-%s' % (dbse, '072THR-075PRO-1')] = -2.038
-BIND_BRONZE['%s-%s' % (dbse, '081ASN-084GLY-1')] = -5.923
-BIND_BRONZE['%s-%s' % (dbse, '081LEU-084LYS-1')] = -1.442
-BIND_BRONZE['%s-%s' % (dbse, '082LEU-106LEU-2')] = -7.618
-BIND_BRONZE['%s-%s' % (dbse, '084LEU-088MET-2')] = -7.225
-BIND_BRONZE['%s-%s' % (dbse, '087ALA-171PRO-2')] = -8.151
-BIND_BRONZE['%s-%s' % (dbse, '087LEU-090TYR-1')] = -6.068
-BIND_BRONZE['%s-%s' % (dbse, '088PHE-091ALA-1')] = -1.387
-BIND_BRONZE['%s-%s' % (dbse, '089MET-093GLY-1')] = -6.694
-BIND_BRONZE['%s-%s' % (dbse, '092SER-096ARG-2')] = -7.368
-BIND_BRONZE['%s-%s' % (dbse, '095GLN-183ILE-1')] = -8.222
-BIND_BRONZE['%s-%s' % (dbse, '095LYS-107ILE-2')] = -7.781
-BIND_BRONZE['%s-%s' % (dbse, '097GLU-100THR-2')] = -5.213
-BIND_BRONZE['%s-%s' % (dbse, '102GLN-106ILE-1')] = -6.443
-BIND_BRONZE['%s-%s' % (dbse, '104VAL-108ILE-1')] = -7.408
-BIND_BRONZE['%s-%s' % (dbse, '108LYS-112TYR-1')] = -7.210
-BIND_BRONZE['%s-%s' % (dbse, '108TYR-129TRP-1')] = -7.356
-BIND_BRONZE['%s-%s' % (dbse, '112SER-115ALA-2')] = -1.716
-BIND_BRONZE['%s-%s' % (dbse, '112TRP-115ARG-1')] = -1.971
-BIND_BRONZE['%s-%s' % (dbse, '113TRP-124HIE-2')] = -7.921
-BIND_BRONZE['%s-%s' % (dbse, '115GLN-118ARG-2')] = -6.439
-BIND_BRONZE['%s-%s' % (dbse, '119MET-122VAL-1')] = -1.319
-BIND_BRONZE['%s-%s' % (dbse, '121LYS-125ALA-1')] = -5.983
-BIND_BRONZE['%s-%s' % (dbse, '121VAL-155THR-2')] = -7.257
-BIND_BRONZE['%s-%s' % (dbse, '126VAL-129ALA-1')] = -1.269
-BIND_BRONZE['%s-%s' % (dbse, '133LYS-137ASN-1')] = -7.240
-BIND_BRONZE['%s-%s' % (dbse, '134GLU-138ARG-1')] = -7.140
-BIND_BRONZE['%s-%s' % (dbse, '135ARG-152ALA-2')] = -7.124
-BIND_BRONZE['%s-%s' % (dbse, '137SER-144LYS-1')] = -7.506
-BIND_BRONZE['%s-%s' % (dbse, '140SER-144THR-2')] = -7.447
-BIND_BRONZE['%s-%s' % (dbse, '142ALA-146PHE-1')] = -7.431
-BIND_BRONZE['%s-%s' % (dbse, '143VAL-147GLU-1')] = -7.213
-BIND_BRONZE['%s-%s' % (dbse, '146PHE-150LEU-1')] = -7.044
-BIND_BRONZE['%s-%s' % (dbse, '150LYS-158LEU-2')] = -8.308
-BIND_BRONZE['%s-%s' % (dbse, '157LYS-160VAL-1')] = 2.056
-BIND_BRONZE['%s-%s' % (dbse, '162ALA-176GLY-1')] = -8.225
-BIND_BRONZE['%s-%s' % (dbse, '167GLY-232GLY-1')] = -6.892
-BIND_BRONZE['%s-%s' % (dbse, '168GLY-172LYS-2')] = -7.259
-BIND_BRONZE['%s-%s' % (dbse, '171ALA-175GLU-1')] = -1.671
-BIND_BRONZE['%s-%s' % (dbse, '172GLY-175TRP-1')] = -5.146
-BIND_BRONZE['%s-%s' % (dbse, '197TYR-201LEU-2')] = -6.637
-BIND_BRONZE['%s-%s' % (dbse, '199SER-202TYR-1')] = -1.087
-BIND_BRONZE['%s-%s' % (dbse, '205THR-208GLU-1')] = -1.028
-BIND_BRONZE['%s-%s' % (dbse, '205THR-209LEU-2')] = -5.627
-BIND_BRONZE['%s-%s' % (dbse, '228ARG-232GLU-1')] = -7.350
+BIND_BRONZE["%s-%s" % (dbse, "004GLU-063LEU-2")] = -8.393
+BIND_BRONZE["%s-%s" % (dbse, "005ASP-008SER-2")] = -1.518
+BIND_BRONZE["%s-%s" % (dbse, "005LEU-008VAL-2")] = -6.233
+BIND_BRONZE["%s-%s" % (dbse, "007GLN-010ASN-1")] = -1.442
+BIND_BRONZE["%s-%s" % (dbse, "007VAL-041VAL-1")] = -6.114
+BIND_BRONZE["%s-%s" % (dbse, "008ILE-012LEU-1")] = -7.172
+BIND_BRONZE["%s-%s" % (dbse, "008TRP-251HIE-2")] = -7.615
+BIND_BRONZE["%s-%s" % (dbse, "011ILE-014PHE-1")] = -1.098
+BIND_BRONZE["%s-%s" % (dbse, "012LEU-085ASP-1")] = -8.072
+BIND_BRONZE["%s-%s" % (dbse, "014LYS-018GLU-1")] = -7.073
+BIND_BRONZE["%s-%s" % (dbse, "014VAL-017GLU-1")] = -7.550
+BIND_BRONZE["%s-%s" % (dbse, "015GLN-018LEU-1")] = -1.272
+BIND_BRONZE["%s-%s" % (dbse, "015LEU-026LEU-1")] = -7.406
+BIND_BRONZE["%s-%s" % (dbse, "017ASN-021LYS-2")] = -6.291
+BIND_BRONZE["%s-%s" % (dbse, "017LEU-025ILE-1")] = -6.664
+BIND_BRONZE["%s-%s" % (dbse, "019LEU-022MET-1")] = -5.842
+BIND_BRONZE["%s-%s" % (dbse, "023LYS-146SER-2")] = -7.712
+BIND_BRONZE["%s-%s" % (dbse, "024PHE-028ALA-1")] = -7.167
+BIND_BRONZE["%s-%s" % (dbse, "024THR-041GLU-2")] = -7.294
+BIND_BRONZE["%s-%s" % (dbse, "025GLY-029SER-2")] = -6.834
+BIND_BRONZE["%s-%s" % (dbse, "025ILE-070TRP-1")] = -7.910
+BIND_BRONZE["%s-%s" % (dbse, "027VAL-031LEU-1")] = -7.772
+BIND_BRONZE["%s-%s" % (dbse, "027VAL-068GLU-2")] = -7.712
+BIND_BRONZE["%s-%s" % (dbse, "029GLU-032VAL-1")] = -1.399
+BIND_BRONZE["%s-%s" % (dbse, "030TRP-178GLY-2")] = -8.039
+BIND_BRONZE["%s-%s" % (dbse, "033ASN-036TRP-2")] = 1.328
+BIND_BRONZE["%s-%s" % (dbse, "033VAL-115VAL-1")] = -7.858
+BIND_BRONZE["%s-%s" % (dbse, "035TRP-056ILE-1")] = -7.840
+BIND_BRONZE["%s-%s" % (dbse, "037PRO-041ALA-1")] = -6.672
+BIND_BRONZE["%s-%s" % (dbse, "038ALA-041GLY-1")] = -1.134
+BIND_BRONZE["%s-%s" % (dbse, "038GLU-047GLU-2")] = -4.753
+BIND_BRONZE["%s-%s" % (dbse, "039SER-046MET-1")] = -7.258
+BIND_BRONZE["%s-%s" % (dbse, "040THR-048VAL-2")] = -7.407
+BIND_BRONZE["%s-%s" % (dbse, "040THR-049GLN-2")] = -8.172
+BIND_BRONZE["%s-%s" % (dbse, "041GLY-045LEU-2")] = -7.460
+BIND_BRONZE["%s-%s" % (dbse, "041LEU-045LEU-1")] = -7.310
+BIND_BRONZE["%s-%s" % (dbse, "042LEU-047ILE-2")] = -7.191
+BIND_BRONZE["%s-%s" % (dbse, "044SER-047GLU-1")] = -2.585
+BIND_BRONZE["%s-%s" % (dbse, "044TRP-054LEU-1")] = -7.819
+BIND_BRONZE["%s-%s" % (dbse, "048GLU-052LYS-1")] = -6.567
+BIND_BRONZE["%s-%s" % (dbse, "051ALA-054VAL-1")] = 2.681
+BIND_BRONZE["%s-%s" % (dbse, "051ALA-055ASN-1")] = -6.170
+BIND_BRONZE["%s-%s" % (dbse, "052CYS-056ALA-1")] = -6.957
+BIND_BRONZE["%s-%s" % (dbse, "054ARG-062GLN-1")] = -6.344
+BIND_BRONZE["%s-%s" % (dbse, "055ASN-058GLU-2")] = -5.542
+BIND_BRONZE["%s-%s" % (dbse, "060LEU-064TYR-1")] = -6.335
+BIND_BRONZE["%s-%s" % (dbse, "060TYR-064LEU-2")] = -7.322
+BIND_BRONZE["%s-%s" % (dbse, "061VAL-064TYR-2")] = -5.629
+BIND_BRONZE["%s-%s" % (dbse, "062LEU-066LYS-2")] = -7.169
+BIND_BRONZE["%s-%s" % (dbse, "064GLN-067ARG-1")] = -1.442
+BIND_BRONZE["%s-%s" % (dbse, "064TYR-067GLU-1")] = -6.343
+BIND_BRONZE["%s-%s" % (dbse, "066PHE-072THR-1")] = -1.684
+BIND_BRONZE["%s-%s" % (dbse, "068ASP-072GLN-1")] = -3.610
+BIND_BRONZE["%s-%s" % (dbse, "071GLU-075ASP-1")] = -7.049
+BIND_BRONZE["%s-%s" % (dbse, "072ASN-075ARG-2")] = -1.244
+BIND_BRONZE["%s-%s" % (dbse, "072THR-075PRO-1")] = -2.038
+BIND_BRONZE["%s-%s" % (dbse, "081ASN-084GLY-1")] = -5.923
+BIND_BRONZE["%s-%s" % (dbse, "081LEU-084LYS-1")] = -1.442
+BIND_BRONZE["%s-%s" % (dbse, "082LEU-106LEU-2")] = -7.618
+BIND_BRONZE["%s-%s" % (dbse, "084LEU-088MET-2")] = -7.225
+BIND_BRONZE["%s-%s" % (dbse, "087ALA-171PRO-2")] = -8.151
+BIND_BRONZE["%s-%s" % (dbse, "087LEU-090TYR-1")] = -6.068
+BIND_BRONZE["%s-%s" % (dbse, "088PHE-091ALA-1")] = -1.387
+BIND_BRONZE["%s-%s" % (dbse, "089MET-093GLY-1")] = -6.694
+BIND_BRONZE["%s-%s" % (dbse, "092SER-096ARG-2")] = -7.368
+BIND_BRONZE["%s-%s" % (dbse, "095GLN-183ILE-1")] = -8.222
+BIND_BRONZE["%s-%s" % (dbse, "095LYS-107ILE-2")] = -7.781
+BIND_BRONZE["%s-%s" % (dbse, "097GLU-100THR-2")] = -5.213
+BIND_BRONZE["%s-%s" % (dbse, "102GLN-106ILE-1")] = -6.443
+BIND_BRONZE["%s-%s" % (dbse, "104VAL-108ILE-1")] = -7.408
+BIND_BRONZE["%s-%s" % (dbse, "108LYS-112TYR-1")] = -7.210
+BIND_BRONZE["%s-%s" % (dbse, "108TYR-129TRP-1")] = -7.356
+BIND_BRONZE["%s-%s" % (dbse, "112SER-115ALA-2")] = -1.716
+BIND_BRONZE["%s-%s" % (dbse, "112TRP-115ARG-1")] = -1.971
+BIND_BRONZE["%s-%s" % (dbse, "113TRP-124HIE-2")] = -7.921
+BIND_BRONZE["%s-%s" % (dbse, "115GLN-118ARG-2")] = -6.439
+BIND_BRONZE["%s-%s" % (dbse, "119MET-122VAL-1")] = -1.319
+BIND_BRONZE["%s-%s" % (dbse, "121LYS-125ALA-1")] = -5.983
+BIND_BRONZE["%s-%s" % (dbse, "121VAL-155THR-2")] = -7.257
+BIND_BRONZE["%s-%s" % (dbse, "126VAL-129ALA-1")] = -1.269
+BIND_BRONZE["%s-%s" % (dbse, "133LYS-137ASN-1")] = -7.240
+BIND_BRONZE["%s-%s" % (dbse, "134GLU-138ARG-1")] = -7.140
+BIND_BRONZE["%s-%s" % (dbse, "135ARG-152ALA-2")] = -7.124
+BIND_BRONZE["%s-%s" % (dbse, "137SER-144LYS-1")] = -7.506
+BIND_BRONZE["%s-%s" % (dbse, "140SER-144THR-2")] = -7.447
+BIND_BRONZE["%s-%s" % (dbse, "142ALA-146PHE-1")] = -7.431
+BIND_BRONZE["%s-%s" % (dbse, "143VAL-147GLU-1")] = -7.213
+BIND_BRONZE["%s-%s" % (dbse, "146PHE-150LEU-1")] = -7.044
+BIND_BRONZE["%s-%s" % (dbse, "150LYS-158LEU-2")] = -8.308
+BIND_BRONZE["%s-%s" % (dbse, "157LYS-160VAL-1")] = 2.056
+BIND_BRONZE["%s-%s" % (dbse, "162ALA-176GLY-1")] = -8.225
+BIND_BRONZE["%s-%s" % (dbse, "167GLY-232GLY-1")] = -6.892
+BIND_BRONZE["%s-%s" % (dbse, "168GLY-172LYS-2")] = -7.259
+BIND_BRONZE["%s-%s" % (dbse, "171ALA-175GLU-1")] = -1.671
+BIND_BRONZE["%s-%s" % (dbse, "172GLY-175TRP-1")] = -5.146
+BIND_BRONZE["%s-%s" % (dbse, "197TYR-201LEU-2")] = -6.637
+BIND_BRONZE["%s-%s" % (dbse, "199SER-202TYR-1")] = -1.087
+BIND_BRONZE["%s-%s" % (dbse, "205THR-208GLU-1")] = -1.028
+BIND_BRONZE["%s-%s" % (dbse, "205THR-209LEU-2")] = -5.627
+BIND_BRONZE["%s-%s" % (dbse, "228ARG-232GLU-1")] = -7.350
 # Silver
 BIND_SILVER = {}
-BIND_SILVER['%s-%s' % (dbse, '004GLU-063LEU-2')] = -8.623
-BIND_SILVER['%s-%s' % (dbse, '005ASP-008SER-2')] = -1.589
-BIND_SILVER['%s-%s' % (dbse, '005LEU-008VAL-2')] = -6.388
-BIND_SILVER['%s-%s' % (dbse, '007GLN-010ASN-1')] = -1.510
-BIND_SILVER['%s-%s' % (dbse, '007VAL-041VAL-1')] = -6.366
-BIND_SILVER['%s-%s' % (dbse, '008ILE-012LEU-1')] = -7.410
-BIND_SILVER['%s-%s' % (dbse, '008TRP-251HIE-2')] = -7.771
-BIND_SILVER['%s-%s' % (dbse, '011ILE-014PHE-1')] = -1.180
-BIND_SILVER['%s-%s' % (dbse, '012LEU-085ASP-1')] = -8.281
-BIND_SILVER['%s-%s' % (dbse, '014LYS-018GLU-1')] = -7.312
-BIND_SILVER['%s-%s' % (dbse, '014VAL-017GLU-1')] = -7.767
-BIND_SILVER['%s-%s' % (dbse, '015GLN-018LEU-1')] = -1.348
-BIND_SILVER['%s-%s' % (dbse, '015LEU-026LEU-1')] = -7.651
-BIND_SILVER['%s-%s' % (dbse, '017ASN-021LYS-2')] = -6.497
-BIND_SILVER['%s-%s' % (dbse, '017LEU-025ILE-1')] = -6.884
-BIND_SILVER['%s-%s' % (dbse, '019LEU-022MET-1')] = -5.970
-BIND_SILVER['%s-%s' % (dbse, '023LYS-146SER-2')] = -7.922
-BIND_SILVER['%s-%s' % (dbse, '024PHE-028ALA-1')] = -7.448
-BIND_SILVER['%s-%s' % (dbse, '024THR-041GLU-2')] = -7.496
-BIND_SILVER['%s-%s' % (dbse, '025GLY-029SER-2')] = -7.075
-BIND_SILVER['%s-%s' % (dbse, '025ILE-070TRP-1')] = -8.120
-BIND_SILVER['%s-%s' % (dbse, '027VAL-031LEU-1')] = -8.041
-BIND_SILVER['%s-%s' % (dbse, '027VAL-068GLU-2')] = -7.943
-BIND_SILVER['%s-%s' % (dbse, '029GLU-032VAL-1')] = -1.472
-BIND_SILVER['%s-%s' % (dbse, '030TRP-178GLY-2')] = -8.247
-BIND_SILVER['%s-%s' % (dbse, '033ASN-036TRP-2')] = 1.229
-BIND_SILVER['%s-%s' % (dbse, '033VAL-115VAL-1')] = -8.073
-BIND_SILVER['%s-%s' % (dbse, '035TRP-056ILE-1')] = -8.082
-BIND_SILVER['%s-%s' % (dbse, '037PRO-041ALA-1')] = -6.917
-BIND_SILVER['%s-%s' % (dbse, '038ALA-041GLY-1')] = -1.191
-BIND_SILVER['%s-%s' % (dbse, '038GLU-047GLU-2')] = -4.865
-BIND_SILVER['%s-%s' % (dbse, '039SER-046MET-1')] = -7.468
-BIND_SILVER['%s-%s' % (dbse, '040THR-048VAL-2')] = -7.639
-BIND_SILVER['%s-%s' % (dbse, '040THR-049GLN-2')] = -8.407
-BIND_SILVER['%s-%s' % (dbse, '041GLY-045LEU-2')] = -7.697
-BIND_SILVER['%s-%s' % (dbse, '041LEU-045LEU-1')] = -7.561
-BIND_SILVER['%s-%s' % (dbse, '042LEU-047ILE-2')] = -7.426
-BIND_SILVER['%s-%s' % (dbse, '044SER-047GLU-1')] = -2.638
-BIND_SILVER['%s-%s' % (dbse, '044TRP-054LEU-1')] = -8.043
-BIND_SILVER['%s-%s' % (dbse, '048GLU-052LYS-1')] = -6.828
-BIND_SILVER['%s-%s' % (dbse, '051ALA-054VAL-1')] = 2.680
-BIND_SILVER['%s-%s' % (dbse, '051ALA-055ASN-1')] = -6.380
-BIND_SILVER['%s-%s' % (dbse, '052CYS-056ALA-1')] = -7.166
-BIND_SILVER['%s-%s' % (dbse, '054ARG-062GLN-1')] = -6.516
-BIND_SILVER['%s-%s' % (dbse, '055ASN-058GLU-2')] = -5.672
-BIND_SILVER['%s-%s' % (dbse, '060LEU-064TYR-1')] = -6.531
-BIND_SILVER['%s-%s' % (dbse, '060TYR-064LEU-2')] = -7.576
-BIND_SILVER['%s-%s' % (dbse, '061VAL-064TYR-2')] = -5.751
-BIND_SILVER['%s-%s' % (dbse, '062LEU-066LYS-2')] = -7.396
-BIND_SILVER['%s-%s' % (dbse, '064GLN-067ARG-1')] = -1.502
-BIND_SILVER['%s-%s' % (dbse, '064TYR-067GLU-1')] = -6.519
-BIND_SILVER['%s-%s' % (dbse, '066PHE-072THR-1')] = -1.963
-BIND_SILVER['%s-%s' % (dbse, '068ASP-072GLN-1')] = -3.899
-BIND_SILVER['%s-%s' % (dbse, '071GLU-075ASP-1')] = -7.283
-BIND_SILVER['%s-%s' % (dbse, '072ASN-075ARG-2')] = -1.300
-BIND_SILVER['%s-%s' % (dbse, '072THR-075PRO-1')] = -2.100
-BIND_SILVER['%s-%s' % (dbse, '081ASN-084GLY-1')] = -5.985
-BIND_SILVER['%s-%s' % (dbse, '081LEU-084LYS-1')] = -1.507
-BIND_SILVER['%s-%s' % (dbse, '082LEU-106LEU-2')] = -7.836
-BIND_SILVER['%s-%s' % (dbse, '084LEU-088MET-2')] = -7.448
-BIND_SILVER['%s-%s' % (dbse, '087ALA-171PRO-2')] = -8.365
-BIND_SILVER['%s-%s' % (dbse, '087LEU-090TYR-1')] = -6.187
-BIND_SILVER['%s-%s' % (dbse, '088PHE-091ALA-1')] = -1.445
-BIND_SILVER['%s-%s' % (dbse, '089MET-093GLY-1')] = -6.946
-BIND_SILVER['%s-%s' % (dbse, '092SER-096ARG-2')] = -7.589
-BIND_SILVER['%s-%s' % (dbse, '095GLN-183ILE-1')] = -8.448
-BIND_SILVER['%s-%s' % (dbse, '095LYS-107ILE-2')] = -8.007
-BIND_SILVER['%s-%s' % (dbse, '097GLU-100THR-2')] = -5.303
-BIND_SILVER['%s-%s' % (dbse, '102GLN-106ILE-1')] = -6.676
-BIND_SILVER['%s-%s' % (dbse, '104VAL-108ILE-1')] = -7.628
-BIND_SILVER['%s-%s' % (dbse, '108LYS-112TYR-1')] = -7.397
-BIND_SILVER['%s-%s' % (dbse, '108TYR-129TRP-1')] = -7.591
-BIND_SILVER['%s-%s' % (dbse, '112SER-115ALA-2')] = -1.785
-BIND_SILVER['%s-%s' % (dbse, '112TRP-115ARG-1')] = -2.022
-BIND_SILVER['%s-%s' % (dbse, '113TRP-124HIE-2')] = -8.153
-BIND_SILVER['%s-%s' % (dbse, '115GLN-118ARG-2')] = -6.585
-BIND_SILVER['%s-%s' % (dbse, '119MET-122VAL-1')] = -1.388
-BIND_SILVER['%s-%s' % (dbse, '121LYS-125ALA-1')] = -6.188
-BIND_SILVER['%s-%s' % (dbse, '121VAL-155THR-2')] = -7.480
-BIND_SILVER['%s-%s' % (dbse, '126VAL-129ALA-1')] = -1.340
-BIND_SILVER['%s-%s' % (dbse, '133LYS-137ASN-1')] = -7.522
-BIND_SILVER['%s-%s' % (dbse, '134GLU-138ARG-1')] = -7.375
-BIND_SILVER['%s-%s' % (dbse, '135ARG-152ALA-2')] = -7.377
-BIND_SILVER['%s-%s' % (dbse, '137SER-144LYS-1')] = -7.731
-BIND_SILVER['%s-%s' % (dbse, '140SER-144THR-2')] = -7.668
-BIND_SILVER['%s-%s' % (dbse, '142ALA-146PHE-1')] = -7.653
-BIND_SILVER['%s-%s' % (dbse, '143VAL-147GLU-1')] = -7.454
-BIND_SILVER['%s-%s' % (dbse, '146PHE-150LEU-1')] = -7.290
-BIND_SILVER['%s-%s' % (dbse, '150LYS-158LEU-2')] = -8.530
-BIND_SILVER['%s-%s' % (dbse, '157LYS-160VAL-1')] = 1.996
-BIND_SILVER['%s-%s' % (dbse, '162ALA-176GLY-1')] = -8.443
-BIND_SILVER['%s-%s' % (dbse, '167GLY-232GLY-1')] = -7.120
-BIND_SILVER['%s-%s' % (dbse, '168GLY-172LYS-2')] = -7.440
-BIND_SILVER['%s-%s' % (dbse, '171ALA-175GLU-1')] = -1.912
-BIND_SILVER['%s-%s' % (dbse, '172GLY-175TRP-1')] = -5.297
-BIND_SILVER['%s-%s' % (dbse, '197TYR-201LEU-2')] = -6.934
-BIND_SILVER['%s-%s' % (dbse, '199SER-202TYR-1')] = -1.140
-BIND_SILVER['%s-%s' % (dbse, '205THR-208GLU-1')] = -1.083
-BIND_SILVER['%s-%s' % (dbse, '205THR-209LEU-2')] = -5.867
-BIND_SILVER['%s-%s' % (dbse, '228ARG-232GLU-1')] = -7.561
+BIND_SILVER["%s-%s" % (dbse, "004GLU-063LEU-2")] = -8.623
+BIND_SILVER["%s-%s" % (dbse, "005ASP-008SER-2")] = -1.589
+BIND_SILVER["%s-%s" % (dbse, "005LEU-008VAL-2")] = -6.388
+BIND_SILVER["%s-%s" % (dbse, "007GLN-010ASN-1")] = -1.510
+BIND_SILVER["%s-%s" % (dbse, "007VAL-041VAL-1")] = -6.366
+BIND_SILVER["%s-%s" % (dbse, "008ILE-012LEU-1")] = -7.410
+BIND_SILVER["%s-%s" % (dbse, "008TRP-251HIE-2")] = -7.771
+BIND_SILVER["%s-%s" % (dbse, "011ILE-014PHE-1")] = -1.180
+BIND_SILVER["%s-%s" % (dbse, "012LEU-085ASP-1")] = -8.281
+BIND_SILVER["%s-%s" % (dbse, "014LYS-018GLU-1")] = -7.312
+BIND_SILVER["%s-%s" % (dbse, "014VAL-017GLU-1")] = -7.767
+BIND_SILVER["%s-%s" % (dbse, "015GLN-018LEU-1")] = -1.348
+BIND_SILVER["%s-%s" % (dbse, "015LEU-026LEU-1")] = -7.651
+BIND_SILVER["%s-%s" % (dbse, "017ASN-021LYS-2")] = -6.497
+BIND_SILVER["%s-%s" % (dbse, "017LEU-025ILE-1")] = -6.884
+BIND_SILVER["%s-%s" % (dbse, "019LEU-022MET-1")] = -5.970
+BIND_SILVER["%s-%s" % (dbse, "023LYS-146SER-2")] = -7.922
+BIND_SILVER["%s-%s" % (dbse, "024PHE-028ALA-1")] = -7.448
+BIND_SILVER["%s-%s" % (dbse, "024THR-041GLU-2")] = -7.496
+BIND_SILVER["%s-%s" % (dbse, "025GLY-029SER-2")] = -7.075
+BIND_SILVER["%s-%s" % (dbse, "025ILE-070TRP-1")] = -8.120
+BIND_SILVER["%s-%s" % (dbse, "027VAL-031LEU-1")] = -8.041
+BIND_SILVER["%s-%s" % (dbse, "027VAL-068GLU-2")] = -7.943
+BIND_SILVER["%s-%s" % (dbse, "029GLU-032VAL-1")] = -1.472
+BIND_SILVER["%s-%s" % (dbse, "030TRP-178GLY-2")] = -8.247
+BIND_SILVER["%s-%s" % (dbse, "033ASN-036TRP-2")] = 1.229
+BIND_SILVER["%s-%s" % (dbse, "033VAL-115VAL-1")] = -8.073
+BIND_SILVER["%s-%s" % (dbse, "035TRP-056ILE-1")] = -8.082
+BIND_SILVER["%s-%s" % (dbse, "037PRO-041ALA-1")] = -6.917
+BIND_SILVER["%s-%s" % (dbse, "038ALA-041GLY-1")] = -1.191
+BIND_SILVER["%s-%s" % (dbse, "038GLU-047GLU-2")] = -4.865
+BIND_SILVER["%s-%s" % (dbse, "039SER-046MET-1")] = -7.468
+BIND_SILVER["%s-%s" % (dbse, "040THR-048VAL-2")] = -7.639
+BIND_SILVER["%s-%s" % (dbse, "040THR-049GLN-2")] = -8.407
+BIND_SILVER["%s-%s" % (dbse, "041GLY-045LEU-2")] = -7.697
+BIND_SILVER["%s-%s" % (dbse, "041LEU-045LEU-1")] = -7.561
+BIND_SILVER["%s-%s" % (dbse, "042LEU-047ILE-2")] = -7.426
+BIND_SILVER["%s-%s" % (dbse, "044SER-047GLU-1")] = -2.638
+BIND_SILVER["%s-%s" % (dbse, "044TRP-054LEU-1")] = -8.043
+BIND_SILVER["%s-%s" % (dbse, "048GLU-052LYS-1")] = -6.828
+BIND_SILVER["%s-%s" % (dbse, "051ALA-054VAL-1")] = 2.680
+BIND_SILVER["%s-%s" % (dbse, "051ALA-055ASN-1")] = -6.380
+BIND_SILVER["%s-%s" % (dbse, "052CYS-056ALA-1")] = -7.166
+BIND_SILVER["%s-%s" % (dbse, "054ARG-062GLN-1")] = -6.516
+BIND_SILVER["%s-%s" % (dbse, "055ASN-058GLU-2")] = -5.672
+BIND_SILVER["%s-%s" % (dbse, "060LEU-064TYR-1")] = -6.531
+BIND_SILVER["%s-%s" % (dbse, "060TYR-064LEU-2")] = -7.576
+BIND_SILVER["%s-%s" % (dbse, "061VAL-064TYR-2")] = -5.751
+BIND_SILVER["%s-%s" % (dbse, "062LEU-066LYS-2")] = -7.396
+BIND_SILVER["%s-%s" % (dbse, "064GLN-067ARG-1")] = -1.502
+BIND_SILVER["%s-%s" % (dbse, "064TYR-067GLU-1")] = -6.519
+BIND_SILVER["%s-%s" % (dbse, "066PHE-072THR-1")] = -1.963
+BIND_SILVER["%s-%s" % (dbse, "068ASP-072GLN-1")] = -3.899
+BIND_SILVER["%s-%s" % (dbse, "071GLU-075ASP-1")] = -7.283
+BIND_SILVER["%s-%s" % (dbse, "072ASN-075ARG-2")] = -1.300
+BIND_SILVER["%s-%s" % (dbse, "072THR-075PRO-1")] = -2.100
+BIND_SILVER["%s-%s" % (dbse, "081ASN-084GLY-1")] = -5.985
+BIND_SILVER["%s-%s" % (dbse, "081LEU-084LYS-1")] = -1.507
+BIND_SILVER["%s-%s" % (dbse, "082LEU-106LEU-2")] = -7.836
+BIND_SILVER["%s-%s" % (dbse, "084LEU-088MET-2")] = -7.448
+BIND_SILVER["%s-%s" % (dbse, "087ALA-171PRO-2")] = -8.365
+BIND_SILVER["%s-%s" % (dbse, "087LEU-090TYR-1")] = -6.187
+BIND_SILVER["%s-%s" % (dbse, "088PHE-091ALA-1")] = -1.445
+BIND_SILVER["%s-%s" % (dbse, "089MET-093GLY-1")] = -6.946
+BIND_SILVER["%s-%s" % (dbse, "092SER-096ARG-2")] = -7.589
+BIND_SILVER["%s-%s" % (dbse, "095GLN-183ILE-1")] = -8.448
+BIND_SILVER["%s-%s" % (dbse, "095LYS-107ILE-2")] = -8.007
+BIND_SILVER["%s-%s" % (dbse, "097GLU-100THR-2")] = -5.303
+BIND_SILVER["%s-%s" % (dbse, "102GLN-106ILE-1")] = -6.676
+BIND_SILVER["%s-%s" % (dbse, "104VAL-108ILE-1")] = -7.628
+BIND_SILVER["%s-%s" % (dbse, "108LYS-112TYR-1")] = -7.397
+BIND_SILVER["%s-%s" % (dbse, "108TYR-129TRP-1")] = -7.591
+BIND_SILVER["%s-%s" % (dbse, "112SER-115ALA-2")] = -1.785
+BIND_SILVER["%s-%s" % (dbse, "112TRP-115ARG-1")] = -2.022
+BIND_SILVER["%s-%s" % (dbse, "113TRP-124HIE-2")] = -8.153
+BIND_SILVER["%s-%s" % (dbse, "115GLN-118ARG-2")] = -6.585
+BIND_SILVER["%s-%s" % (dbse, "119MET-122VAL-1")] = -1.388
+BIND_SILVER["%s-%s" % (dbse, "121LYS-125ALA-1")] = -6.188
+BIND_SILVER["%s-%s" % (dbse, "121VAL-155THR-2")] = -7.480
+BIND_SILVER["%s-%s" % (dbse, "126VAL-129ALA-1")] = -1.340
+BIND_SILVER["%s-%s" % (dbse, "133LYS-137ASN-1")] = -7.522
+BIND_SILVER["%s-%s" % (dbse, "134GLU-138ARG-1")] = -7.375
+BIND_SILVER["%s-%s" % (dbse, "135ARG-152ALA-2")] = -7.377
+BIND_SILVER["%s-%s" % (dbse, "137SER-144LYS-1")] = -7.731
+BIND_SILVER["%s-%s" % (dbse, "140SER-144THR-2")] = -7.668
+BIND_SILVER["%s-%s" % (dbse, "142ALA-146PHE-1")] = -7.653
+BIND_SILVER["%s-%s" % (dbse, "143VAL-147GLU-1")] = -7.454
+BIND_SILVER["%s-%s" % (dbse, "146PHE-150LEU-1")] = -7.290
+BIND_SILVER["%s-%s" % (dbse, "150LYS-158LEU-2")] = -8.530
+BIND_SILVER["%s-%s" % (dbse, "157LYS-160VAL-1")] = 1.996
+BIND_SILVER["%s-%s" % (dbse, "162ALA-176GLY-1")] = -8.443
+BIND_SILVER["%s-%s" % (dbse, "167GLY-232GLY-1")] = -7.120
+BIND_SILVER["%s-%s" % (dbse, "168GLY-172LYS-2")] = -7.440
+BIND_SILVER["%s-%s" % (dbse, "171ALA-175GLU-1")] = -1.912
+BIND_SILVER["%s-%s" % (dbse, "172GLY-175TRP-1")] = -5.297
+BIND_SILVER["%s-%s" % (dbse, "197TYR-201LEU-2")] = -6.934
+BIND_SILVER["%s-%s" % (dbse, "199SER-202TYR-1")] = -1.140
+BIND_SILVER["%s-%s" % (dbse, "205THR-208GLU-1")] = -1.083
+BIND_SILVER["%s-%s" % (dbse, "205THR-209LEU-2")] = -5.867
+BIND_SILVER["%s-%s" % (dbse, "228ARG-232GLU-1")] = -7.561
 # Set default
 BIND = BIND_SILVER
 
 # <<< Comment Lines >>>
 TAGL = {}
-rxnpattern = re.compile(r'^(.+)-(.+)-(.+)$')
+rxnpattern = re.compile(r"^(.+)-(.+)-(.+)$")
 for rxn in HRXN:
     molname = rxnpattern.match(rxn)
-    TAGL['%s-%s' % (dbse, rxn)] = """Residue %s and %s interaction No. %s""" % (molname.group(1), molname.group(2),
-                                                                                molname.group(3))
-    TAGL['%s-%s-dimer' % (dbse, rxn)] = """Dimer from %s""" % (rxn)
-    TAGL['%s-%s-monoA-CP' % (dbse, rxn)] = """Monomer A from %s""" % (rxn)
-    TAGL['%s-%s-monoB-CP' % (dbse, rxn)] = """Monomer B from %s""" % (rxn)
-    TAGL['%s-%s-monoA-unCP' % (dbse, rxn)] = """Monomer A from %s""" % (rxn)
-    TAGL['%s-%s-monoB-unCP' % (dbse, rxn)] = """Monomer B from %s""" % (rxn)
+    TAGL["%s-%s" % (dbse, rxn)] = """Residue %s and %s interaction No. %s""" % (
+        molname.group(1),
+        molname.group(2),
+        molname.group(3),
+    )
+    TAGL["%s-%s-dimer" % (dbse, rxn)] = """Dimer from %s""" % (rxn)
+    TAGL["%s-%s-monoA-CP" % (dbse, rxn)] = """Monomer A from %s""" % (rxn)
+    TAGL["%s-%s-monoB-CP" % (dbse, rxn)] = """Monomer B from %s""" % (rxn)
+    TAGL["%s-%s-monoA-unCP" % (dbse, rxn)] = """Monomer A from %s""" % (rxn)
+    TAGL["%s-%s-monoB-unCP" % (dbse, rxn)] = """Monomer B from %s""" % (rxn)
 
-TAGL['dbse'] = 'interaction energies for peptide backbone-backbone complexes'
-TAGL['shb'] = 'singly hydrogen-bonded complexes'
-TAGL['ua'] = 'unaligned backbone structures'
-TAGL['bbi25'] = 'representative sample of 25'
-TAGL['default'] = 'entire database'
+TAGL["dbse"] = "interaction energies for peptide backbone-backbone complexes"
+TAGL["shb"] = "singly hydrogen-bonded complexes"
+TAGL["ua"] = "unaligned backbone structures"
+TAGL["bbi25"] = "representative sample of 25"
+TAGL["default"] = "entire database"
 
 # <<< Geometry Specification Strings >>>
 GEOS = {}
 
-GEOS['%s-%s-dimer' % (dbse, '004GLU-063LEU-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "004GLU-063LEU-2")] = qcdb.Molecule("""
 0 1
 C       31.01400000    -3.84200000     7.91700000
 C       32.77900000    -5.82000000    10.65500000
@@ -384,7 +572,7 @@ H       32.23175000   -10.94459000     9.29880200
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '005ASP-008SER-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "005ASP-008SER-2")] = qcdb.Molecule("""
 0 1
 C       26.24300000    -6.23800000    -1.26400000
 C       23.28800000    -8.18300000     0.13400000
@@ -415,7 +603,7 @@ H       26.38917000   -11.10225000     1.76057000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '005LEU-008VAL-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "005LEU-008VAL-2")] = qcdb.Molecule("""
 0 1
 C       14.16900000    62.02000000     7.59200000
 C       12.42900000    58.71800000     8.29000000
@@ -446,7 +634,7 @@ H       10.74514000    58.61961000    12.18442000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '007GLN-010ASN-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "007GLN-010ASN-1")] = qcdb.Molecule("""
 0 1
 C        2.71600000     0.82000000    22.90400000
 C        6.42600000     1.29500000    22.11000000
@@ -477,7 +665,7 @@ H        7.00958500     0.77023540    26.63411000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '007VAL-041VAL-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "007VAL-041VAL-1")] = qcdb.Molecule("""
 0 1
 C       22.55700000     0.21000000     5.45400000
 C       19.77500000     1.94900000     3.54200000
@@ -508,7 +696,7 @@ H       24.94375000     4.15420700     2.71309200
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '008ILE-012LEU-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "008ILE-012LEU-1")] = qcdb.Molecule("""
 0 1
 C       32.59400000    -4.62600000    57.97600000
 C       33.24900000    -3.95000000    54.28700000
@@ -539,7 +727,7 @@ H       28.63932000    -6.73144500    56.45492000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '008TRP-251HIE-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "008TRP-251HIE-2")] = qcdb.Molecule("""
 0 1
 C       27.44300000    25.35600000    25.79500000
 C       27.24800000    25.85300000    29.56200000
@@ -570,7 +758,7 @@ H       32.49434000    23.11411000    24.36216000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '011ILE-014PHE-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "011ILE-014PHE-1")] = qcdb.Molecule("""
 0 1
 C        6.60700000    -3.99700000    21.99700000
 C       10.15300000    -3.37000000    23.27900000
@@ -601,7 +789,7 @@ H        8.69941400    -5.44013900    27.08403000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '012LEU-085ASP-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "012LEU-085ASP-1")] = qcdb.Molecule("""
 0 1
 C       12.00300000     7.41700000     2.33500000
 C       12.21000000     3.98800000     0.65700000
@@ -632,7 +820,7 @@ H        9.39303400     1.92446000     3.86121900
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '014LYS-018GLU-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "014LYS-018GLU-1")] = qcdb.Molecule("""
 0 1
 C       16.22000000    16.91300000    11.79900000
 C       13.19600000    14.75900000    12.64600000
@@ -663,7 +851,7 @@ H       17.68895000    13.07583000     9.52996800
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '014VAL-017GLU-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "014VAL-017GLU-1")] = qcdb.Molecule("""
 0 1
 C       10.38200000    95.07800000    19.05400000
 C        8.57800000    91.68400000    19.21700000
@@ -694,7 +882,7 @@ H       11.63536000    89.40124000    22.26727000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '015GLN-018LEU-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "015GLN-018LEU-1")] = qcdb.Molecule("""
 0 1
 C        1.80300000     4.53500000    38.27400000
 C       -1.68700000     5.80100000    37.42600000
@@ -725,7 +913,7 @@ H        0.57226140     9.43715500    35.88355000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '015LEU-026LEU-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "015LEU-026LEU-1")] = qcdb.Molecule("""
 0 1
 C       39.68500000     9.51600000     9.12800000
 C       36.88800000    12.06900000     8.71200000
@@ -756,7 +944,7 @@ H       40.58788000    15.39983000    10.12038000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '017ASN-021LYS-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "017ASN-021LYS-2")] = qcdb.Molecule("""
 0 1
 C       18.31000000    53.33500000    13.55200000
 C       15.15800000    51.25200000    13.89900000
@@ -787,7 +975,7 @@ H       20.20791000    49.23261000    11.92684000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '017LEU-025ILE-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "017LEU-025ILE-1")] = qcdb.Molecule("""
 0 1
 C        7.17000000    24.28800000     3.37300000
 C        4.69000000    27.02900000     2.57900000
@@ -818,7 +1006,7 @@ H        2.01418400    26.14415000     6.55543600
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '019LEU-022MET-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "019LEU-022MET-1")] = qcdb.Molecule("""
 0 1
 C       15.07200000     3.59400000     7.20300000
 C       18.65000000     4.93300000     7.58500000
@@ -849,7 +1037,7 @@ H       16.55190000     8.08422700    10.04243000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '023LYS-146SER-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "023LYS-146SER-2")] = qcdb.Molecule("""
 0 1
 C        0.57400000   -11.81000000     5.51200000
 C        2.98900000   -11.59600000     8.42900000
@@ -880,7 +1068,7 @@ H        7.13044300    -8.67023000     6.45905500
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '024PHE-028ALA-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "024PHE-028ALA-1")] = qcdb.Molecule("""
 0 1
 C       13.10800000    32.54900000    28.14000000
 C       12.74900000    35.41500000    25.67100000
@@ -911,7 +1099,7 @@ H       10.73578000    30.06750000    24.74422000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '024THR-041GLU-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "024THR-041GLU-2")] = qcdb.Molecule("""
 0 1
 C        1.19400000    22.61400000     8.20600000
 C        3.82700000    20.42100000     9.80300000
@@ -942,7 +1130,7 @@ H        6.45927300    20.07380000     5.15432300
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '025GLY-029SER-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "025GLY-029SER-2")] = qcdb.Molecule("""
 0 1
 C        7.13200000    67.30800000    -0.96500000
 C       10.74700000    68.19700000    -0.17500000
@@ -973,7 +1161,7 @@ H        7.65143200    63.48974000     1.23758900
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '025ILE-070TRP-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "025ILE-070TRP-1")] = qcdb.Molecule("""
 0 1
 C        6.01900000   -13.17600000    -7.12800000
 C        4.25900000   -14.74800000    -4.14500000
@@ -1004,7 +1192,7 @@ H        8.13849500   -18.40056000    -5.54130900
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '027VAL-031LEU-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "027VAL-031LEU-1")] = qcdb.Molecule("""
 0 1
 C       10.66300000    30.69400000    23.84300000
 C        8.18500000    33.56600000    24.48600000
@@ -1035,7 +1223,7 @@ H        8.46768900    30.33135000    19.79598000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '027VAL-068GLU-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "027VAL-068GLU-2")] = qcdb.Molecule("""
 0 1
 C        1.24900000   -16.76400000    -5.34400000
 C        4.25900000   -14.74800000    -4.14500000
@@ -1066,7 +1254,7 @@ H        6.96417200   -18.70205000    -6.85785900
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '029GLU-032VAL-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "029GLU-032VAL-1")] = qcdb.Molecule("""
 0 1
 C        5.68300000     7.08200000     2.74100000
 C        2.70200000     8.99900000     1.32500000
@@ -1097,7 +1285,7 @@ H        2.15798000    10.27384000     5.67503500
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '030TRP-178GLY-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "030TRP-178GLY-2")] = qcdb.Molecule("""
 0 1
 C       48.55800000    20.43700000    27.72000000
 C       49.42900000    23.30200000    25.41700000
@@ -1128,7 +1316,7 @@ H       46.11238000    22.51262000    21.24554000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '033ASN-036TRP-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "033ASN-036TRP-2")] = qcdb.Molecule("""
 0 1
 C      -15.84200000   -16.31900000    11.52700000
 C      -14.66100000   -17.23500000     8.03600000
@@ -1159,7 +1347,7 @@ H      -11.39262000   -10.72477000    11.73475000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '033VAL-115VAL-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "033VAL-115VAL-1")] = qcdb.Molecule("""
 0 1
 C        3.50000000   -15.42200000    -8.51000000
 C        6.13100000   -14.90800000    -5.84500000
@@ -1190,7 +1378,7 @@ H        9.62625800   -16.05438000    -8.88205600
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '035TRP-056ILE-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "035TRP-056ILE-1")] = qcdb.Molecule("""
 0 1
 C       26.94200000     3.32900000    60.85700000
 C       23.36400000     4.46100000    60.67500000
@@ -1221,7 +1409,7 @@ H       23.48034000     4.88360800    65.96463000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '037PRO-041ALA-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "037PRO-041ALA-1")] = qcdb.Molecule("""
 0 1
 C        1.45400000     4.71900000    34.53000000
 C        3.13000000     7.08600000    32.05200000
@@ -1252,7 +1440,7 @@ H        2.30265300     1.59170400    31.64011000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '038ALA-041GLY-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "038ALA-041GLY-1")] = qcdb.Molecule("""
 0 1
 C       17.65300000     1.60500000    -0.70200000
 C       15.39900000    -1.42800000    -0.29600000
@@ -1283,7 +1471,7 @@ H       15.01510000    -0.47284690     4.04637200
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '038GLU-047GLU-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "038GLU-047GLU-2")] = qcdb.Molecule("""
 0 1
 C      -16.11100000    27.50200000   -23.68000000
 C      -19.81800000    28.30500000   -23.42700000
@@ -1314,7 +1502,7 @@ H      -19.31530000    23.70215000   -26.34532000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '039SER-046MET-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "039SER-046MET-1")] = qcdb.Molecule("""
 0 1
 C       37.13200000    14.35600000    -9.09000000
 C       37.95400000    10.90500000   -10.49300000
@@ -1345,7 +1533,7 @@ H       34.25590000    11.43015000   -14.24570000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '040THR-048VAL-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "040THR-048VAL-2")] = qcdb.Molecule("""
 0 1
 C        7.24400000    -6.35700000     9.43600000
 C        8.35500000    -4.20300000    12.36200000
@@ -1376,7 +1564,7 @@ H        7.65234400    -7.85801800    15.59342000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '040THR-049GLN-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "040THR-049GLN-2")] = qcdb.Molecule("""
 0 1
 C        7.24400000    -6.35700000     9.43600000
 C        8.61000000    -9.79500000     8.59000000
@@ -1407,7 +1595,7 @@ H        4.65710300   -13.03771000     9.60610800
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '041GLY-045LEU-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "041GLY-045LEU-2")] = qcdb.Molecule("""
 0 1
 C       13.83700000     3.27200000     2.04300000
 C       11.50000000     2.16700000    -0.76900000
@@ -1438,7 +1626,7 @@ H       10.10993000     3.52005200     4.57964100
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '041LEU-045LEU-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "041LEU-045LEU-1")] = qcdb.Molecule("""
 0 1
 C       36.48200000    37.02700000     7.19500000
 C       32.85400000    36.41300000     8.20500000
@@ -1469,7 +1657,7 @@ H       34.64620000    36.33014000     2.76080800
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '042LEU-047ILE-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "042LEU-047ILE-2")] = qcdb.Molecule("""
 0 1
 C       27.98600000    25.44300000    -1.06900000
 C       27.41300000    29.03600000     0.02400000
@@ -1500,7 +1688,7 @@ H       23.72691000    27.78661000     4.19245400
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '044SER-047GLU-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "044SER-047GLU-1")] = qcdb.Molecule("""
 0 1
 C       -4.41100000    -1.31100000     3.89100000
 C       -2.56600000     0.77800000     1.28300000
@@ -1531,7 +1719,7 @@ H       -1.10755600    -3.31988200     0.17187120
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '044TRP-054LEU-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "044TRP-054LEU-1")] = qcdb.Molecule("""
 0 1
 C       10.95000000   -17.77800000    14.61300000
 C        8.09500000   -17.57500000    17.10300000
@@ -1562,7 +1750,7 @@ H        8.57411400   -22.27476000    18.27958000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '048GLU-052LYS-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "048GLU-052LYS-1")] = qcdb.Molecule("""
 0 1
 C       29.19600000    -4.52700000    -8.01800000
 C       30.56800000    -5.20200000    -4.49700000
@@ -1593,7 +1781,7 @@ H       25.58721000    -6.87263200    -6.63124900
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '051ALA-054VAL-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "051ALA-054VAL-1")] = qcdb.Molecule("""
 0 1
 C       11.19000000    25.57800000    16.41500000
 C       11.03900000    29.37100000    16.32400000
@@ -1624,7 +1812,7 @@ H        2.88687400    26.65965000    16.29349000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '051ALA-055ASN-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "051ALA-055ASN-1")] = qcdb.Molecule("""
 0 1
 C       15.43500000    31.69400000    28.98700000
 C       18.02000000    32.43800000    26.28000000
@@ -1655,7 +1843,7 @@ H       14.44896000    36.21332000    28.75222000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '052CYS-056ALA-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "052CYS-056ALA-1")] = qcdb.Molecule("""
 0 1
 C       26.72000000    17.60100000    -3.75600000
 C       26.45300000    15.64600000    -7.03100000
@@ -1686,7 +1874,7 @@ H       29.15797000    13.56143000    -2.39219900
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '054ARG-062GLN-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "054ARG-062GLN-1")] = qcdb.Molecule("""
 0 1
 C       -5.93600000    14.71300000    11.54100000
 C       -7.26700000    11.13900000    11.56900000
@@ -1717,7 +1905,7 @@ H       -3.85167500     8.81225000    12.65614000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '055ASN-058GLU-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "055ASN-058GLU-2")] = qcdb.Molecule("""
 0 1
 C        3.19200000    17.07400000    -9.88600000
 C        5.08000000    20.00600000    -8.31000000
@@ -1748,7 +1936,7 @@ H        7.02139000    16.89545000    -5.54184000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '060LEU-064TYR-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "060LEU-064TYR-1")] = qcdb.Molecule("""
 0 1
 C       26.99500000     5.04200000    -5.25200000
 C       30.19300000     4.10900000    -7.06200000
@@ -1779,7 +1967,7 @@ H       28.62863000     1.67276100    -1.45241500
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '060TYR-064LEU-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "060TYR-064LEU-2")] = qcdb.Molecule("""
 0 1
 C        0.74400000    20.88200000     9.46700000
 C        3.82900000    19.04800000     8.16100000
@@ -1810,7 +1998,7 @@ H        2.41953600    17.71840000    12.32698000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '061VAL-064TYR-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "061VAL-064TYR-2")] = qcdb.Molecule("""
 0 1
 C       27.19000000     8.05900000    14.90900000
 C       30.05500000     6.38400000    13.02700000
@@ -1841,7 +2029,7 @@ H       32.30761000     7.89313400    13.00061000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '062LEU-066LYS-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "062LEU-066LYS-2")] = qcdb.Molecule("""
 0 1
 C       17.65400000    16.07700000    -4.70500000
 C       21.17800000    15.82600000    -3.21600000
@@ -1872,7 +2060,7 @@ H       16.69298000    17.18229000     0.17071660
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '064GLN-067ARG-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "064GLN-067ARG-1")] = qcdb.Molecule("""
 0 1
 C       10.81800000   -25.83400000    -6.60000000
 C       14.08600000   -27.13200000    -5.21000000
@@ -1903,7 +2091,7 @@ H       15.01139000   -22.74833000    -4.34998800
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '064TYR-067GLU-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "064TYR-067GLU-1")] = qcdb.Molecule("""
 0 1
 C       31.49500000   -10.17100000     9.56100000
 C       34.83300000   -11.75500000     8.70300000
@@ -1934,7 +2122,7 @@ H       34.45950000   -14.29445000     4.93272600
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '066PHE-072THR-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "066PHE-072THR-1")] = qcdb.Molecule("""
 0 1
 C       38.12400000    19.12600000    10.45700000
 C       41.27800000    17.83300000    12.11600000
@@ -1965,7 +2153,7 @@ H       35.82698000    20.29205000    15.03690000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '068ASP-072GLN-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "068ASP-072GLN-1")] = qcdb.Molecule("""
 0 1
 C      -12.64500000    14.92300000   -14.97700000
 C      -16.34600000    14.13400000   -14.69400000
@@ -1996,7 +2184,7 @@ H      -14.02744000    19.29478000   -14.20510000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '071GLU-075ASP-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "071GLU-075ASP-1")] = qcdb.Molecule("""
 0 1
 C       15.57200000    63.34800000    -3.02500000
 C       15.98300000    65.88800000    -0.20200000
@@ -2027,7 +2215,7 @@ H       17.23709000    66.62674000    -6.00112200
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '072ASN-075ARG-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "072ASN-075ARG-2")] = qcdb.Molecule("""
 0 1
 C       33.89600000     6.61200000     3.83600000
 C       34.69000000     4.61600000     6.97000000
@@ -2058,7 +2246,7 @@ H       30.61180000     2.78413400     6.15484200
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '072THR-075PRO-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "072THR-075PRO-1")] = qcdb.Molecule("""
 0 1
 C       24.87800000    30.59800000    37.00200000
 C       23.98600000    30.69500000    40.66600000
@@ -2089,7 +2277,7 @@ H       24.03805000    25.80829000    39.78084000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '081ASN-084GLY-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "081ASN-084GLY-1")] = qcdb.Molecule("""
 0 1
 C       13.82900000     2.70400000    76.43400000
 C       13.74200000     6.48100000    76.11400000
@@ -2120,7 +2308,7 @@ H       18.29329000     6.23713200    76.26669000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '081LEU-084LYS-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "081LEU-084LYS-1")] = qcdb.Molecule("""
 0 1
 C       34.35100000    -7.61400000     4.94900000
 C       33.84100000    -8.35400000     1.25300000
@@ -2151,7 +2339,7 @@ H       38.35989000    -8.93906600     1.35095700
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '082LEU-106LEU-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "082LEU-106LEU-2")] = qcdb.Molecule("""
 0 1
 C       21.00100000     3.07600000     2.09400000
 C       23.62700000     5.79100000     2.46200000
@@ -2182,7 +2370,7 @@ H       21.66437000    10.13711000     2.09892200
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '084LEU-088MET-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "084LEU-088MET-2")] = qcdb.Molecule("""
 0 1
 C       29.89300000    14.63600000     9.04800000
 C       31.80200000    14.09700000     5.81700000
@@ -2213,7 +2401,7 @@ H       28.15506000    18.20895000     7.18866100
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '087ALA-171PRO-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "087ALA-171PRO-2")] = qcdb.Molecule("""
 0 1
 C       24.55400000    -8.66200000    -7.54600000
 C       22.97800000    -5.22600000    -8.00400000
@@ -2244,7 +2432,7 @@ H       20.26252000    -7.57213400    -4.60956300
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '087LEU-090TYR-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "087LEU-090TYR-1")] = qcdb.Molecule("""
 0 1
 C       16.60300000     4.96400000    15.18700000
 C       17.39400000     1.45500000    13.87700000
@@ -2275,7 +2463,7 @@ H       13.78416000     2.43425000    11.32241000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '088PHE-091ALA-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "088PHE-091ALA-1")] = qcdb.Molecule("""
 0 1
 C        8.88700000    97.91800000    24.54500000
 C        7.01100000   100.71100000    26.37800000
@@ -2306,7 +2494,7 @@ H        5.99833600   102.66930000    22.38670000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '089MET-093GLY-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "089MET-093GLY-1")] = qcdb.Molecule("""
 0 1
 C       10.15500000    28.16600000    14.94000000
 C        8.42100000    30.63000000    12.60000000
@@ -2337,7 +2525,7 @@ H        9.06646600    30.96557000    18.14838000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '092SER-096ARG-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "092SER-096ARG-2")] = qcdb.Molecule("""
 0 1
 C       20.72500000     2.77400000    15.80200000
 C       22.42300000     0.67100000    13.12000000
@@ -2368,7 +2556,7 @@ H       17.00310000     2.00729400    13.92898000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '095GLN-183ILE-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "095GLN-183ILE-1")] = qcdb.Molecule("""
 0 1
 C       12.33100000     5.30600000   -10.12800000
 C       15.66800000     3.88400000   -11.25800000
@@ -2399,7 +2587,7 @@ H       16.03889000     0.48457490    -7.90533000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '095LYS-107ILE-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "095LYS-107ILE-2")] = qcdb.Molecule("""
 0 1
 C       16.07000000    16.05100000    25.83200000
 C       18.67100000    13.26400000    25.80500000
@@ -2430,7 +2618,7 @@ H       21.53046000    17.30278000    28.27327000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '097GLU-100THR-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "097GLU-100THR-2")] = qcdb.Molecule("""
 0 1
 C        9.39000000    -7.30300000    29.75300000
 C       11.89300000    -4.60400000    28.68400000
@@ -2461,7 +2649,7 @@ H       12.45965000    -7.57595600    25.30575000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '102GLN-106ILE-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "102GLN-106ILE-1")] = qcdb.Molecule("""
 0 1
 C       15.81800000   -10.94900000     7.38500000
 C       15.16100000   -12.86700000    10.61500000
@@ -2492,7 +2680,7 @@ H       13.50531000    -7.57943600     8.98912300
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '104VAL-108ILE-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "104VAL-108ILE-1")] = qcdb.Molecule("""
 0 1
 C       37.23300000    -8.66000000    10.91900000
 C       38.92400000   -12.07000000    10.79300000
@@ -2523,7 +2711,7 @@ H       38.57739000    -8.49842400     6.25826000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '108LYS-112TYR-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "108LYS-112TYR-1")] = qcdb.Molecule("""
 0 1
 C       -0.54400000     1.81600000    15.86000000
 C        1.42400000     4.71400000    14.31800000
@@ -2554,7 +2742,7 @@ H       -2.96919000     2.12759800    11.62566000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '108TYR-129TRP-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "108TYR-129TRP-1")] = qcdb.Molecule("""
 0 1
 C       21.45900000    16.82300000    27.28600000
 C       21.42500000    17.10300000    31.02900000
@@ -2585,7 +2773,7 @@ H       22.56577000    22.69806000    30.70023000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '112SER-115ALA-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "112SER-115ALA-2")] = qcdb.Molecule("""
 0 1
 C       19.26500000   -11.56600000    27.68600000
 C       17.01200000    -9.19000000    29.53700000
@@ -2616,7 +2804,7 @@ H       17.95706000   -12.10543000    32.86979000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '112TRP-115ARG-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "112TRP-115ARG-1")] = qcdb.Molecule("""
 0 1
 C       12.99700000   107.58400000    30.66100000
 C       11.31500000   109.73200000    33.35200000
@@ -2647,7 +2835,7 @@ H       14.59802000   112.89490000    32.64005000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '113TRP-124HIE-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "113TRP-124HIE-2")] = qcdb.Molecule("""
 0 1
 C       15.69200000    18.90600000    -3.72600000
 C       16.61100000    15.27700000    -4.31600000
@@ -2678,7 +2866,7 @@ H       21.70552000    15.47354000    -2.75095500
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '115GLN-118ARG-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "115GLN-118ARG-2")] = qcdb.Molecule("""
 0 1
 C       30.32800000    52.65700000    61.95600000
 C       26.93700000    54.24800000    61.33000000
@@ -2709,7 +2897,7 @@ H       26.51774000    55.17149000    58.77639000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '119MET-122VAL-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "119MET-122VAL-1")] = qcdb.Molecule("""
 0 1
 C       45.95400000    -1.61800000     9.16300000
 C       45.36600000     0.73800000     6.24400000
@@ -2740,7 +2928,7 @@ H       45.53226000    -2.87443100     3.53479500
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '121LYS-125ALA-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "121LYS-125ALA-1")] = qcdb.Molecule("""
 0 1
 C       44.76000000    -2.15600000     3.84700000
 C       42.46700000    -3.99300000     6.27200000
@@ -2771,7 +2959,7 @@ H       40.38072000    -0.34283620     4.36008000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '121VAL-155THR-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "121VAL-155THR-2")] = qcdb.Molecule("""
 0 1
 C       13.19700000    20.16700000    11.57000000
 C       12.05000000    18.43000000     8.37400000
@@ -2802,7 +2990,7 @@ H       10.50478000    22.91227000     8.07891000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '126VAL-129ALA-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "126VAL-129ALA-1")] = qcdb.Molecule("""
 0 1
 C       19.00600000    31.54700000    21.22500000
 C       18.52800000    32.86900000    24.78400000
@@ -2833,7 +3021,7 @@ H       15.87302000    29.16771000    25.13057000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '133LYS-137ASN-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "133LYS-137ASN-1")] = qcdb.Molecule("""
 0 1
 C        0.71300000     5.33600000    27.76300000
 C        1.38700000     1.63800000    28.30600000
@@ -2864,7 +3052,7 @@ H        4.15324200     6.10359500    29.93914000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '134GLU-138ARG-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "134GLU-138ARG-1")] = qcdb.Molecule("""
 0 1
 C       -5.47100000    -3.30200000    72.20800000
 C       -4.40800000    -0.33600000    74.43800000
@@ -2895,7 +3083,7 @@ H       -2.02256900    -1.75743300    69.50168000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '135ARG-152ALA-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "135ARG-152ALA-2")] = qcdb.Molecule("""
 0 1
 C       14.42800000     5.43400000    10.89000000
 C       14.29100000     4.73900000     7.15400000
@@ -2926,7 +3114,7 @@ H       10.33999000     9.28405700     7.06366100
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '137SER-144LYS-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "137SER-144LYS-1")] = qcdb.Molecule("""
 0 1
 C       26.86200000    49.40800000    54.49800000
 C       26.15800000    50.39700000    58.07800000
@@ -2957,7 +3145,7 @@ H       26.33313000    46.02721000    60.16565000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '140SER-144THR-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "140SER-144THR-2")] = qcdb.Molecule("""
 0 1
 C      -27.66700000    11.00300000   -22.84300000
 C      -25.41500000    13.54300000   -24.57200000
@@ -2988,7 +3176,7 @@ H      -24.37686000     7.85338700   -24.50538000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '142ALA-146PHE-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "142ALA-146PHE-1")] = qcdb.Molecule("""
 0 1
 C       33.55000000    94.86800000    46.73100000
 C       35.97100000    97.65100000    45.54600000
@@ -3019,7 +3207,7 @@ H       35.81858000    92.54917000    42.88354000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '143VAL-147GLU-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "143VAL-147GLU-1")] = qcdb.Molecule("""
 0 1
 C       -1.86200000     9.06900000    -7.73200000
 C       -1.72900000     5.24100000    -7.46700000
@@ -3050,7 +3238,7 @@ H        2.83065700     8.64838900    -6.82932900
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '146PHE-150LEU-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "146PHE-150LEU-1")] = qcdb.Molecule("""
 0 1
 C       35.29100000     3.15000000    19.07200000
 C       32.79300000     2.00300000    21.70800000
@@ -3081,7 +3269,7 @@ H       38.44675000     2.74302700    21.85391000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '150LYS-158LEU-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "150LYS-158LEU-2")] = qcdb.Molecule("""
 0 1
 C        9.85300000     2.84200000    -3.55200000
 C       10.78000000     4.84700000    -0.46600000
@@ -3112,7 +3300,7 @@ H        9.87438900     9.03877200    -3.43124000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '157LYS-160VAL-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "157LYS-160VAL-1")] = qcdb.Molecule("""
 0 1
 C        3.73200000     8.86900000     8.77600000
 C        5.41400000    11.67200000     6.81700000
@@ -3143,7 +3331,7 @@ H        8.55369600    13.58398000    14.30862000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '162ALA-176GLY-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "162ALA-176GLY-1")] = qcdb.Molecule("""
 0 1
 C      -17.74000000    15.19200000    -3.17800000
 C      -19.41700000    14.10800000    -6.43200000
@@ -3174,7 +3362,7 @@ H      -23.21900000    14.58874000    -1.75312500
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '167GLY-232GLY-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "167GLY-232GLY-1")] = qcdb.Molecule("""
 0 1
 C      -21.57600000     9.57000000    -2.09200000
 C      -20.37700000     7.34000000     0.75300000
@@ -3205,7 +3393,7 @@ H      -24.61164000     4.94192400    -1.89280900
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '168GLY-172LYS-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "168GLY-172LYS-2")] = qcdb.Molecule("""
 0 1
 C       29.97500000    85.51300000    43.09100000
 C       28.46200000    89.04000000    43.07000000
@@ -3236,7 +3424,7 @@ H       25.05560000    84.71708000    46.18223000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '171ALA-175GLU-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "171ALA-175GLU-1")] = qcdb.Molecule("""
 0 1
 C       14.98600000    -3.67500000    22.14700000
 C       11.18700000    -3.38600000    22.07700000
@@ -3267,7 +3455,7 @@ H       14.78968000    -0.14379990    25.28301000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '172GLY-175TRP-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "172GLY-175TRP-1")] = qcdb.Molecule("""
 0 1
 C      -28.21300000    14.47800000    -2.71000000
 C      -27.17200000    17.90900000    -3.95200000
@@ -3298,7 +3486,7 @@ H      -22.70930000    18.34757000    -4.97388100
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '197TYR-201LEU-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "197TYR-201LEU-2")] = qcdb.Molecule("""
 0 1
 C       19.26600000    20.16900000     9.99800000
 C       21.03600000    22.26700000     7.30200000
@@ -3329,7 +3517,7 @@ H       20.16373000    16.64485000     7.44912300
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '199SER-202TYR-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "199SER-202TYR-1")] = qcdb.Molecule("""
 0 1
 C       43.86400000    26.88100000    10.53600000
 C       43.20800000    24.30000000     7.80900000
@@ -3360,7 +3548,7 @@ H       38.85022000    23.99139000     8.96624700
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '205THR-208GLU-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "205THR-208GLU-1")] = qcdb.Molecule("""
 0 1
 C       27.52100000    12.50600000    26.48200000
 C       29.67700000    10.31900000    28.70500000
@@ -3391,7 +3579,7 @@ H       32.32319000    13.91761000    29.38292000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '205THR-209LEU-2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "205THR-209LEU-2")] = qcdb.Molecule("""
 0 1
 C       27.52100000    12.50600000    26.48200000
 C       29.67700000    10.31900000    28.70500000
@@ -3422,7 +3610,7 @@ H       28.00426000    16.04422000    29.91822000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '228ARG-232GLU-1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "228ARG-232GLU-1")] = qcdb.Molecule("""
 0 1
 C       48.27300000    30.47900000    27.65500000
 C       46.29600000    28.47400000    25.10100000
@@ -3455,7 +3643,7 @@ units angstrom
 
 # <<< Derived Geometry Strings >>>
 for rxn in HRXN:
-    GEOS['%s-%s-monoA-unCP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(1)
-    GEOS['%s-%s-monoB-unCP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(2)
-    GEOS['%s-%s-monoA-CP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(1, 2)
-    GEOS['%s-%s-monoB-CP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(2, 1)
+    GEOS["%s-%s-monoA-unCP" % (dbse, rxn)] = GEOS["%s-%s-dimer" % (dbse, rxn)].extract_fragments(1)
+    GEOS["%s-%s-monoB-unCP" % (dbse, rxn)] = GEOS["%s-%s-dimer" % (dbse, rxn)].extract_fragments(2)
+    GEOS["%s-%s-monoA-CP" % (dbse, rxn)] = GEOS["%s-%s-dimer" % (dbse, rxn)].extract_fragments(1, 2)
+    GEOS["%s-%s-monoB-CP" % (dbse, rxn)] = GEOS["%s-%s-dimer" % (dbse, rxn)].extract_fragments(2, 1)

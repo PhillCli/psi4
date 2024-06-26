@@ -1,9 +1,9 @@
 import numpy as np
 import pytest
+from utils import compare_arrays, compare_values
 
 import psi4
-from psi4.driver.procrouting.response.scf_products import (TDRSCFEngine, TDUSCFEngine)
-from utils import compare_arrays, compare_values
+from psi4.driver.procrouting.response.scf_products import TDRSCFEngine, TDUSCFEngine
 
 pytestmark = [pytest.mark.psi, pytest.mark.api]
 
@@ -81,7 +81,7 @@ def build_RHF_AB_C1_singlet_df(wfn):
     aux = wfn.get_basisset("DF_BASIS_SCF")
     Ppq = np.squeeze(mints.ao_eri(aux, zero_bas, orb, orb))
     metric = mints.ao_eri(aux, zero_bas, aux, zero_bas)
-    metric.power(-0.5, 1.e-14)
+    metric.power(-0.5, 1.0e-14)
     metric = np.squeeze(metric)
     Qpq = np.einsum("QP,Ppq->Qpq", metric, Ppq, optimize=True)
     Qij = np.einsum("Qpq, pi, qj -> Qij", Qpq, Co, Co)
@@ -112,7 +112,7 @@ def build_RHF_AB_singlet_df(wfn):
     aux = wfn.get_basisset("DF_BASIS_SCF")
     Ppq = np.squeeze(mints.ao_eri(aux, zero_bas, orb, orb))
     metric = mints.ao_eri(aux, zero_bas, aux, zero_bas)
-    metric.power(-0.5, 1.e-14)
+    metric.power(-0.5, 1.0e-14)
     metric = np.squeeze(metric)
     Qpq = np.einsum("QP,Ppq->Qpq", metric, Ppq, optimize=True)
     ao2so = wfn.aotoso()
@@ -192,12 +192,12 @@ def build_UHF_AB_C1(wfn):
     A = {}
     B = {}
 
-    A['IAJB'] = np.einsum("AB,IJ->IAJB", FAB, np.eye(nI))
-    A['IAJB'] -= np.einsum("AB,IJ->IAJB", np.eye(nA), FIJ)
-    A['IAJB'] += V_IAJB
-    A['IAJB'] -= np.einsum("ABIJ->IAJB", V_ABIJ)
+    A["IAJB"] = np.einsum("AB,IJ->IAJB", FAB, np.eye(nI))
+    A["IAJB"] -= np.einsum("AB,IJ->IAJB", np.eye(nA), FIJ)
+    A["IAJB"] += V_IAJB
+    A["IAJB"] -= np.einsum("ABIJ->IAJB", V_ABIJ)
 
-    B['IAJB'] = V_IAJB - V_IAJB.swapaxes(0, 2)
+    B["IAJB"] = V_IAJB - V_IAJB.swapaxes(0, 2)
 
     Ci = wfn.Cb_subset("SO", "OCC")
     Ca = wfn.Cb_subset("SO", "VIR")
@@ -209,20 +209,20 @@ def build_UHF_AB_C1(wfn):
     na = Fab.shape[0]
     nia = ni * na
 
-    A['iajb'] = np.einsum("ab,ij->iajb", Fab, np.eye(ni))
-    A['iajb'] -= np.einsum("ab,ij->iajb", np.eye(na), Fij)
-    A['iajb'] += V_iajb
-    A['iajb'] -= np.einsum('abij->iajb', V_abij)
+    A["iajb"] = np.einsum("ab,ij->iajb", Fab, np.eye(ni))
+    A["iajb"] -= np.einsum("ab,ij->iajb", np.eye(na), Fij)
+    A["iajb"] += V_iajb
+    A["iajb"] -= np.einsum("abij->iajb", V_abij)
 
-    B['iajb'] = V_iajb - V_iajb.swapaxes(0, 2)
+    B["iajb"] = V_iajb - V_iajb.swapaxes(0, 2)
 
     V_IAjb = mints.mo_eri(CI, CA, Ci, Ca).to_array()
     V_iaJB = mints.mo_eri(Ci, Ca, CI, CA).to_array()
-    A['IAjb'] = V_IAjb
-    A['iaJB'] = V_iaJB
+    A["IAjb"] = V_IAjb
+    A["iaJB"] = V_iaJB
 
-    B['IAjb'] = V_IAjb
-    B['iaJB'] = V_iaJB
+    B["IAjb"] = V_IAjb
+    B["iaJB"] = V_iaJB
     return A, B
 
 
@@ -236,14 +236,14 @@ def test_restricted_TDA_singlet_c1():
     H 1 0.96 2 104.5
     symmetry c1
     """)
-    psi4.set_options({"scf_type": "pk", 'save_jk': True})
+    psi4.set_options({"scf_type": "pk", "save_jk": True})
     e, wfn = psi4.energy("hf/cc-pvdz", molecule=h2o, return_wfn=True)
     A_ref, _ = build_RHF_AB_C1_singlet(wfn)
     ni, na, _, _ = A_ref.shape
     nia = ni * na
     A_ref = A_ref.reshape((nia, nia))
     # Build engine
-    eng = TDRSCFEngine(wfn, ptype='tda', triplet=False)
+    eng = TDRSCFEngine(wfn, ptype="tda", triplet=False)
     # our "guess"" vectors
     ID = [psi4.core.Matrix.from_array(v.reshape((ni, na))) for v in tuple(np.eye(nia).T)]
     A_test = np.column_stack([x.to_array().flatten() for x in eng.compute_products(ID)[0]])
@@ -259,10 +259,10 @@ def test_restricted_TDA_singlet():
     H 1 0.96
     H 1 0.96 2 104.5
     """)
-    psi4.set_options({"scf_type": "pk", 'save_jk': True})
+    psi4.set_options({"scf_type": "pk", "save_jk": True})
     e, wfn = psi4.energy("hf/cc-pvdz", molecule=h2o, return_wfn=True)
     A_blocks, B_blocks = build_RHF_AB_singlet(wfn)
-    eng = TDRSCFEngine(wfn, ptype='tda', triplet=False)
+    eng = TDRSCFEngine(wfn, ptype="tda", triplet=False)
     vir_dim = wfn.nmopi() - wfn.doccpi()
     for hia, A_block in enumerate(A_blocks):
         ID = []
@@ -276,7 +276,8 @@ def test_restricted_TDA_singlet():
         x = eng.compute_products(ID)[0][0]
         # Assemble the A values as a single (ia, jb) matrix, all possible ia and jb of symmetry hia.
         A_test = np.column_stack(
-            [np.concatenate([y.flatten() for y in x.to_array()]) for x in eng.compute_products(ID)[0]])
+            [np.concatenate([y.flatten() for y in x.to_array()]) for x in eng.compute_products(ID)[0]]
+        )
         assert compare_arrays(A_block, A_test, 8, "RHF Ax C2v products")
 
 
@@ -290,14 +291,14 @@ def test_restricted_TDA_singlet_df_c1():
     H 1 0.96 2 104.5
     symmetry c1
     """)
-    psi4.set_options({"scf_type": "df", 'save_jk': True})
+    psi4.set_options({"scf_type": "df", "save_jk": True})
     e, wfn = psi4.energy("hf/cc-pvdz", molecule=h2o, return_wfn=True)
     A_ref, _ = build_RHF_AB_C1_singlet_df(wfn)
     ni, na, _, _ = A_ref.shape
     nia = ni * na
     A_ref = A_ref.reshape((nia, nia))
     # Build engine
-    eng = TDRSCFEngine(wfn, ptype='tda', triplet=False)
+    eng = TDRSCFEngine(wfn, ptype="tda", triplet=False)
     # our "guess"" vectors
     ID = [psi4.core.Matrix.from_array(v.reshape((ni, na))) for v in tuple(np.eye(nia).T)]
     A_test = np.column_stack([x.to_array().flatten() for x in eng.compute_products(ID)[0]])
@@ -313,10 +314,10 @@ def test_restricted_TDA_singlet_df():
     H 1 0.96
     H 1 0.96 2 104.5
     """)
-    psi4.set_options({"scf_type": "df", 'save_jk': True})
+    psi4.set_options({"scf_type": "df", "save_jk": True})
     e, wfn = psi4.energy("hf/cc-pvdz", molecule=h2o, return_wfn=True)
     A_blocks, B_blocks = build_RHF_AB_singlet_df(wfn)
-    eng = TDRSCFEngine(wfn, ptype='tda', triplet=False)
+    eng = TDRSCFEngine(wfn, ptype="tda", triplet=False)
     vir_dim = wfn.nmopi() - wfn.doccpi()
     for hia, A_block in enumerate(A_blocks):
         ID = []
@@ -330,7 +331,8 @@ def test_restricted_TDA_singlet_df():
         x = eng.compute_products(ID)[0][0]
         # Assemble the A values as a single (ia, jb) matrix, all possible ia and jb of symmetry hia.
         A_test = np.column_stack(
-            [np.concatenate([y.flatten() for y in x.to_array()]) for x in eng.compute_products(ID)[0]])
+            [np.concatenate([y.flatten() for y in x.to_array()]) for x in eng.compute_products(ID)[0]]
+        )
         assert compare_arrays(A_block, A_test, 8, "DF-RHF Ax C2v products")
 
 
@@ -344,14 +346,14 @@ def test_restricted_TDA_triplet_c1():
     H 1 0.96 2 104.5
     symmetry c1
     """)
-    psi4.set_options({"scf_type": "pk", 'save_jk': True})
+    psi4.set_options({"scf_type": "pk", "save_jk": True})
     e, wfn = psi4.energy("hf/cc-pvdz", molecule=h2o, return_wfn=True)
     A_ref, _ = build_RHF_AB_C1_triplet(wfn)
     ni, na, _, _ = A_ref.shape
     nia = ni * na
     A_ref = A_ref.reshape((nia, nia))
     # Build engine
-    eng = TDRSCFEngine(wfn, ptype='tda', triplet=True)
+    eng = TDRSCFEngine(wfn, ptype="tda", triplet=True)
     # our "guess"" vectors
     ID = [psi4.core.Matrix.from_array(v.reshape((ni, na))) for v in tuple(np.eye(nia).T)]
     A_test = np.column_stack([x.to_array().flatten() for x in eng.compute_products(ID)[0]])
@@ -370,20 +372,20 @@ def test_RU_TDA_C1():
     no_reorient
     no_com
     """)
-    psi4.set_options({"scf_type": "pk", 'save_jk': True})
+    psi4.set_options({"scf_type": "pk", "save_jk": True})
     e, wfn = psi4.energy("hf/sto-3g", molecule=h2o, return_wfn=True)
     A_ref, _ = build_UHF_AB_C1(wfn)
-    ni, na, _, _ = A_ref['IAJB'].shape
+    ni, na, _, _ = A_ref["IAJB"].shape
     nia = ni * na
-    A_sing_ref = A_ref['IAJB'] + A_ref['IAjb']
+    A_sing_ref = A_ref["IAJB"] + A_ref["IAjb"]
     A_sing_ref = A_sing_ref.reshape(nia, nia)
-    A_trip_ref = A_ref['IAJB'] - A_ref['IAjb']
+    A_trip_ref = A_ref["IAJB"] - A_ref["IAjb"]
     A_trip_ref = A_trip_ref.reshape(nia, nia)
     sing_vals, _ = np.linalg.eigh(A_sing_ref)
     trip_vals, _ = np.linalg.eigh(A_trip_ref)
 
-    trip_eng = TDRSCFEngine(wfn, ptype='tda', triplet=True)
-    sing_eng = TDRSCFEngine(wfn, ptype='tda', triplet=False)
+    trip_eng = TDRSCFEngine(wfn, ptype="tda", triplet=True)
+    sing_eng = TDRSCFEngine(wfn, ptype="tda", triplet=False)
     ID = [psi4.core.Matrix.from_array(v.reshape((ni, na))) for v in tuple(np.eye(nia).T)]
     psi4.core.print_out("\nA sing:\n" + str(A_sing_ref) + "\n\n")
     psi4.core.print_out("\nA trip:\n" + str(A_trip_ref) + "\n\n")
@@ -420,7 +422,7 @@ def test_restricted_RPA_singlet_c1():
     H 1 0.96 2 104.5
     symmetry c1
     """)
-    psi4.set_options({"scf_type": "pk", 'save_jk': True})
+    psi4.set_options({"scf_type": "pk", "save_jk": True})
     e, wfn = psi4.energy("hf/cc-pvdz", molecule=h2o, return_wfn=True)
     A_ref, B_ref = build_RHF_AB_C1_singlet(wfn)
     ni, na, _, _ = A_ref.shape
@@ -430,7 +432,7 @@ def test_restricted_RPA_singlet_c1():
     P_ref = A_ref + B_ref
     M_ref = A_ref - B_ref
     # Build engine
-    eng = TDRSCFEngine(wfn, ptype='rpa', triplet=False)
+    eng = TDRSCFEngine(wfn, ptype="rpa", triplet=False)
     # our "guess"" vectors
     ID = [psi4.core.Matrix.from_array(v.reshape((ni, na))) for v in tuple(np.eye(nia).T)]
     Px, Mx = eng.compute_products(ID)[:-1]
@@ -450,7 +452,7 @@ def test_restricted_RPA_triplet_c1():
     H 1 0.96 2 104.5
     symmetry c1
     """)
-    psi4.set_options({"scf_type": "pk", 'save_jk': True})
+    psi4.set_options({"scf_type": "pk", "save_jk": True})
     e, wfn = psi4.energy("hf/cc-pvdz", molecule=h2o, return_wfn=True)
     A_ref, B_ref = build_RHF_AB_C1_triplet(wfn)
     ni, na, _, _ = A_ref.shape
@@ -460,7 +462,7 @@ def test_restricted_RPA_triplet_c1():
     P_ref = A_ref + B_ref
     M_ref = A_ref - B_ref
     # Build engine
-    eng = TDRSCFEngine(wfn, ptype='rpa', triplet=True)
+    eng = TDRSCFEngine(wfn, ptype="rpa", triplet=True)
     # our "guess"" vectors
     ID = [psi4.core.Matrix.from_array(v.reshape((ni, na))) for v in tuple(np.eye(nia).T)]
     Px, Mx = eng.compute_products(ID)[:-1]
@@ -480,15 +482,15 @@ def test_unrestricted_TDA_C1():
     h 1 1.0 2 125.0
     symmetry c1
     """)
-    psi4.set_options({"scf_type": "pk", 'reference': 'UHF', 'save_jk': True})
+    psi4.set_options({"scf_type": "pk", "reference": "UHF", "save_jk": True})
     e, wfn = psi4.energy("hf/cc-pvdz", molecule=ch2, return_wfn=True)
     A_ref, B_ref = build_UHF_AB_C1(wfn)
-    nI, nA, _, _ = A_ref['IAJB'].shape
+    nI, nA, _, _ = A_ref["IAJB"].shape
     nIA = nI * nA
-    ni, na, _, _ = A_ref['iajb'].shape
+    ni, na, _, _ = A_ref["iajb"].shape
     nia = ni * na
 
-    eng = TDUSCFEngine(wfn, ptype='tda')
+    eng = TDUSCFEngine(wfn, ptype="tda")
     X_jb = [psi4.core.Matrix.from_array(v.reshape((ni, na))) for v in tuple(np.eye(nia).T)]
     zero_jb = [psi4.core.Matrix(ni, na) for x in range(nIA)]
     X_JB = [psi4.core.Matrix.from_array(v.reshape((nI, nA))) for v in tuple(np.eye(nIA).T)]
@@ -506,13 +508,13 @@ def test_unrestricted_TDA_C1():
     Ax_I0 = eng.compute_products(X_I0)[0]
     Ax_0I = eng.compute_products(X_0I)[0]
     A_IAJB_test = np.column_stack([x[0].to_array().flatten() for x in Ax_I0])
-    assert compare_arrays(A_ref['IAJB'].reshape(nIA, nIA), A_IAJB_test, 8, "A_IAJB")
+    assert compare_arrays(A_ref["IAJB"].reshape(nIA, nIA), A_IAJB_test, 8, "A_IAJB")
     A_iaJB_test = np.column_stack([x[1].to_array().flatten() for x in Ax_I0])
-    assert compare_arrays(A_ref['iaJB'].reshape(nia, nIA), A_iaJB_test, 8, "A_iaJB")
+    assert compare_arrays(A_ref["iaJB"].reshape(nia, nIA), A_iaJB_test, 8, "A_iaJB")
     A_IAjb_test = np.column_stack([x[0].to_array().flatten() for x in Ax_0I])
-    assert compare_arrays(A_ref['IAjb'].reshape(nIA, nia), A_IAjb_test, 8, "A_IAjb")
+    assert compare_arrays(A_ref["IAjb"].reshape(nIA, nia), A_IAjb_test, 8, "A_IAjb")
     A_iajb_test = np.column_stack([x[1].to_array().flatten() for x in Ax_0I])
-    assert compare_arrays(A_ref['iajb'].reshape(nia, nia), A_iajb_test, 8, "A_iajb")
+    assert compare_arrays(A_ref["iajb"].reshape(nia, nia), A_iajb_test, 8, "A_iajb")
 
 
 @pytest.mark.unittest
@@ -525,18 +527,18 @@ def test_unrestricted_RPA_C1():
     h 1 1.0 2 125.0
     symmetry c1
     """)
-    psi4.set_options({"scf_type": "pk", 'reference': 'UHF', 'save_jk': True})
+    psi4.set_options({"scf_type": "pk", "reference": "UHF", "save_jk": True})
     e, wfn = psi4.energy("hf/cc-pvdz", molecule=ch2, return_wfn=True)
     A_ref, B_ref = build_UHF_AB_C1(wfn)
-    nI, nA, _, _ = A_ref['IAJB'].shape
+    nI, nA, _, _ = A_ref["IAJB"].shape
     nIA = nI * nA
-    ni, na, _, _ = A_ref['iajb'].shape
+    ni, na, _, _ = A_ref["iajb"].shape
     nia = ni * na
 
     P_ref = {k: A_ref[k] + B_ref[k] for k in A_ref.keys()}
     M_ref = {k: A_ref[k] - B_ref[k] for k in A_ref.keys()}
 
-    eng = TDUSCFEngine(wfn, ptype='rpa')
+    eng = TDUSCFEngine(wfn, ptype="rpa")
     X_jb = [psi4.core.Matrix.from_array(v.reshape((ni, na))) for v in tuple(np.eye(nia).T)]
     zero_jb = [psi4.core.Matrix(ni, na) for x in range(nIA)]
     X_JB = [psi4.core.Matrix.from_array(v.reshape((nI, nA))) for v in tuple(np.eye(nIA).T)]
@@ -555,25 +557,25 @@ def test_unrestricted_RPA_C1():
     Px_0I, Mx_0I = eng.compute_products(X_0I)[:-1]
 
     P_IAJB_test = np.column_stack([x[0].to_array().flatten() for x in Px_I0])
-    assert compare_arrays(P_ref['IAJB'].reshape(nIA, nIA), P_IAJB_test, 8, "A_IAJB")
+    assert compare_arrays(P_ref["IAJB"].reshape(nIA, nIA), P_IAJB_test, 8, "A_IAJB")
 
     M_IAJB_test = np.column_stack([x[0].to_array().flatten() for x in Mx_I0])
-    assert compare_arrays(M_ref['IAJB'].reshape(nIA, nIA), M_IAJB_test, 8, "A_IAJB")
+    assert compare_arrays(M_ref["IAJB"].reshape(nIA, nIA), M_IAJB_test, 8, "A_IAJB")
 
     P_iaJB_test = np.column_stack([x[1].to_array().flatten() for x in Px_I0])
-    assert compare_arrays(P_ref['iaJB'].reshape(nia, nIA), P_iaJB_test, 8, "P_iaJB")
+    assert compare_arrays(P_ref["iaJB"].reshape(nia, nIA), P_iaJB_test, 8, "P_iaJB")
 
     M_iaJB_test = np.column_stack([x[1].to_array().flatten() for x in Mx_I0])
-    assert compare_arrays(M_ref['iaJB'].reshape(nia, nIA), M_iaJB_test, 8, "M_iaJB")
+    assert compare_arrays(M_ref["iaJB"].reshape(nia, nIA), M_iaJB_test, 8, "M_iaJB")
 
     P_IAjb_test = np.column_stack([x[0].to_array().flatten() for x in Px_0I])
-    assert compare_arrays(P_ref['IAjb'].reshape(nIA, nia), P_IAjb_test, 8, "P_IAjb")
+    assert compare_arrays(P_ref["IAjb"].reshape(nIA, nia), P_IAjb_test, 8, "P_IAjb")
 
     M_IAjb_test = np.column_stack([x[0].to_array().flatten() for x in Mx_0I])
-    assert compare_arrays(M_ref['IAjb'].reshape(nIA, nia), M_IAjb_test, 8, "M_IAjb")
+    assert compare_arrays(M_ref["IAjb"].reshape(nIA, nia), M_IAjb_test, 8, "M_IAjb")
 
     P_iajb_test = np.column_stack([x[1].to_array().flatten() for x in Px_0I])
-    assert compare_arrays(P_ref['iajb'].reshape(nia, nia), P_iajb_test, 8, "P_iajb")
+    assert compare_arrays(P_ref["iajb"].reshape(nia, nia), P_iajb_test, 8, "P_iajb")
 
     M_iajb_test = np.column_stack([x[1].to_array().flatten() for x in Mx_0I])
-    assert compare_arrays(M_ref['iajb'].reshape(nia, nia), M_iajb_test, 8, "M_iajb")
+    assert compare_arrays(M_ref["iajb"].reshape(nia, nia), M_iajb_test, 8, "M_iajb")

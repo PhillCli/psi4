@@ -43,10 +43,11 @@
   - ``'DD'`` stacked systems (adjacent base-pairs on same strand)
 
 """
+
 import qcdb
 
 # <<< JSCH Database Module >>>
-dbse = 'JSCH'
+dbse = "JSCH"
 
 # <<< Database Members >>>
 HRXN = range(1, 125)
@@ -62,907 +63,906 @@ ACTV = {}  # order of active reagents per reaction
 ACTV_CP = {}  # order of active reagents per counterpoise-corrected reaction
 ACTV_SA = {}  # order of active reagents for non-supramolecular calculations
 for rxn in HRXN:
-
-    RXNM['%s-%s' % (dbse, rxn)] = {
-        '%s-%s-dimer' % (dbse, rxn): +1,
-        '%s-%s-monoA-CP' % (dbse, rxn): -1,
-        '%s-%s-monoB-CP' % (dbse, rxn): -1,
-        '%s-%s-monoA-unCP' % (dbse, rxn): -1,
-        '%s-%s-monoB-unCP' % (dbse, rxn): -1
+    RXNM["%s-%s" % (dbse, rxn)] = {
+        "%s-%s-dimer" % (dbse, rxn): +1,
+        "%s-%s-monoA-CP" % (dbse, rxn): -1,
+        "%s-%s-monoB-CP" % (dbse, rxn): -1,
+        "%s-%s-monoA-unCP" % (dbse, rxn): -1,
+        "%s-%s-monoB-unCP" % (dbse, rxn): -1,
     }
 
-    ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn)]
+    ACTV_SA["%s-%s" % (dbse, rxn)] = ["%s-%s-dimer" % (dbse, rxn)]
 
-    ACTV_CP['%s-%s' % (dbse, rxn)] = [
-        '%s-%s-dimer' % (dbse, rxn),
-        '%s-%s-monoA-CP' % (dbse, rxn),
-        '%s-%s-monoB-CP' % (dbse, rxn)
+    ACTV_CP["%s-%s" % (dbse, rxn)] = [
+        "%s-%s-dimer" % (dbse, rxn),
+        "%s-%s-monoA-CP" % (dbse, rxn),
+        "%s-%s-monoB-CP" % (dbse, rxn),
     ]
 
-    ACTV['%s-%s' % (dbse, rxn)] = [
-        '%s-%s-dimer' % (dbse, rxn),
-        '%s-%s-monoA-unCP' % (dbse, rxn),
-        '%s-%s-monoB-unCP' % (dbse, rxn)
+    ACTV["%s-%s" % (dbse, rxn)] = [
+        "%s-%s-dimer" % (dbse, rxn),
+        "%s-%s-monoA-unCP" % (dbse, rxn),
+        "%s-%s-monoB-unCP" % (dbse, rxn),
     ]
 
 # <<< Reference Values >>>
 BIND = {}
-BIND['%s-%s' % (dbse, 1)] = -32.06
-BIND['%s-%s' % (dbse, 2)] = -31.59
-BIND['%s-%s' % (dbse, 3)] = -16.86
-BIND['%s-%s' % (dbse, 4)] = -18.16
-BIND['%s-%s' % (dbse, 5)] = -33.30
-BIND['%s-%s' % (dbse, 6)] = -24.90
-BIND['%s-%s' % (dbse, 7)] = -19.10
-BIND['%s-%s' % (dbse, 8)] = -51.40
-BIND['%s-%s' % (dbse, 9)] = -10.30
-BIND['%s-%s' % (dbse, 10)] = -13.70
-BIND['%s-%s' % (dbse, 11)] = -29.50
-BIND['%s-%s' % (dbse, 12)] = -14.20
-BIND['%s-%s' % (dbse, 13)] = -19.50
-BIND['%s-%s' % (dbse, 14)] = -19.70
-BIND['%s-%s' % (dbse, 15)] = -5.20
-BIND['%s-%s' % (dbse, 16)] = -17.80
-BIND['%s-%s' % (dbse, 17)] = -16.60
-BIND['%s-%s' % (dbse, 18)] = -17.60
-BIND['%s-%s' % (dbse, 19)] = -21.30
-BIND['%s-%s' % (dbse, 20)] = -21.80
-BIND['%s-%s' % (dbse, 21)] = -22.70
-BIND['%s-%s' % (dbse, 22)] = -19.40
-BIND['%s-%s' % (dbse, 23)] = -18.90
-BIND['%s-%s' % (dbse, 24)] = -14.40
-BIND['%s-%s' % (dbse, 25)] = -12.80
-BIND['%s-%s' % (dbse, 26)] = -18.80
-BIND['%s-%s' % (dbse, 27)] = -13.50
-BIND['%s-%s' % (dbse, 28)] = -14.50
-BIND['%s-%s' % (dbse, 29)] = -13.70
-BIND['%s-%s' % (dbse, 30)] = -12.20
-BIND['%s-%s' % (dbse, 31)] = -22.80
-BIND['%s-%s' % (dbse, 32)] = -12.60
-BIND['%s-%s' % (dbse, 33)] = -16.40
-BIND['%s-%s' % (dbse, 34)] = -35.80
-BIND['%s-%s' % (dbse, 35)] = -18.40
-BIND['%s-%s' % (dbse, 36)] = -11.30
-BIND['%s-%s' % (dbse, 37)] = -30.70
-BIND['%s-%s' % (dbse, 38)] = -31.40
-BIND['%s-%s' % (dbse, 39)] = -3.68
-BIND['%s-%s' % (dbse, 40)] = -4.82
-BIND['%s-%s' % (dbse, 41)] = -2.34
-BIND['%s-%s' % (dbse, 42)] = -2.16
-BIND['%s-%s' % (dbse, 43)] = 3.09
-BIND['%s-%s' % (dbse, 44)] = 1.93
-BIND['%s-%s' % (dbse, 45)] = -3.91
-BIND['%s-%s' % (dbse, 46)] = 1.24
-BIND['%s-%s' % (dbse, 47)] = -0.31
-BIND['%s-%s' % (dbse, 48)] = 0.58
-BIND['%s-%s' % (dbse, 49)] = -0.47
-BIND['%s-%s' % (dbse, 50)] = -0.18
-BIND['%s-%s' % (dbse, 51)] = -4.22
-BIND['%s-%s' % (dbse, 52)] = -1.15
-BIND['%s-%s' % (dbse, 53)] = 0.30
-BIND['%s-%s' % (dbse, 54)] = -4.06
-BIND['%s-%s' % (dbse, 55)] = 0.88
-BIND['%s-%s' % (dbse, 56)] = -0.92
-BIND['%s-%s' % (dbse, 57)] = -1.55
-BIND['%s-%s' % (dbse, 58)] = 0.70
-BIND['%s-%s' % (dbse, 59)] = -1.71
-BIND['%s-%s' % (dbse, 60)] = -1.30
-BIND['%s-%s' % (dbse, 61)] = -0.70
-BIND['%s-%s' % (dbse, 62)] = 1.00
-BIND['%s-%s' % (dbse, 63)] = -4.50
-BIND['%s-%s' % (dbse, 64)] = 1.40
-BIND['%s-%s' % (dbse, 65)] = -4.80
-BIND['%s-%s' % (dbse, 66)] = -0.10
-BIND['%s-%s' % (dbse, 67)] = -3.00
-BIND['%s-%s' % (dbse, 68)] = -5.20
-BIND['%s-%s' % (dbse, 69)] = 0.80
-BIND['%s-%s' % (dbse, 70)] = 3.10
-BIND['%s-%s' % (dbse, 71)] = -19.02
-BIND['%s-%s' % (dbse, 72)] = -20.35
-BIND['%s-%s' % (dbse, 73)] = -12.30
-BIND['%s-%s' % (dbse, 74)] = -14.57
-BIND['%s-%s' % (dbse, 75)] = 2.45
-BIND['%s-%s' % (dbse, 76)] = -3.85
-BIND['%s-%s' % (dbse, 77)] = -8.88
-BIND['%s-%s' % (dbse, 78)] = -9.92
-BIND['%s-%s' % (dbse, 79)] = 0.32
-BIND['%s-%s' % (dbse, 80)] = 0.64
-BIND['%s-%s' % (dbse, 81)] = -0.98
-BIND['%s-%s' % (dbse, 82)] = -9.10
-BIND['%s-%s' % (dbse, 83)] = -9.11
-BIND['%s-%s' % (dbse, 84)] = -8.27
-BIND['%s-%s' % (dbse, 85)] = -9.43
-BIND['%s-%s' % (dbse, 86)] = -7.43
-BIND['%s-%s' % (dbse, 87)] = -8.80
-BIND['%s-%s' % (dbse, 88)] = -9.11
-BIND['%s-%s' % (dbse, 89)] = -8.58
-BIND['%s-%s' % (dbse, 90)] = -12.67
-BIND['%s-%s' % (dbse, 91)] = -10.22
-BIND['%s-%s' % (dbse, 92)] = -11.38
-BIND['%s-%s' % (dbse, 93)] = -10.02
-BIND['%s-%s' % (dbse, 94)] = -9.79
-BIND['%s-%s' % (dbse, 95)] = -10.60
-BIND['%s-%s' % (dbse, 96)] = -10.42
-BIND['%s-%s' % (dbse, 97)] = -7.46
-BIND['%s-%s' % (dbse, 98)] = -12.09
-BIND['%s-%s' % (dbse, 99)] = -3.54
-BIND['%s-%s' % (dbse, 100)] = -1.62
-BIND['%s-%s' % (dbse, 101)] = -6.06
-BIND['%s-%s' % (dbse, 102)] = -4.18
-BIND['%s-%s' % (dbse, 103)] = -10.80
-BIND['%s-%s' % (dbse, 104)] = -7.88
-BIND['%s-%s' % (dbse, 105)] = -9.14
-BIND['%s-%s' % (dbse, 106)] = -4.69
-BIND['%s-%s' % (dbse, 107)] = -7.58
-BIND['%s-%s' % (dbse, 108)] = -6.07
-BIND['%s-%s' % (dbse, 109)] = -5.67
-BIND['%s-%s' % (dbse, 110)] = -4.96
-BIND['%s-%s' % (dbse, 111)] = -4.96
-BIND['%s-%s' % (dbse, 112)] = -5.44
-BIND['%s-%s' % (dbse, 113)] = -6.64
-BIND['%s-%s' % (dbse, 114)] = -6.07
-BIND['%s-%s' % (dbse, 115)] = -6.25
-BIND['%s-%s' % (dbse, 116)] = -3.86
-BIND['%s-%s' % (dbse, 117)] = -8.10
-BIND['%s-%s' % (dbse, 118)] = -7.90
-BIND['%s-%s' % (dbse, 119)] = -6.70
-BIND['%s-%s' % (dbse, 120)] = -6.20
-BIND['%s-%s' % (dbse, 121)] = -7.70
-BIND['%s-%s' % (dbse, 122)] = -6.50
-BIND['%s-%s' % (dbse, 123)] = -12.40
-BIND['%s-%s' % (dbse, 124)] = -11.60
+BIND["%s-%s" % (dbse, 1)] = -32.06
+BIND["%s-%s" % (dbse, 2)] = -31.59
+BIND["%s-%s" % (dbse, 3)] = -16.86
+BIND["%s-%s" % (dbse, 4)] = -18.16
+BIND["%s-%s" % (dbse, 5)] = -33.30
+BIND["%s-%s" % (dbse, 6)] = -24.90
+BIND["%s-%s" % (dbse, 7)] = -19.10
+BIND["%s-%s" % (dbse, 8)] = -51.40
+BIND["%s-%s" % (dbse, 9)] = -10.30
+BIND["%s-%s" % (dbse, 10)] = -13.70
+BIND["%s-%s" % (dbse, 11)] = -29.50
+BIND["%s-%s" % (dbse, 12)] = -14.20
+BIND["%s-%s" % (dbse, 13)] = -19.50
+BIND["%s-%s" % (dbse, 14)] = -19.70
+BIND["%s-%s" % (dbse, 15)] = -5.20
+BIND["%s-%s" % (dbse, 16)] = -17.80
+BIND["%s-%s" % (dbse, 17)] = -16.60
+BIND["%s-%s" % (dbse, 18)] = -17.60
+BIND["%s-%s" % (dbse, 19)] = -21.30
+BIND["%s-%s" % (dbse, 20)] = -21.80
+BIND["%s-%s" % (dbse, 21)] = -22.70
+BIND["%s-%s" % (dbse, 22)] = -19.40
+BIND["%s-%s" % (dbse, 23)] = -18.90
+BIND["%s-%s" % (dbse, 24)] = -14.40
+BIND["%s-%s" % (dbse, 25)] = -12.80
+BIND["%s-%s" % (dbse, 26)] = -18.80
+BIND["%s-%s" % (dbse, 27)] = -13.50
+BIND["%s-%s" % (dbse, 28)] = -14.50
+BIND["%s-%s" % (dbse, 29)] = -13.70
+BIND["%s-%s" % (dbse, 30)] = -12.20
+BIND["%s-%s" % (dbse, 31)] = -22.80
+BIND["%s-%s" % (dbse, 32)] = -12.60
+BIND["%s-%s" % (dbse, 33)] = -16.40
+BIND["%s-%s" % (dbse, 34)] = -35.80
+BIND["%s-%s" % (dbse, 35)] = -18.40
+BIND["%s-%s" % (dbse, 36)] = -11.30
+BIND["%s-%s" % (dbse, 37)] = -30.70
+BIND["%s-%s" % (dbse, 38)] = -31.40
+BIND["%s-%s" % (dbse, 39)] = -3.68
+BIND["%s-%s" % (dbse, 40)] = -4.82
+BIND["%s-%s" % (dbse, 41)] = -2.34
+BIND["%s-%s" % (dbse, 42)] = -2.16
+BIND["%s-%s" % (dbse, 43)] = 3.09
+BIND["%s-%s" % (dbse, 44)] = 1.93
+BIND["%s-%s" % (dbse, 45)] = -3.91
+BIND["%s-%s" % (dbse, 46)] = 1.24
+BIND["%s-%s" % (dbse, 47)] = -0.31
+BIND["%s-%s" % (dbse, 48)] = 0.58
+BIND["%s-%s" % (dbse, 49)] = -0.47
+BIND["%s-%s" % (dbse, 50)] = -0.18
+BIND["%s-%s" % (dbse, 51)] = -4.22
+BIND["%s-%s" % (dbse, 52)] = -1.15
+BIND["%s-%s" % (dbse, 53)] = 0.30
+BIND["%s-%s" % (dbse, 54)] = -4.06
+BIND["%s-%s" % (dbse, 55)] = 0.88
+BIND["%s-%s" % (dbse, 56)] = -0.92
+BIND["%s-%s" % (dbse, 57)] = -1.55
+BIND["%s-%s" % (dbse, 58)] = 0.70
+BIND["%s-%s" % (dbse, 59)] = -1.71
+BIND["%s-%s" % (dbse, 60)] = -1.30
+BIND["%s-%s" % (dbse, 61)] = -0.70
+BIND["%s-%s" % (dbse, 62)] = 1.00
+BIND["%s-%s" % (dbse, 63)] = -4.50
+BIND["%s-%s" % (dbse, 64)] = 1.40
+BIND["%s-%s" % (dbse, 65)] = -4.80
+BIND["%s-%s" % (dbse, 66)] = -0.10
+BIND["%s-%s" % (dbse, 67)] = -3.00
+BIND["%s-%s" % (dbse, 68)] = -5.20
+BIND["%s-%s" % (dbse, 69)] = 0.80
+BIND["%s-%s" % (dbse, 70)] = 3.10
+BIND["%s-%s" % (dbse, 71)] = -19.02
+BIND["%s-%s" % (dbse, 72)] = -20.35
+BIND["%s-%s" % (dbse, 73)] = -12.30
+BIND["%s-%s" % (dbse, 74)] = -14.57
+BIND["%s-%s" % (dbse, 75)] = 2.45
+BIND["%s-%s" % (dbse, 76)] = -3.85
+BIND["%s-%s" % (dbse, 77)] = -8.88
+BIND["%s-%s" % (dbse, 78)] = -9.92
+BIND["%s-%s" % (dbse, 79)] = 0.32
+BIND["%s-%s" % (dbse, 80)] = 0.64
+BIND["%s-%s" % (dbse, 81)] = -0.98
+BIND["%s-%s" % (dbse, 82)] = -9.10
+BIND["%s-%s" % (dbse, 83)] = -9.11
+BIND["%s-%s" % (dbse, 84)] = -8.27
+BIND["%s-%s" % (dbse, 85)] = -9.43
+BIND["%s-%s" % (dbse, 86)] = -7.43
+BIND["%s-%s" % (dbse, 87)] = -8.80
+BIND["%s-%s" % (dbse, 88)] = -9.11
+BIND["%s-%s" % (dbse, 89)] = -8.58
+BIND["%s-%s" % (dbse, 90)] = -12.67
+BIND["%s-%s" % (dbse, 91)] = -10.22
+BIND["%s-%s" % (dbse, 92)] = -11.38
+BIND["%s-%s" % (dbse, 93)] = -10.02
+BIND["%s-%s" % (dbse, 94)] = -9.79
+BIND["%s-%s" % (dbse, 95)] = -10.60
+BIND["%s-%s" % (dbse, 96)] = -10.42
+BIND["%s-%s" % (dbse, 97)] = -7.46
+BIND["%s-%s" % (dbse, 98)] = -12.09
+BIND["%s-%s" % (dbse, 99)] = -3.54
+BIND["%s-%s" % (dbse, 100)] = -1.62
+BIND["%s-%s" % (dbse, 101)] = -6.06
+BIND["%s-%s" % (dbse, 102)] = -4.18
+BIND["%s-%s" % (dbse, 103)] = -10.80
+BIND["%s-%s" % (dbse, 104)] = -7.88
+BIND["%s-%s" % (dbse, 105)] = -9.14
+BIND["%s-%s" % (dbse, 106)] = -4.69
+BIND["%s-%s" % (dbse, 107)] = -7.58
+BIND["%s-%s" % (dbse, 108)] = -6.07
+BIND["%s-%s" % (dbse, 109)] = -5.67
+BIND["%s-%s" % (dbse, 110)] = -4.96
+BIND["%s-%s" % (dbse, 111)] = -4.96
+BIND["%s-%s" % (dbse, 112)] = -5.44
+BIND["%s-%s" % (dbse, 113)] = -6.64
+BIND["%s-%s" % (dbse, 114)] = -6.07
+BIND["%s-%s" % (dbse, 115)] = -6.25
+BIND["%s-%s" % (dbse, 116)] = -3.86
+BIND["%s-%s" % (dbse, 117)] = -8.10
+BIND["%s-%s" % (dbse, 118)] = -7.90
+BIND["%s-%s" % (dbse, 119)] = -6.70
+BIND["%s-%s" % (dbse, 120)] = -6.20
+BIND["%s-%s" % (dbse, 121)] = -7.70
+BIND["%s-%s" % (dbse, 122)] = -6.50
+BIND["%s-%s" % (dbse, 123)] = -12.40
+BIND["%s-%s" % (dbse, 124)] = -11.60
 
 # <<< Comment Lines >>>
 TAGL = {}
-TAGL['%s-%s' % (dbse, 1)] = 'HB-01 G...C WC'
-TAGL['%s-%s-dimer' % (dbse, 1)] = 'G...C WC'
-TAGL['%s-%s-monoA-CP' % (dbse, 1)] = 'Cytosine from G...C WC'
-TAGL['%s-%s-monoB-CP' % (dbse, 1)] = 'Guanine from G...C WC'
-TAGL['%s-%s-monoA-unCP' % (dbse, 1)] = 'Cytosine from G...C WC'
-TAGL['%s-%s-monoB-unCP' % (dbse, 1)] = 'Guanine from G...C WC'
-TAGL['%s-%s' % (dbse, 2)] = 'HB-02 mG...mC WC'
-TAGL['%s-%s-dimer' % (dbse, 2)] = 'mG...mC WC'
-TAGL['%s-%s-monoA-CP' % (dbse, 2)] = 'methyl-Cytosine from mG...mC WC'
-TAGL['%s-%s-monoB-CP' % (dbse, 2)] = 'methyl-Guanine from mG...mC WC'
-TAGL['%s-%s-monoA-unCP' % (dbse, 2)] = 'methyl-Cytosine from mG...mC WC'
-TAGL['%s-%s-monoB-unCP' % (dbse, 2)] = 'methyl-Guanine from mG...mC WC'
-TAGL['%s-%s' % (dbse, 3)] = 'HB-03 A...T WC'
-TAGL['%s-%s-dimer' % (dbse, 3)] = 'A...T WC'
-TAGL['%s-%s-monoA-CP' % (dbse, 3)] = 'Adenine from A...T WC'
-TAGL['%s-%s-monoB-CP' % (dbse, 3)] = 'Thymine from A...T WC'
-TAGL['%s-%s-monoA-unCP' % (dbse, 3)] = 'Adenine from A...T WC'
-TAGL['%s-%s-monoB-unCP' % (dbse, 3)] = 'Thymine from A...T WC'
-TAGL['%s-%s' % (dbse, 4)] = 'HB-04 mA...mT H'
-TAGL['%s-%s-dimer' % (dbse, 4)] = 'mA...mT H'
-TAGL['%s-%s-monoA-CP' % (dbse, 4)] = 'methyl-Adenine from mA...mT H'
-TAGL['%s-%s-monoB-CP' % (dbse, 4)] = 'methyl-Thymine from mA...mT H'
-TAGL['%s-%s-monoA-unCP' % (dbse, 4)] = 'methyl-Adenine from mA...mT H'
-TAGL['%s-%s-monoB-unCP' % (dbse, 4)] = 'methyl-Thymine from mA...mT H'
-TAGL['%s-%s' % (dbse, 5)] = 'HB-05 8oG...C WC pl'
-TAGL['%s-%s-dimer' % (dbse, 5)] = '8oG...C WC pl'
-TAGL['%s-%s-monoA-CP' % (dbse, 5)] = '8-oxo-Guanine from 8oG...C WC pl'
-TAGL['%s-%s-monoB-CP' % (dbse, 5)] = 'Cytosine from 8oG...C WC pl'
-TAGL['%s-%s-monoA-unCP' % (dbse, 5)] = '8-oxo-Guanine from 8oG...C WC pl'
-TAGL['%s-%s-monoB-unCP' % (dbse, 5)] = 'Cytosine from 8oG...C WC pl'
-TAGL['%s-%s' % (dbse, 6)] = 'HB-06 I...C WC pl'
-TAGL['%s-%s-dimer' % (dbse, 6)] = 'I...C WC pl'
-TAGL['%s-%s-monoA-CP' % (dbse, 6)] = 'Cytosine from I...C WC pl'
-TAGL['%s-%s-monoB-CP' % (dbse, 6)] = 'Inosine from I...C WC pl'
-TAGL['%s-%s-monoA-unCP' % (dbse, 6)] = 'Cytosine from I...C WC pl'
-TAGL['%s-%s-monoB-unCP' % (dbse, 6)] = 'Inosine from I...C WC pl'
-TAGL['%s-%s' % (dbse, 7)] = 'HB-07 G...U wobble'
-TAGL['%s-%s-dimer' % (dbse, 7)] = 'G...U wobble'
-TAGL['%s-%s-monoA-CP' % (dbse, 7)] = 'Guanine from G...U wobble'
-TAGL['%s-%s-monoB-CP' % (dbse, 7)] = 'Uracil from G...U wobble'
-TAGL['%s-%s-monoA-unCP' % (dbse, 7)] = 'Guanine from G...U wobble'
-TAGL['%s-%s-monoB-unCP' % (dbse, 7)] = 'Uracil from G...U wobble'
-TAGL['%s-%s' % (dbse, 8)] = 'HB-08 CCH+'
-TAGL['%s-%s-dimer' % (dbse, 8)] = 'CCH+'
-TAGL['%s-%s-monoA-CP' % (dbse, 8)] = 'Cytosine from CCH+'
-TAGL['%s-%s-monoB-CP' % (dbse, 8)] = 'protonated-Cytosine from CCH+'
-TAGL['%s-%s-monoA-unCP' % (dbse, 8)] = 'Cytosine from CCH+'
-TAGL['%s-%s-monoB-unCP' % (dbse, 8)] = 'protonated-Cytosine from CCH+'
-TAGL['%s-%s' % (dbse, 9)] = 'HB-09 U...U Calcutta pl'
-TAGL['%s-%s-dimer' % (dbse, 9)] = 'U...U Calcutta pl'
-TAGL['%s-%s-monoA-CP' % (dbse, 9)] = 'Uracil from U...U Calcutta pl'
-TAGL['%s-%s-monoB-CP' % (dbse, 9)] = 'Uracil from U...U Calcutta pl'
-TAGL['%s-%s-monoA-unCP' % (dbse, 9)] = 'Uracil from U...U Calcutta pl'
-TAGL['%s-%s-monoB-unCP' % (dbse, 9)] = 'Uracil from U...U Calcutta pl'
-TAGL['%s-%s' % (dbse, 10)] = 'HB-10 U...U pl'
-TAGL['%s-%s-dimer' % (dbse, 10)] = 'U...U pl'
-TAGL['%s-%s-monoA-CP' % (dbse, 10)] = 'Uracil from U...U pl'
-TAGL['%s-%s-monoB-CP' % (dbse, 10)] = 'Uracil from U...U pl'
-TAGL['%s-%s-monoA-unCP' % (dbse, 10)] = 'Uracil from U...U pl'
-TAGL['%s-%s-monoB-unCP' % (dbse, 10)] = 'Uracil from U...U pl'
-TAGL['%s-%s' % (dbse, 11)] = 'HB-11 6tG...C WC pl'
-TAGL['%s-%s-dimer' % (dbse, 11)] = '6tG...C WC pl'
-TAGL['%s-%s-monoA-CP' % (dbse, 11)] = 'Cytosine from 6tG...C WC pl'
-TAGL['%s-%s-monoB-CP' % (dbse, 11)] = '6-thio-Guanine from 6tG...C WC pl'
-TAGL['%s-%s-monoA-unCP' % (dbse, 11)] = 'Cytosine from 6tG...C WC pl'
-TAGL['%s-%s-monoB-unCP' % (dbse, 11)] = '6-thio-Guanine from 6tG...C WC pl'
-TAGL['%s-%s' % (dbse, 12)] = 'HB-12 A...4tU WC'
-TAGL['%s-%s-dimer' % (dbse, 12)] = 'A...4tU WC'
-TAGL['%s-%s-monoA-CP' % (dbse, 12)] = 'Adenine from A...4tU WC'
-TAGL['%s-%s-monoB-CP' % (dbse, 12)] = '4-thio-Uracil from A...4tU WC'
-TAGL['%s-%s-monoA-unCP' % (dbse, 12)] = 'Adenine from A...4tU WC'
-TAGL['%s-%s-monoB-unCP' % (dbse, 12)] = '4-thio-Uracil from A...4tU WC'
-TAGL['%s-%s' % (dbse, 13)] = 'HB-13 2-aminoA...T'
-TAGL['%s-%s-dimer' % (dbse, 13)] = '2-aminoA...T'
-TAGL['%s-%s-monoA-CP' % (dbse, 13)] = '2-amino-Adenine from 2-aminoA...T'
-TAGL['%s-%s-monoB-CP' % (dbse, 13)] = 'Thymine from 2-aminoA...T'
-TAGL['%s-%s-monoA-unCP' % (dbse, 13)] = '2-amino-Adenine from 2-aminoA...T'
-TAGL['%s-%s-monoB-unCP' % (dbse, 13)] = 'Thymine from 2-aminoA...T'
-TAGL['%s-%s' % (dbse, 14)] = 'HB-14 2-aminoA...T pl'
-TAGL['%s-%s-dimer' % (dbse, 14)] = '2-aminoA...T pl'
-TAGL['%s-%s-monoA-CP' % (dbse, 14)] = '2-amino-Adenine from 2-aminoA...T pl'
-TAGL['%s-%s-monoB-CP' % (dbse, 14)] = 'Thymine from 2-aminoA...T pl'
-TAGL['%s-%s-monoA-unCP' % (dbse, 14)] = '2-amino-Adenine from 2-aminoA...T pl'
-TAGL['%s-%s-monoB-unCP' % (dbse, 14)] = 'Thymine from 2-aminoA...T pl'
-TAGL['%s-%s' % (dbse, 15)] = 'HB-15 A...F'
-TAGL['%s-%s-dimer' % (dbse, 15)] = 'A...F'
-TAGL['%s-%s-monoA-CP' % (dbse, 15)] = 'Adenine from A...F'
-TAGL['%s-%s-monoB-CP' % (dbse, 15)] = 'difluorotoluene from A...F'
-TAGL['%s-%s-monoA-unCP' % (dbse, 15)] = 'Adenine from A...F'
-TAGL['%s-%s-monoB-unCP' % (dbse, 15)] = 'difluorotoluene from A...F'
-TAGL['%s-%s' % (dbse, 16)] = 'HB-16 G...4tU'
-TAGL['%s-%s-dimer' % (dbse, 16)] = 'G...4tU'
-TAGL['%s-%s-monoA-CP' % (dbse, 16)] = 'Guanine from G...4tU'
-TAGL['%s-%s-monoB-CP' % (dbse, 16)] = '4-thio-Uracil from G...4tU'
-TAGL['%s-%s-monoA-unCP' % (dbse, 16)] = 'Guanine from G...4tU'
-TAGL['%s-%s-monoB-unCP' % (dbse, 16)] = '4-thio-Uracil from G...4tU'
-TAGL['%s-%s' % (dbse, 17)] = 'HB-17 G...2tU'
-TAGL['%s-%s-dimer' % (dbse, 17)] = 'G...2tU'
-TAGL['%s-%s-monoA-CP' % (dbse, 17)] = 'Guanine from G...2tU'
-TAGL['%s-%s-monoB-CP' % (dbse, 17)] = '2-thio-Uracil from G...2tU'
-TAGL['%s-%s-monoA-unCP' % (dbse, 17)] = 'Guanine from G...2tU'
-TAGL['%s-%s-monoB-unCP' % (dbse, 17)] = '2-thio-Uracil from G...2tU'
-TAGL['%s-%s' % (dbse, 18)] = 'HB-18 A...C pl'
-TAGL['%s-%s-dimer' % (dbse, 18)] = 'A...C pl'
-TAGL['%s-%s-monoA-CP' % (dbse, 18)] = 'Cytosine from A...C pl'
-TAGL['%s-%s-monoB-CP' % (dbse, 18)] = 'Adenine from A...C pl'
-TAGL['%s-%s-monoA-unCP' % (dbse, 18)] = 'Cytosine from A...C pl'
-TAGL['%s-%s-monoB-unCP' % (dbse, 18)] = 'Adenine from A...C pl'
-TAGL['%s-%s' % (dbse, 19)] = 'HB-19 G...G pl'
-TAGL['%s-%s-dimer' % (dbse, 19)] = 'G...G pl'
-TAGL['%s-%s-monoA-CP' % (dbse, 19)] = 'Guanine from G...G pl'
-TAGL['%s-%s-monoB-CP' % (dbse, 19)] = 'Guanine from G...G pl'
-TAGL['%s-%s-monoA-unCP' % (dbse, 19)] = 'Guanine from G...G pl'
-TAGL['%s-%s-monoB-unCP' % (dbse, 19)] = 'Guanine from G...G pl'
-TAGL['%s-%s' % (dbse, 20)] = 'HB-20 G...6tG pl'
-TAGL['%s-%s-dimer' % (dbse, 20)] = 'G...6tG pl'
-TAGL['%s-%s-monoA-CP' % (dbse, 20)] = 'Guanine from G...6tG pl'
-TAGL['%s-%s-monoB-CP' % (dbse, 20)] = '6-thio-Guanine from G...6tG pl'
-TAGL['%s-%s-monoA-unCP' % (dbse, 20)] = 'Guanine from G...6tG pl'
-TAGL['%s-%s-monoB-unCP' % (dbse, 20)] = '6-thio-Guanine from G...6tG pl'
-TAGL['%s-%s' % (dbse, 21)] = 'HB-21 6tG...G pl'
-TAGL['%s-%s-dimer' % (dbse, 21)] = '6tG...G pl'
-TAGL['%s-%s-monoA-CP' % (dbse, 21)] = '6-thio-Guanine from 6tG...G pl'
-TAGL['%s-%s-monoB-CP' % (dbse, 21)] = 'Guanine from 6tG...G pl'
-TAGL['%s-%s-monoA-unCP' % (dbse, 21)] = '6-thio-Guanine from 6tG...G pl'
-TAGL['%s-%s-monoB-unCP' % (dbse, 21)] = 'Guanine from 6tG...G pl'
-TAGL['%s-%s' % (dbse, 22)] = 'HB-22 G...A 1'
-TAGL['%s-%s-dimer' % (dbse, 22)] = 'G...A 1'
-TAGL['%s-%s-monoA-CP' % (dbse, 22)] = 'Guanine from G...A 1'
-TAGL['%s-%s-monoB-CP' % (dbse, 22)] = 'Adenine from G...A 1'
-TAGL['%s-%s-monoA-unCP' % (dbse, 22)] = 'Guanine from G...A 1'
-TAGL['%s-%s-monoB-unCP' % (dbse, 22)] = 'Adenine from G...A 1'
-TAGL['%s-%s' % (dbse, 23)] = 'HB-23 G...A 1 pl'
-TAGL['%s-%s-dimer' % (dbse, 23)] = 'G...A 1 pl'
-TAGL['%s-%s-monoA-CP' % (dbse, 23)] = 'Adenine from G...A 1 pl'
-TAGL['%s-%s-monoB-CP' % (dbse, 23)] = 'Guanine from G...A 1 pl'
-TAGL['%s-%s-monoA-unCP' % (dbse, 23)] = 'Adenine from G...A 1 pl'
-TAGL['%s-%s-monoB-unCP' % (dbse, 23)] = 'Guanine from G...A 1 pl'
-TAGL['%s-%s' % (dbse, 24)] = 'HB-24 G...A 2'
-TAGL['%s-%s-dimer' % (dbse, 24)] = 'G...A 2'
-TAGL['%s-%s-monoA-CP' % (dbse, 24)] = 'Guanine from G...A 2'
-TAGL['%s-%s-monoB-CP' % (dbse, 24)] = 'Adenine from G...A 2'
-TAGL['%s-%s-monoA-unCP' % (dbse, 24)] = 'Guanine from G...A 2'
-TAGL['%s-%s-monoB-unCP' % (dbse, 24)] = 'Adenine from G...A 2'
-TAGL['%s-%s' % (dbse, 25)] = 'HB-25 G...A 2 pl'
-TAGL['%s-%s-dimer' % (dbse, 25)] = 'G...A 2 pl'
-TAGL['%s-%s-monoA-CP' % (dbse, 25)] = 'Guanine from G...A 2 pl'
-TAGL['%s-%s-monoB-CP' % (dbse, 25)] = 'Adenine from G...A 2 pl'
-TAGL['%s-%s-monoA-unCP' % (dbse, 25)] = 'Guanine from G...A 2 pl'
-TAGL['%s-%s-monoB-unCP' % (dbse, 25)] = 'Adenine from G...A 2 pl'
-TAGL['%s-%s' % (dbse, 26)] = 'HB-26 G...A 3'
-TAGL['%s-%s-dimer' % (dbse, 26)] = 'G...A 3'
-TAGL['%s-%s-monoA-CP' % (dbse, 26)] = 'Guanine from G...A 3'
-TAGL['%s-%s-monoB-CP' % (dbse, 26)] = 'Adenine from G...A 3'
-TAGL['%s-%s-monoA-unCP' % (dbse, 26)] = 'Guanine from G...A 3'
-TAGL['%s-%s-monoB-unCP' % (dbse, 26)] = 'Adenine from G...A 3'
-TAGL['%s-%s' % (dbse, 27)] = 'HB-27 G...A 4'
-TAGL['%s-%s-dimer' % (dbse, 27)] = 'G...A 4'
-TAGL['%s-%s-monoA-CP' % (dbse, 27)] = 'Guanine from G...A 4'
-TAGL['%s-%s-monoB-CP' % (dbse, 27)] = 'Adenine from G...A 4'
-TAGL['%s-%s-monoA-unCP' % (dbse, 27)] = 'Guanine from G...A 4'
-TAGL['%s-%s-monoB-unCP' % (dbse, 27)] = 'Adenine from G...A 4'
-TAGL['%s-%s' % (dbse, 28)] = 'HB-28 A...A 1 pl'
-TAGL['%s-%s-dimer' % (dbse, 28)] = 'A...A 1 pl'
-TAGL['%s-%s-monoA-CP' % (dbse, 28)] = 'Adenine from A...A 1 pl'
-TAGL['%s-%s-monoB-CP' % (dbse, 28)] = 'Adenine from A...A 1 pl'
-TAGL['%s-%s-monoA-unCP' % (dbse, 28)] = 'Adenine from A...A 1 pl'
-TAGL['%s-%s-monoB-unCP' % (dbse, 28)] = 'Adenine from A...A 1 pl'
-TAGL['%s-%s' % (dbse, 29)] = 'HB-29 A...A 2 pl'
-TAGL['%s-%s-dimer' % (dbse, 29)] = 'A...A 2 pl'
-TAGL['%s-%s-monoA-CP' % (dbse, 29)] = 'Adenine from A...A 2 pl'
-TAGL['%s-%s-monoB-CP' % (dbse, 29)] = 'Adenine from A...A 2 pl'
-TAGL['%s-%s-monoA-unCP' % (dbse, 29)] = 'Adenine from A...A 2 pl'
-TAGL['%s-%s-monoB-unCP' % (dbse, 29)] = 'Adenine from A...A 2 pl'
-TAGL['%s-%s' % (dbse, 30)] = 'HB-30 A...A 3 pl'
-TAGL['%s-%s-dimer' % (dbse, 30)] = 'A...A 3 pl'
-TAGL['%s-%s-monoA-CP' % (dbse, 30)] = 'Adenine from A...A 3 pl'
-TAGL['%s-%s-monoB-CP' % (dbse, 30)] = 'Adenine from A...A 3 pl'
-TAGL['%s-%s-monoA-unCP' % (dbse, 30)] = 'Adenine from A...A 3 pl'
-TAGL['%s-%s-monoB-unCP' % (dbse, 30)] = 'Adenine from A...A 3 pl'
-TAGL['%s-%s' % (dbse, 31)] = 'HB-31 8oG...G'
-TAGL['%s-%s-dimer' % (dbse, 31)] = '8oG...G'
-TAGL['%s-%s-monoA-CP' % (dbse, 31)] = 'Guanine from 8oG...G'
-TAGL['%s-%s-monoB-CP' % (dbse, 31)] = '8-oxo-Guanine from 8oG...G'
-TAGL['%s-%s-monoA-unCP' % (dbse, 31)] = 'Guanine from 8oG...G'
-TAGL['%s-%s-monoB-unCP' % (dbse, 31)] = '8-oxo-Guanine from 8oG...G'
-TAGL['%s-%s' % (dbse, 32)] = 'HB-32 2tU....2tU pl'
-TAGL['%s-%s-dimer' % (dbse, 32)] = '2tU....2tU pl'
-TAGL['%s-%s-monoA-CP' % (dbse, 32)] = '2-thio-Uracil from 2tU....2tU pl'
-TAGL['%s-%s-monoB-CP' % (dbse, 32)] = '2-thio-Uracil from 2tU....2tU pl'
-TAGL['%s-%s-monoA-unCP' % (dbse, 32)] = '2-thio-Uracil from 2tU....2tU pl'
-TAGL['%s-%s-monoB-unCP' % (dbse, 32)] = '2-thio-Uracil from 2tU....2tU pl'
-TAGL['%s-%s' % (dbse, 33)] = 'HB-33 A...T WC'
-TAGL['%s-%s-dimer' % (dbse, 33)] = 'A...T WC'
-TAGL['%s-%s-monoA-CP' % (dbse, 33)] = 'methyl-Adenine from A...T WC'
-TAGL['%s-%s-monoB-CP' % (dbse, 33)] = 'methyl-Thymine from A...T WC'
-TAGL['%s-%s-monoA-unCP' % (dbse, 33)] = 'methyl-Adenine from A...T WC'
-TAGL['%s-%s-monoB-unCP' % (dbse, 33)] = 'methyl-Thymine from A...T WC'
-TAGL['%s-%s' % (dbse, 34)] = 'HB-34 G...C WC'
-TAGL['%s-%s-dimer' % (dbse, 34)] = 'G...C WC'
-TAGL['%s-%s-monoA-CP' % (dbse, 34)] = 'methyl-Cytosine from G...C WC'
-TAGL['%s-%s-monoB-CP' % (dbse, 34)] = 'methyl-Guanine from G...C WC'
-TAGL['%s-%s-monoA-unCP' % (dbse, 34)] = 'methyl-Cytosine from G...C WC'
-TAGL['%s-%s-monoB-unCP' % (dbse, 34)] = 'methyl-Guanine from G...C WC'
-TAGL['%s-%s' % (dbse, 35)] = 'HB-35 A...T WC'
-TAGL['%s-%s-dimer' % (dbse, 35)] = 'A...T WC'
-TAGL['%s-%s-monoA-CP' % (dbse, 35)] = 'methyl-Adenine from A...T WC'
-TAGL['%s-%s-monoB-CP' % (dbse, 35)] = 'methyl-Thymine from A...T WC'
-TAGL['%s-%s-monoA-unCP' % (dbse, 35)] = 'methyl-Adenine from A...T WC'
-TAGL['%s-%s-monoB-unCP' % (dbse, 35)] = 'methyl-Thymine from A...T WC'
-TAGL['%s-%s' % (dbse, 36)] = 'HB-36 G...A HB'
-TAGL['%s-%s-dimer' % (dbse, 36)] = 'G...A HB'
-TAGL['%s-%s-monoA-CP' % (dbse, 36)] = 'Guanine from G...A HB'
-TAGL['%s-%s-monoB-CP' % (dbse, 36)] = 'Adenine from G...A HB'
-TAGL['%s-%s-monoA-unCP' % (dbse, 36)] = 'Guanine from G...A HB'
-TAGL['%s-%s-monoB-unCP' % (dbse, 36)] = 'Adenine from G...A HB'
-TAGL['%s-%s' % (dbse, 37)] = 'HB-37 C...G WC'
-TAGL['%s-%s-dimer' % (dbse, 37)] = 'C...G WC'
-TAGL['%s-%s-monoA-CP' % (dbse, 37)] = 'Cytosine from C...G WC'
-TAGL['%s-%s-monoB-CP' % (dbse, 37)] = 'Guanine from C...G WC'
-TAGL['%s-%s-monoA-unCP' % (dbse, 37)] = 'Cytosine from C...G WC'
-TAGL['%s-%s-monoB-unCP' % (dbse, 37)] = 'Guanine from C...G WC'
-TAGL['%s-%s' % (dbse, 38)] = 'HB-38 G...C WC'
-TAGL['%s-%s-dimer' % (dbse, 38)] = 'G...C WC'
-TAGL['%s-%s-monoA-CP' % (dbse, 38)] = 'Guanine from G...C WC'
-TAGL['%s-%s-monoB-CP' % (dbse, 38)] = 'Cytosine from G...C WC'
-TAGL['%s-%s-monoA-unCP' % (dbse, 38)] = 'Guanine from G...C WC'
-TAGL['%s-%s-monoB-unCP' % (dbse, 38)] = 'Cytosine from G...C WC'
-TAGL['%s-%s' % (dbse, 39)] = 'IS-01 GG0/3.36 CGis036'
-TAGL['%s-%s-dimer' % (dbse, 39)] = 'GG0/3.36 CGis036'
-TAGL['%s-%s-monoA-CP' % (dbse, 39)] = 'Guanine from GG0/3.36 CGis036'
-TAGL['%s-%s-monoB-CP' % (dbse, 39)] = 'Cytosine from GG0/3.36 CGis036'
-TAGL['%s-%s-monoA-unCP' % (dbse, 39)] = 'Guanine from GG0/3.36 CGis036'
-TAGL['%s-%s-monoB-unCP' % (dbse, 39)] = 'Cytosine from GG0/3.36 CGis036'
-TAGL['%s-%s' % (dbse, 40)] = 'IS-02 GG0/3.36 GCis036'
-TAGL['%s-%s-dimer' % (dbse, 40)] = 'GG0/3.36 GCis036'
-TAGL['%s-%s-monoA-CP' % (dbse, 40)] = 'Cytosine from GG0/3.36 GCis036'
-TAGL['%s-%s-monoB-CP' % (dbse, 40)] = 'Guanine from GG0/3.36 GCis036'
-TAGL['%s-%s-monoA-unCP' % (dbse, 40)] = 'Cytosine from GG0/3.36 GCis036'
-TAGL['%s-%s-monoB-unCP' % (dbse, 40)] = 'Guanine from GG0/3.36 GCis036'
-TAGL['%s-%s' % (dbse, 41)] = 'IS-03 AA20/3.05 ATis2005'
-TAGL['%s-%s-dimer' % (dbse, 41)] = 'AA20/3.05 ATis2005'
-TAGL['%s-%s-monoA-CP' % (dbse, 41)] = 'Adenine from AA20/3.05 ATis2005'
-TAGL['%s-%s-monoB-CP' % (dbse, 41)] = 'Thymine from AA20/3.05 ATis2005'
-TAGL['%s-%s-monoA-unCP' % (dbse, 41)] = 'Adenine from AA20/3.05 ATis2005'
-TAGL['%s-%s-monoB-unCP' % (dbse, 41)] = 'Thymine from AA20/3.05 ATis2005'
-TAGL['%s-%s' % (dbse, 42)] = 'IS-04 AA20/3.05 TAis2005'
-TAGL['%s-%s-dimer' % (dbse, 42)] = 'AA20/3.05 TAis2005'
-TAGL['%s-%s-monoA-CP' % (dbse, 42)] = 'Thymine from AA20/3.05 TAis2005'
-TAGL['%s-%s-monoB-CP' % (dbse, 42)] = 'Adenine from AA20/3.05 TAis2005'
-TAGL['%s-%s-monoA-unCP' % (dbse, 42)] = 'Thymine from AA20/3.05 TAis2005'
-TAGL['%s-%s-monoB-unCP' % (dbse, 42)] = 'Adenine from AA20/3.05 TAis2005'
-TAGL['%s-%s' % (dbse, 43)] = 'IS-05 GC0/3.25 C//Cis'
-TAGL['%s-%s-dimer' % (dbse, 43)] = 'GC0/3.25 C//Cis'
-TAGL['%s-%s-monoA-CP' % (dbse, 43)] = 'Cytosine from GC0/3.25 C//Cis'
-TAGL['%s-%s-monoB-CP' % (dbse, 43)] = 'Cytosine from GC0/3.25 C//Cis'
-TAGL['%s-%s-monoA-unCP' % (dbse, 43)] = 'Cytosine from GC0/3.25 C//Cis'
-TAGL['%s-%s-monoB-unCP' % (dbse, 43)] = 'Cytosine from GC0/3.25 C//Cis'
-TAGL['%s-%s' % (dbse, 44)] = 'IS-06 GC0/3.25 G//Gis'
-TAGL['%s-%s-dimer' % (dbse, 44)] = 'GC0/3.25 G//Gis'
-TAGL['%s-%s-monoA-CP' % (dbse, 44)] = 'Guanine from GC0/3.25 G//Gis'
-TAGL['%s-%s-monoB-CP' % (dbse, 44)] = 'Guanine from GC0/3.25 G//Gis'
-TAGL['%s-%s-monoA-unCP' % (dbse, 44)] = 'Guanine from GC0/3.25 G//Gis'
-TAGL['%s-%s-monoB-unCP' % (dbse, 44)] = 'Guanine from GC0/3.25 G//Gis'
-TAGL['%s-%s' % (dbse, 45)] = 'IS-07 CG0/3.19 G//Gis'
-TAGL['%s-%s-dimer' % (dbse, 45)] = 'CG0/3.19 G//Gis'
-TAGL['%s-%s-monoA-CP' % (dbse, 45)] = 'Guanine from CG0/3.19 G//Gis'
-TAGL['%s-%s-monoB-CP' % (dbse, 45)] = 'Guanine from CG0/3.19 G//Gis'
-TAGL['%s-%s-monoA-unCP' % (dbse, 45)] = 'Guanine from CG0/3.19 G//Gis'
-TAGL['%s-%s-monoB-unCP' % (dbse, 45)] = 'Guanine from CG0/3.19 G//Gis'
-TAGL['%s-%s' % (dbse, 46)] = 'IS-08 CG0/3.19 C//Cis'
-TAGL['%s-%s-dimer' % (dbse, 46)] = 'CG0/3.19 C//Cis'
-TAGL['%s-%s-monoA-CP' % (dbse, 46)] = 'Cytosine from CG0/3.19 C//Cis'
-TAGL['%s-%s-monoB-CP' % (dbse, 46)] = 'Cytosine from CG0/3.19 C//Cis'
-TAGL['%s-%s-monoA-unCP' % (dbse, 46)] = 'Cytosine from CG0/3.19 C//Cis'
-TAGL['%s-%s-monoB-unCP' % (dbse, 46)] = 'Cytosine from CG0/3.19 C//Cis'
-TAGL['%s-%s' % (dbse, 47)] = 'IS-09 GA10/3.15 A//Cis'
-TAGL['%s-%s-dimer' % (dbse, 47)] = 'GA10/3.15 A//Cis'
-TAGL['%s-%s-monoA-CP' % (dbse, 47)] = 'Adenine from GA10/3.15 A//Cis'
-TAGL['%s-%s-monoB-CP' % (dbse, 47)] = 'Cytosine from GA10/3.15 A//Cis'
-TAGL['%s-%s-monoA-unCP' % (dbse, 47)] = 'Adenine from GA10/3.15 A//Cis'
-TAGL['%s-%s-monoB-unCP' % (dbse, 47)] = 'Cytosine from GA10/3.15 A//Cis'
-TAGL['%s-%s' % (dbse, 48)] = 'IS-10 GA10/3.15 T//Gis'
-TAGL['%s-%s-dimer' % (dbse, 48)] = 'GA10/3.15 T//Gis'
-TAGL['%s-%s-monoA-CP' % (dbse, 48)] = 'Thymine from GA10/3.15 T//Gis'
-TAGL['%s-%s-monoB-CP' % (dbse, 48)] = 'Guanine from GA10/3.15 T//Gis'
-TAGL['%s-%s-monoA-unCP' % (dbse, 48)] = 'Thymine from GA10/3.15 T//Gis'
-TAGL['%s-%s-monoB-unCP' % (dbse, 48)] = 'Guanine from GA10/3.15 T//Gis'
-TAGL['%s-%s' % (dbse, 49)] = 'IS-11 AG08/3.19 T//Gis'
-TAGL['%s-%s-dimer' % (dbse, 49)] = 'AG08/3.19 T//Gis'
-TAGL['%s-%s-monoA-CP' % (dbse, 49)] = 'Guanine from AG08/3.19 T//Gis'
-TAGL['%s-%s-monoB-CP' % (dbse, 49)] = 'Thymine from AG08/3.19 T//Gis'
-TAGL['%s-%s-monoA-unCP' % (dbse, 49)] = 'Guanine from AG08/3.19 T//Gis'
-TAGL['%s-%s-monoB-unCP' % (dbse, 49)] = 'Thymine from AG08/3.19 T//Gis'
-TAGL['%s-%s' % (dbse, 50)] = 'IS-12 AG08/3.19 A//Cis'
-TAGL['%s-%s-dimer' % (dbse, 50)] = 'AG08/3.19 A//Cis'
-TAGL['%s-%s-monoA-CP' % (dbse, 50)] = 'Adenine from AG08/3.19 A//Cis'
-TAGL['%s-%s-monoB-CP' % (dbse, 50)] = 'Cytosine from AG08/3.19 A//Cis'
-TAGL['%s-%s-monoA-unCP' % (dbse, 50)] = 'Adenine from AG08/3.19 A//Cis'
-TAGL['%s-%s-monoB-unCP' % (dbse, 50)] = 'Cytosine from AG08/3.19 A//Cis'
-TAGL['%s-%s' % (dbse, 51)] = 'IS-13 TG03.19 A//Gis'
-TAGL['%s-%s-dimer' % (dbse, 51)] = 'TG03.19 A//Gis'
-TAGL['%s-%s-monoA-CP' % (dbse, 51)] = 'Adenine from TG03.19 A//Gis'
-TAGL['%s-%s-monoB-CP' % (dbse, 51)] = 'Guanine from TG03.19 A//Gis'
-TAGL['%s-%s-monoA-unCP' % (dbse, 51)] = 'Adenine from TG03.19 A//Gis'
-TAGL['%s-%s-monoB-unCP' % (dbse, 51)] = 'Guanine from TG03.19 A//Gis'
-TAGL['%s-%s' % (dbse, 52)] = 'IS-14 TG03.19 T//Cis'
-TAGL['%s-%s-dimer' % (dbse, 52)] = 'TG03.19 T//Cis'
-TAGL['%s-%s-monoA-CP' % (dbse, 52)] = 'Thymine from TG03.19 T//Cis'
-TAGL['%s-%s-monoB-CP' % (dbse, 52)] = 'Cytosine from TG03.19 T//Cis'
-TAGL['%s-%s-monoA-unCP' % (dbse, 52)] = 'Thymine from TG03.19 T//Cis'
-TAGL['%s-%s-monoB-unCP' % (dbse, 52)] = 'Cytosine from TG03.19 T//Cis'
-TAGL['%s-%s' % (dbse, 53)] = 'IS-15 GT10/3.15 T//Cis'
-TAGL['%s-%s-dimer' % (dbse, 53)] = 'GT10/3.15 T//Cis'
-TAGL['%s-%s-monoA-CP' % (dbse, 53)] = 'Thymine from GT10/3.15 T//Cis'
-TAGL['%s-%s-monoB-CP' % (dbse, 53)] = 'Cytosine from GT10/3.15 T//Cis'
-TAGL['%s-%s-monoA-unCP' % (dbse, 53)] = 'Thymine from GT10/3.15 T//Cis'
-TAGL['%s-%s-monoB-unCP' % (dbse, 53)] = 'Cytosine from GT10/3.15 T//Cis'
-TAGL['%s-%s' % (dbse, 54)] = 'IS-16 GT10/3.15 A//Gis'
-TAGL['%s-%s-dimer' % (dbse, 54)] = 'GT10/3.15 A//Gis'
-TAGL['%s-%s-monoA-CP' % (dbse, 54)] = 'Adenine from GT10/3.15 A//Gis'
-TAGL['%s-%s-monoB-CP' % (dbse, 54)] = 'Guanine from GT10/3.15 A//Gis'
-TAGL['%s-%s-monoA-unCP' % (dbse, 54)] = 'Adenine from GT10/3.15 A//Gis'
-TAGL['%s-%s-monoB-unCP' % (dbse, 54)] = 'Guanine from GT10/3.15 A//Gis'
-TAGL['%s-%s' % (dbse, 55)] = 'IS-17 AT10/3.26 T//Tis'
-TAGL['%s-%s-dimer' % (dbse, 55)] = 'AT10/3.26 T//Tis'
-TAGL['%s-%s-monoA-CP' % (dbse, 55)] = 'Thymine from AT10/3.26 T//Tis'
-TAGL['%s-%s-monoB-CP' % (dbse, 55)] = 'Thymine from AT10/3.26 T//Tis'
-TAGL['%s-%s-monoA-unCP' % (dbse, 55)] = 'Thymine from AT10/3.26 T//Tis'
-TAGL['%s-%s-monoB-unCP' % (dbse, 55)] = 'Thymine from AT10/3.26 T//Tis'
-TAGL['%s-%s' % (dbse, 56)] = 'IS-18 AT10/3.26 A//Ais'
-TAGL['%s-%s-dimer' % (dbse, 56)] = 'AT10/3.26 A//Ais'
-TAGL['%s-%s-monoA-CP' % (dbse, 56)] = 'Adenine from AT10/3.26 A//Ais'
-TAGL['%s-%s-monoB-CP' % (dbse, 56)] = 'Adenine from AT10/3.26 A//Ais'
-TAGL['%s-%s-monoA-unCP' % (dbse, 56)] = 'Adenine from AT10/3.26 A//Ais'
-TAGL['%s-%s-monoB-unCP' % (dbse, 56)] = 'Adenine from AT10/3.26 A//Ais'
-TAGL['%s-%s' % (dbse, 57)] = 'IS-19 TA08/3.16 A//Ais'
-TAGL['%s-%s-dimer' % (dbse, 57)] = 'TA08/3.16 A//Ais'
-TAGL['%s-%s-monoA-CP' % (dbse, 57)] = 'Adenine from TA08/3.16 A//Ais'
-TAGL['%s-%s-monoB-CP' % (dbse, 57)] = 'Adenine from TA08/3.16 A//Ais'
-TAGL['%s-%s-monoA-unCP' % (dbse, 57)] = 'Adenine from TA08/3.16 A//Ais'
-TAGL['%s-%s-monoB-unCP' % (dbse, 57)] = 'Adenine from TA08/3.16 A//Ais'
-TAGL['%s-%s' % (dbse, 58)] = 'IS-20 TA08/3.16 T//Tis'
-TAGL['%s-%s-dimer' % (dbse, 58)] = 'TA08/3.16 T//Tis'
-TAGL['%s-%s-monoA-CP' % (dbse, 58)] = 'Thymine from TA08/3.16 T//Tis'
-TAGL['%s-%s-monoB-CP' % (dbse, 58)] = 'Thymine from TA08/3.16 T//Tis'
-TAGL['%s-%s-monoA-unCP' % (dbse, 58)] = 'Thymine from TA08/3.16 T//Tis'
-TAGL['%s-%s-monoB-unCP' % (dbse, 58)] = 'Thymine from TA08/3.16 T//Tis'
-TAGL['%s-%s' % (dbse, 59)] = 'IS-21 AA0/3.24 A//Tis'
-TAGL['%s-%s-dimer' % (dbse, 59)] = 'AA0/3.24 A//Tis'
-TAGL['%s-%s-monoA-CP' % (dbse, 59)] = 'Adenine from AA0/3.24 A//Tis'
-TAGL['%s-%s-monoB-CP' % (dbse, 59)] = 'Thymine from AA0/3.24 A//Tis'
-TAGL['%s-%s-monoA-unCP' % (dbse, 59)] = 'Adenine from AA0/3.24 A//Tis'
-TAGL['%s-%s-monoB-unCP' % (dbse, 59)] = 'Thymine from AA0/3.24 A//Tis'
-TAGL['%s-%s' % (dbse, 60)] = 'IS-22 AA0/3.24 T//Ais'
-TAGL['%s-%s-dimer' % (dbse, 60)] = 'AA0/3.24 T//Ais'
-TAGL['%s-%s-monoA-CP' % (dbse, 60)] = 'Adenine from AA0/3.24 T//Ais'
-TAGL['%s-%s-monoB-CP' % (dbse, 60)] = 'Thymine from AA0/3.24 T//Ais'
-TAGL['%s-%s-monoA-unCP' % (dbse, 60)] = 'Adenine from AA0/3.24 T//Ais'
-TAGL['%s-%s-monoB-unCP' % (dbse, 60)] = 'Thymine from AA0/3.24 T//Ais'
-TAGL['%s-%s' % (dbse, 61)] = 'IS-23 A...A IS'
-TAGL['%s-%s-dimer' % (dbse, 61)] = 'A...A IS'
-TAGL['%s-%s-monoA-CP' % (dbse, 61)] = 'methyl-Adenine from A...A IS'
-TAGL['%s-%s-monoB-CP' % (dbse, 61)] = 'methyl-Adenine from A...A IS'
-TAGL['%s-%s-monoA-unCP' % (dbse, 61)] = 'methyl-Adenine from A...A IS'
-TAGL['%s-%s-monoB-unCP' % (dbse, 61)] = 'methyl-Adenine from A...A IS'
-TAGL['%s-%s' % (dbse, 62)] = 'IS-24 T...T IS'
-TAGL['%s-%s-dimer' % (dbse, 62)] = 'T...T IS'
-TAGL['%s-%s-monoA-CP' % (dbse, 62)] = 'methyl-Thymine from T...T IS'
-TAGL['%s-%s-monoB-CP' % (dbse, 62)] = 'methyl-Thymine from T...T IS'
-TAGL['%s-%s-monoA-unCP' % (dbse, 62)] = 'methyl-Thymine from T...T IS'
-TAGL['%s-%s-monoB-unCP' % (dbse, 62)] = 'methyl-Thymine from T...T IS'
-TAGL['%s-%s' % (dbse, 63)] = 'IS-25 G...G IS'
-TAGL['%s-%s-dimer' % (dbse, 63)] = 'G...G IS'
-TAGL['%s-%s-monoA-CP' % (dbse, 63)] = 'methyl-Guanine from G...G IS'
-TAGL['%s-%s-monoB-CP' % (dbse, 63)] = 'methyl-Guanine from G...G IS'
-TAGL['%s-%s-monoA-unCP' % (dbse, 63)] = 'methyl-Guanine from G...G IS'
-TAGL['%s-%s-monoB-unCP' % (dbse, 63)] = 'methyl-Guanine from G...G IS'
-TAGL['%s-%s' % (dbse, 64)] = 'IS-26 C...C IS'
-TAGL['%s-%s-dimer' % (dbse, 64)] = 'C...C IS'
-TAGL['%s-%s-monoA-CP' % (dbse, 64)] = 'methyl-Cytosine from C...C IS'
-TAGL['%s-%s-monoB-CP' % (dbse, 64)] = 'methyl-Cytosine from C...C IS'
-TAGL['%s-%s-monoA-unCP' % (dbse, 64)] = 'methyl-Cytosine from C...C IS'
-TAGL['%s-%s-monoB-unCP' % (dbse, 64)] = 'methyl-Cytosine from C...C IS'
-TAGL['%s-%s' % (dbse, 65)] = 'IS-27 A...G IS'
-TAGL['%s-%s-dimer' % (dbse, 65)] = 'A...G IS'
-TAGL['%s-%s-monoA-CP' % (dbse, 65)] = 'methyl-Adenine from A...G IS'
-TAGL['%s-%s-monoB-CP' % (dbse, 65)] = 'methyl-Guanine from A...G IS'
-TAGL['%s-%s-monoA-unCP' % (dbse, 65)] = 'methyl-Adenine from A...G IS'
-TAGL['%s-%s-monoB-unCP' % (dbse, 65)] = 'methyl-Guanine from A...G IS'
-TAGL['%s-%s' % (dbse, 66)] = 'IS-28 T...C IS'
-TAGL['%s-%s-dimer' % (dbse, 66)] = 'T...C IS'
-TAGL['%s-%s-monoA-CP' % (dbse, 66)] = 'methyl-Cytosine from T...C IS'
-TAGL['%s-%s-monoB-CP' % (dbse, 66)] = 'methyl-Thymine from T...C IS'
-TAGL['%s-%s-monoA-unCP' % (dbse, 66)] = 'methyl-Cytosine from T...C IS'
-TAGL['%s-%s-monoB-unCP' % (dbse, 66)] = 'methyl-Thymine from T...C IS'
-TAGL['%s-%s' % (dbse, 67)] = 'IS-29 C...A IS'
-TAGL['%s-%s-dimer' % (dbse, 67)] = 'C...A IS'
-TAGL['%s-%s-monoA-CP' % (dbse, 67)] = 'Cytosine from C...A IS'
-TAGL['%s-%s-monoB-CP' % (dbse, 67)] = 'Adenine from C...A IS'
-TAGL['%s-%s-monoA-unCP' % (dbse, 67)] = 'Cytosine from C...A IS'
-TAGL['%s-%s-monoB-unCP' % (dbse, 67)] = 'Adenine from C...A IS'
-TAGL['%s-%s' % (dbse, 68)] = 'IS-30 G...G IS'
-TAGL['%s-%s-dimer' % (dbse, 68)] = 'G...G IS'
-TAGL['%s-%s-monoA-CP' % (dbse, 68)] = 'Guanine from G...G IS'
-TAGL['%s-%s-monoB-CP' % (dbse, 68)] = 'Guanine from G...G IS'
-TAGL['%s-%s-monoA-unCP' % (dbse, 68)] = 'Guanine from G...G IS'
-TAGL['%s-%s-monoB-unCP' % (dbse, 68)] = 'Guanine from G...G IS'
-TAGL['%s-%s' % (dbse, 69)] = 'IS-31 G...G IS'
-TAGL['%s-%s-dimer' % (dbse, 69)] = 'G...G IS'
-TAGL['%s-%s-monoA-CP' % (dbse, 69)] = 'Guanine from G...G IS'
-TAGL['%s-%s-monoB-CP' % (dbse, 69)] = 'Guanine from G...G IS'
-TAGL['%s-%s-monoA-unCP' % (dbse, 69)] = 'Guanine from G...G IS'
-TAGL['%s-%s-monoB-unCP' % (dbse, 69)] = 'Guanine from G...G IS'
-TAGL['%s-%s' % (dbse, 70)] = 'IS-32 C...C IS'
-TAGL['%s-%s-dimer' % (dbse, 70)] = 'C...C IS'
-TAGL['%s-%s-monoA-CP' % (dbse, 70)] = 'Cytosine from C...C IS'
-TAGL['%s-%s-monoB-CP' % (dbse, 70)] = 'Cytosine from C...C IS'
-TAGL['%s-%s-monoA-unCP' % (dbse, 70)] = 'Cytosine from C...C IS'
-TAGL['%s-%s-monoB-unCP' % (dbse, 70)] = 'Cytosine from C...C IS'
-TAGL['%s-%s' % (dbse, 71)] = 'ST-01 G...C S'
-TAGL['%s-%s-dimer' % (dbse, 71)] = 'G...C S'
-TAGL['%s-%s-monoA-CP' % (dbse, 71)] = 'Guanine from G...C S'
-TAGL['%s-%s-monoB-CP' % (dbse, 71)] = 'Cytosine from G...C S'
-TAGL['%s-%s-monoA-unCP' % (dbse, 71)] = 'Guanine from G...C S'
-TAGL['%s-%s-monoB-unCP' % (dbse, 71)] = 'Cytosine from G...C S'
-TAGL['%s-%s' % (dbse, 72)] = 'ST-02 mG...mC S'
-TAGL['%s-%s-dimer' % (dbse, 72)] = 'mG...mC S'
-TAGL['%s-%s-monoA-CP' % (dbse, 72)] = 'methyl-Guanine from mG...mC S'
-TAGL['%s-%s-monoB-CP' % (dbse, 72)] = 'methyl-Cytosine from mG...mC S'
-TAGL['%s-%s-monoA-unCP' % (dbse, 72)] = 'methyl-Guanine from mG...mC S'
-TAGL['%s-%s-monoB-unCP' % (dbse, 72)] = 'methyl-Cytosine from mG...mC S'
-TAGL['%s-%s' % (dbse, 73)] = 'ST-03 A...T S'
-TAGL['%s-%s-dimer' % (dbse, 73)] = 'A...T S'
-TAGL['%s-%s-monoA-CP' % (dbse, 73)] = 'Adenine from A...T S'
-TAGL['%s-%s-monoB-CP' % (dbse, 73)] = 'Thymine from A...T S'
-TAGL['%s-%s-monoA-unCP' % (dbse, 73)] = 'Adenine from A...T S'
-TAGL['%s-%s-monoB-unCP' % (dbse, 73)] = 'Thymine from A...T S'
-TAGL['%s-%s' % (dbse, 74)] = 'ST-04 mA...mT S'
-TAGL['%s-%s-dimer' % (dbse, 74)] = 'mA...mT S'
-TAGL['%s-%s-monoA-CP' % (dbse, 74)] = 'methyl-Adenine from mA...mT S'
-TAGL['%s-%s-monoB-CP' % (dbse, 74)] = 'methyl-Thymine from mA...mT S'
-TAGL['%s-%s-monoA-unCP' % (dbse, 74)] = 'methyl-Adenine from mA...mT S'
-TAGL['%s-%s-monoB-unCP' % (dbse, 74)] = 'methyl-Thymine from mA...mT S'
-TAGL['%s-%s' % (dbse, 75)] = 'ST-05 CC1'
-TAGL['%s-%s-dimer' % (dbse, 75)] = 'CC1'
-TAGL['%s-%s-monoA-CP' % (dbse, 75)] = 'Cytosine from CC1'
-TAGL['%s-%s-monoB-CP' % (dbse, 75)] = 'Cytosine from CC1'
-TAGL['%s-%s-monoA-unCP' % (dbse, 75)] = 'Cytosine from CC1'
-TAGL['%s-%s-monoB-unCP' % (dbse, 75)] = 'Cytosine from CC1'
-TAGL['%s-%s' % (dbse, 76)] = 'ST-06 CC2'
-TAGL['%s-%s-dimer' % (dbse, 76)] = 'CC2'
-TAGL['%s-%s-monoA-CP' % (dbse, 76)] = 'Cytosine from CC2'
-TAGL['%s-%s-monoB-CP' % (dbse, 76)] = 'Cytosine from CC2'
-TAGL['%s-%s-monoA-unCP' % (dbse, 76)] = 'Cytosine from CC2'
-TAGL['%s-%s-monoB-unCP' % (dbse, 76)] = 'Cytosine from CC2'
-TAGL['%s-%s' % (dbse, 77)] = 'ST-07 CC3'
-TAGL['%s-%s-dimer' % (dbse, 77)] = 'CC3'
-TAGL['%s-%s-monoA-CP' % (dbse, 77)] = 'Cytosine from CC3'
-TAGL['%s-%s-monoB-CP' % (dbse, 77)] = 'Cytosine from CC3'
-TAGL['%s-%s-monoA-unCP' % (dbse, 77)] = 'Cytosine from CC3'
-TAGL['%s-%s-monoB-unCP' % (dbse, 77)] = 'Cytosine from CC3'
-TAGL['%s-%s' % (dbse, 78)] = 'ST-08 CC4'
-TAGL['%s-%s-dimer' % (dbse, 78)] = 'CC4'
-TAGL['%s-%s-monoA-CP' % (dbse, 78)] = 'Cytosine from CC4'
-TAGL['%s-%s-monoB-CP' % (dbse, 78)] = 'Cytosine from CC4'
-TAGL['%s-%s-monoA-unCP' % (dbse, 78)] = 'Cytosine from CC4'
-TAGL['%s-%s-monoB-unCP' % (dbse, 78)] = 'Cytosine from CC4'
-TAGL['%s-%s' % (dbse, 79)] = 'ST-09 CC5'
-TAGL['%s-%s-dimer' % (dbse, 79)] = 'CC5'
-TAGL['%s-%s-monoA-CP' % (dbse, 79)] = 'Cytosine from CC5'
-TAGL['%s-%s-monoB-CP' % (dbse, 79)] = 'Cytosine from CC5'
-TAGL['%s-%s-monoA-unCP' % (dbse, 79)] = 'Cytosine from CC5'
-TAGL['%s-%s-monoB-unCP' % (dbse, 79)] = 'Cytosine from CC5'
-TAGL['%s-%s' % (dbse, 80)] = 'ST-10 CC6'
-TAGL['%s-%s-dimer' % (dbse, 80)] = 'CC6'
-TAGL['%s-%s-monoA-CP' % (dbse, 80)] = 'Cytosine from CC6'
-TAGL['%s-%s-monoB-CP' % (dbse, 80)] = 'Cytosine from CC6'
-TAGL['%s-%s-monoA-unCP' % (dbse, 80)] = 'Cytosine from CC6'
-TAGL['%s-%s-monoB-unCP' % (dbse, 80)] = 'Cytosine from CC6'
-TAGL['%s-%s' % (dbse, 81)] = 'ST-11 CC7'
-TAGL['%s-%s-dimer' % (dbse, 81)] = 'CC7'
-TAGL['%s-%s-monoA-CP' % (dbse, 81)] = 'Cytosine from CC7'
-TAGL['%s-%s-monoB-CP' % (dbse, 81)] = 'Cytosine from CC7'
-TAGL['%s-%s-monoA-unCP' % (dbse, 81)] = 'Cytosine from CC7'
-TAGL['%s-%s-monoB-unCP' % (dbse, 81)] = 'Cytosine from CC7'
-TAGL['%s-%s' % (dbse, 82)] = 'ST-12 CC8'
-TAGL['%s-%s-dimer' % (dbse, 82)] = 'CC8'
-TAGL['%s-%s-monoA-CP' % (dbse, 82)] = 'Cytosine from CC8'
-TAGL['%s-%s-monoB-CP' % (dbse, 82)] = 'Cytosine from CC8'
-TAGL['%s-%s-monoA-unCP' % (dbse, 82)] = 'Cytosine from CC8'
-TAGL['%s-%s-monoB-unCP' % (dbse, 82)] = 'Cytosine from CC8'
-TAGL['%s-%s' % (dbse, 83)] = 'ST-13 CC9'
-TAGL['%s-%s-dimer' % (dbse, 83)] = 'CC9'
-TAGL['%s-%s-monoA-CP' % (dbse, 83)] = 'Cytosine from CC9'
-TAGL['%s-%s-monoB-CP' % (dbse, 83)] = 'Cytosine from CC9'
-TAGL['%s-%s-monoA-unCP' % (dbse, 83)] = 'Cytosine from CC9'
-TAGL['%s-%s-monoB-unCP' % (dbse, 83)] = 'Cytosine from CC9'
-TAGL['%s-%s' % (dbse, 84)] = 'ST-14 CC10'
-TAGL['%s-%s-dimer' % (dbse, 84)] = 'CC10'
-TAGL['%s-%s-monoA-CP' % (dbse, 84)] = 'Cytosine from CC10'
-TAGL['%s-%s-monoB-CP' % (dbse, 84)] = 'Cytosine from CC10'
-TAGL['%s-%s-monoA-unCP' % (dbse, 84)] = 'Cytosine from CC10'
-TAGL['%s-%s-monoB-unCP' % (dbse, 84)] = 'Cytosine from CC10'
-TAGL['%s-%s' % (dbse, 85)] = 'ST-15 CC11'
-TAGL['%s-%s-dimer' % (dbse, 85)] = 'CC11'
-TAGL['%s-%s-monoA-CP' % (dbse, 85)] = 'Cytosine from CC11'
-TAGL['%s-%s-monoB-CP' % (dbse, 85)] = 'Cytosine from CC11'
-TAGL['%s-%s-monoA-unCP' % (dbse, 85)] = 'Cytosine from CC11'
-TAGL['%s-%s-monoB-unCP' % (dbse, 85)] = 'Cytosine from CC11'
-TAGL['%s-%s' % (dbse, 86)] = 'ST-16 CC12'
-TAGL['%s-%s-dimer' % (dbse, 86)] = 'CC12'
-TAGL['%s-%s-monoA-CP' % (dbse, 86)] = 'Cytosine from CC12'
-TAGL['%s-%s-monoB-CP' % (dbse, 86)] = 'Cytosine from CC12'
-TAGL['%s-%s-monoA-unCP' % (dbse, 86)] = 'Cytosine from CC12'
-TAGL['%s-%s-monoB-unCP' % (dbse, 86)] = 'Cytosine from CC12'
-TAGL['%s-%s' % (dbse, 87)] = 'ST-17 CC13'
-TAGL['%s-%s-dimer' % (dbse, 87)] = 'CC13'
-TAGL['%s-%s-monoA-CP' % (dbse, 87)] = 'Cytosine from CC13'
-TAGL['%s-%s-monoB-CP' % (dbse, 87)] = 'Cytosine from CC13'
-TAGL['%s-%s-monoA-unCP' % (dbse, 87)] = 'Cytosine from CC13'
-TAGL['%s-%s-monoB-unCP' % (dbse, 87)] = 'Cytosine from CC13'
-TAGL['%s-%s' % (dbse, 88)] = 'ST-18 CC14'
-TAGL['%s-%s-dimer' % (dbse, 88)] = 'CC14'
-TAGL['%s-%s-monoA-CP' % (dbse, 88)] = 'Cytosine from CC14'
-TAGL['%s-%s-monoB-CP' % (dbse, 88)] = 'Cytosine from CC14'
-TAGL['%s-%s-monoA-unCP' % (dbse, 88)] = 'Cytosine from CC14'
-TAGL['%s-%s-monoB-unCP' % (dbse, 88)] = 'Cytosine from CC14'
-TAGL['%s-%s' % (dbse, 89)] = 'ST-19 AAst'
-TAGL['%s-%s-dimer' % (dbse, 89)] = 'AAst'
-TAGL['%s-%s-monoA-CP' % (dbse, 89)] = 'Adenine from AAst'
-TAGL['%s-%s-monoB-CP' % (dbse, 89)] = 'Adenine from AAst'
-TAGL['%s-%s-monoA-unCP' % (dbse, 89)] = 'Adenine from AAst'
-TAGL['%s-%s-monoB-unCP' % (dbse, 89)] = 'Adenine from AAst'
-TAGL['%s-%s' % (dbse, 90)] = 'ST-20 GGst'
-TAGL['%s-%s-dimer' % (dbse, 90)] = 'GGst'
-TAGL['%s-%s-monoA-CP' % (dbse, 90)] = 'Guanine from GGst'
-TAGL['%s-%s-monoB-CP' % (dbse, 90)] = 'Guanine from GGst'
-TAGL['%s-%s-monoA-unCP' % (dbse, 90)] = 'Guanine from GGst'
-TAGL['%s-%s-monoB-unCP' % (dbse, 90)] = 'Guanine from GGst'
-TAGL['%s-%s' % (dbse, 91)] = 'ST-21 ACst'
-TAGL['%s-%s-dimer' % (dbse, 91)] = 'ACst'
-TAGL['%s-%s-monoA-CP' % (dbse, 91)] = 'Adenine from ACst'
-TAGL['%s-%s-monoB-CP' % (dbse, 91)] = 'Cytosine from ACst'
-TAGL['%s-%s-monoA-unCP' % (dbse, 91)] = 'Adenine from ACst'
-TAGL['%s-%s-monoB-unCP' % (dbse, 91)] = 'Cytosine from ACst'
-TAGL['%s-%s' % (dbse, 92)] = 'ST-22 GAst'
-TAGL['%s-%s-dimer' % (dbse, 92)] = 'GAst'
-TAGL['%s-%s-monoA-CP' % (dbse, 92)] = 'Guanine from GAst'
-TAGL['%s-%s-monoB-CP' % (dbse, 92)] = 'Adenine from GAst'
-TAGL['%s-%s-monoA-unCP' % (dbse, 92)] = 'Guanine from GAst'
-TAGL['%s-%s-monoB-unCP' % (dbse, 92)] = 'Adenine from GAst'
-TAGL['%s-%s' % (dbse, 93)] = 'ST-23 CCst'
-TAGL['%s-%s-dimer' % (dbse, 93)] = 'CCst'
-TAGL['%s-%s-monoA-CP' % (dbse, 93)] = 'Cytosine from CCst'
-TAGL['%s-%s-monoB-CP' % (dbse, 93)] = 'Cytosine from CCst'
-TAGL['%s-%s-monoA-unCP' % (dbse, 93)] = 'Cytosine from CCst'
-TAGL['%s-%s-monoB-unCP' % (dbse, 93)] = 'Cytosine from CCst'
-TAGL['%s-%s' % (dbse, 94)] = 'ST-24 AUst'
-TAGL['%s-%s-dimer' % (dbse, 94)] = 'AUst'
-TAGL['%s-%s-monoA-CP' % (dbse, 94)] = 'Adenine from AUst'
-TAGL['%s-%s-monoB-CP' % (dbse, 94)] = 'Uracil from AUst'
-TAGL['%s-%s-monoA-unCP' % (dbse, 94)] = 'Adenine from AUst'
-TAGL['%s-%s-monoB-unCP' % (dbse, 94)] = 'Uracil from AUst'
-TAGL['%s-%s' % (dbse, 95)] = 'ST-25 GCst'
-TAGL['%s-%s-dimer' % (dbse, 95)] = 'GCst'
-TAGL['%s-%s-monoA-CP' % (dbse, 95)] = 'Guanine from GCst'
-TAGL['%s-%s-monoB-CP' % (dbse, 95)] = 'Cytosine from GCst'
-TAGL['%s-%s-monoA-unCP' % (dbse, 95)] = 'Guanine from GCst'
-TAGL['%s-%s-monoB-unCP' % (dbse, 95)] = 'Cytosine from GCst'
-TAGL['%s-%s' % (dbse, 96)] = 'ST-26 CUst'
-TAGL['%s-%s-dimer' % (dbse, 96)] = 'CUst'
-TAGL['%s-%s-monoA-CP' % (dbse, 96)] = 'Cytosine from CUst'
-TAGL['%s-%s-monoB-CP' % (dbse, 96)] = 'Uracil from CUst'
-TAGL['%s-%s-monoA-unCP' % (dbse, 96)] = 'Cytosine from CUst'
-TAGL['%s-%s-monoB-unCP' % (dbse, 96)] = 'Uracil from CUst'
-TAGL['%s-%s' % (dbse, 97)] = 'ST-27 UUst'
-TAGL['%s-%s-dimer' % (dbse, 97)] = 'UUst'
-TAGL['%s-%s-monoA-CP' % (dbse, 97)] = 'Uracil from UUst'
-TAGL['%s-%s-monoB-CP' % (dbse, 97)] = 'Uracil from UUst'
-TAGL['%s-%s-monoA-unCP' % (dbse, 97)] = 'Uracil from UUst'
-TAGL['%s-%s-monoB-unCP' % (dbse, 97)] = 'Uracil from UUst'
-TAGL['%s-%s' % (dbse, 98)] = 'ST-28 GUst'
-TAGL['%s-%s-dimer' % (dbse, 98)] = 'GUst'
-TAGL['%s-%s-monoA-CP' % (dbse, 98)] = 'Guanine from GUst'
-TAGL['%s-%s-monoB-CP' % (dbse, 98)] = 'Uracil from GUst'
-TAGL['%s-%s-monoA-unCP' % (dbse, 98)] = 'Guanine from GUst'
-TAGL['%s-%s-monoB-unCP' % (dbse, 98)] = 'Uracil from GUst'
-TAGL['%s-%s' % (dbse, 99)] = 'ST-29 GG0/3.36 GGs036'
-TAGL['%s-%s-dimer' % (dbse, 99)] = 'GGs036'
-TAGL['%s-%s-monoA-CP' % (dbse, 99)] = 'Guanine from GGs036'
-TAGL['%s-%s-monoB-CP' % (dbse, 99)] = 'Guanine from GGs036'
-TAGL['%s-%s-monoA-unCP' % (dbse, 99)] = 'Guanine from GGs036'
-TAGL['%s-%s-monoB-unCP' % (dbse, 99)] = 'Guanine from GGs036'
-TAGL['%s-%s' % (dbse, 100)] = 'ST-30 GG0/3.36 CCs036'
-TAGL['%s-%s-dimer' % (dbse, 100)] = 'CCs036'
-TAGL['%s-%s-monoA-CP' % (dbse, 100)] = 'Cytosine from CCs036'
-TAGL['%s-%s-monoB-CP' % (dbse, 100)] = 'Cytosine from CCs036'
-TAGL['%s-%s-monoA-unCP' % (dbse, 100)] = 'Cytosine from CCs036'
-TAGL['%s-%s-monoB-unCP' % (dbse, 100)] = 'Cytosine from CCs036'
-TAGL['%s-%s' % (dbse, 101)] = 'ST-31 AA20/3.05 AAs2005'
-TAGL['%s-%s-dimer' % (dbse, 101)] = 'AAs2005'
-TAGL['%s-%s-monoA-CP' % (dbse, 101)] = 'Adenine from AAs2005'
-TAGL['%s-%s-monoB-CP' % (dbse, 101)] = 'Adenine from AAs2005'
-TAGL['%s-%s-monoA-unCP' % (dbse, 101)] = 'Adenine from AAs2005'
-TAGL['%s-%s-monoB-unCP' % (dbse, 101)] = 'Adenine from AAs2005'
-TAGL['%s-%s' % (dbse, 102)] = 'ST-32 AA20/3.05 TTs2005'
-TAGL['%s-%s-dimer' % (dbse, 102)] = 'TTs2005'
-TAGL['%s-%s-monoA-CP' % (dbse, 102)] = 'Thymine from TTs2005'
-TAGL['%s-%s-monoB-CP' % (dbse, 102)] = 'Thymine from TTs2005'
-TAGL['%s-%s-monoA-unCP' % (dbse, 102)] = 'Thymine from TTs2005'
-TAGL['%s-%s-monoB-unCP' % (dbse, 102)] = 'Thymine from TTs2005'
-TAGL['%s-%s' % (dbse, 103)] = 'ST-33 GC0/3.25 G//Cs'
-TAGL['%s-%s-dimer' % (dbse, 103)] = 'GC0/3.25 G//Cs'
-TAGL['%s-%s-monoA-CP' % (dbse, 103)] = 'Cytosine from GC0/3.25 G//Cs'
-TAGL['%s-%s-monoB-CP' % (dbse, 103)] = 'Guanine from GC0/3.25 G//Cs'
-TAGL['%s-%s-monoA-unCP' % (dbse, 103)] = 'Cytosine from GC0/3.25 G//Cs'
-TAGL['%s-%s-monoB-unCP' % (dbse, 103)] = 'Guanine from GC0/3.25 G//Cs'
-TAGL['%s-%s' % (dbse, 104)] = 'ST-34 CG0/3.19 G//Cs'
-TAGL['%s-%s-dimer' % (dbse, 104)] = 'CG0/3.19 G//Cs'
-TAGL['%s-%s-monoA-CP' % (dbse, 104)] = 'Cytosine from CG0/3.19 G//Cs'
-TAGL['%s-%s-monoB-CP' % (dbse, 104)] = 'Guanine from CG0/3.19 G//Cs'
-TAGL['%s-%s-monoA-unCP' % (dbse, 104)] = 'Cytosine from CG0/3.19 G//Cs'
-TAGL['%s-%s-monoB-unCP' % (dbse, 104)] = 'Guanine from CG0/3.19 G//Cs'
-TAGL['%s-%s' % (dbse, 105)] = 'ST-35 GA10/3.15 A//Gs'
-TAGL['%s-%s-dimer' % (dbse, 105)] = 'GA10/3.15 A//Gs'
-TAGL['%s-%s-monoA-CP' % (dbse, 105)] = 'Adenine from GA10/3.15 A//Gs'
-TAGL['%s-%s-monoB-CP' % (dbse, 105)] = 'Guanine from GA10/3.15 A//Gs'
-TAGL['%s-%s-monoA-unCP' % (dbse, 105)] = 'Adenine from GA10/3.15 A//Gs'
-TAGL['%s-%s-monoB-unCP' % (dbse, 105)] = 'Guanine from GA10/3.15 A//Gs'
-TAGL['%s-%s' % (dbse, 106)] = 'ST-36 GA10/3.15 T//Cs'
-TAGL['%s-%s-dimer' % (dbse, 106)] = 'GA10/3.15 T//Cs'
-TAGL['%s-%s-monoA-CP' % (dbse, 106)] = 'Thymine from GA10/3.15 T//Cs'
-TAGL['%s-%s-monoB-CP' % (dbse, 106)] = 'Cytosine from GA10/3.15 T//Cs'
-TAGL['%s-%s-monoA-unCP' % (dbse, 106)] = 'Thymine from GA10/3.15 T//Cs'
-TAGL['%s-%s-monoB-unCP' % (dbse, 106)] = 'Cytosine from GA10/3.15 T//Cs'
-TAGL['%s-%s' % (dbse, 107)] = 'ST-37 AG08/3.19 A//Gs'
-TAGL['%s-%s-dimer' % (dbse, 107)] = 'AG08/3.19 A//Gs'
-TAGL['%s-%s-monoA-CP' % (dbse, 107)] = 'Adenine from AG08/3.19 A//Gs'
-TAGL['%s-%s-monoB-CP' % (dbse, 107)] = 'Guanine from AG08/3.19 A//Gs'
-TAGL['%s-%s-monoA-unCP' % (dbse, 107)] = 'Adenine from AG08/3.19 A//Gs'
-TAGL['%s-%s-monoB-unCP' % (dbse, 107)] = 'Guanine from AG08/3.19 A//Gs'
-TAGL['%s-%s' % (dbse, 108)] = 'ST-38 AG08/3.19 T//Cs'
-TAGL['%s-%s-dimer' % (dbse, 108)] = 'AG08/3.19 T//Cs'
-TAGL['%s-%s-monoA-CP' % (dbse, 108)] = 'Thymine from AG08/3.19 T//Cs'
-TAGL['%s-%s-monoB-CP' % (dbse, 108)] = 'Cytosine from AG08/3.19 T//Cs'
-TAGL['%s-%s-monoA-unCP' % (dbse, 108)] = 'Thymine from AG08/3.19 T//Cs'
-TAGL['%s-%s-monoB-unCP' % (dbse, 108)] = 'Cytosine from AG08/3.19 T//Cs'
-TAGL['%s-%s' % (dbse, 109)] = 'ST-39 TG03.19 T//Gs'
-TAGL['%s-%s-dimer' % (dbse, 109)] = 'TG03.19 T//Gs'
-TAGL['%s-%s-monoA-CP' % (dbse, 109)] = 'Thymine from TG03.19 T//Gs'
-TAGL['%s-%s-monoB-CP' % (dbse, 109)] = 'Guanine from TG03.19 T//Gs'
-TAGL['%s-%s-monoA-unCP' % (dbse, 109)] = 'Thymine from TG03.19 T//Gs'
-TAGL['%s-%s-monoB-unCP' % (dbse, 109)] = 'Guanine from TG03.19 T//Gs'
-TAGL['%s-%s' % (dbse, 110)] = 'ST-40 TG03.19 A//Cs'
-TAGL['%s-%s-dimer' % (dbse, 110)] = 'TG03.19 A//Cs'
-TAGL['%s-%s-monoA-CP' % (dbse, 110)] = 'Adenine from TG03.19 A//Cs'
-TAGL['%s-%s-monoB-CP' % (dbse, 110)] = 'Cytosine from TG03.19 A//Cs'
-TAGL['%s-%s-monoA-unCP' % (dbse, 110)] = 'Adenine from TG03.19 A//Cs'
-TAGL['%s-%s-monoB-unCP' % (dbse, 110)] = 'Cytosine from TG03.19 A//Cs'
-TAGL['%s-%s' % (dbse, 111)] = 'ST-41 GT10/3.15 T//Gs'
-TAGL['%s-%s-dimer' % (dbse, 111)] = 'GT10/3.15 T//Gs'
-TAGL['%s-%s-monoA-CP' % (dbse, 111)] = 'Thymine from GT10/3.15 T//Gs'
-TAGL['%s-%s-monoB-CP' % (dbse, 111)] = 'Guanine from GT10/3.15 T//Gs'
-TAGL['%s-%s-monoA-unCP' % (dbse, 111)] = 'Thymine from GT10/3.15 T//Gs'
-TAGL['%s-%s-monoB-unCP' % (dbse, 111)] = 'Guanine from GT10/3.15 T//Gs'
-TAGL['%s-%s' % (dbse, 112)] = 'ST-42 GT10/3.15 A//Cs'
-TAGL['%s-%s-dimer' % (dbse, 112)] = 'GT10/3.15 A//Cs'
-TAGL['%s-%s-monoA-CP' % (dbse, 112)] = 'Adenine from GT10/3.15 A//Cs'
-TAGL['%s-%s-monoB-CP' % (dbse, 112)] = 'Cytosine from GT10/3.15 A//Cs'
-TAGL['%s-%s-monoA-unCP' % (dbse, 112)] = 'Adenine from GT10/3.15 A//Cs'
-TAGL['%s-%s-monoB-unCP' % (dbse, 112)] = 'Cytosine from GT10/3.15 A//Cs'
-TAGL['%s-%s' % (dbse, 113)] = 'ST-43 AT10/3.26 A//Ts'
-TAGL['%s-%s-dimer' % (dbse, 113)] = 'AT10/3.26 A//Ts'
-TAGL['%s-%s-monoA-CP' % (dbse, 113)] = 'Adenine from AT10/3.26 A//Ts'
-TAGL['%s-%s-monoB-CP' % (dbse, 113)] = 'Thymine from AT10/3.26 A//Ts'
-TAGL['%s-%s-monoA-unCP' % (dbse, 113)] = 'Adenine from AT10/3.26 A//Ts'
-TAGL['%s-%s-monoB-unCP' % (dbse, 113)] = 'Thymine from AT10/3.26 A//Ts'
-TAGL['%s-%s' % (dbse, 114)] = 'ST-44 TA08/3.16 A//Ts'
-TAGL['%s-%s-dimer' % (dbse, 114)] = 'TA08/3.16 A//Ts'
-TAGL['%s-%s-monoA-CP' % (dbse, 114)] = 'Adenine from TA08/3.16 A//Ts'
-TAGL['%s-%s-monoB-CP' % (dbse, 114)] = 'Thymine from TA08/3.16 A//Ts'
-TAGL['%s-%s-monoA-unCP' % (dbse, 114)] = 'Adenine from TA08/3.16 A//Ts'
-TAGL['%s-%s-monoB-unCP' % (dbse, 114)] = 'Thymine from TA08/3.16 A//Ts'
-TAGL['%s-%s' % (dbse, 115)] = 'ST-45 AA0/3.24 A//As'
-TAGL['%s-%s-dimer' % (dbse, 115)] = 'AA0/3.24 A//As'
-TAGL['%s-%s-monoA-CP' % (dbse, 115)] = 'Adenine from AA0/3.24 A//As'
-TAGL['%s-%s-monoB-CP' % (dbse, 115)] = 'Adenine from AA0/3.24 A//As'
-TAGL['%s-%s-monoA-unCP' % (dbse, 115)] = 'Adenine from AA0/3.24 A//As'
-TAGL['%s-%s-monoB-unCP' % (dbse, 115)] = 'Adenine from AA0/3.24 A//As'
-TAGL['%s-%s' % (dbse, 116)] = 'ST-46 AA0/3.24 T//Ts'
-TAGL['%s-%s-dimer' % (dbse, 116)] = 'AA0/3.24 T//Ts'
-TAGL['%s-%s-monoA-CP' % (dbse, 116)] = 'Thymine from AA0/3.24 T//Ts'
-TAGL['%s-%s-monoB-CP' % (dbse, 116)] = 'Thymine from AA0/3.24 T//Ts'
-TAGL['%s-%s-monoA-unCP' % (dbse, 116)] = 'Thymine from AA0/3.24 T//Ts'
-TAGL['%s-%s-monoB-unCP' % (dbse, 116)] = 'Thymine from AA0/3.24 T//Ts'
-TAGL['%s-%s' % (dbse, 117)] = 'ST-47 A...T S'
-TAGL['%s-%s-dimer' % (dbse, 117)] = 'A...T S'
-TAGL['%s-%s-monoA-CP' % (dbse, 117)] = 'methyl-Adenine from A...T S'
-TAGL['%s-%s-monoB-CP' % (dbse, 117)] = 'methyl-Thymine from A...T S'
-TAGL['%s-%s-monoA-unCP' % (dbse, 117)] = 'methyl-Adenine from A...T S'
-TAGL['%s-%s-monoB-unCP' % (dbse, 117)] = 'methyl-Thymine from A...T S'
-TAGL['%s-%s' % (dbse, 118)] = 'ST-48 G...C S'
-TAGL['%s-%s-dimer' % (dbse, 118)] = 'G...C S'
-TAGL['%s-%s-monoA-CP' % (dbse, 118)] = 'methyl-Cytosine from G...C S'
-TAGL['%s-%s-monoB-CP' % (dbse, 118)] = 'methyl-Guanine from G...C S'
-TAGL['%s-%s-monoA-unCP' % (dbse, 118)] = 'methyl-Cytosine from G...C S'
-TAGL['%s-%s-monoB-unCP' % (dbse, 118)] = 'methyl-Guanine from G...C S'
-TAGL['%s-%s' % (dbse, 119)] = 'ST-49 A...C S'
-TAGL['%s-%s-dimer' % (dbse, 119)] = 'A...C S'
-TAGL['%s-%s-monoA-CP' % (dbse, 119)] = 'methyl-Adenine from A...C S'
-TAGL['%s-%s-monoB-CP' % (dbse, 119)] = 'methyl-Cytosine from A...C S'
-TAGL['%s-%s-monoA-unCP' % (dbse, 119)] = 'methyl-Adenine from A...C S'
-TAGL['%s-%s-monoB-unCP' % (dbse, 119)] = 'methyl-Cytosine from A...C S'
-TAGL['%s-%s' % (dbse, 120)] = 'ST-50 T...G S'
-TAGL['%s-%s-dimer' % (dbse, 120)] = 'T...G S'
-TAGL['%s-%s-monoA-CP' % (dbse, 120)] = 'methyl-Thymine from T...G S'
-TAGL['%s-%s-monoB-CP' % (dbse, 120)] = 'methyl-Guanine from T...G S'
-TAGL['%s-%s-monoA-unCP' % (dbse, 120)] = 'methyl-Thymine from T...G S'
-TAGL['%s-%s-monoB-unCP' % (dbse, 120)] = 'methyl-Guanine from T...G S'
-TAGL['%s-%s' % (dbse, 121)] = 'ST-51 G...C S'
-TAGL['%s-%s-dimer' % (dbse, 121)] = 'G...C S'
-TAGL['%s-%s-monoA-CP' % (dbse, 121)] = 'Cytosine from G...C S'
-TAGL['%s-%s-monoB-CP' % (dbse, 121)] = 'Guanine from G...C S'
-TAGL['%s-%s-monoA-unCP' % (dbse, 121)] = 'Cytosine from G...C S'
-TAGL['%s-%s-monoB-unCP' % (dbse, 121)] = 'Guanine from G...C S'
-TAGL['%s-%s' % (dbse, 122)] = 'ST-52 A...G S'
-TAGL['%s-%s-dimer' % (dbse, 122)] = 'A...G S'
-TAGL['%s-%s-monoA-CP' % (dbse, 122)] = 'Adenine from A...G S'
-TAGL['%s-%s-monoB-CP' % (dbse, 122)] = 'Guanine from A...G S'
-TAGL['%s-%s-monoA-unCP' % (dbse, 122)] = 'Adenine from A...G S'
-TAGL['%s-%s-monoB-unCP' % (dbse, 122)] = 'Guanine from A...G S'
-TAGL['%s-%s' % (dbse, 123)] = 'ST-53 C...G S'
-TAGL['%s-%s-dimer' % (dbse, 123)] = 'C...G S'
-TAGL['%s-%s-monoA-CP' % (dbse, 123)] = 'Guanine from C...G S'
-TAGL['%s-%s-monoB-CP' % (dbse, 123)] = 'Cytosine from C...G S'
-TAGL['%s-%s-monoA-unCP' % (dbse, 123)] = 'Guanine from C...G S'
-TAGL['%s-%s-monoB-unCP' % (dbse, 123)] = 'Cytosine from C...G S'
-TAGL['%s-%s' % (dbse, 124)] = 'ST-54 G...C S'
-TAGL['%s-%s-dimer' % (dbse, 124)] = 'G...C S'
-TAGL['%s-%s-monoA-CP' % (dbse, 124)] = 'Guanine from G...C S'
-TAGL['%s-%s-monoB-CP' % (dbse, 124)] = 'Cytosine from G...C S'
-TAGL['%s-%s-monoA-unCP' % (dbse, 124)] = 'Guanine from G...C S'
-TAGL['%s-%s-monoB-unCP' % (dbse, 124)] = 'Cytosine from G...C S'
+TAGL["%s-%s" % (dbse, 1)] = "HB-01 G...C WC"
+TAGL["%s-%s-dimer" % (dbse, 1)] = "G...C WC"
+TAGL["%s-%s-monoA-CP" % (dbse, 1)] = "Cytosine from G...C WC"
+TAGL["%s-%s-monoB-CP" % (dbse, 1)] = "Guanine from G...C WC"
+TAGL["%s-%s-monoA-unCP" % (dbse, 1)] = "Cytosine from G...C WC"
+TAGL["%s-%s-monoB-unCP" % (dbse, 1)] = "Guanine from G...C WC"
+TAGL["%s-%s" % (dbse, 2)] = "HB-02 mG...mC WC"
+TAGL["%s-%s-dimer" % (dbse, 2)] = "mG...mC WC"
+TAGL["%s-%s-monoA-CP" % (dbse, 2)] = "methyl-Cytosine from mG...mC WC"
+TAGL["%s-%s-monoB-CP" % (dbse, 2)] = "methyl-Guanine from mG...mC WC"
+TAGL["%s-%s-monoA-unCP" % (dbse, 2)] = "methyl-Cytosine from mG...mC WC"
+TAGL["%s-%s-monoB-unCP" % (dbse, 2)] = "methyl-Guanine from mG...mC WC"
+TAGL["%s-%s" % (dbse, 3)] = "HB-03 A...T WC"
+TAGL["%s-%s-dimer" % (dbse, 3)] = "A...T WC"
+TAGL["%s-%s-monoA-CP" % (dbse, 3)] = "Adenine from A...T WC"
+TAGL["%s-%s-monoB-CP" % (dbse, 3)] = "Thymine from A...T WC"
+TAGL["%s-%s-monoA-unCP" % (dbse, 3)] = "Adenine from A...T WC"
+TAGL["%s-%s-monoB-unCP" % (dbse, 3)] = "Thymine from A...T WC"
+TAGL["%s-%s" % (dbse, 4)] = "HB-04 mA...mT H"
+TAGL["%s-%s-dimer" % (dbse, 4)] = "mA...mT H"
+TAGL["%s-%s-monoA-CP" % (dbse, 4)] = "methyl-Adenine from mA...mT H"
+TAGL["%s-%s-monoB-CP" % (dbse, 4)] = "methyl-Thymine from mA...mT H"
+TAGL["%s-%s-monoA-unCP" % (dbse, 4)] = "methyl-Adenine from mA...mT H"
+TAGL["%s-%s-monoB-unCP" % (dbse, 4)] = "methyl-Thymine from mA...mT H"
+TAGL["%s-%s" % (dbse, 5)] = "HB-05 8oG...C WC pl"
+TAGL["%s-%s-dimer" % (dbse, 5)] = "8oG...C WC pl"
+TAGL["%s-%s-monoA-CP" % (dbse, 5)] = "8-oxo-Guanine from 8oG...C WC pl"
+TAGL["%s-%s-monoB-CP" % (dbse, 5)] = "Cytosine from 8oG...C WC pl"
+TAGL["%s-%s-monoA-unCP" % (dbse, 5)] = "8-oxo-Guanine from 8oG...C WC pl"
+TAGL["%s-%s-monoB-unCP" % (dbse, 5)] = "Cytosine from 8oG...C WC pl"
+TAGL["%s-%s" % (dbse, 6)] = "HB-06 I...C WC pl"
+TAGL["%s-%s-dimer" % (dbse, 6)] = "I...C WC pl"
+TAGL["%s-%s-monoA-CP" % (dbse, 6)] = "Cytosine from I...C WC pl"
+TAGL["%s-%s-monoB-CP" % (dbse, 6)] = "Inosine from I...C WC pl"
+TAGL["%s-%s-monoA-unCP" % (dbse, 6)] = "Cytosine from I...C WC pl"
+TAGL["%s-%s-monoB-unCP" % (dbse, 6)] = "Inosine from I...C WC pl"
+TAGL["%s-%s" % (dbse, 7)] = "HB-07 G...U wobble"
+TAGL["%s-%s-dimer" % (dbse, 7)] = "G...U wobble"
+TAGL["%s-%s-monoA-CP" % (dbse, 7)] = "Guanine from G...U wobble"
+TAGL["%s-%s-monoB-CP" % (dbse, 7)] = "Uracil from G...U wobble"
+TAGL["%s-%s-monoA-unCP" % (dbse, 7)] = "Guanine from G...U wobble"
+TAGL["%s-%s-monoB-unCP" % (dbse, 7)] = "Uracil from G...U wobble"
+TAGL["%s-%s" % (dbse, 8)] = "HB-08 CCH+"
+TAGL["%s-%s-dimer" % (dbse, 8)] = "CCH+"
+TAGL["%s-%s-monoA-CP" % (dbse, 8)] = "Cytosine from CCH+"
+TAGL["%s-%s-monoB-CP" % (dbse, 8)] = "protonated-Cytosine from CCH+"
+TAGL["%s-%s-monoA-unCP" % (dbse, 8)] = "Cytosine from CCH+"
+TAGL["%s-%s-monoB-unCP" % (dbse, 8)] = "protonated-Cytosine from CCH+"
+TAGL["%s-%s" % (dbse, 9)] = "HB-09 U...U Calcutta pl"
+TAGL["%s-%s-dimer" % (dbse, 9)] = "U...U Calcutta pl"
+TAGL["%s-%s-monoA-CP" % (dbse, 9)] = "Uracil from U...U Calcutta pl"
+TAGL["%s-%s-monoB-CP" % (dbse, 9)] = "Uracil from U...U Calcutta pl"
+TAGL["%s-%s-monoA-unCP" % (dbse, 9)] = "Uracil from U...U Calcutta pl"
+TAGL["%s-%s-monoB-unCP" % (dbse, 9)] = "Uracil from U...U Calcutta pl"
+TAGL["%s-%s" % (dbse, 10)] = "HB-10 U...U pl"
+TAGL["%s-%s-dimer" % (dbse, 10)] = "U...U pl"
+TAGL["%s-%s-monoA-CP" % (dbse, 10)] = "Uracil from U...U pl"
+TAGL["%s-%s-monoB-CP" % (dbse, 10)] = "Uracil from U...U pl"
+TAGL["%s-%s-monoA-unCP" % (dbse, 10)] = "Uracil from U...U pl"
+TAGL["%s-%s-monoB-unCP" % (dbse, 10)] = "Uracil from U...U pl"
+TAGL["%s-%s" % (dbse, 11)] = "HB-11 6tG...C WC pl"
+TAGL["%s-%s-dimer" % (dbse, 11)] = "6tG...C WC pl"
+TAGL["%s-%s-monoA-CP" % (dbse, 11)] = "Cytosine from 6tG...C WC pl"
+TAGL["%s-%s-monoB-CP" % (dbse, 11)] = "6-thio-Guanine from 6tG...C WC pl"
+TAGL["%s-%s-monoA-unCP" % (dbse, 11)] = "Cytosine from 6tG...C WC pl"
+TAGL["%s-%s-monoB-unCP" % (dbse, 11)] = "6-thio-Guanine from 6tG...C WC pl"
+TAGL["%s-%s" % (dbse, 12)] = "HB-12 A...4tU WC"
+TAGL["%s-%s-dimer" % (dbse, 12)] = "A...4tU WC"
+TAGL["%s-%s-monoA-CP" % (dbse, 12)] = "Adenine from A...4tU WC"
+TAGL["%s-%s-monoB-CP" % (dbse, 12)] = "4-thio-Uracil from A...4tU WC"
+TAGL["%s-%s-monoA-unCP" % (dbse, 12)] = "Adenine from A...4tU WC"
+TAGL["%s-%s-monoB-unCP" % (dbse, 12)] = "4-thio-Uracil from A...4tU WC"
+TAGL["%s-%s" % (dbse, 13)] = "HB-13 2-aminoA...T"
+TAGL["%s-%s-dimer" % (dbse, 13)] = "2-aminoA...T"
+TAGL["%s-%s-monoA-CP" % (dbse, 13)] = "2-amino-Adenine from 2-aminoA...T"
+TAGL["%s-%s-monoB-CP" % (dbse, 13)] = "Thymine from 2-aminoA...T"
+TAGL["%s-%s-monoA-unCP" % (dbse, 13)] = "2-amino-Adenine from 2-aminoA...T"
+TAGL["%s-%s-monoB-unCP" % (dbse, 13)] = "Thymine from 2-aminoA...T"
+TAGL["%s-%s" % (dbse, 14)] = "HB-14 2-aminoA...T pl"
+TAGL["%s-%s-dimer" % (dbse, 14)] = "2-aminoA...T pl"
+TAGL["%s-%s-monoA-CP" % (dbse, 14)] = "2-amino-Adenine from 2-aminoA...T pl"
+TAGL["%s-%s-monoB-CP" % (dbse, 14)] = "Thymine from 2-aminoA...T pl"
+TAGL["%s-%s-monoA-unCP" % (dbse, 14)] = "2-amino-Adenine from 2-aminoA...T pl"
+TAGL["%s-%s-monoB-unCP" % (dbse, 14)] = "Thymine from 2-aminoA...T pl"
+TAGL["%s-%s" % (dbse, 15)] = "HB-15 A...F"
+TAGL["%s-%s-dimer" % (dbse, 15)] = "A...F"
+TAGL["%s-%s-monoA-CP" % (dbse, 15)] = "Adenine from A...F"
+TAGL["%s-%s-monoB-CP" % (dbse, 15)] = "difluorotoluene from A...F"
+TAGL["%s-%s-monoA-unCP" % (dbse, 15)] = "Adenine from A...F"
+TAGL["%s-%s-monoB-unCP" % (dbse, 15)] = "difluorotoluene from A...F"
+TAGL["%s-%s" % (dbse, 16)] = "HB-16 G...4tU"
+TAGL["%s-%s-dimer" % (dbse, 16)] = "G...4tU"
+TAGL["%s-%s-monoA-CP" % (dbse, 16)] = "Guanine from G...4tU"
+TAGL["%s-%s-monoB-CP" % (dbse, 16)] = "4-thio-Uracil from G...4tU"
+TAGL["%s-%s-monoA-unCP" % (dbse, 16)] = "Guanine from G...4tU"
+TAGL["%s-%s-monoB-unCP" % (dbse, 16)] = "4-thio-Uracil from G...4tU"
+TAGL["%s-%s" % (dbse, 17)] = "HB-17 G...2tU"
+TAGL["%s-%s-dimer" % (dbse, 17)] = "G...2tU"
+TAGL["%s-%s-monoA-CP" % (dbse, 17)] = "Guanine from G...2tU"
+TAGL["%s-%s-monoB-CP" % (dbse, 17)] = "2-thio-Uracil from G...2tU"
+TAGL["%s-%s-monoA-unCP" % (dbse, 17)] = "Guanine from G...2tU"
+TAGL["%s-%s-monoB-unCP" % (dbse, 17)] = "2-thio-Uracil from G...2tU"
+TAGL["%s-%s" % (dbse, 18)] = "HB-18 A...C pl"
+TAGL["%s-%s-dimer" % (dbse, 18)] = "A...C pl"
+TAGL["%s-%s-monoA-CP" % (dbse, 18)] = "Cytosine from A...C pl"
+TAGL["%s-%s-monoB-CP" % (dbse, 18)] = "Adenine from A...C pl"
+TAGL["%s-%s-monoA-unCP" % (dbse, 18)] = "Cytosine from A...C pl"
+TAGL["%s-%s-monoB-unCP" % (dbse, 18)] = "Adenine from A...C pl"
+TAGL["%s-%s" % (dbse, 19)] = "HB-19 G...G pl"
+TAGL["%s-%s-dimer" % (dbse, 19)] = "G...G pl"
+TAGL["%s-%s-monoA-CP" % (dbse, 19)] = "Guanine from G...G pl"
+TAGL["%s-%s-monoB-CP" % (dbse, 19)] = "Guanine from G...G pl"
+TAGL["%s-%s-monoA-unCP" % (dbse, 19)] = "Guanine from G...G pl"
+TAGL["%s-%s-monoB-unCP" % (dbse, 19)] = "Guanine from G...G pl"
+TAGL["%s-%s" % (dbse, 20)] = "HB-20 G...6tG pl"
+TAGL["%s-%s-dimer" % (dbse, 20)] = "G...6tG pl"
+TAGL["%s-%s-monoA-CP" % (dbse, 20)] = "Guanine from G...6tG pl"
+TAGL["%s-%s-monoB-CP" % (dbse, 20)] = "6-thio-Guanine from G...6tG pl"
+TAGL["%s-%s-monoA-unCP" % (dbse, 20)] = "Guanine from G...6tG pl"
+TAGL["%s-%s-monoB-unCP" % (dbse, 20)] = "6-thio-Guanine from G...6tG pl"
+TAGL["%s-%s" % (dbse, 21)] = "HB-21 6tG...G pl"
+TAGL["%s-%s-dimer" % (dbse, 21)] = "6tG...G pl"
+TAGL["%s-%s-monoA-CP" % (dbse, 21)] = "6-thio-Guanine from 6tG...G pl"
+TAGL["%s-%s-monoB-CP" % (dbse, 21)] = "Guanine from 6tG...G pl"
+TAGL["%s-%s-monoA-unCP" % (dbse, 21)] = "6-thio-Guanine from 6tG...G pl"
+TAGL["%s-%s-monoB-unCP" % (dbse, 21)] = "Guanine from 6tG...G pl"
+TAGL["%s-%s" % (dbse, 22)] = "HB-22 G...A 1"
+TAGL["%s-%s-dimer" % (dbse, 22)] = "G...A 1"
+TAGL["%s-%s-monoA-CP" % (dbse, 22)] = "Guanine from G...A 1"
+TAGL["%s-%s-monoB-CP" % (dbse, 22)] = "Adenine from G...A 1"
+TAGL["%s-%s-monoA-unCP" % (dbse, 22)] = "Guanine from G...A 1"
+TAGL["%s-%s-monoB-unCP" % (dbse, 22)] = "Adenine from G...A 1"
+TAGL["%s-%s" % (dbse, 23)] = "HB-23 G...A 1 pl"
+TAGL["%s-%s-dimer" % (dbse, 23)] = "G...A 1 pl"
+TAGL["%s-%s-monoA-CP" % (dbse, 23)] = "Adenine from G...A 1 pl"
+TAGL["%s-%s-monoB-CP" % (dbse, 23)] = "Guanine from G...A 1 pl"
+TAGL["%s-%s-monoA-unCP" % (dbse, 23)] = "Adenine from G...A 1 pl"
+TAGL["%s-%s-monoB-unCP" % (dbse, 23)] = "Guanine from G...A 1 pl"
+TAGL["%s-%s" % (dbse, 24)] = "HB-24 G...A 2"
+TAGL["%s-%s-dimer" % (dbse, 24)] = "G...A 2"
+TAGL["%s-%s-monoA-CP" % (dbse, 24)] = "Guanine from G...A 2"
+TAGL["%s-%s-monoB-CP" % (dbse, 24)] = "Adenine from G...A 2"
+TAGL["%s-%s-monoA-unCP" % (dbse, 24)] = "Guanine from G...A 2"
+TAGL["%s-%s-monoB-unCP" % (dbse, 24)] = "Adenine from G...A 2"
+TAGL["%s-%s" % (dbse, 25)] = "HB-25 G...A 2 pl"
+TAGL["%s-%s-dimer" % (dbse, 25)] = "G...A 2 pl"
+TAGL["%s-%s-monoA-CP" % (dbse, 25)] = "Guanine from G...A 2 pl"
+TAGL["%s-%s-monoB-CP" % (dbse, 25)] = "Adenine from G...A 2 pl"
+TAGL["%s-%s-monoA-unCP" % (dbse, 25)] = "Guanine from G...A 2 pl"
+TAGL["%s-%s-monoB-unCP" % (dbse, 25)] = "Adenine from G...A 2 pl"
+TAGL["%s-%s" % (dbse, 26)] = "HB-26 G...A 3"
+TAGL["%s-%s-dimer" % (dbse, 26)] = "G...A 3"
+TAGL["%s-%s-monoA-CP" % (dbse, 26)] = "Guanine from G...A 3"
+TAGL["%s-%s-monoB-CP" % (dbse, 26)] = "Adenine from G...A 3"
+TAGL["%s-%s-monoA-unCP" % (dbse, 26)] = "Guanine from G...A 3"
+TAGL["%s-%s-monoB-unCP" % (dbse, 26)] = "Adenine from G...A 3"
+TAGL["%s-%s" % (dbse, 27)] = "HB-27 G...A 4"
+TAGL["%s-%s-dimer" % (dbse, 27)] = "G...A 4"
+TAGL["%s-%s-monoA-CP" % (dbse, 27)] = "Guanine from G...A 4"
+TAGL["%s-%s-monoB-CP" % (dbse, 27)] = "Adenine from G...A 4"
+TAGL["%s-%s-monoA-unCP" % (dbse, 27)] = "Guanine from G...A 4"
+TAGL["%s-%s-monoB-unCP" % (dbse, 27)] = "Adenine from G...A 4"
+TAGL["%s-%s" % (dbse, 28)] = "HB-28 A...A 1 pl"
+TAGL["%s-%s-dimer" % (dbse, 28)] = "A...A 1 pl"
+TAGL["%s-%s-monoA-CP" % (dbse, 28)] = "Adenine from A...A 1 pl"
+TAGL["%s-%s-monoB-CP" % (dbse, 28)] = "Adenine from A...A 1 pl"
+TAGL["%s-%s-monoA-unCP" % (dbse, 28)] = "Adenine from A...A 1 pl"
+TAGL["%s-%s-monoB-unCP" % (dbse, 28)] = "Adenine from A...A 1 pl"
+TAGL["%s-%s" % (dbse, 29)] = "HB-29 A...A 2 pl"
+TAGL["%s-%s-dimer" % (dbse, 29)] = "A...A 2 pl"
+TAGL["%s-%s-monoA-CP" % (dbse, 29)] = "Adenine from A...A 2 pl"
+TAGL["%s-%s-monoB-CP" % (dbse, 29)] = "Adenine from A...A 2 pl"
+TAGL["%s-%s-monoA-unCP" % (dbse, 29)] = "Adenine from A...A 2 pl"
+TAGL["%s-%s-monoB-unCP" % (dbse, 29)] = "Adenine from A...A 2 pl"
+TAGL["%s-%s" % (dbse, 30)] = "HB-30 A...A 3 pl"
+TAGL["%s-%s-dimer" % (dbse, 30)] = "A...A 3 pl"
+TAGL["%s-%s-monoA-CP" % (dbse, 30)] = "Adenine from A...A 3 pl"
+TAGL["%s-%s-monoB-CP" % (dbse, 30)] = "Adenine from A...A 3 pl"
+TAGL["%s-%s-monoA-unCP" % (dbse, 30)] = "Adenine from A...A 3 pl"
+TAGL["%s-%s-monoB-unCP" % (dbse, 30)] = "Adenine from A...A 3 pl"
+TAGL["%s-%s" % (dbse, 31)] = "HB-31 8oG...G"
+TAGL["%s-%s-dimer" % (dbse, 31)] = "8oG...G"
+TAGL["%s-%s-monoA-CP" % (dbse, 31)] = "Guanine from 8oG...G"
+TAGL["%s-%s-monoB-CP" % (dbse, 31)] = "8-oxo-Guanine from 8oG...G"
+TAGL["%s-%s-monoA-unCP" % (dbse, 31)] = "Guanine from 8oG...G"
+TAGL["%s-%s-monoB-unCP" % (dbse, 31)] = "8-oxo-Guanine from 8oG...G"
+TAGL["%s-%s" % (dbse, 32)] = "HB-32 2tU....2tU pl"
+TAGL["%s-%s-dimer" % (dbse, 32)] = "2tU....2tU pl"
+TAGL["%s-%s-monoA-CP" % (dbse, 32)] = "2-thio-Uracil from 2tU....2tU pl"
+TAGL["%s-%s-monoB-CP" % (dbse, 32)] = "2-thio-Uracil from 2tU....2tU pl"
+TAGL["%s-%s-monoA-unCP" % (dbse, 32)] = "2-thio-Uracil from 2tU....2tU pl"
+TAGL["%s-%s-monoB-unCP" % (dbse, 32)] = "2-thio-Uracil from 2tU....2tU pl"
+TAGL["%s-%s" % (dbse, 33)] = "HB-33 A...T WC"
+TAGL["%s-%s-dimer" % (dbse, 33)] = "A...T WC"
+TAGL["%s-%s-monoA-CP" % (dbse, 33)] = "methyl-Adenine from A...T WC"
+TAGL["%s-%s-monoB-CP" % (dbse, 33)] = "methyl-Thymine from A...T WC"
+TAGL["%s-%s-monoA-unCP" % (dbse, 33)] = "methyl-Adenine from A...T WC"
+TAGL["%s-%s-monoB-unCP" % (dbse, 33)] = "methyl-Thymine from A...T WC"
+TAGL["%s-%s" % (dbse, 34)] = "HB-34 G...C WC"
+TAGL["%s-%s-dimer" % (dbse, 34)] = "G...C WC"
+TAGL["%s-%s-monoA-CP" % (dbse, 34)] = "methyl-Cytosine from G...C WC"
+TAGL["%s-%s-monoB-CP" % (dbse, 34)] = "methyl-Guanine from G...C WC"
+TAGL["%s-%s-monoA-unCP" % (dbse, 34)] = "methyl-Cytosine from G...C WC"
+TAGL["%s-%s-monoB-unCP" % (dbse, 34)] = "methyl-Guanine from G...C WC"
+TAGL["%s-%s" % (dbse, 35)] = "HB-35 A...T WC"
+TAGL["%s-%s-dimer" % (dbse, 35)] = "A...T WC"
+TAGL["%s-%s-monoA-CP" % (dbse, 35)] = "methyl-Adenine from A...T WC"
+TAGL["%s-%s-monoB-CP" % (dbse, 35)] = "methyl-Thymine from A...T WC"
+TAGL["%s-%s-monoA-unCP" % (dbse, 35)] = "methyl-Adenine from A...T WC"
+TAGL["%s-%s-monoB-unCP" % (dbse, 35)] = "methyl-Thymine from A...T WC"
+TAGL["%s-%s" % (dbse, 36)] = "HB-36 G...A HB"
+TAGL["%s-%s-dimer" % (dbse, 36)] = "G...A HB"
+TAGL["%s-%s-monoA-CP" % (dbse, 36)] = "Guanine from G...A HB"
+TAGL["%s-%s-monoB-CP" % (dbse, 36)] = "Adenine from G...A HB"
+TAGL["%s-%s-monoA-unCP" % (dbse, 36)] = "Guanine from G...A HB"
+TAGL["%s-%s-monoB-unCP" % (dbse, 36)] = "Adenine from G...A HB"
+TAGL["%s-%s" % (dbse, 37)] = "HB-37 C...G WC"
+TAGL["%s-%s-dimer" % (dbse, 37)] = "C...G WC"
+TAGL["%s-%s-monoA-CP" % (dbse, 37)] = "Cytosine from C...G WC"
+TAGL["%s-%s-monoB-CP" % (dbse, 37)] = "Guanine from C...G WC"
+TAGL["%s-%s-monoA-unCP" % (dbse, 37)] = "Cytosine from C...G WC"
+TAGL["%s-%s-monoB-unCP" % (dbse, 37)] = "Guanine from C...G WC"
+TAGL["%s-%s" % (dbse, 38)] = "HB-38 G...C WC"
+TAGL["%s-%s-dimer" % (dbse, 38)] = "G...C WC"
+TAGL["%s-%s-monoA-CP" % (dbse, 38)] = "Guanine from G...C WC"
+TAGL["%s-%s-monoB-CP" % (dbse, 38)] = "Cytosine from G...C WC"
+TAGL["%s-%s-monoA-unCP" % (dbse, 38)] = "Guanine from G...C WC"
+TAGL["%s-%s-monoB-unCP" % (dbse, 38)] = "Cytosine from G...C WC"
+TAGL["%s-%s" % (dbse, 39)] = "IS-01 GG0/3.36 CGis036"
+TAGL["%s-%s-dimer" % (dbse, 39)] = "GG0/3.36 CGis036"
+TAGL["%s-%s-monoA-CP" % (dbse, 39)] = "Guanine from GG0/3.36 CGis036"
+TAGL["%s-%s-monoB-CP" % (dbse, 39)] = "Cytosine from GG0/3.36 CGis036"
+TAGL["%s-%s-monoA-unCP" % (dbse, 39)] = "Guanine from GG0/3.36 CGis036"
+TAGL["%s-%s-monoB-unCP" % (dbse, 39)] = "Cytosine from GG0/3.36 CGis036"
+TAGL["%s-%s" % (dbse, 40)] = "IS-02 GG0/3.36 GCis036"
+TAGL["%s-%s-dimer" % (dbse, 40)] = "GG0/3.36 GCis036"
+TAGL["%s-%s-monoA-CP" % (dbse, 40)] = "Cytosine from GG0/3.36 GCis036"
+TAGL["%s-%s-monoB-CP" % (dbse, 40)] = "Guanine from GG0/3.36 GCis036"
+TAGL["%s-%s-monoA-unCP" % (dbse, 40)] = "Cytosine from GG0/3.36 GCis036"
+TAGL["%s-%s-monoB-unCP" % (dbse, 40)] = "Guanine from GG0/3.36 GCis036"
+TAGL["%s-%s" % (dbse, 41)] = "IS-03 AA20/3.05 ATis2005"
+TAGL["%s-%s-dimer" % (dbse, 41)] = "AA20/3.05 ATis2005"
+TAGL["%s-%s-monoA-CP" % (dbse, 41)] = "Adenine from AA20/3.05 ATis2005"
+TAGL["%s-%s-monoB-CP" % (dbse, 41)] = "Thymine from AA20/3.05 ATis2005"
+TAGL["%s-%s-monoA-unCP" % (dbse, 41)] = "Adenine from AA20/3.05 ATis2005"
+TAGL["%s-%s-monoB-unCP" % (dbse, 41)] = "Thymine from AA20/3.05 ATis2005"
+TAGL["%s-%s" % (dbse, 42)] = "IS-04 AA20/3.05 TAis2005"
+TAGL["%s-%s-dimer" % (dbse, 42)] = "AA20/3.05 TAis2005"
+TAGL["%s-%s-monoA-CP" % (dbse, 42)] = "Thymine from AA20/3.05 TAis2005"
+TAGL["%s-%s-monoB-CP" % (dbse, 42)] = "Adenine from AA20/3.05 TAis2005"
+TAGL["%s-%s-monoA-unCP" % (dbse, 42)] = "Thymine from AA20/3.05 TAis2005"
+TAGL["%s-%s-monoB-unCP" % (dbse, 42)] = "Adenine from AA20/3.05 TAis2005"
+TAGL["%s-%s" % (dbse, 43)] = "IS-05 GC0/3.25 C//Cis"
+TAGL["%s-%s-dimer" % (dbse, 43)] = "GC0/3.25 C//Cis"
+TAGL["%s-%s-monoA-CP" % (dbse, 43)] = "Cytosine from GC0/3.25 C//Cis"
+TAGL["%s-%s-monoB-CP" % (dbse, 43)] = "Cytosine from GC0/3.25 C//Cis"
+TAGL["%s-%s-monoA-unCP" % (dbse, 43)] = "Cytosine from GC0/3.25 C//Cis"
+TAGL["%s-%s-monoB-unCP" % (dbse, 43)] = "Cytosine from GC0/3.25 C//Cis"
+TAGL["%s-%s" % (dbse, 44)] = "IS-06 GC0/3.25 G//Gis"
+TAGL["%s-%s-dimer" % (dbse, 44)] = "GC0/3.25 G//Gis"
+TAGL["%s-%s-monoA-CP" % (dbse, 44)] = "Guanine from GC0/3.25 G//Gis"
+TAGL["%s-%s-monoB-CP" % (dbse, 44)] = "Guanine from GC0/3.25 G//Gis"
+TAGL["%s-%s-monoA-unCP" % (dbse, 44)] = "Guanine from GC0/3.25 G//Gis"
+TAGL["%s-%s-monoB-unCP" % (dbse, 44)] = "Guanine from GC0/3.25 G//Gis"
+TAGL["%s-%s" % (dbse, 45)] = "IS-07 CG0/3.19 G//Gis"
+TAGL["%s-%s-dimer" % (dbse, 45)] = "CG0/3.19 G//Gis"
+TAGL["%s-%s-monoA-CP" % (dbse, 45)] = "Guanine from CG0/3.19 G//Gis"
+TAGL["%s-%s-monoB-CP" % (dbse, 45)] = "Guanine from CG0/3.19 G//Gis"
+TAGL["%s-%s-monoA-unCP" % (dbse, 45)] = "Guanine from CG0/3.19 G//Gis"
+TAGL["%s-%s-monoB-unCP" % (dbse, 45)] = "Guanine from CG0/3.19 G//Gis"
+TAGL["%s-%s" % (dbse, 46)] = "IS-08 CG0/3.19 C//Cis"
+TAGL["%s-%s-dimer" % (dbse, 46)] = "CG0/3.19 C//Cis"
+TAGL["%s-%s-monoA-CP" % (dbse, 46)] = "Cytosine from CG0/3.19 C//Cis"
+TAGL["%s-%s-monoB-CP" % (dbse, 46)] = "Cytosine from CG0/3.19 C//Cis"
+TAGL["%s-%s-monoA-unCP" % (dbse, 46)] = "Cytosine from CG0/3.19 C//Cis"
+TAGL["%s-%s-monoB-unCP" % (dbse, 46)] = "Cytosine from CG0/3.19 C//Cis"
+TAGL["%s-%s" % (dbse, 47)] = "IS-09 GA10/3.15 A//Cis"
+TAGL["%s-%s-dimer" % (dbse, 47)] = "GA10/3.15 A//Cis"
+TAGL["%s-%s-monoA-CP" % (dbse, 47)] = "Adenine from GA10/3.15 A//Cis"
+TAGL["%s-%s-monoB-CP" % (dbse, 47)] = "Cytosine from GA10/3.15 A//Cis"
+TAGL["%s-%s-monoA-unCP" % (dbse, 47)] = "Adenine from GA10/3.15 A//Cis"
+TAGL["%s-%s-monoB-unCP" % (dbse, 47)] = "Cytosine from GA10/3.15 A//Cis"
+TAGL["%s-%s" % (dbse, 48)] = "IS-10 GA10/3.15 T//Gis"
+TAGL["%s-%s-dimer" % (dbse, 48)] = "GA10/3.15 T//Gis"
+TAGL["%s-%s-monoA-CP" % (dbse, 48)] = "Thymine from GA10/3.15 T//Gis"
+TAGL["%s-%s-monoB-CP" % (dbse, 48)] = "Guanine from GA10/3.15 T//Gis"
+TAGL["%s-%s-monoA-unCP" % (dbse, 48)] = "Thymine from GA10/3.15 T//Gis"
+TAGL["%s-%s-monoB-unCP" % (dbse, 48)] = "Guanine from GA10/3.15 T//Gis"
+TAGL["%s-%s" % (dbse, 49)] = "IS-11 AG08/3.19 T//Gis"
+TAGL["%s-%s-dimer" % (dbse, 49)] = "AG08/3.19 T//Gis"
+TAGL["%s-%s-monoA-CP" % (dbse, 49)] = "Guanine from AG08/3.19 T//Gis"
+TAGL["%s-%s-monoB-CP" % (dbse, 49)] = "Thymine from AG08/3.19 T//Gis"
+TAGL["%s-%s-monoA-unCP" % (dbse, 49)] = "Guanine from AG08/3.19 T//Gis"
+TAGL["%s-%s-monoB-unCP" % (dbse, 49)] = "Thymine from AG08/3.19 T//Gis"
+TAGL["%s-%s" % (dbse, 50)] = "IS-12 AG08/3.19 A//Cis"
+TAGL["%s-%s-dimer" % (dbse, 50)] = "AG08/3.19 A//Cis"
+TAGL["%s-%s-monoA-CP" % (dbse, 50)] = "Adenine from AG08/3.19 A//Cis"
+TAGL["%s-%s-monoB-CP" % (dbse, 50)] = "Cytosine from AG08/3.19 A//Cis"
+TAGL["%s-%s-monoA-unCP" % (dbse, 50)] = "Adenine from AG08/3.19 A//Cis"
+TAGL["%s-%s-monoB-unCP" % (dbse, 50)] = "Cytosine from AG08/3.19 A//Cis"
+TAGL["%s-%s" % (dbse, 51)] = "IS-13 TG03.19 A//Gis"
+TAGL["%s-%s-dimer" % (dbse, 51)] = "TG03.19 A//Gis"
+TAGL["%s-%s-monoA-CP" % (dbse, 51)] = "Adenine from TG03.19 A//Gis"
+TAGL["%s-%s-monoB-CP" % (dbse, 51)] = "Guanine from TG03.19 A//Gis"
+TAGL["%s-%s-monoA-unCP" % (dbse, 51)] = "Adenine from TG03.19 A//Gis"
+TAGL["%s-%s-monoB-unCP" % (dbse, 51)] = "Guanine from TG03.19 A//Gis"
+TAGL["%s-%s" % (dbse, 52)] = "IS-14 TG03.19 T//Cis"
+TAGL["%s-%s-dimer" % (dbse, 52)] = "TG03.19 T//Cis"
+TAGL["%s-%s-monoA-CP" % (dbse, 52)] = "Thymine from TG03.19 T//Cis"
+TAGL["%s-%s-monoB-CP" % (dbse, 52)] = "Cytosine from TG03.19 T//Cis"
+TAGL["%s-%s-monoA-unCP" % (dbse, 52)] = "Thymine from TG03.19 T//Cis"
+TAGL["%s-%s-monoB-unCP" % (dbse, 52)] = "Cytosine from TG03.19 T//Cis"
+TAGL["%s-%s" % (dbse, 53)] = "IS-15 GT10/3.15 T//Cis"
+TAGL["%s-%s-dimer" % (dbse, 53)] = "GT10/3.15 T//Cis"
+TAGL["%s-%s-monoA-CP" % (dbse, 53)] = "Thymine from GT10/3.15 T//Cis"
+TAGL["%s-%s-monoB-CP" % (dbse, 53)] = "Cytosine from GT10/3.15 T//Cis"
+TAGL["%s-%s-monoA-unCP" % (dbse, 53)] = "Thymine from GT10/3.15 T//Cis"
+TAGL["%s-%s-monoB-unCP" % (dbse, 53)] = "Cytosine from GT10/3.15 T//Cis"
+TAGL["%s-%s" % (dbse, 54)] = "IS-16 GT10/3.15 A//Gis"
+TAGL["%s-%s-dimer" % (dbse, 54)] = "GT10/3.15 A//Gis"
+TAGL["%s-%s-monoA-CP" % (dbse, 54)] = "Adenine from GT10/3.15 A//Gis"
+TAGL["%s-%s-monoB-CP" % (dbse, 54)] = "Guanine from GT10/3.15 A//Gis"
+TAGL["%s-%s-monoA-unCP" % (dbse, 54)] = "Adenine from GT10/3.15 A//Gis"
+TAGL["%s-%s-monoB-unCP" % (dbse, 54)] = "Guanine from GT10/3.15 A//Gis"
+TAGL["%s-%s" % (dbse, 55)] = "IS-17 AT10/3.26 T//Tis"
+TAGL["%s-%s-dimer" % (dbse, 55)] = "AT10/3.26 T//Tis"
+TAGL["%s-%s-monoA-CP" % (dbse, 55)] = "Thymine from AT10/3.26 T//Tis"
+TAGL["%s-%s-monoB-CP" % (dbse, 55)] = "Thymine from AT10/3.26 T//Tis"
+TAGL["%s-%s-monoA-unCP" % (dbse, 55)] = "Thymine from AT10/3.26 T//Tis"
+TAGL["%s-%s-monoB-unCP" % (dbse, 55)] = "Thymine from AT10/3.26 T//Tis"
+TAGL["%s-%s" % (dbse, 56)] = "IS-18 AT10/3.26 A//Ais"
+TAGL["%s-%s-dimer" % (dbse, 56)] = "AT10/3.26 A//Ais"
+TAGL["%s-%s-monoA-CP" % (dbse, 56)] = "Adenine from AT10/3.26 A//Ais"
+TAGL["%s-%s-monoB-CP" % (dbse, 56)] = "Adenine from AT10/3.26 A//Ais"
+TAGL["%s-%s-monoA-unCP" % (dbse, 56)] = "Adenine from AT10/3.26 A//Ais"
+TAGL["%s-%s-monoB-unCP" % (dbse, 56)] = "Adenine from AT10/3.26 A//Ais"
+TAGL["%s-%s" % (dbse, 57)] = "IS-19 TA08/3.16 A//Ais"
+TAGL["%s-%s-dimer" % (dbse, 57)] = "TA08/3.16 A//Ais"
+TAGL["%s-%s-monoA-CP" % (dbse, 57)] = "Adenine from TA08/3.16 A//Ais"
+TAGL["%s-%s-monoB-CP" % (dbse, 57)] = "Adenine from TA08/3.16 A//Ais"
+TAGL["%s-%s-monoA-unCP" % (dbse, 57)] = "Adenine from TA08/3.16 A//Ais"
+TAGL["%s-%s-monoB-unCP" % (dbse, 57)] = "Adenine from TA08/3.16 A//Ais"
+TAGL["%s-%s" % (dbse, 58)] = "IS-20 TA08/3.16 T//Tis"
+TAGL["%s-%s-dimer" % (dbse, 58)] = "TA08/3.16 T//Tis"
+TAGL["%s-%s-monoA-CP" % (dbse, 58)] = "Thymine from TA08/3.16 T//Tis"
+TAGL["%s-%s-monoB-CP" % (dbse, 58)] = "Thymine from TA08/3.16 T//Tis"
+TAGL["%s-%s-monoA-unCP" % (dbse, 58)] = "Thymine from TA08/3.16 T//Tis"
+TAGL["%s-%s-monoB-unCP" % (dbse, 58)] = "Thymine from TA08/3.16 T//Tis"
+TAGL["%s-%s" % (dbse, 59)] = "IS-21 AA0/3.24 A//Tis"
+TAGL["%s-%s-dimer" % (dbse, 59)] = "AA0/3.24 A//Tis"
+TAGL["%s-%s-monoA-CP" % (dbse, 59)] = "Adenine from AA0/3.24 A//Tis"
+TAGL["%s-%s-monoB-CP" % (dbse, 59)] = "Thymine from AA0/3.24 A//Tis"
+TAGL["%s-%s-monoA-unCP" % (dbse, 59)] = "Adenine from AA0/3.24 A//Tis"
+TAGL["%s-%s-monoB-unCP" % (dbse, 59)] = "Thymine from AA0/3.24 A//Tis"
+TAGL["%s-%s" % (dbse, 60)] = "IS-22 AA0/3.24 T//Ais"
+TAGL["%s-%s-dimer" % (dbse, 60)] = "AA0/3.24 T//Ais"
+TAGL["%s-%s-monoA-CP" % (dbse, 60)] = "Adenine from AA0/3.24 T//Ais"
+TAGL["%s-%s-monoB-CP" % (dbse, 60)] = "Thymine from AA0/3.24 T//Ais"
+TAGL["%s-%s-monoA-unCP" % (dbse, 60)] = "Adenine from AA0/3.24 T//Ais"
+TAGL["%s-%s-monoB-unCP" % (dbse, 60)] = "Thymine from AA0/3.24 T//Ais"
+TAGL["%s-%s" % (dbse, 61)] = "IS-23 A...A IS"
+TAGL["%s-%s-dimer" % (dbse, 61)] = "A...A IS"
+TAGL["%s-%s-monoA-CP" % (dbse, 61)] = "methyl-Adenine from A...A IS"
+TAGL["%s-%s-monoB-CP" % (dbse, 61)] = "methyl-Adenine from A...A IS"
+TAGL["%s-%s-monoA-unCP" % (dbse, 61)] = "methyl-Adenine from A...A IS"
+TAGL["%s-%s-monoB-unCP" % (dbse, 61)] = "methyl-Adenine from A...A IS"
+TAGL["%s-%s" % (dbse, 62)] = "IS-24 T...T IS"
+TAGL["%s-%s-dimer" % (dbse, 62)] = "T...T IS"
+TAGL["%s-%s-monoA-CP" % (dbse, 62)] = "methyl-Thymine from T...T IS"
+TAGL["%s-%s-monoB-CP" % (dbse, 62)] = "methyl-Thymine from T...T IS"
+TAGL["%s-%s-monoA-unCP" % (dbse, 62)] = "methyl-Thymine from T...T IS"
+TAGL["%s-%s-monoB-unCP" % (dbse, 62)] = "methyl-Thymine from T...T IS"
+TAGL["%s-%s" % (dbse, 63)] = "IS-25 G...G IS"
+TAGL["%s-%s-dimer" % (dbse, 63)] = "G...G IS"
+TAGL["%s-%s-monoA-CP" % (dbse, 63)] = "methyl-Guanine from G...G IS"
+TAGL["%s-%s-monoB-CP" % (dbse, 63)] = "methyl-Guanine from G...G IS"
+TAGL["%s-%s-monoA-unCP" % (dbse, 63)] = "methyl-Guanine from G...G IS"
+TAGL["%s-%s-monoB-unCP" % (dbse, 63)] = "methyl-Guanine from G...G IS"
+TAGL["%s-%s" % (dbse, 64)] = "IS-26 C...C IS"
+TAGL["%s-%s-dimer" % (dbse, 64)] = "C...C IS"
+TAGL["%s-%s-monoA-CP" % (dbse, 64)] = "methyl-Cytosine from C...C IS"
+TAGL["%s-%s-monoB-CP" % (dbse, 64)] = "methyl-Cytosine from C...C IS"
+TAGL["%s-%s-monoA-unCP" % (dbse, 64)] = "methyl-Cytosine from C...C IS"
+TAGL["%s-%s-monoB-unCP" % (dbse, 64)] = "methyl-Cytosine from C...C IS"
+TAGL["%s-%s" % (dbse, 65)] = "IS-27 A...G IS"
+TAGL["%s-%s-dimer" % (dbse, 65)] = "A...G IS"
+TAGL["%s-%s-monoA-CP" % (dbse, 65)] = "methyl-Adenine from A...G IS"
+TAGL["%s-%s-monoB-CP" % (dbse, 65)] = "methyl-Guanine from A...G IS"
+TAGL["%s-%s-monoA-unCP" % (dbse, 65)] = "methyl-Adenine from A...G IS"
+TAGL["%s-%s-monoB-unCP" % (dbse, 65)] = "methyl-Guanine from A...G IS"
+TAGL["%s-%s" % (dbse, 66)] = "IS-28 T...C IS"
+TAGL["%s-%s-dimer" % (dbse, 66)] = "T...C IS"
+TAGL["%s-%s-monoA-CP" % (dbse, 66)] = "methyl-Cytosine from T...C IS"
+TAGL["%s-%s-monoB-CP" % (dbse, 66)] = "methyl-Thymine from T...C IS"
+TAGL["%s-%s-monoA-unCP" % (dbse, 66)] = "methyl-Cytosine from T...C IS"
+TAGL["%s-%s-monoB-unCP" % (dbse, 66)] = "methyl-Thymine from T...C IS"
+TAGL["%s-%s" % (dbse, 67)] = "IS-29 C...A IS"
+TAGL["%s-%s-dimer" % (dbse, 67)] = "C...A IS"
+TAGL["%s-%s-monoA-CP" % (dbse, 67)] = "Cytosine from C...A IS"
+TAGL["%s-%s-monoB-CP" % (dbse, 67)] = "Adenine from C...A IS"
+TAGL["%s-%s-monoA-unCP" % (dbse, 67)] = "Cytosine from C...A IS"
+TAGL["%s-%s-monoB-unCP" % (dbse, 67)] = "Adenine from C...A IS"
+TAGL["%s-%s" % (dbse, 68)] = "IS-30 G...G IS"
+TAGL["%s-%s-dimer" % (dbse, 68)] = "G...G IS"
+TAGL["%s-%s-monoA-CP" % (dbse, 68)] = "Guanine from G...G IS"
+TAGL["%s-%s-monoB-CP" % (dbse, 68)] = "Guanine from G...G IS"
+TAGL["%s-%s-monoA-unCP" % (dbse, 68)] = "Guanine from G...G IS"
+TAGL["%s-%s-monoB-unCP" % (dbse, 68)] = "Guanine from G...G IS"
+TAGL["%s-%s" % (dbse, 69)] = "IS-31 G...G IS"
+TAGL["%s-%s-dimer" % (dbse, 69)] = "G...G IS"
+TAGL["%s-%s-monoA-CP" % (dbse, 69)] = "Guanine from G...G IS"
+TAGL["%s-%s-monoB-CP" % (dbse, 69)] = "Guanine from G...G IS"
+TAGL["%s-%s-monoA-unCP" % (dbse, 69)] = "Guanine from G...G IS"
+TAGL["%s-%s-monoB-unCP" % (dbse, 69)] = "Guanine from G...G IS"
+TAGL["%s-%s" % (dbse, 70)] = "IS-32 C...C IS"
+TAGL["%s-%s-dimer" % (dbse, 70)] = "C...C IS"
+TAGL["%s-%s-monoA-CP" % (dbse, 70)] = "Cytosine from C...C IS"
+TAGL["%s-%s-monoB-CP" % (dbse, 70)] = "Cytosine from C...C IS"
+TAGL["%s-%s-monoA-unCP" % (dbse, 70)] = "Cytosine from C...C IS"
+TAGL["%s-%s-monoB-unCP" % (dbse, 70)] = "Cytosine from C...C IS"
+TAGL["%s-%s" % (dbse, 71)] = "ST-01 G...C S"
+TAGL["%s-%s-dimer" % (dbse, 71)] = "G...C S"
+TAGL["%s-%s-monoA-CP" % (dbse, 71)] = "Guanine from G...C S"
+TAGL["%s-%s-monoB-CP" % (dbse, 71)] = "Cytosine from G...C S"
+TAGL["%s-%s-monoA-unCP" % (dbse, 71)] = "Guanine from G...C S"
+TAGL["%s-%s-monoB-unCP" % (dbse, 71)] = "Cytosine from G...C S"
+TAGL["%s-%s" % (dbse, 72)] = "ST-02 mG...mC S"
+TAGL["%s-%s-dimer" % (dbse, 72)] = "mG...mC S"
+TAGL["%s-%s-monoA-CP" % (dbse, 72)] = "methyl-Guanine from mG...mC S"
+TAGL["%s-%s-monoB-CP" % (dbse, 72)] = "methyl-Cytosine from mG...mC S"
+TAGL["%s-%s-monoA-unCP" % (dbse, 72)] = "methyl-Guanine from mG...mC S"
+TAGL["%s-%s-monoB-unCP" % (dbse, 72)] = "methyl-Cytosine from mG...mC S"
+TAGL["%s-%s" % (dbse, 73)] = "ST-03 A...T S"
+TAGL["%s-%s-dimer" % (dbse, 73)] = "A...T S"
+TAGL["%s-%s-monoA-CP" % (dbse, 73)] = "Adenine from A...T S"
+TAGL["%s-%s-monoB-CP" % (dbse, 73)] = "Thymine from A...T S"
+TAGL["%s-%s-monoA-unCP" % (dbse, 73)] = "Adenine from A...T S"
+TAGL["%s-%s-monoB-unCP" % (dbse, 73)] = "Thymine from A...T S"
+TAGL["%s-%s" % (dbse, 74)] = "ST-04 mA...mT S"
+TAGL["%s-%s-dimer" % (dbse, 74)] = "mA...mT S"
+TAGL["%s-%s-monoA-CP" % (dbse, 74)] = "methyl-Adenine from mA...mT S"
+TAGL["%s-%s-monoB-CP" % (dbse, 74)] = "methyl-Thymine from mA...mT S"
+TAGL["%s-%s-monoA-unCP" % (dbse, 74)] = "methyl-Adenine from mA...mT S"
+TAGL["%s-%s-monoB-unCP" % (dbse, 74)] = "methyl-Thymine from mA...mT S"
+TAGL["%s-%s" % (dbse, 75)] = "ST-05 CC1"
+TAGL["%s-%s-dimer" % (dbse, 75)] = "CC1"
+TAGL["%s-%s-monoA-CP" % (dbse, 75)] = "Cytosine from CC1"
+TAGL["%s-%s-monoB-CP" % (dbse, 75)] = "Cytosine from CC1"
+TAGL["%s-%s-monoA-unCP" % (dbse, 75)] = "Cytosine from CC1"
+TAGL["%s-%s-monoB-unCP" % (dbse, 75)] = "Cytosine from CC1"
+TAGL["%s-%s" % (dbse, 76)] = "ST-06 CC2"
+TAGL["%s-%s-dimer" % (dbse, 76)] = "CC2"
+TAGL["%s-%s-monoA-CP" % (dbse, 76)] = "Cytosine from CC2"
+TAGL["%s-%s-monoB-CP" % (dbse, 76)] = "Cytosine from CC2"
+TAGL["%s-%s-monoA-unCP" % (dbse, 76)] = "Cytosine from CC2"
+TAGL["%s-%s-monoB-unCP" % (dbse, 76)] = "Cytosine from CC2"
+TAGL["%s-%s" % (dbse, 77)] = "ST-07 CC3"
+TAGL["%s-%s-dimer" % (dbse, 77)] = "CC3"
+TAGL["%s-%s-monoA-CP" % (dbse, 77)] = "Cytosine from CC3"
+TAGL["%s-%s-monoB-CP" % (dbse, 77)] = "Cytosine from CC3"
+TAGL["%s-%s-monoA-unCP" % (dbse, 77)] = "Cytosine from CC3"
+TAGL["%s-%s-monoB-unCP" % (dbse, 77)] = "Cytosine from CC3"
+TAGL["%s-%s" % (dbse, 78)] = "ST-08 CC4"
+TAGL["%s-%s-dimer" % (dbse, 78)] = "CC4"
+TAGL["%s-%s-monoA-CP" % (dbse, 78)] = "Cytosine from CC4"
+TAGL["%s-%s-monoB-CP" % (dbse, 78)] = "Cytosine from CC4"
+TAGL["%s-%s-monoA-unCP" % (dbse, 78)] = "Cytosine from CC4"
+TAGL["%s-%s-monoB-unCP" % (dbse, 78)] = "Cytosine from CC4"
+TAGL["%s-%s" % (dbse, 79)] = "ST-09 CC5"
+TAGL["%s-%s-dimer" % (dbse, 79)] = "CC5"
+TAGL["%s-%s-monoA-CP" % (dbse, 79)] = "Cytosine from CC5"
+TAGL["%s-%s-monoB-CP" % (dbse, 79)] = "Cytosine from CC5"
+TAGL["%s-%s-monoA-unCP" % (dbse, 79)] = "Cytosine from CC5"
+TAGL["%s-%s-monoB-unCP" % (dbse, 79)] = "Cytosine from CC5"
+TAGL["%s-%s" % (dbse, 80)] = "ST-10 CC6"
+TAGL["%s-%s-dimer" % (dbse, 80)] = "CC6"
+TAGL["%s-%s-monoA-CP" % (dbse, 80)] = "Cytosine from CC6"
+TAGL["%s-%s-monoB-CP" % (dbse, 80)] = "Cytosine from CC6"
+TAGL["%s-%s-monoA-unCP" % (dbse, 80)] = "Cytosine from CC6"
+TAGL["%s-%s-monoB-unCP" % (dbse, 80)] = "Cytosine from CC6"
+TAGL["%s-%s" % (dbse, 81)] = "ST-11 CC7"
+TAGL["%s-%s-dimer" % (dbse, 81)] = "CC7"
+TAGL["%s-%s-monoA-CP" % (dbse, 81)] = "Cytosine from CC7"
+TAGL["%s-%s-monoB-CP" % (dbse, 81)] = "Cytosine from CC7"
+TAGL["%s-%s-monoA-unCP" % (dbse, 81)] = "Cytosine from CC7"
+TAGL["%s-%s-monoB-unCP" % (dbse, 81)] = "Cytosine from CC7"
+TAGL["%s-%s" % (dbse, 82)] = "ST-12 CC8"
+TAGL["%s-%s-dimer" % (dbse, 82)] = "CC8"
+TAGL["%s-%s-monoA-CP" % (dbse, 82)] = "Cytosine from CC8"
+TAGL["%s-%s-monoB-CP" % (dbse, 82)] = "Cytosine from CC8"
+TAGL["%s-%s-monoA-unCP" % (dbse, 82)] = "Cytosine from CC8"
+TAGL["%s-%s-monoB-unCP" % (dbse, 82)] = "Cytosine from CC8"
+TAGL["%s-%s" % (dbse, 83)] = "ST-13 CC9"
+TAGL["%s-%s-dimer" % (dbse, 83)] = "CC9"
+TAGL["%s-%s-monoA-CP" % (dbse, 83)] = "Cytosine from CC9"
+TAGL["%s-%s-monoB-CP" % (dbse, 83)] = "Cytosine from CC9"
+TAGL["%s-%s-monoA-unCP" % (dbse, 83)] = "Cytosine from CC9"
+TAGL["%s-%s-monoB-unCP" % (dbse, 83)] = "Cytosine from CC9"
+TAGL["%s-%s" % (dbse, 84)] = "ST-14 CC10"
+TAGL["%s-%s-dimer" % (dbse, 84)] = "CC10"
+TAGL["%s-%s-monoA-CP" % (dbse, 84)] = "Cytosine from CC10"
+TAGL["%s-%s-monoB-CP" % (dbse, 84)] = "Cytosine from CC10"
+TAGL["%s-%s-monoA-unCP" % (dbse, 84)] = "Cytosine from CC10"
+TAGL["%s-%s-monoB-unCP" % (dbse, 84)] = "Cytosine from CC10"
+TAGL["%s-%s" % (dbse, 85)] = "ST-15 CC11"
+TAGL["%s-%s-dimer" % (dbse, 85)] = "CC11"
+TAGL["%s-%s-monoA-CP" % (dbse, 85)] = "Cytosine from CC11"
+TAGL["%s-%s-monoB-CP" % (dbse, 85)] = "Cytosine from CC11"
+TAGL["%s-%s-monoA-unCP" % (dbse, 85)] = "Cytosine from CC11"
+TAGL["%s-%s-monoB-unCP" % (dbse, 85)] = "Cytosine from CC11"
+TAGL["%s-%s" % (dbse, 86)] = "ST-16 CC12"
+TAGL["%s-%s-dimer" % (dbse, 86)] = "CC12"
+TAGL["%s-%s-monoA-CP" % (dbse, 86)] = "Cytosine from CC12"
+TAGL["%s-%s-monoB-CP" % (dbse, 86)] = "Cytosine from CC12"
+TAGL["%s-%s-monoA-unCP" % (dbse, 86)] = "Cytosine from CC12"
+TAGL["%s-%s-monoB-unCP" % (dbse, 86)] = "Cytosine from CC12"
+TAGL["%s-%s" % (dbse, 87)] = "ST-17 CC13"
+TAGL["%s-%s-dimer" % (dbse, 87)] = "CC13"
+TAGL["%s-%s-monoA-CP" % (dbse, 87)] = "Cytosine from CC13"
+TAGL["%s-%s-monoB-CP" % (dbse, 87)] = "Cytosine from CC13"
+TAGL["%s-%s-monoA-unCP" % (dbse, 87)] = "Cytosine from CC13"
+TAGL["%s-%s-monoB-unCP" % (dbse, 87)] = "Cytosine from CC13"
+TAGL["%s-%s" % (dbse, 88)] = "ST-18 CC14"
+TAGL["%s-%s-dimer" % (dbse, 88)] = "CC14"
+TAGL["%s-%s-monoA-CP" % (dbse, 88)] = "Cytosine from CC14"
+TAGL["%s-%s-monoB-CP" % (dbse, 88)] = "Cytosine from CC14"
+TAGL["%s-%s-monoA-unCP" % (dbse, 88)] = "Cytosine from CC14"
+TAGL["%s-%s-monoB-unCP" % (dbse, 88)] = "Cytosine from CC14"
+TAGL["%s-%s" % (dbse, 89)] = "ST-19 AAst"
+TAGL["%s-%s-dimer" % (dbse, 89)] = "AAst"
+TAGL["%s-%s-monoA-CP" % (dbse, 89)] = "Adenine from AAst"
+TAGL["%s-%s-monoB-CP" % (dbse, 89)] = "Adenine from AAst"
+TAGL["%s-%s-monoA-unCP" % (dbse, 89)] = "Adenine from AAst"
+TAGL["%s-%s-monoB-unCP" % (dbse, 89)] = "Adenine from AAst"
+TAGL["%s-%s" % (dbse, 90)] = "ST-20 GGst"
+TAGL["%s-%s-dimer" % (dbse, 90)] = "GGst"
+TAGL["%s-%s-monoA-CP" % (dbse, 90)] = "Guanine from GGst"
+TAGL["%s-%s-monoB-CP" % (dbse, 90)] = "Guanine from GGst"
+TAGL["%s-%s-monoA-unCP" % (dbse, 90)] = "Guanine from GGst"
+TAGL["%s-%s-monoB-unCP" % (dbse, 90)] = "Guanine from GGst"
+TAGL["%s-%s" % (dbse, 91)] = "ST-21 ACst"
+TAGL["%s-%s-dimer" % (dbse, 91)] = "ACst"
+TAGL["%s-%s-monoA-CP" % (dbse, 91)] = "Adenine from ACst"
+TAGL["%s-%s-monoB-CP" % (dbse, 91)] = "Cytosine from ACst"
+TAGL["%s-%s-monoA-unCP" % (dbse, 91)] = "Adenine from ACst"
+TAGL["%s-%s-monoB-unCP" % (dbse, 91)] = "Cytosine from ACst"
+TAGL["%s-%s" % (dbse, 92)] = "ST-22 GAst"
+TAGL["%s-%s-dimer" % (dbse, 92)] = "GAst"
+TAGL["%s-%s-monoA-CP" % (dbse, 92)] = "Guanine from GAst"
+TAGL["%s-%s-monoB-CP" % (dbse, 92)] = "Adenine from GAst"
+TAGL["%s-%s-monoA-unCP" % (dbse, 92)] = "Guanine from GAst"
+TAGL["%s-%s-monoB-unCP" % (dbse, 92)] = "Adenine from GAst"
+TAGL["%s-%s" % (dbse, 93)] = "ST-23 CCst"
+TAGL["%s-%s-dimer" % (dbse, 93)] = "CCst"
+TAGL["%s-%s-monoA-CP" % (dbse, 93)] = "Cytosine from CCst"
+TAGL["%s-%s-monoB-CP" % (dbse, 93)] = "Cytosine from CCst"
+TAGL["%s-%s-monoA-unCP" % (dbse, 93)] = "Cytosine from CCst"
+TAGL["%s-%s-monoB-unCP" % (dbse, 93)] = "Cytosine from CCst"
+TAGL["%s-%s" % (dbse, 94)] = "ST-24 AUst"
+TAGL["%s-%s-dimer" % (dbse, 94)] = "AUst"
+TAGL["%s-%s-monoA-CP" % (dbse, 94)] = "Adenine from AUst"
+TAGL["%s-%s-monoB-CP" % (dbse, 94)] = "Uracil from AUst"
+TAGL["%s-%s-monoA-unCP" % (dbse, 94)] = "Adenine from AUst"
+TAGL["%s-%s-monoB-unCP" % (dbse, 94)] = "Uracil from AUst"
+TAGL["%s-%s" % (dbse, 95)] = "ST-25 GCst"
+TAGL["%s-%s-dimer" % (dbse, 95)] = "GCst"
+TAGL["%s-%s-monoA-CP" % (dbse, 95)] = "Guanine from GCst"
+TAGL["%s-%s-monoB-CP" % (dbse, 95)] = "Cytosine from GCst"
+TAGL["%s-%s-monoA-unCP" % (dbse, 95)] = "Guanine from GCst"
+TAGL["%s-%s-monoB-unCP" % (dbse, 95)] = "Cytosine from GCst"
+TAGL["%s-%s" % (dbse, 96)] = "ST-26 CUst"
+TAGL["%s-%s-dimer" % (dbse, 96)] = "CUst"
+TAGL["%s-%s-monoA-CP" % (dbse, 96)] = "Cytosine from CUst"
+TAGL["%s-%s-monoB-CP" % (dbse, 96)] = "Uracil from CUst"
+TAGL["%s-%s-monoA-unCP" % (dbse, 96)] = "Cytosine from CUst"
+TAGL["%s-%s-monoB-unCP" % (dbse, 96)] = "Uracil from CUst"
+TAGL["%s-%s" % (dbse, 97)] = "ST-27 UUst"
+TAGL["%s-%s-dimer" % (dbse, 97)] = "UUst"
+TAGL["%s-%s-monoA-CP" % (dbse, 97)] = "Uracil from UUst"
+TAGL["%s-%s-monoB-CP" % (dbse, 97)] = "Uracil from UUst"
+TAGL["%s-%s-monoA-unCP" % (dbse, 97)] = "Uracil from UUst"
+TAGL["%s-%s-monoB-unCP" % (dbse, 97)] = "Uracil from UUst"
+TAGL["%s-%s" % (dbse, 98)] = "ST-28 GUst"
+TAGL["%s-%s-dimer" % (dbse, 98)] = "GUst"
+TAGL["%s-%s-monoA-CP" % (dbse, 98)] = "Guanine from GUst"
+TAGL["%s-%s-monoB-CP" % (dbse, 98)] = "Uracil from GUst"
+TAGL["%s-%s-monoA-unCP" % (dbse, 98)] = "Guanine from GUst"
+TAGL["%s-%s-monoB-unCP" % (dbse, 98)] = "Uracil from GUst"
+TAGL["%s-%s" % (dbse, 99)] = "ST-29 GG0/3.36 GGs036"
+TAGL["%s-%s-dimer" % (dbse, 99)] = "GGs036"
+TAGL["%s-%s-monoA-CP" % (dbse, 99)] = "Guanine from GGs036"
+TAGL["%s-%s-monoB-CP" % (dbse, 99)] = "Guanine from GGs036"
+TAGL["%s-%s-monoA-unCP" % (dbse, 99)] = "Guanine from GGs036"
+TAGL["%s-%s-monoB-unCP" % (dbse, 99)] = "Guanine from GGs036"
+TAGL["%s-%s" % (dbse, 100)] = "ST-30 GG0/3.36 CCs036"
+TAGL["%s-%s-dimer" % (dbse, 100)] = "CCs036"
+TAGL["%s-%s-monoA-CP" % (dbse, 100)] = "Cytosine from CCs036"
+TAGL["%s-%s-monoB-CP" % (dbse, 100)] = "Cytosine from CCs036"
+TAGL["%s-%s-monoA-unCP" % (dbse, 100)] = "Cytosine from CCs036"
+TAGL["%s-%s-monoB-unCP" % (dbse, 100)] = "Cytosine from CCs036"
+TAGL["%s-%s" % (dbse, 101)] = "ST-31 AA20/3.05 AAs2005"
+TAGL["%s-%s-dimer" % (dbse, 101)] = "AAs2005"
+TAGL["%s-%s-monoA-CP" % (dbse, 101)] = "Adenine from AAs2005"
+TAGL["%s-%s-monoB-CP" % (dbse, 101)] = "Adenine from AAs2005"
+TAGL["%s-%s-monoA-unCP" % (dbse, 101)] = "Adenine from AAs2005"
+TAGL["%s-%s-monoB-unCP" % (dbse, 101)] = "Adenine from AAs2005"
+TAGL["%s-%s" % (dbse, 102)] = "ST-32 AA20/3.05 TTs2005"
+TAGL["%s-%s-dimer" % (dbse, 102)] = "TTs2005"
+TAGL["%s-%s-monoA-CP" % (dbse, 102)] = "Thymine from TTs2005"
+TAGL["%s-%s-monoB-CP" % (dbse, 102)] = "Thymine from TTs2005"
+TAGL["%s-%s-monoA-unCP" % (dbse, 102)] = "Thymine from TTs2005"
+TAGL["%s-%s-monoB-unCP" % (dbse, 102)] = "Thymine from TTs2005"
+TAGL["%s-%s" % (dbse, 103)] = "ST-33 GC0/3.25 G//Cs"
+TAGL["%s-%s-dimer" % (dbse, 103)] = "GC0/3.25 G//Cs"
+TAGL["%s-%s-monoA-CP" % (dbse, 103)] = "Cytosine from GC0/3.25 G//Cs"
+TAGL["%s-%s-monoB-CP" % (dbse, 103)] = "Guanine from GC0/3.25 G//Cs"
+TAGL["%s-%s-monoA-unCP" % (dbse, 103)] = "Cytosine from GC0/3.25 G//Cs"
+TAGL["%s-%s-monoB-unCP" % (dbse, 103)] = "Guanine from GC0/3.25 G//Cs"
+TAGL["%s-%s" % (dbse, 104)] = "ST-34 CG0/3.19 G//Cs"
+TAGL["%s-%s-dimer" % (dbse, 104)] = "CG0/3.19 G//Cs"
+TAGL["%s-%s-monoA-CP" % (dbse, 104)] = "Cytosine from CG0/3.19 G//Cs"
+TAGL["%s-%s-monoB-CP" % (dbse, 104)] = "Guanine from CG0/3.19 G//Cs"
+TAGL["%s-%s-monoA-unCP" % (dbse, 104)] = "Cytosine from CG0/3.19 G//Cs"
+TAGL["%s-%s-monoB-unCP" % (dbse, 104)] = "Guanine from CG0/3.19 G//Cs"
+TAGL["%s-%s" % (dbse, 105)] = "ST-35 GA10/3.15 A//Gs"
+TAGL["%s-%s-dimer" % (dbse, 105)] = "GA10/3.15 A//Gs"
+TAGL["%s-%s-monoA-CP" % (dbse, 105)] = "Adenine from GA10/3.15 A//Gs"
+TAGL["%s-%s-monoB-CP" % (dbse, 105)] = "Guanine from GA10/3.15 A//Gs"
+TAGL["%s-%s-monoA-unCP" % (dbse, 105)] = "Adenine from GA10/3.15 A//Gs"
+TAGL["%s-%s-monoB-unCP" % (dbse, 105)] = "Guanine from GA10/3.15 A//Gs"
+TAGL["%s-%s" % (dbse, 106)] = "ST-36 GA10/3.15 T//Cs"
+TAGL["%s-%s-dimer" % (dbse, 106)] = "GA10/3.15 T//Cs"
+TAGL["%s-%s-monoA-CP" % (dbse, 106)] = "Thymine from GA10/3.15 T//Cs"
+TAGL["%s-%s-monoB-CP" % (dbse, 106)] = "Cytosine from GA10/3.15 T//Cs"
+TAGL["%s-%s-monoA-unCP" % (dbse, 106)] = "Thymine from GA10/3.15 T//Cs"
+TAGL["%s-%s-monoB-unCP" % (dbse, 106)] = "Cytosine from GA10/3.15 T//Cs"
+TAGL["%s-%s" % (dbse, 107)] = "ST-37 AG08/3.19 A//Gs"
+TAGL["%s-%s-dimer" % (dbse, 107)] = "AG08/3.19 A//Gs"
+TAGL["%s-%s-monoA-CP" % (dbse, 107)] = "Adenine from AG08/3.19 A//Gs"
+TAGL["%s-%s-monoB-CP" % (dbse, 107)] = "Guanine from AG08/3.19 A//Gs"
+TAGL["%s-%s-monoA-unCP" % (dbse, 107)] = "Adenine from AG08/3.19 A//Gs"
+TAGL["%s-%s-monoB-unCP" % (dbse, 107)] = "Guanine from AG08/3.19 A//Gs"
+TAGL["%s-%s" % (dbse, 108)] = "ST-38 AG08/3.19 T//Cs"
+TAGL["%s-%s-dimer" % (dbse, 108)] = "AG08/3.19 T//Cs"
+TAGL["%s-%s-monoA-CP" % (dbse, 108)] = "Thymine from AG08/3.19 T//Cs"
+TAGL["%s-%s-monoB-CP" % (dbse, 108)] = "Cytosine from AG08/3.19 T//Cs"
+TAGL["%s-%s-monoA-unCP" % (dbse, 108)] = "Thymine from AG08/3.19 T//Cs"
+TAGL["%s-%s-monoB-unCP" % (dbse, 108)] = "Cytosine from AG08/3.19 T//Cs"
+TAGL["%s-%s" % (dbse, 109)] = "ST-39 TG03.19 T//Gs"
+TAGL["%s-%s-dimer" % (dbse, 109)] = "TG03.19 T//Gs"
+TAGL["%s-%s-monoA-CP" % (dbse, 109)] = "Thymine from TG03.19 T//Gs"
+TAGL["%s-%s-monoB-CP" % (dbse, 109)] = "Guanine from TG03.19 T//Gs"
+TAGL["%s-%s-monoA-unCP" % (dbse, 109)] = "Thymine from TG03.19 T//Gs"
+TAGL["%s-%s-monoB-unCP" % (dbse, 109)] = "Guanine from TG03.19 T//Gs"
+TAGL["%s-%s" % (dbse, 110)] = "ST-40 TG03.19 A//Cs"
+TAGL["%s-%s-dimer" % (dbse, 110)] = "TG03.19 A//Cs"
+TAGL["%s-%s-monoA-CP" % (dbse, 110)] = "Adenine from TG03.19 A//Cs"
+TAGL["%s-%s-monoB-CP" % (dbse, 110)] = "Cytosine from TG03.19 A//Cs"
+TAGL["%s-%s-monoA-unCP" % (dbse, 110)] = "Adenine from TG03.19 A//Cs"
+TAGL["%s-%s-monoB-unCP" % (dbse, 110)] = "Cytosine from TG03.19 A//Cs"
+TAGL["%s-%s" % (dbse, 111)] = "ST-41 GT10/3.15 T//Gs"
+TAGL["%s-%s-dimer" % (dbse, 111)] = "GT10/3.15 T//Gs"
+TAGL["%s-%s-monoA-CP" % (dbse, 111)] = "Thymine from GT10/3.15 T//Gs"
+TAGL["%s-%s-monoB-CP" % (dbse, 111)] = "Guanine from GT10/3.15 T//Gs"
+TAGL["%s-%s-monoA-unCP" % (dbse, 111)] = "Thymine from GT10/3.15 T//Gs"
+TAGL["%s-%s-monoB-unCP" % (dbse, 111)] = "Guanine from GT10/3.15 T//Gs"
+TAGL["%s-%s" % (dbse, 112)] = "ST-42 GT10/3.15 A//Cs"
+TAGL["%s-%s-dimer" % (dbse, 112)] = "GT10/3.15 A//Cs"
+TAGL["%s-%s-monoA-CP" % (dbse, 112)] = "Adenine from GT10/3.15 A//Cs"
+TAGL["%s-%s-monoB-CP" % (dbse, 112)] = "Cytosine from GT10/3.15 A//Cs"
+TAGL["%s-%s-monoA-unCP" % (dbse, 112)] = "Adenine from GT10/3.15 A//Cs"
+TAGL["%s-%s-monoB-unCP" % (dbse, 112)] = "Cytosine from GT10/3.15 A//Cs"
+TAGL["%s-%s" % (dbse, 113)] = "ST-43 AT10/3.26 A//Ts"
+TAGL["%s-%s-dimer" % (dbse, 113)] = "AT10/3.26 A//Ts"
+TAGL["%s-%s-monoA-CP" % (dbse, 113)] = "Adenine from AT10/3.26 A//Ts"
+TAGL["%s-%s-monoB-CP" % (dbse, 113)] = "Thymine from AT10/3.26 A//Ts"
+TAGL["%s-%s-monoA-unCP" % (dbse, 113)] = "Adenine from AT10/3.26 A//Ts"
+TAGL["%s-%s-monoB-unCP" % (dbse, 113)] = "Thymine from AT10/3.26 A//Ts"
+TAGL["%s-%s" % (dbse, 114)] = "ST-44 TA08/3.16 A//Ts"
+TAGL["%s-%s-dimer" % (dbse, 114)] = "TA08/3.16 A//Ts"
+TAGL["%s-%s-monoA-CP" % (dbse, 114)] = "Adenine from TA08/3.16 A//Ts"
+TAGL["%s-%s-monoB-CP" % (dbse, 114)] = "Thymine from TA08/3.16 A//Ts"
+TAGL["%s-%s-monoA-unCP" % (dbse, 114)] = "Adenine from TA08/3.16 A//Ts"
+TAGL["%s-%s-monoB-unCP" % (dbse, 114)] = "Thymine from TA08/3.16 A//Ts"
+TAGL["%s-%s" % (dbse, 115)] = "ST-45 AA0/3.24 A//As"
+TAGL["%s-%s-dimer" % (dbse, 115)] = "AA0/3.24 A//As"
+TAGL["%s-%s-monoA-CP" % (dbse, 115)] = "Adenine from AA0/3.24 A//As"
+TAGL["%s-%s-monoB-CP" % (dbse, 115)] = "Adenine from AA0/3.24 A//As"
+TAGL["%s-%s-monoA-unCP" % (dbse, 115)] = "Adenine from AA0/3.24 A//As"
+TAGL["%s-%s-monoB-unCP" % (dbse, 115)] = "Adenine from AA0/3.24 A//As"
+TAGL["%s-%s" % (dbse, 116)] = "ST-46 AA0/3.24 T//Ts"
+TAGL["%s-%s-dimer" % (dbse, 116)] = "AA0/3.24 T//Ts"
+TAGL["%s-%s-monoA-CP" % (dbse, 116)] = "Thymine from AA0/3.24 T//Ts"
+TAGL["%s-%s-monoB-CP" % (dbse, 116)] = "Thymine from AA0/3.24 T//Ts"
+TAGL["%s-%s-monoA-unCP" % (dbse, 116)] = "Thymine from AA0/3.24 T//Ts"
+TAGL["%s-%s-monoB-unCP" % (dbse, 116)] = "Thymine from AA0/3.24 T//Ts"
+TAGL["%s-%s" % (dbse, 117)] = "ST-47 A...T S"
+TAGL["%s-%s-dimer" % (dbse, 117)] = "A...T S"
+TAGL["%s-%s-monoA-CP" % (dbse, 117)] = "methyl-Adenine from A...T S"
+TAGL["%s-%s-monoB-CP" % (dbse, 117)] = "methyl-Thymine from A...T S"
+TAGL["%s-%s-monoA-unCP" % (dbse, 117)] = "methyl-Adenine from A...T S"
+TAGL["%s-%s-monoB-unCP" % (dbse, 117)] = "methyl-Thymine from A...T S"
+TAGL["%s-%s" % (dbse, 118)] = "ST-48 G...C S"
+TAGL["%s-%s-dimer" % (dbse, 118)] = "G...C S"
+TAGL["%s-%s-monoA-CP" % (dbse, 118)] = "methyl-Cytosine from G...C S"
+TAGL["%s-%s-monoB-CP" % (dbse, 118)] = "methyl-Guanine from G...C S"
+TAGL["%s-%s-monoA-unCP" % (dbse, 118)] = "methyl-Cytosine from G...C S"
+TAGL["%s-%s-monoB-unCP" % (dbse, 118)] = "methyl-Guanine from G...C S"
+TAGL["%s-%s" % (dbse, 119)] = "ST-49 A...C S"
+TAGL["%s-%s-dimer" % (dbse, 119)] = "A...C S"
+TAGL["%s-%s-monoA-CP" % (dbse, 119)] = "methyl-Adenine from A...C S"
+TAGL["%s-%s-monoB-CP" % (dbse, 119)] = "methyl-Cytosine from A...C S"
+TAGL["%s-%s-monoA-unCP" % (dbse, 119)] = "methyl-Adenine from A...C S"
+TAGL["%s-%s-monoB-unCP" % (dbse, 119)] = "methyl-Cytosine from A...C S"
+TAGL["%s-%s" % (dbse, 120)] = "ST-50 T...G S"
+TAGL["%s-%s-dimer" % (dbse, 120)] = "T...G S"
+TAGL["%s-%s-monoA-CP" % (dbse, 120)] = "methyl-Thymine from T...G S"
+TAGL["%s-%s-monoB-CP" % (dbse, 120)] = "methyl-Guanine from T...G S"
+TAGL["%s-%s-monoA-unCP" % (dbse, 120)] = "methyl-Thymine from T...G S"
+TAGL["%s-%s-monoB-unCP" % (dbse, 120)] = "methyl-Guanine from T...G S"
+TAGL["%s-%s" % (dbse, 121)] = "ST-51 G...C S"
+TAGL["%s-%s-dimer" % (dbse, 121)] = "G...C S"
+TAGL["%s-%s-monoA-CP" % (dbse, 121)] = "Cytosine from G...C S"
+TAGL["%s-%s-monoB-CP" % (dbse, 121)] = "Guanine from G...C S"
+TAGL["%s-%s-monoA-unCP" % (dbse, 121)] = "Cytosine from G...C S"
+TAGL["%s-%s-monoB-unCP" % (dbse, 121)] = "Guanine from G...C S"
+TAGL["%s-%s" % (dbse, 122)] = "ST-52 A...G S"
+TAGL["%s-%s-dimer" % (dbse, 122)] = "A...G S"
+TAGL["%s-%s-monoA-CP" % (dbse, 122)] = "Adenine from A...G S"
+TAGL["%s-%s-monoB-CP" % (dbse, 122)] = "Guanine from A...G S"
+TAGL["%s-%s-monoA-unCP" % (dbse, 122)] = "Adenine from A...G S"
+TAGL["%s-%s-monoB-unCP" % (dbse, 122)] = "Guanine from A...G S"
+TAGL["%s-%s" % (dbse, 123)] = "ST-53 C...G S"
+TAGL["%s-%s-dimer" % (dbse, 123)] = "C...G S"
+TAGL["%s-%s-monoA-CP" % (dbse, 123)] = "Guanine from C...G S"
+TAGL["%s-%s-monoB-CP" % (dbse, 123)] = "Cytosine from C...G S"
+TAGL["%s-%s-monoA-unCP" % (dbse, 123)] = "Guanine from C...G S"
+TAGL["%s-%s-monoB-unCP" % (dbse, 123)] = "Cytosine from C...G S"
+TAGL["%s-%s" % (dbse, 124)] = "ST-54 G...C S"
+TAGL["%s-%s-dimer" % (dbse, 124)] = "G...C S"
+TAGL["%s-%s-monoA-CP" % (dbse, 124)] = "Guanine from G...C S"
+TAGL["%s-%s-monoB-CP" % (dbse, 124)] = "Cytosine from G...C S"
+TAGL["%s-%s-monoA-unCP" % (dbse, 124)] = "Guanine from G...C S"
+TAGL["%s-%s-monoB-unCP" % (dbse, 124)] = "Cytosine from G...C S"
 
 # <<< Geometry Specification Strings >>>
 GEOS = {}
 
-GEOS['%s-%s-dimer' % (dbse, '1')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "1")] = qcdb.Molecule("""
 0 1
 C    -1.0398599    -0.0950435     2.9628987
 N    -0.8760506    -0.1198953     4.3522101
@@ -998,7 +998,7 @@ H    -2.4169221     0.0545062     0.6045745
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '2')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "2")] = qcdb.Molecule("""
 0 1
 C    -0.8133331    -0.0866715     2.9789275
 N    -0.6596824    -0.0799211     4.3738426
@@ -1040,7 +1040,7 @@ H    -1.1628640    -0.0654072    -6.4980769
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '3')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "3")] = qcdb.Molecule("""
 0 1
 N     0.9350155    -0.0279801    -0.3788916
 C     1.6739638    -0.0357766     0.7424316
@@ -1077,7 +1077,7 @@ H    -5.7883971     0.0505530     2.0247280
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '4')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "4")] = qcdb.Molecule("""
 0 1
 N     1.4233678    -2.5755572    -0.0177928
 C     2.4164068    -1.6737862    -0.0069340
@@ -1120,7 +1120,7 @@ H    -5.6215286     2.0832557    -0.1007218
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '5')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "5")] = qcdb.Molecule("""
 0 1
 N    -0.7878100     0.0020606    -4.2304138
 C    -0.8092899     0.0015891    -2.8583291
@@ -1157,7 +1157,7 @@ H     2.2148236     0.0000552     1.1689293
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '6')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "6")] = qcdb.Molecule("""
 0 1
 C    -0.0399020     0.0000000    -0.0353727
 N    -0.0114814     0.0000000     1.3676751
@@ -1191,7 +1191,7 @@ H     0.0674277     0.0000000    -8.0602299
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '7')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "7")] = qcdb.Molecule("""
 0 1
 O    -1.3445145    -0.0017812     0.2109785
 C    -0.5827723    -0.0011739     1.1802676
@@ -1226,7 +1226,7 @@ H     2.3651020     0.0016683    -3.9825177
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '8')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "8")] = qcdb.Molecule("""
 0 1
 C    -0.0546262    -0.0000666    -0.0449366
 N    -0.0199900    -0.0000391     1.3370041
@@ -1260,7 +1260,7 @@ H     0.9279995     0.0000010    -2.4136765
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '9')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "9")] = qcdb.Molecule("""
 0 1
 O     3.5986069     0.3187715    -0.0000425
 C     3.1043656    -0.7907721     0.0000494
@@ -1291,7 +1291,7 @@ H    -4.0815013    -0.3955360     0.0000308
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '10')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "10")] = qcdb.Molecule("""
 0 1
 O     3.0139530    -0.0000663    -2.3714607
 C     3.0149686    -0.0000275    -1.1572038
@@ -1322,7 +1322,7 @@ H    -5.0495438     0.0000916    -1.5966575
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '11')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "11")] = qcdb.Molecule("""
 0 1
 C    -0.0268479     0.0001243    -0.0484048
 N     0.0107678    -0.0000464     1.3475182
@@ -1358,7 +1358,7 @@ H    -1.1666925     0.0000488    -2.3691590
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '12')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "12")] = qcdb.Molecule("""
 0 1
 N    -2.3081868     0.7091068     0.0000285
 C    -1.2051249     1.4749768    -0.0000074
@@ -1392,7 +1392,7 @@ H     2.3325010    -5.4794294    -0.0000001
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '13')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "13")] = qcdb.Molecule("""
 0 1
 N    -0.9044942     0.3053428    -1.9849463
 C    -1.5722006     0.1028596    -0.8342896
@@ -1431,7 +1431,7 @@ H     5.8186182    -0.2165735    -2.1235955
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '14')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "14")] = qcdb.Molecule("""
 0 1
 N     0.3803518     5.2710590     0.0000000
 C    -0.9827443     5.4382698     0.0000000
@@ -1470,7 +1470,7 @@ H    -2.7348414    -4.1561542     0.8748178
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '15')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "15")] = qcdb.Molecule("""
 0 1
 N    -5.1985541     0.4936739     0.0318901
 C    -5.3820983    -0.8616291     0.0378780
@@ -1507,7 +1507,7 @@ H     5.0549009     2.2603064     0.0258240
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '16')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "16")] = qcdb.Molecule("""
 0 1
 O     0.3144345    -1.1442948     0.0144949
 C     1.3535742    -0.4837792     0.0219615
@@ -1542,7 +1542,7 @@ H    -3.6021712     2.8189896    -0.0637914
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '17')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "17")] = qcdb.Molecule("""
 0 1
 O     0.2958263    -1.2112383     0.3424002
 C     1.3078216    -0.5286166     0.1794526
@@ -1577,7 +1577,7 @@ H    -4.4551541     1.8895240    -0.0237988
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '18')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "18")] = qcdb.Molecule("""
 0 1
 C    -1.2382495     0.0003068     3.2761967
 N    -0.8377699    -0.0002822     4.6262520
@@ -1612,7 +1612,7 @@ H    -2.1264189     0.0000818    -0.6840313
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '19')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "19")] = qcdb.Molecule("""
 0 1
 O     1.7709955     2.3306811     0.0000007
 C     0.5807567     2.6278573    -0.0000017
@@ -1651,7 +1651,7 @@ H    -0.2426849    -6.8513669     0.0000027
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '20')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "20")] = qcdb.Molecule("""
 0 1
 O    -2.1042101     2.1109877    -0.0000208
 C    -0.9861671     2.6187107    -0.0000392
@@ -1690,7 +1690,7 @@ H     0.4955304    -6.8577215    -0.0011689
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '21')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "21")] = qcdb.Molecule("""
 0 1
 S    -1.8166246     2.6821898    -0.0001323
 C    -0.1580956     2.6810732    -0.0000609
@@ -1729,7 +1729,7 @@ H    -0.3206311    -6.9565723     0.0005285
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '22')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "22")] = qcdb.Molecule("""
 0 1
 O    -1.3058058     0.3353432    -1.9024452
 C    -1.9900049     0.1709800    -0.8920389
@@ -1767,7 +1767,7 @@ H     1.9849455    -0.4365244    -2.6464500
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '23')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "23")] = qcdb.Molecule("""
 0 1
 N     0.5317472    -1.5315785     0.0000000
 C     1.6654518    -2.2639451     0.0000000
@@ -1805,7 +1805,7 @@ H     0.9500064     6.0803260     0.0000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '24')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "24")] = qcdb.Molecule("""
 0 1
 O    -1.3082180    -0.2837400    -5.2857830
 C    -1.2591040    -0.1735270    -4.0737910
@@ -1843,7 +1843,7 @@ H    -0.5364890    -0.5388150     0.7550260
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '25')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "25")] = qcdb.Molecule("""
 0 1
 C     1.2592909     1.6400416     0.0000000
 N    -0.0329944     1.3939366     0.0000000
@@ -1881,7 +1881,7 @@ H    -2.5417242    -1.0304237     0.0000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '26')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "26")] = qcdb.Molecule("""
 0 1
 O     1.0272885    -1.7927509    -0.4061508
 C     1.7699883    -0.8358415    -0.1967480
@@ -1919,7 +1919,7 @@ H    -0.7358064    -1.8946489     0.1475504
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '27')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "27")] = qcdb.Molecule("""
 0 1
 O     5.3545637    -1.5839084     0.1643820
 C     4.3016967    -0.9781139     0.1123080
@@ -1957,7 +1957,7 @@ H    -1.4852074     1.9635263     0.7951137
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '28')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "28")] = qcdb.Molecule("""
 0 1
 N    -1.2744921    -0.0017953    -1.3782659
 C    -2.1152770    -0.0015179    -0.3381875
@@ -1994,7 +1994,7 @@ H     1.6714569    -0.0000645     2.2984633
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '29')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "29")] = qcdb.Molecule("""
 0 1
 N    -1.1366363    -0.0666108    -1.4922977
 C    -1.9363007    -0.0408578    -0.4194776
@@ -2031,7 +2031,7 @@ H     0.4799202    -0.0417563     1.3125324
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '30')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "30")] = qcdb.Molecule("""
 0 1
 N     1.9051383    -0.1221668     1.3018987
 C     1.2306207    -0.0724496     2.4599521
@@ -2068,7 +2068,7 @@ H    -1.4533881    -0.0384046    -0.3902022
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '31')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "31")] = qcdb.Molecule("""
 0 1
 C    -5.2998476     2.1696769    -0.1527418
 N    -4.0012332     2.3280352     0.0113365
@@ -2108,7 +2108,7 @@ H     5.0828171     2.2880907    -0.1283728
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '32')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "32")] = qcdb.Molecule("""
 0 1
 S    -0.2983354    -0.0000513     0.0606545
 C    -0.2090863    -0.0000888     1.7027085
@@ -2139,7 +2139,7 @@ H    -8.7287725     0.0000774     2.9713072
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '33')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "33")] = qcdb.Molecule("""
 0 1
 C    12.1619966    21.5469940    -0.5249999
 N    12.0019966    20.1249944    -0.3349999
@@ -2182,7 +2182,7 @@ H     3.1730521    17.3682771    -0.6086068
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '34')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "34")] = qcdb.Molecule("""
 0 1
 N    10.3469971    14.4959959     8.8169975
 C    11.5789968    13.8469961     8.7069976
@@ -2224,7 +2224,7 @@ H    20.4431063    12.0114766     9.7460263
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '35')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "35")] = qcdb.Molecule("""
 0 1
 N    10.9240000    16.7550000     5.5620000
 C    11.6470000    17.8510000     5.8140000
@@ -2267,7 +2267,7 @@ H    16.0652090     7.9755790     7.0417370
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '36')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "36")] = qcdb.Molecule("""
 0 1
 H     0.0112670     4.2441280     0.3057270
 N    -0.1600000     4.2010000     1.2990000
@@ -2305,7 +2305,7 @@ C    -1.7380000    -0.6050000    -3.0150000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '37')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "37")] = qcdb.Molecule("""
 0 1
 H     3.1762460     2.3738070     2.9634160
 N     2.3770000     1.8470000     3.2830000
@@ -2341,7 +2341,7 @@ C    -0.8790000    -3.5010000    -0.9150000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '38')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "38")] = qcdb.Molecule("""
 0 1
 H     4.0780890     0.2050200     6.5267380
 N     3.3380000    -0.4520000     6.3380000
@@ -2377,7 +2377,7 @@ O     3.8210000    -4.4400000     0.4780000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '39')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "39")] = qcdb.Molecule("""
 0 1
 O     0.9601320     1.3436400     0.0000000
 C     1.5166980     0.2684520     0.0000000
@@ -2413,7 +2413,7 @@ H    -1.7581040     0.8646590     3.3600000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '40')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "40")] = qcdb.Molecule("""
 0 1
 C    -3.0263940    -1.4464050     0.0000000
 N    -4.3985350    -1.2378500     0.0000000
@@ -2449,7 +2449,7 @@ H     1.2381640    -2.7944260     3.3600000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '41')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "41")] = qcdb.Molecule("""
 0 1
 N    -1.3923840    -1.5825730    -0.2790500
 C    -1.8533500    -0.3518640    -0.0620430
@@ -2486,7 +2486,7 @@ H     5.9296670     1.2931580     3.4791940
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '42')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "42")] = qcdb.Molecule("""
 0 1
 O     1.6803850    -1.8647480     0.3288050
 C     2.4435780    -0.9466670     0.1669230
@@ -2523,7 +2523,7 @@ H    -0.2797430    -3.0783000     2.6398690
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '43')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "43")] = qcdb.Molecule("""
 0 1
 C     2.4313070     1.6249990    -1.4530130
 N     3.8007370     1.6249990    -1.6786800
@@ -2556,7 +2556,7 @@ H    -1.4048620    -1.6249990     2.2234300
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '44')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "44")] = qcdb.Molecule("""
 0 1
 O    -0.4979320     1.6249990     1.9422390
 C    -1.3595090     1.6249990     1.0916630
@@ -2595,7 +2595,7 @@ H     0.3140390    -1.6249990    -2.6726050
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '45')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "45")] = qcdb.Molecule("""
 0 1
 O     0.9601320     1.3436400     0.0000000
 C     1.5166980     0.2684520     0.0000000
@@ -2634,7 +2634,7 @@ H     2.2750440    -2.0410890     3.1900000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '46')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "46")] = qcdb.Molecule("""
 0 1
 C    -3.0263940    -1.4464050     0.0000000
 N    -4.3985350    -1.2378500     0.0000000
@@ -2667,7 +2667,7 @@ H    -0.2790560     1.9392500     3.1900000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '47')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "47")] = qcdb.Molecule("""
 0 1
 N     1.0423840    -1.6008720     0.1400580
 C     1.5033500    -0.3559320     0.0311400
@@ -2702,7 +2702,7 @@ H    -1.7946790    -0.8299350    -3.3010330
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '48')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "48")] = qcdb.Molecule("""
 0 1
 O    -2.0303850    -1.8863100    -0.1650310
 C    -2.7935780    -0.9576130    -0.0837800
@@ -2740,7 +2740,7 @@ H     1.1910290     2.8146150    -3.4104660
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '49')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "49")] = qcdb.Molecule("""
 0 1
 O     1.5241600    -0.5494170     3.3837280
 C     1.3439910     0.6454500     3.3087260
@@ -2778,7 +2778,7 @@ H    -5.9073000    -2.4705620    -0.1736470
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '50')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "50")] = qcdb.Molecule("""
 0 1
 N     1.0423840    -1.6030730     0.1120980
 C     1.5033500    -0.3564220     0.0249230
@@ -2813,7 +2813,7 @@ H     0.2361240    -1.9652240     3.1691180
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '51')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "51")] = qcdb.Molecule("""
 0 1
 N    -1.0423840    -1.6069870     0.0000000
 C    -1.5033500    -0.3572920     0.0000000
@@ -2851,7 +2851,7 @@ H    -2.3154950     2.0117000     3.1800000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '52')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "52")] = qcdb.Molecule("""
 0 1
 O     2.0303850    -1.8935150     0.0000000
 C     2.7935780    -0.9612710     0.0000000
@@ -2886,7 +2886,7 @@ H     0.2386050    -1.9686390     3.1800000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '53')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "53")] = qcdb.Molecule("""
 0 1
 O     2.0303850    -1.8863100     0.1650310
 C     2.7935780    -0.9576130     0.0837800
@@ -2921,7 +2921,7 @@ H    -1.7946790    -0.8299350    -3.3010330
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '54')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "54")] = qcdb.Molecule("""
 0 1
 N    -1.0423840    -1.6008720    -0.1400580
 C    -1.5033500    -0.3559320    -0.0311400
@@ -2959,7 +2959,7 @@ H     1.1910290     2.8146150    -3.4104660
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '55')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "55")] = qcdb.Molecule("""
 0 1
 O    -1.6803850    -1.8863100    -0.1650310
 C    -2.4435780    -0.9576130    -0.0837800
@@ -2996,7 +2996,7 @@ H     5.9461980     1.2704040     3.4749720
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '56')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "56")] = qcdb.Molecule("""
 0 1
 N     1.3923840    -1.6008720     0.1400580
 C     1.8533500    -0.3559320     0.0311400
@@ -3033,7 +3033,7 @@ H    -0.2639350    -3.1000580     3.0541510
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '57')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "57")] = qcdb.Molecule("""
 0 1
 N    -1.4867430     1.6920980    -2.3336600
 C    -1.5399110     1.6049230    -1.0055780
@@ -3070,7 +3070,7 @@ H     2.3312660    -1.7447540    -2.8510340
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '58')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "58")] = qcdb.Molecule("""
 0 1
 O     1.3473090     1.4479140    -0.7794320
 C     2.3605260     1.5129430    -0.1308130
@@ -3107,7 +3107,7 @@ H    -4.8546930    -1.4081210    -2.5307720
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '59')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "59")] = qcdb.Molecule("""
 0 1
 N    -1.3923840    -1.6069870     0.0000000
 C    -1.8533500    -0.3572920     0.0000000
@@ -3144,7 +3144,7 @@ H     5.9516930     1.2628420     3.2391140
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '60')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "60")] = qcdb.Molecule("""
 0 1
 N    -0.1818990    -2.1185030     3.2400000
 C    -1.2893810    -1.3784270     3.2400000
@@ -3181,7 +3181,7 @@ H     5.5573000    -2.4766570    -0.0008860
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '61')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "61")] = qcdb.Molecule("""
 0 1
 C    12.1619966    21.5469940    -0.5249999
 N    12.0019966    20.1249944    -0.3349999
@@ -3224,7 +3224,7 @@ H     3.2840151    12.3521085     3.4311880
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '62')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "62")] = qcdb.Molecule("""
 0 1
 C     3.0629991    16.2869954    -0.5529998
 N     4.3679988    15.6949956    -0.7379998
@@ -3267,7 +3267,7 @@ H     8.5371916    17.3217571     2.6353613
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '63')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "63")] = qcdb.Molecule("""
 0 1
 C    10.7049970     9.6579973    11.8009967
 N    11.0689969    11.0699969    11.9839966
@@ -3312,7 +3312,7 @@ H    20.4431063    12.0114766     9.7460263
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '64')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "64")] = qcdb.Molecule("""
 0 1
 N    10.3469971    14.4959959     8.8169975
 C    11.5789968    13.8469961     8.7069976
@@ -3351,7 +3351,7 @@ H    21.0763281    14.1698120    13.7655701
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '65')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "65")] = qcdb.Molecule("""
 0 1
 N    10.9240000    16.7550000     5.5620000
 C    11.6470000    17.8510000     5.8140000
@@ -3395,7 +3395,7 @@ H    20.4431070    12.0114850     9.7460660
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '66')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "66")] = qcdb.Molecule("""
 0 1
 C     9.1690000    13.6920000     8.6010000
 N    10.3470000    14.4960000     8.8170000
@@ -3436,7 +3436,7 @@ H    16.0652090     7.9755790     7.0417370
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '67')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "67")] = qcdb.Molecule("""
 0 1
 H     3.1762460     2.3738070     2.9634160
 N     2.3770000     1.8470000     3.2830000
@@ -3471,7 +3471,7 @@ C    -1.7380000    -0.6050000    -3.0150000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '68')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "68")] = qcdb.Molecule("""
 0 1
 H     0.0112670     4.2441280     0.3057270
 N    -0.1600000     4.2010000     1.2990000
@@ -3510,7 +3510,7 @@ C    -0.8790000    -3.5010000    -0.9150000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '69')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "69")] = qcdb.Molecule("""
 0 1
 H     4.0780890     0.2050200     6.5267380
 N     3.3380000    -0.4520000     6.3380000
@@ -3549,7 +3549,7 @@ C    -0.8790000    -3.5010000    -0.9150000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '70')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "70")] = qcdb.Molecule("""
 0 1
 H     3.1762460     2.3738070     2.9634160
 N     2.3770000     1.8470000     3.2830000
@@ -3582,7 +3582,7 @@ O     3.8210000    -4.4400000     0.4780000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '71')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "71")] = qcdb.Molecule("""
 0 1
 O    -1.2390176    -2.5490521     0.6548924
 C    -1.0284571    -1.3714583     0.9008651
@@ -3618,7 +3618,7 @@ H    -0.4171470    -2.5417743    -1.5096178
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '72')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "72")] = qcdb.Molecule("""
 0 1
 O    -1.6144948    -2.7570519    -0.2060980
 C    -1.1842160    -1.7852952     0.3968248
@@ -3660,7 +3660,7 @@ H     2.7199672     2.9140199    -0.2854865
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '73')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "73")] = qcdb.Molecule("""
 0 1
 N     0.2793014     2.4068393    -0.6057517
 C    -1.0848570     2.4457461    -0.5511608
@@ -3697,7 +3697,7 @@ H     2.0853289    -0.2760176    -2.4454577
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '74')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "74")] = qcdb.Molecule("""
 0 1
 N    -0.3455004     1.7703632     1.4950792
 C    -1.6474050     1.3634505     1.5386766
@@ -3740,7 +3740,7 @@ H     1.2518503     3.0690500    -1.8139519
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '75')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "75")] = qcdb.Molecule("""
 0 1
 C     0.9181960    -0.9215090     0.0000000
 N    -0.3693690    -1.5141310     0.0000000
@@ -3773,7 +3773,7 @@ H     0.8696630     2.9040660     3.4000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '76')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "76")] = qcdb.Molecule("""
 0 1
 C     0.9181960    -0.9215090     0.0000000
 N    -0.3693690    -1.5141310     0.0000000
@@ -3806,7 +3806,7 @@ H    -2.0801630     2.2051830     3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '77')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "77")] = qcdb.Molecule("""
 0 1
 C     0.9181960    -0.9215090     0.0000000
 N    -0.3693690    -1.5141310     0.0000000
@@ -3839,7 +3839,7 @@ H    -2.9498260    -0.6988840     3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '78')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "78")] = qcdb.Molecule("""
 0 1
 C     0.9181960    -0.9215090     0.0000000
 N    -0.3693690    -1.5141310     0.0000000
@@ -3872,7 +3872,7 @@ H    -0.8696630    -2.9040660     3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '79')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "79")] = qcdb.Molecule("""
 0 1
 C     0.9181960    -0.9215090     0.0000000
 N    -0.3693690    -1.5141310     0.0000000
@@ -3905,7 +3905,7 @@ H     1.8696630     2.9040660     3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '80')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "80")] = qcdb.Molecule("""
 0 1
 C     0.9181960    -0.9215090     0.0000000
 N    -0.3693690    -1.5141310     0.0000000
@@ -3938,7 +3938,7 @@ H     0.8696630     3.9040660     3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '81')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "81")] = qcdb.Molecule("""
 0 1
 C     0.9181960    -0.9215090     0.0000000
 N    -0.3693690    -1.5141310     0.0000000
@@ -3971,7 +3971,7 @@ H     2.8696630     0.9040660     3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '82')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "82")] = qcdb.Molecule("""
 0 1
 C     0.9181960    -0.9215090     0.0000000
 N    -0.3693690    -1.5141310     0.0000000
@@ -4004,7 +4004,7 @@ H     0.1303370    -2.9040660     3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '83')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "83")] = qcdb.Molecule("""
 0 1
 C     0.9181960    -0.9215090     0.0000000
 N    -0.3693690    -1.5141310     0.0000000
@@ -4037,7 +4037,7 @@ H    -1.8696630    -2.9040660     3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '84')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "84")] = qcdb.Molecule("""
 0 1
 C     0.9181960    -0.9215090     0.0000000
 N    -0.3693690    -1.5141310     0.0000000
@@ -4070,7 +4070,7 @@ H    -0.8696630    -1.9040660     3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '85')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "85")] = qcdb.Molecule("""
 0 1
 C     0.9181960    -0.9215090     0.0000000
 N    -0.3693690    -1.5141310     0.0000000
@@ -4103,7 +4103,7 @@ H    -0.8696630    -3.9040660     3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '86')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "86")] = qcdb.Molecule("""
 0 1
 C     0.9181960    -0.9215090     0.0000000
 N    -0.3693690    -1.5141310     0.0000000
@@ -4136,7 +4136,7 @@ H     1.1303370    -4.9040660     3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '87')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "87")] = qcdb.Molecule("""
 0 1
 C     0.9181960    -0.9215090     0.0000000
 N    -0.3693690    -1.5141310     0.0000000
@@ -4169,7 +4169,7 @@ H    -0.8696630    -0.9040660     3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '88')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "88")] = qcdb.Molecule("""
 0 1
 C     0.9181960    -0.9215090     0.0000000
 N    -0.3693690    -1.5141310     0.0000000
@@ -4202,7 +4202,7 @@ H    -0.8696630     2.9040660     3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '89')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "89")] = qcdb.Molecule("""
 0 1
 N    -1.9000000    -0.3579200     0.0000000
 C    -1.9000000     0.9808800     0.0000000
@@ -4239,7 +4239,7 @@ H     1.7398820    -3.7580580     3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '90')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "90")] = qcdb.Molecule("""
 0 1
 O     0.2392880    -2.6920590     0.0000000
 C     0.2392880    -1.4664590     0.0000000
@@ -4278,7 +4278,7 @@ H    -1.0045320    -2.9659380     3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '91')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "91")] = qcdb.Molecule("""
 0 1
 N    -1.9000000    -0.3579200     0.0000000
 C    -1.9000000     0.9808800     0.0000000
@@ -4313,7 +4313,7 @@ H    -3.5624890    -1.8438140     3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '92')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "92")] = qcdb.Molecule("""
 0 1
 O     0.2392880    -2.6920580     0.0000000
 C     0.2392880    -1.4664580     0.0000000
@@ -4351,7 +4351,7 @@ H     1.6771880     2.3031370    -3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '93')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "93")] = qcdb.Molecule("""
 0 1
 C    -1.2210000    -0.4488000     0.0000000
 N    -1.2210000     0.9686000     0.0000000
@@ -4384,7 +4384,7 @@ H    -2.6744400     3.0042040     3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '94')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "94")] = qcdb.Molecule("""
 0 1
 N    -1.9000000    -0.3579200     0.0000000
 C    -1.9000000     0.9808800     0.0000000
@@ -4418,7 +4418,7 @@ H    -1.7216600     0.9981100     3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '95')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "95")] = qcdb.Molecule("""
 0 1
 O     0.2392880    -2.6920580     0.0000000
 C     0.2392880    -1.4664580     0.0000000
@@ -4454,7 +4454,7 @@ H     2.4664440    -3.3043070    -3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '96')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "96")] = qcdb.Molecule("""
 0 1
 C    -1.2210000    -0.4488000     0.0000000
 N    -1.2210000     0.9686000     0.0000000
@@ -4486,7 +4486,7 @@ H    -2.3825080    -1.8474300     3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '97')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "97")] = qcdb.Molecule("""
 0 1
 O    -0.4072070    -2.5021900     0.0000000
 C    -0.4072070    -1.2746690     0.0000000
@@ -4517,7 +4517,7 @@ H     0.6781200    -2.0138170     3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '98')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "98")] = qcdb.Molecule("""
 0 1
 O     0.2392880    -2.6920580     0.0000000
 C     0.2392880    -1.4664580     0.0000000
@@ -4552,7 +4552,7 @@ H    -0.7985270    -2.8016270    -3.3000000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '99')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "99")] = qcdb.Molecule("""
 0 1
 O     0.9601320     1.3436400     0.0000000
 C     1.5166980     0.2684520     0.0000000
@@ -4591,7 +4591,7 @@ H     1.2381640    -2.7944260     3.3600000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '100')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "100")] = qcdb.Molecule("""
 0 1
 C    -3.0263940    -1.4464050     0.0000000
 N    -4.3985350    -1.2378500     0.0000000
@@ -4624,7 +4624,7 @@ H    -1.7581040     0.8646590     3.3600000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '101')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "101")] = qcdb.Molecule("""
 0 1
 N    -1.3923840    -1.5825730    -0.2790500
 C    -1.8533500    -0.3518640    -0.0620430
@@ -4661,7 +4661,7 @@ H    -0.2797430    -3.0783000     2.6398690
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '102')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "102")] = qcdb.Molecule("""
 0 1
 O     1.6803850    -1.8647480     0.3288050
 C     2.4435780    -0.9466670     0.1669230
@@ -4698,7 +4698,7 @@ H     5.9296670     1.2931580     3.4791940
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '103')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "103")] = qcdb.Molecule("""
 0 1
 C     2.4313070     1.6249990    -1.4530130
 N     3.8007370     1.6249990    -1.6786800
@@ -4734,7 +4734,7 @@ H     0.3140390    -1.6249990    -2.6726050
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '104')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "104")] = qcdb.Molecule("""
 0 1
 C    -3.0263940    -1.4464050     0.0000000
 N    -4.3985350    -1.2378500     0.0000000
@@ -4770,7 +4770,7 @@ H     2.2750440    -2.0410890     3.1900000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '105')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "105")] = qcdb.Molecule("""
 0 1
 N     1.0423840    -1.6008720     0.1400580
 C     1.5033500    -0.3559320     0.0311400
@@ -4808,7 +4808,7 @@ H     1.1910290     2.8146150    -3.4104660
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '106')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "106")] = qcdb.Molecule("""
 0 1
 O    -2.0303850    -1.8863100    -0.1650310
 C    -2.7935780    -0.9576130    -0.0837800
@@ -4843,7 +4843,7 @@ H    -1.7946790    -0.8299350    -3.3010330
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '107')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "107")] = qcdb.Molecule("""
 0 1
 N     1.0423840    -1.6030730     0.1120980
 C     1.5033500    -0.3564220     0.0249230
@@ -4881,7 +4881,7 @@ H    -2.3112160     2.0058100     3.0815320
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '108')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "108")] = qcdb.Molecule("""
 0 1
 O    -2.0303850    -1.8889030    -0.1320850
 C    -2.7935780    -0.9589290    -0.0670550
@@ -4916,7 +4916,7 @@ H     0.2361240    -1.9652240     3.1691180
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '109')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "109")] = qcdb.Molecule("""
 0 1
 O     2.0303850    -1.8935150     0.0000000
 C     2.7935780    -0.9612710     0.0000000
@@ -4954,7 +4954,7 @@ H    -2.3154950     2.0117000     3.1800000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '110')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "110")] = qcdb.Molecule("""
 0 1
 N    -1.0423840    -1.6069870     0.0000000
 C    -1.5033500    -0.3572920     0.0000000
@@ -4989,7 +4989,7 @@ H     0.2386050    -1.9686390     3.1800000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '111')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "111")] = qcdb.Molecule("""
 0 1
 O     2.0303850    -1.8863100     0.1650310
 C     2.7935780    -0.9576130     0.0837800
@@ -5027,7 +5027,7 @@ H     1.1910290     2.8146150    -3.4104660
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '112')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "112")] = qcdb.Molecule("""
 0 1
 N    -1.0423840    -1.6008720    -0.1400580
 C    -1.5033500    -0.3559320    -0.0311400
@@ -5062,7 +5062,7 @@ H    -1.7946790    -0.8299350    -3.3010330
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '113')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "113")] = qcdb.Molecule("""
 0 1
 N     1.3923840    -1.6008720     0.1400580
 C     1.8533500    -0.3559320     0.0311400
@@ -5099,7 +5099,7 @@ H     5.9461980     1.2704040     3.4749720
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '114')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "114")] = qcdb.Molecule("""
 0 1
 N    -1.4867430     1.6920980    -2.3336600
 C    -1.5399110     1.6049230    -1.0055780
@@ -5136,7 +5136,7 @@ H    -4.8546930    -1.4081210    -2.5307720
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '115')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "115")] = qcdb.Molecule("""
 0 1
 N    -1.3923840    -1.6069870     0.0000000
 C    -1.8533500    -0.3572920     0.0000000
@@ -5173,7 +5173,7 @@ H    -0.2586520    -3.1073290     3.2400000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '116')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "116")] = qcdb.Molecule("""
 0 1
 O     1.6803850    -1.8935150     0.0000000
 C     2.4435780    -0.9612710     0.0000000
@@ -5210,7 +5210,7 @@ H     5.9516930     1.2628420     3.2391140
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '117')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "117")] = qcdb.Molecule("""
 0 1
 C    12.1619966    21.5469940    -0.5249999
 N    12.0019966    20.1249944    -0.3349999
@@ -5253,7 +5253,7 @@ H     8.5371916    17.3217571     2.6353613
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '118')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "118")] = qcdb.Molecule("""
 0 1
 N    10.3469971    14.4959959     8.8169975
 C    11.5789968    13.8469961     8.7069976
@@ -5295,7 +5295,7 @@ H    16.5616854    11.7259467    12.8207994
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '119')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "119")] = qcdb.Molecule("""
 0 1
 N    10.9240000    16.7550000     5.5620000
 C    11.6470000    17.8510000     5.8140000
@@ -5336,7 +5336,7 @@ H    13.8876420    17.4962710     9.5342540
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '120')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "120")] = qcdb.Molecule("""
 0 1
 N    16.2460000     9.7810000     5.9650000
 C    17.5950000    10.0510000     5.9930000
@@ -5380,7 +5380,7 @@ H    20.4431070    12.0114850     9.7460660
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '121')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "121")] = qcdb.Molecule("""
 0 1
 H     3.1762460     2.3738070     2.9634160
 N     2.3770000     1.8470000     3.2830000
@@ -5416,7 +5416,7 @@ C    -1.0480000     3.3630000     1.9240000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '122')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "122")] = qcdb.Molecule("""
 0 1
 H    -3.4958570    -1.4150050    -3.9137580
 N    -3.0510000    -1.0010000    -3.1090000
@@ -5454,7 +5454,7 @@ C    -0.8790000    -3.5010000    -0.9150000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '123')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "123")] = qcdb.Molecule("""
 0 1
 H     4.0780890     0.2050200     6.5267380
 N     3.3380000    -0.4520000     6.3380000
@@ -5490,7 +5490,7 @@ O     2.5580000     0.4150000     1.4830000
 units angstrom
 """)
 
-GEOS['%s-%s-dimer' % (dbse, '124')] = qcdb.Molecule("""
+GEOS["%s-%s-dimer" % (dbse, "124")] = qcdb.Molecule("""
 0 1
 H    -1.2611710    -4.7286740    -2.6257100
 N    -1.6090000    -4.2940000    -1.7860000
@@ -5528,634 +5528,634 @@ units angstrom
 
 # <<< Derived Geometry Strings >>>
 for rxn in HRXN:
-    GEOS['%s-%s-monoA-unCP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(1)
-    GEOS['%s-%s-monoB-unCP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(2)
-    GEOS['%s-%s-monoA-CP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(1, 2)
-    GEOS['%s-%s-monoB-CP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(2, 1)
+    GEOS["%s-%s-monoA-unCP" % (dbse, rxn)] = GEOS["%s-%s-dimer" % (dbse, rxn)].extract_fragments(1)
+    GEOS["%s-%s-monoB-unCP" % (dbse, rxn)] = GEOS["%s-%s-dimer" % (dbse, rxn)].extract_fragments(2)
+    GEOS["%s-%s-monoA-CP" % (dbse, rxn)] = GEOS["%s-%s-dimer" % (dbse, rxn)].extract_fragments(1, 2)
+    GEOS["%s-%s-monoB-CP" % (dbse, rxn)] = GEOS["%s-%s-dimer" % (dbse, rxn)].extract_fragments(2, 1)
 
 #########################################################################
 
 # <<< Supplementary Quantum Chemical Results >>>
 DATA = {}
 
-DATA['NUCLEAR REPULSION ENERGY'] = {}
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-1-dimer'] = 1391.98129069
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-1-monoA-unCP'] = 357.13933560
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-1-monoB-unCP'] = 596.62760720
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-2-dimer'] = 1654.40527853
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-2-monoA-unCP'] = 443.56399475
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-2-monoB-unCP'] = 696.60732032
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-3-dimer'] = 1365.23227533
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-3-monoA-unCP'] = 503.39630679
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-3-monoB-unCP'] = 440.30156925
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-4-dimer'] = 1645.63864536
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-4-monoA-unCP'] = 596.45767348
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-4-monoB-unCP'] = 533.27333592
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-5-dimer'] = 1519.08619634
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-5-monoA-unCP'] = 694.08169190
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-5-monoB-unCP'] = 357.17481831
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-6-dimer'] = 1250.60241408
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-6-monoA-unCP'] = 357.05937707
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-6-monoB-unCP'] = 502.93669666
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-7-dimer'] = 1377.89785724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-7-monoA-unCP'] = 596.76364865
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-7-monoB-unCP'] = 357.05278633
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-8-dimer'] = 1101.46127813
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-8-monoA-unCP'] = 357.43034135
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-8-monoB-unCP'] = 369.97349400
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-9-dimer'] = 1026.69630020
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-9-monoA-unCP'] = 357.07506993
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-9-monoB-unCP'] = 357.22791266
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-10-dimer'] = 1049.26311591
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-10-monoA-unCP'] = 357.30966824
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-10-monoB-unCP'] = 357.25457437
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-11-dimer'] = 1501.52577097
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-11-monoA-unCP'] = 357.30771904
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-11-monoB-unCP'] = 670.49331720
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-12-dimer'] = 1338.80888094
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-12-monoA-unCP'] = 502.97292629
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-12-monoB-unCP'] = 412.74720533
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-13-dimer'] = 1521.60537748
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-13-monoA-unCP'] = 596.65701652
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-13-monoB-unCP'] = 440.44274318
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-14-dimer'] = 1516.62359887
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-14-monoA-unCP'] = 596.92255465
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-14-monoB-unCP'] = 440.54554467
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-15-dimer'] = 1318.42675206
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-15-monoA-unCP'] = 503.53728859
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-15-monoB-unCP'] = 425.75653587
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-16-dimer'] = 1478.61731319
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-16-monoA-unCP'] = 596.66795120
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-16-monoB-unCP'] = 413.04224329
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-17-dimer'] = 1487.72900733
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-17-monoA-unCP'] = 596.75974596
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-17-monoB-unCP'] = 412.84579804
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-18-dimer'] = 1229.51638352
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-18-monoA-unCP'] = 356.91023176
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-18-monoB-unCP'] = 503.30931271
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-19-dimer'] = 1706.17310708
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-19-monoA-unCP'] = 596.15051246
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-19-monoB-unCP'] = 596.63218121
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-20-dimer'] = 1830.02648907
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-20-monoA-unCP'] = 596.58545524
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-20-monoB-unCP'] = 670.44234386
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-21-dimer'] = 1835.32380783
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-21-monoA-unCP'] = 670.04325278
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-21-monoB-unCP'] = 596.84640861
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-22-dimer'] = 1578.33475973
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-22-monoA-unCP'] = 596.48090327
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-22-monoB-unCP'] = 503.33140569
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-23-dimer'] = 1570.60868318
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-23-monoA-unCP'] = 503.54456755
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-23-monoB-unCP'] = 596.89708469
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-24-dimer'] = 1563.56410044
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-24-monoA-unCP'] = 593.67756289
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-24-monoB-unCP'] = 501.45867869
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-25-dimer'] = 1563.69890911
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-25-monoA-unCP'] = 595.94249141
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-25-monoB-unCP'] = 503.12213297
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-26-dimer'] = 1590.81054033
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-26-monoA-unCP'] = 596.44241276
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-26-monoB-unCP'] = 502.87235332
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-27-dimer'] = 1551.55026390
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-27-monoA-unCP'] = 595.72714752
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-27-monoB-unCP'] = 503.45401843
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-28-dimer'] = 1411.30275525
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-28-monoA-unCP'] = 503.40799836
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-28-monoB-unCP'] = 503.40916818
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-29-dimer'] = 1424.44630670
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-29-monoA-unCP'] = 503.49043267
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-29-monoB-unCP'] = 502.94567640
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-30-dimer'] = 1435.87093606
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-30-monoA-unCP'] = 503.11592074
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-30-monoB-unCP'] = 503.11223193
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-31-dimer'] = 1849.09724927
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-31-monoA-unCP'] = 596.75580700
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-31-monoB-unCP'] = 693.16448502
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-32-dimer'] = 1250.78225068
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-32-monoA-unCP'] = 413.69053788
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-32-monoB-unCP'] = 413.05557496
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-33-dimer'] = 1622.96228374
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-33-monoA-unCP'] = 595.94046611
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-33-monoB-unCP'] = 533.43445531
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-34-dimer'] = 1657.51101967
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-34-monoA-unCP'] = 442.44825872
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-34-monoB-unCP'] = 697.73092506
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-35-dimer'] = 1626.09750599
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-35-monoA-unCP'] = 595.84177555
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-35-monoB-unCP'] = 535.63812262
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-36-dimer'] = 1590.75136012
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-36-monoA-unCP'] = 596.77416801
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-36-monoB-unCP'] = 503.84093948
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-37-dimer'] = 1401.39568382
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-37-monoA-unCP'] = 358.21308540
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-37-monoB-unCP'] = 596.89846546
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-38-dimer'] = 1399.57843792
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-38-monoA-unCP'] = 596.88729965
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-38-monoB-unCP'] = 357.96626427
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-39-dimer'] = 1349.21626455
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-39-monoA-unCP'] = 601.53395829
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-39-monoB-unCP'] = 359.95486861
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-40-dimer'] = 1314.37579643
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-40-monoA-unCP'] = 359.95489055
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-40-monoB-unCP'] = 601.53394221
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-41-dimer'] = 1334.39438102
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-41-monoA-unCP'] = 507.48990840
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-41-monoB-unCP'] = 443.36744333
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-42-dimer'] = 1319.28084098
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-42-monoA-unCP'] = 443.36745667
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-42-monoB-unCP'] = 507.48988528
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-43-dimer'] = 973.06142895
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-43-monoA-unCP'] = 359.95499475
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-43-monoB-unCP'] = 359.95499475
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-44-dimer'] = 1724.48127327
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-44-monoA-unCP'] = 601.53410726
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-44-monoB-unCP'] = 601.53410726
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-45-dimer'] = 1806.98548380
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-45-monoA-unCP'] = 601.53395829
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-45-monoB-unCP'] = 601.53394398
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-46-dimer'] = 971.53306922
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-46-monoA-unCP'] = 359.95489055
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-46-monoB-unCP'] = 359.95491240
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-47-dimer'] = 1208.85975313
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-47-monoA-unCP'] = 507.48987556
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-47-monoB-unCP'] = 359.95490302
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-48-dimer'] = 1443.15679999
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-48-monoA-unCP'] = 443.36742635
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-48-monoB-unCP'] = 601.53395163
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-49-dimer'] = 1481.99538897
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-49-monoA-unCP'] = 601.53400057
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-49-monoB-unCP'] = 443.36740384
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-50-dimer'] = 1189.16944115
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-50-monoA-unCP'] = 507.48984219
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-50-monoB-unCP'] = 359.95489222
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-51-dimer'] = 1634.77658138
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-51-monoA-unCP'] = 507.48989123
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-51-monoB-unCP'] = 601.53400527
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-52-dimer'] = 1081.19928424
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-52-monoA-unCP'] = 443.36742642
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-52-monoB-unCP'] = 359.95488319
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-53-dimer'] = 1083.47826689
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-53-monoA-unCP'] = 443.36742741
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-53-monoB-unCP'] = 359.95490302
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-54-dimer'] = 1581.29557886
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-54-monoA-unCP'] = 507.48987556
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-54-monoB-unCP'] = 601.53395163
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-55-dimer'] = 1219.56453397
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-55-monoA-unCP'] = 443.36742635
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-55-monoB-unCP'] = 443.36742934
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-56-dimer'] = 1405.28947121
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-56-monoA-unCP'] = 507.48987556
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-56-monoB-unCP'] = 507.48987021
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-57-dimer'] = 1474.05108110
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-57-monoA-unCP'] = 507.48984783
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-57-monoB-unCP'] = 507.48984783
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-58-dimer'] = 1198.83425089
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-58-monoA-unCP'] = 443.36742068
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-58-monoB-unCP'] = 443.36742068
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-59-dimer'] = 1321.59763058
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-59-monoA-unCP'] = 507.48989123
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-59-monoB-unCP'] = 443.36741425
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-60-dimer'] = 1311.14164882
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-60-monoA-unCP'] = 507.48987743
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-60-monoB-unCP'] = 443.36742642
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-61-dimer'] = 1662.05565427
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-61-monoA-unCP'] = 595.94046611
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-61-monoB-unCP'] = 596.81166025
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-62-dimer'] = 1471.46519284
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-62-monoA-unCP'] = 533.43445531
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-62-monoB-unCP'] = 534.51236588
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-63-dimer'] = 2118.75518694
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-63-monoA-unCP'] = 697.73026630
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-63-monoB-unCP'] = 697.73092506
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-64-dimer'] = 1195.41740656
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-64-monoA-unCP'] = 442.44825872
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-64-monoB-unCP'] = 442.44825964
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-65-dimer'] = 1827.15190604
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-65-monoA-unCP'] = 595.84177555
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-65-monoB-unCP'] = 697.73051558
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-66-dimer'] = 1330.55895484
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-66-monoA-unCP'] = 443.14986171
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-66-monoB-unCP'] = 535.63812262
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-67-dimer'] = 1207.89930362
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-67-monoA-unCP'] = 358.21308540
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-67-monoB-unCP'] = 503.84093948
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-68-dimer'] = 1669.65398984
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-68-monoA-unCP'] = 596.77416801
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-68-monoB-unCP'] = 596.89846546
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-69-dimer'] = 1734.47387907
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-69-monoA-unCP'] = 596.88729965
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-69-monoB-unCP'] = 596.89846546
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-70-dimer'] = 963.62312494
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-70-monoA-unCP'] = 358.21308540
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-70-monoB-unCP'] = 357.96626427
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-71-dimer'] = 1537.57227681
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-71-monoA-unCP'] = 596.44964921
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-71-monoB-unCP'] = 357.10169648
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-72-dimer'] = 1870.03529750
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-72-monoA-unCP'] = 696.44803543
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-72-monoB-unCP'] = 443.64584898
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-73-dimer'] = 1542.14304870
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-73-monoA-unCP'] = 503.36564485
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-73-monoB-unCP'] = 440.14700689
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-74-dimer'] = 1873.30862324
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-74-monoA-unCP'] = 596.40342598
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-74-monoB-unCP'] = 532.86039581
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-75-dimer'] = 1136.50020569
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-75-monoA-unCP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-75-monoB-unCP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-76-dimer'] = 1143.60873849
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-76-monoA-unCP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-76-monoB-unCP'] = 355.44451746
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-77-dimer'] = 1144.33569661
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-77-monoA-unCP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-77-monoB-unCP'] = 355.44455365
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-78-dimer'] = 1144.53152982
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-78-monoA-unCP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-78-monoB-unCP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-79-dimer'] = 1136.39531003
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-79-monoA-unCP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-79-monoB-unCP'] = 355.44458170
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-80-dimer'] = 1137.56590421
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-80-monoA-unCP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-80-monoB-unCP'] = 355.44458162
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-81-dimer'] = 1089.71176518
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-81-monoA-unCP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-81-monoB-unCP'] = 355.44458170
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-82-dimer'] = 1135.52588803
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-82-monoA-unCP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-82-monoB-unCP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-83-dimer'] = 1135.89252554
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-83-monoA-unCP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-83-monoB-unCP'] = 355.44457113
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-84-dimer'] = 1136.27990430
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-84-monoA-unCP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-84-monoB-unCP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-85-dimer'] = 1137.68428928
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-85-monoA-unCP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-85-monoB-unCP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-86-dimer'] = 1091.48755032
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-86-monoA-unCP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-86-monoB-unCP'] = 355.44459806
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-87-dimer'] = 1114.79473660
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-87-monoA-unCP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-87-monoB-unCP'] = 355.44457375
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-88-dimer'] = 1144.74104397
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-88-monoA-unCP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-88-monoB-unCP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-89-dimer'] = 1593.04361768
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-89-monoA-unCP'] = 501.81461749
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-89-monoB-unCP'] = 501.81461592
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-90-dimer'] = 1914.59068159
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-90-monoA-unCP'] = 593.90346744
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-90-monoB-unCP'] = 593.90347753
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-91-dimer'] = 1358.00357589
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-91-monoA-unCP'] = 501.81461749
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-91-monoB-unCP'] = 355.44452826
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-92-dimer'] = 1749.63836451
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-92-monoA-unCP'] = 593.90347360
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-92-monoB-unCP'] = 501.81458877
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-93-dimer'] = 1135.19068685
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-93-monoA-unCP'] = 355.44454853
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-93-monoB-unCP'] = 355.44453848
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-94-dimer'] = 1368.42192946
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-94-monoA-unCP'] = 501.81461749
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-94-monoB-unCP'] = 355.38546038
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-95-dimer'] = 1491.03516654
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-95-monoA-unCP'] = 593.90347360
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-95-monoB-unCP'] = 355.44418383
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-96-dimer'] = 1143.55810352
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-96-monoA-unCP'] = 355.44454853
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-96-monoB-unCP'] = 355.38590060
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-97-dimer'] = 1124.41284995
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-97-monoA-unCP'] = 355.38547127
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-97-monoB-unCP'] = 355.38549385
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-98-dimer'] = 1517.60433270
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-98-monoA-unCP'] = 593.90347360
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-98-monoB-unCP'] = 355.38464230
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-99-dimer'] = 1912.03719777
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-99-monoA-unCP'] = 601.53395829
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-99-monoB-unCP'] = 601.53394221
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-100-dimer'] = 1120.88525374
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-100-monoA-unCP'] = 359.95489055
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-100-monoB-unCP'] = 359.95486861
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-101-dimer'] = 1612.73592913
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-101-monoA-unCP'] = 507.48990840
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-101-monoB-unCP'] = 507.48988528
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-102-dimer'] = 1415.77211916
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-102-monoA-unCP'] = 443.36745667
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-102-monoB-unCP'] = 443.36744333
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-103-dimer'] = 1529.52830806
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-103-monoA-unCP'] = 359.95499475
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-103-monoB-unCP'] = 601.53410726
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-104-dimer'] = 1475.57522935
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-104-monoA-unCP'] = 359.95489055
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-104-monoB-unCP'] = 601.53394398
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-105-dimer'] = 1782.23519943
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-105-monoA-unCP'] = 507.48987556
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-105-monoB-unCP'] = 601.53395163
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-106-dimer'] = 1257.02669139
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-106-monoA-unCP'] = 443.36742635
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-106-monoB-unCP'] = 359.95490302
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-107-dimer'] = 1740.95680727
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-107-monoA-unCP'] = 507.48984219
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-107-monoB-unCP'] = 601.53400057
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-108-dimer'] = 1260.01230981
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-108-monoA-unCP'] = 443.36740384
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-108-monoB-unCP'] = 359.95489222
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-109-dimer'] = 1609.15794755
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-109-monoA-unCP'] = 443.36742642
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-109-monoB-unCP'] = 601.53400527
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-110-dimer'] = 1349.63628460
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-110-monoA-unCP'] = 507.48989123
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-110-monoB-unCP'] = 359.95488319
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-111-dimer'] = 1673.67295485
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-111-monoA-unCP'] = 443.36742741
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-111-monoB-unCP'] = 601.53395163
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-112-dimer'] = 1367.26317388
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-112-monoA-unCP'] = 507.48987556
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-112-monoB-unCP'] = 359.95490302
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-113-dimer'] = 1509.79318924
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-113-monoA-unCP'] = 507.48987556
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-113-monoB-unCP'] = 443.36742934
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-114-dimer'] = 1545.03032944
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-114-monoA-unCP'] = 507.48984783
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-114-monoB-unCP'] = 443.36742068
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-115-dimer'] = 1601.56827337
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-115-monoA-unCP'] = 507.48989123
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-115-monoB-unCP'] = 507.48987743
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-116-dimer'] = 1410.31245614
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-116-monoA-unCP'] = 443.36742642
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-116-monoB-unCP'] = 443.36741425
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-117-dimer'] = 1816.15304322
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-117-monoA-unCP'] = 595.94046611
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-117-monoB-unCP'] = 534.51236588
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-118-dimer'] = 1727.56215886
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-118-monoA-unCP'] = 442.44825872
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-118-monoB-unCP'] = 697.73026630
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-119-dimer'] = 1650.54443625
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-119-monoA-unCP'] = 595.84177555
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-119-monoB-unCP'] = 443.14986171
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-120-dimer'] = 1964.24212034
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-120-monoA-unCP'] = 535.63812262
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-120-monoB-unCP'] = 697.73051558
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-121-dimer'] = 1496.57764615
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-121-monoA-unCP'] = 358.21308540
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-121-monoB-unCP'] = 596.77416801
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-122-dimer'] = 1752.69730428
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-122-monoA-unCP'] = 503.84093948
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-122-monoB-unCP'] = 596.89846546
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-123-dimer'] = 1512.39205830
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-123-monoA-unCP'] = 596.88729965
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-123-monoB-unCP'] = 358.21308540
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-124-dimer'] = 1498.52644117
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-124-monoA-unCP'] = 596.89846546
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-124-monoB-unCP'] = 357.96626427
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-1-monoA-CP'] = 357.13933560
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-1-monoB-CP'] = 596.62760720
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-2-monoA-CP'] = 443.56399475
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-2-monoB-CP'] = 696.60732032
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-3-monoA-CP'] = 503.39630679
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-3-monoB-CP'] = 440.30156925
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-4-monoA-CP'] = 596.45767348
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-4-monoB-CP'] = 533.27333592
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-5-monoA-CP'] = 694.08169190
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-5-monoB-CP'] = 357.17481831
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-6-monoA-CP'] = 357.05937707
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-6-monoB-CP'] = 502.93669666
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-7-monoA-CP'] = 596.76364865
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-7-monoB-CP'] = 357.05278633
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-8-monoA-CP'] = 357.43034135
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-8-monoB-CP'] = 369.97349400
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-9-monoA-CP'] = 357.07506993
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-9-monoB-CP'] = 357.22791266
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-10-monoA-CP'] = 357.30966824
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-10-monoB-CP'] = 357.25457437
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-11-monoA-CP'] = 357.30771904
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-11-monoB-CP'] = 670.49331720
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-12-monoA-CP'] = 502.97292629
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-12-monoB-CP'] = 412.74720533
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-13-monoA-CP'] = 596.65701652
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-13-monoB-CP'] = 440.44274318
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-14-monoA-CP'] = 596.92255465
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-14-monoB-CP'] = 440.54554467
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-15-monoA-CP'] = 503.53728859
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-15-monoB-CP'] = 425.75653587
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-16-monoA-CP'] = 596.66795120
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-16-monoB-CP'] = 413.04224329
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-17-monoA-CP'] = 596.75974596
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-17-monoB-CP'] = 412.84579804
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-18-monoA-CP'] = 356.91023176
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-18-monoB-CP'] = 503.30931271
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-19-monoA-CP'] = 596.15051246
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-19-monoB-CP'] = 596.63218121
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-20-monoA-CP'] = 596.58545524
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-20-monoB-CP'] = 670.44234386
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-21-monoA-CP'] = 670.04325278
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-21-monoB-CP'] = 596.84640861
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-22-monoA-CP'] = 596.48090327
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-22-monoB-CP'] = 503.33140569
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-23-monoA-CP'] = 503.54456755
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-23-monoB-CP'] = 596.89708469
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-24-monoA-CP'] = 593.67756289
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-24-monoB-CP'] = 501.45867869
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-25-monoA-CP'] = 595.94249141
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-25-monoB-CP'] = 503.12213297
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-26-monoA-CP'] = 596.44241276
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-26-monoB-CP'] = 502.87235332
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-27-monoA-CP'] = 595.72714752
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-27-monoB-CP'] = 503.45401843
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-28-monoA-CP'] = 503.40799836
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-28-monoB-CP'] = 503.40916818
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-29-monoA-CP'] = 503.49043267
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-29-monoB-CP'] = 502.94567640
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-30-monoA-CP'] = 503.11592074
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-30-monoB-CP'] = 503.11223193
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-31-monoA-CP'] = 596.75580700
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-31-monoB-CP'] = 693.16448502
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-32-monoA-CP'] = 413.69053788
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-32-monoB-CP'] = 413.05557496
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-33-monoA-CP'] = 595.94046611
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-33-monoB-CP'] = 533.43445531
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-34-monoA-CP'] = 442.44825872
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-34-monoB-CP'] = 697.73092506
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-35-monoA-CP'] = 595.84177555
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-35-monoB-CP'] = 535.63812262
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-36-monoA-CP'] = 596.77416801
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-36-monoB-CP'] = 503.84093948
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-37-monoA-CP'] = 358.21308540
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-37-monoB-CP'] = 596.89846546
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-38-monoA-CP'] = 596.88729965
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-38-monoB-CP'] = 357.96626427
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-39-monoA-CP'] = 601.53395829
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-39-monoB-CP'] = 359.95486861
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-40-monoA-CP'] = 359.95489055
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-40-monoB-CP'] = 601.53394221
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-41-monoA-CP'] = 507.48990840
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-41-monoB-CP'] = 443.36744333
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-42-monoA-CP'] = 443.36745667
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-42-monoB-CP'] = 507.48988528
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-43-monoA-CP'] = 359.95499475
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-43-monoB-CP'] = 359.95499475
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-44-monoA-CP'] = 601.53410726
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-44-monoB-CP'] = 601.53410726
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-45-monoA-CP'] = 601.53395829
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-45-monoB-CP'] = 601.53394398
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-46-monoA-CP'] = 359.95489055
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-46-monoB-CP'] = 359.95491240
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-47-monoA-CP'] = 507.48987556
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-47-monoB-CP'] = 359.95490302
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-48-monoA-CP'] = 443.36742635
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-48-monoB-CP'] = 601.53395163
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-49-monoA-CP'] = 601.53400057
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-49-monoB-CP'] = 443.36740384
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-50-monoA-CP'] = 507.48984219
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-50-monoB-CP'] = 359.95489222
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-51-monoA-CP'] = 507.48989123
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-51-monoB-CP'] = 601.53400527
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-52-monoA-CP'] = 443.36742642
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-52-monoB-CP'] = 359.95488319
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-53-monoA-CP'] = 443.36742741
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-53-monoB-CP'] = 359.95490302
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-54-monoA-CP'] = 507.48987556
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-54-monoB-CP'] = 601.53395163
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-55-monoA-CP'] = 443.36742635
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-55-monoB-CP'] = 443.36742934
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-56-monoA-CP'] = 507.48987556
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-56-monoB-CP'] = 507.48987021
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-57-monoA-CP'] = 507.48984783
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-57-monoB-CP'] = 507.48984783
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-58-monoA-CP'] = 443.36742068
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-58-monoB-CP'] = 443.36742068
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-59-monoA-CP'] = 507.48989123
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-59-monoB-CP'] = 443.36741425
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-60-monoA-CP'] = 507.48987743
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-60-monoB-CP'] = 443.36742642
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-61-monoA-CP'] = 595.94046611
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-61-monoB-CP'] = 596.81166025
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-62-monoA-CP'] = 533.43445531
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-62-monoB-CP'] = 534.51236588
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-63-monoA-CP'] = 697.73026630
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-63-monoB-CP'] = 697.73092506
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-64-monoA-CP'] = 442.44825872
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-64-monoB-CP'] = 442.44825964
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-65-monoA-CP'] = 595.84177555
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-65-monoB-CP'] = 697.73051558
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-66-monoA-CP'] = 443.14986171
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-66-monoB-CP'] = 535.63812262
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-67-monoA-CP'] = 358.21308540
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-67-monoB-CP'] = 503.84093948
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-68-monoA-CP'] = 596.77416801
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-68-monoB-CP'] = 596.89846546
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-69-monoA-CP'] = 596.88729965
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-69-monoB-CP'] = 596.89846546
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-70-monoA-CP'] = 358.21308540
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-70-monoB-CP'] = 357.96626427
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-71-monoA-CP'] = 596.44964921
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-71-monoB-CP'] = 357.10169648
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-72-monoA-CP'] = 696.44803543
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-72-monoB-CP'] = 443.64584898
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-73-monoA-CP'] = 503.36564485
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-73-monoB-CP'] = 440.14700689
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-74-monoA-CP'] = 596.40342598
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-74-monoB-CP'] = 532.86039581
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-75-monoA-CP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-75-monoB-CP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-76-monoA-CP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-76-monoB-CP'] = 355.44451746
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-77-monoA-CP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-77-monoB-CP'] = 355.44455365
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-78-monoA-CP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-78-monoB-CP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-79-monoA-CP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-79-monoB-CP'] = 355.44458170
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-80-monoA-CP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-80-monoB-CP'] = 355.44458162
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-81-monoA-CP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-81-monoB-CP'] = 355.44458170
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-82-monoA-CP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-82-monoB-CP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-83-monoA-CP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-83-monoB-CP'] = 355.44457113
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-84-monoA-CP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-84-monoB-CP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-85-monoA-CP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-85-monoB-CP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-86-monoA-CP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-86-monoB-CP'] = 355.44459806
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-87-monoA-CP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-87-monoB-CP'] = 355.44457375
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-88-monoA-CP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-88-monoB-CP'] = 355.44457724
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-89-monoA-CP'] = 501.81461749
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-89-monoB-CP'] = 501.81461592
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-90-monoA-CP'] = 593.90346744
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-90-monoB-CP'] = 593.90347753
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-91-monoA-CP'] = 501.81461749
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-91-monoB-CP'] = 355.44452826
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-92-monoA-CP'] = 593.90347360
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-92-monoB-CP'] = 501.81458877
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-93-monoA-CP'] = 355.44454853
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-93-monoB-CP'] = 355.44453848
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-94-monoA-CP'] = 501.81461749
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-94-monoB-CP'] = 355.38546038
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-95-monoA-CP'] = 593.90347360
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-95-monoB-CP'] = 355.44418383
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-96-monoA-CP'] = 355.44454853
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-96-monoB-CP'] = 355.38590060
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-97-monoA-CP'] = 355.38547127
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-97-monoB-CP'] = 355.38549385
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-98-monoA-CP'] = 593.90347360
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-98-monoB-CP'] = 355.38464230
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-99-monoA-CP'] = 601.53395829
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-99-monoB-CP'] = 601.53394221
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-100-monoA-CP'] = 359.95489055
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-100-monoB-CP'] = 359.95486861
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-101-monoA-CP'] = 507.48990840
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-101-monoB-CP'] = 507.48988528
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-102-monoA-CP'] = 443.36745667
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-102-monoB-CP'] = 443.36744333
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-103-monoA-CP'] = 359.95499475
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-103-monoB-CP'] = 601.53410726
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-104-monoA-CP'] = 359.95489055
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-104-monoB-CP'] = 601.53394398
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-105-monoA-CP'] = 507.48987556
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-105-monoB-CP'] = 601.53395163
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-106-monoA-CP'] = 443.36742635
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-106-monoB-CP'] = 359.95490302
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-107-monoA-CP'] = 507.48984219
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-107-monoB-CP'] = 601.53400057
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-108-monoA-CP'] = 443.36740384
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-108-monoB-CP'] = 359.95489222
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-109-monoA-CP'] = 443.36742642
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-109-monoB-CP'] = 601.53400527
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-110-monoA-CP'] = 507.48989123
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-110-monoB-CP'] = 359.95488319
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-111-monoA-CP'] = 443.36742741
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-111-monoB-CP'] = 601.53395163
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-112-monoA-CP'] = 507.48987556
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-112-monoB-CP'] = 359.95490302
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-113-monoA-CP'] = 507.48987556
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-113-monoB-CP'] = 443.36742934
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-114-monoA-CP'] = 507.48984783
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-114-monoB-CP'] = 443.36742068
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-115-monoA-CP'] = 507.48989123
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-115-monoB-CP'] = 507.48987743
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-116-monoA-CP'] = 443.36742642
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-116-monoB-CP'] = 443.36741425
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-117-monoA-CP'] = 595.94046611
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-117-monoB-CP'] = 534.51236588
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-118-monoA-CP'] = 442.44825872
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-118-monoB-CP'] = 697.73026630
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-119-monoA-CP'] = 595.84177555
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-119-monoB-CP'] = 443.14986171
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-120-monoA-CP'] = 535.63812262
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-120-monoB-CP'] = 697.73051558
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-121-monoA-CP'] = 358.21308540
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-121-monoB-CP'] = 596.77416801
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-122-monoA-CP'] = 503.84093948
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-122-monoB-CP'] = 596.89846546
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-123-monoA-CP'] = 596.88729965
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-123-monoB-CP'] = 358.21308540
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-124-monoA-CP'] = 596.89846546
-DATA['NUCLEAR REPULSION ENERGY']['JSCH-124-monoB-CP'] = 357.96626427
+DATA["NUCLEAR REPULSION ENERGY"] = {}
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-1-dimer"] = 1391.98129069
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-1-monoA-unCP"] = 357.13933560
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-1-monoB-unCP"] = 596.62760720
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-2-dimer"] = 1654.40527853
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-2-monoA-unCP"] = 443.56399475
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-2-monoB-unCP"] = 696.60732032
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-3-dimer"] = 1365.23227533
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-3-monoA-unCP"] = 503.39630679
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-3-monoB-unCP"] = 440.30156925
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-4-dimer"] = 1645.63864536
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-4-monoA-unCP"] = 596.45767348
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-4-monoB-unCP"] = 533.27333592
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-5-dimer"] = 1519.08619634
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-5-monoA-unCP"] = 694.08169190
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-5-monoB-unCP"] = 357.17481831
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-6-dimer"] = 1250.60241408
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-6-monoA-unCP"] = 357.05937707
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-6-monoB-unCP"] = 502.93669666
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-7-dimer"] = 1377.89785724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-7-monoA-unCP"] = 596.76364865
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-7-monoB-unCP"] = 357.05278633
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-8-dimer"] = 1101.46127813
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-8-monoA-unCP"] = 357.43034135
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-8-monoB-unCP"] = 369.97349400
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-9-dimer"] = 1026.69630020
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-9-monoA-unCP"] = 357.07506993
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-9-monoB-unCP"] = 357.22791266
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-10-dimer"] = 1049.26311591
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-10-monoA-unCP"] = 357.30966824
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-10-monoB-unCP"] = 357.25457437
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-11-dimer"] = 1501.52577097
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-11-monoA-unCP"] = 357.30771904
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-11-monoB-unCP"] = 670.49331720
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-12-dimer"] = 1338.80888094
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-12-monoA-unCP"] = 502.97292629
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-12-monoB-unCP"] = 412.74720533
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-13-dimer"] = 1521.60537748
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-13-monoA-unCP"] = 596.65701652
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-13-monoB-unCP"] = 440.44274318
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-14-dimer"] = 1516.62359887
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-14-monoA-unCP"] = 596.92255465
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-14-monoB-unCP"] = 440.54554467
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-15-dimer"] = 1318.42675206
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-15-monoA-unCP"] = 503.53728859
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-15-monoB-unCP"] = 425.75653587
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-16-dimer"] = 1478.61731319
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-16-monoA-unCP"] = 596.66795120
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-16-monoB-unCP"] = 413.04224329
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-17-dimer"] = 1487.72900733
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-17-monoA-unCP"] = 596.75974596
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-17-monoB-unCP"] = 412.84579804
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-18-dimer"] = 1229.51638352
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-18-monoA-unCP"] = 356.91023176
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-18-monoB-unCP"] = 503.30931271
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-19-dimer"] = 1706.17310708
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-19-monoA-unCP"] = 596.15051246
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-19-monoB-unCP"] = 596.63218121
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-20-dimer"] = 1830.02648907
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-20-monoA-unCP"] = 596.58545524
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-20-monoB-unCP"] = 670.44234386
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-21-dimer"] = 1835.32380783
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-21-monoA-unCP"] = 670.04325278
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-21-monoB-unCP"] = 596.84640861
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-22-dimer"] = 1578.33475973
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-22-monoA-unCP"] = 596.48090327
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-22-monoB-unCP"] = 503.33140569
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-23-dimer"] = 1570.60868318
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-23-monoA-unCP"] = 503.54456755
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-23-monoB-unCP"] = 596.89708469
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-24-dimer"] = 1563.56410044
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-24-monoA-unCP"] = 593.67756289
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-24-monoB-unCP"] = 501.45867869
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-25-dimer"] = 1563.69890911
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-25-monoA-unCP"] = 595.94249141
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-25-monoB-unCP"] = 503.12213297
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-26-dimer"] = 1590.81054033
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-26-monoA-unCP"] = 596.44241276
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-26-monoB-unCP"] = 502.87235332
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-27-dimer"] = 1551.55026390
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-27-monoA-unCP"] = 595.72714752
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-27-monoB-unCP"] = 503.45401843
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-28-dimer"] = 1411.30275525
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-28-monoA-unCP"] = 503.40799836
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-28-monoB-unCP"] = 503.40916818
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-29-dimer"] = 1424.44630670
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-29-monoA-unCP"] = 503.49043267
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-29-monoB-unCP"] = 502.94567640
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-30-dimer"] = 1435.87093606
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-30-monoA-unCP"] = 503.11592074
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-30-monoB-unCP"] = 503.11223193
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-31-dimer"] = 1849.09724927
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-31-monoA-unCP"] = 596.75580700
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-31-monoB-unCP"] = 693.16448502
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-32-dimer"] = 1250.78225068
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-32-monoA-unCP"] = 413.69053788
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-32-monoB-unCP"] = 413.05557496
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-33-dimer"] = 1622.96228374
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-33-monoA-unCP"] = 595.94046611
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-33-monoB-unCP"] = 533.43445531
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-34-dimer"] = 1657.51101967
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-34-monoA-unCP"] = 442.44825872
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-34-monoB-unCP"] = 697.73092506
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-35-dimer"] = 1626.09750599
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-35-monoA-unCP"] = 595.84177555
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-35-monoB-unCP"] = 535.63812262
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-36-dimer"] = 1590.75136012
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-36-monoA-unCP"] = 596.77416801
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-36-monoB-unCP"] = 503.84093948
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-37-dimer"] = 1401.39568382
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-37-monoA-unCP"] = 358.21308540
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-37-monoB-unCP"] = 596.89846546
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-38-dimer"] = 1399.57843792
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-38-monoA-unCP"] = 596.88729965
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-38-monoB-unCP"] = 357.96626427
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-39-dimer"] = 1349.21626455
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-39-monoA-unCP"] = 601.53395829
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-39-monoB-unCP"] = 359.95486861
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-40-dimer"] = 1314.37579643
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-40-monoA-unCP"] = 359.95489055
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-40-monoB-unCP"] = 601.53394221
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-41-dimer"] = 1334.39438102
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-41-monoA-unCP"] = 507.48990840
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-41-monoB-unCP"] = 443.36744333
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-42-dimer"] = 1319.28084098
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-42-monoA-unCP"] = 443.36745667
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-42-monoB-unCP"] = 507.48988528
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-43-dimer"] = 973.06142895
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-43-monoA-unCP"] = 359.95499475
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-43-monoB-unCP"] = 359.95499475
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-44-dimer"] = 1724.48127327
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-44-monoA-unCP"] = 601.53410726
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-44-monoB-unCP"] = 601.53410726
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-45-dimer"] = 1806.98548380
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-45-monoA-unCP"] = 601.53395829
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-45-monoB-unCP"] = 601.53394398
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-46-dimer"] = 971.53306922
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-46-monoA-unCP"] = 359.95489055
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-46-monoB-unCP"] = 359.95491240
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-47-dimer"] = 1208.85975313
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-47-monoA-unCP"] = 507.48987556
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-47-monoB-unCP"] = 359.95490302
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-48-dimer"] = 1443.15679999
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-48-monoA-unCP"] = 443.36742635
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-48-monoB-unCP"] = 601.53395163
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-49-dimer"] = 1481.99538897
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-49-monoA-unCP"] = 601.53400057
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-49-monoB-unCP"] = 443.36740384
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-50-dimer"] = 1189.16944115
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-50-monoA-unCP"] = 507.48984219
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-50-monoB-unCP"] = 359.95489222
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-51-dimer"] = 1634.77658138
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-51-monoA-unCP"] = 507.48989123
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-51-monoB-unCP"] = 601.53400527
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-52-dimer"] = 1081.19928424
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-52-monoA-unCP"] = 443.36742642
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-52-monoB-unCP"] = 359.95488319
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-53-dimer"] = 1083.47826689
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-53-monoA-unCP"] = 443.36742741
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-53-monoB-unCP"] = 359.95490302
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-54-dimer"] = 1581.29557886
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-54-monoA-unCP"] = 507.48987556
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-54-monoB-unCP"] = 601.53395163
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-55-dimer"] = 1219.56453397
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-55-monoA-unCP"] = 443.36742635
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-55-monoB-unCP"] = 443.36742934
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-56-dimer"] = 1405.28947121
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-56-monoA-unCP"] = 507.48987556
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-56-monoB-unCP"] = 507.48987021
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-57-dimer"] = 1474.05108110
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-57-monoA-unCP"] = 507.48984783
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-57-monoB-unCP"] = 507.48984783
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-58-dimer"] = 1198.83425089
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-58-monoA-unCP"] = 443.36742068
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-58-monoB-unCP"] = 443.36742068
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-59-dimer"] = 1321.59763058
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-59-monoA-unCP"] = 507.48989123
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-59-monoB-unCP"] = 443.36741425
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-60-dimer"] = 1311.14164882
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-60-monoA-unCP"] = 507.48987743
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-60-monoB-unCP"] = 443.36742642
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-61-dimer"] = 1662.05565427
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-61-monoA-unCP"] = 595.94046611
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-61-monoB-unCP"] = 596.81166025
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-62-dimer"] = 1471.46519284
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-62-monoA-unCP"] = 533.43445531
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-62-monoB-unCP"] = 534.51236588
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-63-dimer"] = 2118.75518694
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-63-monoA-unCP"] = 697.73026630
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-63-monoB-unCP"] = 697.73092506
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-64-dimer"] = 1195.41740656
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-64-monoA-unCP"] = 442.44825872
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-64-monoB-unCP"] = 442.44825964
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-65-dimer"] = 1827.15190604
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-65-monoA-unCP"] = 595.84177555
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-65-monoB-unCP"] = 697.73051558
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-66-dimer"] = 1330.55895484
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-66-monoA-unCP"] = 443.14986171
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-66-monoB-unCP"] = 535.63812262
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-67-dimer"] = 1207.89930362
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-67-monoA-unCP"] = 358.21308540
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-67-monoB-unCP"] = 503.84093948
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-68-dimer"] = 1669.65398984
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-68-monoA-unCP"] = 596.77416801
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-68-monoB-unCP"] = 596.89846546
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-69-dimer"] = 1734.47387907
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-69-monoA-unCP"] = 596.88729965
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-69-monoB-unCP"] = 596.89846546
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-70-dimer"] = 963.62312494
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-70-monoA-unCP"] = 358.21308540
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-70-monoB-unCP"] = 357.96626427
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-71-dimer"] = 1537.57227681
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-71-monoA-unCP"] = 596.44964921
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-71-monoB-unCP"] = 357.10169648
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-72-dimer"] = 1870.03529750
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-72-monoA-unCP"] = 696.44803543
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-72-monoB-unCP"] = 443.64584898
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-73-dimer"] = 1542.14304870
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-73-monoA-unCP"] = 503.36564485
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-73-monoB-unCP"] = 440.14700689
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-74-dimer"] = 1873.30862324
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-74-monoA-unCP"] = 596.40342598
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-74-monoB-unCP"] = 532.86039581
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-75-dimer"] = 1136.50020569
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-75-monoA-unCP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-75-monoB-unCP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-76-dimer"] = 1143.60873849
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-76-monoA-unCP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-76-monoB-unCP"] = 355.44451746
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-77-dimer"] = 1144.33569661
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-77-monoA-unCP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-77-monoB-unCP"] = 355.44455365
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-78-dimer"] = 1144.53152982
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-78-monoA-unCP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-78-monoB-unCP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-79-dimer"] = 1136.39531003
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-79-monoA-unCP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-79-monoB-unCP"] = 355.44458170
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-80-dimer"] = 1137.56590421
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-80-monoA-unCP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-80-monoB-unCP"] = 355.44458162
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-81-dimer"] = 1089.71176518
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-81-monoA-unCP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-81-monoB-unCP"] = 355.44458170
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-82-dimer"] = 1135.52588803
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-82-monoA-unCP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-82-monoB-unCP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-83-dimer"] = 1135.89252554
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-83-monoA-unCP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-83-monoB-unCP"] = 355.44457113
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-84-dimer"] = 1136.27990430
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-84-monoA-unCP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-84-monoB-unCP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-85-dimer"] = 1137.68428928
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-85-monoA-unCP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-85-monoB-unCP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-86-dimer"] = 1091.48755032
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-86-monoA-unCP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-86-monoB-unCP"] = 355.44459806
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-87-dimer"] = 1114.79473660
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-87-monoA-unCP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-87-monoB-unCP"] = 355.44457375
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-88-dimer"] = 1144.74104397
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-88-monoA-unCP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-88-monoB-unCP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-89-dimer"] = 1593.04361768
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-89-monoA-unCP"] = 501.81461749
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-89-monoB-unCP"] = 501.81461592
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-90-dimer"] = 1914.59068159
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-90-monoA-unCP"] = 593.90346744
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-90-monoB-unCP"] = 593.90347753
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-91-dimer"] = 1358.00357589
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-91-monoA-unCP"] = 501.81461749
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-91-monoB-unCP"] = 355.44452826
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-92-dimer"] = 1749.63836451
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-92-monoA-unCP"] = 593.90347360
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-92-monoB-unCP"] = 501.81458877
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-93-dimer"] = 1135.19068685
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-93-monoA-unCP"] = 355.44454853
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-93-monoB-unCP"] = 355.44453848
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-94-dimer"] = 1368.42192946
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-94-monoA-unCP"] = 501.81461749
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-94-monoB-unCP"] = 355.38546038
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-95-dimer"] = 1491.03516654
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-95-monoA-unCP"] = 593.90347360
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-95-monoB-unCP"] = 355.44418383
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-96-dimer"] = 1143.55810352
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-96-monoA-unCP"] = 355.44454853
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-96-monoB-unCP"] = 355.38590060
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-97-dimer"] = 1124.41284995
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-97-monoA-unCP"] = 355.38547127
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-97-monoB-unCP"] = 355.38549385
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-98-dimer"] = 1517.60433270
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-98-monoA-unCP"] = 593.90347360
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-98-monoB-unCP"] = 355.38464230
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-99-dimer"] = 1912.03719777
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-99-monoA-unCP"] = 601.53395829
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-99-monoB-unCP"] = 601.53394221
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-100-dimer"] = 1120.88525374
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-100-monoA-unCP"] = 359.95489055
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-100-monoB-unCP"] = 359.95486861
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-101-dimer"] = 1612.73592913
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-101-monoA-unCP"] = 507.48990840
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-101-monoB-unCP"] = 507.48988528
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-102-dimer"] = 1415.77211916
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-102-monoA-unCP"] = 443.36745667
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-102-monoB-unCP"] = 443.36744333
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-103-dimer"] = 1529.52830806
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-103-monoA-unCP"] = 359.95499475
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-103-monoB-unCP"] = 601.53410726
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-104-dimer"] = 1475.57522935
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-104-monoA-unCP"] = 359.95489055
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-104-monoB-unCP"] = 601.53394398
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-105-dimer"] = 1782.23519943
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-105-monoA-unCP"] = 507.48987556
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-105-monoB-unCP"] = 601.53395163
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-106-dimer"] = 1257.02669139
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-106-monoA-unCP"] = 443.36742635
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-106-monoB-unCP"] = 359.95490302
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-107-dimer"] = 1740.95680727
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-107-monoA-unCP"] = 507.48984219
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-107-monoB-unCP"] = 601.53400057
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-108-dimer"] = 1260.01230981
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-108-monoA-unCP"] = 443.36740384
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-108-monoB-unCP"] = 359.95489222
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-109-dimer"] = 1609.15794755
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-109-monoA-unCP"] = 443.36742642
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-109-monoB-unCP"] = 601.53400527
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-110-dimer"] = 1349.63628460
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-110-monoA-unCP"] = 507.48989123
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-110-monoB-unCP"] = 359.95488319
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-111-dimer"] = 1673.67295485
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-111-monoA-unCP"] = 443.36742741
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-111-monoB-unCP"] = 601.53395163
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-112-dimer"] = 1367.26317388
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-112-monoA-unCP"] = 507.48987556
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-112-monoB-unCP"] = 359.95490302
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-113-dimer"] = 1509.79318924
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-113-monoA-unCP"] = 507.48987556
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-113-monoB-unCP"] = 443.36742934
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-114-dimer"] = 1545.03032944
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-114-monoA-unCP"] = 507.48984783
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-114-monoB-unCP"] = 443.36742068
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-115-dimer"] = 1601.56827337
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-115-monoA-unCP"] = 507.48989123
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-115-monoB-unCP"] = 507.48987743
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-116-dimer"] = 1410.31245614
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-116-monoA-unCP"] = 443.36742642
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-116-monoB-unCP"] = 443.36741425
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-117-dimer"] = 1816.15304322
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-117-monoA-unCP"] = 595.94046611
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-117-monoB-unCP"] = 534.51236588
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-118-dimer"] = 1727.56215886
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-118-monoA-unCP"] = 442.44825872
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-118-monoB-unCP"] = 697.73026630
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-119-dimer"] = 1650.54443625
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-119-monoA-unCP"] = 595.84177555
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-119-monoB-unCP"] = 443.14986171
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-120-dimer"] = 1964.24212034
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-120-monoA-unCP"] = 535.63812262
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-120-monoB-unCP"] = 697.73051558
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-121-dimer"] = 1496.57764615
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-121-monoA-unCP"] = 358.21308540
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-121-monoB-unCP"] = 596.77416801
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-122-dimer"] = 1752.69730428
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-122-monoA-unCP"] = 503.84093948
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-122-monoB-unCP"] = 596.89846546
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-123-dimer"] = 1512.39205830
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-123-monoA-unCP"] = 596.88729965
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-123-monoB-unCP"] = 358.21308540
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-124-dimer"] = 1498.52644117
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-124-monoA-unCP"] = 596.89846546
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-124-monoB-unCP"] = 357.96626427
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-1-monoA-CP"] = 357.13933560
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-1-monoB-CP"] = 596.62760720
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-2-monoA-CP"] = 443.56399475
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-2-monoB-CP"] = 696.60732032
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-3-monoA-CP"] = 503.39630679
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-3-monoB-CP"] = 440.30156925
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-4-monoA-CP"] = 596.45767348
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-4-monoB-CP"] = 533.27333592
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-5-monoA-CP"] = 694.08169190
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-5-monoB-CP"] = 357.17481831
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-6-monoA-CP"] = 357.05937707
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-6-monoB-CP"] = 502.93669666
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-7-monoA-CP"] = 596.76364865
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-7-monoB-CP"] = 357.05278633
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-8-monoA-CP"] = 357.43034135
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-8-monoB-CP"] = 369.97349400
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-9-monoA-CP"] = 357.07506993
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-9-monoB-CP"] = 357.22791266
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-10-monoA-CP"] = 357.30966824
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-10-monoB-CP"] = 357.25457437
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-11-monoA-CP"] = 357.30771904
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-11-monoB-CP"] = 670.49331720
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-12-monoA-CP"] = 502.97292629
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-12-monoB-CP"] = 412.74720533
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-13-monoA-CP"] = 596.65701652
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-13-monoB-CP"] = 440.44274318
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-14-monoA-CP"] = 596.92255465
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-14-monoB-CP"] = 440.54554467
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-15-monoA-CP"] = 503.53728859
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-15-monoB-CP"] = 425.75653587
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-16-monoA-CP"] = 596.66795120
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-16-monoB-CP"] = 413.04224329
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-17-monoA-CP"] = 596.75974596
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-17-monoB-CP"] = 412.84579804
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-18-monoA-CP"] = 356.91023176
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-18-monoB-CP"] = 503.30931271
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-19-monoA-CP"] = 596.15051246
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-19-monoB-CP"] = 596.63218121
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-20-monoA-CP"] = 596.58545524
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-20-monoB-CP"] = 670.44234386
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-21-monoA-CP"] = 670.04325278
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-21-monoB-CP"] = 596.84640861
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-22-monoA-CP"] = 596.48090327
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-22-monoB-CP"] = 503.33140569
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-23-monoA-CP"] = 503.54456755
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-23-monoB-CP"] = 596.89708469
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-24-monoA-CP"] = 593.67756289
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-24-monoB-CP"] = 501.45867869
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-25-monoA-CP"] = 595.94249141
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-25-monoB-CP"] = 503.12213297
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-26-monoA-CP"] = 596.44241276
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-26-monoB-CP"] = 502.87235332
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-27-monoA-CP"] = 595.72714752
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-27-monoB-CP"] = 503.45401843
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-28-monoA-CP"] = 503.40799836
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-28-monoB-CP"] = 503.40916818
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-29-monoA-CP"] = 503.49043267
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-29-monoB-CP"] = 502.94567640
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-30-monoA-CP"] = 503.11592074
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-30-monoB-CP"] = 503.11223193
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-31-monoA-CP"] = 596.75580700
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-31-monoB-CP"] = 693.16448502
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-32-monoA-CP"] = 413.69053788
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-32-monoB-CP"] = 413.05557496
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-33-monoA-CP"] = 595.94046611
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-33-monoB-CP"] = 533.43445531
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-34-monoA-CP"] = 442.44825872
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-34-monoB-CP"] = 697.73092506
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-35-monoA-CP"] = 595.84177555
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-35-monoB-CP"] = 535.63812262
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-36-monoA-CP"] = 596.77416801
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-36-monoB-CP"] = 503.84093948
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-37-monoA-CP"] = 358.21308540
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-37-monoB-CP"] = 596.89846546
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-38-monoA-CP"] = 596.88729965
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-38-monoB-CP"] = 357.96626427
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-39-monoA-CP"] = 601.53395829
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-39-monoB-CP"] = 359.95486861
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-40-monoA-CP"] = 359.95489055
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-40-monoB-CP"] = 601.53394221
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-41-monoA-CP"] = 507.48990840
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-41-monoB-CP"] = 443.36744333
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-42-monoA-CP"] = 443.36745667
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-42-monoB-CP"] = 507.48988528
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-43-monoA-CP"] = 359.95499475
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-43-monoB-CP"] = 359.95499475
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-44-monoA-CP"] = 601.53410726
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-44-monoB-CP"] = 601.53410726
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-45-monoA-CP"] = 601.53395829
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-45-monoB-CP"] = 601.53394398
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-46-monoA-CP"] = 359.95489055
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-46-monoB-CP"] = 359.95491240
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-47-monoA-CP"] = 507.48987556
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-47-monoB-CP"] = 359.95490302
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-48-monoA-CP"] = 443.36742635
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-48-monoB-CP"] = 601.53395163
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-49-monoA-CP"] = 601.53400057
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-49-monoB-CP"] = 443.36740384
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-50-monoA-CP"] = 507.48984219
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-50-monoB-CP"] = 359.95489222
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-51-monoA-CP"] = 507.48989123
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-51-monoB-CP"] = 601.53400527
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-52-monoA-CP"] = 443.36742642
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-52-monoB-CP"] = 359.95488319
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-53-monoA-CP"] = 443.36742741
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-53-monoB-CP"] = 359.95490302
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-54-monoA-CP"] = 507.48987556
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-54-monoB-CP"] = 601.53395163
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-55-monoA-CP"] = 443.36742635
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-55-monoB-CP"] = 443.36742934
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-56-monoA-CP"] = 507.48987556
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-56-monoB-CP"] = 507.48987021
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-57-monoA-CP"] = 507.48984783
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-57-monoB-CP"] = 507.48984783
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-58-monoA-CP"] = 443.36742068
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-58-monoB-CP"] = 443.36742068
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-59-monoA-CP"] = 507.48989123
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-59-monoB-CP"] = 443.36741425
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-60-monoA-CP"] = 507.48987743
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-60-monoB-CP"] = 443.36742642
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-61-monoA-CP"] = 595.94046611
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-61-monoB-CP"] = 596.81166025
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-62-monoA-CP"] = 533.43445531
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-62-monoB-CP"] = 534.51236588
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-63-monoA-CP"] = 697.73026630
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-63-monoB-CP"] = 697.73092506
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-64-monoA-CP"] = 442.44825872
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-64-monoB-CP"] = 442.44825964
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-65-monoA-CP"] = 595.84177555
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-65-monoB-CP"] = 697.73051558
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-66-monoA-CP"] = 443.14986171
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-66-monoB-CP"] = 535.63812262
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-67-monoA-CP"] = 358.21308540
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-67-monoB-CP"] = 503.84093948
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-68-monoA-CP"] = 596.77416801
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-68-monoB-CP"] = 596.89846546
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-69-monoA-CP"] = 596.88729965
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-69-monoB-CP"] = 596.89846546
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-70-monoA-CP"] = 358.21308540
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-70-monoB-CP"] = 357.96626427
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-71-monoA-CP"] = 596.44964921
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-71-monoB-CP"] = 357.10169648
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-72-monoA-CP"] = 696.44803543
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-72-monoB-CP"] = 443.64584898
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-73-monoA-CP"] = 503.36564485
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-73-monoB-CP"] = 440.14700689
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-74-monoA-CP"] = 596.40342598
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-74-monoB-CP"] = 532.86039581
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-75-monoA-CP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-75-monoB-CP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-76-monoA-CP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-76-monoB-CP"] = 355.44451746
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-77-monoA-CP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-77-monoB-CP"] = 355.44455365
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-78-monoA-CP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-78-monoB-CP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-79-monoA-CP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-79-monoB-CP"] = 355.44458170
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-80-monoA-CP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-80-monoB-CP"] = 355.44458162
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-81-monoA-CP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-81-monoB-CP"] = 355.44458170
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-82-monoA-CP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-82-monoB-CP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-83-monoA-CP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-83-monoB-CP"] = 355.44457113
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-84-monoA-CP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-84-monoB-CP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-85-monoA-CP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-85-monoB-CP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-86-monoA-CP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-86-monoB-CP"] = 355.44459806
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-87-monoA-CP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-87-monoB-CP"] = 355.44457375
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-88-monoA-CP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-88-monoB-CP"] = 355.44457724
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-89-monoA-CP"] = 501.81461749
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-89-monoB-CP"] = 501.81461592
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-90-monoA-CP"] = 593.90346744
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-90-monoB-CP"] = 593.90347753
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-91-monoA-CP"] = 501.81461749
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-91-monoB-CP"] = 355.44452826
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-92-monoA-CP"] = 593.90347360
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-92-monoB-CP"] = 501.81458877
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-93-monoA-CP"] = 355.44454853
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-93-monoB-CP"] = 355.44453848
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-94-monoA-CP"] = 501.81461749
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-94-monoB-CP"] = 355.38546038
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-95-monoA-CP"] = 593.90347360
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-95-monoB-CP"] = 355.44418383
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-96-monoA-CP"] = 355.44454853
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-96-monoB-CP"] = 355.38590060
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-97-monoA-CP"] = 355.38547127
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-97-monoB-CP"] = 355.38549385
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-98-monoA-CP"] = 593.90347360
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-98-monoB-CP"] = 355.38464230
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-99-monoA-CP"] = 601.53395829
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-99-monoB-CP"] = 601.53394221
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-100-monoA-CP"] = 359.95489055
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-100-monoB-CP"] = 359.95486861
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-101-monoA-CP"] = 507.48990840
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-101-monoB-CP"] = 507.48988528
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-102-monoA-CP"] = 443.36745667
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-102-monoB-CP"] = 443.36744333
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-103-monoA-CP"] = 359.95499475
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-103-monoB-CP"] = 601.53410726
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-104-monoA-CP"] = 359.95489055
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-104-monoB-CP"] = 601.53394398
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-105-monoA-CP"] = 507.48987556
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-105-monoB-CP"] = 601.53395163
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-106-monoA-CP"] = 443.36742635
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-106-monoB-CP"] = 359.95490302
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-107-monoA-CP"] = 507.48984219
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-107-monoB-CP"] = 601.53400057
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-108-monoA-CP"] = 443.36740384
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-108-monoB-CP"] = 359.95489222
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-109-monoA-CP"] = 443.36742642
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-109-monoB-CP"] = 601.53400527
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-110-monoA-CP"] = 507.48989123
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-110-monoB-CP"] = 359.95488319
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-111-monoA-CP"] = 443.36742741
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-111-monoB-CP"] = 601.53395163
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-112-monoA-CP"] = 507.48987556
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-112-monoB-CP"] = 359.95490302
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-113-monoA-CP"] = 507.48987556
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-113-monoB-CP"] = 443.36742934
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-114-monoA-CP"] = 507.48984783
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-114-monoB-CP"] = 443.36742068
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-115-monoA-CP"] = 507.48989123
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-115-monoB-CP"] = 507.48987743
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-116-monoA-CP"] = 443.36742642
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-116-monoB-CP"] = 443.36741425
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-117-monoA-CP"] = 595.94046611
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-117-monoB-CP"] = 534.51236588
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-118-monoA-CP"] = 442.44825872
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-118-monoB-CP"] = 697.73026630
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-119-monoA-CP"] = 595.84177555
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-119-monoB-CP"] = 443.14986171
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-120-monoA-CP"] = 535.63812262
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-120-monoB-CP"] = 697.73051558
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-121-monoA-CP"] = 358.21308540
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-121-monoB-CP"] = 596.77416801
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-122-monoA-CP"] = 503.84093948
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-122-monoB-CP"] = 596.89846546
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-123-monoA-CP"] = 596.88729965
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-123-monoB-CP"] = 358.21308540
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-124-monoA-CP"] = 596.89846546
+DATA["NUCLEAR REPULSION ENERGY"]["JSCH-124-monoB-CP"] = 357.96626427

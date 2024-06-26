@@ -1,6 +1,6 @@
-import psi4
-
 import numpy as np
+
+import psi4
 from psi4.driver.p4util.solvers import davidson_solver
 from psi4.driver.procrouting.response.scf_products import SCFProducts
 
@@ -12,7 +12,7 @@ symmetry c1
 """)
 
 psi4.set_options({"SAVE_JK": True})
-psi4.set_options({"e_convergence": 1.e-1, "d_convergence": 1.e-1})
+psi4.set_options({"e_convergence": 1.0e-1, "d_convergence": 1.0e-1})
 # psi4.set_options({"reference": "uhf"})
 e, wfn = psi4.energy("HF/6-31G", return_wfn=True)
 
@@ -25,7 +25,6 @@ wfn.form_D()
 
 record = [(False, wfn.compute_E())]
 for x in range(5):
-
     prod = SCFProducts(wfn)
 
     def func(vector):
@@ -36,7 +35,7 @@ for x in range(5):
 
     nvecs = 5
     guess = np.ones((prod.narot, nvecs))
-    evals, evecs = davidson_solver(func, precon, guess, no_eigs=nvecs, e_conv=1.e-4)
+    evals, evecs = davidson_solver(func, precon, guess, no_eigs=nvecs, e_conv=1.0e-4)
 
     # If x == 0 we take a "bad" step, require rotation next step to get back on track
     if (x == 0) or (evals[0] < 0):

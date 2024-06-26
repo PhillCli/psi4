@@ -1,7 +1,7 @@
 #! rhf gradient code
 """
 This script calculates nuclear gradients of RHF Wavefunction using
-gradients of one and two electron integrals obtained from PSI4. 
+gradients of one and two electron integrals obtained from PSI4.
 
 Reference: "Derivative studies in Hartree--Fock and Moller--Plesset theories",
 J. A. Pople, R. Krishnan, H. B. Schlegel and J. S. Binkley
@@ -16,7 +16,9 @@ __license__ = "BSD-3-Clause"
 __date__ = "2017-12-17"
 
 import time
+
 import numpy as np
+
 np.set_printoptions(precision=15, linewidth=200, suppress=True)
 import psi4
 
@@ -31,11 +33,11 @@ symmetry c1
 
 psi4.core.set_active_molecule(mol)
 
-options = {'BASIS': 'STO-3G', 'SCF_TYPE': 'PK', 'E_CONVERGENCE': 1e-10, 'D_CONVERGENCE': 1e-10}
+options = {"BASIS": "STO-3G", "SCF_TYPE": "PK", "E_CONVERGENCE": 1e-10, "D_CONVERGENCE": 1e-10}
 
 psi4.set_options(options)
 
-rhf_e, wfn = psi4.energy('SCF', return_wfn=True)
+rhf_e, wfn = psi4.energy("SCF", return_wfn=True)
 
 # Assuming C1 symmetry
 occ = wfn.doccpi()[0]
@@ -48,17 +50,17 @@ mints = psi4.core.MintsHelper(wfn.basisset())
 H_ao = np.asarray(mints.ao_kinetic()) + np.asarray(mints.ao_potential())
 
 # Update H, transform to MO basis
-H = np.einsum('uj,vi,uv', npC, npC, H_ao)
+H = np.einsum("uj,vi,uv", npC, npC, H_ao)
 
 # Integral generation from Psi4's MintsHelper
 MO = np.asarray(mints.mo_eri(C, C, C, C))
 # Physicist notation
 MO = MO.swapaxes(1, 2)
 
-F = H + 2.0 * np.einsum('pmqm->pq', MO[:, :occ, :, :occ])
-F -= np.einsum('pmmq->pq', MO[:, :occ, :occ, :])
+F = H + 2.0 * np.einsum("pmqm->pq", MO[:, :occ, :, :occ])
+F -= np.einsum("pmmq->pq", MO[:, :occ, :occ, :])
 natoms = mol.natom()
-cart = ['_X', '_Y', '_Z']
+cart = ["_X", "_Y", "_Z"]
 oei_dict = {"S": "OVERLAP", "T": "KINETIC", "V": "POTENTIAL"}
 
 deriv1_mat = {}
@@ -93,7 +95,8 @@ for atom in range(natoms):
             if key == "S":
                 Gradient[key][atom, p] = -2.0 * np.einsum("ii,ii->", F[:occ, :occ], deriv1_np[map_key][:occ, :occ])
                 Gradient["S'"][atom, p] = 2.0 * np.einsum(
-                    "ii->", deriv1_np[map_key][:occ, :occ])  # For comparison with PSI4's overlap_grad
+                    "ii->", deriv1_np[map_key][:occ, :occ]
+                )  # For comparison with PSI4's overlap_grad
             else:
                 Gradient[key][atom, p] = 2.0 * np.einsum("ii->", deriv1_np[map_key][:occ, :occ])
 
@@ -141,21 +144,23 @@ PSI4_Grad["S"] = mints.overlap_grad(D)
 PSI4_Grad["T"] = mints.kinetic_grad(D)
 PSI4_Grad["V"] = mints.potential_grad(D)
 
-#Convert np array into PSI4 Matrix
+# Convert np array into PSI4 Matrix
 G_python_S_mat = psi4.core.Matrix.from_array(Gradient["S'"])
 G_python_T_mat = psi4.core.Matrix.from_array(Gradient["T"])
 G_python_V_mat = psi4.core.Matrix.from_array(Gradient["V"])
 
 # Test OEI gradients with that of PSI4
-psi4.compare_matrices(PSI4_Grad["S"], G_python_S_mat, 10, "OVERLAP_GRADIENT_TEST")  #TEST
-psi4.compare_matrices(PSI4_Grad["T"], G_python_T_mat, 10, "KINETIC_GRADIENT_TEST")  #TEST
-psi4.compare_matrices(PSI4_Grad["V"], G_python_V_mat, 10, "POTENTIAL_GRADIENT_TEST")  #TEST
+psi4.compare_matrices(PSI4_Grad["S"], G_python_S_mat, 10, "OVERLAP_GRADIENT_TEST")  # TEST
+psi4.compare_matrices(PSI4_Grad["T"], G_python_T_mat, 10, "KINETIC_GRADIENT_TEST")  # TEST
+psi4.compare_matrices(PSI4_Grad["V"], G_python_V_mat, 10, "POTENTIAL_GRADIENT_TEST")  # TEST
 
 # PSI4's Total Gradient
-Total_G_psi4 = psi4.core.Matrix.from_list([
-    [0.000000000000, 0.00000000000000, -0.09744143723018],
-    [0.000000000000, -0.08630009812231, 0.04872071861516],
-    [0.000000000000, 0.08630009812231, 0.04872071861516],
-])
+Total_G_psi4 = psi4.core.Matrix.from_list(
+    [
+        [0.000000000000, 0.00000000000000, -0.09744143723018],
+        [0.000000000000, -0.08630009812231, 0.04872071861516],
+        [0.000000000000, 0.08630009812231, 0.04872071861516],
+    ]
+)
 G_python_Total_mat = psi4.core.Matrix.from_array(Gradient["Total"])
-psi4.compare_matrices(Total_G_psi4, G_python_Total_mat, 10, "RHF_TOTAL_GRADIENT_TEST")  #TEST
+psi4.compare_matrices(Total_G_psi4, G_python_Total_mat, 10, "RHF_TOTAL_GRADIENT_TEST")  # TEST

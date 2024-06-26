@@ -1,10 +1,12 @@
 #! test QCSchema for CCSD amplitudes saving
 
-import numpy as np
-import psi4
 import json
 
-#Generate JSON data
+import numpy as np
+
+import psi4
+
+# Generate JSON data
 
 method = "CCSD"
 basis = "sto-3g"
@@ -12,24 +14,25 @@ json_data = {
     "schema_name": "qcschema_input",
     "schema_version": 1,
     "molecule": {
-        "geometry":
-        [0.0, 0.0, -0.129476941212, 0.0, -1.494187339480, 1.027446507906, 0.0, 1.494187339480, 1.027446507906],
+        "geometry": [
+            0.0,
+            0.0,
+            -0.129476941212,
+            0.0,
+            -1.494187339480,
+            1.027446507906,
+            0.0,
+            1.494187339480,
+            1.027446507906,
+        ],
         "symbols": ["O", "H", "H"],
         "connectivity": [(0, 1, 1.0), (0, 2, 1.0)],
-        "fix_symmetry": "c1"
+        "fix_symmetry": "c1",
     },
     "driver": "energy",
-    "model": {
-        "method": method,
-        "basis": basis
-    },
-    "keywords": {
-        "scf_type": "df",
-        "mp2_type": "df"
-    },
-    "extras": {
-        "psi4:save_tamps": True
-    }
+    "model": {"method": method, "basis": basis},
+    "keywords": {"scf_type": "df", "mp2_type": "df"},
+    "extras": {"psi4:save_tamps": True},
 }
 
 h2o_test = psi4.geometry("""
@@ -57,9 +60,11 @@ with open("output.json", "w") as ofile:
     json.dump(json_ret.json(), ofile, indent=2)
 
 # Make sure the amplitudes compted from h2o_test are actually assigned.
-if all(map(lambda x: x == 0, tIJAB.flatten())) or \
-   all(map(lambda x: x == 0, tIA.flatten())) or \
-   all(map(lambda x: x == 0, Da.flatten())) :
+if (
+    all(map(lambda x: x == 0, tIJAB.flatten()))
+    or all(map(lambda x: x == 0, tIA.flatten()))
+    or all(map(lambda x: x == 0, Da.flatten()))
+):
     raise Exception("Error in computing values to compare against. Could not compare.")
 else:
     psi4.compare_values(tIJAB, np.array(json_ret.extras["psi4:tamps"]["tIjAb"]))

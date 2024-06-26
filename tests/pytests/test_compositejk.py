@@ -1,6 +1,5 @@
 import pytest
-
-from utils import compare_values, compare
+from utils import compare, compare_values
 
 import psi4
 
@@ -10,24 +9,21 @@ pytestmark = [pytest.mark.psi, pytest.mark.api]
 @pytest.fixture
 def mols():
     return {
-        "h2o":
-        psi4.geometry("""
+        "h2o": psi4.geometry("""
 0 1
 O    0.000000000000     0.000000000000    -0.124038860300
 H    0.000000000000    -1.431430901356     0.984293362719
 H    0.000000000000     1.431430901356     0.984293362719
 units au
 """),
-        "nh2":
-        psi4.geometry("""
+        "nh2": psi4.geometry("""
 0 2
 N    0.000000000000000   0.000000000000000  -0.145912918634892
 H    0.000000000000000  -1.511214298139000   1.013682596946108
 H    0.000000000000000   1.511214298139000   1.013682596946108
 units au
 """),
-        "h2o_nap1":
-        psi4.geometry("""
+        "h2o_nap1": psi4.geometry("""
 0 1
 O    0.000000000000     0.000000000000    -0.124038860300
 H    0.000000000000    -1.431430901356     0.984293362719
@@ -36,12 +32,12 @@ H    0.000000000000     1.431430901356     0.984293362719
 1 1
 Na   0.000000000000     0.000000000000    -4.124038860300
 units au
-""")
+"""),
     }
 
 
-@pytest.mark.parametrize("j_algo", ["DFDIRJ"])  #to be extended in the future
-@pytest.mark.parametrize("k_algo", ["LINK", "COSX"])  #to be extended in the future
+@pytest.mark.parametrize("j_algo", ["DFDIRJ"])  # to be extended in the future
+@pytest.mark.parametrize("k_algo", ["LINK", "COSX"])  # to be extended in the future
 def test_composite_call(j_algo, k_algo, mols, request):
     """Test all SCF_TYPE={J}+{K} combinations for an HF calculation.
     The correct algorithm pair should be called in each case."""
@@ -51,8 +47,8 @@ def test_composite_call(j_algo, k_algo, mols, request):
 
     molecule = mols["h2o"]
 
-    scf_type = f'{j_algo}+{k_algo}'
-    psi4.set_options({"scf_type": f'{j_algo}+{k_algo}', "incfock": True, "save_jk": True})
+    scf_type = f"{j_algo}+{k_algo}"
+    psi4.set_options({"scf_type": f"{j_algo}+{k_algo}", "incfock": True, "save_jk": True})
 
     if "COSX" in scf_type:
         psi4.set_options({"screening": "schwarz"})
@@ -66,10 +62,10 @@ def test_composite_call(j_algo, k_algo, mols, request):
 
     # check that correct J algo has been called
     clean_j_name = clean_j_name.replace("-", "")  # replace DF-DirJ with DFDirJ
-    assert clean_j_name.lower() == j_algo.lower(), f'{test_id} has correct J build method'
+    assert clean_j_name.lower() == j_algo.lower(), f"{test_id} has correct J build method"
 
     # check that correct K algo has been called
-    assert clean_k_name.lower() == k_algo.lower(), f'{test_id} has correct K build method'
+    assert clean_k_name.lower() == k_algo.lower(), f"{test_id} has correct K build method"
 
 
 @pytest.mark.parametrize(
@@ -78,59 +74,54 @@ def test_composite_call(j_algo, k_algo, mols, request):
         pytest.param(
             {
                 "method": "hf",
-                "options": {
-                    "reference": "rhf"
-                },
+                "options": {"reference": "rhf"},
                 "molecule": "h2o",
                 "bsse_type": None,
-                "ref": -76.026780223322
+                "ref": -76.026780223322,
             },
-            id="h2o (rhf)"),
+            id="h2o (rhf)",
+        ),
         pytest.param(
             {
                 "method": "b3lyp",
-                "options": {
-                    "reference": "rhf"
-                },
+                "options": {"reference": "rhf"},
                 "molecule": "h2o",
                 "bsse_type": None,
-                "ref": -76.420402720419
+                "ref": -76.420402720419,
             },
-            id="h2o (rks)"),
+            id="h2o (rks)",
+        ),
         pytest.param(
             {
                 "method": "hf",
-                "options": {
-                    "reference": "uhf"
-                },
+                "options": {"reference": "uhf"},
                 "molecule": "nh2",
                 "bsse_type": None,
-                "ref": -55.566890252551
+                "ref": -55.566890252551,
             },
-            id="nh2 (uhf)"),
+            id="nh2 (uhf)",
+        ),
         pytest.param(
             {
                 "method": "hf",
-                "options": {
-                    "reference": "rohf"
-                },
+                "options": {"reference": "rohf"},
                 "molecule": "nh2",
                 "bsse_type": None,
-                "ref": -55.562689948780
+                "ref": -55.562689948780,
             },
-            id="nh2 (rohf)"),
+            id="nh2 (rohf)",
+        ),
         pytest.param(
             {
                 "method": "hf",
-                "options": {
-                    "reference": "rhf"
-                },
+                "options": {"reference": "rhf"},
                 "molecule": "h2o_nap1",
                 "bsse_type": "CP",
-                "ref": -0.040121884077
+                "ref": -0.040121884077,
             },
             marks=pytest.mark.nbody,
-            id="h2o/na+ (rhf ie)"),
+            id="h2o/na+ (rhf ie)",
+        ),
     ],
 )
 def test_dfjcosk(inp, mols, request):
@@ -144,13 +135,14 @@ def test_dfjcosk(inp, mols, request):
 
     # does the DFJCOSK SCF energy match a pre-computed reference?
     energy_dfjcosk = psi4.energy(inp["method"], molecule=molecule, bsse_type=inp["bsse_type"])
-    assert compare_values(inp["ref"], energy_dfjcosk, 6,
-                          f'{test_id} DFDIRJ+COSX accurate to reference (1e-6 threshold)')
+    assert compare_values(
+        inp["ref"], energy_dfjcosk, 6, f"{test_id} DFDIRJ+COSX accurate to reference (1e-6 threshold)"
+    )
 
     # is the DFJCOSK SCF energy reasonably close to a conventional SCF?
     psi4.set_options({"scf_type": "pk"})
     energy_pk = psi4.energy(inp["method"], molecule=molecule, bsse_type=inp["bsse_type"])
-    assert compare_values(energy_pk, energy_dfjcosk, 4, f'{test_id} DFDIRJ+COSX accurate to PK (1e-4 threshold)')
+    assert compare_values(energy_pk, energy_dfjcosk, 4, f"{test_id} DFDIRJ+COSX accurate to PK (1e-4 threshold)")
 
 
 @pytest.mark.parametrize(
@@ -159,59 +151,54 @@ def test_dfjcosk(inp, mols, request):
         pytest.param(
             {
                 "method": "hf",
-                "options": {
-                    "reference": "rhf"
-                },
+                "options": {"reference": "rhf"},
                 "molecule": "h2o",
                 "bsse_type": None,
-                "ref": -76.026780223322
+                "ref": -76.026780223322,
             },
-            id="h2o (rhf)"),
+            id="h2o (rhf)",
+        ),
         pytest.param(
             {
                 "method": "b3lyp",
-                "options": {
-                    "reference": "rhf"
-                },
+                "options": {"reference": "rhf"},
                 "molecule": "h2o",
                 "bsse_type": None,
-                "ref": -76.420402720419
+                "ref": -76.420402720419,
             },
-            id="h2o (rks)"),
+            id="h2o (rks)",
+        ),
         pytest.param(
             {
                 "method": "hf",
-                "options": {
-                    "reference": "uhf"
-                },
+                "options": {"reference": "uhf"},
                 "molecule": "nh2",
                 "bsse_type": None,
-                "ref": -55.566890252551
+                "ref": -55.566890252551,
             },
-            id="nh2 (uhf)"),
+            id="nh2 (uhf)",
+        ),
         pytest.param(
             {
                 "method": "hf",
-                "options": {
-                    "reference": "rohf"
-                },
+                "options": {"reference": "rohf"},
                 "molecule": "nh2",
                 "bsse_type": None,
-                "ref": -55.562689948780
+                "ref": -55.562689948780,
             },
-            id="nh2 (rohf)"),
+            id="nh2 (rohf)",
+        ),
         pytest.param(
             {
                 "method": "hf",
-                "options": {
-                    "reference": "rhf"
-                },
+                "options": {"reference": "rhf"},
                 "molecule": "h2o_nap1",
                 "bsse_type": "CP",
-                "ref": -0.040121884077
+                "ref": -0.040121884077,
             },
             marks=pytest.mark.nbody,
-            id="h2o/na+ (rhf ie)"),
+            id="h2o/na+ (rhf ie)",
+        ),
     ],
 )
 def test_dfjcosk_incfock(inp, mols, request):
@@ -224,37 +211,39 @@ def test_dfjcosk_incfock(inp, mols, request):
     psi4.set_options(inp["options"])
 
     # compute DFJCOSK energy+wfn without IncFock
-    energy_dfjcosk_noinc, wfn_dfjcosk_noinc = psi4.energy(inp["method"],
-                                                          molecule=molecule,
-                                                          bsse_type=inp["bsse_type"],
-                                                          return_wfn=True)
-    #assert compare_values(inp["ref"], energy_dfjcosk, atol=1e-6)
+    energy_dfjcosk_noinc, wfn_dfjcosk_noinc = psi4.energy(
+        inp["method"], molecule=molecule, bsse_type=inp["bsse_type"], return_wfn=True
+    )
+    # assert compare_values(inp["ref"], energy_dfjcosk, atol=1e-6)
 
     # compute DFJCOSK energy+wfn with Incfock
     psi4.set_options({"incfock": True})
-    energy_dfjcosk_inc, wfn_dfjcosk_inc = psi4.energy(inp["method"],
-                                                      molecule=molecule,
-                                                      bsse_type=inp["bsse_type"],
-                                                      return_wfn=True)
+    energy_dfjcosk_inc, wfn_dfjcosk_inc = psi4.energy(
+        inp["method"], molecule=molecule, bsse_type=inp["bsse_type"], return_wfn=True
+    )
 
     # how do energies compare?
-    assert compare_values(energy_dfjcosk_noinc, energy_dfjcosk_inc, 6, f'{test_id} IncFock accurate (1e-6 threshold)')
+    assert compare_values(energy_dfjcosk_noinc, energy_dfjcosk_inc, 6, f"{test_id} IncFock accurate (1e-6 threshold)")
 
     # how do SCF iteration counts compare?
-    niter_noinc = int(
-        wfn_dfjcosk_noinc.variable("SCF ITERATIONS")) if wfn_dfjcosk_noinc.has_scalar_variable("SCF ITERATIONS") else 0
-    niter_inc = int(
-        wfn_dfjcosk_inc.variable("SCF ITERATIONS")) if wfn_dfjcosk_inc.has_scalar_variable("SCF ITERATIONS") else 0
+    niter_noinc = (
+        int(wfn_dfjcosk_noinc.variable("SCF ITERATIONS"))
+        if wfn_dfjcosk_noinc.has_scalar_variable("SCF ITERATIONS")
+        else 0
+    )
+    niter_inc = (
+        int(wfn_dfjcosk_inc.variable("SCF ITERATIONS")) if wfn_dfjcosk_inc.has_scalar_variable("SCF ITERATIONS") else 0
+    )
 
-    assert compare(True, abs(niter_inc - niter_noinc) <= 3, f'{test_id} IncFock efficient')
+    assert compare(True, abs(niter_inc - niter_noinc) <= 3, f"{test_id} IncFock efficient")
 
 
 @pytest.mark.parametrize("functional", ["bp86", "b3lyp"])
 @pytest.mark.parametrize("scf_type", ["DFDIRJ", "LINK", "COSX", "DFDIRJ+COSX", "DFDIRJ+LINK"])
 def test_dfdirj(functional, scf_type, mols):
     """Test the functionality of the SCF_TYPE keyword for CompositeJK methods under varying situations:
-      - Using hybrid DFT functionals without specifying a K algorithm should cause a RuntimeError to be thrown.
-      - Not specifying a J algorithm should cause a ValidationError to be thrown."""
+    - Using hybrid DFT functionals without specifying a K algorithm should cause a RuntimeError to be thrown.
+    - Not specifying a J algorithm should cause a ValidationError to be thrown."""
 
     composite_algo_to_matrix = {"DFDIRJ": "J", "LINK": "K", "COSX": "K"}
 
@@ -267,15 +256,18 @@ def test_dfdirj(functional, scf_type, mols):
             psi4.set_options({"scf_type": scf_type, "reference": "rhf", "basis": "cc-pvdz", "screening": screening})
 
         # we keep this line just for printout purposes; should always pass if done correctly
-        assert compare(type(e_info), pytest.ExceptionInfo, f'{scf_type}+{functional} throws ValidationError')
+        assert compare(type(e_info), pytest.ExceptionInfo, f"{scf_type}+{functional} throws ValidationError")
 
     # ... else we continue as normal
     else:
         psi4.set_options({"scf_type": scf_type, "reference": "rhf", "basis": "cc-pvdz", "screening": screening})
 
         is_hybrid = True if functional == "b3lyp" else False
-        k_algo_specified = True if any(
-            [algo in scf_type for algo, matrix in composite_algo_to_matrix.items() if matrix == "K"]) else False
+        k_algo_specified = (
+            True
+            if any([algo in scf_type for algo, matrix in composite_algo_to_matrix.items() if matrix == "K"])
+            else False
+        )
 
         # if K algorithm isn't specified, but hybrid functional is used, code should throw...
         if is_hybrid and not k_algo_specified:
@@ -283,18 +275,18 @@ def test_dfdirj(functional, scf_type, mols):
                 E = psi4.energy(functional, molecule=molecule)
 
             # we keep this line just for printout purposes; should always pass if done correctly
-            assert compare(type(e_info), pytest.ExceptionInfo, f'{scf_type}+{functional} throws RuntimeError')
+            assert compare(type(e_info), pytest.ExceptionInfo, f"{scf_type}+{functional} throws RuntimeError")
 
         # ... else code will run fine
         else:
             E = psi4.energy(functional, molecule=molecule)
 
             # we keep this line just for printout purposes; should always pass if done correctly
-            assert compare(type(E), float, f'{scf_type}+{functional} executes')
+            assert compare(type(E), float, f"{scf_type}+{functional} executes")
 
 
-@pytest.mark.parametrize("j_algo", ["DFDIRJ"])  #to be extended in the future
-@pytest.mark.parametrize("df_basis_scf", ["CC-PVDZ-JKFIT", "DEF2-UNIVERSAL-JFIT"])  #to be extended in the future
+@pytest.mark.parametrize("j_algo", ["DFDIRJ"])  # to be extended in the future
+@pytest.mark.parametrize("df_basis_scf", ["CC-PVDZ-JKFIT", "DEF2-UNIVERSAL-JFIT"])  # to be extended in the future
 def test_j_algo_bp86(j_algo, df_basis_scf, mols):
     """Test SCF_TYPE={J} and all SCF_TYPE={J}+{K} combinations for a BP86 calculation.
     They should all give the exact same answer (within tolerance)."""
@@ -312,14 +304,17 @@ def test_j_algo_bp86(j_algo, df_basis_scf, mols):
         scf_type = j_algo + "+" + k_algo
         screening = "CSAM" if "COSX" in scf_type else "DENSITY"
 
-        psi4.set_options({
-            "scf_type": scf_type,
-            "reference": "rhf",
-            "basis": "cc-pvdz",
-            "df_basis_scf": df_basis_scf,
-            "screening": screening
-        })
+        psi4.set_options(
+            {
+                "scf_type": scf_type,
+                "reference": "rhf",
+                "basis": "cc-pvdz",
+                "df_basis_scf": df_basis_scf,
+                "screening": screening,
+            }
+        )
         energy_composite = psi4.energy("bp86", molecule=molecule)
 
-        assert compare_values(energy_dfdirj, energy_composite, 6,
-                              f'BP86/{df_basis_scf} {scf_type} accurate to {j_algo} (1e-6 threshold)')
+        assert compare_values(
+            energy_dfdirj, energy_composite, 6, f"BP86/{df_basis_scf} {scf_type} accurate to {j_algo} (1e-6 threshold)"
+        )

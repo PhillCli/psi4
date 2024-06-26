@@ -29,6 +29,7 @@
 Avoid importing from psi4 into here.
 
 """
+
 from collections import namedtuple
 from typing import Tuple
 
@@ -203,14 +204,14 @@ def method_algorithm_type(name: str) -> Tuple[str, str, str]:
     default = type_keywords_defaults[keyword]
 
     if lowername in [
-            "mp2.5",
-            "fno-mp2.5",
-            "mp3",
-            "fno-mp3",
-            # below are newly treated like their parent above c. Sept 2022
-            "custom-scs-mp2.5",
-            "scs-mp3",
-            "custom-scs-mp3"
+        "mp2.5",
+        "fno-mp2.5",
+        "mp3",
+        "fno-mp3",
+        # below are newly treated like their parent above c. Sept 2022
+        "custom-scs-mp2.5",
+        "scs-mp3",
+        "custom-scs-mp3",
     ]:
         now = core.get_global_option(keyword) if core.has_global_option_changed(keyword) else "DF"
     elif keyword == "DCT_TYPE":

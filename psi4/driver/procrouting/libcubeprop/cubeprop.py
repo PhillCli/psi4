@@ -42,9 +42,9 @@ def cubeprop_compute_properties(self):
     if not os.path.isdir(os.path.abspath(os.path.expandvars(filepath))):
         raise ValidationError("""Filepath "{}" is not valid.  Please create this directory.""".format(filepath))
 
-    geomfile = filepath + os.sep + 'geom.xyz'
-    xyz = self.basisset().molecule().to_string(dtype='xyz', units='Angstrom')
-    with open(geomfile, 'w') as fh:
+    geomfile = filepath + os.sep + "geom.xyz"
+    xyz = self.basisset().molecule().to_string(dtype="xyz", units="Angstrom")
+    with open(geomfile, "w") as fh:
         fh.write(xyz)
 
     self.raw_compute_properties()

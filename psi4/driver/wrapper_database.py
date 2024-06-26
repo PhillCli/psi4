@@ -211,34 +211,35 @@ def database(name, db_name, **kwargs):
     >>> database('ccsd','HTBH',subset='small', tabulate=['ccsd total energy', 'mp2 total energy'])
 
     """
-    lowername = name  #TODO
+    lowername = name  # TODO
     kwargs = p4util.kwargs_lower(kwargs)
 
     # Wrap any positional arguments into kwargs (for intercalls among wrappers)
-    if not ('name' in kwargs) and name:
-        kwargs['name'] = name  #.lower()
-    if not ('db_name' in kwargs) and db_name:
-        kwargs['db_name'] = db_name
+    if not ("name" in kwargs) and name:
+        kwargs["name"] = name  # .lower()
+    if not ("db_name" in kwargs) and db_name:
+        kwargs["db_name"] = db_name
 
     # Establish function to call
-    func = kwargs.pop('db_func', kwargs.pop('func', energy))
-    kwargs['db_func'] = func
+    func = kwargs.pop("db_func", kwargs.pop("func", energy))
+    kwargs["db_func"] = func
     # Bounce to CP if bsse kwarg (someday)
-    if kwargs.get('bsse_type', None) is not None:
+    if kwargs.get("bsse_type", None) is not None:
         raise ValidationError(
-            """Database: Cannot specify bsse_type for database. Use the cp keyword withing database instead.""")
+            """Database: Cannot specify bsse_type for database. Use the cp keyword withing database instead."""
+        )
 
-    allowoptexceeded = kwargs.get('allowoptexceeded', False)
-    optstash = p4util.OptionsState(['WRITER_FILE_LABEL'], ['SCF', 'REFERENCE'])
+    allowoptexceeded = kwargs.get("allowoptexceeded", False)
+    optstash = p4util.OptionsState(["WRITER_FILE_LABEL"], ["SCF", "REFERENCE"])
 
     # Wrapper wholly defines molecule. discard any passed-in
-    kwargs.pop('molecule', None)
+    kwargs.pop("molecule", None)
 
     # Paths to search for database files: here + PSIPATH + library + PYTHONPATH
     db_paths = []
     db_paths.append(os.getcwd())
-    db_paths.extend(os.environ.get('PSIPATH', '').split(os.path.pathsep))
-    db_paths.append(os.path.join(core.get_datadir(), 'databases'))
+    db_paths.extend(os.environ.get("PSIPATH", "").split(os.path.pathsep))
+    db_paths.append(os.path.join(core.get_datadir(), "databases"))
     db_paths.append(os.path.dirname(__file__))
     db_paths = list(map(os.path.abspath, db_paths))
     sys.path[1:1] = db_paths
@@ -247,8 +248,8 @@ def database(name, db_name, **kwargs):
     # Define path and load module for requested database
     database = p4util.import_ignorecase(db_name)
     if database is None:
-        core.print_out('\nPython module for database %s failed to load\n\n' % (db_name))
-        core.print_out('\nSearch path that was tried:\n')
+        core.print_out("\nPython module for database %s failed to load\n\n" % (db_name))
+        core.print_out("\nSearch path that was tried:\n")
         core.print_out(", ".join(map(str, sys.path)))
         raise ValidationError("Python module loading problem for database " + str(db_name))
     else:
@@ -264,21 +265,21 @@ def database(name, db_name, **kwargs):
         except AttributeError:
             DATA = {}
 
-    user_writer_file_label = core.get_global_option('WRITER_FILE_LABEL')
-    user_reference = core.get_global_option('REFERENCE')
+    user_writer_file_label = core.get_global_option("WRITER_FILE_LABEL")
+    user_reference = core.get_global_option("REFERENCE")
 
     # Configuration based upon e_name & db_name options
     #   Force non-supramolecular if needed
-    if not hasattr(lowername, '__call__') and re.match(r'^.*sapt', lowername):
+    if not hasattr(lowername, "__call__") and re.match(r"^.*sapt", lowername):
         try:
             database.ACTV_SA
         except AttributeError:
-            raise ValidationError('Database %s not suitable for non-supramolecular calculation.' % (db_name))
+            raise ValidationError("Database %s not suitable for non-supramolecular calculation." % (db_name))
         else:
             ACTV = database.ACTV_SA
     #   Force open-shell if needed
     openshell_override = 0
-    if user_reference in ['RHF', 'RKS']:
+    if user_reference in ["RHF", "RKS"]:
         try:
             database.isOS
         except AttributeError:
@@ -287,12 +288,13 @@ def database(name, db_name, **kwargs):
             if p4util.yes.match(str(database.isOS)):
                 openshell_override = 1
                 core.print_out(
-                    '\nSome reagents in database %s require an open-shell reference; will be reset to UHF/UKS as needed.\n'
-                    % (db_name))
+                    "\nSome reagents in database %s require an open-shell reference; will be reset to UHF/UKS as needed.\n"
+                    % (db_name)
+                )
 
     # Configuration based upon database keyword options
     #   Option symmetry- whether symmetry treated normally or turned off (currently req'd for dfmp2 & dft)
-    db_symm = kwargs.get('symm', True)
+    db_symm = kwargs.get("symm", True)
 
     symmetry_override = 0
     if db_symm is False:
@@ -303,22 +305,22 @@ def database(name, db_name, **kwargs):
         raise ValidationError("""Symmetry mode '%s' not valid.""" % (db_symm))
 
     #   Option mode of operation- whether db run in one job or files farmed out
-    db_mode = kwargs.pop('db_mode', kwargs.pop('mode', 'continuous')).lower()
-    kwargs['db_mode'] = db_mode
+    db_mode = kwargs.pop("db_mode", kwargs.pop("mode", "continuous")).lower()
+    kwargs["db_mode"] = db_mode
 
-    if db_mode == 'continuous':
+    if db_mode == "continuous":
         pass
-    elif db_mode == 'sow':
+    elif db_mode == "sow":
         pass
-    elif db_mode == 'reap':
-        db_linkage = kwargs.get('linkage', None)
+    elif db_mode == "reap":
+        db_linkage = kwargs.get("linkage", None)
         if db_linkage is None:
             raise ValidationError("""Database execution mode 'reap' requires a linkage option.""")
     else:
         raise ValidationError("""Database execution mode '%s' not valid.""" % (db_mode))
 
     #   Option counterpoise- whether for interaction energy databases run in bsse-corrected or not
-    db_cp = kwargs.get('cp', False)
+    db_cp = kwargs.get("cp", False)
 
     if db_cp is True:
         try:
@@ -333,7 +335,7 @@ def database(name, db_name, **kwargs):
         raise ValidationError("""Counterpoise correction mode '%s' not valid.""" % (db_cp))
 
     #   Option relaxed- whether for non-frozen-monomer interaction energy databases include deformation correction or not?
-    db_rlxd = kwargs.get('rlxd', False)
+    db_rlxd = kwargs.get("rlxd", False)
 
     if db_rlxd is True:
         if db_cp is True:
@@ -341,8 +343,9 @@ def database(name, db_name, **kwargs):
                 database.ACTV_CPRLX
                 database.RXNM_CPRLX
             except AttributeError:
-                raise ValidationError('Deformation and counterpoise correction mode \'yes\' invalid for database %s.' %
-                                      (db_name))
+                raise ValidationError(
+                    "Deformation and counterpoise correction mode 'yes' invalid for database %s." % (db_name)
+                )
             else:
                 ACTV = database.ACTV_CPRLX
                 RXNM = database.RXNM_CPRLX
@@ -350,65 +353,66 @@ def database(name, db_name, **kwargs):
             try:
                 database.ACTV_RLX
             except AttributeError:
-                raise ValidationError('Deformation correction mode \'yes\' invalid for database %s.' % (db_name))
+                raise ValidationError("Deformation correction mode 'yes' invalid for database %s." % (db_name))
             else:
                 ACTV = database.ACTV_RLX
     elif db_rlxd is False:
-        #elif no.match(str(db_rlxd)):
+        # elif no.match(str(db_rlxd)):
         pass
     else:
-        raise ValidationError('Deformation correction mode \'%s\' not valid.' % (db_rlxd))
+        raise ValidationError("Deformation correction mode '%s' not valid." % (db_rlxd))
 
     #   Option zero-point-correction- whether for thermochem databases jobs are corrected by zpe
-    db_zpe = kwargs.get('zpe', False)
+    db_zpe = kwargs.get("zpe", False)
 
     if db_zpe is True:
-        raise ValidationError('Zero-point-correction mode \'yes\' not yet implemented.')
+        raise ValidationError("Zero-point-correction mode 'yes' not yet implemented.")
     elif db_zpe is False:
         pass
     else:
-        raise ValidationError('Zero-point-correction \'mode\' %s not valid.' % (db_zpe))
+        raise ValidationError("Zero-point-correction 'mode' %s not valid." % (db_zpe))
 
     #   Option benchmark- whether error statistics computed wrt alternate reference energies
-    db_benchmark = 'default'
-    if 'benchmark' in kwargs:
-        db_benchmark = kwargs['benchmark']
+    db_benchmark = "default"
+    if "benchmark" in kwargs:
+        db_benchmark = kwargs["benchmark"]
 
-        if db_benchmark.lower() == 'default':
+        if db_benchmark.lower() == "default":
             pass
         else:
-            BIND = p4util.getattr_ignorecase(database, 'BIND_' + db_benchmark)
+            BIND = p4util.getattr_ignorecase(database, "BIND_" + db_benchmark)
             if BIND is None:
-                raise ValidationError('Special benchmark \'%s\' not available for database %s.' %
-                                      (db_benchmark, db_name))
+                raise ValidationError(
+                    "Special benchmark '%s' not available for database %s." % (db_benchmark, db_name)
+                )
 
     #   Option tabulate- whether tables of variables other than primary energy method are formed
     # TODO db(func=cbs,tabulate=[non-current-energy])  # broken
     db_tabulate = []
-    if 'tabulate' in kwargs:
-        db_tabulate = kwargs['tabulate']
+    if "tabulate" in kwargs:
+        db_tabulate = kwargs["tabulate"]
 
     #   Option subset- whether all of the database or just a portion is run
     db_subset = HRXN
-    if 'subset' in kwargs:
-        db_subset = kwargs['subset']
+    if "subset" in kwargs:
+        db_subset = kwargs["subset"]
 
     if isinstance(db_subset, (str, bytes)):
-        if db_subset.lower() == 'small':
+        if db_subset.lower() == "small":
             try:
                 database.HRXN_SM
             except AttributeError:
                 raise ValidationError("""Special subset 'small' not available for database %s.""" % (db_name))
             else:
                 HRXN = database.HRXN_SM
-        elif db_subset.lower() == 'large':
+        elif db_subset.lower() == "large":
             try:
                 database.HRXN_LG
             except AttributeError:
                 raise ValidationError("""Special subset 'large' not available for database %s.""" % (db_name))
             else:
                 HRXN = database.HRXN_LG
-        elif db_subset.lower() == 'equilibrium':
+        elif db_subset.lower() == "equilibrium":
             try:
                 database.HRXN_EQ
             except AttributeError:
@@ -418,10 +422,11 @@ def database(name, db_name, **kwargs):
         else:
             HRXN = p4util.getattr_ignorecase(database, db_subset)
             if HRXN is None:
-                HRXN = p4util.getattr_ignorecase(database, 'HRXN_' + db_subset)
+                HRXN = p4util.getattr_ignorecase(database, "HRXN_" + db_subset)
                 if HRXN is None:
-                    raise ValidationError("""Special subset '%s' not available for database %s.""" %
-                                          (db_subset, db_name))
+                    raise ValidationError(
+                        """Special subset '%s' not available for database %s.""" % (db_subset, db_name)
+                    )
     else:
         temp = []
         for rxn in db_subset:
@@ -433,7 +438,7 @@ def database(name, db_name, **kwargs):
 
     temp = []
     for rxn in HRXN:
-        temp.append(ACTV['%s-%s' % (dbse, rxn)])
+        temp.append(ACTV["%s-%s" % (dbse, rxn)])
     HSYS = p4util.drop_duplicates(sum(temp, []))
 
     # Sow all the necessary reagent computations
@@ -457,28 +462,29 @@ def database(name, db_name, **kwargs):
     for rgt in HSYS:
         VRGT[rgt] = {}
 
-        core.print_out('\n')
-        p4util.banner(' Database {} Computation: Reagent {} \n   {}'.format(db_name, rgt, TAGL[rgt]))
-        core.print_out('\n')
+        core.print_out("\n")
+        p4util.banner(" Database {} Computation: Reagent {} \n   {}".format(db_name, rgt, TAGL[rgt]))
+        core.print_out("\n")
 
         molecule = core.Molecule.from_dict(GEOS[rgt].to_dict())
         molecule.set_name(rgt)
         molecule.update_geometry()
 
         if symmetry_override:
-            molecule.reset_point_group('c1')
+            molecule.reset_point_group("c1")
             molecule.fix_orientation(True)
             molecule.fix_com(True)
             molecule.update_geometry()
 
         if (openshell_override) and (molecule.multiplicity() != 1):
-            if user_reference == 'RHF':
-                core.set_global_option('REFERENCE', 'UHF')
-            elif user_reference == 'RKS':
-                core.set_global_option('REFERENCE', 'UKS')
+            if user_reference == "RHF":
+                core.set_global_option("REFERENCE", "UHF")
+            elif user_reference == "RKS":
+                core.set_global_option("REFERENCE", "UKS")
 
-        core.set_global_option('WRITER_FILE_LABEL',
-                               user_writer_file_label + ('' if user_writer_file_label == '' else '-') + rgt)
+        core.set_global_option(
+            "WRITER_FILE_LABEL", user_writer_file_label + ("" if user_writer_file_label == "" else "-") + rgt
+        )
 
         if allowoptexceeded:
             try:
@@ -489,18 +495,19 @@ def database(name, db_name, **kwargs):
         else:
             ERGT[rgt] = func(molecule=molecule, **kwargs)
         core.print_variables()
-        core.print_out("   Database Contributions Map:\n   {}\n".format('-' * 75))
+        core.print_out("   Database Contributions Map:\n   {}\n".format("-" * 75))
         for rxn in HRXN:
-            db_rxn = dbse + '-' + str(rxn)
+            db_rxn = dbse + "-" + str(rxn)
             if rgt in ACTV[db_rxn]:
-                core.print_out('   reagent {} contributes by {:.4f} to reaction {}\n'.format(
-                    rgt, RXNM[db_rxn][rgt], db_rxn))
-        core.print_out('\n')
+                core.print_out(
+                    "   reagent {} contributes by {:.4f} to reaction {}\n".format(rgt, RXNM[db_rxn][rgt], db_rxn)
+                )
+        core.print_out("\n")
         for envv in db_tabulate:
             VRGT[rgt][envv.upper()] = core.variable(envv)
         core.set_global_option("REFERENCE", user_reference)
         core.clean()
-        #core.opt_clean()
+        # core.opt_clean()
         core.clean_variables()
 
     # Reap all the necessary reaction computations
@@ -510,15 +517,15 @@ def database(name, db_name, **kwargs):
 
     maxactv = []
     for rxn in HRXN:
-        maxactv.append(len(ACTV[dbse + '-' + str(rxn)]))
+        maxactv.append(len(ACTV[dbse + "-" + str(rxn)]))
     maxrgt = max(maxactv)
-    table_delimit = '-' * (62 + 20 * maxrgt)
-    tables = ''
+    table_delimit = "-" * (62 + 20 * maxrgt)
+    tables = ""
 
     #   find any reactions that are incomplete
     FAIL = collections.defaultdict(int)
     for rxn in HRXN:
-        db_rxn = dbse + '-' + str(rxn)
+        db_rxn = dbse + "-" + str(rxn)
         for i in range(len(ACTV[db_rxn])):
             if abs(ERGT[ACTV[db_rxn][i]]) < 1.0e-12:
                 if not allowoptexceeded:
@@ -529,7 +536,7 @@ def database(name, db_name, **kwargs):
     tables += """   'Reagent' values according to weightings 'Wt', as for the REQUESTED ENERGY below.\n"""
     tables += """   Depending on the nature of the variable, this may or may not make any physical sense.\n"""
     for rxn in HRXN:
-        db_rxn = dbse + '-' + str(rxn)
+        db_rxn = dbse + "-" + str(rxn)
         VRXN[db_rxn] = {}
 
     for envv in db_tabulate:
@@ -538,10 +545,10 @@ def database(name, db_name, **kwargs):
         tables += _tblhead(maxrgt, table_delimit, 2)
 
         for rxn in HRXN:
-            db_rxn = dbse + '-' + str(rxn)
+            db_rxn = dbse + "-" + str(rxn)
 
             if FAIL[rxn]:
-                tables += """\n%23s   %8s %8s %8s %8s""" % (db_rxn, '', '****', '', '')
+                tables += """\n%23s   %8s %8s %8s %8s""" % (db_rxn, "", "****", "", "")
                 for i in range(len(ACTV[db_rxn])):
                     tables += """ %16.8f %2.0f""" % (VRGT[ACTV[db_rxn][i]][envv], RXNM[db_rxn][ACTV[db_rxn][i]])
 
@@ -563,13 +570,13 @@ def database(name, db_name, **kwargs):
     MADerror = 0.0
     RMSDerror = 0.0
 
-    tables += """\n   ==> %s <==\n\n""" % ('Requested Energy')
+    tables += """\n   ==> %s <==\n\n""" % ("Requested Energy")
     tables += _tblhead(maxrgt, table_delimit, 1)
     for rxn in HRXN:
-        db_rxn = dbse + '-' + str(rxn)
+        db_rxn = dbse + "-" + str(rxn)
 
         if FAIL[rxn]:
-            tables += """\n%23s   %8.4f %8s %10s %10s""" % (db_rxn, BIND[db_rxn], '****', '****', '****')
+            tables += """\n%23s   %8.4f %8s %10s %10s""" % (db_rxn, BIND[db_rxn], "****", "****", "****")
             for i in range(len(ACTV[db_rxn])):
                 tables += """ %16.8f %2.0f""" % (ERGT[ACTV[db_rxn][i]], RXNM[db_rxn][ACTV[db_rxn][i]])
 
@@ -579,8 +586,13 @@ def database(name, db_name, **kwargs):
                 ERXN[db_rxn] += ERGT[ACTV[db_rxn][i]] * RXNM[db_rxn][ACTV[db_rxn][i]]
             error = constants.hartree2kcalmol * ERXN[db_rxn] - BIND[db_rxn]
 
-            tables += """\n%23s   %8.4f %8.4f %10.4f %10.4f""" % (db_rxn, BIND[db_rxn], constants.hartree2kcalmol *
-                                                                  ERXN[db_rxn], error, error * constants.cal2J)
+            tables += """\n%23s   %8.4f %8.4f %10.4f %10.4f""" % (
+                db_rxn,
+                BIND[db_rxn],
+                constants.hartree2kcalmol * ERXN[db_rxn],
+                error,
+                error * constants.cal2J,
+            )
             for i in range(len(ACTV[db_rxn])):
                 tables += """ %16.8f %2.0f""" % (ERGT[ACTV[db_rxn][i]], RXNM[db_rxn][ACTV[db_rxn][i]])
 
@@ -595,21 +607,20 @@ def database(name, db_name, **kwargs):
     tables += """\n   %s\n""" % (table_delimit)
 
     if count_rxn:
-
         MSDerror /= float(count_rxn)
         MADerror /= float(count_rxn)
         RMSDerror = math.sqrt(RMSDerror / float(count_rxn))
 
-        tables += """%23s %19s %10.4f %10.4f\n""" % ('Minimal Dev', '', minDerror, minDerror * constants.cal2J)
-        tables += """%23s %19s %10.4f %10.4f\n""" % ('Maximal Dev', '', maxDerror, maxDerror * constants.cal2J)
-        tables += """%23s %19s %10.4f %10.4f\n""" % ('Mean Signed Dev', '', MSDerror, MSDerror * constants.cal2J)
-        tables += """%23s %19s %10.4f %10.4f\n""" % ('Mean Absolute Dev', '', MADerror, MADerror * constants.cal2J)
-        tables += """%23s %19s %10.4f %10.4f\n""" % ('RMS Dev', '', RMSDerror, RMSDerror * constants.cal2J)
+        tables += """%23s %19s %10.4f %10.4f\n""" % ("Minimal Dev", "", minDerror, minDerror * constants.cal2J)
+        tables += """%23s %19s %10.4f %10.4f\n""" % ("Maximal Dev", "", maxDerror, maxDerror * constants.cal2J)
+        tables += """%23s %19s %10.4f %10.4f\n""" % ("Mean Signed Dev", "", MSDerror, MSDerror * constants.cal2J)
+        tables += """%23s %19s %10.4f %10.4f\n""" % ("Mean Absolute Dev", "", MADerror, MADerror * constants.cal2J)
+        tables += """%23s %19s %10.4f %10.4f\n""" % ("RMS Dev", "", RMSDerror, RMSDerror * constants.cal2J)
         tables += """   %s\n""" % (table_delimit)
 
-        core.set_variable('%s DATABASE MEAN SIGNED DEVIATION' % (db_name), MSDerror)
-        core.set_variable('%s DATABASE MEAN ABSOLUTE DEVIATION' % (db_name), MADerror)
-        core.set_variable('%s DATABASE ROOT-MEAN-SQUARE DEVIATION' % (db_name), RMSDerror)
+        core.set_variable("%s DATABASE MEAN SIGNED DEVIATION" % (db_name), MSDerror)
+        core.set_variable("%s DATABASE MEAN ABSOLUTE DEVIATION" % (db_name), MADerror)
+        core.set_variable("%s DATABASE ROOT-MEAN-SQUARE DEVIATION" % (db_name), RMSDerror)
 
         core.print_out(tables)
         finalenergy = MADerror
@@ -634,23 +645,23 @@ def _tblhead(tbl_maxrgt, tbl_delimit, ttype):
     and sum of the computed values.
 
     """
-    tbl_str = ''
+    tbl_str = ""
     tbl_str += """   %s""" % (tbl_delimit)
     if ttype == 1:
-        tbl_str += """\n%23s %19s %21s""" % ('Reaction', 'Reaction Energy', 'Reaction Error')
+        tbl_str += """\n%23s %19s %21s""" % ("Reaction", "Reaction Energy", "Reaction Error")
     elif ttype == 2:
-        tbl_str += """\n%23s     %19s %17s""" % ('Reaction', 'Reaction Value', '')
+        tbl_str += """\n%23s     %19s %17s""" % ("Reaction", "Reaction Value", "")
     for i in range(tbl_maxrgt):
-        tbl_str += """%20s""" % ('Reagent ' + str(i + 1))
+        tbl_str += """%20s""" % ("Reagent " + str(i + 1))
     if ttype == 1:
-        tbl_str += """\n%23s   %8s %8s %10s %10s""" % ('', 'Ref', 'Calc', '[kcal/mol]', '[kJ/mol]')
+        tbl_str += """\n%23s   %8s %8s %10s %10s""" % ("", "Ref", "Calc", "[kcal/mol]", "[kJ/mol]")
     elif ttype == 2:
-        tbl_str += """\n%65s""" % ('')
+        tbl_str += """\n%65s""" % ("")
     for i in range(tbl_maxrgt):
         if ttype == 1:
-            tbl_str += """%20s""" % ('[Eh] Wt')
+            tbl_str += """%20s""" % ("[Eh] Wt")
         elif ttype == 2:
-            tbl_str += """%20s""" % ('Value Wt')
+            tbl_str += """%20s""" % ("Value Wt")
     tbl_str += """\n   %s""" % (tbl_delimit)
     return tbl_str
 

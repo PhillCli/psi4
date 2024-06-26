@@ -1,12 +1,12 @@
-from pathlib import Path
 import json
+from pathlib import Path
 
 import numpy as np
 import pytest
+from utils import *
 
 import psi4
 from psi4.driver.procrouting.response.scf_response import tdscf_excitations
-from utils import *
 
 pytestmark = [pytest.mark.psi, pytest.mark.api]
 
@@ -39,8 +39,7 @@ def reference_data():
 def molecules():
     smols = {
         # Canonical unrestricted system
-        "CH2":
-        """0 3
+        "CH2": """0 3
     C           0.000000    0.000000    0.159693
     H          -0.000000    0.895527   -0.479080
     H          -0.000000   -0.895527   -0.479080
@@ -48,8 +47,7 @@ def molecules():
     no_com
     """,
         # Canonical restricted system
-        "H2O":
-        """0 1
+        "H2O": """0 1
     O           0.000000    0.000000    0.135446
     H          -0.000000    0.866812   -0.541782
     H          -0.000000   -0.866812   -0.541782
@@ -57,8 +55,7 @@ def molecules():
     no_com
     """,
         # Canonical chiral system
-        "H2O2":
-        """0 1
+        "H2O2": """0 1
     O        0.000000    0.695000   -0.092486
     O       -0.000000   -0.695000   -0.092486
     H       -0.388142    0.895249    0.739888
@@ -67,8 +64,7 @@ def molecules():
     no_com
     """,
         # Slightly larger chiral system
-        "METHYLOXIRANE":
-        """0 1
+        "METHYLOXIRANE": """0 1
     C  0.152133 -0.035800  0.485797
     C -1.039475  0.615938 -0.061249
     C  1.507144  0.097806 -0.148460
@@ -193,68 +189,78 @@ def _rotatory_strength(e: float, etm: np.ndarray, mtm: np.ndarray, gauge: str = 
     pytest.param( "METHYLOXIRANE", 'RHF-1',     'wB97X',  'TDA',  'cc-pvdz', marks=[hyb_gga_lrc, RHF_singlet, TDA, pytest.mark.medlong]),
     pytest.param( "METHYLOXIRANE", 'RHF-3',     'wB97X',  'RPA',  'cc-pvdz', marks=[hyb_gga_lrc, RHF_triplet, RPA, pytest.mark.medlong]),
     pytest.param( "METHYLOXIRANE", 'RHF-3',     'wB97X',  'TDA',  'cc-pvdz', marks=[hyb_gga_lrc, RHF_triplet, TDA, pytest.mark.medlong]),
-]) # yapf: disable
+])  # yapf: disable
 def test_tdscf(mol, ref, func, ptype, basis, molecules, reference_data):
     molecule = molecules[mol]
-    psi4.set_options({
-        'scf_type': 'pk',
-        'e_convergence': 8,
-        'd_convergence': 8,
-        'save_jk': True,
-        'dft_radial_points': 99,
-        'dft_spherical_points': 590,
-        'dft_pruning_scheme': "None"
-    })
+    psi4.set_options(
+        {
+            "scf_type": "pk",
+            "e_convergence": 8,
+            "d_convergence": 8,
+            "save_jk": True,
+            "dft_radial_points": 99,
+            "dft_spherical_points": 590,
+            "dft_pruning_scheme": "None",
+        }
+    )
     if ref == "UHF":
-        psi4.set_options({'reference': 'UHF'})
-    molecule.reset_point_group('c1')
+        psi4.set_options({"reference": "UHF"})
+    molecule.reset_point_group("c1")
     _, wfn = psi4.energy(f"{func}/{basis}", return_wfn=True, molecule=molecule)
 
-    out = tdscf_excitations(wfn,
-                            states=4,
-                            maxiter=30,
-                            r_convergence=1.0e-6,
-                            triplets="ONLY" if ref == "RHF-3" else "NONE",
-                            tda=True if ptype == "TDA" else False)
+    out = tdscf_excitations(
+        wfn,
+        states=4,
+        maxiter=30,
+        r_convergence=1.0e-6,
+        triplets="ONLY" if ref == "RHF-3" else "NONE",
+        tda=True if ptype == "TDA" else False,
+    )
 
     ref_v = reference_data[f"{mol}_{ref}_{func}_{ptype}"]
 
     for i, my_v in enumerate(out):
-
         # compare excitation energies
         ref_e = ref_v[i]["EXCITATION ENERGY"]
-        assert compare_values(ref_e,
-                              my_v["EXCITATION ENERGY"],
-                              f"{mol}_{ref}_{func}_{ptype}-ROOT_{i+1} Excitation energy",
-                              atol=2.0e-4)
+        assert compare_values(
+            ref_e, my_v["EXCITATION ENERGY"], f"{mol}_{ref}_{func}_{ptype}-ROOT_{i+1} Excitation energy", atol=2.0e-4
+        )
 
         ref_edtm_L = np.array(ref_v[i]["LENGTH MU"])
         # compare length-gauge oscillator strength
         ref_f_L = _oscillator_strength(ref_e, ref_edtm_L, "L")
-        assert compare_values(ref_f_L,
-                              my_v["OSCILLATOR STRENGTH (LEN)"],
-                              f"{mol}_{ref}_{func}_{ptype}-ROOT_{i+1} Length-gauge oscillator strength",
-                              atol=1.0e-3)
+        assert compare_values(
+            ref_f_L,
+            my_v["OSCILLATOR STRENGTH (LEN)"],
+            f"{mol}_{ref}_{func}_{ptype}-ROOT_{i+1} Length-gauge oscillator strength",
+            atol=1.0e-3,
+        )
 
         ref_edtm_V = np.array(ref_v[i]["VELOCITY MU"])
         # compare velocity-gauge oscillator strengths
         ref_f_V = _oscillator_strength(ref_e, ref_edtm_V, "V")
-        assert compare_values(ref_f_V,
-                              my_v["OSCILLATOR STRENGTH (VEL)"],
-                              f"{mol}_{ref}_{func}_{ptype}-ROOT_{i+1} Velocity-gauge oscillator strength",
-                              atol=1.0e-2)
+        assert compare_values(
+            ref_f_V,
+            my_v["OSCILLATOR STRENGTH (VEL)"],
+            f"{mol}_{ref}_{func}_{ptype}-ROOT_{i+1} Velocity-gauge oscillator strength",
+            atol=1.0e-2,
+        )
 
         ref_mdtm = np.array(ref_v[i]["M"])
         # compare length-gauge rotatory strengths
         ref_R_L = _rotatory_strength(ref_e, ref_edtm_L, ref_mdtm, "L")
-        assert compare_values(ref_R_L,
-                              my_v["ROTATORY STRENGTH (LEN)"],
-                              f"{mol}_{ref}_{func}_{ptype}-ROOT_{i+1} Length-gauge rotatory strength",
-                              atol=2.0e-3)
+        assert compare_values(
+            ref_R_L,
+            my_v["ROTATORY STRENGTH (LEN)"],
+            f"{mol}_{ref}_{func}_{ptype}-ROOT_{i+1} Length-gauge rotatory strength",
+            atol=2.0e-3,
+        )
 
         # compare velocity-gauge rotatory strengths
         ref_R_V = _rotatory_strength(ref_e, ref_edtm_V, ref_mdtm, "V")
-        assert compare_values(ref_R_V,
-                              my_v["ROTATORY STRENGTH (VEL)"],
-                              f"{mol}_{ref}_{func}_{ptype}-ROOT_{i+1} Velocity-gauge rotatory strength",
-                              atol=2.0e-3)
+        assert compare_values(
+            ref_R_V,
+            my_v["ROTATORY STRENGTH (VEL)"],
+            f"{mol}_{ref}_{func}_{ptype}-ROOT_{i+1} Velocity-gauge rotatory strength",
+            atol=2.0e-3,
+        )

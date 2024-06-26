@@ -1,9 +1,8 @@
-import pytest
-
 import numpy as np
-import psi4
-
+import pytest
 from utils import compare_arrays
+
+import psi4
 
 pytestmark = [pytest.mark.psi, pytest.mark.api, pytest.mark.quick]
 
@@ -15,7 +14,7 @@ def test_fock_subset_mo():
         H 1 1.0 2 101.5
     """)
 
-    rhf_e, wfn = psi4.energy('SCF/cc-pVDZ', molecule=h2o, return_wfn=True)
+    rhf_e, wfn = psi4.energy("SCF/cc-pVDZ", molecule=h2o, return_wfn=True)
 
     F_diagonals = []
     for h in wfn.epsilon_a().nph:

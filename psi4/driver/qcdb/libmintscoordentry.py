@@ -31,12 +31,13 @@ Justin M. Turney, with incremental improvements by other
 psi4 developers.
 
 """
-import math
-import copy
-import collections
 
-from .vecutil import *
+import collections
+import copy
+import math
+
 from .exceptions import *
+from .vecutil import *
 
 
 class CoordValue(object):
@@ -61,7 +62,7 @@ class CoordValue(object):
         return self.PYfixed
 
     def everything(self):
-        print('\nCoordValue\n  Fixed = %s\n  Computed = %s\n\n' % (self.PYfixed, self.computed))
+        print("\nCoordValue\n  Fixed = %s\n  Computed = %s\n\n" % (self.PYfixed, self.computed))
 
 
 class NumberValue(CoordValue):
@@ -83,7 +84,7 @@ class NumberValue(CoordValue):
 
     def type(self):
         """Gets specialization type of CoordValue"""
-        return 'NumberType'
+        return "NumberType"
 
     def clone(self):
         """Returns new, independent NumberValue object"""
@@ -94,8 +95,10 @@ class NumberValue(CoordValue):
         return "%*.*f" % (precision + 5, precision, self.compute())
 
     def everything(self):
-        print('\nNumberValue\n  Fixed = %s\n  Type = %s\n  Value = %f\n  FValue = %s\n\n' %
-              (self.PYfixed, self.type(), self.value, self.variable_to_string(4)))
+        print(
+            "\nNumberValue\n  Fixed = %s\n  Type = %s\n  Value = %f\n  FValue = %s\n\n"
+            % (self.PYfixed, self.type(), self.value, self.variable_to_string(4))
+        )
 
 
 class VariableValue(CoordValue):
@@ -117,7 +120,7 @@ class VariableValue(CoordValue):
         """Computes value of coordinate from member data"""
         vstr = self.PYname.upper()
         if vstr not in self.geometryVariables:
-            raise IncompleteAtomError('Variable %s used in geometry specification has not been defined' % (vstr))
+            raise IncompleteAtomError("Variable %s used in geometry specification has not been defined" % (vstr))
         if self.negate:
             return self.geometryVariables[vstr] * -1.0
         else:
@@ -141,7 +144,7 @@ class VariableValue(CoordValue):
 
     def type(self):
         """Gets specialization type of CoordValue"""
-        return 'VariableType'
+        return "VariableType"
 
     def clone(self):
         """Returns new, independent VariableValue object"""
@@ -150,15 +153,23 @@ class VariableValue(CoordValue):
     def variable_to_string(self, precision):
         """Takes a CoordValue object, and returns a string for printing."""
         if self.negate:
-            return '-' + self.PYname
+            return "-" + self.PYname
         else:
             return self.PYname
 
     def everything(self):
         print(
-            '\nVariableValue\n  Fixed = %s\n  Type = %s\n  Value = %f\n  FValue = %s\n  Name = %s\n  Negated = %s\n  Map = %s\n\n'
-            % (self.PYfixed, self.type(), self.compute(), self.variable_to_string(4), self.name(), self.negated(),
-               self.geometryVariables))
+            "\nVariableValue\n  Fixed = %s\n  Type = %s\n  Value = %f\n  FValue = %s\n  Name = %s\n  Negated = %s\n  Map = %s\n\n"
+            % (
+                self.PYfixed,
+                self.type(),
+                self.compute(),
+                self.variable_to_string(4),
+                self.name(),
+                self.negated(),
+                self.geometryVariables,
+            )
+        )
 
 
 class CoordEntry(object):
@@ -200,23 +211,23 @@ class CoordEntry(object):
     def r(a1, a2):
         """Computes the distance between two sets of coordinates"""
         if len(a1) != 3 or len(a2) != 3:
-            raise ValidationError('ERROR: r() only defined for Vector3\n')
+            raise ValidationError("ERROR: r() only defined for Vector3\n")
         return distance(a1, a2)
 
     @staticmethod
     def a(a1, a2, a3):
         """Computes the angle (in rad.) between three sets of coordinates."""
         if len(a1) != 3 or len(a2) != 3 or len(a3) != 3:
-            raise ValidationError('ERROR: a() only defined for Vector3\n')
+            raise ValidationError("ERROR: a() only defined for Vector3\n")
         eBA = sub(a2, a1)
         eBC = sub(a2, a3)
         eBA = normalize(eBA)
         eBC = normalize(eBC)
         costheta = dot(eBA, eBC)
 
-        if costheta > 1.0 - 1.0E-14:
+        if costheta > 1.0 - 1.0e-14:
             costheta = 1.0
-        if costheta < 1.0E-14 - 1.0:
+        if costheta < 1.0e-14 - 1.0:
             costheta = -1.0
         return math.acos(costheta)
 
@@ -224,7 +235,7 @@ class CoordEntry(object):
     def d(a1, a2, a3, a4):
         """Computes the dihedral (in rad.) between four sets of coordinates."""
         if len(a1) != 3 or len(a2) != 3 or len(a3) != 3 or len(a4) != 3:
-            raise ValidationError('ERROR: d() only defined for Vector3\n')
+            raise ValidationError("ERROR: d() only defined for Vector3\n")
         eBA = sub(a2, a1)
         eDC = sub(a4, a3)
         eCB = sub(a3, a2)
@@ -254,21 +265,22 @@ class CoordEntry(object):
                 if bas in other.PYshells:
                     if other.PYshells[bas] != self.PYshells[bas]:
                         return False
-                    #if other.PYshells[bas].nbf() != self.PYshells[bas].nbf():
+                    # if other.PYshells[bas].nbf() != self.PYshells[bas].nbf():
                     #    return False
-                    #if other.PYshells[bas].nshell() != self.PYshells[bas].nshell():
+                    # if other.PYshells[bas].nshell() != self.PYshells[bas].nshell():
                     #    return False
-                    #if other.PYshells[bas].nprimitive() != self.PYshells[bas].nprimitive():
+                    # if other.PYshells[bas].nprimitive() != self.PYshells[bas].nprimitive():
                     #    return False
-                    #if other.PYshells[bas].max_am() != self.PYshells[bas].max_am():
+                    # if other.PYshells[bas].max_am() != self.PYshells[bas].max_am():
                     #    return False
-                    #if other.PYshells[bas].max_nprimitive() != self.PYshells[bas].max_nprimitive():
+                    # if other.PYshells[bas].max_nprimitive() != self.PYshells[bas].max_nprimitive():
                     #    return False
-                    #if other.PYshells[bas].has_puream() != self.PYshells[bas].has_puream():
+                    # if other.PYshells[bas].has_puream() != self.PYshells[bas].has_puream():
                     #    return False
                 else:
                     raise ValidationError(
-                        """Basis set %s set for one and not other. This shouldn't happen. Investigate.""" % (bas))
+                        """Basis set %s set for one and not other. This shouldn't happen. Investigate.""" % (bas)
+                    )
         return True
 
     def is_ghosted(self):
@@ -318,7 +330,7 @@ class CoordEntry(object):
         """The order in which this appears in the full atom list."""
         return self.PYentry_number
 
-    def set_basisset(self, name, role='BASIS'):
+    def set_basisset(self, name, role="BASIS"):
         """Set the basis for this atom
         * @param type Keyword from input file, basis, ri_basis, etc.
         * @param name Value from input file
@@ -326,7 +338,7 @@ class CoordEntry(object):
         """
         self.PYbasissets[role] = name
 
-    def basisset(self, role='BASIS'):
+    def basisset(self, role="BASIS"):
         """Returns the basis name for the provided type.
         * @param type Keyword from input file.
         * @returns the value from input.
@@ -335,14 +347,15 @@ class CoordEntry(object):
         try:
             return self.PYbasissets[role]
         except ValueError:
-            raise ValidationError('CoordEntry::basisset: Basisset not set for %s and type of %s' %
-                                  (self.PYlabel, role))
+            raise ValidationError(
+                "CoordEntry::basisset: Basisset not set for %s and type of %s" % (self.PYlabel, role)
+            )
 
     def basissets(self):
         """Returns basisset to atom map"""
         return self.PYbasissets
 
-    def set_shell(self, bshash, key='BASIS'):
+    def set_shell(self, bshash, key="BASIS"):
         """Set the hash for this atom
         * @param key Keyword from input file, basis, ri_basis, etc.
         * @param bshash hash string of one-atom BasisSet
@@ -350,7 +363,7 @@ class CoordEntry(object):
         """
         self.PYshells[key] = bshash
 
-    def shell(self, key='BASIS'):
+    def shell(self, key="BASIS"):
         """Returns the hash for the provided type.
         * @param type Keyword from input file.
         * @returns the hash string for basis.
@@ -359,7 +372,7 @@ class CoordEntry(object):
         try:
             return self.PYshells[key]
         except (ValueError, KeyError):
-            raise ValidationError('CoordEntry::shells: Shells not set for %s and type of %s' % (self.PYlabel, key))
+            raise ValidationError("CoordEntry::shells: Shells not set for %s and type of %s" % (self.PYlabel, key))
 
     def shells(self):
         """Returns shells sets to atom map"""
@@ -371,9 +384,22 @@ class CoordEntry(object):
 
     def everything(self):
         print(
-            '\nCoordEntry\n  Entry Number = %d\n  Computed = %s\n  Z = %d\n  Charge = %f\n  Mass = %f\n  Symbol = %s\n  Label = %s\n  A = %d\n  Ghosted = %s\n  Coordinates = %s\n  Basissets = %s\n\n  Shells = %s\n\n'
-            % (self.entry_number(), self.is_computed(), self.Z(), self.charge(), self.mass(), self.symbol(),
-               self.label(), self.A(), self.is_ghosted(), self.coordinates, self.PYbasissets, self.PYshells))
+            "\nCoordEntry\n  Entry Number = %d\n  Computed = %s\n  Z = %d\n  Charge = %f\n  Mass = %f\n  Symbol = %s\n  Label = %s\n  A = %d\n  Ghosted = %s\n  Coordinates = %s\n  Basissets = %s\n\n  Shells = %s\n\n"
+            % (
+                self.entry_number(),
+                self.is_computed(),
+                self.Z(),
+                self.charge(),
+                self.mass(),
+                self.symbol(),
+                self.label(),
+                self.A(),
+                self.is_ghosted(),
+                self.coordinates,
+                self.PYbasissets,
+                self.PYshells,
+            )
+        )
 
 
 class CartesianEntry(CoordEntry):
@@ -418,7 +444,7 @@ class CartesianEntry(CoordEntry):
 
     def type(self):
         """The type of CoordEntry specialization."""
-        return 'CartesianCoord'
+        return "CartesianCoord"
 
     def print_in_input_format(self):
         """Prints the updated geometry, in the format provided by the user."""
@@ -445,8 +471,10 @@ class CartesianEntry(CoordEntry):
 
     def everything(self):
         CoordEntry.everything(self)
-        print('\nCartesianEntry\n  Type = %s\n  x = %s\n  y = %s\n  z = %s\n\n' %
-              (self.type(), self.x.variable_to_string(8), self.y.variable_to_string(8), self.z.variable_to_string(8)))
+        print(
+            "\nCartesianEntry\n  Type = %s\n  x = %s\n  y = %s\n  z = %s\n\n"
+            % (self.type(), self.x.variable_to_string(8), self.y.variable_to_string(8), self.z.variable_to_string(8))
+        )
 
 
 class ZMatrixEntry(CoordEntry):
@@ -455,22 +483,24 @@ class ZMatrixEntry(CoordEntry):
 
     """
 
-    def __init__(self,
-                 entry_number,
-                 Z,
-                 charge,
-                 mass,
-                 symbol,
-                 label,
-                 A,
-                 rto=None,
-                 rval=0,
-                 ato=None,
-                 aval=0,
-                 dto=None,
-                 dval=0,
-                 basis=None,
-                 shells=None):
+    def __init__(
+        self,
+        entry_number,
+        Z,
+        charge,
+        mass,
+        symbol,
+        label,
+        A,
+        rto=None,
+        rval=0,
+        ato=None,
+        aval=0,
+        dto=None,
+        dval=0,
+        basis=None,
+        shells=None,
+    ):
         """Constructor"""  # note that pos'n of basis arg changed from libmints
         CoordEntry.__init__(self, entry_number, Z, charge, mass, symbol, label, A, basis, shells)
         self.rto = rto
@@ -506,10 +536,10 @@ class ZMatrixEntry(CoordEntry):
             now_aval = self.aval.variable_to_string(10)
             now_dto = self.dto.entry_number() + 1
             now_dval = self.dval.variable_to_string(10)
-            text += "  %5d %11s  %5d %11s  %5d %11s\n" % \
-                (now_rto, now_rval, now_ato, now_aval, now_dto, now_dval)
+            text += "  %5d %11s  %5d %11s  %5d %11s\n" % (now_rto, now_rval, now_ato, now_aval, now_dto, now_dval)
         return text
-#        outfile
+
+    #        outfile
 
     def print_in_input_format_cfour(self):
         """Prints the updated geometry, in the format provided by the user"""
@@ -537,21 +567,19 @@ class ZMatrixEntry(CoordEntry):
             now_aval = self.aval.variable_to_string(10)
             now_dto = self.dto.entry_number() + 1
             now_dval = self.dval.variable_to_string(10)
-            text += " %d %s %d %s %d %s\n" % \
-                (now_rto, now_rval, now_ato, now_aval, now_dto, now_dval)
+            text += " %d %s %d %s %d %s\n" % (now_rto, now_rval, now_ato, now_aval, now_dto, now_dval)
         return text
 
-
-#        outfile
+    #        outfile
 
     def set_coordinates(self, x, y, z):
         """Given the current set of coordinates, updates the values of this
         atom's coordinates, and any variables that may depend on it.
 
         """
-        self.coordinates[0] = 0.0 if math.fabs(x) < 1.0E-14 else x
-        self.coordinates[1] = 0.0 if math.fabs(y) < 1.0E-14 else y
-        self.coordinates[2] = 0.0 if math.fabs(z) < 1.0E-14 else z
+        self.coordinates[0] = 0.0 if math.fabs(x) < 1.0e-14 else x
+        self.coordinates[1] = 0.0 if math.fabs(y) < 1.0e-14 else y
+        self.coordinates[2] = 0.0 if math.fabs(z) < 1.0e-14 else z
 
         if self.rto is not None:
             if not self.rto.is_computed():
@@ -579,7 +607,7 @@ class ZMatrixEntry(CoordEntry):
 
     def type(self):
         """The type of CoordEntry specialization."""
-        return 'ZMatrixCoord'
+        return "ZMatrixCoord"
 
     def clone(self):
         """Returns new, independent ZMatrixEntry object."""
@@ -618,7 +646,7 @@ class ZMatrixEntry(CoordEntry):
             eCB = normalize(eCB)
             eX = [0.0, 0.0, 0.0]
             eY = [0.0, 0.0, 0.0]
-            if (math.fabs(1.0 - math.fabs(eCB[0])) < 1.0E-5):
+            if math.fabs(1.0 - math.fabs(eCB[0])) < 1.0e-5:
                 # CB is collinear with X, start by finding Y
                 eY[1] = 1.0
                 eX = perp_unit(eY, eCB)
@@ -630,7 +658,7 @@ class ZMatrixEntry(CoordEntry):
                 eX = perp_unit(eY, eCB)
             for xyz in range(3):
                 self.coordinates[xyz] = B[xyz] + r * (eY[xyz] * sinABC - eCB[xyz] * cosABC)
-                if math.fabs(self.coordinates[xyz]) < 1.E-14:
+                if math.fabs(self.coordinates[xyz]) < 1.0e-14:
                     self.coordinates[xyz] = 0.0
 
         # The fourth, or subsequent, atom
@@ -659,9 +687,10 @@ class ZMatrixEntry(CoordEntry):
             eY = perp_unit(eDC, eCB)
             eX = perp_unit(eY, eCB)
             for xyz in range(3):
-                self.coordinates[xyz] = B[xyz] + r * (eX[xyz] * sinABC * cosABCD + eY[xyz] * sinABC * sinABCD -
-                                                      eCB[xyz] * cosABC)
-                if math.fabs(self.coordinates[xyz]) < 1.E-14:
+                self.coordinates[xyz] = B[xyz] + r * (
+                    eX[xyz] * sinABC * cosABCD + eY[xyz] * sinABC * sinABCD - eCB[xyz] * cosABC
+                )
+                if math.fabs(self.coordinates[xyz]) < 1.0e-14:
                     self.coordinates[xyz] = 0.0
 
         self.computed = True
@@ -669,5 +698,5 @@ class ZMatrixEntry(CoordEntry):
 
     def everything(self):
         CoordEntry.everything(self)
-        print('\nZMatrixEntry\n  Type = %s\n\n' % (self.type()))
+        print("\nZMatrixEntry\n  Type = %s\n\n" % (self.type()))
         print(self.print_in_input_format())

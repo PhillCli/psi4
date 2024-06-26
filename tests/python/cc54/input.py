@@ -1,8 +1,8 @@
 #! CCSD dipole with user-specified basis set
 import psi4
 
-ref_di_au = [0.0, 0.0, -0.724043461736]  #TEST
-ref_quad_au = [[-5.84669623357, 0.0, 0.0], [0.0, -3.37343584714, 0.0], [0.0, 0.0, -4.70310405195]]  #TEST
+ref_di_au = [0.0, 0.0, -0.724043461736]  # TEST
+ref_quad_au = [[-5.84669623357, 0.0, 0.0], [0.0, -3.37343584714, 0.0], [0.0, 0.0, -4.70310405195]]  # TEST
 
 psi4.set_output_file("output.dat", False)
 
@@ -13,7 +13,7 @@ h2o = psi4.geometry("""
   H 2 0.957 1 104.5
 """)
 
-psi4.set_options({'freeze_core': 'false'})
+psi4.set_options({"freeze_core": "false"})
 
 psi4.basis_helper("""
 # Sadlej-pVTZ
@@ -102,8 +102,8 @@ D 2 1.00
 ****
 """)
 
-ccsd_e, wfn = psi4.properties('ccsd', properties=['dipole'], return_wfn=True)
+ccsd_e, wfn = psi4.properties("ccsd", properties=["dipole"], return_wfn=True)
 psi4.oeprop(wfn, "DIPOLE", "QUADRUPOLE", title="(OEPROP)CC")
 
-psi4.compare_values(ref_di_au, psi4.variable('(OEPROP)CC DIPOLE'), 4, "CC DIPOLE")  #TEST
-psi4.compare_values(ref_quad_au, psi4.variable('(OEPROP)CC QUADRUPOLE'), 4, "CC QUADRUPOLE")  #TEST
+psi4.compare_values(ref_di_au, psi4.variable("(OEPROP)CC DIPOLE"), 4, "CC DIPOLE")  # TEST
+psi4.compare_values(ref_quad_au, psi4.variable("(OEPROP)CC QUADRUPOLE"), 4, "CC QUADRUPOLE")  # TEST

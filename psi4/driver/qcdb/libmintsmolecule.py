@@ -26,30 +26,29 @@
 # @END LICENSE
 #
 
-import os
-import re
+import collections
 import copy
 import math
-import collections
+import os
+import re
 
 import numpy as np
-
 import qcelemental as qcel
 
 from .constants import constants
-from .vecutil import *
 from .exceptions import *
-from .libmintscoordentry import NumberValue, VariableValue, CartesianEntry, ZMatrixEntry
-from .libmintspointgrp import SymmOps, similar, SymmetryOperation, PointGroup
+from .libmintscoordentry import CartesianEntry, NumberValue, VariableValue, ZMatrixEntry
+from .libmintspointgrp import PointGroup, SymmetryOperation, SymmOps, similar
+from .vecutil import *
 
-LINEAR_A_TOL = 1.0E-2  # When sin(a) is below this, we consider the angle to be linear
-DEFAULT_SYM_TOL = 1.0E-8
+LINEAR_A_TOL = 1.0e-2  # When sin(a) is below this, we consider the angle to be linear
+DEFAULT_SYM_TOL = 1.0e-8
 FULL_PG_TOL = 1.0e-8
-ZERO = 1.0E-14
-NOISY_ZERO = 1.0E-8
+ZERO = 1.0e-14
+NOISY_ZERO = 1.0e-8
 
 
-class LibmintsMolecule():
+class LibmintsMolecule:
     """Class to store the elements, coordinates, fragmentation pattern,
     charge, multiplicity of a molecule. Largely replicates psi4's libmints
     Molecule class, developed by Justin M. Turney and Andy M. Simmonett
@@ -77,8 +76,24 @@ class LibmintsMolecule():
 
     >>> H2O = qcdb.Molecule.init_with_xyz('h2o.xyz')
     """
+
     FullPointGroupList = [
-        "ATOM", "C_inf_v", "D_inf_h", "C1", "Cs", "Ci", "Cn", "Cnv", "Cnh", "Sn", "Dn", "Dnd", "Dnh", "Td", "Oh", "Ih"
+        "ATOM",
+        "C_inf_v",
+        "D_inf_h",
+        "C1",
+        "Cs",
+        "Ci",
+        "Cn",
+        "Cnv",
+        "Cnh",
+        "Sn",
+        "Dn",
+        "Dnd",
+        "Dnh",
+        "Td",
+        "Oh",
+        "Ih",
     ]
 
     def __init__(self):
@@ -87,9 +102,9 @@ class LibmintsMolecule():
         # <<< Basic Molecule Information >>>
 
         # Molecule (or fragment) name
-        self.PYname = 'default'
+        self.PYname = "default"
         # Molecule comment
-        self.PYcomment = ''
+        self.PYcomment = ""
         # Molecule origin
         self.PYprovenance = []
         # Molecule connectivity
@@ -99,7 +114,7 @@ class LibmintsMolecule():
         # The multiplicity (defined as 2Ms + 1)
         self.PYmultiplicity = 1
         # The units used to define the geometry
-        self.PYunits = 'Angstrom'
+        self.PYunits = "Angstrom"
         # The conversion factor to take input units to Bohr
         self.PYinput_units_to_au = 1.0 / constants.bohr2angstroms
         # Whether this molecule has at least one zmatrix entry
@@ -149,7 +164,7 @@ class LibmintsMolecule():
         # Point group to use with this molecule
         self.pg = None
         # Full point group
-        self.full_pg = 'C1'
+        self.full_pg = "C1"
         # n of the highest rotational axis Cn
         self.PYfull_pg_n = 1
         # Symmetry string from geometry specification
@@ -269,7 +284,7 @@ class LibmintsMolecule():
 
         """
         if not float(charge).is_integer():
-            raise ValidationError('System charge must be integer: {}'.format(charge))
+            raise ValidationError("System charge must be integer: {}".format(charge))
         self.PYcharge_specified = True
         self.PYmolecular_charge = int(charge)
 
@@ -288,7 +303,7 @@ class LibmintsMolecule():
 
         """
         if not float(mult).is_integer() or float(mult) < 0.0:
-            raise ValidationError('System multiplicity must be positive integer: {}'.format(mult))
+            raise ValidationError("System multiplicity must be positive integer: {}".format(mult))
         self.PYmultiplicity_specified = True
         self.PYmultiplicity = int(mult)
 
@@ -319,10 +334,10 @@ class LibmintsMolecule():
         >>> H2OH2O.set_units('Angstrom')
 
         """
-        if units == 'Angstrom':
+        if units == "Angstrom":
             self.PYunits = units
             self.PYinput_units_to_au = 1.0 / constants.bohr2angstroms
-        elif units == 'Bohr':
+        elif units == "Bohr":
             self.PYunits = units
             self.PYinput_units_to_au = 1.0
         else:
@@ -458,7 +473,7 @@ class LibmintsMolecule():
         """
         mass = float(mass)
         if mass < 0.0:
-            raise ValidationError('Mass must be positive: {}'.format(mass))
+            raise ValidationError("Mass must be positive: {}".format(mass))
         self.lock_frame = False
         self.full_atoms[atom].set_mass(mass)
         self.full_atoms[atom].set_A(-1)
@@ -613,7 +628,7 @@ class LibmintsMolecule():
         """
         n = 0
         for fr in range(self.nfragments()):
-            if self.fragment_types[fr] == 'Real':
+            if self.fragment_types[fr] == "Real":
                 n += 1
         return n
 
@@ -621,35 +636,35 @@ class LibmintsMolecule():
         """Sets all fragments in the molecule to be active."""
         self.lock_frame = False
         for fr in range(self.nfragments()):
-            self.fragment_types[fr] = 'Real'
+            self.fragment_types[fr] = "Real"
 
     def set_active_fragment(self, fr):
         """Tags fragment index *fr* as composed of real atoms."""
         self.lock_frame = False
-        self.fragment_types[fr - 1] = 'Real'
+        self.fragment_types[fr - 1] = "Real"
 
     def set_active_fragments(self, reals):
         """Tags the fragments in array *reals* as composed of real atoms."""
         self.lock_frame = False
         for fr in reals:
-            self.fragment_types[fr - 1] = 'Real'
+            self.fragment_types[fr - 1] = "Real"
 
     def set_ghost_fragment(self, fr):
         """Tags fragment index *fr* as composed of ghost atoms."""
         self.lock_frame = False
-        self.fragment_types[fr - 1] = 'Ghost'
+        self.fragment_types[fr - 1] = "Ghost"
 
     def set_ghost_fragments(self, ghosts):
         """Tags the fragments in array *ghosts* as composed of ghost atoms."""
         self.lock_frame = False
         for fr in ghosts:
-            self.fragment_types[fr - 1] = 'Ghost'
+            self.fragment_types[fr - 1] = "Ghost"
 
     def deactivate_all_fragments(self):
         """Sets all fragments in the molecule to be inactive."""
         self.lock_frame = False
         for fr in range(self.nfragments()):
-            self.fragment_types[fr] = 'Absent'
+            self.fragment_types[fr] = "Absent"
 
     def extract_subsets(self, reals, ghosts=[]):
         """Wrapper for :py:func:`~qcdb.molecule.extract_fragments`.
@@ -688,7 +703,7 @@ class LibmintsMolecule():
             lghosts = [ghosts - 1]
         if len(lreals) + len(lghosts) > self.nfragments():
             raise ValidationError(
-                'Molecule::extract_fragments: sum of real- and ghost-atom subsets is greater than the number of subsets'
+                "Molecule::extract_fragments: sum of real- and ghost-atom subsets is greater than the number of subsets"
             )
 
         subset = self.clone()
@@ -754,21 +769,22 @@ class LibmintsMolecule():
 
         """
         raise FeatureDeprecated(
-            "qcdb.Molecule.create_molecule_from_string. Replace with qcdb.Molecule.from_string(..., dtype='psi4+')")
+            "qcdb.Molecule.create_molecule_from_string. Replace with qcdb.Molecule.from_string(..., dtype='psi4+')"
+        )
 
     def init_with_checkpoint(self, chkpt):
-        """ **NYI** Pull information from the *chkpt* object passed
+        """**NYI** Pull information from the *chkpt* object passed
         (method name in libmints is init_with_chkpt)
 
         """
-        raise FeatureNotImplemented('Molecule::init_with_checkpoint')  # FINAL
+        raise FeatureNotImplemented("Molecule::init_with_checkpoint")  # FINAL
 
     def init_with_io(self, psio):
-        """ **NYI** Pull information from a chkpt object created from psio
+        """**NYI** Pull information from a chkpt object created from psio
         (method name in libmints is init_with_psio)
 
         """
-        raise FeatureNotImplemented('Molecule::init_with_io')  # FINAL
+        raise FeatureNotImplemented("Molecule::init_with_io")  # FINAL
 
     def clone(self):
         """Returns new, independent Molecule object.
@@ -802,28 +818,33 @@ class LibmintsMolecule():
                 text += """    Molecular point group: %s\n""" % (self.pg.symbol())
             if self.full_pg:
                 text += """    Full point group: %s\n\n""" % (self.get_full_point_group())
-            text += """    Geometry (in %s), charge = %d, multiplicity = %d:\n\n""" % \
-                ('Angstrom' if self.units() == 'Angstrom' else 'Bohr', self.molecular_charge(), self.multiplicity())
+            text += """    Geometry (in %s), charge = %d, multiplicity = %d:\n\n""" % (
+                "Angstrom" if self.units() == "Angstrom" else "Bohr",
+                self.molecular_charge(),
+                self.multiplicity(),
+            )
             text += """       Center              X                  Y                   Z       \n"""
             text += """    ------------   -----------------  -----------------  -----------------\n"""
 
             for i in range(self.natom()):
                 geom = self.atoms[i].compute()
-                text += """      %3s%-7s """ % ("" if self.Z(i) else "Gh(", self.symbol(i) +
-                                                ("" if self.Z(i) else ")"))
+                text += """      %3s%-7s """ % (
+                    "" if self.Z(i) else "Gh(",
+                    self.symbol(i) + ("" if self.Z(i) else ")"),
+                )
                 for j in range(3):
                     text += """  %17.12f""" % (geom[j])
                 text += "\n"
             # TODO if (Process::environment.options.get_int("PRINT") > 2) {
             text += "\n"
             for i in range(self.natom()):
-                Astr = '' if self.mass_number(i) == -1 else str(self.mass_number(i))
+                Astr = "" if self.mass_number(i) == -1 else str(self.mass_number(i))
                 text += """    %8s\n""" % (Astr + self.label(i))
                 for bas in self.atoms[i].basissets().keys():
                     text += """              %-15s %-20s""" % (bas, self.atoms[i].basissets()[bas])
                     if bas in self.atoms[i].shells():
                         text += """%s""" % (self.atoms[i].shells()[bas])
-                    text += '\n'
+                    text += "\n"
             text += "\n"
         else:
             text += "  No atoms in this molecule.\n"
@@ -841,14 +862,19 @@ class LibmintsMolecule():
                 text += """    Molecular point group: %s\n""" % (self.pg.symbol())
             if self.full_pg:
                 text += """    Full point group: %s\n\n""" % (self.get_full_point_group())
-            text += """    Geometry (in %s), charge = %d, multiplicity = %d:\n\n""" % \
-                ('Bohr', self.molecular_charge(), self.multiplicity())
+            text += """    Geometry (in %s), charge = %d, multiplicity = %d:\n\n""" % (
+                "Bohr",
+                self.molecular_charge(),
+                self.multiplicity(),
+            )
             text += """       Center              X                  Y                   Z       \n"""
             text += """    ------------   -----------------  -----------------  -----------------\n"""
 
             for i in range(self.natom()):
-                text += """      %3s%-7s """ % ("" if self.Z(i) else "Gh(", self.symbol(i) +
-                                                ("" if self.Z(i) else ")"))
+                text += """      %3s%-7s """ % (
+                    "" if self.Z(i) else "Gh(",
+                    self.symbol(i) + ("" if self.Z(i) else ")"),
+                )
                 text += ("""  %17.12f""" * 3).format(*(self.xyz(i)))
                 text += "\n"
             text += "\n"
@@ -868,14 +894,19 @@ class LibmintsMolecule():
                 text += """    Molecular point group: %s\n""" % (self.pg.symbol())
             if self.full_pg:
                 text += """    Full point group: %s\n\n""" % (self.get_full_point_group())
-            text += """    Geometry (in %s), charge = %d, multiplicity = %d:\n\n""" % \
-                ('Angstrom', self.molecular_charge(), self.multiplicity())
+            text += """    Geometry (in %s), charge = %d, multiplicity = %d:\n\n""" % (
+                "Angstrom",
+                self.molecular_charge(),
+                self.multiplicity(),
+            )
             text += """       Center              X                  Y                   Z       \n"""
             text += """    ------------   -----------------  -----------------  -----------------\n"""
 
             for i in range(self.natom()):
-                text += """      %3s%-7s """ % ("" if self.Z(i) else "Gh(", self.symbol(i) +
-                                                ("" if self.Z(i) else ")"))
+                text += """      %3s%-7s """ % (
+                    "" if self.Z(i) else "Gh(",
+                    self.symbol(i) + ("" if self.Z(i) else ")"),
+                )
                 text += ("""  %17.12f""" * 3).format(*self.xyz(i) * constants.bohr2angstroms)
                 text += "\n"
             text += "\n"
@@ -885,24 +916,27 @@ class LibmintsMolecule():
         # TODO outfile
 
     def print_full(self):
-        """Print full atom list. Same as :py:func:`print_out` only displays dummy atoms.
-
-        """
+        """Print full atom list. Same as :py:func:`print_out` only displays dummy atoms."""
         text = ""
         if self.natom():
             if self.pg:
                 text += """    Molecular point group: %s\n""" % (self.pg.symbol())
             if self.full_pg:
                 text += """    Full point group: %s\n\n""" % (self.get_full_point_group())
-            text += """    Geometry (in %s), charge = %d, multiplicity = %d:\n\n""" % \
-                (self.units(), self.molecular_charge(), self.multiplicity())
+            text += """    Geometry (in %s), charge = %d, multiplicity = %d:\n\n""" % (
+                self.units(),
+                self.molecular_charge(),
+                self.multiplicity(),
+            )
             text += """       Center              X                  Y                   Z       \n"""
             text += """    ------------   -----------------  -----------------  -----------------\n"""
 
             for i in range(self.nallatom()):
                 geom = self.full_atoms[i].compute()
-                text += """      %3s%-7s """ % ("" if self.fZ(i) else "Gh(", self.fsymbol(i) +
-                                                ("" if self.fZ(i) else ")"))
+                text += """      %3s%-7s """ % (
+                    "" if self.fZ(i) else "Gh(",
+                    self.fsymbol(i) + ("" if self.fZ(i) else ")"),
+                )
                 for j in range(3):
                     text += """  %17.12f""" % (geom[j])
                 text += "\n"
@@ -913,13 +947,14 @@ class LibmintsMolecule():
         # TODO outfile
 
     def print_in_input_format(self):
-        """Print the molecule in the same format that the user provided.
-        """
+        """Print the molecule in the same format that the user provided."""
         text = ""
         if self.nallatom():
-            text += "    Geometry (in %s), charge = %d, multiplicity = %d:\n\n" % \
-                    ("Angstrom" if self.units() == 'Angstrom' else "Bohr",
-                    self.molecular_charge(), self.multiplicity())
+            text += "    Geometry (in %s), charge = %d, multiplicity = %d:\n\n" % (
+                "Angstrom" if self.units() == "Angstrom" else "Bohr",
+                self.molecular_charge(),
+                self.multiplicity(),
+            )
             for i in range(self.nallatom()):
                 if self.fZ(i) or self.fsymbol(i) == "X":
                     text += "    %-8s" % (self.fsymbol(i))
@@ -957,9 +992,8 @@ class LibmintsMolecule():
         """
         text = ""
         if self.nallatom():
-
             # append units and any other non-default molecule keywords
-            text += "    units %-s\n" % ("Angstrom" if self.units() == 'Angstrom' else "Bohr")
+            text += "    units %-s\n" % ("Angstrom" if self.units() == "Angstrom" else "Bohr")
             if not self.PYmove_to_com:
                 text += "    no_com\n"
             if self.PYfix_orientation:
@@ -971,14 +1005,17 @@ class LibmintsMolecule():
             # append atoms and coordentries and fragment separators with charge and multiplicity
             Pfr = 0
             for fr in range(self.nfragments()):
-                if self.fragment_types[fr] == 'Absent' and not self.has_zmatrix():
+                if self.fragment_types[fr] == "Absent" and not self.has_zmatrix():
                     continue
-                text += "%s    %s%d %d\n" % ("" if Pfr == 0 else "    --\n", "#" if self.fragment_types[fr] == 'Ghost'
-                                             or self.fragment_types[fr] == 'Absent' else "", self.fragment_charges[fr],
-                                             self.fragment_multiplicities[fr])
+                text += "%s    %s%d %d\n" % (
+                    "" if Pfr == 0 else "    --\n",
+                    "#" if self.fragment_types[fr] == "Ghost" or self.fragment_types[fr] == "Absent" else "",
+                    self.fragment_charges[fr],
+                    self.fragment_multiplicities[fr],
+                )
                 Pfr += 1
                 for at in range(self.fragments[fr][0], self.fragments[fr][1] + 1):
-                    if self.fragment_types[fr] == 'Absent':
+                    if self.fragment_types[fr] == "Absent":
                         text += "    %-8s" % ("X")
                     elif self.fZ(at) or self.fsymbol(at) == "X":
                         text += "    %-8s" % (self.flabel(at))
@@ -998,9 +1035,7 @@ class LibmintsMolecule():
     # <<< Involved Methods for Coordinates >>>
 
     def get_coord_value(self, vstr):
-        """Attempts to interpret a string as a double, if not it assumes it's a variable.
-
-        """
+        """Attempts to interpret a string as a double, if not it assumes it's a variable."""
         vstr = vstr.upper()
         realNumber = re.compile(r"""[-+]?(?:(?:\d*\.\d+)|(?:\d+\.?))(?:[Ee][+-]?\d+)?""", re.VERBOSE)
 
@@ -1010,11 +1045,11 @@ class LibmintsMolecule():
 
         # handle variable values, whether defined or not
         else:
-            if vstr == 'TDA':
+            if vstr == "TDA":
                 self.geometry_variables[vstr] = 360.0 * math.atan(math.sqrt(2)) / math.pi
 
             # handle negative variable values (ignore leading '-' and return minus the value)
-            if vstr[0] == '-':
+            if vstr[0] == "-":
                 self.all_variables.append(vstr[1:])
                 return VariableValue(vstr[1:], self.geometry_variables, True)
 
@@ -1023,7 +1058,7 @@ class LibmintsMolecule():
                 self.all_variables.append(vstr)
                 return VariableValue(vstr, self.geometry_variables)
 
-    def add_atom(self, Z, x, y, z, symbol, mass=0.0, charge=0.0, label='', A=-1, lineno=-1):
+    def add_atom(self, Z, x, y, z, symbol, mass=0.0, charge=0.0, label="", A=-1, lineno=-1):
         """Add an atom to the molecule
         *Z* atomic number
         *x* cartesian coordinate
@@ -1040,21 +1075,23 @@ class LibmintsMolecule():
         self.lock_frame = False
         self.set_has_cartesian(True)
 
-        if label == '':
+        if label == "":
             label = symbol
-        #if self.atom_at_position([x, y, z]) == -1:
+        # if self.atom_at_position([x, y, z]) == -1:
         if True:
             # Dummies go to full_atoms, ghosts need to go to both.
             self.full_atoms.append(
-                CartesianEntry(self.nallatom(), Z, charge, mass, symbol, label, A, NumberValue(x), NumberValue(y),
-                               NumberValue(z)))
-            if label.upper() != 'X':
+                CartesianEntry(
+                    self.nallatom(), Z, charge, mass, symbol, label, A, NumberValue(x), NumberValue(y), NumberValue(z)
+                )
+            )
+            if label.upper() != "X":
                 self.atoms.append(self.full_atoms[-1])
         else:
             raise ValidationError("Molecule::add_atom: Adding atom on top of an existing atom.")
 
     # For use with atoms defined with ZMAT or variable values, i.e., not Cartesian and NumberValue
-    def add_unsettled_atom(self, Z, anchor, symbol, mass=0.0, charge=0.0, label='', A=-1):
+    def add_unsettled_atom(self, Z, anchor, symbol, mass=0.0, charge=0.0, label="", A=-1):
         self.lock_frame = False
         numEntries = len(anchor)
         currentAtom = len(self.full_atoms)
@@ -1076,25 +1113,26 @@ class LibmintsMolecule():
         elif numEntries == 2:
             self.set_has_zmatrix(True)
 
-            rTo = self.get_anchor_atom(anchor[0], '')
+            rTo = self.get_anchor_atom(anchor[0], "")
             if rTo >= currentAtom:
                 raise ValidationError("Error finding defined anchor atom {}".format(anchor[0]))
             rval = self.get_coord_value(anchor[1])
 
-            if self.full_atoms[rTo].symbol() == 'X':
+            if self.full_atoms[rTo].symbol() == "X":
                 rval.set_fixed(True)
 
             self.full_atoms.append(
-                ZMatrixEntry(currentAtom, Z, charge, mass, symbol, label, A, self.full_atoms[rTo], rval))
+                ZMatrixEntry(currentAtom, Z, charge, mass, symbol, label, A, self.full_atoms[rTo], rval)
+            )
 
         # handle third line of Zmat
         elif numEntries == 4:
             self.set_has_zmatrix(True)
 
-            rTo = self.get_anchor_atom(anchor[0], '')
+            rTo = self.get_anchor_atom(anchor[0], "")
             if rTo >= currentAtom:
                 raise ValidationError("Error finding defined anchor atom {}".format(anchor[0]))
-            aTo = self.get_anchor_atom(anchor[2], '')
+            aTo = self.get_anchor_atom(anchor[2], "")
             if aTo >= currentAtom:
                 raise ValidationError("Error finding defined anchor atom {}".format(anchor[2]))
             if aTo == rTo:
@@ -1102,26 +1140,38 @@ class LibmintsMolecule():
             rval = self.get_coord_value(anchor[1])
             aval = self.get_coord_value(anchor[3])
 
-            if self.full_atoms[rTo].symbol() == 'X':
+            if self.full_atoms[rTo].symbol() == "X":
                 rval.set_fixed(True)
-            if self.full_atoms[aTo].symbol() == 'X':
+            if self.full_atoms[aTo].symbol() == "X":
                 aval.set_fixed(True)
 
             self.full_atoms.append(
-                ZMatrixEntry(currentAtom, Z, charge, mass, symbol, label, A, self.full_atoms[rTo], rval,
-                             self.full_atoms[aTo], aval))
+                ZMatrixEntry(
+                    currentAtom,
+                    Z,
+                    charge,
+                    mass,
+                    symbol,
+                    label,
+                    A,
+                    self.full_atoms[rTo],
+                    rval,
+                    self.full_atoms[aTo],
+                    aval,
+                )
+            )
 
         # handle fourth line of Zmat
         elif numEntries == 6:
             self.set_has_zmatrix(True)
 
-            rTo = self.get_anchor_atom(anchor[0], '')
+            rTo = self.get_anchor_atom(anchor[0], "")
             if rTo >= currentAtom:
                 raise ValidationError("Error finding defined anchor atom {}".format(anchor[0]))
-            aTo = self.get_anchor_atom(anchor[2], '')
+            aTo = self.get_anchor_atom(anchor[2], "")
             if aTo >= currentAtom:
                 raise ValidationError("Error finding defined anchor atom {}".format(anchor[2]))
-            dTo = self.get_anchor_atom(anchor[4], '')
+            dTo = self.get_anchor_atom(anchor[4], "")
             if dTo >= currentAtom:
                 raise ValidationError("Error finding defined anchor atom {}".format(anchor[4]))
             if aTo == rTo or rTo == dTo or aTo == dTo:  # for you star wars fans
@@ -1131,19 +1181,33 @@ class LibmintsMolecule():
             aval = self.get_coord_value(anchor[3])
             dval = self.get_coord_value(anchor[5])
 
-            if self.full_atoms[rTo].symbol() == 'X':
+            if self.full_atoms[rTo].symbol() == "X":
                 rval.set_fixed(True)
-            if self.full_atoms[aTo].symbol() == 'X':
+            if self.full_atoms[aTo].symbol() == "X":
                 aval.set_fixed(True)
-            if self.full_atoms[dTo].symbol() == 'X':
+            if self.full_atoms[dTo].symbol() == "X":
                 dval.set_fixed(True)
 
             self.full_atoms.append(
-                ZMatrixEntry(currentAtom, Z, charge, mass, symbol, label, A, self.full_atoms[rTo], rval,
-                             self.full_atoms[aTo], aval, self.full_atoms[dTo], dval))
+                ZMatrixEntry(
+                    currentAtom,
+                    Z,
+                    charge,
+                    mass,
+                    symbol,
+                    label,
+                    A,
+                    self.full_atoms[rTo],
+                    rval,
+                    self.full_atoms[aTo],
+                    aval,
+                    self.full_atoms[dTo],
+                    dval,
+                )
+            )
 
         else:
-            raise ValidationError('Illegal geometry specification (neither Cartesian nor Z-Matrix)')
+            raise ValidationError("Illegal geometry specification (neither Cartesian nor Z-Matrix)")
 
     def atom_entry(self, atom):
         """Returns the CoordEntry for an atom."""
@@ -1157,7 +1221,7 @@ class LibmintsMolecule():
 
         """
         if len(b) != 3:
-            raise ValidationError('Molecule::atom_at_position: Argument vector not of length 3\n')
+            raise ValidationError("Molecule::atom_at_position: Argument vector not of length 3\n")
 
         if self.natom() == 0:
             return -1
@@ -1193,7 +1257,7 @@ class LibmintsMolecule():
         try:
             return self.geometry_variables[vstr]
         except KeyError:
-            raise ValidationError('Molecule::get_variable: Geometry variable %s not known.\n' % (vstr))
+            raise ValidationError("Molecule::get_variable: Geometry variable %s not known.\n" % (vstr))
 
     def set_variable(self, vstr, val):
         """Assigns the value val to the variable labelled string in the
@@ -1230,8 +1294,9 @@ class LibmintsMolecule():
             for i in range(self.nallatom()):
                 if self.full_atoms[i].label() == vstr:
                     return i
-            raise ValidationError("Molecule::get_anchor_atom: Illegal value %s in atom specification on line %s.\n" %
-                                  (vstr, line))
+            raise ValidationError(
+                "Molecule::get_anchor_atom: Illegal value %s in atom specification on line %s.\n" % (vstr, line)
+            )
 
     def geometry(self, np_out=False):
         """Returns the geometry in Bohr as a N X 3 array.
@@ -1269,9 +1334,11 @@ class LibmintsMolecule():
         """
         self.lock_frame = False
         for at in range(self.natom()):
-            self.atoms[at].set_coordinates(geom[at][0] / self.input_units_to_au(),
-                                           geom[at][1] / self.input_units_to_au(),
-                                           geom[at][2] / self.input_units_to_au())
+            self.atoms[at].set_coordinates(
+                geom[at][0] / self.input_units_to_au(),
+                geom[at][1] / self.input_units_to_au(),
+                geom[at][2] / self.input_units_to_au(),
+            )
 
     def set_full_geometry(self, geom):
         """Sets the full geometry (dummies included), given a N X 3 array of coordinates *geom* in Bohr.
@@ -1281,9 +1348,11 @@ class LibmintsMolecule():
         """
         self.lock_frame = False
         for at in range(self.nallatom()):
-            self.full_atoms[at].set_coordinates(geom[at][0] / self.input_units_to_au(),
-                                                geom[at][1] / self.input_units_to_au(),
-                                                geom[at][2] / self.input_units_to_au())
+            self.full_atoms[at].set_coordinates(
+                geom[at][0] / self.input_units_to_au(),
+                geom[at][1] / self.input_units_to_au(),
+                geom[at][2] / self.input_units_to_au(),
+            )
 
     def distance_matrix(self):
         """Computes a matrix depicting distances between atoms. Prints
@@ -1305,15 +1374,15 @@ class LibmintsMolecule():
 
         text = "        Interatomic Distances (Angstroms)\n\n          "
         for i in range(self.natom()):
-            text += '%11s ' % ('[' + str(i + 1) + ']')
+            text += "%11s " % ("[" + str(i + 1) + "]")
         text += "\n"
         for i in range(self.natom()):
-            text += '  %-8s ' % ('[' + str(i + 1) + ']')
+            text += "  %-8s " % ("[" + str(i + 1) + "]")
             for j in range(self.natom()):
                 if j > i:
                     continue
                 else:
-                    text += '%10.5f  ' % (distm(i, j))
+                    text += "%10.5f  " % (distm(i, j))
             text += "\n"
         text += "\n\n"
         print(text)
@@ -1481,9 +1550,7 @@ class LibmintsMolecule():
         self.PYreinterpret_coordentries = rc
 
     def reinterpret_coordentries(self):
-        """Reinterpret the fragments for reals/ghosts and build the atom list.
-
-        """
+        """Reinterpret the fragments for reals/ghosts and build the atom list."""
         self.atoms = []
         for item in self.full_atoms:
             item.invalidate()
@@ -1494,17 +1561,17 @@ class LibmintsMolecule():
         high_spin_multiplicity = 1
 
         for fr in range(self.nfragments()):
-            if self.fragment_types[fr] == 'Absent':
+            if self.fragment_types[fr] == "Absent":
                 continue
 
-            if self.fragment_types[fr] == 'Real':
+            if self.fragment_types[fr] == "Real":
                 self.PYmolecular_charge += self.fragment_charges[fr]
                 high_spin_multiplicity += self.fragment_multiplicities[fr] - 1
 
             for at in range(self.fragments[fr][0], self.fragments[fr][1] + 1):
                 self.full_atoms[at].compute()
-                self.full_atoms[at].set_ghosted(self.fragment_types[fr] == 'Ghost')
-                if self.full_atoms[at].symbol() != 'X':
+                self.full_atoms[at].set_ghosted(self.fragment_types[fr] == "Ghost")
+                if self.full_atoms[at].symbol() != "X":
                     self.atoms.append(self.full_atoms[at])
 
         # TODO: This is a hack to ensure that set_multiplicity and set_molecular_charge
@@ -1513,8 +1580,9 @@ class LibmintsMolecule():
             self.PYmolecular_charge = temp_charge
             self.PYmultiplicity = temp_multiplicity
         else:
-            if (self.fragment_types.count('Real') == len(
-                    self.fragments)) and ((temp_multiplicity % 2) == (high_spin_multiplicity % 2)):
+            if (self.fragment_types.count("Real") == len(self.fragments)) and (
+                (temp_multiplicity % 2) == (high_spin_multiplicity % 2)
+            ):
                 # give low-spin a chance, so long as ghost/absent fragments can't be complicating the picture
                 self.PYmultiplicity = temp_multiplicity
             else:
@@ -1541,17 +1609,17 @@ class LibmintsMolecule():
         if self.lock_frame:
             return
 
-        #print("beginning update_geometry:")
-        #self.print_full()
+        # print("beginning update_geometry:")
+        # self.print_full()
         if self.PYreinterpret_coordentries:
             self.reinterpret_coordentries()
-        #print("after reinterpret_coordentries:")
-        #self.print_full()
+        # print("after reinterpret_coordentries:")
+        # self.print_full()
 
         if self.PYmove_to_com:
             self.move_to_com()
-        #print("after com:")
-        #self.print_full()
+        # print("after com:")
+        # self.print_full()
         self.wholegeom = self.geometry(np_out=True)
 
         # If the no_reorient command was given, don't reorient
@@ -1563,8 +1631,8 @@ class LibmintsMolecule():
             # the the user might have provided.
             frame = self.symmetry_frame()
             self.rotate_full(frame)
-            #print("after rotate:")
-            #self.print_full()
+            # print("after rotate:")
+            # self.print_full()
             self.wholegeom = self.geometry(np_out=True)
 
         # Recompute point group of the molecule, so the symmetry info is updated to the new frame
@@ -1577,8 +1645,8 @@ class LibmintsMolecule():
         #   finite-differences the set geometry is not totally symmetric anyway.
         # Symmetrize the molecule to remove any noise
         self.symmetrize()
-        #print("after symmetry:")
-        #self.print_full()
+        # print("after symmetry:")
+        # self.print_full()
 
         self.wholegeom = None
         self.lock_frame = True
@@ -1620,7 +1688,7 @@ class LibmintsMolecule():
             entry = [0.0, 0.0, 0.0]
             for j in range(self.natom()):
                 if i != j:
-                    temp = distance(self.xyz(i), self.xyz(j))**3.0
+                    temp = distance(self.xyz(i), self.xyz(j)) ** 3.0
                     Zi = self.Z(i)
                     Zj = self.Z(j)
                     entry[0] -= (self.x(i) - self.x(j)) * Zi * Zj / temp
@@ -1630,8 +1698,8 @@ class LibmintsMolecule():
         return de
 
     def nuclear_repulsion_energy_deriv2(self):
-        """ **NYI** Computes nuclear repulsion energy second derivatives"""
-        raise FeatureNotImplemented('Molecule::nuclear_repulsion_energy_deriv2')  # FINAL
+        """**NYI** Computes nuclear repulsion energy second derivatives"""
+        raise FeatureNotImplemented("Molecule::nuclear_repulsion_energy_deriv2")  # FINAL
 
     def set_basis_all_atoms(self, name, role="BASIS"):
         """Assigns basis *name* to all atoms."""
@@ -1655,7 +1723,8 @@ class LibmintsMolecule():
         if number >= self.natom():
             raise ValidationError(
                 "Molecule::set_basis_by_number: Basis specified for atom %d, but there are only %d atoms in this molecule."
-                % (number, self.natom()))
+                % (number, self.natom())
+            )
         self.atoms[number].set_basisset(name, role)
 
     def set_basis_by_label(self, label, name, role="BASIS"):
@@ -1670,7 +1739,8 @@ class LibmintsMolecule():
         if number >= self.natom():
             raise ValidationError(
                 "Molecule::set_shell_by_number: Basis specified for atom %d, but there are only %d atoms in this molecule."
-                % (number, self.natom()))
+                % (number, self.natom())
+            )
         self.atoms[number].set_shell(bshash, role)
 
     def nfrozen_core(self, depth=False):
@@ -1680,10 +1750,10 @@ class LibmintsMolecule():
         2
 
         """
-        if not depth or depth.upper() == 'FALSE':
+        if not depth or depth.upper() == "FALSE":
             return 0
 
-        elif depth or depth.upper() == 'TRUE':
+        elif depth or depth.upper() == "TRUE":
             # Freeze the number of core electrons corresponding to the
             # nearest previous noble gas atom.  This means that the 4p block
             # will still have 3d electrons active.  Alkali earth atoms will
@@ -1708,7 +1778,8 @@ class LibmintsMolecule():
 
         else:
             raise ValidationError(
-                "Molecule::nfrozen_core: Frozen core '%s' is not supported, options are {true, false}." % (depth))
+                "Molecule::nfrozen_core: Frozen core '%s' is not supported, options are {true, false}." % (depth)
+            )
 
     # <<< Involved Methods for Frame >>>
 
@@ -1744,52 +1815,50 @@ class LibmintsMolecule():
         return ret
 
     def move_to_com(self):
-        """Moves molecule to center of mass
-
-        """
+        """Moves molecule to center of mass"""
         com = scale(self.center_of_mass(), -1.0)
         self.translate(com)
 
     def set_com_fixed(self, _fix=True):
-        """ **NYI** Fix the center of mass at its current frame.
+        """**NYI** Fix the center of mass at its current frame.
         Not used in libmints so not implemented.
 
         """
-        raise FeatureNotImplemented('Molecule::set_com_fixed')  # FINAL
+        raise FeatureNotImplemented("Molecule::set_com_fixed")  # FINAL
 
-#    def inertia_tensor(self):
-#        """Compute inertia tensor.
-#
-#        >>> print(H2OH2O.inertia_tensor())
-#        [[8.704574864178731, -8.828375721817082, 0.0], [-8.828375721817082, 280.82861714077666, 0.0], [0.0, 0.0, 281.249500988553]]
-#
-#        """
-#        tensor = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-#
-#        for i in range(self.natom()):
-#            # I(alpha, alpha)
-#            tensor[0][0] += self.mass(i) * (self.y(i) * self.y(i) + self.z(i) * self.z(i))
-#            tensor[1][1] += self.mass(i) * (self.x(i) * self.x(i) + self.z(i) * self.z(i))
-#            tensor[2][2] += self.mass(i) * (self.x(i) * self.x(i) + self.y(i) * self.y(i))
-#
-#            # I(alpha, beta)
-#            tensor[0][1] -= self.mass(i) * self.x(i) * self.y(i)
-#            tensor[0][2] -= self.mass(i) * self.x(i) * self.z(i)
-#            tensor[1][2] -= self.mass(i) * self.y(i) * self.z(i)
-#
-#        # mirror
-#        tensor[1][0] = tensor[0][1]
-#        tensor[2][0] = tensor[0][2]
-#        tensor[2][1] = tensor[1][2]
-#
-#        # Check the elements for zero and make them a hard zero.
-#        for i in range(3):
-#            for j in range(3):
-#                if math.fabs(tensor[i][j]) < ZERO:
-#                    tensor[i][j] = 0.0
-#        return tensor
+    #    def inertia_tensor(self):
+    #        """Compute inertia tensor.
+    #
+    #        >>> print(H2OH2O.inertia_tensor())
+    #        [[8.704574864178731, -8.828375721817082, 0.0], [-8.828375721817082, 280.82861714077666, 0.0], [0.0, 0.0, 281.249500988553]]
+    #
+    #        """
+    #        tensor = [[0, 0, 0], [0, 0, 0], [0, 0, 0]]
+    #
+    #        for i in range(self.natom()):
+    #            # I(alpha, alpha)
+    #            tensor[0][0] += self.mass(i) * (self.y(i) * self.y(i) + self.z(i) * self.z(i))
+    #            tensor[1][1] += self.mass(i) * (self.x(i) * self.x(i) + self.z(i) * self.z(i))
+    #            tensor[2][2] += self.mass(i) * (self.x(i) * self.x(i) + self.y(i) * self.y(i))
+    #
+    #            # I(alpha, beta)
+    #            tensor[0][1] -= self.mass(i) * self.x(i) * self.y(i)
+    #            tensor[0][2] -= self.mass(i) * self.x(i) * self.z(i)
+    #            tensor[1][2] -= self.mass(i) * self.y(i) * self.z(i)
+    #
+    #        # mirror
+    #        tensor[1][0] = tensor[0][1]
+    #        tensor[2][0] = tensor[0][2]
+    #        tensor[2][1] = tensor[1][2]
+    #
+    #        # Check the elements for zero and make them a hard zero.
+    #        for i in range(3):
+    #            for j in range(3):
+    #                if math.fabs(tensor[i][j]) < ZERO:
+    #                    tensor[i][j] = 0.0
+    #        return tensor
 
-    def rotational_constants(self, tol=FULL_PG_TOL, return_units='cm^-1'):
+    def rotational_constants(self, tol=FULL_PG_TOL, return_units="cm^-1"):
         """Compute the rotational constants and moments of inertia.
 
         Parameters
@@ -1813,26 +1882,30 @@ class LibmintsMolecule():
         evals = np.asarray(evals)
 
         im_amuA = constants.bohr2angstroms * constants.bohr2angstroms
-        im_ghz = constants.h * constants.na * 1e14 / (8 * math.pi * math.pi * constants.bohr2angstroms *
-                                                      constants.bohr2angstroms)
-        im_mhz = im_ghz * 1000.
-        im_cm = im_ghz * 1.e7 / constants.c
+        im_ghz = (
+            constants.h
+            * constants.na
+            * 1e14
+            / (8 * math.pi * math.pi * constants.bohr2angstroms * constants.bohr2angstroms)
+        )
+        im_mhz = im_ghz * 1000.0
+        im_cm = im_ghz * 1.0e7 / constants.c
 
         rc_moi = {}
-        rc_moi['u a0^2'] = evals
-        rc_moi['u A^2'] = evals * im_amuA
-        with np.errstate(divide='ignore'):
-            rc_moi['GHz'] = im_ghz / evals
-            rc_moi['MHz'] = im_mhz / evals
-            rc_moi['cm^-1'] = im_cm / evals
+        rc_moi["u a0^2"] = evals
+        rc_moi["u A^2"] = evals * im_amuA
+        with np.errstate(divide="ignore"):
+            rc_moi["GHz"] = im_ghz / evals
+            rc_moi["MHz"] = im_mhz / evals
+            rc_moi["cm^-1"] = im_cm / evals
 
         fmt = """  {:12}    {a:3} {:16.8f}    {b:3} {:16.8f}    {c:3} {:16.8f}\n"""
         text = "        Moments of Inertia and Rotational Constants\n\n"
-        text += fmt.format('[u a0^2]', a='I_A', b='I_B', c='I_C', *rc_moi['u a0^2'])
-        text += fmt.format('[u A^2]', a='I_A', b='I_B', c='I_C', *rc_moi['u A^2'])
-        text += fmt.format('[GHz]', a='A', b='B', c='C', *rc_moi['GHz'])
-        text += fmt.format('[MHz]', a='A', b='B', c='C', *rc_moi['MHz'])
-        text += fmt.format('[cm^-1]', a='A', b='B', c='C', *rc_moi['cm^-1'])
+        text += fmt.format("[u a0^2]", a="I_A", b="I_B", c="I_C", *rc_moi["u a0^2"])
+        text += fmt.format("[u A^2]", a="I_A", b="I_B", c="I_C", *rc_moi["u A^2"])
+        text += fmt.format("[GHz]", a="A", b="B", c="C", *rc_moi["GHz"])
+        text += fmt.format("[MHz]", a="A", b="B", c="C", *rc_moi["MHz"])
+        text += fmt.format("[cm^-1]", a="A", b="B", c="C", *rc_moi["cm^-1"])
         print(text)
         # TODO outfile
 
@@ -1864,20 +1937,20 @@ class LibmintsMolecule():
                     rel = 0.0
                 if rel < tol:
                     degen += 1
-        #print("\tDegeneracy is %d\n" % (degen))
+        # print("\tDegeneracy is %d\n" % (degen))
 
         # Determine rotor type
         if self.natom() == 1:
-            rotor_type = 'RT_ATOM'
+            rotor_type = "RT_ATOM"
         elif rot_const[0] == 0.0:
-            rotor_type = 'RT_LINEAR'  # 0  <  IB == IC      inf > B == C
+            rotor_type = "RT_LINEAR"  # 0  <  IB == IC      inf > B == C
         elif degen == 2:
-            rotor_type = 'RT_SPHERICAL_TOP'  # IA == IB == IC       A == B == C
+            rotor_type = "RT_SPHERICAL_TOP"  # IA == IB == IC       A == B == C
         elif degen == 1:
-            rotor_type = 'RT_SYMMETRIC_TOP'  # IA <  IB == IC       A >  B == C --or--
+            rotor_type = "RT_SYMMETRIC_TOP"  # IA <  IB == IC       A >  B == C --or--
             # IA == IB <  IC       A == B >  C
         else:
-            rotor_type = 'RT_ASYMMETRIC_TOP'  # IA <  IB <  IC       A >  B >  C
+            rotor_type = "RT_ASYMMETRIC_TOP"  # IA <  IB <  IC       A >  B >  C
         return rotor_type
 
     def rotate(self, R):
@@ -1943,45 +2016,44 @@ class LibmintsMolecule():
             for fr in range(self.nfragments()):
                 for at in range(self.fragments[fr][0], self.fragments[fr][1] + 1):
                     self.full_atoms[at].compute()
-                    self.full_atoms[at].set_ghosted(self.fragment_types[fr] == 'Ghost')
-                    if self.full_atoms[at].symbol() != 'X':
+                    self.full_atoms[at].set_ghosted(self.fragment_types[fr] == "Ghost")
+                    if self.full_atoms[at].symbol() != "X":
                         self.atoms.append(self.full_atoms[at])
         else:  # release orientation to be free
             self.PYfix_orientation = False
 
     # <<< Methods for Saving >>>
 
-
-#    def save_string_xyz(self, save_ghosts=True):
-#        """Save a string for a XYZ-style file.
-#
-#        >>> H2OH2O.save_string_xyz()
-#        6
-#        _
-#         O   -1.551007000000   -0.114520000000    0.000000000000
-#         H   -1.934259000000    0.762503000000    0.000000000000
-#         H   -0.599677000000    0.040712000000    0.000000000000
-#         O    1.350625000000    0.111469000000    0.000000000000
-#         H    1.680398000000   -0.373741000000   -0.758561000000
-#         H    1.680398000000   -0.373741000000    0.758561000000
-#
-#        """
-#        factor = 1.0 if self.PYunits == 'Angstrom' else constants.bohr2angstroms
-#
-#        N = self.natom()
-#        if not save_ghosts:
-#            N = 0
-#            for i in range(self.natom()):
-#                if self.Z(i):
-#                    N += 1
-#        text = "%d\n\n" % (N)
-#
-#        for i in range(self.natom()):
-#            [x, y, z] = self.atoms[i].compute()
-#            if save_ghosts or self.Z(i):
-#                text += '%2s %17.12f %17.12f %17.12f\n' % ((self.symbol(i) if self.Z(i) else "Gh"), \
-#                    x * factor, y * factor, z * factor)
-#        return text
+    #    def save_string_xyz(self, save_ghosts=True):
+    #        """Save a string for a XYZ-style file.
+    #
+    #        >>> H2OH2O.save_string_xyz()
+    #        6
+    #        _
+    #         O   -1.551007000000   -0.114520000000    0.000000000000
+    #         H   -1.934259000000    0.762503000000    0.000000000000
+    #         H   -0.599677000000    0.040712000000    0.000000000000
+    #         O    1.350625000000    0.111469000000    0.000000000000
+    #         H    1.680398000000   -0.373741000000   -0.758561000000
+    #         H    1.680398000000   -0.373741000000    0.758561000000
+    #
+    #        """
+    #        factor = 1.0 if self.PYunits == 'Angstrom' else constants.bohr2angstroms
+    #
+    #        N = self.natom()
+    #        if not save_ghosts:
+    #            N = 0
+    #            for i in range(self.natom()):
+    #                if self.Z(i):
+    #                    N += 1
+    #        text = "%d\n\n" % (N)
+    #
+    #        for i in range(self.natom()):
+    #            [x, y, z] = self.atoms[i].compute()
+    #            if save_ghosts or self.Z(i):
+    #                text += '%2s %17.12f %17.12f %17.12f\n' % ((self.symbol(i) if self.Z(i) else "Gh"), \
+    #                    x * factor, y * factor, z * factor)
+    #        return text
 
     def save_xyz(self, filename, save_ghosts=True):
         """Save an XYZ file.
@@ -1989,25 +2061,25 @@ class LibmintsMolecule():
         >>> H2OH2O.save_xyz('h2o.xyz')
 
         """
-        outfile = open(filename, 'w')
+        outfile = open(filename, "w")
         outfile.write(self.save_string_xyz(save_ghosts))
         outfile.close()
 
     def save_to_checkpoint(self, chkpt, prefix=""):
-        """ **NYI** Save information to checkpoint file
+        """**NYI** Save information to checkpoint file
         (method name in libmints is save_to_chkpt)
 
         """
-        raise FeatureNotImplemented('Molecule::save_to_checkpoint')  # FINAL
+        raise FeatureNotImplemented("Molecule::save_to_checkpoint")  # FINAL
 
     # <<< Methods for Symmetry >>>
 
     def has_symmetry_element(self, op, tol=DEFAULT_SYM_TOL):
-        """ **NYI** Whether molecule satisfies the vector symmetry
+        """**NYI** Whether molecule satisfies the vector symmetry
         operation *op*. Not used by libmints.
 
         """
-        raise FeatureNotImplemented('Molecule::has_symmetry_element')  # FINAL
+        raise FeatureNotImplemented("Molecule::has_symmetry_element")  # FINAL
         for i in range(self.natom()):
             result = naivemult(self.xyz(i), op)
             atom = self.atom_at_position(result, tol)
@@ -2026,7 +2098,7 @@ class LibmintsMolecule():
         return self.pg
 
     def set_point_group(self, pg):
-        """Set the point group to object *pg* """
+        """Set the point group to object *pg*"""
         self.pg = pg
         # Call this here, the programmer will forget to call it, as I have many times.
         self.form_symmetry_information()
@@ -2061,78 +2133,76 @@ class LibmintsMolecule():
         v3_zero = [0.0, 0.0, 0.0]
         op_i = self.has_inversion(v3_zero, tol)
         if verbose > 2:
-            print("""  Inversion symmetry               : %s""" % ('yes' if op_i else 'no'))
+            print("""  Inversion symmetry               : %s""" % ("yes" if op_i else "no"))
 
         x_axis = [1, 0, 0]
         y_axis = [0, 1, 0]
         z_axis = [0, 0, 1]
         rot_axis = [0.0, 0.0, 0.0]
 
-        if rotor == 'RT_ATOM':  # atoms
-            self.full_pg = 'ATOM'
+        if rotor == "RT_ATOM":  # atoms
+            self.full_pg = "ATOM"
             self.PYfull_pg_n = 0
 
-        elif rotor == 'RT_LINEAR':  # linear molecules
-            self.full_pg = 'D_inf_h' if op_i else 'C_inf_v'
+        elif rotor == "RT_LINEAR":  # linear molecules
+            self.full_pg = "D_inf_h" if op_i else "C_inf_v"
             self.PYfull_pg_n = 0
 
-        elif rotor == 'RT_SPHERICAL_TOP':  # spherical tops
+        elif rotor == "RT_SPHERICAL_TOP":  # spherical tops
             if not op_i:  # The only spherical top without inversion is Td.
-                self.full_pg = 'Td'
+                self.full_pg = "Td"
                 self.PYfull_pg_n = 3
             else:  # Oh or Ih ?
                 # Oh has a S4 and should be oriented properly already.
                 test_mat = matrix_3d_rotation(geom, z_axis, math.pi / 2.0, True)
                 op_symm = equal_but_for_row_order(geom, test_mat, tol)
                 if verbose > 2:
-                    print("""  S4z                              : %s""" % ('yes' if op_symm else 'no'))
+                    print("""  S4z                              : %s""" % ("yes" if op_symm else "no"))
 
                 if op_symm:
-                    self.full_pg = 'Oh'
+                    self.full_pg = "Oh"
                     self.PYfull_pg_n = 4
                 else:
-                    self.full_pg = 'Ih'
+                    self.full_pg = "Ih"
                     self.PYfull_pg_n = 5
 
-        elif rotor == 'RT_ASYMMETRIC_TOP':  # asymmetric tops cannot exceed D2h, right?
-
-            if d2h_subgroup == 'c1':
-                self.full_pg = 'C1'
+        elif rotor == "RT_ASYMMETRIC_TOP":  # asymmetric tops cannot exceed D2h, right?
+            if d2h_subgroup == "c1":
+                self.full_pg = "C1"
                 self.PYfull_pg_n = 1
 
-            elif d2h_subgroup == 'ci':
-                self.full_pg = 'Ci'
+            elif d2h_subgroup == "ci":
+                self.full_pg = "Ci"
                 self.PYfull_pg_n = 1
 
-            elif d2h_subgroup == 'c2':
-                self.full_pg = 'Cn'
+            elif d2h_subgroup == "c2":
+                self.full_pg = "Cn"
                 self.PYfull_pg_n = 2
 
-            elif d2h_subgroup == 'cs':
-                self.full_pg = 'Cs'
+            elif d2h_subgroup == "cs":
+                self.full_pg = "Cs"
                 self.PYfull_pg_n = 1
 
-            elif d2h_subgroup == 'd2':
-                self.full_pg = 'Dn'
+            elif d2h_subgroup == "d2":
+                self.full_pg = "Dn"
                 self.PYfull_pg_n = 2
 
-            elif d2h_subgroup == 'c2v':
-                self.full_pg = 'Cnv'
+            elif d2h_subgroup == "c2v":
+                self.full_pg = "Cnv"
                 self.PYfull_pg_n = 2
 
-            elif d2h_subgroup == 'c2h':
-                self.full_pg = 'Cnh'
+            elif d2h_subgroup == "c2h":
+                self.full_pg = "Cnh"
                 self.PYfull_pg_n = 2
 
-            elif d2h_subgroup == 'd2h':
-                self.full_pg = 'Dnh'
+            elif d2h_subgroup == "d2h":
+                self.full_pg = "Dnh"
                 self.PYfull_pg_n = 2
 
             else:
                 print("""  Warning: Cannot determine point group.""")
 
-        elif rotor in ['RT_SYMMETRIC_TOP', 'RT_PROLATE_SYMMETRIC_TOP', 'RT_OBLATE_SYMMETRIC_TOP']:
-
+        elif rotor in ["RT_SYMMETRIC_TOP", "RT_PROLATE_SYMMETRIC_TOP", "RT_OBLATE_SYMMETRIC_TOP"]:
             # Find principal axis that is unique and make it z-axis.
             It = self.inertia_tensor()
             I_evals, I_evecs = diagonalize3x3symmat(It)
@@ -2171,7 +2241,7 @@ class LibmintsMolecule():
                 print("""  Geometry to analyze - principal axis on z-axis:""")
                 for at in range(self.natom()):
                     print("""%20.15lf %20.15lf %20.15lf""" % (geom[at][0], geom[at][1], geom[at][2]))
-                print('\n')
+                print("\n")
 
             # Determine order Cn and Sn of principal axis.
             Cn_z = matrix_3d_rotation_Cn(geom, z_axis, False, tol)
@@ -2194,7 +2264,7 @@ class LibmintsMolecule():
             else:
                 op_sigma_h = True
             if verbose > 2:
-                print("""  sigma_h                          : %s""" % ('yes' if op_sigma_h else 'no'))
+                print("""  sigma_h                          : %s""" % ("yes" if op_sigma_h else "no"))
 
             # Rotate one off-axis atom to the yz plane and check for sigma_v's.
             for at in range(self.natom()):
@@ -2205,7 +2275,8 @@ class LibmintsMolecule():
 
             if pivot_atom_i == self.natom():  # needs to be in else clause?
                 raise ValidationError(
-                    "Molecule::set_full_point_group: Not a linear molecule but could not find off-axis atom.")
+                    "Molecule::set_full_point_group: Not a linear molecule but could not find off-axis atom."
+                )
 
             # Rotate around z-axis to put pivot atom in the yz plane
             xy_point = normalize([geom[pivot_atom_i][0], geom[pivot_atom_i][1], 0])
@@ -2237,12 +2308,12 @@ class LibmintsMolecule():
             else:
                 op_sigma_v = True
             if verbose > 2:
-                print("""  sigma_v                          : %s""" % ('yes' if op_sigma_v else 'no'))
+                print("""  sigma_v                          : %s""" % ("yes" if op_sigma_v else "no"))
 
                 print("""  geom to analyze - one atom in yz plane:""")
                 for at in range(self.natom()):
                     print("""%20.15lf %20.15lf %20.15lf""" % (geom[at][0], geom[at][1], geom[at][2]))
-                print('\n')
+                print("\n")
 
             # Check for perpendicular C2's.
             # Loop through pairs of atoms to find c2 axis candidates.
@@ -2271,47 +2342,45 @@ class LibmintsMolecule():
                     if matrix_3d_rotation_Cn(geom, axis, False, tol, 2) == 2:
                         is_D = True
             if verbose > 2:
-                print("""  perp. C2's                       : %s""" % ('yes' if is_D else 'no'))
+                print("""  perp. C2's                       : %s""" % ("yes" if is_D else "no"))
 
             # Now assign point groups!  Sn first.
             if Sn_z == 2 * Cn_z and not is_D:
-                self.full_pg = 'Sn'
+                self.full_pg = "Sn"
                 self.PYfull_pg_n = Sn_z
                 return
 
             if is_D:  # has perpendicular C2's
                 if op_sigma_h and op_sigma_v:  # Dnh : Cn, nC2, sigma_h, nSigma_v
-                    self.full_pg = 'Dnh'
+                    self.full_pg = "Dnh"
                     self.PYfull_pg_n = Cn_z
 
                 elif Sn_z == 2 * Cn_z:  # Dnd : Cn, nC2, S2n axis coincident with Cn
-                    self.full_pg = 'Dnd'
+                    self.full_pg = "Dnd"
                     self.PYfull_pg_n = Cn_z
 
                 else:  # Dn : Cn, nC2
-                    self.full_pg = 'Dn'
+                    self.full_pg = "Dn"
                     self.PYfull_pg_n = Cn_z
 
             else:  # lacks perpendicular C2's
                 if op_sigma_h and Sn_z == Cn_z:  # Cnh : Cn, sigma_h, Sn coincident with Cn
-                    self.full_pg = 'Cnh'
+                    self.full_pg = "Cnh"
                     self.PYfull_pg_n = Cn_z
 
                 elif op_sigma_v:  # Cnv : Cn, nCv
-                    self.full_pg = 'Cnv'
+                    self.full_pg = "Cnv"
                     self.PYfull_pg_n = Cn_z
 
                 else:  # Cn  : Cn
-                    self.full_pg = 'Cn'
+                    self.full_pg = "Cn"
                     self.PYfull_pg_n = Cn_z
         return
 
     def has_inversion(self, origin, tol=DEFAULT_SYM_TOL):
-        """Does the molecule have an inversion center at origin
-
-        """
+        """Does the molecule have an inversion center at origin"""
         geom = self.geometry(np_out=True)
-        inverted = 2. * np.asarray(origin) - geom
+        inverted = 2.0 * np.asarray(origin) - geom
         for at in range(self.natom()):
             atom = self.atom_at_position(inverted[at], tol)
             if atom < 0 or not self.atoms[atom].is_equivalent_to(self.atoms[at]):
@@ -2319,9 +2388,7 @@ class LibmintsMolecule():
         return True
 
     def is_plane(self, origin, uperp, tol=DEFAULT_SYM_TOL):
-        """Is a plane?
-
-        """
+        """Is a plane?"""
         for i in range(self.natom()):
             A = sub(self.xyz(i), origin)
             Apar = scale(uperp, dot(uperp, A))
@@ -2333,9 +2400,7 @@ class LibmintsMolecule():
         return True
 
     def is_axis(self, origin, axis, order, tol=DEFAULT_SYM_TOL):
-        """Is *axis* an axis of order *order* with respect to *origin*?
-
-        """
+        """Is *axis* an axis of order *order* with respect to *origin*?"""
         for i in range(self.natom()):
             A = sub(self.xyz(i), origin)
             for j in range(1, order):
@@ -2407,16 +2472,16 @@ class LibmintsMolecule():
         ylikeness = math.fabs(dot(axis, worldyaxis))
         zlikeness = math.fabs(dot(axis, worldzaxis))
 
-        if (xlikeness - ylikeness) > 1.0E-12 and (xlikeness - zlikeness) > 1.0E-12:
-            like = 'XAxis'
+        if (xlikeness - ylikeness) > 1.0e-12 and (xlikeness - zlikeness) > 1.0e-12:
+            like = "XAxis"
             if dot(axis, worldxaxis) < 0:
                 axis = scale(axis, -1.0)
-        elif (ylikeness - zlikeness) > 1.0E-12:
-            like = 'YAxis'
+        elif (ylikeness - zlikeness) > 1.0e-12:
+            like = "YAxis"
             if dot(axis, worldyaxis) < 0:
                 axis = scale(axis, -1.0)
         else:
-            like = 'ZAxis'
+            like = "ZAxis"
             if dot(axis, worldzaxis) < 0:
                 axis = scale(axis, -1.0)
         return like, axis
@@ -2436,7 +2501,7 @@ class LibmintsMolecule():
 
             # Did the user provide directionality? If they did, the last letter would be x, y, or z
             #   Directionality given, assume the user is smart enough to know what they're doing.
-            user_specified_direction = True if user[-1] in ['X', 'x', 'Y', 'y', 'Z', 'z'] else False
+            user_specified_direction = True if user[-1] in ["X", "x", "Y", "y", "Z", "z"] else False
 
             if self.symmetry_from_input() != pg.symbol():
                 user = PointGroup(self.symmetry_from_input())
@@ -2447,7 +2512,8 @@ class LibmintsMolecule():
                     if (pg.bits() & user.bits()) != user.bits():
                         raise ValidationError(
                             "Molecule::find_point_group: User specified point group (%s) is not a subgroup of the highest detected point group (%s)"
-                            % (PointGroup.bits_to_full_name(user.bits()), PointGroup.bits_to_full_name(pg.bits())))
+                            % (PointGroup.bits_to_full_name(user.bits()), PointGroup.bits_to_full_name(pg.bits()))
+                        )
 
                 else:
                     similars, count = similar(user.bits())
@@ -2466,7 +2532,8 @@ class LibmintsMolecule():
                     else:
                         raise ValidationError(
                             "Molecule::find_point_group: User specified point group (%s) is not a subgroup of the highest detected point group (%s). If this is because the symmetry increased, try to start the calculation again from the last geometry, after checking any symmetry-dependent input, such as DOCC."
-                            % (PointGroup.bits_to_full_name(user.bits()), PointGroup.bits_to_full_name(pg.bits())))
+                            % (PointGroup.bits_to_full_name(user.bits()), PointGroup.bits_to_full_name(pg.bits()))
+                        )
 
                 # If we make it here, what the user specified is good.
                 pg = user
@@ -2488,13 +2555,23 @@ class LibmintsMolecule():
 
         # The order of the next 2 arrays MUST match!
         symm_bit = [
-            SymmOps['C2_z'], SymmOps['C2_y'], SymmOps['C2_x'], SymmOps['i'], SymmOps['Sigma_xy'], SymmOps['Sigma_xz'],
-            SymmOps['Sigma_yz']
+            SymmOps["C2_z"],
+            SymmOps["C2_y"],
+            SymmOps["C2_x"],
+            SymmOps["i"],
+            SymmOps["Sigma_xy"],
+            SymmOps["Sigma_xz"],
+            SymmOps["Sigma_yz"],
         ]
 
         symm_func = [
-            SymmetryOperation.c2_z, SymmetryOperation.c2_y, SymmetryOperation.c2_x, SymmetryOperation.i,
-            SymmetryOperation.sigma_xy, SymmetryOperation.sigma_xz, SymmetryOperation.sigma_yz
+            SymmetryOperation.c2_z,
+            SymmetryOperation.c2_y,
+            SymmetryOperation.c2_x,
+            SymmetryOperation.i,
+            SymmetryOperation.sigma_xy,
+            SymmetryOperation.sigma_xz,
+            SymmetryOperation.sigma_yz,
         ]
 
         symop = SymmetryOperation()
@@ -2502,7 +2579,6 @@ class LibmintsMolecule():
 
         # Only needs to detect the 8 symmetry operations
         for g in range(7):
-
             # Call the function pointer
             symm_func[g](symop)
             found = True
@@ -2607,7 +2683,7 @@ class LibmintsMolecule():
                 break
 
         # symmframe found c2axis
-        c2like = 'ZAxis'
+        c2like = "ZAxis"
         if have_c2axis:
             # try to make the sign of the axis correspond to one of the world axes
             c2like, c2axis = self.like_world_axis(c2axis, worldxaxis, worldyaxis, worldzaxis)
@@ -2659,22 +2735,22 @@ class LibmintsMolecule():
             c2perplike, c2axisperp = self.like_world_axis(c2axisperp, worldxaxis, worldyaxis, worldzaxis)
 
             # try to make c2axis the z axis
-            if c2perplike == 'ZAxis':
+            if c2perplike == "ZAxis":
                 tmpv = copy.deepcopy(c2axisperp)
                 c2axisperp = copy.deepcopy(c2axis)
                 c2axis = copy.deepcopy(tmpv)
                 c2perplike = c2like
-                c2like = 'ZAxis'
+                c2like = "ZAxis"
 
-            if c2like != 'ZAxis':
-                if c2like == 'XAxis':
+            if c2like != "ZAxis":
+                if c2like == "XAxis":
                     c2axis = cross(c2axis, c2axisperp)
                 else:
                     c2axis = cross(c2axisperp, c2axis)
                 c2like, c2axis = self.like_world_axis(c2axis, worldxaxis, worldyaxis, worldzaxis)
 
             # try to make c2axisperplike the x axis
-            if c2perplike == 'YAxis':
+            if c2perplike == "YAxis":
                 c2axisperp = cross(c2axisperp, c2axis)
                 c2perplike, c2axisperp = self.like_world_axis(c2axisperp, worldxaxis, worldyaxis, worldzaxis)
 
@@ -2730,9 +2806,9 @@ class LibmintsMolecule():
             sigmavlike, sigmav = self.like_world_axis(sigmav, worldxaxis, worldyaxis, worldzaxis)
 
             # Choose sigmav to be the world x axis, if possible
-            if c2like == 'ZAxis' and sigmavlike == 'YAxis':
+            if c2like == "ZAxis" and sigmavlike == "YAxis":
                 sigmav = cross(sigmav, c2axis)
-            elif c2like == 'YAxis' and sigmavlike == 'ZAxis':
+            elif c2like == "YAxis" and sigmavlike == "ZAxis":
                 sigmav = cross(c2axis, sigmav)
 
         # under certain conditions i need to know if there is any sigma plane
@@ -2831,9 +2907,9 @@ class LibmintsMolecule():
         # the y is then -x cross z
         yaxis = scale(cross(xaxis, zaxis), -1.0)
 
-        #print("xaxis %20.14lf %20.14lf %20.14lf" % (xaxis[0], xaxis[1], xaxis[2]))
-        #print("yaxis %20.14lf %20.14lf %20.14lf" % (yaxis[0], yaxis[1], yaxis[2]))
-        #print("zaxis %20.14lf %20.14lf %20.14lf" % (zaxis[0], zaxis[1], zaxis[2]))
+        # print("xaxis %20.14lf %20.14lf %20.14lf" % (xaxis[0], xaxis[1], xaxis[2]))
+        # print("yaxis %20.14lf %20.14lf %20.14lf" % (yaxis[0], yaxis[1], yaxis[2]))
+        # print("zaxis %20.14lf %20.14lf %20.14lf" % (zaxis[0], zaxis[1], zaxis[2]))
 
         frame = zero(3, 3)
         for i in range(3):
@@ -2869,7 +2945,7 @@ class LibmintsMolecule():
         self.PYatom_to_unique = [0] * self.natom()
         self.equiv = []
 
-        if self.point_group().symbol() == 'c1':
+        if self.point_group().symbol() == "c1":
             self.PYnunique = self.natom()
             for at in range(self.natom()):
                 self.nequiv.append(1)
@@ -2908,9 +2984,11 @@ class LibmintsMolecule():
                 for j in range(self.PYnunique):
                     unique = self.equiv[j][0]
                     aj = current_geom[unique]
-                    if current_Z[unique] == current_Z[i] and \
-                        abs(current_mass[unique] - current_mass[i]) < tol and \
-                        distance(np3, aj) < tol:
+                    if (
+                        current_Z[unique] == current_Z[i]
+                        and abs(current_mass[unique] - current_mass[i]) < tol
+                        and distance(np3, aj) < tol
+                    ):
                         i_is_unique = False
                         i_equiv = j
                         break
@@ -2945,10 +3023,10 @@ class LibmintsMolecule():
             tmp = self.equiv[i][jmaxzero]
             self.equiv[i][jmaxzero] = self.equiv[i][0]
             self.equiv[i][0] = tmp
-        #print('nunique', self.PYnunique)
-        #print('nequiv', self.nequiv)
-        #print('atom_to_unique', self.PYatom_to_unique)
-        #print('equiv', self.equiv)
+        # print('nunique', self.PYnunique)
+        # print('nequiv', self.nequiv)
+        # print('atom_to_unique', self.PYatom_to_unique)
+        # print('equiv', self.equiv)
 
     def sym_label(self):
         """Returns the symmetry label"""
@@ -2977,7 +3055,7 @@ class LibmintsMolecule():
         atoms cannot be mapped within tol(erance).
 
         """
-        #raise FeatureNotImplemented('Molecule::symmetrize')  # FINAL SYMM
+        # raise FeatureNotImplemented('Molecule::symmetrize')  # FINAL SYMM
         temp = zero(self.natom(), 3)
         ct = self.point_group().char_table()
 
@@ -3013,9 +3091,7 @@ class LibmintsMolecule():
         return self.point_group().symbol()
 
     def valid_atom_map(self, tol=0.01):
-        """Check if current geometry fits current point group
-
-        """
+        """Check if current geometry fits current point group"""
         np3 = [0.0, 0.0, 0.0]
         ct = self.point_group().char_table()
 
@@ -3047,7 +3123,7 @@ class LibmintsMolecule():
         testmol.set_geometry(XYZ)
         return testmol.is_symmetric(tol)
 
-    #def valid_atom_map(self, tol=0.01):
+    # def valid_atom_map(self, tol=0.01):
     #    """Check if current geometry fits current point group
 
     #    """
@@ -3084,10 +3160,10 @@ class LibmintsMolecule():
 
         """
         pg_with_n = self.full_pg
-        if pg_with_n in ['D_inf_h', 'C_inf_v', 'C1', 'Cs', 'Ci', 'Td', 'Oh', 'Ih']:
+        if pg_with_n in ["D_inf_h", "C_inf_v", "C1", "Cs", "Ci", "Td", "Oh", "Ih"]:
             return pg_with_n  # These don't need changes - have no 'n'.
         else:
-            return pg_with_n.replace('n', str(self.PYfull_pg_n), 1)
+            return pg_with_n.replace("n", str(self.PYfull_pg_n), 1)
 
     # <<< Methods for Uniqueness >>> (assume molecular point group has been determined)
 
@@ -3195,21 +3271,21 @@ def matrix_3d_rotation(mat, axis, phi, Sn):
     R[2][2] = wz * wz * cp + math.cos(phi)
 
     # R * coord^t = R_coord^t or coord * R^t = R_coord
-    #Matrix rotated_coord(nrow(),3);
-    #rotated_coord.gemm(false, true, 1.0, *this, R, 0.0);
+    # Matrix rotated_coord(nrow(),3);
+    # rotated_coord.gemm(false, true, 1.0, *this, R, 0.0);
     rotated_coord = mult(mat, transpose(R))
     #    print('after C')
     #    show(rotated_coord)
 
     if Sn:  # delta_ij - 2 a_i a_j / ||a||^2
         R = identity(3)
-        #R = zero(3, 3)
+        # R = zero(3, 3)
         R[0][0] -= 2 * wx * wx
         R[1][1] -= 2 * wy * wy
         R[2][2] -= 2 * wz * wz
-        #R[0][0] = 1 - 2 * wx * wx
-        #R[1][1] = 1 - 2 * wy * wy
-        #R[2][2] = 1 - 2 * wz * wz
+        # R[0][0] = 1 - 2 * wx * wx
+        # R[1][1] = 1 - 2 * wy * wy
+        # R[2][2] = 1 - 2 * wz * wz
         R[1][0] = 2 * wx * wy
         R[2][0] = 2 * wx * wz
         R[2][1] = 2 * wy * wz
@@ -3217,14 +3293,14 @@ def matrix_3d_rotation(mat, axis, phi, Sn):
         R[0][2] = 2 * wx * wz
         R[1][2] = 2 * wy * wz
         rotated_coord = mult(rotated_coord, transpose(R))
-        #tmp = mult(rotated_coord, transpose(R))
-        #Matrix tmp(nrow(),3);
-        #tmp.gemm(false, true, 1.0, rotated_coord, R, 0.0);
-        #rotated_coord.copy(tmp);
-        #rotated_coord = [row[:] for row in tmp]
+        # tmp = mult(rotated_coord, transpose(R))
+        # Matrix tmp(nrow(),3);
+        # tmp.gemm(false, true, 1.0, rotated_coord, R, 0.0);
+        # rotated_coord.copy(tmp);
+        # rotated_coord = [row[:] for row in tmp]
 
-    #SharedMatrix to_return = rotated_coord.clone();
-    #return to_return
+    # SharedMatrix to_return = rotated_coord.clone();
+    # return to_return
     return rotated_coord
 
 
@@ -3236,7 +3312,6 @@ def equal_but_for_row_order(mat, rhs, tol=DEFAULT_SYM_TOL):
     """
     for m in range(len(mat)):
         for m_rhs in range(len(mat)):
-
             for n in range(len(mat[m])):
                 if abs(mat[m][n] - rhs[m_rhs][n]) > tol:
                     break  # from n
@@ -3288,8 +3363,9 @@ def compute_atom_map(mol, tol=0.05):
                 mol.print_out()
                 print("""  attempted to find atom at\n""")
                 print("""    %lf %lf %lf\n""" % (np3[0], np3[1], np3[2]))
-                raise ValidationError("ERROR: Symmetry operation %d did not map atom %d to another atom:\n" %
-                                      (g, i + 1))
+                raise ValidationError(
+                    "ERROR: Symmetry operation %d did not map atom %d to another atom:\n" % (g, i + 1)
+                )
 
     return atom_map
 

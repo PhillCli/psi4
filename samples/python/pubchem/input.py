@@ -1,6 +1,7 @@
 #! PsiAPI pubchem access
 
 import psi4
+
 hartree2ev = psi4.constants.hartree2ev
 
 psi4.set_output_file("output.dat", False)
@@ -11,18 +12,18 @@ benz = psi4.geometry("""
 
 psi4.set_options({"REFERENCE": "RHF", "MAX_ENERGY_G_CONVERGENCE": 8, "BASIS": "STO-3G", "DF_BASIS_SCF": "CC-PVDZ-RI"})
 
-psi4.optimize('scf')
+psi4.optimize("scf")
 
 psi4.set_options({"REFERENCE": "RHF", "BASIS": "CC-PVDZ", "DF_BASIS_SCF": "CC-PVDZ-JKFIT"})
 
-e_sing_rhf = psi4.energy('scf')
+e_sing_rhf = psi4.energy("scf")
 
 benz.set_multiplicity(3)
 
 psi4.set_options({"REFERENCE": "ROHF"})
-e_trip_rohf = psi4.energy('scf')
+e_trip_rohf = psi4.energy("scf")
 psi4.set_options({"REFERENCE": "UHF"})
-e_trip_uhf = psi4.energy('scf')
+e_trip_uhf = psi4.energy("scf")
 
 vertical_uhf = hartree2ev * (e_trip_uhf - e_sing_rhf)
 vertical_rohf = hartree2ev * (e_trip_rohf - e_sing_rhf)

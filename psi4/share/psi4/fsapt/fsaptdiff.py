@@ -34,25 +34,24 @@ import sys
 import psi4
 
 path = psi4.core.get_datadir()
-sys.path.append('%s/fsapt' % path)
+sys.path.append("%s/fsapt" % path)
 from fsapt import *  # isort:skip
 
 # => Driver Code <= #
 
-if __name__ == '__main__':
-
+if __name__ == "__main__":
     # > Working Dirname < #
 
     if len(sys.argv) == 3:
         dirA = sys.argv[1]
         dirB = sys.argv[2]
-        dirD = '.'
+        dirD = "."
     elif len(sys.argv) == 4:
         dirA = sys.argv[1]
         dirB = sys.argv[2]
         dirD = sys.argv[3]
     else:
-        raise Exception('Usage: fsapt.py dirnameA dirnameB [dirnameD]')
+        raise Exception("Usage: fsapt.py dirnameA dirnameB [dirnameD]")
 
     # Make dirD if needed
     if not os.path.exists(dirD):
@@ -60,75 +59,75 @@ if __name__ == '__main__':
 
     # > Order-2 Analysis < #
 
-    fh = open('%s/fsapt.dat' % dirA, 'w')
+    fh = open("%s/fsapt.dat" % dirA, "w")
     fh, sys.stdout = sys.stdout, fh
-    print('  ==> F-ISAPT: Links by Charge <==\n')
+    print("  ==> F-ISAPT: Links by Charge <==\n")
     stuffA = compute_fsapt(dirA, False)
-    print('   => Full Analysis <=\n')
-    print_order2(stuffA['order2'], stuffA['fragkeys'])
-    print('   => Reduced Analysis <=\n')
-    print_order2(stuffA['order2r'], stuffA['fragkeysr'])
+    print("   => Full Analysis <=\n")
+    print_order2(stuffA["order2"], stuffA["fragkeys"])
+    print("   => Reduced Analysis <=\n")
+    print_order2(stuffA["order2r"], stuffA["fragkeysr"])
     fh, sys.stdout = sys.stdout, fh
     fh.close()
 
-    fh = open('%s/fsapt.dat' % dirB, 'w')
+    fh = open("%s/fsapt.dat" % dirB, "w")
     fh, sys.stdout = sys.stdout, fh
-    print('  ==> F-ISAPT: Links by Charge <==\n')
+    print("  ==> F-ISAPT: Links by Charge <==\n")
     stuffB = compute_fsapt(dirB, False)
-    print('   => Full Analysis <=\n')
-    print_order2(stuffB['order2'], stuffB['fragkeys'])
-    print('   => Reduced Analysis <=\n')
-    print_order2(stuffB['order2r'], stuffB['fragkeysr'])
+    print("   => Full Analysis <=\n")
+    print_order2(stuffB["order2"], stuffB["fragkeys"])
+    print("   => Reduced Analysis <=\n")
+    print_order2(stuffB["order2r"], stuffB["fragkeysr"])
     fh, sys.stdout = sys.stdout, fh
     fh.close()
 
-    fh = open('%s/fsapt.dat' % dirD, 'w')
+    fh = open("%s/fsapt.dat" % dirD, "w")
     fh, sys.stdout = sys.stdout, fh
-    print('  ==> F-ISAPT: Links by Charge <==\n')
-    order2D = diff_order2(stuffA['order2r'], stuffB['order2r'])
-    print('   => Reduced Analysis <=\n')
-    print_order2(order2D, stuffB['fragkeysr'])
+    print("  ==> F-ISAPT: Links by Charge <==\n")
+    order2D = diff_order2(stuffA["order2r"], stuffB["order2r"])
+    print("   => Reduced Analysis <=\n")
+    print_order2(order2D, stuffB["fragkeysr"])
     fh, sys.stdout = sys.stdout, fh
     fh.close()
 
-    fh = open('%s/fsapt.dat' % dirA, 'a')
+    fh = open("%s/fsapt.dat" % dirA, "a")
     fh, sys.stdout = sys.stdout, fh
-    print('  ==> F-ISAPT: Links 50-50 <==\n')
+    print("  ==> F-ISAPT: Links 50-50 <==\n")
     stuffA = compute_fsapt(dirA, True)
-    print('   => Full Analysis <=\n')
-    print_order2(stuffA['order2'], stuffA['fragkeys'])
-    print('   => Reduced Analysis <=\n')
-    print_order2(stuffA['order2r'], stuffA['fragkeysr'])
+    print("   => Full Analysis <=\n")
+    print_order2(stuffA["order2"], stuffA["fragkeys"])
+    print("   => Reduced Analysis <=\n")
+    print_order2(stuffA["order2r"], stuffA["fragkeysr"])
     fh, sys.stdout = sys.stdout, fh
     fh.close()
 
-    fh = open('%s/fsapt.dat' % dirB, 'a')
+    fh = open("%s/fsapt.dat" % dirB, "a")
     fh, sys.stdout = sys.stdout, fh
-    print('  ==> F-ISAPT: Links 50-50 <==\n')
+    print("  ==> F-ISAPT: Links 50-50 <==\n")
     stuffB = compute_fsapt(dirB, True)
-    print('   => Full Analysis <=\n')
-    print_order2(stuffB['order2'], stuffB['fragkeys'])
-    print('   => Reduced Analysis <=\n')
-    print_order2(stuffB['order2r'], stuffB['fragkeysr'])
+    print("   => Full Analysis <=\n")
+    print_order2(stuffB["order2"], stuffB["fragkeys"])
+    print("   => Reduced Analysis <=\n")
+    print_order2(stuffB["order2r"], stuffB["fragkeysr"])
     fh, sys.stdout = sys.stdout, fh
     fh.close()
 
-    fh = open('%s/fsapt.dat' % dirD, 'a')
+    fh = open("%s/fsapt.dat" % dirD, "a")
     fh, sys.stdout = sys.stdout, fh
-    print('  ==> F-ISAPT: Links 50-50 <==\n')
-    order2D = diff_order2(stuffA['order2r'], stuffB['order2r'])
-    print('   => Reduced Analysis <=\n')
-    print_order2(order2D, stuffB['fragkeysr'])
+    print("  ==> F-ISAPT: Links 50-50 <==\n")
+    order2D = diff_order2(stuffA["order2r"], stuffB["order2r"])
+    print("   => Reduced Analysis <=\n")
+    print_order2(order2D, stuffB["fragkeysr"])
     fh, sys.stdout = sys.stdout, fh
     fh.close()
 
     # > Order-1 PBD Files < #
 
-    pdbA = PDB.from_geom(stuffA['geom'])
-    print_order1(dirA, stuffA['order2r'], pdbA, stuffA['frags'])
+    pdbA = PDB.from_geom(stuffA["geom"])
+    print_order1(dirA, stuffA["order2r"], pdbA, stuffA["frags"])
 
-    pdbB = PDB.from_geom(stuffB['geom'])
-    print_order1(dirB, stuffB['order2r'], pdbB, stuffB['frags'])
+    pdbB = PDB.from_geom(stuffB["geom"])
+    print_order1(dirB, stuffB["order2r"], pdbB, stuffB["frags"])
 
     # Using A geometry
-    print_order1(dirD, order2D, pdbA, stuffA['frags'])
+    print_order1(dirD, order2D, pdbA, stuffA["frags"])

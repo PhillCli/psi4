@@ -17,10 +17,10 @@ def test_psi4_basic():
       H 1 0.96 2 104.5
     """)
 
-    psi4.set_options({'basis': "cc-pVDZ"})
-    psi4.energy('scf')
+    psi4.set_options({"basis": "cc-pVDZ"})
+    psi4.energy("scf")
 
-    assert psi4.compare_values(-76.0266327341067125, psi4.variable('SCF TOTAL ENERGY'), 6, 'SCF energy')
+    assert psi4.compare_values(-76.0266327341067125, psi4.variable("SCF TOTAL ENERGY"), 6, "SCF energy")
 
 
 @pytest.mark.smoke
@@ -35,9 +35,9 @@ def test_psi4_cc():
         H 1 0.97 2 103.0
     """)
 
-    psi4.set_options({"basis": '6-31G**'})
+    psi4.set_options({"basis": "6-31G**"})
 
-    psi4.optimize('ccsd')
+    psi4.optimize("ccsd")
 
     refnuc = 9.1654609427539
     refscf = -76.0229427274435
@@ -61,24 +61,26 @@ def test_psi4_cas():
     H 1 1.00 2 103.1
     """)
 
-    psi4.set_options({
-        "basis": '6-31G**',
-        "reference": 'rhf',
-        "scf_type": 'pk',
-        "mcscf_algorithm": 'ah',
-        "qc_module": 'detci',
-        "nat_orbs": True
-    })
+    psi4.set_options(
+        {
+            "basis": "6-31G**",
+            "reference": "rhf",
+            "scf_type": "pk",
+            "mcscf_algorithm": "ah",
+            "qc_module": "detci",
+            "nat_orbs": True,
+        }
+    )
 
     cisd_energy, cisd_wfn = psi4.energy("CISD", return_wfn=True)
 
-    assert psi4.compare_values(-76.2198474477531, cisd_energy, 6, 'CISD Energy')
+    assert psi4.compare_values(-76.2198474477531, cisd_energy, 6, "CISD Energy")
 
     psi4.set_options({"restricted_docc": [1, 0, 0, 0], "active": [3, 0, 1, 2]})
 
-    casscf_energy = psi4.energy('casscf', ref_wfn=cisd_wfn)
+    casscf_energy = psi4.energy("casscf", ref_wfn=cisd_wfn)
 
-    assert psi4.compare_values(-76.073865006902, casscf_energy, 6, 'CASSCF Energy')
+    assert psi4.compare_values(-76.073865006902, casscf_energy, 6, "CASSCF Energy")
 
 
 @pytest.mark.nbody
@@ -109,17 +111,19 @@ def test_psi4_dfmp2():
        no_reorient
     """)
 
-    psi4.set_options({
-        'basis': 'cc-pvdz',
-        'df_basis_scf': 'cc-pvdz-jkfit',
-        'df_basis_mp2': 'cc-pvdz-ri',
-        # not necessary to specify df_basis* for most basis sets
-        'scf_type': 'df',
-        'guess': 'sad',
-        'd_convergence': 11,
-    })
+    psi4.set_options(
+        {
+            "basis": "cc-pvdz",
+            "df_basis_scf": "cc-pvdz-jkfit",
+            "df_basis_mp2": "cc-pvdz-ri",
+            # not necessary to specify df_basis* for most basis sets
+            "scf_type": "df",
+            "guess": "sad",
+            "d_convergence": 11,
+        }
+    )
 
-    e_cp = psi4.energy('mp2', bsse_type='cp')
+    e_cp = psi4.energy("mp2", bsse_type="cp")
 
     assert psi4.compare_values(Enuc, formic_dim.nuclear_repulsion_energy(), 7, "Nuclear Repulsion Energy")
     assert psi4.compare_values(Ecp, e_cp, 5, "CP Corrected cc-pVDZ/cc-pVDZ-RI DFMP2")
@@ -156,18 +160,20 @@ def test_psi4_sapt():
      He
     """)
 
-    psi4.set_options({
-        "basis": "cc-pvdz",
-        "df_basis_elst": "cc-pvdz-ri",
-        "guess": "sad",
-        "scf_type": "df",
-        "sad_print": 2,
-        "d_convergence": 11,
-        "puream": True,
-        "print": 1
-    })
+    psi4.set_options(
+        {
+            "basis": "cc-pvdz",
+            "df_basis_elst": "cc-pvdz-ri",
+            "guess": "sad",
+            "scf_type": "df",
+            "sad_print": 2,
+            "d_convergence": 11,
+            "puream": True,
+            "print": 1,
+        }
+    )
 
-    psi4.energy('sapt0', molecule=ethene_ethyne)
+    psi4.energy("sapt0", molecule=ethene_ethyne)
 
     Eelst = psi4.variable("SAPT ELST ENERGY")
     Eexch = psi4.variable("SAPT EXCH ENERGY")
@@ -193,7 +199,7 @@ def test_psi4_scfproperty():
     ref_b3lyp_di_au = np.array([0.0, 0.0, 0.252480541747])
     ref_b3lyp_quad_au = np.array([[-5.66266837697, 0.0, 0.0], [0.0, -4.46523692003, 0.0], [0.0, 0.0, -5.22054902407]])
 
-    with open('grid.dat', 'w') as handle:
+    with open("grid.dat", "w") as handle:
         handle.write("""\
 0.0  0.0  0.0
 1.1  1.3  1.4
@@ -210,31 +216,44 @@ def test_psi4_scfproperty():
     """)
 
     # Get a reasonable guess, to save some iterations
-    psi4.set_options({
-        "scf_type": "pk",
-        "basis": "6-31G**",
-        "e_convergence": 8,
-        "docc": [2, 0, 0, 1],
-        "socc": [1, 0, 1, 0],
-        "reference": "uhf"
-    })
+    psi4.set_options(
+        {
+            "scf_type": "pk",
+            "basis": "6-31G**",
+            "e_convergence": 8,
+            "docc": [2, 0, 0, 1],
+            "socc": [1, 0, 1, 0],
+            "reference": "uhf",
+        }
+    )
 
     ch2.update_geometry()
     assert psi4.compare_values(6.6484189450, ch2.nuclear_repulsion_energy(), 9, "Nuclear repulsion energy")
 
     props = [
-        'DIPOLE', 'QUADRUPOLE', 'MULLIKEN_CHARGES', 'LOWDIN_CHARGES', 'WIBERG_LOWDIN_INDICES', 'MAYER_INDICES',
-        'MAYER_INDICES', 'MO_EXTENTS', 'GRID_FIELD', 'GRID_ESP', 'ESP_AT_NUCLEI', 'MULTIPOLE(5)', 'NO_OCCUPATIONS'
+        "DIPOLE",
+        "QUADRUPOLE",
+        "MULLIKEN_CHARGES",
+        "LOWDIN_CHARGES",
+        "WIBERG_LOWDIN_INDICES",
+        "MAYER_INDICES",
+        "MAYER_INDICES",
+        "MO_EXTENTS",
+        "GRID_FIELD",
+        "GRID_ESP",
+        "ESP_AT_NUCLEI",
+        "MULTIPOLE(5)",
+        "NO_OCCUPATIONS",
     ]
 
-    psi4.properties('scf', properties=props)
+    psi4.properties("scf", properties=props)
 
     assert psi4.compare_values(-38.91591819679808, psi4.variable("CURRENT ENERGY"), 6, "SCF energy")
-    assert psi4.compare_values(ref_hf_di_au, psi4.variable('SCF DIPOLE'), 4, "SCF DIPOLE")
-    assert psi4.compare_values(ref_hf_quad_au, psi4.variable('SCF QUADRUPOLE'), 4, "SCF QUADRUPOLE")
+    assert psi4.compare_values(ref_hf_di_au, psi4.variable("SCF DIPOLE"), 4, "SCF DIPOLE")
+    assert psi4.compare_values(ref_hf_quad_au, psi4.variable("SCF QUADRUPOLE"), 4, "SCF QUADRUPOLE")
 
-    psi4.properties('B3LYP', properties=props)
+    psi4.properties("B3LYP", properties=props)
 
-    assert psi4.compare_values(psi4.variable('CURRENT ENERGY'), -39.14134740550916, 6, "B3LYP energy")
-    assert psi4.compare_values(ref_b3lyp_di_au, psi4.variable('B3LYP DIPOLE'), 4, "B3LYP DIPOLE")
-    assert psi4.compare_values(ref_b3lyp_quad_au, psi4.variable('B3LYP QUADRUPOLE'), 4, "B3LYP QUADRUPOLE")
+    assert psi4.compare_values(psi4.variable("CURRENT ENERGY"), -39.14134740550916, 6, "B3LYP energy")
+    assert psi4.compare_values(ref_b3lyp_di_au, psi4.variable("B3LYP DIPOLE"), 4, "B3LYP DIPOLE")
+    assert psi4.compare_values(ref_b3lyp_quad_au, psi4.variable("B3LYP QUADRUPOLE"), 4, "B3LYP QUADRUPOLE")

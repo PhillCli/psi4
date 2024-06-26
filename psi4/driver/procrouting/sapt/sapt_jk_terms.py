@@ -173,7 +173,7 @@ def exchange(cache, jk, do_print=True):
     Sab.np[:nocc_A, nocc_A:] = SAB.np
     Sab.np[nocc_A:, :nocc_A] = SAB.np.T
     Sab.np[np.diag_indices_from(Sab.np)] += 1
-    Sab.power(-1.0, 1.e-14)
+    Sab.power(-1.0, 1.0e-14)
     Sab.np[np.diag_indices_from(Sab.np)] -= 1.0
 
     Tmo_AA = core.Matrix.from_array(Sab.np[:nocc_A, :nocc_A])
@@ -244,7 +244,7 @@ def exchange(cache, jk, do_print=True):
     return {"Exch10(S^2)": Exch_s2, "Exch10": Exch10}
 
 
-def induction(cache, jk, do_print=True, maxiter=12, conv=1.e-8, do_response=True, Sinf=False, sapt_jk_B=None):
+def induction(cache, jk, do_print=True, maxiter=12, conv=1.0e-8, do_response=True, Sinf=False, sapt_jk_B=None):
     """
     Compute Ind20 and Exch-Ind20 quantities from a SAPT cache and JK object.
     """
@@ -347,9 +347,9 @@ def induction(cache, jk, do_print=True, maxiter=12, conv=1.e-8, do_response=True
     # Do uncoupled
     core.print_out("   => Uncoupled Induction <= \n\n")
     unc_x_B_MOA = w_B_MOA.clone()
-    unc_x_B_MOA.np[:] /= (cache["eps_occ_A"].np.reshape(-1, 1) - cache["eps_vir_A"].np)
+    unc_x_B_MOA.np[:] /= cache["eps_occ_A"].np.reshape(-1, 1) - cache["eps_vir_A"].np
     unc_x_A_MOB = w_A_MOB.clone()
-    unc_x_A_MOB.np[:] /= (cache["eps_occ_B"].np.reshape(-1, 1) - cache["eps_vir_B"].np)
+    unc_x_A_MOB.np[:] /= cache["eps_occ_B"].np.reshape(-1, 1) - cache["eps_vir_B"].np
 
     unc_ind_ab = 2.0 * unc_x_B_MOA.vector_dot(w_B_MOA)
     unc_ind_ba = 2.0 * unc_x_A_MOB.vector_dot(w_A_MOB)
@@ -365,7 +365,12 @@ def induction(cache, jk, do_print=True, maxiter=12, conv=1.e-8, do_response=True
     ret["Exch-Ind20,u"] = unc_indexch_ba + unc_indexch_ab
 
     plist = [
-        "Ind20,u (A<-B)", "Ind20,u (A->B)", "Ind20,u", "Exch-Ind20,u (A<-B)", "Exch-Ind20,u (A->B)", "Exch-Ind20,u"
+        "Ind20,u (A<-B)",
+        "Ind20,u (A->B)",
+        "Ind20,u",
+        "Exch-Ind20,u (A<-B)",
+        "Exch-Ind20,u (A->B)",
+        "Exch-Ind20,u",
     ]
 
     if do_print:
@@ -385,7 +390,7 @@ def induction(cache, jk, do_print=True, maxiter=12, conv=1.e-8, do_response=True
         Sab.np[:nocc_A, nocc_A:] = SAB.np
         Sab.np[nocc_A:, :nocc_A] = SAB.np.T
         Sab.np[np.diag_indices_from(Sab.np)] += 1
-        Sab.power(-1.0, 1.e-14)
+        Sab.power(-1.0, 1.0e-14)
 
         Tmo_AA = core.Matrix.from_array(Sab.np[:nocc_A, :nocc_A])
         Tmo_BB = core.Matrix.from_array(Sab.np[nocc_A:, nocc_A:])
@@ -395,26 +400,18 @@ def induction(cache, jk, do_print=True, maxiter=12, conv=1.e-8, do_response=True
         T_B = core.triplet(cache["Cocc_B"], Tmo_BB, cache["Cocc_B"], False, False, True)
         T_AB = core.triplet(cache["Cocc_A"], Tmo_AB, cache["Cocc_B"], False, False, True)
 
-        sT_A = core.Matrix.chain_dot(cache["Cvir_A"],
-                                     unc_x_B_MOA,
-                                     Tmo_AA,
-                                     cache["Cocc_A"],
-                                     trans=[False, True, False, True])
-        sT_B = core.Matrix.chain_dot(cache["Cvir_B"],
-                                     unc_x_A_MOB,
-                                     Tmo_BB,
-                                     cache["Cocc_B"],
-                                     trans=[False, True, False, True])
-        sT_AB = core.Matrix.chain_dot(cache["Cvir_A"],
-                                      unc_x_B_MOA,
-                                      Tmo_AB,
-                                      cache["Cocc_B"],
-                                      trans=[False, True, False, True])
-        sT_BA = core.Matrix.chain_dot(cache["Cvir_B"],
-                                      unc_x_A_MOB,
-                                      Tmo_AB,
-                                      cache["Cocc_A"],
-                                      trans=[False, True, True, True])
+        sT_A = core.Matrix.chain_dot(
+            cache["Cvir_A"], unc_x_B_MOA, Tmo_AA, cache["Cocc_A"], trans=[False, True, False, True]
+        )
+        sT_B = core.Matrix.chain_dot(
+            cache["Cvir_B"], unc_x_A_MOB, Tmo_BB, cache["Cocc_B"], trans=[False, True, False, True]
+        )
+        sT_AB = core.Matrix.chain_dot(
+            cache["Cvir_A"], unc_x_B_MOA, Tmo_AB, cache["Cocc_B"], trans=[False, True, False, True]
+        )
+        sT_BA = core.Matrix.chain_dot(
+            cache["Cvir_B"], unc_x_A_MOB, Tmo_AB, cache["Cocc_A"], trans=[False, True, True, True]
+        )
 
         jk.C_clear()
 
@@ -509,7 +506,7 @@ def induction(cache, jk, do_print=True, maxiter=12, conv=1.e-8, do_response=True
 
         if do_print:
             for name in plist[3:]:
-                name = name + ' (S^inf)'
+                name = name + " (S^inf)"
 
                 core.print_out(print_sapt_var(name, ret[name], short=True))
                 core.print_out("\n")
@@ -545,26 +542,18 @@ def induction(cache, jk, do_print=True, maxiter=12, conv=1.e-8, do_response=True
 
         # Exch-Ind without S^2
         if Sinf:
-            cT_A = core.Matrix.chain_dot(cache["Cvir_A"],
-                                         x_B_MOA,
-                                         Tmo_AA,
-                                         cache["Cocc_A"],
-                                         trans=[False, True, False, True])
-            cT_B = core.Matrix.chain_dot(cache["Cvir_B"],
-                                         x_A_MOB,
-                                         Tmo_BB,
-                                         cache["Cocc_B"],
-                                         trans=[False, True, False, True])
-            cT_AB = core.Matrix.chain_dot(cache["Cvir_A"],
-                                          x_B_MOA,
-                                          Tmo_AB,
-                                          cache["Cocc_B"],
-                                          trans=[False, True, False, True])
-            cT_BA = core.Matrix.chain_dot(cache["Cvir_B"],
-                                          x_A_MOB,
-                                          Tmo_AB,
-                                          cache["Cocc_A"],
-                                          trans=[False, True, True, True])
+            cT_A = core.Matrix.chain_dot(
+                cache["Cvir_A"], x_B_MOA, Tmo_AA, cache["Cocc_A"], trans=[False, True, False, True]
+            )
+            cT_B = core.Matrix.chain_dot(
+                cache["Cvir_B"], x_A_MOB, Tmo_BB, cache["Cocc_B"], trans=[False, True, False, True]
+            )
+            cT_AB = core.Matrix.chain_dot(
+                cache["Cvir_A"], x_B_MOA, Tmo_AB, cache["Cocc_B"], trans=[False, True, False, True]
+            )
+            cT_BA = core.Matrix.chain_dot(
+                cache["Cvir_B"], x_A_MOB, Tmo_AB, cache["Cocc_A"], trans=[False, True, True, True]
+            )
 
             ind_ab_total = 2.0 * (cT_A.vector_dot(EX_AA_inf) + cT_AB.vector_dot(EX_AB_inf))
             ind_ba_total = 2.0 * (cT_B.vector_dot(EX_BB_inf) + cT_BA.vector_dot(EX_BA_inf))
@@ -577,7 +566,7 @@ def induction(cache, jk, do_print=True, maxiter=12, conv=1.e-8, do_response=True
 
             if do_print:
                 for name in plist[3:]:
-                    name = name.replace(",u", ",r") + ' (S^inf)'
+                    name = name.replace(",u", ",r") + " (S^inf)"
 
                     core.print_out(print_sapt_var(name, ret[name], short=True))
                     core.print_out("\n")
@@ -598,10 +587,10 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv, sapt_jk_B=None):
 
     # Make a preconditioner function
     P_A = core.Matrix(cache["eps_occ_A"].shape[0], cache["eps_vir_A"].shape[0])
-    P_A.np[:] = (cache["eps_occ_A"].np.reshape(-1, 1) - cache["eps_vir_A"].np)
+    P_A.np[:] = cache["eps_occ_A"].np.reshape(-1, 1) - cache["eps_vir_A"].np
 
     P_B = core.Matrix(cache["eps_occ_B"].shape[0], cache["eps_vir_B"].shape[0])
-    P_B.np[:] = (cache["eps_occ_B"].np.reshape(-1, 1) - cache["eps_vir_B"].np)
+    P_B.np[:] = cache["eps_occ_B"].np.reshape(-1, 1) - cache["eps_vir_B"].np
 
     # Preconditioner function
     def apply_precon(x_vec, act_mask):
@@ -653,17 +642,17 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv, sapt_jk_B=None):
         if niter == 0:
             niter = "Guess"
         else:
-            niter = ("%5d" % niter)
+            niter = "%5d" % niter
 
         # Compute IndAB
-        valA = (r_vec[0].sum_of_squares() / start_resid[0])**0.5
+        valA = (r_vec[0].sum_of_squares() / start_resid[0]) ** 0.5
         if valA < conv:
             cA = "*"
         else:
             cA = " "
 
         # Compute IndBA
-        valB = (r_vec[1].sum_of_squares() / start_resid[1])**0.5
+        valB = (r_vec[1].sum_of_squares() / start_resid[1]) ** 0.5
         if valB < conv:
             cB = "*"
         else:
@@ -673,13 +662,9 @@ def _sapt_cpscf_solve(cache, jk, rhsA, rhsB, maxiter, conv, sapt_jk_B=None):
         return [valA, valB]
 
     # Compute the solver
-    vecs, resid = solvers.cg_solver([rhsA, rhsB],
-                                    hessian_vec,
-                                    apply_precon,
-                                    maxiter=maxiter,
-                                    rcond=conv,
-                                    printlvl=0,
-                                    printer=pfunc)
+    vecs, resid = solvers.cg_solver(
+        [rhsA, rhsB], hessian_vec, apply_precon, maxiter=maxiter, rcond=conv, printlvl=0, printer=pfunc
+    )
     core.print_out("   " + ("-" * sep_size) + "\n")
 
     return vecs

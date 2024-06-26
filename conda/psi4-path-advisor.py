@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 
-import os
-import re
-import sys
-import json
-import shutil
 import argparse
 import itertools
-import unicodedata
+import json
+import os
+import re
+import shutil
+import sys
 import textwrap as _textwrap
+import unicodedata
 from pathlib import Path
 from subprocess import run
 from typing import Dict
@@ -19,13 +19,15 @@ except ModuleNotFoundError:
     try:
         import yaml
     except ModuleNotFoundError:
-        raise ModuleNotFoundError("Python module PyYAML not found. Solve by installing it: "
-                                  "`conda install -c conda-forge ruamel.yaml` or `pip install ruamel.yaml` or "
-                                  "`conda install -c conda-forge pyyaml` or `pip install PyYAML`.")
+        raise ModuleNotFoundError(
+            "Python module PyYAML not found. Solve by installing it: "
+            "`conda install -c conda-forge ruamel.yaml` or `pip install ruamel.yaml` or "
+            "`conda install -c conda-forge pyyaml` or `pip install PyYAML`."
+        )
     else:
         yaml_load = yaml.safe_load
 else:
-    yaml = YAML(typ='safe')
+    yaml = YAML(typ="safe")
     yaml_load = yaml.load
 
 codedeps_yaml = Path(__file__).resolve().parent.parent / "codedeps.yaml"
@@ -38,6 +40,7 @@ def native_platform() -> str:
 
     """
     import platform
+
     if sys.platform.startswith("linux"):
         return "linux-64"
     elif sys.platform == "darwin":
@@ -84,7 +87,7 @@ def strike(text: str, tilde: bool = False) -> str:
         #   UnicodeEncodeError: 'charmap' codec can't encode character '\u0336' in position 3: character maps to <undefined>
         return "~" + text + "~"
     else:
-        return ''.join(itertools.chain.from_iterable(zip(text, itertools.repeat('\u0336'))))
+        return "".join(itertools.chain.from_iterable(zip(text, itertools.repeat("\u0336"))))
 
 
 def visible_width(chars):
@@ -99,7 +102,7 @@ re_pkgline = re.compile("(?P<suppress>//)?(?P<chnl>.*::)?(?P<pkg>[A-Za-z0-9_-]+)
 
 conda_available = shutil.which("conda")
 mamba_available = shutil.which("mamba")
-pm_available = (conda_available or mamba_available)
+pm_available = conda_available or mamba_available
 
 if pm_available:
     conda_info_dict = conda_info()
@@ -228,9 +231,13 @@ else:
     lapack_choices.append(strike("conda"))
     for lap in conda_lapack_platform_this:
         lapack_choices.append(strike(lap))
-    lapack_help.append(f"""{strike(f'conda ({lapack_default_pkg})')}:\n""" + "\n".join(options_lap) + f"""
+    lapack_help.append(
+        f"""{strike(f'conda ({lapack_default_pkg})')}:\n"""
+        + "\n".join(options_lap)
+        + f"""
     Can't engage conda-provided blas/lapack libraries because
-    package (blas-devel=*=*{lapack_default_pkg} etc.) not installed in current env.""")
+    package (blas-devel=*=*{lapack_default_pkg} etc.) not installed in current env."""
+    )
 
 
 def lapack_type(arg):
@@ -418,13 +425,14 @@ class PreserveWhiteSpaceWrapRawTextHelpFormatter(argparse.RawDescriptionHelpForm
     def _split_lines(self, text, width):
         textRows = text.splitlines()
         for idx, line in enumerate(textRows):
-            search = re.search(r'\s*[0-9\-]{0,}\.?\s*', line)
+            search = re.search(r"\s*[0-9\-]{0,}\.?\s*", line)
             if line.strip() == "":
                 textRows[idx] = " "
             elif search:
                 lWSpace = search.end()
-                lines = [self.__add_whitespace(i, lWSpace, x)
-                         for i, x in enumerate(_textwrap.wrap(line, 70))]  # width))]
+                lines = [
+                    self.__add_whitespace(i, lWSpace, x) for i, x in enumerate(_textwrap.wrap(line, 70))
+                ]  # width))]
                 textRows[idx] = lines
 
         return [item for sublist in textRows for item in sublist]
@@ -432,9 +440,10 @@ class PreserveWhiteSpaceWrapRawTextHelpFormatter(argparse.RawDescriptionHelpForm
 
 ##### MENU
 
-parser = argparse.ArgumentParser(prog="psi4-path-advisor",
-                                 formatter_class=PreserveWhiteSpaceWrapRawTextHelpFormatter,
-                                 description="""Dependency, Build, and Run path advisor for Psi4.
+parser = argparse.ArgumentParser(
+    prog="psi4-path-advisor",
+    formatter_class=PreserveWhiteSpaceWrapRawTextHelpFormatter,
+    description="""Dependency, Build, and Run path advisor for Psi4.
 Mediates file https://github.com/psi4/psi4/blob/master/codedeps.yaml
 Run env subcommand. Conda env create and activate. Run cmake subcommand. Build.
 
@@ -479,88 +488,108 @@ cmake -S. -GNinja -C/home/psi4/cache_p4dev310.cmake -Bobjdir_p4dev310 -DCMAKE_IN
 # (4) next steps. repeat each login or add to shell's rc. your paths may vary.
 eval $(objdir_p4dev310/stage/bin/psi4 --psiapi)
 export PSI_SCRATCH=/path/to/existing/writable/local-not-network/directory/for/scratch/files
-""")
+""",
+)
 
-parser.add_argument("-v",
-                    action="count",
-                    default=0,
-                    help="""Use for more printing (-vv).
-Verbosity arg is NOT compatible with bash command substitution.""")
+parser.add_argument(
+    "-v",
+    action="count",
+    default=0,
+    help="""Use for more printing (-vv).
+Verbosity arg is NOT compatible with bash command substitution.""",
+)
 
 subparsers = parser.add_subparsers(dest="subparser_name", help="Script requires a subcommand.")
 
-parser_env = subparsers.add_parser("env",
-                                   aliases=["conda"],
-                                   formatter_class=PreserveWhiteSpaceWrapRawTextHelpFormatter,
-                                   help="Write conda environment file from codedeps file.")
-parser_env.add_argument("--lapack",
-                        choices=["mkl", "openblas", "accelerate", "blis", "netlib"],
-                        help=f"""(default: mkl if available else accelerate)
+parser_env = subparsers.add_parser(
+    "env",
+    aliases=["conda"],
+    formatter_class=PreserveWhiteSpaceWrapRawTextHelpFormatter,
+    help="Write conda environment file from codedeps file.",
+)
+parser_env.add_argument(
+    "--lapack",
+    choices=["mkl", "openblas", "accelerate", "blis", "netlib"],
+    help=f"""(default: mkl if available else accelerate)
 Specify a blas/lapack version.
 'accelerate' only for osx-* platforms.
-'mkl' and 'blis' only for *-64 platforms.""")
-parser_env.add_argument("-n",
-                        "--name",
-                        default="p4dev",
-                        help=f"""Specify environment name.
+'mkl' and 'blis' only for *-64 platforms.""",
+)
+parser_env.add_argument(
+    "-n",
+    "--name",
+    default="p4dev",
+    help=f"""Specify environment name.
 Can instead edit generated env spec file by hand
--or- rename on the cmdline, so argument mostly for printing.""")
-parser_env.add_argument("--python",
-                        default="",
-                        help="""Specify a python version.
-Can instead accept latest or edit env spec file by hand.""")
-parser_env.add_argument("--disable",
-                        nargs="+",
-                        choices=["compilers", "lapack", "addons", "test", "docs"],
-                        help=f"""Categories of dependencies to not include in env file.
+-or- rename on the cmdline, so argument mostly for printing.""",
+)
+parser_env.add_argument(
+    "--python",
+    default="",
+    help="""Specify a python version.
+Can instead accept latest or edit env spec file by hand.""",
+)
+parser_env.add_argument(
+    "--disable",
+    nargs="+",
+    choices=["compilers", "lapack", "addons", "test", "docs"],
+    help=f"""Categories of dependencies to not include in env file.
 Can instead edit generated env spec file by hand.
-For example, '--disable compilers lapack addons test docs' for minimal.""")
+For example, '--disable compilers lapack addons test docs' for minimal.""",
+)
 parser_env.add_argument("--solver", default="conda-else-mamba", choices=solver_choices, help="\n".join(solver_help))
-parser_env.add_argument("--platform",
-                        choices=["linux-64", "osx-64", "osx-arm64", "win-64"],
-                        default=conda_platform_native,
-                        help=f"""Conda platform/subdir for env file, if not the computed native
+parser_env.add_argument(
+    "--platform",
+    choices=["linux-64", "osx-64", "osx-arm64", "win-64"],
+    default=conda_platform_native,
+    help=f"""Conda platform/subdir for env file, if not the computed native
 (default: {conda_platform_native}).
-Apple Silicon users, check this value! Argument rarely used.""")
-parser_env.add_argument("--offline-conda",
-                        action="store_true",
-                        help=f"""Use script without conda/mamba available.
-Useful for bootstrapping CI runners. Offline arg is NOT compatible with bash command substitution.""")
+Apple Silicon users, check this value! Argument rarely used.""",
+)
+parser_env.add_argument(
+    "--offline-conda",
+    action="store_true",
+    help=f"""Use script without conda/mamba available.
+Useful for bootstrapping CI runners. Offline arg is NOT compatible with bash command substitution.""",
+)
 
 # add constraints to env file?
 
-parser_cmake = subparsers.add_parser("cache",
-                                     aliases=["cmake"],
-                                     formatter_class=PreserveWhiteSpaceWrapRawTextHelpFormatter,
-                                     help="Write cmake configuration cache from conda environment.")
-parser_cmake.add_argument("--compiler",
-                          choices=compiler_choices,
-                          default=compiler_default,
-                          type=compiler_type,
-                          help="\n".join(compiler_help))
-parser_cmake.add_argument("--lapack",
-                          choices=lapack_choices,
-                          default=lapack_default,
-                          type=lapack_type,
-                          help="\n".join(lapack_help))
-parser_cmake.add_argument("--objdir",
-                          default=f"objdir_{conda_prefix_short}",
-                          help=f"""Specify a build directory to cmake, if not (default: objdir_{conda_prefix_short}).
-Can instead rename on cmdline, so argument mostly for printing.""")
+parser_cmake = subparsers.add_parser(
+    "cache",
+    aliases=["cmake"],
+    formatter_class=PreserveWhiteSpaceWrapRawTextHelpFormatter,
+    help="Write cmake configuration cache from conda environment.",
+)
+parser_cmake.add_argument(
+    "--compiler", choices=compiler_choices, default=compiler_default, type=compiler_type, help="\n".join(compiler_help)
+)
+parser_cmake.add_argument(
+    "--lapack", choices=lapack_choices, default=lapack_default, type=lapack_type, help="\n".join(lapack_help)
+)
+parser_cmake.add_argument(
+    "--objdir",
+    default=f"objdir_{conda_prefix_short}",
+    help=f"""Specify a build directory to cmake, if not (default: objdir_{conda_prefix_short}).
+Can instead rename on cmdline, so argument mostly for printing.""",
+)
 parser_cmake.add_argument(
     "--insist",
     action="store_true",
-    help=
-    f"""Set the cache (`INSIST_FIND_PACKAGE_<pkg>=ON`) to prevent cmake from falling back on internal build for packages present in the conda environment."""
+    help=f"""Set the cache (`INSIST_FIND_PACKAGE_<pkg>=ON`) to prevent cmake from falling back on internal build for packages present in the conda environment.""",
 )
 
-parser_bulletin = subparsers.add_parser("bulletin",
-                                        formatter_class=PreserveWhiteSpaceWrapRawTextHelpFormatter,
-                                        help="(Info only) Read any build messages or advice.")
+parser_bulletin = subparsers.add_parser(
+    "bulletin",
+    formatter_class=PreserveWhiteSpaceWrapRawTextHelpFormatter,
+    help="(Info only) Read any build messages or advice.",
+)
 
-parser_deploy = subparsers.add_parser("deploy",
-                                      formatter_class=PreserveWhiteSpaceWrapRawTextHelpFormatter,
-                                      help="(Admin only) Apply codedeps info to codebase.")
+parser_deploy = subparsers.add_parser(
+    "deploy",
+    formatter_class=PreserveWhiteSpaceWrapRawTextHelpFormatter,
+    help="(Admin only) Apply codedeps info to codebase.",
+)
 
 args = parser.parse_args()
 
@@ -589,7 +618,7 @@ if args.v > 1:
 #          - pip
 #          - pip:
 #             - git+https://github.com/i-pi/i-pi.git@master-py3
-#""")
+# """)
 
 with codedeps_yaml.open() as fp:
     ydict = yaml_load(fp)
@@ -630,7 +659,6 @@ if args.subparser_name in ["conda", "env"]:
     lapack_packages = []  # TODO: incl openmp, too?
 
     for ddep in ydict["data"]:
-
         # skips
         use = ddep["use"]
         if "deprecated" in use:
@@ -820,7 +848,6 @@ elif args.subparser_name in ["cmake", "cache"]:
     }
 
     for ddep in ydict["data"]:
-
         use = ddep["use"]
         if "deprecated" in use:
             continue
@@ -880,8 +907,9 @@ elif args.subparser_name in ["cmake", "cache"]:
                     text.append(
                         "# Bring-your-own (byo) compilers by setting here -or- by passing on cmdline -or- by letting cmake autodetect."
                     )
-                dcmake_vars = conda["cmake"].get(f"{args.compiler}_{conda_platform}",
-                                                 conda["cmake"].get(args.compiler))
+                dcmake_vars = conda["cmake"].get(
+                    f"{args.compiler}_{conda_platform}", conda["cmake"].get(args.compiler)
+                )
             elif primary in ["libblas"]:
                 if args.lapack == "byo":
                     text.append(
@@ -898,7 +926,6 @@ elif args.subparser_name in ["cmake", "cache"]:
                 dcmake_vars = conda["cmake"]
 
             for k, v in dcmake_vars.items():
-
                 if isinstance(v, dict):
                     v = v.get(conda_platform, v.get(conda_unix))
 
@@ -1010,7 +1037,6 @@ elif args.subparser_name in ["cmake", "cache"]:
 ##### BULLETIN
 
 elif args.subparser_name in ["bulletin"]:
-
     notes = f"""
 
   * [21 Dec 2023] The Psi4 source can use most any Libint packaged as psi4*::libint2
@@ -1102,7 +1128,7 @@ mv env_p4docs.yaml {full_cmake_S}/devtools/conda-envs/linux-64-docs.yaml
     with open("deps_deploy.sh", "w") as fp:
         fp.write(script)
 
-#elif sys.platform == 'darwin':
+# elif sys.platform == 'darwin':
 #    parser.add_argument('--clang', action='store_true',
 #                        help="""Engage conda's psi4-dev-provided clang/clang++/gfortran compilers. You must have downloaded this file https://github.com/phracker/MacOSX-SDKs/releases/download/10.13/MacOSX10.9.sdk.tar.xz, unpacked it, and saved it at ~/SDKs/MacOSX10.9.sdk . !Change! this arg invoked XCode AppleClang prior to Jul 2018.""")
 #
@@ -1111,26 +1137,26 @@ mv env_p4docs.yaml {full_cmake_S}/devtools/conda-envs/linux-64-docs.yaml
 #    #                    help="""Engage psi4-dev-provided gcc/g++/gfortran compilers.""")
 #
 ## duplicates from `bin/psi4`
-#psi4 = os.path.abspath(os.path.dirname(__file__)) + os.path.sep + 'psi4'
-#psi4alongside = os.path.isfile(psi4) and os.access(psi4, os.X_OK)
+# psi4 = os.path.abspath(os.path.dirname(__file__)) + os.path.sep + 'psi4'
+# psi4alongside = os.path.isfile(psi4) and os.access(psi4, os.X_OK)
 #
-#if psi4alongside:
+# if psi4alongside:
 #    parser.add_argument("--psiapi-path", action='store_true',
 #                        help="""(Duplicate from `psi4`) Generates a bash command to source correct Python for `python -c "import psi4"`""")
 #
-#if psi4alongside:
+# if psi4alongside:
 #    from subprocess import call
 #
 #    if args.psiapi_path:
 #        call([psi4, '--psiapi-path'])
 #        sys.exit(0)
 #
-#else:
+# else:
 #    if args.plugin_compile:
 #        print("""Install "psi4" via `conda install psi4 -c psi4[/label/dev]`, then reissue command.""")
 #
 #
-#if sys.platform == 'darwin':
+# if sys.platform == 'darwin':
 #    if args.clang:
 #        recc.insert(-1, '-C/opt/anaconda1anaconda2anaconda3/share/cmake/psi4/psi4DepsClangCache.cmake')
 #    #    recc.insert(0, 'CONDA_BUILD_SYSROOT=~/SDKs/MacOSX10.9.sdk')

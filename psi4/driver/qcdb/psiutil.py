@@ -29,6 +29,7 @@ r"""Stuff stolen from psi. Should import or not as necessary
 or some better way. Apologies to the coders.
 
 """
+
 import os
 import re
 import sys
@@ -46,8 +47,8 @@ def query_yes_no(question, default=True):
 
     """
 
-    yes = re.compile(r'^(y|yes|true|on|1)', re.IGNORECASE)
-    no = re.compile(r'^(n|no|false|off|0)', re.IGNORECASE)
+    yes = re.compile(r"^(y|yes|true|on|1)", re.IGNORECASE)
+    no = re.compile(r"^(n|no|false|off|0)", re.IGNORECASE)
 
     if default is None:
         prompt = " [y/n] "
@@ -61,7 +62,7 @@ def query_yes_no(question, default=True):
     while True:
         sys.stdout.write(question + prompt)
         choice = input().strip().lower()
-        if default is not None and choice == '':
+        if default is not None and choice == "":
             return default
         elif yes.match(choice):
             return True
@@ -79,7 +80,7 @@ def search_file(filename, search_path):
     """
     file_found = False
     paths = search_path.split(os.pathsep)
-    #paths = string.split(search_path, os.pathsep)
+    # paths = string.split(search_path, os.pathsep)
     for path in paths:
         if os.path.exists(os.path.join(path, filename)):
             file_found = True
@@ -98,9 +99,9 @@ def drop_duplicates(seq):
     entries. There is no guarantee of which duplicate entry is dropped.
 
     """
-    #noDupes = []
-    #[noDupes.append(i) for i in seq if not noDupes.count(i)]
-    #return noDupes
+    # noDupes = []
+    # [noDupes.append(i) for i in seq if not noDupes.count(i)]
+    # return noDupes
     noDupes = []
     seq2 = sum(seq, [])
     [noDupes.append(i) for i in seq2 if not noDupes.count(i)]
@@ -113,7 +114,7 @@ def all_casings(input_string):
 
     """
     if not input_string:
-        yield ''
+        yield ""
     else:
         first = input_string[:1]
         if first.lower() == first.upper():
@@ -161,7 +162,7 @@ def import_ignorecase(module):
     return modobj
 
 
-def findfile_ignorecase(fil, pre='', post=''):
+def findfile_ignorecase(fil, pre="", post=""):
     """Function to locate a file *pre* + *fil* + *post* in any possible
     lettercase permutation of *fil*. Returns *pre* + *fil* + *post* if
     available, None if not.

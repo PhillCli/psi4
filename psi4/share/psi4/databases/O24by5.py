@@ -76,8 +76,8 @@ isOS = "True"
 # <<< Database Members >>>
 DIST = ["0.9", "1.0", "1.2", "1.5", "2.0"]
 HRXN = [f"{rxn}-{dist}" for rxn in range(1, 25) for dist in DIST]
-#HRXN_SM = []
-#HRXN_LG = []
+# HRXN_SM = []
+# HRXN_LG = []
 HRXN_DD = [f"{rxn}-{dist}" for rxn in [1, 2, 3, 4, 5, 6, 7, 8, 9] for dist in DIST]
 HRXN_ED = [f"{rxn}-{dist}" for rxn in [10, 11, 12, 13, 14, 15] for dist in DIST]
 HRXN_MX = [f"{rxn}-{dist}" for rxn in [16, 17, 18, 19, 20, 21, 22, 23, 24] for dist in DIST]
@@ -1814,8 +1814,8 @@ units angstrom
 
 # <<< Derived Geometry Strings >>>
 for rxn in HRXN:
-    cp_monoA = (1, (2, ))
-    cp_monoB = (2, (1, ))
+    cp_monoA = (1, (2,))
+    cp_monoB = (2, (1,))
     GEOS[f"{dbse}-{rxn}-monoA-CP"] = GEOS[f"{dbse}-{rxn}-dimer"].extract_fragments(*cp_monoA)
     GEOS[f"{dbse}-{rxn}-monoB-CP"] = GEOS[f"{dbse}-{rxn}-dimer"].extract_fragments(*cp_monoB)
     GEOS[f"{dbse}-{rxn}-monoA-unCP"] = GEOS[f"{dbse}-{rxn}-dimer"].extract_fragments(1)

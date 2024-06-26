@@ -1,8 +1,7 @@
-import pytest
-
 from functools import partial
 
 import numpy as np
+import pytest
 
 import psi4
 from psi4.driver import qcdb
@@ -10,12 +9,12 @@ from psi4.driver import qcdb
 pytestmark = [pytest.mark.psi, pytest.mark.api, pytest.mark.quick]
 
 _arrs = {
-    'a1234_14': np.arange(4),
-    'blip14': np.arange(4) + [0., 0.02, 0.005, 0.02],
-    'a1234_22': np.arange(4).reshape((2, 2)),
-    'blip22': (np.arange(4) + [0., 0.02, 0.005, 0.02]).reshape((2, 2)),
-    'iblip14': np.arange(4) + [0, 1, 0, 1],
-    'iblip22': (np.arange(4) + [0, 1, 0, 1]).reshape((2, 2)),
+    "a1234_14": np.arange(4),
+    "blip14": np.arange(4) + [0.0, 0.02, 0.005, 0.02],
+    "a1234_22": np.arange(4).reshape((2, 2)),
+    "blip22": (np.arange(4) + [0.0, 0.02, 0.005, 0.02]).reshape((2, 2)),
+    "iblip14": np.arange(4) + [0, 1, 0, 1],
+    "iblip22": (np.arange(4) + [0, 1, 0, 1]).reshape((2, 2)),
 }
 
 _dcts = {

@@ -44,7 +44,6 @@ def print_sapt_var(name, value, short=False, start_spacer="    "):
 
 
 def print_sapt_hf_summary(data, name, short=False, delta_hf=False):
-
     ret = "   Partial %s Results, to compute Delta HF (dHF)\n" % name
     ret += "  " + "-" * 105 + "\n"
 
@@ -75,7 +74,7 @@ def print_sapt_hf_summary(data, name, short=False, delta_hf=False):
     core.set_variable("SAPT IND ENERGY", ind)
 
     if delta_hf:
-        total_sapt = (data["Elst10,r"] + data["Exch10"] + ind)
+        total_sapt = data["Elst10,r"] + data["Exch10"] + ind
         sapt_hf_delta = delta_hf - total_sapt
 
         core.set_variable("SAPT(DFT) Delta HF", sapt_hf_delta)

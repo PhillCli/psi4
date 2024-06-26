@@ -18,12 +18,14 @@ __license__ = "BSD-3-Clause"
 __date__ = "2017-12-17"
 
 import time
+
 import numpy as np
+
 np.set_printoptions(precision=15, linewidth=200, suppress=True)
 import psi4
 
 psi4.set_memory(int(1e9), False)
-psi4.core.set_output_file('output.dat', False)
+psi4.core.set_output_file("output.dat", False)
 psi4.core.set_num_threads(4)
 
 mol = psi4.geometry("""
@@ -35,11 +37,11 @@ symmetry c1
 
 psi4.core.set_active_molecule(mol)
 
-options = {'BASIS': 'STO-3G', 'SCF_TYPE': 'PK', 'E_CONVERGENCE': 1e-10, 'D_CONVERGENCE': 1e-10}
+options = {"BASIS": "STO-3G", "SCF_TYPE": "PK", "E_CONVERGENCE": 1e-10, "D_CONVERGENCE": 1e-10}
 
 psi4.set_options(options)
 
-rhf_e, wfn = psi4.energy('SCF', return_wfn=True)
+rhf_e, wfn = psi4.energy("SCF", return_wfn=True)
 
 # Assuming C1 symmetry
 occ = wfn.doccpi()[0]
@@ -53,17 +55,17 @@ mints = psi4.core.MintsHelper(wfn.basisset())
 H_ao = np.asarray(mints.ao_kinetic()) + np.asarray(mints.ao_potential())
 
 # Update H, transform to MO basis
-H = np.einsum('uj,vi,uv', npC, npC, H_ao)
+H = np.einsum("uj,vi,uv", npC, npC, H_ao)
 
 # Integral generation from Psi4's MintsHelper
 MO = np.asarray(mints.mo_eri(C, C, C, C))
 # Physicist notation
 MO = MO.swapaxes(1, 2)
 
-F = H + 2.0 * np.einsum('pmqm->pq', MO[:, :occ, :, :occ])
-F -= np.einsum('pmmq->pq', MO[:, :occ, :occ, :])
+F = H + 2.0 * np.einsum("pmqm->pq", MO[:, :occ, :, :occ])
+F -= np.einsum("pmmq->pq", MO[:, :occ, :occ, :])
 natoms = mol.natom()
-cart = ['_X', '_Y', '_Z']
+cart = ["_X", "_Y", "_Z"]
 oei_dict = {"S": "OVERLAP", "T": "KINETIC", "V": "POTENTIAL"}
 
 deriv1_mat = {}
@@ -182,7 +184,7 @@ G = 4 * MO[:occ, :occ, occ:, occ:]
 G -= MO[:occ, :occ:, occ:, occ:].swapaxes(2, 3)
 G -= MO[:occ, occ:, :occ, occ:].swapaxes(1, 2)
 G = G.swapaxes(1, 2)
-G += np.einsum('ai,ij,ab->iajb', eps_diag, I_occ, I_vir)
+G += np.einsum("ai,ij,ab->iajb", eps_diag, I_occ, I_vir)
 
 # Inverse of G
 
@@ -200,8 +202,8 @@ for atom in range(natoms):
         key = str(atom) + cart[p]
         F_grad[key] = deriv1["T" + key]
         F_grad[key] += deriv1["V" + key]
-        F_grad[key] += 2.0 * np.einsum('pqmm->pq', deriv1["TEI" + key][:, :, :occ, :occ])
-        F_grad[key] -= 1.0 * np.einsum('pmmq->pq', deriv1["TEI" + key][:, :occ, :occ, :])
+        F_grad[key] += 2.0 * np.einsum("pqmm->pq", deriv1["TEI" + key][:, :, :occ, :occ])
+        F_grad[key] -= 1.0 * np.einsum("pmmq->pq", deriv1["TEI" + key][:, :occ, :occ, :])
 
 psi4.core.print_out("\n\n CPHF Coefficentsn:\n")
 
@@ -238,13 +240,16 @@ for atom1 in range(natoms):
 
                 Hes["R"][r][c] = -2.0 * np.einsum("ij,ij->", deriv1[key1S][:occ, :occ], F_grad[key2][:occ, :occ])
                 Hes["R"][r][c] -= 2.0 * np.einsum("ij,ij->", deriv1[key2S][:occ, :occ], F_grad[key1][:occ, :occ])
-                Hes["R"][r][c] += 4.0 * np.einsum("ii,mi,mi->", F[:occ, :occ], deriv1[key2S][:occ, :occ],
-                                                  deriv1[key1S][:occ, :occ])
+                Hes["R"][r][c] += 4.0 * np.einsum(
+                    "ii,mi,mi->", F[:occ, :occ], deriv1[key2S][:occ, :occ], deriv1[key1S][:occ, :occ]
+                )
 
-                Hes["R"][r][c] += 4.0 * np.einsum("ij,mn,imjn->", deriv1[key1S][:occ, :occ], deriv1[key2S][:occ, :occ],
-                                                  MO[:occ, :occ, :occ, :occ])
-                Hes["R"][r][c] -= 2.0 * np.einsum("ij,mn,imnj->", deriv1[key1S][:occ, :occ], deriv1[key2S][:occ, :occ],
-                                                  MO[:occ, :occ, :occ, :occ])
+                Hes["R"][r][c] += 4.0 * np.einsum(
+                    "ij,mn,imjn->", deriv1[key1S][:occ, :occ], deriv1[key2S][:occ, :occ], MO[:occ, :occ, :occ, :occ]
+                )
+                Hes["R"][r][c] -= 2.0 * np.einsum(
+                    "ij,mn,imnj->", deriv1[key1S][:occ, :occ], deriv1[key2S][:occ, :occ], MO[:occ, :occ, :occ, :occ]
+                )
 
                 Hes["R"][r][c] -= 4.0 * np.einsum("ai,ai->", U[key2], B[key1])
                 Hes["R"][c][r] = Hes["R"][r][c]
@@ -260,44 +265,109 @@ Mat = psi4.core.Matrix.from_array(Hessian)
 Mat.name = " TOTAL HESSIAN"
 Mat.print_out()
 
-H_psi4 = psi4.core.Matrix.from_list([
+H_psi4 = psi4.core.Matrix.from_list(
     [
-        0.07613952269361, -0.00000000000000, -0.00000000000011, -0.03806976134686, 0.00000000000009, 0.00000000000006,
-        -0.03806976134685, -0.00000000000009, 0.00000000000006
-    ],
-    [
-        -0.00000000000000, 0.48290537237134, -0.00000000000000, 0.00000000000005, -0.24145268618572, 0.15890015585447,
-        -0.00000000000005, -0.24145268618572, -0.15890015585447
-    ],
-    [
-        -0.00000000000011, -0.00000000000000, 0.43734495978407, 0.00000000000006, 0.07344233774235, -0.21867247989206,
-        0.00000000000006, -0.07344233774235, -0.21867247989205
-    ],
-    [
-        -0.03806976134686, 0.00000000000005, 0.00000000000006, 0.04537741758844, -0.00000000000007, -0.00000000000004,
-        -0.00730765624159, 0.00000000000002, -0.00000000000001
-    ],
-    [
-        0.00000000000009, -0.24145268618572, 0.07344233774235, -0.00000000000007, 0.25786500659260, -0.11617124679841,
-        -0.00000000000002, -0.01641232040687, 0.04272890905606
-    ],
-    [
-        0.00000000000006, 0.15890015585447, -0.21867247989206, -0.00000000000004, -0.11617124679841, 0.19775198076992,
-        -0.00000000000001, -0.04272890905606, 0.02092049912214
-    ],
-    [
-        -0.03806976134685, -0.00000000000005, 0.00000000000006, -0.00730765624159, -0.00000000000002,
-        -0.00000000000001, 0.04537741758844, 0.00000000000007, -0.00000000000004
-    ],
-    [
-        -0.00000000000009, -0.24145268618572, -0.07344233774235, 0.00000000000002, -0.01641232040687,
-        -0.04272890905606, 0.00000000000007, 0.25786500659260, 0.11617124679841
-    ],
-    [
-        0.00000000000006, -0.15890015585447, -0.21867247989205, -0.00000000000001, 0.04272890905606, 0.02092049912214,
-        -0.00000000000004, 0.11617124679841, 0.19775198076991
-    ],
-])
+        [
+            0.07613952269361,
+            -0.00000000000000,
+            -0.00000000000011,
+            -0.03806976134686,
+            0.00000000000009,
+            0.00000000000006,
+            -0.03806976134685,
+            -0.00000000000009,
+            0.00000000000006,
+        ],
+        [
+            -0.00000000000000,
+            0.48290537237134,
+            -0.00000000000000,
+            0.00000000000005,
+            -0.24145268618572,
+            0.15890015585447,
+            -0.00000000000005,
+            -0.24145268618572,
+            -0.15890015585447,
+        ],
+        [
+            -0.00000000000011,
+            -0.00000000000000,
+            0.43734495978407,
+            0.00000000000006,
+            0.07344233774235,
+            -0.21867247989206,
+            0.00000000000006,
+            -0.07344233774235,
+            -0.21867247989205,
+        ],
+        [
+            -0.03806976134686,
+            0.00000000000005,
+            0.00000000000006,
+            0.04537741758844,
+            -0.00000000000007,
+            -0.00000000000004,
+            -0.00730765624159,
+            0.00000000000002,
+            -0.00000000000001,
+        ],
+        [
+            0.00000000000009,
+            -0.24145268618572,
+            0.07344233774235,
+            -0.00000000000007,
+            0.25786500659260,
+            -0.11617124679841,
+            -0.00000000000002,
+            -0.01641232040687,
+            0.04272890905606,
+        ],
+        [
+            0.00000000000006,
+            0.15890015585447,
+            -0.21867247989206,
+            -0.00000000000004,
+            -0.11617124679841,
+            0.19775198076992,
+            -0.00000000000001,
+            -0.04272890905606,
+            0.02092049912214,
+        ],
+        [
+            -0.03806976134685,
+            -0.00000000000005,
+            0.00000000000006,
+            -0.00730765624159,
+            -0.00000000000002,
+            -0.00000000000001,
+            0.04537741758844,
+            0.00000000000007,
+            -0.00000000000004,
+        ],
+        [
+            -0.00000000000009,
+            -0.24145268618572,
+            -0.07344233774235,
+            0.00000000000002,
+            -0.01641232040687,
+            -0.04272890905606,
+            0.00000000000007,
+            0.25786500659260,
+            0.11617124679841,
+        ],
+        [
+            0.00000000000006,
+            -0.15890015585447,
+            -0.21867247989205,
+            -0.00000000000001,
+            0.04272890905606,
+            0.02092049912214,
+            -0.00000000000004,
+            0.11617124679841,
+            0.19775198076991,
+        ],
+    ]
+)
 
 H_python_mat = psi4.core.Matrix.from_array(Hessian)
-psi4.compare_matrices(H_psi4, H_python_mat, 10, "RHF-HESSIAN-TEST")  #TEST
+psi4.compare_matrices(H_psi4, H_python_mat, 10, "RHF-HESSIAN-TEST")  # TEST

@@ -68,8 +68,8 @@ def _write_nbo(self, name: str):
         [103, 101, 102],  # p
         [255, 252, 253, 254, 251],  # d: z2 xz yz x2-y2 xy
         [351, 352, 353, 354, 355, 356, 357],  # f
-        [451, 452, 453, 454, 455, 456, 457, 458, 459],  #g
-        [551, 552, 553, 554, 555, 556, 557, 558, 559, 560, 561]  #h
+        [451, 452, 453, 454, 455, 456, 457, 458, 459],  # g
+        [551, 552, 553, 554, 555, 556, 557, 558, 559, 560, 561],  # h
     ]
     # For historical reasons, the code loops over shells first and then basis functions within the shell.
     # This turns out to not give the same ordering as looping over basis functions directly.
@@ -138,7 +138,7 @@ def _write_nbo(self, name: str):
     # Let's normalize ourselves instead.
     ao_overlap = mints.ao_overlap().np
     nbf = ao_overlap.shape[0]
-    ao_normalizer = ao_overlap.diagonal()**(-1 / 2)
+    ao_normalizer = ao_overlap.diagonal() ** (-1 / 2)
 
     def normalize(matrix, normalizer):
         return ((matrix * normalizer).T * normalizer).T
@@ -192,14 +192,14 @@ def _write_nbo(self, name: str):
         for i in range(self.nmo()):
             for mu in range(nbf):
                 count += 1
-                if (count % 5 == 1):
-                    string += ("\n  ")
+                if count % 5 == 1:
+                    string += "\n  "
                 string += f"{C[mu][i]:15.6E}"
         # Pad linear dependencies
         for i in range((nbf - self.nmo()) * nbf):
             count += 1
-            if (count % 5 == 1):
-                string += ("\n  ")
+            if count % 5 == 1:
+                string += "\n  "
             string += f"{0:15.6E}"
         return count, string
 
@@ -209,8 +209,8 @@ def _write_nbo(self, name: str):
         NBO_file += write_C_matrix(self.Cb_subset("AO", "ALL"), count)[1]
     NBO_file += "\n $END\n"
 
-    #Now time to write !
-    with open(name, 'w') as f:
+    # Now time to write !
+    with open(name, "w") as f:
         f.write(NBO_file)
 
 
@@ -218,10 +218,10 @@ core.Wavefunction.write_nbo = _write_nbo
 
 
 def _write_molden(
-        self: core.Wavefunction,
-        filename: Optional[str] = None,
-        do_virtual: Optional[bool] = None,
-        use_natural: bool = False,
+    self: core.Wavefunction,
+    filename: Optional[str] = None,
+    do_virtual: Optional[bool] = None,
+    use_natural: bool = False,
 ):
     """Writes wavefunction information in *wfn* to *filename* in
     molden format. Will write natural orbitals from *density* (MO basis) if supplied.
@@ -291,12 +291,12 @@ def _write_molden(
     basisset = self.basisset()
     mol = self.molecule()
     # Header and geometry (Atom, Atom #, Z, x, y, z)
-    mol_string = '[Molden Format]\n[Atoms] (AU)\n'
+    mol_string = "[Molden Format]\n[Atoms] (AU)\n"
     for atom in range(mol.natom()):
         mol_string += f"{mol.symbol(atom):2s}  {atom+1:2d}  {int(mol.Z(atom)):3d}   {mol.x(atom):20.10f} {mol.y(atom):20.10f} {mol.z(atom):20.10f}\n"
 
     # Dump basis set
-    mol_string += '[GTO]\n'
+    mol_string += "[GTO]\n"
     for atom in range(mol.natom()):
         mol_string += f"  {atom+1:d} 0\n"
         for rel_shell_idx in range(basisset.nshell_on_center(atom)):
@@ -305,23 +305,23 @@ def _write_molden(
             mol_string += f" {shell.amchar:s}{shell.nprimitive:5d}  1.00\n"
             for prim in range(shell.nprimitive):
                 mol_string += f"{shell.exp(prim):20.10f} {shell.original_coef(prim):20.10f}\n"
-        mol_string += '\n'
+        mol_string += "\n"
 
     #
     if use_natural:
         # Alphas
         nmopi = self.nmopi()
-        #MO_Da = core.Matrix("MO Alpha Density Matrix", nmopi, nmopi)
-        #MO_Da.transform(self.Da(), self.Ca().transpose())
-        MO_Da = self.Da_subset("MO")  #MO_Da.transform(self.Da(), self.Ca())
+        # MO_Da = core.Matrix("MO Alpha Density Matrix", nmopi, nmopi)
+        # MO_Da.transform(self.Da(), self.Ca().transpose())
+        MO_Da = self.Da_subset("MO")  # MO_Da.transform(self.Da(), self.Ca())
         NO_Ra = core.Matrix("NO Alpha Rotation Matrix", nmopi, nmopi)
         occupation_a = core.Vector(nmopi)
         MO_Da.diagonalize(NO_Ra, occupation_a, core.DiagonalizeOrder.Descending)
         Ca = core.doublet(self.Ca(), NO_Ra, False, False)
         epsilon_a = occupation_a
         # Betas
-        #MO_Db = core.Matrix("MO Beta Density Matrix", nmopi, nmopi)
-        #MO_Db.transform(self.Db(), self.Cb().transpose())
+        # MO_Db = core.Matrix("MO Beta Density Matrix", nmopi, nmopi)
+        # MO_Db.transform(self.Db(), self.Cb().transpose())
         MO_Db = self.Db_subset("MO")
         NO_Rb = core.Matrix("NO Beta Rotation Matrix", nmopi, nmopi)
         occupation_b = core.Vector(nmopi)
@@ -343,12 +343,12 @@ def _write_molden(
     Cb_ao_mo = core.doublet(aotoso, Cb, False, False).nph
     ao_overlap = self.mintshelper().ao_overlap().np
     # Convert from Psi4 internal normalization to the unit normalization expected by Molden
-    ao_normalizer = ao_overlap.diagonal()**(-1 / 2)
+    ao_normalizer = ao_overlap.diagonal() ** (-1 / 2)
     Ca_ao_mo = core.Matrix.from_array([(i.T / ao_normalizer).T for i in Ca_ao_mo])
     Cb_ao_mo = core.Matrix.from_array([(i.T / ao_normalizer).T for i in Cb_ao_mo])
 
     # Reorder AO x MO matrix to fit Molden conventions
-    '''
+    """
     Reordering expected by Molden
     P: x, y, z
     5D: D 0, D+1, D-1, D+2, D-2
@@ -359,12 +359,12 @@ def _write_molden(
     15G: xxxx, yyyy, zzzz, xxxy, xxxz, yyyz, zzzx, zzzy, xxyy, xxzz, yyzz, xxyz, yyxz, zzxy
     
     Molden does not handle angular momenta higher than G
-    '''
+    """
     molden_cartesian_order = [
         [2, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # p
         [0, 3, 4, 1, 5, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0],  # d
         [0, 4, 5, 3, 9, 6, 1, 8, 7, 2, 0, 0, 0, 0, 0],  # f
-        [0, 3, 4, 9, 12, 10, 5, 13, 14, 7, 1, 6, 11, 8, 2]  # g
+        [0, 3, 4, 9, 12, 10, 5, 13, 14, 7, 1, 6, 11, 8, 2],  # g
     ]
     nirrep = self.nirrep()
     count = 0  # Keeps track of count for reordering
@@ -384,9 +384,9 @@ def _write_molden(
     # Dump MO information
     if basisset.has_puream():
         # For historical reasons, D and F can go on the same line, but setting D without F implicitly sets F. G must be on its own.
-        mol_string += '[5D7F]\n[9G]\n\n'
+        mol_string += "[5D7F]\n[9G]\n\n"
     ct = mol.point_group().char_table()
-    mol_string += '[MO]\n'
+    mol_string += "[MO]\n"
     mo_dim = self.nmopi() if do_virtual else (self.doccpi() + self.soccpi())
 
     # Alphas. If Alphas and Betas are the same, then only Alphas with double occupation will be written (see line marked "***")
@@ -420,13 +420,15 @@ def _write_molden(
         mos.sort(key=mosSort)
         for i in range(len(mos)):
             h, n = mos[i][1]
-            mol_string += f" Sym= {ct.gamma(h).symbol():s}\n Ene= {epsilon_b.get(h, n):24.10e}\n Spin= Beta\n " \
-                          f"Occup= {occupation_b.get(h, n):24.10e}\n"
+            mol_string += (
+                f" Sym= {ct.gamma(h).symbol():s}\n Ene= {epsilon_b.get(h, n):24.10e}\n Spin= Beta\n "
+                f"Occup= {occupation_b.get(h, n):24.10e}\n"
+            )
             for so in range(self.nso()):
                 mol_string += f"{so+1:3d} {Cb_ao_mo.get(h, so, n):24.10e}\n"
 
     # Write Molden string to file
-    with open(filename, 'w') as fn:
+    with open(filename, "w") as fn:
         fn.write(mol_string)
 
 

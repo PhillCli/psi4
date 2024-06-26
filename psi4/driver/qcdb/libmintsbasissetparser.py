@@ -61,11 +61,11 @@ class Gaussian94BasisSetParser(object):
 
         given_basisname = False if basisname is None else True
         found_basisname = False
-        basis_separator = re.compile(r'^\s*\[\s*(.*?)\s*\]\s*$')
+        basis_separator = re.compile(r"^\s*\[\s*(.*?)\s*\]\s*$")
 
         # Loads an entire file.
         try:
-            infile = open(filename, 'r')
+            infile = open(filename, "r")
         except IOError:
             raise BasisSetFileNotFound("""BasisSetParser::parse: Unable to open basis set file: %s""" % (filename))
         if os.stat(filename).st_size == 0:
@@ -103,37 +103,64 @@ class Gaussian94BasisSetParser(object):
 
         """
         if isinstance(dataset, str):
-            lines = dataset.split('\n')
+            lines = dataset.split("\n")
         else:
             lines = dataset
 
         # Regular expressions that we'll be checking for.
-        cartesian = re.compile(r'^\s*cartesian\s*$', re.IGNORECASE)
-        spherical = re.compile(r'^\s*spherical\s*$', re.IGNORECASE)
-        comment = re.compile(r'^\s*\!.*')  # line starts with !
-        separator = re.compile(r'^\s*\*\*\*\*\s*$')  # line starts with ****
-        ATOM = r'(([A-Z]{1,3}\d*)|([A-Z]{1,3}_\w+))'  # match 'C 0', 'Al c 0', 'P p88 p_pass 0' not 'Ofail 0', 'h99_text 0'
-        atom_array = re.compile(r'^\s*((' + ATOM + r'\s+)+)0\s*$',
-                                re.IGNORECASE)  # array of atomic symbols terminated by 0
-        atom_ecp = re.compile(r'^\s*((' + ATOM + r'-ECP\s+)+)(\d+)\s+(\d+)\s*$',
-                              re.IGNORECASE)  # atom_ECP number number
-        shell = re.compile(r'^\s*(\w+|L=\d+)\s*(\d+)\s*(-?\d+\.\d+)\s*$')  # Match beginning of contraction
-        blank_line = re.compile(r'^\s*$')
-        NUMBER = r'((?:[-+]?\d*\.\d+(?:[DdEe][-+]?\d+)?)|(?:[-+]?\d+\.\d*(?:[DdEe][-+]?\d+)?)|(?:[-+]?\d+))'
-        primitives1 = re.compile(r'^\s*' + NUMBER + r'\s+' + NUMBER + r'\s*$')  # Match s, p, d, f, g, ... functions
-        primitives2 = re.compile(r'^\s*' + NUMBER + r'\s+' + NUMBER + r'\s+' + NUMBER + r'\s*$')  # match sp functions
-        ecpinfo = re.compile(r'^\s*(\d)\s+' + NUMBER + r'\s+' + NUMBER +
-                             r'\s*$')  # Match rpower, exponent, coefficient
+        cartesian = re.compile(r"^\s*cartesian\s*$", re.IGNORECASE)
+        spherical = re.compile(r"^\s*spherical\s*$", re.IGNORECASE)
+        comment = re.compile(r"^\s*\!.*")  # line starts with !
+        separator = re.compile(r"^\s*\*\*\*\*\s*$")  # line starts with ****
+        ATOM = r"(([A-Z]{1,3}\d*)|([A-Z]{1,3}_\w+))"  # match 'C 0', 'Al c 0', 'P p88 p_pass 0' not 'Ofail 0', 'h99_text 0'
+        atom_array = re.compile(
+            r"^\s*((" + ATOM + r"\s+)+)0\s*$", re.IGNORECASE
+        )  # array of atomic symbols terminated by 0
+        atom_ecp = re.compile(
+            r"^\s*((" + ATOM + r"-ECP\s+)+)(\d+)\s+(\d+)\s*$", re.IGNORECASE
+        )  # atom_ECP number number
+        shell = re.compile(r"^\s*(\w+|L=\d+)\s*(\d+)\s*(-?\d+\.\d+)\s*$")  # Match beginning of contraction
+        blank_line = re.compile(r"^\s*$")
+        NUMBER = r"((?:[-+]?\d*\.\d+(?:[DdEe][-+]?\d+)?)|(?:[-+]?\d+\.\d*(?:[DdEe][-+]?\d+)?)|(?:[-+]?\d+))"
+        primitives1 = re.compile(r"^\s*" + NUMBER + r"\s+" + NUMBER + r"\s*$")  # Match s, p, d, f, g, ... functions
+        primitives2 = re.compile(r"^\s*" + NUMBER + r"\s+" + NUMBER + r"\s+" + NUMBER + r"\s*$")  # match sp functions
+        ecpinfo = re.compile(
+            r"^\s*(\d)\s+" + NUMBER + r"\s+" + NUMBER + r"\s*$"
+        )  # Match rpower, exponent, coefficient
 
         # s, p and s, p, d can be grouped together in Pople-style basis sets
-        sp = 'SP'
-        spd = 'SPD'
+        sp = "SP"
+        spd = "SPD"
 
         #                a  b  c  d  e  f  g  h  i  j  k  l  m  n  o  p  q  r  s  t  u  v  w  x  y  z
-        #shell_to_am = [-1,-1,-1, 2,-1, 3, 4, 5, 6,-1, 7, 8, 9,10,11, 1,12,13, 0,14,15,16,17,18,19,20]
+        # shell_to_am = [-1,-1,-1, 2,-1, 3, 4, 5, 6,-1, 7, 8, 9,10,11, 1,12,13, 0,14,15,16,17,18,19,20]
         alpha = [
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
-            'V', 'W', 'X', 'Y', 'Z'
+            "A",
+            "B",
+            "C",
+            "D",
+            "E",
+            "F",
+            "G",
+            "H",
+            "I",
+            "J",
+            "K",
+            "L",
+            "M",
+            "N",
+            "O",
+            "P",
+            "Q",
+            "R",
+            "S",
+            "T",
+            "U",
+            "V",
+            "W",
+            "X",
+            "Y",
+            "Z",
         ]
         angmo = [-1, -1, -1, 2, -1, 3, 4, 5, 6, -1, -1, -1, -1, -1, -1, 1, -1, -1, 0, -1, -1, -1, -1, -1, -1, -1]
         angmo_HIK = [-1, -1, -1, 2, -1, 3, 4, 5, 6, -1, 7, 8, 9, 10, 11, 1, 12, 13, 0, 14, 15, 16, 17, 18, 19, 20]
@@ -141,15 +168,17 @@ class Gaussian94BasisSetParser(object):
         shell_to_am = dict(zip(alpha, angmo))
         shell_to_am_HIK = dict(zip(alpha, angmo_HIK))
         shell_to_am_HIJ = dict(zip(alpha, angmo_HIJ))
-        am_convention = None  # None is undetermined; "HIK" is the natural Psi4 HIK convention; "HIJ" is the GBS HIJ convention
+        am_convention = (
+            None  # None is undetermined; "HIK" is the natural Psi4 HIK convention; "HIJ" is the GBS HIJ convention
+        )
         max_am_to_date = 0
 
         # Basis type.
-        gaussian_type = 'Pure'
+        gaussian_type = "Pure"
 
         if self.force_puream_or_cartesian:
             if not self.forced_is_puream:
-                gaussian_type = 'Cartesian'
+                gaussian_type = "Cartesian"
 
         # Need a dummy center for the shell.
         center = [0.0, 0.0, 0.0]
@@ -172,16 +201,16 @@ class Gaussian94BasisSetParser(object):
             # Look for Cartesian or Spherical
             if not self.force_puream_or_cartesian:
                 if cartesian.match(line):
-                    gaussian_type = 'Cartesian'
-                    #TODO                    if psi4.get_global_option('PUREAM').has_changed():
-                    #TODO                        gaussian_type = 'Pure' if int(psi4.get_global('PUREAM')) else 'Cartesian'
+                    gaussian_type = "Cartesian"
+                    # TODO                    if psi4.get_global_option('PUREAM').has_changed():
+                    # TODO                        gaussian_type = 'Pure' if int(psi4.get_global('PUREAM')) else 'Cartesian'
                     continue
                 elif spherical.match(line):
-                    gaussian_type = 'Pure'
-                    #TODO                    if psi4.get_global_option('PUREAM').has_changed():
-                    #TODO                        gaussian_type = 'Pure' if int(psi4.get_global('PUREAM')) else 'Cartesian'
+                    gaussian_type = "Pure"
+                    # TODO                    if psi4.get_global_option('PUREAM').has_changed():
+                    # TODO                        gaussian_type = 'Pure' if int(psi4.get_global('PUREAM')) else 'Cartesian'
                     continue
-                #end case where puream setting wasn't forced by caller
+                # end case where puream setting wasn't forced by caller
 
             # Do some matches
             if comment.match(line):
@@ -194,7 +223,6 @@ class Gaussian94BasisSetParser(object):
             if atom_array.match(line):
                 what = atom_array.match(line).group(1).split()
                 if symbol in [x.upper() for x in what]:
-
                     # Read in the next line
                     line = lines[lineno]
                     lineno += 1
@@ -205,26 +233,26 @@ class Gaussian94BasisSetParser(object):
                         ecp_msg = """line %5d""" % (lineno)
                         symbol_to_am = {
                             0: 0,
-                            's': 0,
-                            'S': 0,
+                            "s": 0,
+                            "S": 0,
                             1: 1,
-                            'p': 1,
-                            'P': 1,
+                            "p": 1,
+                            "P": 1,
                             2: 2,
-                            'd': 2,
-                            'D': 2,
+                            "d": 2,
+                            "D": 2,
                             3: 3,
-                            'f': 3,
-                            'F': 3,
+                            "f": 3,
+                            "F": 3,
                             4: 4,
-                            'g': 4,
-                            'G': 4,
+                            "g": 4,
+                            "G": 4,
                             5: 5,
-                            'h': 5,
-                            'H': 5,
+                            "h": 5,
+                            "H": 5,
                             6: 6,
-                            'i': 6,
-                            'I': 6
+                            "i": 6,
+                            "I": 6,
                         }
                         # This is an ECP spec like "KR-ECP    3     28"
                         matchobj = atom_ecp.match(line)
@@ -234,7 +262,7 @@ class Gaussian94BasisSetParser(object):
                         # This parser is not tolerant of comments of blank lines.  Perhaps the best strategy is to
                         # remove all comments/blank lines first before getting in here.  This'll do for now.
                         for am in range(maxam + 1):
-                            #f-ul potential"
+                            # f-ul potential"
                             line = lines[lineno]
                             lineno += 1
                             angmom = symbol_to_am[line.lstrip()[0]]
@@ -249,20 +277,23 @@ class Gaussian94BasisSetParser(object):
                             for term in range(nprimitives):
                                 line = lines[lineno]
                                 lineno += 1
-                                line = line.replace('D', 'e', 2)
-                                line = line.replace('d', 'e', 2)
+                                line = line.replace("D", "e", 2)
+                                line = line.replace("d", "e", 2)
                                 what = ecpinfo.match(line)
                                 if not what:
                                     raise ValidationError(
-                                        """Gaussian94BasisSetParser::parse: Bad ECP specification : line %d: %s""" %
-                                        (lineno, line))
+                                        """Gaussian94BasisSetParser::parse: Bad ECP specification : line %d: %s"""
+                                        % (lineno, line)
+                                    )
                                 rpowers[term] = int(what.group(1))
                                 exponents[term] = float(what.group(2))
                                 contractions[term] = float(what.group(3))
                             # We have a full shell, push it to the basis set
                             ecp_shell_list.append(
-                                ShellInfo(angmom, contractions, exponents, gaussian_type, 0, center, 0, 'Normalized',
-                                          rpowers))
+                                ShellInfo(
+                                    angmom, contractions, exponents, gaussian_type, 0, center, 0, "Normalized", rpowers
+                                )
+                            )
                     else:
                         # This is a basis set spec
                         basis_found = True
@@ -276,15 +307,17 @@ class Gaussian94BasisSetParser(object):
                                 nprimitive = int(what.group(2))
                                 scale = float(what.group(3))
 
-                                if len(shell_type) == 1 or (len(shell_type) >= 3 and shell_type[:2] == 'L='):
+                                if len(shell_type) == 1 or (len(shell_type) >= 3 and shell_type[:2] == "L="):
                                     if len(shell_type) == 1:
                                         am = shell_to_am[shell_type[0]]
-                                        if am_convention == "HIK" or (am == -1 and shell_type[0].upper() == "K"
-                                                                      and max_am_to_date == 6):
+                                        if am_convention == "HIK" or (
+                                            am == -1 and shell_type[0].upper() == "K" and max_am_to_date == 6
+                                        ):
                                             am_convention = "HIK"
                                             am = shell_to_am_HIK[shell_type[0]]
-                                        if am_convention == "HIJ" or (am == -1 and shell_type[0].upper() == "J"
-                                                                      and max_am_to_date == 6):
+                                        if am_convention == "HIJ" or (
+                                            am == -1 and shell_type[0].upper() == "J" and max_am_to_date == 6
+                                        ):
                                             am_convention = "HIJ"
                                             am = shell_to_am_HIJ[shell_type[0]]
                                         if am_convention is None and am == -1:
@@ -298,7 +331,8 @@ class Gaussian94BasisSetParser(object):
                                     if am < 0:
                                         raise ValidationError(
                                             """Gaussian94BasisSetParser::parse: angular momentum type %s not recognized: line %d: %s"""
-                                            % (shell_type[0], lineno, line))
+                                            % (shell_type[0], lineno, line)
+                                        )
 
                                     exponents = [0.0] * nprimitive
                                     contractions = [0.0] * nprimitive
@@ -306,15 +340,16 @@ class Gaussian94BasisSetParser(object):
                                     for p in range(nprimitive):
                                         line = lines[lineno]
                                         lineno += 1
-                                        line = line.replace('D', 'e', 2)
-                                        line = line.replace('d', 'e', 2)
+                                        line = line.replace("D", "e", 2)
+                                        line = line.replace("d", "e", 2)
 
                                         what = primitives1.match(line)
                                         # Must match primitives1; will work on the others later
                                         if not what:
                                             raise ValidationError(
                                                 """Gaussian94BasisSetParser::parse: Unable to match an exponent with one contraction: line %d: %s"""
-                                                % (lineno, line))
+                                                % (lineno, line)
+                                            )
                                         exponent = float(what.group(1))
                                         contraction = float(what.group(2))
 
@@ -325,8 +360,10 @@ class Gaussian94BasisSetParser(object):
 
                                     # We have a full shell, push it to the basis set
                                     shell_list.append(
-                                        ShellInfo(am, contractions, exponents, gaussian_type, 0, center, 0,
-                                                  'Unnormalized'))
+                                        ShellInfo(
+                                            am, contractions, exponents, gaussian_type, 0, center, 0, "Unnormalized"
+                                        )
+                                    )
 
                                 elif len(shell_type) == 2:
                                     # This is to handle instances of SP, PD, DF, FG, ...
@@ -335,7 +372,8 @@ class Gaussian94BasisSetParser(object):
                                     if am1 < 0 or am2 < 0:
                                         raise ValidationError(
                                             """Gaussian94BasisSetParser::parse: angular momentum type %s not recognized: line %d: %s"""
-                                            % (shell_type[0], lineno, line))
+                                            % (shell_type[0], lineno, line)
+                                        )
 
                                     exponents = [0.0] * nprimitive
                                     contractions1 = [0.0] * nprimitive
@@ -344,15 +382,16 @@ class Gaussian94BasisSetParser(object):
                                     for p in range(nprimitive):
                                         line = lines[lineno]
                                         lineno += 1
-                                        line = line.replace('D', 'e', 3)
-                                        line = line.replace('d', 'e', 3)
+                                        line = line.replace("D", "e", 3)
+                                        line = line.replace("d", "e", 3)
 
                                         what = primitives2.match(line)
                                         # Must match primitivies2
                                         if not what:
                                             raise ValidationError(
                                                 "Gaussian94BasisSetParser::parse: Unable to match an exponent with two contractions: line %d: %s"
-                                                % (lineno, line))
+                                                % (lineno, line)
+                                            )
                                         exponent = float(what.group(1))
                                         contraction = float(what.group(2))
 
@@ -369,11 +408,15 @@ class Gaussian94BasisSetParser(object):
                                         contractions2[p] = contraction
 
                                     shell_list.append(
-                                        ShellInfo(am1, contractions1, exponents, gaussian_type, 0, center, 0,
-                                                  'Unnormalized'))
+                                        ShellInfo(
+                                            am1, contractions1, exponents, gaussian_type, 0, center, 0, "Unnormalized"
+                                        )
+                                    )
                                     shell_list.append(
-                                        ShellInfo(am2, contractions2, exponents, gaussian_type, 0, center, 0,
-                                                  'Unnormalized'))
+                                        ShellInfo(
+                                            am2, contractions2, exponents, gaussian_type, 0, center, 0, "Unnormalized"
+                                        )
+                                    )
 
                                 else:
                                     raise ValidationError(
@@ -382,12 +425,13 @@ class Gaussian94BasisSetParser(object):
                             else:
                                 raise ValidationError(
                                     """Gaussian94BasisSetParser::parse: Expected shell information, but got: line %d: %s"""
-                                    % (lineno, line))
+                                    % (lineno, line)
+                                )
                             line = lines[lineno]
                             lineno += 1
 
         if not basis_found:
-            #raise BasisSetNotFound("Gaussian94BasisSetParser::parser: Unable to find the basis set for %s in %s" % \
+            # raise BasisSetNotFound("Gaussian94BasisSetParser::parser: Unable to find the basis set for %s in %s" % \
             #   (symbol, self.filename), silent=True)
             return None, None, None, None, None
 

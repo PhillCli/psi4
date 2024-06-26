@@ -26,11 +26,10 @@
 # @END LICENSE
 #
 
-import math
 import collections
+import math
 
 import numpy as np
-
 import qcelemental as qcel
 
 from .constants import constants
@@ -190,7 +189,7 @@ def _get_bond_tree(radii, geom, allblocks, blocksize, bond_threshold):
         for at1 in allblocks[blk]:
             for at2 in atom_list:
                 r2_ij = _distance2(geom[at1], geom[at2])
-                r2_thresh = bond_threshold * (radii[at1] + radii[at2])**2
+                r2_thresh = bond_threshold * (radii[at1] + radii[at2]) ** 2
                 if at1 != at2 and r2_ij <= r2_thresh:
                     if at2 not in bond_tree[at1]:
                         bond_tree[at1].append(at2)
@@ -202,7 +201,7 @@ def _get_bond_tree(radii, geom, allblocks, blocksize, bond_threshold):
 def _get_neighbor_blocks(block, blocksize, allblocks):
     """Find occupied blocks which neighbor `block`, including self"""
 
-    x, y, z = (int(block.split(',')[j]) for j in range(3))
+    x, y, z = (int(block.split(",")[j]) for j in range(3))
     neighbor_blocks = [_get_key(x + blocksize * (i - 1),
                                 y + blocksize * (j - 1),
                                 z + blocksize * (k - 1),

@@ -1,7 +1,9 @@
-import time
-import pytest
-import numpy as np
 import multiprocessing
+import time
+
+import numpy as np
+import pytest
+
 import psi4
 
 pytestmark = [pytest.mark.psi, pytest.mark.api]
@@ -9,7 +11,7 @@ pytestmark = [pytest.mark.psi, pytest.mark.api]
 
 # Test below is fine on its own but erratic through pytest. Most likely
 #   to succeed as first test collected, so here it lies.
-@pytest.mark.xfail(True, reason='threading treatment suspect', run=True)
+@pytest.mark.xfail(True, reason="threading treatment suspect", run=True)
 def disabled_test_threaded_blas():
     threads = multiprocessing.cpu_count()
     threads = int(threads / 2)
@@ -23,7 +25,7 @@ def disabled_test_threaded_blas():
         psi4.set_num_threads(th)
 
         for sz in size:
-            nruns = max(1, int(1.e10 / (sz**3)))
+            nruns = max(1, int(1.0e10 / (sz**3)))
 
             a = psi4.core.Matrix(sz, sz)
             b = psi4.core.Matrix(sz, sz)

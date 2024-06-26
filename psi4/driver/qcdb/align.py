@@ -31,18 +31,20 @@ import warnings
 import qcelemental as qcel
 
 
-def B787(cgeom,
-         rgeom,
-         cuniq,
-         runiq,
-         do_plot=False,
-         verbose=1,
-         atoms_map=False,
-         run_resorting=False,
-         mols_align=False,
-         run_to_completion=False,
-         uno_cutoff=1.e-3,
-         run_mirror=False):
+def B787(
+    cgeom,
+    rgeom,
+    cuniq,
+    runiq,
+    do_plot=False,
+    verbose=1,
+    atoms_map=False,
+    run_resorting=False,
+    mols_align=False,
+    run_to_completion=False,
+    uno_cutoff=1.0e-3,
+    run_mirror=False,
+):
     """Use Kabsch algorithm to find best alignment of geometry `cgeom` onto
     `rgeom` while sampling atom mappings restricted by `runiq` and `cuniq`.
 
@@ -101,20 +103,23 @@ def B787(cgeom,
     warnings.warn(
         "Using `qcdb.align.B787` instead of `qcelemental.molutil.B787` is deprecated, and as soon as 1.5 it will stop working\n",
         category=FutureWarning,
-        stacklevel=2)
+        stacklevel=2,
+    )
 
-    return qcel.molutil.B787(cgeom,
-                             rgeom,
-                             cuniq,
-                             runiq,
-                             do_plot=do_plot,
-                             verbose=verbose,
-                             atoms_map=atoms_map,
-                             run_resorting=run_resorting,
-                             mols_align=mols_align,
-                             run_to_completion=run_to_completion,
-                             uno_cutoff=uno_cutoff,
-                             run_mirror=run_mirror)
+    return qcel.molutil.B787(
+        cgeom,
+        rgeom,
+        cuniq,
+        runiq,
+        do_plot=do_plot,
+        verbose=verbose,
+        atoms_map=atoms_map,
+        run_resorting=run_resorting,
+        mols_align=mols_align,
+        run_to_completion=run_to_completion,
+        uno_cutoff=uno_cutoff,
+        run_mirror=run_mirror,
+    )
 
 
 def compute_scramble(nat, do_resort=True, do_shift=True, do_rotate=True, deflection=1.0, do_mirror=False):
@@ -151,11 +156,9 @@ def compute_scramble(nat, do_resort=True, do_shift=True, do_rotate=True, deflect
     warnings.warn(
         "Using `qcdb.align.compute_scramble` instead of `qcelemental.molutil.compute_scramble` is deprecated, and as soon as 1.5 it will stop working\n",
         category=FutureWarning,
-        stacklevel=2)
+        stacklevel=2,
+    )
 
-    return qcel.molutil.compute_scramble(nat,
-                                         do_resort=do_resort,
-                                         do_shift=do_shift,
-                                         do_rotate=do_rotate,
-                                         deflection=deflection,
-                                         do_mirror=do_mirror)
+    return qcel.molutil.compute_scramble(
+        nat, do_resort=do_resort, do_shift=do_shift, do_rotate=do_rotate, deflection=deflection, do_mirror=do_mirror
+    )

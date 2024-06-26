@@ -71,7 +71,7 @@ def _find_dim(arr, ndim):
         return [0] * ndim
 
     # Make sure this is a numpy array like thing
-    if not hasattr(arr, 'shape'):
+    if not hasattr(arr, "shape"):
         raise ValidationError("Expected numpy array, found object of type '%s'" % type(arr))
 
     if len(arr.shape) == ndim:
@@ -81,11 +81,11 @@ def _find_dim(arr, ndim):
 
 
 def array_to_matrix(
-        self: Union[core.Matrix, core.Vector],
-        arr: Union[np.ndarray, List[np.ndarray]],
-        name: str = "New Matrix",
-        dim1: Optional[Union[List, Tuple, core.Dimension]] = None,
-        dim2: Optional[core.Dimension] = None,
+    self: Union[core.Matrix, core.Vector],
+    arr: Union[np.ndarray, List[np.ndarray]],
+    name: str = "New Matrix",
+    dim1: Optional[Union[List, Tuple, core.Dimension]] = None,
+    dim2: Optional[core.Dimension] = None,
 ) -> Union[core.Matrix, core.Vector]:
     """
     Converts a `NumPy array
@@ -163,7 +163,8 @@ def array_to_matrix(
             raise ValidationError("Array_to_Matrix: type '%s' is not recognized." % str(arr_type))
 
         for view, vals in zip(ret.nph, arr):
-            if 0 in view.shape: continue
+            if 0 in view.shape:
+                continue
             view[:] = vals
 
         return ret
@@ -171,7 +172,6 @@ def array_to_matrix(
     # No irreps implied by list
     else:
         if arr_type == core.Matrix:
-
             # Build an irrepped array back out
             if dim1 is not None:
                 if dim2 is None:
@@ -194,7 +194,7 @@ def array_to_matrix(
                         continue
 
                     view = np.asarray(interface)
-                    view[:] = arr[start1:start1 + d1, start2:start2 + d2]
+                    view[:] = arr[start1 : start1 + d1, start2 : start2 + d2]
                     start1 += d1
                     start2 += d2
 
@@ -218,11 +218,11 @@ def array_to_matrix(
                 start1 = 0
                 for num, interface in enumerate(ret.nph):
                     d1 = dim1[num]
-                    if (d1 == 0):
+                    if d1 == 0:
                         continue
 
                     view = np.asarray(interface)
-                    view[:] = arr[start1:start1 + d1]
+                    view[:] = arr[start1 : start1 + d1]
                     start1 += d1
 
                 return ret
@@ -238,9 +238,9 @@ def array_to_matrix(
 
 
 def _to_array(
-        matrix: Union[core.Matrix, core.Vector],
-        copy: bool = True,
-        dense: bool = False,
+    matrix: Union[core.Matrix, core.Vector],
+    copy: bool = True,
+    dense: bool = False,
 ) -> Union[np.ndarray, List[np.ndarray]]:
     """
     Converts a |PSIfour| Matrix or Vector to a NumPy array. Either copies the
@@ -275,7 +275,6 @@ def _to_array(
      [ 0.  0.  0.]]
     """
     if matrix.nirrep() > 1:
-
         # We will copy when we make a large matrix
         if dense:
             copy = False
@@ -288,9 +287,9 @@ def _to_array(
 
         # Build the dense matrix
         if isinstance(matrix, core.Vector):
-            ret_type = '1D'
+            ret_type = "1D"
         elif isinstance(matrix, core.Matrix):
-            ret_type = '2D'
+            ret_type = "2D"
         else:
             raise ValidationError("Array_to_Matrix: type '%s' is not recognized." % type(matrix))
 
@@ -303,26 +302,28 @@ def _to_array(
                 dim2.append(0)
             else:
                 dim1.append(h.shape[0])
-                if ret_type == '2D':
+                if ret_type == "2D":
                     dim2.append(h.shape[1])
 
         ndim1 = np.sum(dim1)
         ndim2 = np.sum(dim2)
-        if ret_type == '1D':
+        if ret_type == "1D":
             dense_ret = np.zeros(shape=(ndim1))
             start = 0
             for d1, arr in zip(dim1, matrix_views):
-                if d1 == 0: continue
-                dense_ret[start:start + d1] = arr
+                if d1 == 0:
+                    continue
+                dense_ret[start : start + d1] = arr
                 start += d1
         else:
             dense_ret = np.zeros(shape=(ndim1, ndim2))
             start1 = 0
             start2 = 0
             for d1, d2, arr in zip(dim1, dim2, matrix_views):
-                if (d1 == 0) or (d2 == 0): continue
+                if (d1 == 0) or (d2 == 0):
+                    continue
 
-                dense_ret[start1:start1 + d1, start2:start2 + d2] = arr
+                dense_ret[start1 : start1 + d1, start2 : start2 + d2] = arr
                 start1 += d1
                 start2 += d2
 
@@ -350,8 +351,10 @@ def _np_view(self):
     View with single irrep.
     """
     if self.nirrep() > 1:
-        raise ValidationError("Attempted to call .np on a Psi4 data object with multiple irreps."
-                              "Please use .nph for objects with irreps.")
+        raise ValidationError(
+            "Attempted to call .np on a Psi4 data object with multiple irreps."
+            "Please use .nph for objects with irreps."
+        )
     return _get_raw_views(self)[0]
 
 
@@ -375,9 +378,9 @@ def _array_conversion(self):
 
 
 def _np_write(
-        self: Union[core.Matrix, core.Vector],
-        filename: Optional[str] = None,
-        prefix: str = "",
+    self: Union[core.Matrix, core.Vector],
+    filename: Optional[str] = None,
+    prefix: str = "",
 ) -> Optional[Dict[str, Any]]:
     """
     Writes the irrepped matrix to a NumPy uncompressed file using :func:`numpy.savez`.
@@ -407,7 +410,7 @@ def _np_write(
     for h, v in enumerate(self.nph):
         # If returning arrays to user, we want to return copies (snapshot), not
         # views of the core.Matrix's memory.
-        if filename is None and not v.flags['OWNDATA']:
+        if filename is None and not v.flags["OWNDATA"]:
             v = np.copy(v)
         ret[prefix + "IrrepData" + str(h)] = v
 
@@ -424,9 +427,9 @@ def _np_write(
 
 
 def _np_read(
-        self: Union[core.Matrix, core.Vector],
-        filename: str,
-        prefix: str = "",
+    self: Union[core.Matrix, core.Vector],
+    filename: str,
+    prefix: str = "",
 ) -> Union[core.Matrix, core.Vector]:
     """Reads the data from a NumPy compressed or uncompressed file using :func:`numpy.load`.
 
@@ -443,8 +446,8 @@ def _np_read(
     if isinstance(filename, np.lib.npyio.NpzFile):
         data = filename
     elif isinstance(filename, str):
-        if not filename.endswith('.npz'):
-            filename = filename + '.npz'
+        if not filename.endswith(".npz"):
+            filename = filename + ".npz"
 
         data = np.load(filename)
     else:
@@ -558,7 +561,8 @@ def _chain_dot(*args, **kwargs) -> core.Matrix:
     else:
         if len(trans) != len(args):
             raise ValidationError(
-                "Chain dot: The length of the transpose arguements is not equal to the length of args.")
+                "Chain dot: The length of the transpose arguements is not equal to the length of args."
+            )
 
     # Setup chain
     ret = args[0]
@@ -576,8 +580,10 @@ def _irrep_access(self, *args, **kwargs):
     """
     Warns user when iterating/accessing an irrepped object.
     """
-    raise ValidationError("Attempted to access by index/iteration a Psi4 data object that supports multiple"
-                          " irreps. Please use .np or .nph explicitly.")
+    raise ValidationError(
+        "Attempted to access by index/iteration a Psi4 data object that supports multiple"
+        " irreps. Please use .np or .nph explicitly."
+    )
 
 
 # Matrix attributes
@@ -629,9 +635,9 @@ core.CIVector.np = _civec_view
 
 @classmethod
 def _dimension_from_list(
-        self,
-        dims: Union[Tuple[int], List[int], np.ndarray, core.Dimension],
-        name="New Dimension",
+    self,
+    dims: Union[Tuple[int], List[int], np.ndarray, core.Dimension],
+    name="New Dimension",
 ) -> core.Dimension:
     """
     Builds a Dimension object from a Python list or tuple. If a :class:`~psi4.core.Dimension` object is passed, a copy will be returned.

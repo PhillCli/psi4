@@ -28,12 +28,12 @@
 """Parent classes for quantum chemistry program input and output file
 formats.
 """
+
 import re
 
 
 class InputFormat(object):
     def __init__(self, mem, mtd, bas, mol, sys, cast):
-
         # total job memory in MB
         self.memory = mem
         # computational method
@@ -56,12 +56,12 @@ class InputFormat(object):
         *rootbasis* is round down to the nearest cc-pVXZ
         *auxbasis* is round up to the nearest cc-pVXZ or aug-cc-pVXZ
         """
-        Dunmatch = re.compile(r'^(.*cc-)(pv|pcv|pwcv).*?([dtq56]).*z$').match(self.basis)
+        Dunmatch = re.compile(r"^(.*cc-)(pv|pcv|pwcv).*?([dtq56]).*z$").match(self.basis)
 
         if Dunmatch:
-            rootbas = 'cc-' + Dunmatch.group(2) + Dunmatch.group(3) + 'z'
-            augbas = 'aug-cc-' + Dunmatch.group(2) + Dunmatch.group(3) + 'z'
-            if Dunmatch.group(1) == 'cc-':
+            rootbas = "cc-" + Dunmatch.group(2) + Dunmatch.group(3) + "z"
+            augbas = "aug-cc-" + Dunmatch.group(2) + Dunmatch.group(3) + "z"
+            if Dunmatch.group(1) == "cc-":
                 auxbas = rootbas
             else:
                 auxbas = augbas
@@ -75,7 +75,6 @@ class InputFormat(object):
 
 class InputFormat2(object):
     def __init__(self, mem, mol, mtd, der, opt):
-
         # total job memory in MB
         self.memory = mem
         # qcdb.Molecule object
@@ -87,9 +86,9 @@ class InputFormat2(object):
         # options dictionary
         self.options = opt
         # orbital basis set
-        self.basis = opt['GLOBALS']['BASIS']['value'].lower()
+        self.basis = opt["GLOBALS"]["BASIS"]["value"].lower()
         # do cast up from sto-3g basis?
-        self.castup = opt['SCF']['BASIS_GUESS']['value']
+        self.castup = opt["SCF"]["BASIS_GUESS"]["value"]
 
     def corresponding_aux_basis(self):
         """For Dunning basis sets, returns strings from which auxiliary
@@ -100,12 +99,12 @@ class InputFormat2(object):
         *rootbasis* is round down to the nearest cc-pVXZ
         *auxbasis* is round up to the nearest cc-pVXZ or aug-cc-pVXZ
         """
-        Dunmatch = re.compile(r'^(.*cc-)(pv|pcv|pwcv).*?([dtq56]).*z$').match(self.basis)
+        Dunmatch = re.compile(r"^(.*cc-)(pv|pcv|pwcv).*?([dtq56]).*z$").match(self.basis)
 
         if Dunmatch:
-            rootbas = 'cc-' + Dunmatch.group(2) + Dunmatch.group(3) + 'z'
-            augbas = 'aug-cc-' + Dunmatch.group(2) + Dunmatch.group(3) + 'z'
-            if Dunmatch.group(1) == 'cc-':
+            rootbas = "cc-" + Dunmatch.group(2) + Dunmatch.group(3) + "z"
+            augbas = "aug-cc-" + Dunmatch.group(2) + Dunmatch.group(3) + "z"
+            if Dunmatch.group(1) == "cc-":
                 auxbas = rootbas
             else:
                 auxbas = augbas

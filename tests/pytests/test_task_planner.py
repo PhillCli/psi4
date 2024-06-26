@@ -2,20 +2,19 @@
 Tests the Psi4 task driver
 """
 
-import pytest
-from utils import *
-from addons import *
-
 import math
 
 import numpy as np
+import pytest
+from addons import *
+from utils import *
 
 import psi4
-from psi4.driver.task_planner import task_planner
-from psi4.driver.task_base import AtomicComputer
 from psi4.driver.driver_cbs import CompositeComputer
-from psi4.driver.driver_nbody import ManyBodyComputer
 from psi4.driver.driver_findif import FiniteDifferenceComputer
+from psi4.driver.driver_nbody import ManyBodyComputer
+from psi4.driver.task_base import AtomicComputer
+from psi4.driver.task_planner import task_planner
 
 pytestmark = [pytest.mark.quick, pytest.mark.psi, pytest.mark.api]
 
@@ -186,10 +185,8 @@ def test_nbody_dimer_gradient_1_0(mtd, kw):
     }
 
     nbody_displacements = {
-        "1_((2,), (2,))": {k: v[1]
-                           for k, v in displacements.items()},
-        "1_((1,), (1,))": {k: v[0]
-                           for k, v in displacements.items()},
+        "1_((2,), (2,))": {k: v[1] for k, v in displacements.items()},
+        "1_((1,), (1,))": {k: v[0] for k, v in displacements.items()},
         "1_((1, 2), (1, 2))": displacements,
         "1_((1,), (1, 2))": displacements,
         "1_((2,), (1, 2))": displacements,
@@ -295,10 +292,8 @@ def test_nbody_dimer_cbs_gradient_1_0(mtd, kw):
     }
 
     nbody_displacements = {
-        "1_((2,), (2,))": {k: v[1]
-                           for k, v in displacements.items()},
-        "1_((1,), (1,))": {k: v[0]
-                           for k, v in displacements.items()},
+        "1_((2,), (2,))": {k: v[1] for k, v in displacements.items()},
+        "1_((1,), (1,))": {k: v[0] for k, v in displacements.items()},
         "1_((1, 2), (1, 2))": displacements,
         "1_((1,), (1, 2))": displacements,
         "1_((2,), (1, 2))": displacements,
@@ -391,8 +386,8 @@ def test_findif_1_0(mtd, kw):
         assert plan2.driver == "energy"
         assert np.allclose(plan2.molecule.geometry().np, displacements[k2])
         assert psi4.compare_values(1.0e-10, plan2.keywords["SCF__E_CONVERGENCE"], atol=1.0e-14)
-        assert psi4.compare_values(1.0e-10, plan2.keywords["SCF__D_CONVERGENCE"], atol=1.e-14)
-        assert psi4.compare_values(1.0e-8, plan2.keywords["E_CONVERGENCE"], atol=1.e-14)
+        assert psi4.compare_values(1.0e-10, plan2.keywords["SCF__D_CONVERGENCE"], atol=1.0e-14)
+        assert psi4.compare_values(1.0e-8, plan2.keywords["E_CONVERGENCE"], atol=1.0e-14)
 
 
 @pytest.mark.parametrize("kw, pts", [({"ref_gradient": np.zeros((2, 3))}, 3), ({}, 5)])
@@ -427,8 +422,8 @@ def test_findif_2_1(kw, pts):
         assert plan2.method == "mp2"
         assert plan2.driver == "gradient"
         assert np.allclose(plan2.molecule.geometry().np, displacements[k2])
-        assert psi4.compare_values(1.0e-10, plan2.keywords["SCF__D_CONVERGENCE"], atol=1.e-14)
-        assert psi4.compare_values(1.0e-6, plan2.keywords["E_CONVERGENCE"], atol=1.e-14)
+        assert psi4.compare_values(1.0e-10, plan2.keywords["SCF__D_CONVERGENCE"], atol=1.0e-14)
+        assert psi4.compare_values(1.0e-6, plan2.keywords["E_CONVERGENCE"], atol=1.0e-14)
 
 
 @pytest.mark.parametrize("kw, pts", [({"ref_gradient": np.zeros((2, 3))}, 5), ({}, 9)])
@@ -467,6 +462,6 @@ def test_findif_2_0(kw, pts):
         assert plan2.method == "mp2"
         assert plan2.driver == "energy"
         assert np.allclose(plan2.molecule.geometry().np, displacements[k2])
-        assert psi4.compare_values(1.0e-6, plan2.keywords["SCF__E_CONVERGENCE"], atol=1.e-14)
-        assert psi4.compare_values(1.0e-11, plan2.keywords["SCF__D_CONVERGENCE"], atol=1.e-14)
-        assert psi4.compare_values(1.0e-10, plan2.keywords["E_CONVERGENCE"], atol=1.e-14)
+        assert psi4.compare_values(1.0e-6, plan2.keywords["SCF__E_CONVERGENCE"], atol=1.0e-14)
+        assert psi4.compare_values(1.0e-11, plan2.keywords["SCF__D_CONVERGENCE"], atol=1.0e-14)
+        assert psi4.compare_values(1.0e-10, plan2.keywords["E_CONVERGENCE"], atol=1.0e-14)

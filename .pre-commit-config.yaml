@@ -5,7 +5,7 @@ repos:
       - id: check-case-conflict
       - id: check-merge-conflict
   # NOTE: https://docs.astral.sh/ruff/formatter/#sorting-imports
-  # to achieve isort + black-like
+  # to achieve isort + black-like formatting
   - repo: https://github.com/charliermarsh/ruff-pre-commit
     rev: "v0.4.10"
     hooks:

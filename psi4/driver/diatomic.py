@@ -42,16 +42,16 @@ from .p4util.exceptions import *
 
 
 def least_squares_fit_polynomial(
-        xvals: List[float],
-        fvals: List[float],
-        localization_point: float,
-        no_factorials: bool = True,
-        weighted: bool = True,
-        polynomial_order: int = 4,
+    xvals: List[float],
+    fvals: List[float],
+    localization_point: float,
+    no_factorials: bool = True,
+    weighted: bool = True,
+    polynomial_order: int = 4,
 ):
     """Performs an unweighted least squares fit of a polynomial, with specified order
-       to an array of input function values (fvals) evaluated at given locations (xvals).
-       See https://doi.org/10.1063/1.4862157, particularly eqn (7) for details. """
+    to an array of input function values (fvals) evaluated at given locations (xvals).
+    See https://doi.org/10.1063/1.4862157, particularly eqn (7) for details."""
     xpts = np.array(xvals) - localization_point
     if weighted:
         R = 1.0
@@ -71,29 +71,29 @@ def least_squares_fit_polynomial(
     return fit
 
 
-def anharmonicity(rvals: List[float], energies: List[float], plot_fit: str = '', mol=None) -> Dict[str, Any]:
+def anharmonicity(rvals: List[float], energies: List[float], plot_fit: str = "", mol=None) -> Dict[str, Any]:
     """Generates spectroscopic constants for a diatomic molecules.
-       Fits a diatomic potential energy curve using a weighted least squares approach
-       (c.f. https://doi.org/10.1063/1.4862157, particularly eqn. 7), locates the minimum
-       energy point, and then applies second order vibrational perturbation theory to obtain spectroscopic
-       constants.  Any number of points greater than 4 may be provided, and they should bracket the minimum.
-       The data need not be evenly spaced, and can be provided in any order.  The data are weighted such that
-       those closest to the minimum have highest impact.
+    Fits a diatomic potential energy curve using a weighted least squares approach
+    (c.f. https://doi.org/10.1063/1.4862157, particularly eqn. 7), locates the minimum
+    energy point, and then applies second order vibrational perturbation theory to obtain spectroscopic
+    constants.  Any number of points greater than 4 may be provided, and they should bracket the minimum.
+    The data need not be evenly spaced, and can be provided in any order.  The data are weighted such that
+    those closest to the minimum have highest impact.
 
-       A dictionary with the following keys, which correspond to spectroscopic constants, is returned:
+    A dictionary with the following keys, which correspond to spectroscopic constants, is returned:
 
-       :param rvals: The bond lengths (in Angstrom) for which energies are
-           provided, of length at least 5 and equal to the length of the energies array
+    :param rvals: The bond lengths (in Angstrom) for which energies are
+        provided, of length at least 5 and equal to the length of the energies array
 
-       :param energies: The energies (Eh) computed at the bond lengths in the rvals list
+    :param energies: The energies (Eh) computed at the bond lengths in the rvals list
 
-       :param plot_fit: A string describing where to save a plot of the harmonic and anharmonic fits, the
-           inputted data points, re, r0 and the first few energy levels, if matplotlib
-           is available.  Set to 'screen' to generate an interactive plot on the screen instead. If a filename is
-           provided, the image type is determined by the extension; see matplotlib for supported file types.
+    :param plot_fit: A string describing where to save a plot of the harmonic and anharmonic fits, the
+        inputted data points, re, r0 and the first few energy levels, if matplotlib
+        is available.  Set to 'screen' to generate an interactive plot on the screen instead. If a filename is
+        provided, the image type is determined by the extension; see matplotlib for supported file types.
 
-       :returns: (*dict*) Keys: "re", "r0", "we", "wexe", "nu", "ZPVE(harmonic)", "ZPVE(anharmonic)", "Be", "B0", "ae", "De"
-                 corresponding to the spectroscopic constants in cm-1
+    :returns: (*dict*) Keys: "re", "r0", "we", "wexe", "nu", "ZPVE(harmonic)", "ZPVE(anharmonic)", "Be", "B0", "ae", "De"
+              corresponding to the spectroscopic constants in cm-1
     """
 
     angstrom_to_bohr = 1.0 / constants.bohr2angstroms
@@ -159,10 +159,10 @@ def anharmonicity(rvals: List[float], energies: List[float], plot_fit: str = '',
     hbar = constants.h / (2.0 * np.pi)
     mu = ((m1 * m2) / (m1 + m2)) * constants.amu2kg
     we = 5.3088375e-11 * np.sqrt(d2 / mu)
-    wexe = (1.2415491e-6) * (we / d2)**2 * ((5.0 * d3 * d3) / (3.0 * d2) - d4)
+    wexe = (1.2415491e-6) * (we / d2) ** 2 * ((5.0 * d3 * d3) / (3.0 * d2) - d4)
 
     # Rotational constant: Be
-    I = ((m1 * m2) / (m1 + m2)) * constants.amu2kg * (re * angstrom_to_meter)**2
+    I = ((m1 * m2) / (m1 + m2)) * constants.amu2kg * (re * angstrom_to_meter) ** 2
     B = constants.h / (8.0 * np.pi**2 * constants.c * I)
 
     # alpha_e and quartic centrifugal distortion constant
@@ -182,7 +182,7 @@ def anharmonicity(rvals: List[float], energies: List[float], plot_fit: str = '',
     zpve_we = 0.5 * we
 
     # Generate pretty pictures, if requested
-    if (plot_fit):
+    if plot_fit:
         try:
             import matplotlib.pyplot as plt
         except ImportError:
@@ -210,7 +210,7 @@ def anharmonicity(rvals: List[float], energies: List[float], plot_fit: str = '',
         coefs4 = [dvals[4], dvals[3], dvals[2], dvals[1], dvals[0]]
         for n in range(3):
             Eharm = we_au * (n + 0.5)
-            Evpt2 = Eharm - wexe_au * (n + 0.5)**2
+            Evpt2 = Eharm - wexe_au * (n + 0.5) ** 2
             coefs2[-1] = -Eharm
             coefs4[-1] = -Evpt2
             roots2 = np.roots(coefs2)
@@ -219,8 +219,8 @@ def anharmonicity(rvals: List[float], energies: List[float], plot_fit: str = '',
             xvals4 = np.choose(np.where(np.isreal(roots4)), roots4)[0].real + re
             Eharm += dvals[0]
             Evpt2 += dvals[0]
-            plt.plot(xvals2, [Eharm, Eharm], 'b', linewidth=1)
-            plt.plot(xvals4, [Evpt2, Evpt2], 'g', linewidth=1)
+            plt.plot(xvals2, [Eharm, Eharm], "b", linewidth=1)
+            plt.plot(xvals4, [Evpt2, Evpt2], "g", linewidth=1)
             maxE = Eharm
             maxR = np.max([xvals2, xvals4])
             minR = np.min([xvals2, xvals4])
@@ -236,23 +236,23 @@ def anharmonicity(rvals: List[float], energies: List[float], plot_fit: str = '',
         # Generate the fitted PES
         xpts = np.linspace(minR, maxR, 1000)
         xrel = xpts - re
-        xpows = xrel[:, None]**range(5)
-        fit2 = np.einsum('xd,d', xpows[:, 0:3], dvals[0:3])
-        fit4 = np.einsum('xd,d', xpows, dvals)
+        xpows = xrel[:, None] ** range(5)
+        fit2 = np.einsum("xd,d", xpows[:, 0:3], dvals[0:3])
+        fit4 = np.einsum("xd,d", xpows, dvals)
 
         # Make / display the plot
-        plt.plot(xpts, fit2, 'b', linewidth=2.5, label='Harmonic (quadratic) fit')
-        plt.plot(xpts, fit4, 'g', linewidth=2.5, label='Anharmonic (quartic) fit')
-        plt.plot([re, re], [minE, maxE], 'b--', linewidth=0.5)
-        plt.plot([r0, r0], [minE, maxE], 'g--', linewidth=0.5)
-        plt.scatter(rvals, energies, c='Black', linewidth=3, label='Input Data')
+        plt.plot(xpts, fit2, "b", linewidth=2.5, label="Harmonic (quadratic) fit")
+        plt.plot(xpts, fit4, "g", linewidth=2.5, label="Anharmonic (quartic) fit")
+        plt.plot([re, re], [minE, maxE], "b--", linewidth=0.5)
+        plt.plot([r0, r0], [minE, maxE], "g--", linewidth=0.5)
+        plt.scatter(rvals, energies, c="Black", linewidth=3, label="Input Data")
         plt.legend()
 
-        plt.xlabel('Bond length (Angstroms)')
-        plt.ylabel('Energy (Eh)')
+        plt.xlabel("Bond length (Angstroms)")
+        plt.ylabel("Energy (Eh)")
         plt.xlim(minR, maxR)
         plt.ylim(minE, maxE)
-        if plot_fit == 'screen':
+        if plot_fit == "screen":
             plt.show()
         else:
             plt.savefig(plot_fit)
@@ -282,6 +282,6 @@ def anharmonicity(rvals: List[float], energies: List[float], plot_fit: str = '',
         "Be": B,
         "B0": B0,
         "ae": ae,
-        "De": de
+        "De": de,
     }
     return results

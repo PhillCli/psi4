@@ -38,16 +38,16 @@ if "undef" in __version__:
         """Using custom build without tags. Please pull git tags with `git pull origin master --tags`. If building from source, `git fetch upstream "refs/tags/*:refs/tags/*"` and re-make."""
     )
 
-time_string = datetime.datetime.now().strftime('%A, %d %B %Y %I:%M%p')
+time_string = datetime.datetime.now().strftime("%A, %d %B %Y %I:%M%p")
 pid = os.getpid()
 
 
-def sizeof_fmt(num, suffix='B'):
-    for unit in ['', 'Ki', 'Mi', 'Gi', 'Ti', 'Pi', 'Ei', 'Zi']:
+def sizeof_fmt(num, suffix="B"):
+    for unit in ["", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"]:
         if abs(num) < 1024.0:
             return "%3.1f %s%s" % (num, unit, suffix)
         num /= 1024.0
-    return "%.1f %s%s" % (num, 'Yi', suffix)
+    return "%.1f %s%s" % (num, "Yi", suffix)
 
 
 def print_header():

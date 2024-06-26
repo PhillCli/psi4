@@ -1,5 +1,6 @@
 import numpy as np
 import pytest
+
 import psi4
 
 pytestmark = [pytest.mark.psi, pytest.mark.api, pytest.mark.quick]
@@ -17,14 +18,16 @@ def test_dft_atomic_blocking():
     no_reorient
     symmetry c1
     """)
-    psi4.set_options({
-        "BASIS": "def2-SVP",
-        "DFT_BLOCK_SCHEME": "ATOMIC",
-        "DFT_SPHERICAL_POINTS": 590,
-        "DFT_RADIAL_POINTS": 85,
-        "DFT_REMOVE_DISTANT_POINTS": 0,
-        "D_convergence": 1e-8,
-    })
+    psi4.set_options(
+        {
+            "BASIS": "def2-SVP",
+            "DFT_BLOCK_SCHEME": "ATOMIC",
+            "DFT_SPHERICAL_POINTS": 590,
+            "DFT_RADIAL_POINTS": 85,
+            "DFT_REMOVE_DISTANT_POINTS": 0,
+            "D_convergence": 1e-8,
+        }
+    )
 
     svwn_w, wfn = psi4.energy("SVWN", return_wfn=True)
     xc_ref = -8.9396369264084168  # Default Octree blocking
@@ -43,7 +46,6 @@ def test_dft_atomic_blocking():
     for atom in range(mol.nallatom()):
         xc_atom = 0
         for block in grid.atomic_blocks()[atom]:
-
             # Obtain block information
             points_func.compute_points(block)
             npoints = block.npoints()
@@ -54,7 +56,7 @@ def test_dft_atomic_blocking():
             w = np.array(block.w())
 
             # Compute phi!
-            phi = np.array(points_func.basis_values()["PHI"])[:npoints, :lpos.shape[0]]
+            phi = np.array(points_func.basis_values()["PHI"])[:npoints, : lpos.shape[0]]
 
             # Build a local slice of D
             lD = D[(lpos[:, None], lpos)]
@@ -97,13 +99,15 @@ def test_dft_block_schemes(scheme):
     no_reorient
     symmetry c1
     """)
-    psi4.set_options({
-        "BASIS": "def2-SVPD",
-        "DFT_SPHERICAL_POINTS": 590,
-        "DFT_RADIAL_POINTS": 85,
-        "D_convergence": 1e-8,
-        "DFT_WEIGHTS_TOLERANCE": -1.0,
-    })
+    psi4.set_options(
+        {
+            "BASIS": "def2-SVPD",
+            "DFT_SPHERICAL_POINTS": 590,
+            "DFT_RADIAL_POINTS": 85,
+            "D_convergence": 1e-8,
+            "DFT_WEIGHTS_TOLERANCE": -1.0,
+        }
+    )
     ref = {"XC GRID TOTAL POINTS": 300900, "DFT XC ENERGY": -9.218561399189895}
     psi4.set_options({"DFT_BLOCK_SCHEME": scheme})
     e, wfn = psi4.energy("pbe/def2-SVPD", return_wfn=True)
@@ -126,13 +130,15 @@ def test_dft_block_scheme_distantpoints():
     no_reorient
     symmetry c1
     """)
-    psi4.set_options({
-        "BASIS": "sto-3g",
-        "maxiter": 1,
-        "FAIL_ON_MAXITER": False,
-        "DFT_PRUNING_SCHEME": "ROBUST",
-        "DFT_WEIGHTS_TOLERANCE": -1.0,
-    })
+    psi4.set_options(
+        {
+            "BASIS": "sto-3g",
+            "maxiter": 1,
+            "FAIL_ON_MAXITER": False,
+            "DFT_PRUNING_SCHEME": "ROBUST",
+            "DFT_WEIGHTS_TOLERANCE": -1.0,
+        }
+    )
     ref = {"True": 45929, "False": 46890}
     YESNO = [True, False]
     SCHEMES = ["OCTREE", "NAIVE", "ATOMIC"]

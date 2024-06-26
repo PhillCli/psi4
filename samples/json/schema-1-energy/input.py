@@ -1,36 +1,35 @@
 #! test QCSchema for energy
 
-import numpy as np
-import psi4
 import json
+
+import numpy as np
+
+import psi4
 
 # Generate JSON data
 json_data = {
     "schema_name": "qcschema_input",
     "schema_version": 1,
     "molecule": {
-        "schema_name":
-        "qcschema_molecule",
-        "schema_version":
-        2,
+        "schema_name": "qcschema_molecule",
+        "schema_version": 2,
         "geometry": [
-            0.0, 0.0, -0.1294769411935893, 0.0, -1.494187339479985, 1.0274465079245698, 0.0, 1.494187339479985,
-            1.0274465079245698
+            0.0,
+            0.0,
+            -0.1294769411935893,
+            0.0,
+            -1.494187339479985,
+            1.0274465079245698,
+            0.0,
+            1.494187339479985,
+            1.0274465079245698,
         ],
         "symbols": ["O", "H", "H"],
-        "connectivity": [(0, 1, 1.0), (0, 2, 1.0)]
+        "connectivity": [(0, 1, 1.0), (0, 2, 1.0)],
     },
     "driver": "energy",
-    "model": {
-        "method": "CCSD(T)",
-        "basis": "6-31g"
-    },
-    "keywords": {
-        "scf_type": "df",
-        "mp2_type": "df",
-        "cc_type": "df",
-        "scf_properties": ["mayer_indices"]
-    }
+    "model": {"method": "CCSD(T)", "basis": "6-31g"},
+    "keywords": {"scf_type": "df", "mp2_type": "df", "cc_type": "df", "scf_properties": ["mayer_indices"]},
 }
 
 # Write expected output
@@ -86,7 +85,7 @@ expected_properties = {
     "mp2_doubles_energy": -0.2069490608880642,
     "mp2_correlation_energy": -0.2069490608880642,
     "mp2_total_energy": -76.2283674281634,
-    "return_energy": expected_return_result
+    "return_energy": expected_return_result,
 }
 
 # Switch run to exact MP2
@@ -96,8 +95,8 @@ json_data["keywords"]["mp2_type"] = "conv"
 json_data["extras"] = {"current_qcvars_only": True}
 json_ret = psi4.schema_wrapper.run_qcschema(json_data)
 
-#print(json.dumps(json_ret.json(), indent=2))
-#import pprint
-#pprint.pprint(json_ret.dict(), width=200)
+# print(json.dumps(json_ret.json(), indent=2))
+# import pprint
+# pprint.pprint(json_ret.dict(), width=200)
 
 assert "Ugur Bozkaya" in json_ret.stdout

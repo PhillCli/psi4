@@ -28,29 +28,29 @@
 
 import math
 
-#MAX_IOFF = 30000
-#extern size_t ioff[MAX_IOFF];
+# MAX_IOFF = 30000
+# extern size_t ioff[MAX_IOFF];
 #
-#MAX_DF = 500
-#extern double df[MAX_DF];
+# MAX_DF = 500
+# extern double df[MAX_DF];
 #
-#MAX_BC = 20
-#extern double bc[MAX_BC][MAX_BC];
+# MAX_BC = 20
+# extern double bc[MAX_BC][MAX_BC];
 #
-#MAX_FAC = 100
-#extern double fac[MAX_FAC];
+# MAX_FAC = 100
+# extern double fac[MAX_FAC];
 #
 #
-#MAX_DF = 500
-#extern double df[MAX_DF];
+# MAX_DF = 500
+# extern double df[MAX_DF];
 #
 ## Globals
-#size_t ioff[MAX_IOFF];
-#double df[MAX_DF];
-#double bc[MAX_BC][MAX_BC];
-#double fac[MAX_FAC];
+# size_t ioff[MAX_IOFF];
+# double df[MAX_DF];
+# double bc[MAX_BC][MAX_BC];
+# double fac[MAX_FAC];
 #
-#def Wavefunction_initialize_singletons():
+# def Wavefunction_initialize_singletons():
 #    done = False
 #
 #    if done:
@@ -87,7 +87,7 @@ def INT_NCART(am):
     #define INT_NCART(am) ((am>=0) ? ((((am)+2)*((am)+1))>>1) : 0)
 
     """
-    return (((abs(am) + 2) * (abs(am) + 1)) >> 1)
+    return ((abs(am) + 2) * (abs(am) + 1)) >> 1
 
 
 def INT_NPURE(am):
@@ -103,7 +103,7 @@ def INT_NFUNC(pu, am):
     #define INT_NFUNC(pu,am) ((pu)?INT_NPURE(am):INT_NCART(am))
 
     """
-    return INT_NCART(am) if pu in {'Cartesian', False} else INT_NPURE(am)
+    return INT_NCART(am) if pu in {"Cartesian", False} else INT_NPURE(am)
 
 
 def INT_CARTINDEX(am, i, j):
@@ -119,7 +119,7 @@ def INT_ICART(a, b, c):
     #define INT_ICART(a, b, c) (((((((a)+(b)+(c)+1)<<1)-(a))*((a)+1))>>1)-(b)-1)
 
     """
-    return ((((((a + b + c + 1) << 1) - a) * (a + 1)) >> 1) - b - 1)
+    return (((((a + b + c + 1) << 1) - a) * (a + 1)) >> 1) - b - 1
 
 
 def INT_IPURE(l, m):
@@ -131,8 +131,8 @@ def INT_IPURE(l, m):
 
 
 # Lookup array that when you index the angular momentum it returns the corresponding letter
-PrimitiveType = ['Normalized', 'Unnormalized']
-GaussianType = ['Cartesian', 'Pure']  # Cartesian = 0, Pure = 1
+PrimitiveType = ["Normalized", "Unnormalized"]
+GaussianType = ["Cartesian", "Pure"]  # Cartesian = 0, Pure = 1
 
 
 class ShellInfo(object):
@@ -155,7 +155,7 @@ class ShellInfo(object):
 
     """
 
-    def __init__(self, am, c, e, pure, nc, center, start, pt='Normalized', rpowers=None):
+    def __init__(self, am, c, e, pure, nc, center, start, pt="Normalized", rpowers=None):
         # Angular momentum
         self.l = am
         # Flag for pure angular momentum (Cartesian = 0, Pure = 1)
@@ -181,7 +181,7 @@ class ShellInfo(object):
         # These are the radial factors for ECPs.  They are not defined for regular shells.
         self.rpowers = rpowers
         # Compute the normalization constants
-        if pt == 'Unnormalized':
+        if pt == "Unnormalized":
             self.normalize_shell()
             self.erd_normalize_shell()
         else:
@@ -199,9 +199,7 @@ class ShellInfo(object):
         return math.sqrt((pow(2.0, self.l) * z) / (math.pi * math.sqrt(math.pi) * df(2 * self.l)))
 
     def contraction_normalization(self):
-        """Normalizes an entire contraction set. Applies the normalization to the coefficients
-
-        """
+        """Normalizes an entire contraction set. Applies the normalization to the coefficients"""
         e_sum = 0.0
         for i in range(self.nprimitive()):
             for j in range(self.nprimitive()):
@@ -254,11 +252,21 @@ class ShellInfo(object):
     def copy(self, nc=None, c=None):
         """Return a copy of the ShellInfo"""
         if nc is not None and c is not None:
-            return ShellInfo(self.l, self.PYoriginal_coef, self.PYexp, self.puream, nc, c, self.start, 'Unnormalized',
-                             self.rpowers)
+            return ShellInfo(
+                self.l, self.PYoriginal_coef, self.PYexp, self.puream, nc, c, self.start, "Unnormalized", self.rpowers
+            )
         else:
-            return ShellInfo(self.l, self.PYoriginal_coef, self.PYexp, self.puream, self.nc, self.center, self.start,
-                             'Unnormalized', self.rpowers)
+            return ShellInfo(
+                self.l,
+                self.PYoriginal_coef,
+                self.PYexp,
+                self.puream,
+                self.nc,
+                self.center,
+                self.start,
+                "Unnormalized",
+                self.rpowers,
+            )
         # better to just deepcopy?
 
     def nprimitive(self):
@@ -279,7 +287,7 @@ class ShellInfo(object):
 
     def amchar(self):
         """Return the character symbol for the angular momentum of the given contraction"""
-        return 'spdfghiklmnoqrtuvwxyz' [self.l]
+        return "spdfghiklmnoqrtuvwxyz"[self.l]
 
     def AMCHAR(self):
         """Return the character symbol for the angular momentum of the given contraction (upper case)"""
@@ -287,11 +295,11 @@ class ShellInfo(object):
 
     def is_cartesian(self):
         """Returns true if contraction is Cartesian"""
-        return self.puream == 'Cartesian'
+        return self.puream == "Cartesian"
 
     def is_pure(self):
         """Returns true if contraction is pure"""
-        return self.puream == 'Pure'
+        return self.puream == "Pure"
 
     def center(self):
         """Returns the center of the Molecule this shell is on"""
@@ -337,8 +345,9 @@ class ShellInfo(object):
         """Return minimal list of shell info"""
         if self.rpowers and self.rpowers[0] is not None:
             # This is an ECP, so we tack the radial powers onto the end of the list
-            info = [self.l] + [(self.PYexp[K], self.PYoriginal_coef[K], self.rpower(K))
-                               for K in range(self.nprimitive())]
+            info = [self.l] + [
+                (self.PYexp[K], self.PYoriginal_coef[K], self.rpower(K)) for K in range(self.nprimitive())
+            ]
         else:
             # This is a regular shell, with only coefficients and exponents to worry about
             info = [self.l] + [(self.PYexp[K], self.PYoriginal_coef[K]) for K in range(self.nprimitive())]
@@ -353,7 +362,7 @@ class ShellInfo(object):
         if outfile is None:
             return text
         else:
-            with open(outfile, mode='w') as handle:
+            with open(outfile, mode="w") as handle:
                 handle.write(text)
 
     def pyprint_gamess(self, outfile=None):
@@ -365,7 +374,7 @@ class ShellInfo(object):
         if outfile is None:
             return text
         else:
-            with open(outfile, mode='w') as handle:
+            with open(outfile, mode="w") as handle:
                 handle.write(text)
 
     def __str__(self):

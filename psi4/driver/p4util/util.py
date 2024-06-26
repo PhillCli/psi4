@@ -71,15 +71,15 @@ def oeprop(wfn: core.Wavefunction, *args: List[str], **kwargs):
 
     """
     oe = core.OEProp(wfn)
-    if 'title' in kwargs:
-        oe.set_title(kwargs['title'])
+    if "title" in kwargs:
+        oe.set_title(kwargs["title"])
     for prop in args:
         oe.add(prop.upper())
 
         # If we're doing MBIS, we want the free-atom volumes
         # in order to compute volume ratios,
         # but only if we're calling oeprop as the whole molecule
-        free_atom = kwargs.get('free_atom', False)
+        free_atom = kwargs.get("free_atom", False)
         if "MBIS_VOLUME_RATIOS" in prop.upper() and not free_atom:
             core.print_out("  Computing free-atom volumes\n")
             free_atom_volumes(wfn)
@@ -112,8 +112,8 @@ def cubeprop(wfn: core.Wavefunction, **kwargs):
 
     """
     # By default compute the orbitals
-    if not core.has_global_option_changed('CUBEPROP_TASKS'):
-        core.set_global_option('CUBEPROP_TASKS', ['ORBITALS'])
+    if not core.has_global_option_changed("CUBEPROP_TASKS"):
+        core.set_global_option("CUBEPROP_TASKS", ["ORBITALS"])
 
     cp = core.CubeProperties(wfn)
     cp.compute_properties()
@@ -179,10 +179,10 @@ def set_memory(inputval: Union[str, int, float], execute: bool = True, quiet: bo
     # Handle memory given in bytes directly (int or float)
     if isinstance(inputval, (int, float)):
         val = inputval
-        units = ''
+        units = ""
     # Handle memory given as a string
     elif isinstance(inputval, str):
-        memory_string = re.compile(r'^\s*(\d*\.?\d+)\s*([KMGTPBE]i?B)\s*$', re.IGNORECASE)
+        memory_string = re.compile(r"^\s*(\d*\.?\d+)\s*([KMGTPBE]i?B)\s*$", re.IGNORECASE)
         matchobj = re.search(memory_string, inputval)
         if matchobj:
             val = float(matchobj.group(1))
@@ -190,8 +190,11 @@ def set_memory(inputval: Union[str, int, float], execute: bool = True, quiet: bo
         else:
             raise ValidationError("""Invalid memory specification: {}. Try 5e9 or '5 gb'.""".format(repr(inputval)))
     else:
-        raise ValidationError("""Invalid type {} in memory specification: {}. Try 5e9 or '5 gb'.""".format(
-            type(inputval), repr(inputval)))
+        raise ValidationError(
+            """Invalid type {} in memory specification: {}. Try 5e9 or '5 gb'.""".format(
+                type(inputval), repr(inputval)
+            )
+        )
 
     # Units decimal or binary?
     multiplier = 1000
@@ -213,8 +216,10 @@ def set_memory(inputval: Union[str, int, float], execute: bool = True, quiet: bo
     min_mem_allowed = 262144000
     if memory_amount < min_mem_allowed:
         raise ValidationError(
-            """set_memory(): Requested {:.3} MiB ({:.3} MB); minimum 250 MiB (263 MB). Please, sir, I want some more."""
-            .format(memory_amount / 1024**2, memory_amount / 1000**2))
+            """set_memory(): Requested {:.3} MiB ({:.3} MB); minimum 250 MiB (263 MB). Please, sir, I want some more.""".format(
+                memory_amount / 1024**2, memory_amount / 1000**2
+            )
+        )
 
     if execute:
         core.set_memory_bytes(memory_amount, quiet)
@@ -259,23 +264,23 @@ def copy_file_to_scratch(filename: str, prefix: str, namespace: str, unit: int, 
     pid = str(os.getpid())
     scratch = core.IOManager.shared_object().get_file_path(int(unit))
 
-    cp = '/bin/cp'
+    cp = "/bin/cp"
     if move:
-        cp = '/bin/mv'
+        cp = "/bin/mv"
 
     unit = str(unit)
 
-    target = ''
+    target = ""
     target += prefix
-    target += '.'
+    target += "."
     target += pid
     if len(namespace):
-        target += '.'
+        target += "."
         target += namespace
-    target += '.'
+    target += "."
     target += unit
 
-    command = ('%s %s %s/%s' % (cp, filename, scratch, target))
+    command = "%s %s %s/%s" % (cp, filename, scratch, target)
 
     os.system(command)
 
@@ -315,23 +320,23 @@ def copy_file_from_scratch(filename: str, prefix: str, namespace: str, unit: int
     pid = str(os.getpid())
     scratch = core.IOManager.shared_object().get_file_path(int(unit))
 
-    cp = '/bin/cp'
+    cp = "/bin/cp"
     if move:
-        cp = '/bin/mv'
+        cp = "/bin/mv"
 
     unit = str(unit)
 
-    target = ''
+    target = ""
     target += prefix
-    target += '.'
+    target += "."
     target += pid
     if len(namespace):
-        target += '.'
+        target += "."
         target += namespace
-    target += '.'
+    target += "."
     target += unit
 
-    command = ('%s %s/%s %s' % (cp, scratch, target, filename))
+    command = "%s %s/%s %s" % (cp, scratch, target, filename)
 
     os.system(command)
 
@@ -358,7 +363,7 @@ def _l2_config_style_eri_llll():
         "onebody_": r"onebody_\w_d\d",
         "eri_c4_": r"eri_\w..._d\d",
         "eri_c3_": r"eri_\w.._d\d",
-        "eri_c2_": r"eri_\w._d\d"
+        "eri_c2_": r"eri_\w._d\d",
     }
 
     amstr = "SPDFGHIKLMNOQRTUVWXYZ"
@@ -392,7 +397,7 @@ def _l2_config_style_eri_c4():
     for itm in core._libint2_configuration().split(";"):
         for cat in list(skel.keys()):
             if itm.startswith(cat):
-                skel[cat].append(itm[len(cat):])
+                skel[cat].append(itm[len(cat) :])
 
     for cat in list(skel.keys()):
         der_max_store = []
@@ -400,7 +405,7 @@ def _l2_config_style_eri_c4():
             lmax = -1
             for itm2 in skel[cat]:
                 if itm2.startswith(der):
-                    lmax = max(int(itm2[len(der):]), lmax)
+                    lmax = max(int(itm2[len(der) :]), lmax)
             der_max_store.append(None if lmax == -1 else lmax)
         skel[cat] = der_max_store
 
@@ -418,9 +423,11 @@ def libint2_print_out() -> None:
     # when L2 is pure cmake core.print_out(core.libint2_citation());
 
     core.print_out(
-        f"    Primary   basis highest AM E, G, H:  {', '.join(('-' if d is None else str(d)) for d in ams['eri'])}\n")
+        f"    Primary   basis highest AM E, G, H:  {', '.join(('-' if d is None else str(d)) for d in ams['eri'])}\n"
+    )
     core.print_out(
-        f"    Auxiliary basis highest AM E, G, H:  {', '.join(('-' if d is None else str(d)) for d in ams['eri3'])}\n")
+        f"    Auxiliary basis highest AM E, G, H:  {', '.join(('-' if d is None else str(d)) for d in ams['eri3'])}\n"
+    )
     core.print_out(
         f"    Onebody   basis highest AM E, G, H:  {', '.join(('-' if d is None else str(d)) for d in ams['onebody'])}\n"
     )

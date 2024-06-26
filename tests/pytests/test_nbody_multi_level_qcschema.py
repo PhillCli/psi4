@@ -27,17 +27,17 @@ def base_schema():
     """)
 
     _base_schema = {
-        'schema_name': 'qcschema_input',
-        'schema_version': 1,
-        'molecule': h2o_trimer.to_schema(dtype=2),
-        'keywords': {
-            'function_kwargs': {},
-            'cc_type': 'df',
+        "schema_name": "qcschema_input",
+        "schema_version": 1,
+        "molecule": h2o_trimer.to_schema(dtype=2),
+        "keywords": {
+            "function_kwargs": {},
+            "cc_type": "df",
         },
-        'model': {
-            'basis': '(auto)',
+        "model": {
+            "basis": "(auto)",
         },
-        'driver': 'energy',
+        "driver": "energy",
     }
 
     return _base_schema
@@ -49,56 +49,46 @@ def base_schema():
         # Compute 1-body contribution with ccsd(t) and 2-body contribution with mp2
         pytest.param(
             {
-                'method': '',
-                'kfk': {
-                    'bsse_type': ['nocp', 'cp', 'vmfc'],
-                    'return_total_data': True,
-                    'levels': {
-                        1: 'mp2/sto-3g',
-                        2: 'scf/sto-3g'
-                    }
-                }
-            }, {
-                '2NOCP': -225.019408434635,
-                '2CP': -225.000173661598,
-                '2VMFC': -224.998744381484
+                "method": "",
+                "kfk": {
+                    "bsse_type": ["nocp", "cp", "vmfc"],
+                    "return_total_data": True,
+                    "levels": {1: "mp2/sto-3g", 2: "scf/sto-3g"},
+                },
             },
-            id='nbody-multilevel'),
+            {"2NOCP": -225.019408434635, "2CP": -225.000173661598, "2VMFC": -224.998744381484},
+            id="nbody-multilevel",
+        ),
         # Compute 1-body contribution with ccsd(t) and estimate all higher order contributions with scf
         pytest.param(
             {
-                'method': '',
-                'kfk': {
-                    'bsse_type': 'nocp',
-                    'return_total_data': True,
-                    'levels': {
-                        1: 'mp2/sto-3g',
-                        'supersystem': 'scf/sto-3g'
-                    }
-                }
-            }, {
-                '1NOCP': -224.998373505116,
-                '3NOCP': -225.023509855159
+                "method": "",
+                "kfk": {
+                    "bsse_type": "nocp",
+                    "return_total_data": True,
+                    "levels": {1: "mp2/sto-3g", "supersystem": "scf/sto-3g"},
+                },
             },
-            id='nbody-multilevel-supersys'),
+            {"1NOCP": -224.998373505116, "3NOCP": -225.023509855159},
+            id="nbody-multilevel-supersys",
+        ),
         # Compute electrostatically embedded  many-body expansion energy.with TIP3P charges
         pytest.param(
             {
-                'method': 'scf/sto-3g',
-                'kfk': {
-                    'bsse_type': 'vmfc',
-                    'return_total_data': True,
-                    'levels': None,
-                    'max_nbody': 2,
-                    'embedding_charges': {i: [j for j in [-0.834, 0.417, 0.417]]
-                                          for i in range(1, 4)}
-                }
-            }, {
-                '1': -224.940138148882,
-                '2': -224.943882712817
+                "method": "scf/sto-3g",
+                "kfk": {
+                    "bsse_type": "vmfc",
+                    "return_total_data": True,
+                    "levels": None,
+                    "max_nbody": 2,
+                    "embedding_charges": {i: [j for j in [-0.834, 0.417, 0.417]] for i in range(1, 4)},
+                },
             },
-            id='nbody-embedded'),
-    ])
+            {"1": -224.940138148882, "2": -224.943882712817},
+            id="nbody-embedded",
+        ),
+    ],
+)
 def test_nbody_levels(inp, expected, base_schema):
     # reference for nbody-multilevel generated with this larger fitting basis for sto-3g. fails otherwise by 3.e-5
     basfams = psi4.driver.qcdb.basislist.load_basis_families()
@@ -107,8 +97,8 @@ def test_nbody_levels(inp, expected, base_schema):
             fam.add_rifit("def2-qzvpp-ri")
 
     jin = copy.deepcopy(base_schema)
-    jin['model']['method'] = inp['method']
-    jin['keywords']['function_kwargs'] = inp['kfk']
+    jin["model"]["method"] = inp["method"]
+    jin["keywords"]["function_kwargs"] = inp["kfk"]
 
     otp = psi4.schema_wrapper.run_qcschema(jin)
     pprint.pprint(otp)

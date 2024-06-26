@@ -78,8 +78,9 @@ def fisapt_compute_energy(self, external_potentials=None):
     core.timer_off("FISAPT:SAPT:ind")
     if not core.get_option("FISAPT", "FISAPT_DO_FSAPT"):
         core.timer_on("FISAPT:SAPT:disp")
-        self.disp(self.matrices(), self.vectors(),
-                  True)  # Expensive, only do if needed  # unteseted translation of below
+        self.disp(
+            self.matrices(), self.vectors(), True
+        )  # Expensive, only do if needed  # unteseted translation of below
         # self.disp(matrices_, vectors_, true)  # Expensive, only do if needed
         core.timer_off("FISAPT:SAPT:disp")
 
@@ -102,7 +103,7 @@ def fisapt_compute_energy(self, external_potentials=None):
             core.timer_on("FISAPT:FSAPT:disp")
             self.fdisp()
             core.timer_off("FISAPT:FSAPT:disp")
-        #else:
+        # else:
         #    # Build Empirical Dispersion
         #    dashD = empirical_dispersion.EmpiricalDispersion(name_hint='SAPT0-D3M')
         #    dashD.print_out()
@@ -141,9 +142,9 @@ def fisapt_fdrop(self, external_potentials=None):
 
     core.print_out("    F-SAPT Data Filepath = {}\n\n".format(filepath))
 
-    geomfile = filepath + os.sep + 'geom.xyz'
-    xyz = self.molecule().to_string(dtype='xyz', units='Angstrom')
-    with open(geomfile, 'w') as fh:
+    geomfile = filepath + os.sep + "geom.xyz"
+    xyz = self.molecule().to_string(dtype="xyz", units="Angstrom")
+    with open(geomfile, "w") as fh:
         fh.write(xyz)
 
     # write external potential geometries
@@ -159,7 +160,8 @@ def fisapt_fdrop(self, external_potentials=None):
                         xyz += "Ch %f %f %f\n" % (qxyz[1], qxyz[2], qxyz[3])
                     else:
                         raise ValidationError(
-                            f"Point charge '{qxyz}' not mapping into 'chg, [x, y, z]' or 'chg, x, y, z'")
+                            f"Point charge '{qxyz}' not mapping into 'chg, [x, y, z]' or 'chg, x, y, z'"
+                        )
 
                 with open(filepath + os.sep + "Extern_%s.xyz" % frag, "w") as fh:
                     fh.write(xyz)
@@ -193,8 +195,8 @@ def fisapt_fdrop(self, external_potentials=None):
 
         core.print_out("    sF-SAPT Data Filepath = {}\n\n".format(ssapt_filepath))
 
-        geomfile = ssapt_filepath + os.sep + 'geom.xyz'
-        with open(geomfile, 'w') as fh:
+        geomfile = ssapt_filepath + os.sep + "geom.xyz"
+        with open(geomfile, "w") as fh:
             fh.write(xyz)
 
         matrices["sIndAB_AB"].name = "IndAB"
@@ -220,9 +222,9 @@ def fisapt_plot(self):
     filepath = core.get_option("FISAPT", "FISAPT_PLOT_FILEPATH")
     os.makedirs(filepath, exist_ok=True)
 
-    geomfile = filepath + os.sep + 'geom.xyz'
-    xyz = self.molecule().to_string(dtype='xyz', units='Angstrom')
-    with open(geomfile, 'w') as fh:
+    geomfile = filepath + os.sep + "geom.xyz"
+    xyz = self.molecule().to_string(dtype="xyz", units="Angstrom")
+    with open(geomfile, "w") as fh:
         fh.write(xyz)
 
     self.raw_plot(filepath)
@@ -248,9 +250,9 @@ def _drop(array, filepath):
     Equivalent to https://github.com/psi4/psi4archive/blob/master/psi4/src/psi4/fisapt/fisapt.cc#L4389-L4420
 
     """
-    filename = filepath + os.sep + array.name + '.dat'
-    with open(filename, 'wb') as handle:
-        np.savetxt(handle, array.to_array(), fmt="%24.16E", delimiter=' ', newline='\n')
+    filename = filepath + os.sep + array.name + ".dat"
+    with open(filename, "wb") as handle:
+        np.savetxt(handle, array.to_array(), fmt="%24.16E", delimiter=" ", newline="\n")
 
 
 core.FISAPT.compute_energy = fisapt_compute_energy

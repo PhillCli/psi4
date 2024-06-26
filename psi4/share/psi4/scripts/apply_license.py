@@ -7,7 +7,7 @@
 import os
 
 # File type we know how to handle
-ftypes = ['cc', 'h', 'py']
+ftypes = ["cc", "h", "py"]
 
 c_header = """/*
  * @BEGIN LICENSE
@@ -37,57 +37,57 @@ c_header = """/*
  * @END LICENSE
  */"""
 
-py_header = c_header.replace(' */', '#')
-py_header = py_header.replace('/*', '#')
-py_header = py_header.replace(' *', '#')
+py_header = c_header.replace(" */", "#")
+py_header = py_header.replace("/*", "#")
+py_header = py_header.replace(" *", "#")
 
 c_header = c_header.splitlines()
 py_header = py_header.splitlines()
 
 
 def check_header(infile):
-    f = open(infile, 'r+')
+    f = open(infile, "r+")
     data = f.read().splitlines()
 
     # Find the header location
     max_lines = 30
     try:
         symbol = None
-        if filename.split('.')[-1] in ['py']:
+        if filename.split(".")[-1] in ["py"]:
             start = data.index("# @BEGIN LICENSE") - 1
             end = data.index("# @END LICENSE") + 1
-            if data[start] != '#' or data[end] != '#':
+            if data[start] != "#" or data[end] != "#":
                 f.close()
                 print('Did not find "wings" of license block in file %s' % infile)
                 return
         else:
             start = data.index(" * @BEGIN LICENSE") - 1
             end = data.index(" * @END LICENSE") + 1
-            if data[start] != '/*' or data[end] != ' */':
+            if data[start] != "/*" or data[end] != " */":
                 f.close()
                 print('Did not find "wings" of license block in file %s' % infile)
                 return
     except Exception:
-        print('Could not find license block in file %s' % infile)
+        print("Could not find license block in file %s" % infile)
         f.close()
         return
 
     # Make sure the block actually looks like a license
-    license = data[start:end + 1]
+    license = data[start : end + 1]
     top = any("PSI4:" in x.upper() for x in license[:5])
     bot = any("51 Franklin Street" in x for x in license[5:])
     if not (top and bot):
-        print('Did not understand infile %s' % infile)
+        print("Did not understand infile %s" % infile)
         f.close()
         return
 
     # Replace license
-    if filename.split('.')[-1] in ['cc', 'h']:
-        data[start:end + 1] = c_header
-    elif filename.split('.')[-1] in ['py']:
-        data[start:end + 1] = py_header
+    if filename.split(".")[-1] in ["cc", "h"]:
+        data[start : end + 1] = c_header
+    elif filename.split(".")[-1] in ["py"]:
+        data[start : end + 1] = py_header
     else:
-        print('Did not understand infile end: %s' % infile)
+        print("Did not understand infile end: %s" % infile)
         f.close()
         return
 
@@ -98,18 +98,17 @@ def check_header(infile):
     f.close()
 
 
-avoid_strings = ['qcdb', 'libJKFactory']
+avoid_strings = ["qcdb", "libJKFactory"]
 
-walk = list(os.walk('../../src/'))
-walk += list(os.walk('../python'))
+walk = list(os.walk("../../src/"))
+walk += list(os.walk("../python"))
 
 for root, dirnames, filenames in walk:
     if any(x in root for x in avoid_strings):
         continue
 
     for filename in filenames:
-
-        if filename.split('.')[-1] not in ftypes:
+        if filename.split(".")[-1] not in ftypes:
             continue
 
-        check_header(root + '/' + filename)
+        check_header(root + "/" + filename)

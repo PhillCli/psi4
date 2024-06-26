@@ -25,18 +25,17 @@
 #
 # @END LICENSE
 #
-r"""File to
+r"""File to"""
 
-"""
-import sys
-import os
-import glob
 import ast
+import glob
+import os
+import sys
 
 
 def useful():
     print("in qcdb.useful()")
-    return 'qcdb successfully accessed'
+    return "qcdb successfully accessed"
 
 
 def drop_duplicates(seq):
@@ -52,52 +51,50 @@ def drop_duplicates(seq):
 
 
 def dictify_database_docstrings():
-    """
-
-    """
-    db_path = os.path.dirname(__file__) + '/../databases'
+    """ """
+    db_path = os.path.dirname(__file__) + "/../databases"
 
     DSD = {}
     module_choices = []
-    for module in glob.glob(db_path + '/*.py'):
+    for module in glob.glob(db_path + "/*.py"):
         filename = os.path.split(module)[1]
         basename = os.path.splitext(filename)[0]
-        div = '=' * len(basename)
+        div = "=" * len(basename)
 
         module_choices.append(basename)
         DSD[basename] = {}
 
-        M = ast.parse(''.join(open(module)))
+        M = ast.parse("".join(open(module)))
         DS = ast.get_docstring(M)
         if not DS:
             DS = ""
-        DS = str.replace(DS, '|dl|', '-->')
-        DS = str.replace(DS, '|dr|', '<--')
-        DS = str.replace(DS, "``'", '')
-        DS = str.replace(DS, "'``", '')
+        DS = str.replace(DS, "|dl|", "-->")
+        DS = str.replace(DS, "|dr|", "<--")
+        DS = str.replace(DS, "``'", "")
+        DS = str.replace(DS, "'``", "")
 
         lst = DS.split("\n- **")
 
-        #DSD[basename]['general'] = str.replace(lst[0], '|', '')
-        DSD[basename]['general'] = lst[0].split('\n')
+        # DSD[basename]['general'] = str.replace(lst[0], '|', '')
+        DSD[basename]["general"] = lst[0].split("\n")
 
         try:
-            DSD[basename]['cp'] = [section for section in lst if section.startswith("cp")][0]
+            DSD[basename]["cp"] = [section for section in lst if section.startswith("cp")][0]
         except IndexError:
-            DSD[basename]['cp'] = None
+            DSD[basename]["cp"] = None
 
         try:
-            DSD[basename]['rlxd'] = [section for section in lst if section.startswith("rlxd")][0]
+            DSD[basename]["rlxd"] = [section for section in lst if section.startswith("rlxd")][0]
         except IndexError:
-            DSD[basename]['rlxd'] = None
+            DSD[basename]["rlxd"] = None
 
         try:
-            DSD[basename]['benchmark'] = [section for section in lst if section.startswith("benchmark")][0]
+            DSD[basename]["benchmark"] = [section for section in lst if section.startswith("benchmark")][0]
         except IndexError:
-            DSD[basename]['benchmark'] = None
+            DSD[basename]["benchmark"] = None
 
         try:
-            #DSD[basename]['subset'] = [section for section in lst if section.startswith("subset")][0]
+            # DSD[basename]['subset'] = [section for section in lst if section.startswith("subset")][0]
             temp = [section for section in lst if section.startswith("subset")][0].splitlines()
             temp = temp[2:]
 
@@ -110,10 +107,10 @@ def dictify_database_docstrings():
                 except ValueError:
                     result[item] = ""
 
-            DSD[basename]['subset'] = result
+            DSD[basename]["subset"] = result
 
         except IndexError:
-            DSD[basename]['subset'] = {"": 'No subsets available'}
+            DSD[basename]["subset"] = {"": "No subsets available"}
 
     return DSD
 
@@ -123,6 +120,6 @@ def dictify_database_docstrings():
     #    print '\nbenchmark\n\n', DSD[basename]['benchmark']
     #    print '\nsubset\n\n', DSD[basename]['subset']
 
-    #print '  %-12s   %s' % ('[' + basename + ']', DSD[basename]['general'][0])
+    # print '  %-12s   %s' % ('[' + basename + ']', DSD[basename]['general'][0])
 
-    #print 'DSD2\n', DSD['S22']['subset']
+    # print 'DSD2\n', DSD['S22']['subset']

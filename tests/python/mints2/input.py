@@ -5,8 +5,8 @@ import psi4
 
 psi4.set_output_file("output.dat", False)
 
-refnuc = 204.01995818061  #TEST
-refscf = -228.95763005900784  #TEST
+refnuc = 204.01995818061  # TEST
+refscf = -228.95763005900784  # TEST
 
 bz = psi4.geometry("""
     X
@@ -113,10 +113,10 @@ psi4.basis_helper("""
     ****
 """)
 
-psi4.set_options({'d_convergence': 11, 'e_convergence': 11, 'scf_type': 'pk'})
+psi4.set_options({"d_convergence": 11, "e_convergence": 11, "scf_type": "pk"})
 
-scfenergy = psi4.energy('scf')
+scfenergy = psi4.energy("scf")
 
-psi4.compare_strings("c2v", bz.schoenflies_symbol(), "Point group")  #TEST
-psi4.compare_values(refnuc, bz.nuclear_repulsion_energy(), 10, "Nuclear repulsion energy")  #TEST
-psi4.compare_values(refscf, scfenergy, 9, "SCF Energy")  #TEST
+psi4.compare_strings("c2v", bz.schoenflies_symbol(), "Point group")  # TEST
+psi4.compare_values(refnuc, bz.nuclear_repulsion_energy(), 10, "Nuclear repulsion energy")  # TEST
+psi4.compare_values(refscf, scfenergy, 9, "SCF Energy")  # TEST

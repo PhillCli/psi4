@@ -31,7 +31,7 @@ import numpy as np
 # TODO: Include gradient loading feature, analagously to hessian loading.
 
 
-def to_string(grad, handle, dtype='file11', mol=None, energy=None):
+def to_string(grad, handle, dtype="file11", mol=None, energy=None):
     """Writes gradient in various formats.
 
     Parameters
@@ -59,45 +59,43 @@ def to_string(grad, handle, dtype='file11', mol=None, energy=None):
     try:
         grad = grad.reshape(-1, 3)
     except ValueError:
-        raise ValidationError("Number of gradient entries must be divisible by 3. Received {} entries.".format(
-            grad.size))
+        raise ValidationError(
+            "Number of gradient entries must be divisible by 3. Received {} entries.".format(grad.size)
+        )
 
     if mol and grad.shape[0] != mol.natom():
-        raise ValidationError("Number of gradient entries must be number of atoms * 3. Received {} entries.".format(
-            grad.size))
+        raise ValidationError(
+            "Number of gradient entries must be number of atoms * 3. Received {} entries.".format(grad.size)
+        )
 
-    if dtype in ['file11', 'GRD']:
+    if dtype in ["file11", "GRD"]:
         if mol is None:
             raise ValidationError("molecule must both be defined to print a gradient in file11 format.")
 
     # Now actually write out the gradients.
-    if dtype in ['file11']:
+    if dtype in ["file11"]:
         # We can forgive a missing energy, but not a missing molecule.
         head = "{:59} {:10}{:9}\n".format(mol.name(), "(wfn)", "(dertype)")
         head += "{:5d}{:20.10f}".format(mol.natom(), energy)
         for atom in range(mol.natom()):
             head += ("\n" + 4 * "{:20.10f}").format(mol.Z(atom), mol.x(atom), mol.y(atom), mol.z(atom))
-        np.savetxt(handle,
-                   grad,
-                   fmt=" " * 20 + "%20.10f%20.10f%20.10f",
-                   delimiter='',
-                   newline='\n',
-                   header=head,
-                   comments='')
+        np.savetxt(
+            handle, grad, fmt=" " * 20 + "%20.10f%20.10f%20.10f", delimiter="", newline="\n", header=head, comments=""
+        )
 
-    elif dtype in ['GRD']:
-        head = '{:5}{:20.10f}'.format(mol.natom(), 0)
+    elif dtype in ["GRD"]:
+        head = "{:5}{:20.10f}".format(mol.natom(), 0)
         for atom in range(mol.natom()):
             head += ("\n" + 4 * "{:20.10f}").format(mol.Z(atom), mol.x(atom), mol.y(atom), mol.z(atom))
         # The need to supply the atomic charge makes writing an actual array inconvenient.
         # For consistency, save a dummy array.
         charges = np.array([mol.Z(i) for i in range(mol.natom())])
         modified_grad = np.insert(grad, 0, charges, axis=1)
-        np.savetxt(handle, modified_grad, fmt='%20.10f', delimiter='', newline='\n', header=head, comments='')
+        np.savetxt(handle, modified_grad, fmt="%20.10f", delimiter="", newline="\n", header=head, comments="")
 
-    elif dtype in ['minimal']:
-        head = '{:5}{:5}'.format(grad.shape[0], grad.size)
-        np.savetxt(handle, grad, fmt='%20.10f', delimiter='', newline='\n', header=head, comments='')
+    elif dtype in ["minimal"]:
+        head = "{:5}{:5}".format(grad.shape[0], grad.size)
+        np.savetxt(handle, grad, fmt="%20.10f", delimiter="", newline="\n", header=head, comments="")
 
     else:
-        raise ValidationError('Unknown dtype: {}'.format(dtype))
+        raise ValidationError("Unknown dtype: {}".format(dtype))

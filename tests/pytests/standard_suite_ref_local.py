@@ -1,5 +1,5 @@
 import numpy as np
-from qcengine.programs.tests.standard_suite_ref import answer_hash, compute_derived_qcvars, _std_suite, _std_generics
+from qcengine.programs.tests.standard_suite_ref import _std_generics, _std_suite, answer_hash, compute_derived_qcvars
 
 # in-repo extensions for _std_suite above
 # * ideally empty. PR to QCEngine ASAP and empty this after QCEngine release.
@@ -13,7 +13,7 @@ _std_suite_psi4_extension = [
             "reference": "rhf",
             "fcae": "ae",
             "corl_type": "conv",
-            "sdsc": "sd"
+            "sdsc": "sd",
         },
         "data": {},
     },
@@ -25,7 +25,7 @@ _std_suite_psi4_extension = [
             "reference": "rhf",
             "fcae": "ae",
             "corl_type": "conv",
-            "sdsc": "sd"
+            "sdsc": "sd",
         },
         "data": {},
     },
@@ -37,7 +37,7 @@ _std_suite_psi4_extension = [
             "reference": "rhf",
             "fcae": "ae",
             "corl_type": "conv",
-            "sdsc": "sd"
+            "sdsc": "sd",
         },
         "data": {},
     },
@@ -61,7 +61,7 @@ _std_suite_psi4_extension = [
             "reference": "uhf",
             "fcae": "ae",
             "corl_type": "conv",
-            "sdsc": "sd"
+            "sdsc": "sd",
         },
         "data": {},
     },
@@ -73,7 +73,7 @@ _std_suite_psi4_extension = [
             "reference": "uhf",
             "fcae": "ae",
             "corl_type": "conv",
-            "sdsc": "sd"
+            "sdsc": "sd",
         },
         "data": {},
     },
@@ -88,8 +88,7 @@ _std_suite_psi4_extension = [
             "sdsc": "sd",
         },
         "data": {
-            "CISD CORRELATION ENERGY":
-            -0.08142433,  # detci != cfour's vcc ???  # locally, replacing the rohf cisd vcc=tce value (stored in qcng) by the detci=guga value. correct sdsc label unclear.
+            "CISD CORRELATION ENERGY": -0.08142433,  # detci != cfour's vcc ???  # locally, replacing the rohf cisd vcc=tce value (stored in qcng) by the detci=guga value. correct sdsc label unclear.
             "FCI CORRELATION ENERGY": -0.084637876308811,  # detci
         },
     },
@@ -121,7 +120,6 @@ _std_suite_psi4_extension = [
             "CISD CORRELATION ENERGY": -0.21038651,  # detci != vcc ???
         },
     },
-
     # <<<  CONV-FC-CONV  >>>
     {
         "meta": {
@@ -166,7 +164,6 @@ _std_suite_psi4_extension = [
             "CISD CORRELATION ENERGY": -0.186640254417867,  # detci only != vcc ???
         },
     },
-
     # <<<  DF-AE-DF  >>>
     {
         "meta": {
@@ -176,7 +173,7 @@ _std_suite_psi4_extension = [
             "reference": "rhf",
             "fcae": "ae",
             "corl_type": "df",
-            "sdsc": "sd"
+            "sdsc": "sd",
         },
         "data": {},
     },
@@ -188,7 +185,7 @@ _std_suite_psi4_extension = [
             "reference": "rhf",
             "fcae": "ae",
             "corl_type": "df",
-            "sdsc": "sd"
+            "sdsc": "sd",
         },
         "data": {},
     },
@@ -200,7 +197,7 @@ _std_suite_psi4_extension = [
             "reference": "rhf",
             "fcae": "ae",
             "corl_type": "df",
-            "sdsc": "sd"
+            "sdsc": "sd",
         },
         "data": {},
     },
@@ -224,7 +221,7 @@ _std_suite_psi4_extension = [
             "reference": "uhf",
             "fcae": "ae",
             "corl_type": "df",
-            "sdsc": "sd"
+            "sdsc": "sd",
         },
         "data": {},
     },
@@ -236,7 +233,7 @@ _std_suite_psi4_extension = [
             "reference": "uhf",
             "fcae": "ae",
             "corl_type": "df",
-            "sdsc": "sd"
+            "sdsc": "sd",
         },
         "data": {},
     },

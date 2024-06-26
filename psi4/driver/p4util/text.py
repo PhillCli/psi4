@@ -67,24 +67,24 @@ def banner(text: str, type: int = 1, width: int = 35, strNotOutfile: bool = Fals
         If *strNotOutfile* is False, print it to output file.
 
     """
-    lines = text.split('\n')
+    lines = text.split("\n")
     max_length = 0
     for line in lines:
         max_length = max(len(line), max_length)
 
     max_length = max(width, max_length)
 
-    null = ''
+    null = ""
     if type == 1:
-        banner = '  //' + null.center(max_length, '>') + '//\n'
+        banner = "  //" + null.center(max_length, ">") + "//\n"
         for line in lines:
-            banner += '  //' + line.center(max_length) + '//\n'
-        banner += '  //' + null.center(max_length, '<') + '//\n'
+            banner += "  //" + line.center(max_length) + "//\n"
+        banner += "  //" + null.center(max_length, "<") + "//\n"
 
     if type == 2:
-        banner = ''
+        banner = ""
         for line in lines:
-            banner += (' ' + line + ' ').center(max_length, '=')
+            banner += (" " + line + " ").center(max_length, "=")
 
     if strNotOutfile:
         return banner
@@ -156,15 +156,15 @@ def message_box(message: str, max_width: int = 80, min_width: int = 30) -> str:
     box_width = max(min(max_width, max_line), min_width)
 
     error_str = []
-    error_str.append('\n!' + '-' * box_width + '--!\n')
-    error_str.append('!' + ' ' * box_width + '  !\n')
+    error_str.append("\n!" + "-" * box_width + "--!\n")
+    error_str.append("!" + " " * box_width + "  !\n")
 
     fmt = "! {:" + str(box_width) + "} !\n"
     for line in msg[:]:
         error_str.extend([fmt.format(x) for x in wrap(line, box_width, subsequent_indent="    ")])
 
-    error_str.append('!' + ' ' * box_width + '  !\n')
-    error_str.append('!' + '-' * box_width + '--!\n')
-    error_str = ''.join(error_str)
+    error_str.append("!" + " " * box_width + "  !\n")
+    error_str.append("!" + "-" * box_width + "--!\n")
+    error_str = "".join(error_str)
 
     return error_str

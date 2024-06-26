@@ -1,10 +1,9 @@
 from collections import Counter
 
 import pytest
+from utils import compare_values
 
 import psi4
-
-from utils import compare_values
 
 pytestmark = [pytest.mark.psi, pytest.mark.api, pytest.mark.quick, pytest.mark.scf]
 
@@ -213,13 +212,15 @@ def test_weird_basis(subject, bas, ans, mols, request):
 
     mol = mols[subject]
     ref = "rhf" if mol.multiplicity() == 1 else "uhf"
-    psi4.set_options({
-        "reference": ref,
-        "guess": "core",
-        "scf_type": "pk",
-        "df_scf_guess": "false",
-        "basis": "anonymous1234",
-    })
+    psi4.set_options(
+        {
+            "reference": ref,
+            "guess": "core",
+            "scf_type": "pk",
+            "df_scf_guess": "false",
+            "basis": "anonymous1234",
+        }
+    )
 
     def basisspec_psi4_yo__anonymous1234(mol, role):
         mol.set_basis_all_atoms("test", role=role)
@@ -386,9 +387,9 @@ I 1 1.0
 ****
 """
 
-_hijhik = pytest.mark.xfail(reason="HIJ/HIK convention uncertain",
-                            raises=psi4.driver.qcdb.exceptions.ValidationError,
-                            strict=True)
+_hijhik = pytest.mark.xfail(
+    reason="HIJ/HIK convention uncertain", raises=psi4.driver.qcdb.exceptions.ValidationError, strict=True
+)
 
 
 @pytest.mark.parametrize(
@@ -424,7 +425,7 @@ def test_high_angmom_basis(subject, bas, mols, request):
 
     # Psi uses HI_K for export
     count = Counter(wert.shell(ish).AMCHAR for ish in range(wert.nshell()))
-    assert dict(count) == {'S': 11, 'P': 10, 'D': 9, 'F': 8, 'G': 7, 'H': 6, 'I': 5, 'K': 4, 'L': 3, 'M': 2}
+    assert dict(count) == {"S": 11, "P": 10, "D": 9, "F": 8, "G": 7, "H": 6, "I": 5, "K": 4, "L": 3, "M": 2}
 
 
 @pytest.mark.parametrize(

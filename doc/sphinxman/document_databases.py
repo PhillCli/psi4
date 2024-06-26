@@ -33,33 +33,32 @@ import os
 import re
 import sys
 
-DriverPath = ''
-if (len(sys.argv) == 2):
-    DriverPath = sys.argv[1] + '/'
+DriverPath = ""
+if len(sys.argv) == 2:
+    DriverPath = sys.argv[1] + "/"
     sys.path.insert(0, os.path.abspath(os.getcwd()))
 
 
 def pts(category, pyfile):
-    print('Auto-documenting %s file %s' % (category, pyfile))
+    print("Auto-documenting %s file %s" % (category, pyfile))
 
 
 # Available databases in psi4/share/psi4/databases
-fdriver = open('source/autodoc_available_databases.rst', 'w')
-fdriver.write('\n\n')
+fdriver = open("source/autodoc_available_databases.rst", "w")
+fdriver.write("\n\n")
 
-for pyfile in glob.glob(DriverPath + '../../psi4/share/psi4/databases/*.py'):
+for pyfile in glob.glob(DriverPath + "../../psi4/share/psi4/databases/*.py"):
     filename = os.path.split(pyfile)[1]
     basename = os.path.splitext(filename)[0]
-    div = '=' * len(basename)
+    div = "=" * len(basename)
 
-    if basename not in ['input']:
+    if basename not in ["input"]:
+        pts("database", basename)
 
-        pts('database', basename)
+        fdriver.write(":srcdb:`%s`\n%s\n\n" % (basename, '"' * (9 + len(basename))))
+        fdriver.write(".. automodule:: %s\n" % (basename))
+        fdriver.write("   :noindex:\n\n")
+        fdriver.write("----\n")
 
-        fdriver.write(':srcdb:`%s`\n%s\n\n' % (basename, '"' * (9 + len(basename))))
-        fdriver.write('.. automodule:: %s\n' % (basename))
-        fdriver.write('   :noindex:\n\n')
-        fdriver.write('----\n')
-
-    fdriver.write('\n')
+    fdriver.write("\n")
 fdriver.close()

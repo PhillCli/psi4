@@ -26,9 +26,9 @@
 # @END LICENSE
 #
 
+import math
 import os
 import sys
-import math
 
 try:
     import cPickle as pickle
@@ -37,48 +37,47 @@ except ImportError:
 import itertools
 from collections import OrderedDict
 
+from . import psiutil, textables
 from .exceptions import *
+from .modelchems import BasisSet, Error, Method, bases, errors, methods, pubs
 from .molecule import Molecule
-from .modelchems import Method, BasisSet, Error, methods, bases, errors, pubs
-from . import psiutil
-from . import textables
 
 
 def initialize_errors():
     """Form OrderedDict of all possible statistical measures set to None"""
     error = OrderedDict()
-    for e in ['e', 'pe', 'pbe', 'pce']:
-        for m in ['pex', 'nex', 'max', 'min', 'm', 'ma', 'rms', 'std']:
+    for e in ["e", "pe", "pbe", "pce"]:
+        for m in ["pex", "nex", "max", "min", "m", "ma", "rms", "std"]:
             error[m + e] = None
     return error
 
 
 def initialize_errors_elaborate(e=None, pe=None, pbe=None, pce=None, extrema=True):
     error = OrderedDict()
-    error['maxe'] = None if (e is None or not extrema) else e  # LD_XA
-    error['mine'] = None if (e is None or not extrema) else e  # LD_XI
-    error['me'] = None if e is None else 0.0  # LD_MS
-    error['mae'] = None if e is None else 0.0  # LD_MA
-    error['rmse'] = None if e is None else 0.0  # LD_RA
-    error['stde'] = None if e is None else 0.0
-    error['maxpe'] = None if (pe is None or not extrema) else pe  # FD_XA
-    error['minpe'] = None if (pe is None or not extrema) else pe  # FD_XI
-    error['mpe'] = None if pe is None else 0.0  # FD_MS
-    error['mape'] = None if pe is None else 0.0  # FD_MA
-    error['rmspe'] = None if pe is None else 0.0  # FD_RA
-    error['stdpe'] = None if pe is None else 0.0
-    error['maxpbe'] = None if (pbe is None or not extrema) else pbe  # BD_XA
-    error['minpbe'] = None if (pbe is None or not extrema) else pbe  # BD_XI
-    error['mpbe'] = None if pbe is None else 0.0  # BD_MS
-    error['mapbe'] = None if pbe is None else 0.0  # BD_MA
-    error['rmspbe'] = None if pbe is None else 0.0  # BD_RA
-    error['stdpbe'] = None if pbe is None else 0.0
-    error['maxpce'] = None if (pce is None or not extrema) else pce  # BD_XA
-    error['minpce'] = None if (pce is None or not extrema) else pce  # BD_XI
-    error['mpce'] = None if pce is None else 0.0  # BD_MS
-    error['mapce'] = None if pce is None else 0.0  # BD_MA
-    error['rmspce'] = None if pce is None else 0.0  # BD_RA
-    error['stdpce'] = None if pce is None else 0.0
+    error["maxe"] = None if (e is None or not extrema) else e  # LD_XA
+    error["mine"] = None if (e is None or not extrema) else e  # LD_XI
+    error["me"] = None if e is None else 0.0  # LD_MS
+    error["mae"] = None if e is None else 0.0  # LD_MA
+    error["rmse"] = None if e is None else 0.0  # LD_RA
+    error["stde"] = None if e is None else 0.0
+    error["maxpe"] = None if (pe is None or not extrema) else pe  # FD_XA
+    error["minpe"] = None if (pe is None or not extrema) else pe  # FD_XI
+    error["mpe"] = None if pe is None else 0.0  # FD_MS
+    error["mape"] = None if pe is None else 0.0  # FD_MA
+    error["rmspe"] = None if pe is None else 0.0  # FD_RA
+    error["stdpe"] = None if pe is None else 0.0
+    error["maxpbe"] = None if (pbe is None or not extrema) else pbe  # BD_XA
+    error["minpbe"] = None if (pbe is None or not extrema) else pbe  # BD_XI
+    error["mpbe"] = None if pbe is None else 0.0  # BD_MS
+    error["mapbe"] = None if pbe is None else 0.0  # BD_MA
+    error["rmspbe"] = None if pbe is None else 0.0  # BD_RA
+    error["stdpbe"] = None if pbe is None else 0.0
+    error["maxpce"] = None if (pce is None or not extrema) else pce  # BD_XA
+    error["minpce"] = None if (pce is None or not extrema) else pce  # BD_XI
+    error["mpce"] = None if pce is None else 0.0  # BD_MS
+    error["mapce"] = None if pce is None else 0.0  # BD_MA
+    error["rmspce"] = None if pce is None else 0.0  # BD_RA
+    error["stdpce"] = None if pce is None else 0.0
     return error
 
 
@@ -93,41 +92,41 @@ def average_errors(*args):
     Ndb = float(len(args))
     avgerror = initialize_errors()
     try:
-        avgerror['pexe'] = max([x['pexe'] for x in args])
-        avgerror['nexe'] = min([x['nexe'] for x in args])
-        avgerror['maxe'] = max([x['maxe'] for x in args], key=lambda x: abs(x))
-        avgerror['mine'] = min([x['mine'] for x in args], key=lambda x: abs(x))
-        avgerror['me'] = sum([x['me'] for x in args]) / Ndb
-        avgerror['mae'] = sum([x['mae'] for x in args]) / Ndb
-        avgerror['rmse'] = sum([x['rmse'] for x in args]) / Ndb  # TODO: unsure of op validity
-        avgerror['stde'] = math.sqrt(sum([x['stde']**2 for x in args]) / Ndb)
+        avgerror["pexe"] = max([x["pexe"] for x in args])
+        avgerror["nexe"] = min([x["nexe"] for x in args])
+        avgerror["maxe"] = max([x["maxe"] for x in args], key=lambda x: abs(x))
+        avgerror["mine"] = min([x["mine"] for x in args], key=lambda x: abs(x))
+        avgerror["me"] = sum([x["me"] for x in args]) / Ndb
+        avgerror["mae"] = sum([x["mae"] for x in args]) / Ndb
+        avgerror["rmse"] = sum([x["rmse"] for x in args]) / Ndb  # TODO: unsure of op validity
+        avgerror["stde"] = math.sqrt(sum([x["stde"] ** 2 for x in args]) / Ndb)
 
-        avgerror['pexpe'] = max([x['pexpe'] for x in args])
-        avgerror['nexpe'] = min([x['nexpe'] for x in args])
-        avgerror['maxpe'] = max([x['maxpe'] for x in args], key=lambda x: abs(x))
-        avgerror['minpe'] = min([x['minpe'] for x in args], key=lambda x: abs(x))
-        avgerror['mpe'] = sum([x['mpe'] for x in args]) / Ndb
-        avgerror['mape'] = sum([x['mape'] for x in args]) / Ndb
-        avgerror['rmspe'] = sum([x['rmspe'] for x in args]) / Ndb  # TODO: unsure of op validity
-        avgerror['stdpe'] = math.sqrt(sum([x['stdpe'] * x['stdpe'] for x in args]) / Ndb)
+        avgerror["pexpe"] = max([x["pexpe"] for x in args])
+        avgerror["nexpe"] = min([x["nexpe"] for x in args])
+        avgerror["maxpe"] = max([x["maxpe"] for x in args], key=lambda x: abs(x))
+        avgerror["minpe"] = min([x["minpe"] for x in args], key=lambda x: abs(x))
+        avgerror["mpe"] = sum([x["mpe"] for x in args]) / Ndb
+        avgerror["mape"] = sum([x["mape"] for x in args]) / Ndb
+        avgerror["rmspe"] = sum([x["rmspe"] for x in args]) / Ndb  # TODO: unsure of op validity
+        avgerror["stdpe"] = math.sqrt(sum([x["stdpe"] * x["stdpe"] for x in args]) / Ndb)
 
-        avgerror['pexpbe'] = max([x['pexpbe'] for x in args])
-        avgerror['nexpbe'] = min([x['nexpbe'] for x in args])
-        avgerror['maxpbe'] = max([x['maxpbe'] for x in args], key=lambda x: abs(x))
-        avgerror['minpbe'] = min([x['minpbe'] for x in args], key=lambda x: abs(x))
-        avgerror['mpbe'] = sum([x['mpbe'] for x in args]) / Ndb
-        avgerror['mapbe'] = sum([x['mapbe'] for x in args]) / Ndb
-        avgerror['rmspbe'] = sum([x['rmspbe'] for x in args]) / Ndb  # TODO: unsure of op validity
-        avgerror['stdpbe'] = math.sqrt(sum([x['stdpbe'] * x['stdpbe'] for x in args]) / Ndb)
+        avgerror["pexpbe"] = max([x["pexpbe"] for x in args])
+        avgerror["nexpbe"] = min([x["nexpbe"] for x in args])
+        avgerror["maxpbe"] = max([x["maxpbe"] for x in args], key=lambda x: abs(x))
+        avgerror["minpbe"] = min([x["minpbe"] for x in args], key=lambda x: abs(x))
+        avgerror["mpbe"] = sum([x["mpbe"] for x in args]) / Ndb
+        avgerror["mapbe"] = sum([x["mapbe"] for x in args]) / Ndb
+        avgerror["rmspbe"] = sum([x["rmspbe"] for x in args]) / Ndb  # TODO: unsure of op validity
+        avgerror["stdpbe"] = math.sqrt(sum([x["stdpbe"] * x["stdpbe"] for x in args]) / Ndb)
 
-        avgerror['pexpce'] = max([x['pexpce'] for x in args])
-        avgerror['nexpce'] = min([x['nexpce'] for x in args])
-        avgerror['maxpce'] = max([x['maxpce'] for x in args], key=lambda x: abs(x))
-        avgerror['minpce'] = min([x['minpce'] for x in args], key=lambda x: abs(x))
-        avgerror['mpce'] = sum([x['mpce'] for x in args]) / Ndb
-        avgerror['mapce'] = sum([x['mapce'] for x in args]) / Ndb
-        avgerror['rmspce'] = sum([x['rmspce'] for x in args]) / Ndb  # TODO: unsure of op validity
-        avgerror['stdpce'] = math.sqrt(sum([x['stdpce'] * x['stdpce'] for x in args]) / Ndb)
+        avgerror["pexpce"] = max([x["pexpce"] for x in args])
+        avgerror["nexpce"] = min([x["nexpce"] for x in args])
+        avgerror["maxpce"] = max([x["maxpce"] for x in args], key=lambda x: abs(x))
+        avgerror["minpce"] = min([x["minpce"] for x in args], key=lambda x: abs(x))
+        avgerror["mpce"] = sum([x["mpce"] for x in args]) / Ndb
+        avgerror["mapce"] = sum([x["mapce"] for x in args]) / Ndb
+        avgerror["rmspce"] = sum([x["rmspce"] for x in args]) / Ndb  # TODO: unsure of op validity
+        avgerror["stdpce"] = math.sqrt(sum([x["stdpce"] * x["stdpce"] for x in args]) / Ndb)
     except TypeError:
         pass
     return avgerror
@@ -142,49 +141,92 @@ def format_errors(err, mode=1):
     twodecimal = r"""{0:8.2f}"""
     threedecimal = r"""{0:12.3f}"""
     fourdecimal = r"""{0:12.4f}"""
-    shortblank = r"""{0:8s}""".format('')
-    longblank = r"""{0:12s}""".format('')
+    shortblank = r"""{0:8s}""".format("")
+    longblank = r"""{0:12s}""".format("")
 
     if mode == 1:
-        me = ' ----' if err['me'] is None else '%+.2f' % (err['me'])
-        stde = '----' if err['stde'] is None else '%.2f' % (err['stde'])
-        mae = '  ----' if err['mae'] is None else '%6.2f' % (err['mae'])
-        mape = '  ----  ' if err['mape'] is None else '{:6.1f}%'.format(100 * err['mape'])
-        mapbe = '  ----  ' if err['mapbe'] is None else '{:6.1f}%'.format(100 * err['mapbe'])
-        mapce = '  ----  ' if err['mapce'] is None else '{:6.1f}%'.format(100 * err['mapce'])
-        text = r"""$\{%s; %s\}$ %s %s %s""" % \
-               (me, stde, mae, mape, mapce)
+        me = " ----" if err["me"] is None else "%+.2f" % (err["me"])
+        stde = "----" if err["stde"] is None else "%.2f" % (err["stde"])
+        mae = "  ----" if err["mae"] is None else "%6.2f" % (err["mae"])
+        mape = "  ----  " if err["mape"] is None else "{:6.1f}%".format(100 * err["mape"])
+        mapbe = "  ----  " if err["mapbe"] is None else "{:6.1f}%".format(100 * err["mapbe"])
+        mapce = "  ----  " if err["mapce"] is None else "{:6.1f}%".format(100 * err["mapce"])
+        text = r"""$\{%s; %s\}$ %s %s %s""" % (me, stde, mae, mape, mapce)
         return text
 
     if mode == 2:
         sdict = OrderedDict()
-        for lbl in ['pexe', 'nexe', 'maxe', 'mine', 'me', 'mae', 'rmse', 'stde']:
-            sdict[lbl] = '        ----' if err[lbl] is None else fourdecimal.format(err[lbl])
+        for lbl in ["pexe", "nexe", "maxe", "mine", "me", "mae", "rmse", "stde"]:
+            sdict[lbl] = "        ----" if err[lbl] is None else fourdecimal.format(err[lbl])
         for lbl in [
-                'pexpe', 'nexpe', 'maxpe', 'minpe', 'mpe', 'mape', 'rmspe', 'stdpe', 'pexpbe', 'nexpbe', 'maxpbe',
-                'minpbe', 'mpbe', 'mapbe', 'rmspbe', 'stdpbe', 'pexpce', 'nexpce', 'maxpce', 'minpce', 'mpce', 'mapce',
-                'rmspce', 'stdpce'
+            "pexpe",
+            "nexpe",
+            "maxpe",
+            "minpe",
+            "mpe",
+            "mape",
+            "rmspe",
+            "stdpe",
+            "pexpbe",
+            "nexpbe",
+            "maxpbe",
+            "minpbe",
+            "mpbe",
+            "mapbe",
+            "rmspbe",
+            "stdpbe",
+            "pexpce",
+            "nexpce",
+            "maxpce",
+            "minpce",
+            "mpce",
+            "mapce",
+            "rmspce",
+            "stdpce",
         ]:
-            sdict[lbl] = '        ----' if err[lbl] is None else threedecimal.format(100 * err[lbl])
-        text = """nex: {nexe}{nexpe}{nexpbe}{nexpce}\n""" \
-               """pex: {pexe}{pexpe}{pexpbe}{pexpce}\n""" \
-               """min: {mine}{minpe}{minpbe}{minpce}\n""" \
-               """max: {maxe}{maxpe}{maxpbe}{maxpce}\n""" \
-               """m:   {me}{mpe}{mpbe}{mpce}\n""" \
-               """ma:  {mae}{mape}{mapbe}{mapce}\n""" \
-               """rms: {rmse}{rmspe}{rmspbe}{rmspce}\n""" \
-               """std: {stde}{stdpe}{stdpbe}{stdpce}\n""".format(**sdict)
+            sdict[lbl] = "        ----" if err[lbl] is None else threedecimal.format(100 * err[lbl])
+        text = (
+            """nex: {nexe}{nexpe}{nexpbe}{nexpce}\n"""
+            """pex: {pexe}{pexpe}{pexpbe}{pexpce}\n"""
+            """min: {mine}{minpe}{minpbe}{minpce}\n"""
+            """max: {maxe}{maxpe}{maxpbe}{maxpce}\n"""
+            """m:   {me}{mpe}{mpbe}{mpce}\n"""
+            """ma:  {mae}{mape}{mapbe}{mapce}\n"""
+            """rms: {rmse}{rmspe}{rmspbe}{rmspce}\n"""
+            """std: {stde}{stdpe}{stdpbe}{stdpce}\n""".format(**sdict)
+        )
         return text
 
     if mode == 3:
         sdict = OrderedDict()
         # shortblanks changed from empty strings Aug 2015
-        for lbl in ['pexe', 'nexe', 'maxe', 'mine', 'me', 'mae', 'rmse', 'stde']:
+        for lbl in ["pexe", "nexe", "maxe", "mine", "me", "mae", "rmse", "stde"]:
             sdict[lbl] = shortblank if err[lbl] is None else twodecimal.format(err[lbl])
         for lbl in [
-                'pexpe', 'nexpe', 'maxpe', 'minpe', 'mpe', 'mape', 'rmspe', 'stdpe', 'pexpbe', 'nexpbe', 'maxpbe',
-                'minpbe', 'mpbe', 'mapbe', 'rmspbe', 'stdpbe', 'pexpce', 'nexpce', 'maxpce', 'minpce', 'mpce', 'mapce',
-                'rmspce', 'stdpce'
+            "pexpe",
+            "nexpe",
+            "maxpe",
+            "minpe",
+            "mpe",
+            "mape",
+            "rmspe",
+            "stdpe",
+            "pexpbe",
+            "nexpbe",
+            "maxpbe",
+            "minpbe",
+            "mpbe",
+            "mapbe",
+            "rmspbe",
+            "stdpbe",
+            "pexpce",
+            "nexpce",
+            "maxpce",
+            "minpce",
+            "mpce",
+            "mapce",
+            "rmspce",
+            "stdpce",
         ]:
             sdict[lbl] = shortblank if err[lbl] is None else onedecimal.format(100 * err[lbl])
         return sdict
@@ -195,7 +237,7 @@ def string_contrast(ss):
     string, maximum common suffix string, and array of middles.
 
     """
-    s = [item + 'q' for item in ss if item is not None]
+    s = [item + "q" for item in ss if item is not None]
     short = min(s, key=len)
     for ib in range(len(short)):
         if not all([mc[ib] == short[ib] for mc in s]):
@@ -214,7 +256,7 @@ def string_contrast(ss):
     miditer = iter([mc[preidx:sufidx] for mc in s])
     prefix = short[:preidx]
     suffix = short[sufidx:-1]
-    middle = ['' if mc is None else next(miditer) for mc in ss]
+    middle = ["" if mc is None else next(miditer) for mc in ss]
 
     return prefix, suffix, middle
 
@@ -224,13 +266,13 @@ def oxcom(lst):
     lst = [str(l) for l in lst]
 
     if not lst:
-        return ''
+        return ""
     elif len(lst) == 1:
         return lst[0]
     elif len(lst) == 2:
-        return ' and '.join(lst)
+        return " and ".join(lst)
     else:
-        return ', and '.join([', '.join(lst[:-1]), lst[-1]])
+        return ", and ".join([", ".join(lst[:-1]), lst[-1]])
 
 
 def cure_weight(refrxn, refeq, rrat, xi=0.2):
@@ -270,7 +312,7 @@ def fancify_mc_tag(mc, latex=False):
 
     """
     try:
-        mtd, mod, bas = mc.split('-')
+        mtd, mod, bas = mc.split("-")
     except ValueError:
         text = mc
     else:
@@ -282,13 +324,11 @@ def fancify_mc_tag(mc, latex=False):
 
 
 class ReactionDatum(object):
-    """Piece of quantum chemical information that describes a qcdb.Reaction object.
+    """Piece of quantum chemical information that describes a qcdb.Reaction object."""
 
-    """
-
-    def __init__(self, dbse, rxn, method, mode, basis, value, units='kcal/mol', citation=None, doi=None, comment=None):
+    def __init__(self, dbse, rxn, method, mode, basis, value, units="kcal/mol", citation=None, doi=None, comment=None):
         # geometry
-        self.dbrxn = dbse + '-' + str(rxn)
+        self.dbrxn = dbse + "-" + str(rxn)
         # qcdb.Method
         self.method = method
         # mode, e.g., unCP, CP, RLX, etc.
@@ -307,17 +347,9 @@ class ReactionDatum(object):
         self.comment = comment
 
     @classmethod
-    def library_modelchem(cls,
-                          dbse,
-                          rxn,
-                          method,
-                          mode,
-                          basis,
-                          value,
-                          units='kcal/mol',
-                          citation=None,
-                          doi=None,
-                          comment=None):
+    def library_modelchem(
+        cls, dbse, rxn, method, mode, basis, value, units="kcal/mol", citation=None, doi=None, comment=None
+    ):
         """Constructor when method and basis are strings corresponding to
         qcdb.Method and qcdb.BasisSet already defined in methods and bases.
 
@@ -343,7 +375,7 @@ class ReactionDatum(object):
         return cls(dbse, rxn, tmp_method, mode, tmp_basis, value, units, citation=tmp_pub, doi=doi, comment=comment)
 
     def __str__(self):
-        text = ''
+        text = ""
         text += """  ==> ReactionDatum <==\n\n"""
         text += """  Database reaction:    %s\n""" % (self.dbrxn)
         text += """  Method:               %s\n""" % (self.method.fullname)
@@ -358,9 +390,7 @@ class ReactionDatum(object):
 
 
 class Subset(object):
-    """Affiliated qcdb.Reaction-s
-
-    """
+    """Affiliated qcdb.Reaction-s"""
 
     def __init__(self, name, hrxn, tagl=None, axis=None):
         # identifier
@@ -373,10 +403,10 @@ class Subset(object):
         self.axis = OrderedDict()
 
     def __str__(self):
-        text = ''
+        text = ""
         text += """  ==> %s Subset <==\n\n""" % (self.name)
         text += """  Tagline:              %s\n""" % (self.tagl)
-        text += """  %20s""" % ('Reactions')
+        text += """  %20s""" % ("Reactions")
         for ax in self.axis.keys():
             text += """  %8s""" % (ax)
         text += """\n"""
@@ -390,9 +420,7 @@ class Subset(object):
 
 
 class Reagent(object):
-    """Chemical entity only slightly dresed up from qcdb.Molecule.
-
-    """
+    """Chemical entity only slightly dresed up from qcdb.Molecule."""
 
     def __init__(self, name, mol, tagl=None, comment=None):
         # full name, e.g., 'S22-2-dimer' or 'NBC1-BzMe-8.0-monoA-CP' or 'HTBH-HCl-reagent'
@@ -419,7 +447,7 @@ class Reagent(object):
         self.charge = mol.molecular_charge()
 
     def __str__(self):
-        text = ''
+        text = ""
         text += """  ==> %s Reagent <==\n\n""" % (self.name)
         text += """  Tagline:              %s\n""" % (self.tagl)
         # text += """  Comment:              %s\n""" % (self.comment)
@@ -437,15 +465,13 @@ class Reagent(object):
 
 
 class Reaction(object):
-    """
+    """ """
 
-    """
-
-    def __init__(self, name, dbse, indx, tagl=None, latex=None, color='black', comment=None):
+    def __init__(self, name, dbse, indx, tagl=None, latex=None, color="black", comment=None):
         # name, e.g., '2' or 'BzMe-8.0'
         self.name = name
         # database reaction name, e.g., 'S22-2' or 'NBC1-BzMe-8.0'
-        self.dbrxn = dbse + '-' + str(name)
+        self.dbrxn = dbse + "-" + str(name)
         # numerical index of reaction
         self.indx = indx
         # description line
@@ -464,7 +490,7 @@ class Reaction(object):
         self.color = color
 
     def __str__(self):
-        text = ''
+        text = ""
         text += """  ==> %s Reaction <==\n\n""" % (self.name)
         text += """  Database reaction:    %s\n""" % (self.dbrxn)
         text += """  Index:                %s\n""" % (self.indx)
@@ -472,7 +498,7 @@ class Reaction(object):
         text += """  Tagline:              %s\n""" % (self.tagl)
         text += """  Comment:              %s\n""" % (self.comment)
         if self.benchmark is None:
-            text += """  Benchmark:            %s\n""" % ('UNDEFINED')
+            text += """  Benchmark:            %s\n""" % ("UNDEFINED")
         else:
             text += """  Benchmark:            %f\n""" % (self.data[self.benchmark].value)
         text += """  Color:                %s\n""" % (str(self.color))
@@ -487,7 +513,7 @@ class Reaction(object):
         text += """\n"""
         return text
 
-    def compute_errors(self, benchmark='default', mcset='default', failoninc=True, verbose=False):
+    def compute_errors(self, benchmark="default", mcset="default", failoninc=True, verbose=False):
         """For all data or modelchem subset *mcset*, computes raw reaction
         errors between *modelchem* and *benchmark* model chemistries.
         Returns error if model chemistries are missing for any reaction in
@@ -495,7 +521,7 @@ class Reaction(object):
         Returns dictionary of reaction labels and error forms.
 
         """
-        if mcset == 'default':
+        if mcset == "default":
             lsslist = self.data.keys()
         elif callable(mcset):
             # mcset is function that will generate subset of HRXN from sset(self)
@@ -508,7 +534,7 @@ class Reaction(object):
         for mc in lsslist:
             lsset[mc] = self.data[mc]
 
-        lbench = self.benchmark if benchmark == 'default' else benchmark
+        lbench = self.benchmark if benchmark == "default" else benchmark
         try:
             mcGreater = self.data[lbench].value
         except KeyError as e:
@@ -525,31 +551,37 @@ class Reaction(object):
                     continue
 
             err[label] = [
-                mcLesser - mcGreater, (mcLesser - mcGreater) / abs(mcGreater), (mcLesser - mcGreater) / abs(mcGreater)
+                mcLesser - mcGreater,
+                (mcLesser - mcGreater) / abs(mcGreater),
+                (mcLesser - mcGreater) / abs(mcGreater),
             ]  # TODO define BER
             if verbose:
-                print("""p = %6.2f, pe = %6.1f%%, bpe = %6.1f%% modelchem %s.""" %
-                      (err[label][0], 100 * err[label][1], 100 * err[label][2], label))
+                print(
+                    """p = %6.2f, pe = %6.1f%%, bpe = %6.1f%% modelchem %s."""
+                    % (err[label][0], 100 * err[label][1], 100 * err[label][2], label)
+                )
 
         return err
 
-    def plot(self,
-             benchmark='default',
-             mcset='default',
-             failoninc=True,
-             verbose=False,
-             color='sapt',
-             xlimit=4.0,
-             labeled=True,
-             view=True,
-             mousetext=None,
-             mouselink=None,
-             mouseimag=None,
-             mousetitle=None,
-             mousediv=None,
-             saveas=None,
-             relpath=False,
-             graphicsformat=['pdf']):
+    def plot(
+        self,
+        benchmark="default",
+        mcset="default",
+        failoninc=True,
+        verbose=False,
+        color="sapt",
+        xlimit=4.0,
+        labeled=True,
+        view=True,
+        mousetext=None,
+        mouselink=None,
+        mouseimag=None,
+        mousetitle=None,
+        mousediv=None,
+        saveas=None,
+        relpath=False,
+        graphicsformat=["pdf"],
+    ):
         """Computes individual errors over model chemistries in *mcset* (which
         may be default or an array or a function generating an array) versus
         *benchmark*. Thread *color* can be 'rgb' for old coloring, a color
@@ -569,56 +601,71 @@ class Reaction(object):
 
         """
         # compute errors
-        dbse = self.dbrxn.split('-')[0]
+        dbse = self.dbrxn.split("-")[0]
         indiv = self.compute_errors(benchmark=benchmark, mcset=mcset, failoninc=failoninc, verbose=verbose)
 
         # repackage
         dbdat = []
         for mc in indiv.keys():
-            dbdat.append({
-                'db': dbse,
-                'show': fancify_mc_tag(mc),
-                'sys': mc,
-                'color': self.color,
-                'data': [indiv[mc][0]]
-            })
+            dbdat.append(
+                {"db": dbse, "show": fancify_mc_tag(mc), "sys": mc, "color": self.color, "data": [indiv[mc][0]]}
+            )
         mae = None  # [errors[ix][self.dbse]['mae'] for ix in index]
         mape = None  # [100 * errors[ix][self.dbse]['mape'] for ix in index]
         # form unique filename
         # ixpre, ixsuf, ixmid = string_contrast(index)
         # title = self.dbse + ' ' + ixpre + '[]' + ixsuf
         title = self.dbrxn
-        labels = ['']
+        labels = [""]
         # generate matplotlib instructions and call or print
         try:
-            from . import mpl
             import matplotlib.pyplot as plt
+
+            from . import mpl
         except ImportError:
             # if not running from Canopy, print line to execute from Canopy
             print(
                 """filedict, htmlcode = mpl.threads(%s,\n    color='%s',\n    title='%s',\n    labels=%s,\n    mae=%s,\n    mape=%s\n    xlimit=%s\n    labeled=%s\n    saveas=%s\n    mousetext=%s\n    mouselink=%s\n    mouseimag=%s\n    mousetitle=%s,\n    mousediv=%s,\n    relpath=%s\n    graphicsformat=%s)\n\n"""
-                % (dbdat, color, title, labels, mae, mape, str(xlimit), repr(labeled), repr(saveas), repr(mousetext),
-                   repr(mouselink), repr(mouseimag), repr(mousetitle), repr(mousediv), repr(relpath),
-                   repr(graphicsformat)))
+                % (
+                    dbdat,
+                    color,
+                    title,
+                    labels,
+                    mae,
+                    mape,
+                    str(xlimit),
+                    repr(labeled),
+                    repr(saveas),
+                    repr(mousetext),
+                    repr(mouselink),
+                    repr(mouseimag),
+                    repr(mousetitle),
+                    repr(mousediv),
+                    repr(relpath),
+                    repr(graphicsformat),
+                )
+            )
         else:
             # if running from Canopy, call mpl directly
-            filedict, htmlcode = mpl.threads(dbdat,
-                                             color=color,
-                                             title=title,
-                                             labels=labels,
-                                             mae=mae,
-                                             mape=mape,
-                                             xlimit=xlimit,
-                                             labeled=labeled,
-                                             view=view,
-                                             mousetext=mousetext,
-                                             mouselink=mouselink,
-                                             mouseimag=mouseimag,
-                                             mousetitle=mousetitle,
-                                             mousediv=mousediv,
-                                             saveas=saveas,
-                                             relpath=relpath,
-                                             graphicsformat=graphicsformat)
+            filedict, htmlcode = mpl.threads(
+                dbdat,
+                color=color,
+                title=title,
+                labels=labels,
+                mae=mae,
+                mape=mape,
+                xlimit=xlimit,
+                labeled=labeled,
+                view=view,
+                mousetext=mousetext,
+                mouselink=mouselink,
+                mouseimag=mouseimag,
+                mousetitle=mousetitle,
+                mousediv=mousediv,
+                saveas=saveas,
+                relpath=relpath,
+                graphicsformat=graphicsformat,
+            )
             return filedict, htmlcode
 
 
@@ -679,21 +726,21 @@ class WrappedDatabase(object):
         if pythonpath is not None:
             sys.path.insert(1, pythonpath)
         else:
-            sys.path.append(os.path.dirname(__file__) + '/../databases')
+            sys.path.append(os.path.dirname(__file__) + "/../databases")
         database = psiutil.import_ignorecase(dbname)
         if not database:
-            print('\nPython module for database %s failed to load\n\n' % (dbname))
-            print('\nSearch path that was tried:\n')
+            print("\nPython module for database %s failed to load\n\n" % (dbname))
+            print("\nSearch path that was tried:\n")
             print(", ".join(map(str, sys.path)))
             raise ValidationError("Python module loading problem for database " + str(dbname))
 
         # gross validation of database
-        for item in ['dbse', 'GEOS', 'HRXN', 'ACTV', 'RXNM']:
+        for item in ["dbse", "GEOS", "HRXN", "ACTV", "RXNM"]:
             try:
                 getattr(database, item)
             except AttributeError:
                 raise ValidationError("""Database %s severely deformed with %s missing.""" % (database.__name__, item))
-        for item in ['TAGL', 'BIND']:
+        for item in ["TAGL", "BIND"]:
             try:
                 getattr(database, item)
             except AttributeError:
@@ -702,16 +749,16 @@ class WrappedDatabase(object):
         # form database name
         self.dbse = database.dbse
         try:
-            self.tagl = database.TAGL['dbse']
+            self.tagl = database.TAGL["dbse"]
         except KeyError:
             print("""Warning: TAGL missing for database %s""" % (self.dbse))
 
         # form array of database contents to process through
         pieces = []
         for item in dir(database):
-            if item in ['qcdb', 'rxn', 'dbse', 'TAGL']:
+            if item in ["qcdb", "rxn", "dbse", "TAGL"]:
                 pass
-            elif item.startswith('__'):
+            elif item.startswith("__"):
                 pass
             else:
                 pieces.append(item)
@@ -726,49 +773,47 @@ class WrappedDatabase(object):
                 tagl = None
                 print("""Warning: TAGL missing for reagent %s""" % (rgt))
             oHRGT[rgt] = Reagent(name=rgt, mol=mol, tagl=tagl)
-        pieces.remove('GEOS')
+        pieces.remove("GEOS")
         self.hrgt = oHRGT
 
         # form qcdb.Reaction objects from comprehensive reaction list, HRXN
         oHRXN = OrderedDict()
         for rxn in database.HRXN:
             try:
-                tagl = database.TAGL[database.dbse + '-' + str(rxn)]
+                tagl = database.TAGL[database.dbse + "-" + str(rxn)]
             except KeyError:
                 tagl = None
                 print("""Warning: TAGL missing for reaction %s""" % (rxn))
             try:
-                elst = database.DATA['SAPT ELST ENERGY'][database.dbse + '-' + str(rxn)]
-                disp = database.DATA['SAPT DISP ENERGY'][database.dbse + '-' + str(rxn)]
+                elst = database.DATA["SAPT ELST ENERGY"][database.dbse + "-" + str(rxn)]
+                disp = database.DATA["SAPT DISP ENERGY"][database.dbse + "-" + str(rxn)]
                 color = abs(elst) / (abs(elst) + abs(disp))
             except (KeyError, AttributeError):
-                color = 'black'
+                color = "black"
                 print("""Warning: DATA['SAPT * ENERGY'] missing for reaction %s""" % (rxn))
 
-            oHRXN[rxn] = Reaction(name=rxn,
-                                  dbse=database.dbse,
-                                  indx=database.HRXN.index(rxn) + 1,
-                                  color=color,
-                                  tagl=tagl)
-        pieces.remove('HRXN')
+            oHRXN[rxn] = Reaction(
+                name=rxn, dbse=database.dbse, indx=database.HRXN.index(rxn) + 1, color=color, tagl=tagl
+            )
+        pieces.remove("HRXN")
         self.hrxn = oHRXN
 
         # list and align database stoichiometry modes, ACTV* and RXNM*
         oACTV = {}
-        for modactv in [item for item in pieces if item.startswith('ACTV')]:
-            modrxnm = modactv.replace('ACTV', 'RXNM')
-            mode = 'default' if modactv == 'ACTV' else modactv.replace('ACTV_', '')
+        for modactv in [item for item in pieces if item.startswith("ACTV")]:
+            modrxnm = modactv.replace("ACTV", "RXNM")
+            mode = "default" if modactv == "ACTV" else modactv.replace("ACTV_", "")
             try:
                 getattr(database, modrxnm)
             except AttributeError:
-                modrxnm = 'RXNM'
+                modrxnm = "RXNM"
             oACTV[mode] = [modactv, modrxnm]
-        for item in [tmp for tmp in pieces if tmp.startswith('ACTV') or tmp.startswith('RXNM')]:
+        for item in [tmp for tmp in pieces if tmp.startswith("ACTV") or tmp.startswith("RXNM")]:
             pieces.remove(item)
 
         # populate reaction matrices in qcdb.Reaction objects
         for rxn in database.HRXN:
-            dbrxn = database.dbse + '-' + str(rxn)
+            dbrxn = database.dbse + "-" + str(rxn)
             for mode, actvrxnm in oACTV.items():
                 tdict = OrderedDict()
                 for rgt in getattr(database, actvrxnm[0])[dbrxn]:
@@ -776,10 +821,10 @@ class WrappedDatabase(object):
                 oHRXN[rxn].rxnm[mode] = tdict
 
         # list embedded quantum chem info per rxn, incl. BIND*
-        arrsbind = [item for item in pieces if item.startswith('BIND_')]
+        arrsbind = [item for item in pieces if item.startswith("BIND_")]
         if len(arrsbind) == 0:
-            if 'BIND' in pieces:
-                arrsbind = ['BIND']
+            if "BIND" in pieces:
+                arrsbind = ["BIND"]
             else:
                 arrsbind = []
                 print("""Warning: No BIND array with reference values.""")
@@ -792,49 +837,55 @@ class WrappedDatabase(object):
 
         oBIND = {}
         for arrbind in arrsbind:
-            ref = database.dbse + 'REF' if arrbind == 'BIND' else arrbind.replace('BIND_', '')
+            ref = database.dbse + "REF" if arrbind == "BIND" else arrbind.replace("BIND_", "")
             methods[ref] = Method(name=ref)
             bases[ref] = BasisSet(name=ref)
             try:
-                getattr(database, 'BINDINFO_' + ref)
+                getattr(database, "BINDINFO_" + ref)
             except AttributeError:
                 arrbindinfo = None
                 print("""Warning: No BINDINFO dict with BIND attribution and modelchem for %s.""" % (ref))
             else:
-                arrbindinfo = 'BINDINFO_' + ref
+                arrbindinfo = "BINDINFO_" + ref
             oBIND[ref] = [
-                methods[ref], 'default', bases[ref], arrbind, (getattr(database, arrbind) is database.BIND),
-                arrbindinfo
+                methods[ref],
+                "default",
+                bases[ref],
+                arrbind,
+                (getattr(database, arrbind) is database.BIND),
+                arrbindinfo,
             ]
-        for item in [tmp for tmp in pieces if tmp.startswith('BIND')]:
+        for item in [tmp for tmp in pieces if tmp.startswith("BIND")]:
             pieces.remove(item)
 
         # populate data with reference values in qcdb.Reaction objects
         for rxn in database.HRXN:
-            dbrxn = database.dbse + '-' + str(rxn)
+            dbrxn = database.dbse + "-" + str(rxn)
             for ref, info in oBIND.items():
                 bindval = getattr(database, info[3])[dbrxn]
                 if info[5] is None:
                     methodfeed = info[0]
                     modefeed = info[1]
                     basisfeed = info[2]
-                    citationkey = 'anon'
+                    citationkey = "anon"
                 else:
                     bindinforxn = getattr(database, info[5])[dbrxn]
-                    methodfeed = methods[bindinforxn['method'].upper()] if 'method' in bindinforxn else info[0]
-                    modefeed = bindinforxn['mode'] if 'mode' in bindinforxn else info[1]
-                    basisfeed = bases[bindinforxn['basis'].lower()] if 'basis' in bindinforxn else info[2]
-                    citationkey = bindinforxn['citation'].lower() if 'citation' in bindinforxn else 'anon'
+                    methodfeed = methods[bindinforxn["method"].upper()] if "method" in bindinforxn else info[0]
+                    modefeed = bindinforxn["mode"] if "mode" in bindinforxn else info[1]
+                    basisfeed = bases[bindinforxn["basis"].lower()] if "basis" in bindinforxn else info[2]
+                    citationkey = bindinforxn["citation"].lower() if "citation" in bindinforxn else "anon"
                 citationfeed = pubs[citationkey]
 
                 if bindval is not None:
-                    oHRXN[rxn].data[ref] = ReactionDatum(dbse=database.dbse,
-                                                         rxn=rxn,
-                                                         method=methodfeed,
-                                                         mode=modefeed,
-                                                         basis=basisfeed,
-                                                         citation=citationfeed,
-                                                         value=bindval)
+                    oHRXN[rxn].data[ref] = ReactionDatum(
+                        dbse=database.dbse,
+                        rxn=rxn,
+                        method=methodfeed,
+                        mode=modefeed,
+                        basis=basisfeed,
+                        citation=citationfeed,
+                        value=bindval,
+                    )
                     # oHRXN[rxn].data[ref] = ReactionDatum(dbse=database.dbse,
                     #                                     rxn=rxn,
                     #                                     method=info[0],
@@ -849,7 +900,7 @@ class WrappedDatabase(object):
         oSSET = {}
         fsHRXN = frozenset(database.HRXN)
         for sset in pieces:
-            if not sset.startswith('AXIS_'):
+            if not sset.startswith("AXIS_"):
                 try:
                     fssset = frozenset(getattr(database, sset))
                 except TypeError:
@@ -858,21 +909,21 @@ class WrappedDatabase(object):
                     oSSET[sset] = getattr(database, sset)
         for item in oSSET.keys():
             pieces.remove(item)
-        oSSET['HRXN'] = database.HRXN
+        oSSET["HRXN"] = database.HRXN
 
         self.sset = OrderedDict()
         self.oss = OrderedDict()  # just in case oss replaces sset someday
         for item in oSSET.keys():
-            if item == 'HRXN_SM':
-                label = 'small'
-            elif item == 'HRXN_LG':
-                label = 'large'
-            elif item == 'HRXN_EQ':
-                label = 'equilibrium'
-            elif item == 'HRXN':
-                label = 'default'
-            elif item.startswith('HRXN_'):
-                label = item.replace('HRXN_', '').lower()
+            if item == "HRXN_SM":
+                label = "small"
+            elif item == "HRXN_LG":
+                label = "large"
+            elif item == "HRXN_EQ":
+                label = "equilibrium"
+            elif item == "HRXN":
+                label = "default"
+            elif item.startswith("HRXN_"):
+                label = item.replace("HRXN_", "").lower()
             else:
                 label = item.lower()
 
@@ -893,8 +944,8 @@ class WrappedDatabase(object):
             self.oss[label] = Subset(name=label, hrxn=self.sset[label].keys(), tagl=sstagl)
 
         # Process axes
-        for axis in [item for item in pieces if item.startswith('AXIS_')]:
-            label = axis.replace('AXIS_', '')
+        for axis in [item for item in pieces if item.startswith("AXIS_")]:
+            label = axis.replace("AXIS_", "")
             try:
                 defn = getattr(database, axis)
             except AttributeError:
@@ -915,7 +966,7 @@ class WrappedDatabase(object):
         print("""WrappedDatabase %s: Unparsed attributes""" % (self.dbse), pieces)
 
     def __str__(self):
-        text = ''
+        text = ""
         text += """  ==> %s WrappedDatabase <==\n\n""" % (self.dbse)
         text += """  Reagents:             %s\n""" % (self.hrgt.keys())
         text += """  Reactions:            %s\n""" % (self.hrxn.keys())
@@ -924,24 +975,16 @@ class WrappedDatabase(object):
         text += """\n"""
         return text
 
-    def add_ReactionDatum(self,
-                          dbse,
-                          rxn,
-                          method,
-                          mode,
-                          basis,
-                          value,
-                          units='kcal/mol',
-                          citation=None,
-                          comment=None,
-                          overwrite=False):
+    def add_ReactionDatum(
+        self, dbse, rxn, method, mode, basis, value, units="kcal/mol", citation=None, comment=None, overwrite=False
+    ):
         """Add a new quantum chemical value to *rxn* by creating a
         qcdb.ReactionDatum from same arguments as that class's
         object-less constructor. *rxn* may be actual Reaction.name
         or Reaction.indx.
 
         """
-        if (self.dbse == dbse):
+        if self.dbse == dbse:
             if rxn in self.hrxn:
                 rxnname = rxn  # rxn is proper reaction name
             else:
@@ -950,36 +993,40 @@ class WrappedDatabase(object):
                         rxnname = self.hrxn.items()[rxn - 1][1].name  # rxn is reaction index (maybe dangerous?)
                 except (TypeError, IndexError):
                     raise ValidationError(
-                        """Inconsistent to add ReactionDatum for %s to database %s with reactions %s.""" %
-                        (dbse + '-' + str(rxn), self.dbse, self.hrxn.keys()))
-            label = '-'.join([method, mode, basis])
+                        """Inconsistent to add ReactionDatum for %s to database %s with reactions %s."""
+                        % (dbse + "-" + str(rxn), self.dbse, self.hrxn.keys())
+                    )
+            label = "-".join([method, mode, basis])
             if overwrite or (label not in self.hrxn[rxnname].data):
-                self.hrxn[rxnname].data[label] = ReactionDatum.library_modelchem(dbse=dbse,
-                                                                                 rxn=rxnname,
-                                                                                 method=method,
-                                                                                 mode=mode,
-                                                                                 basis=basis,
-                                                                                 value=value,
-                                                                                 units=units,
-                                                                                 comment=comment,
-                                                                                 citation=citation)
+                self.hrxn[rxnname].data[label] = ReactionDatum.library_modelchem(
+                    dbse=dbse,
+                    rxn=rxnname,
+                    method=method,
+                    mode=mode,
+                    basis=basis,
+                    value=value,
+                    units=units,
+                    comment=comment,
+                    citation=citation,
+                )
             else:
                 raise ValidationError("""ReactionDatum %s already present in Database.""" % (label))
         else:
-            raise ValidationError("""Inconsistent to add ReactionDatum for %s to database %s.""" %
-                                  (dbse + '-' + str(rxn), self.dbse))
+            raise ValidationError(
+                """Inconsistent to add ReactionDatum for %s to database %s.""" % (dbse + "-" + str(rxn), self.dbse)
+            )
 
     def add_Subset(self, name, func):
         """Define a new subset labeled *name* by providing a function
         *func* that filters *self.hrxn*.
 
         """
-        sname = name.lower().split('\n')
+        sname = name.lower().split("\n")
         label = sname.pop(0)
         tagl = sname[0].strip() if sname else None
         try:
             filtered = func(self)
-            lsslist = [rxn for rxn in self.sset['default'].keys() if rxn in filtered]
+            lsslist = [rxn for rxn in self.sset["default"].keys() if rxn in filtered]
         except TypeError as e:
             raise ValidationError("""Function %s did not return list: %s.""" % (func.__name__, str(e)))
         if len(lsslist) == 0:
@@ -992,7 +1039,7 @@ class WrappedDatabase(object):
         self.oss[label] = Subset(name=label, hrxn=self.sset[label].keys(), tagl=tagl)
         print("""WrappedDatabase %s: Subset %s formed: %d""" % (self.dbse, label, len(self.sset[label].keys())))
 
-    def compute_errors(self, modelchem, benchmark='default', sset='default', failoninc=True, verbose=False):
+    def compute_errors(self, modelchem, benchmark="default", sset="default", failoninc=True, verbose=False):
         """For full database or subset *sset*, computes raw reaction
         errors between *modelchem* and *benchmark* model chemistries.
         Returns error if model chemistries are missing for any reaction in
@@ -1010,19 +1057,19 @@ class WrappedDatabase(object):
         else:
             if callable(sset):
                 # sset is function that will generate subset of HRXN from sset(self)
-                lsslist = [rxn for rxn in self.sset['default'].keys() if rxn in sset(self)]
+                lsslist = [rxn for rxn in self.sset["default"].keys() if rxn in sset(self)]
             else:
                 # sset is array containing reactions
-                lsslist = [rxn for rxn in self.sset['default'].keys() if rxn in sset]
+                lsslist = [rxn for rxn in self.sset["default"].keys() if rxn in sset]
             # assemble dict of qcdb.Reaction objects from array of reaction names
             lsset = OrderedDict()
             for rxn in lsslist:
                 lsset[rxn] = self.hrxn[rxn]
 
-#        cureinfo = self.get_pec_weightinfo()
+        #        cureinfo = self.get_pec_weightinfo()
         err = {}
         for rxn, oRxn in lsset.items():
-            lbench = oRxn.benchmark if benchmark == 'default' else benchmark
+            lbench = oRxn.benchmark if benchmark == "default" else benchmark
             try:
                 mcLesser = oRxn.data[modelchem].value
             except KeyError as e:
@@ -1033,22 +1080,22 @@ class WrappedDatabase(object):
             try:
                 mcGreater = oRxn.data[lbench].value
             except KeyError as e:
-                if lbench == 'ZEROS':
+                if lbench == "ZEROS":
                     pass
                 else:
                     print("""Reaction %s missing benchmark""" % (str(rxn)))
                     continue
             # handle particulars of PEC error measures
-#            rxncureinfo = cureinfo[rxn]
-#            try:
-#                mcGreaterCrvmin = self.hrxn[rxncureinfo['eq']].data[lbench].value
-#            except KeyError as e:
-#                print """Reaction %s missing benchmark""" % (str(eqrxn))
+            #            rxncureinfo = cureinfo[rxn]
+            #            try:
+            #                mcGreaterCrvmin = self.hrxn[rxncureinfo['eq']].data[lbench].value
+            #            except KeyError as e:
+            #                print """Reaction %s missing benchmark""" % (str(eqrxn))
 
-#            cure_denom = cure_weight(refrxn=mcGreater, refeq=mcGreaterCrvmin, rrat=rxncureinfo['Rrat'])
-#            balanced_mask, balwt = balanced_error(refrxn=mcGreater, refeq=mcGreaterCrvmin, rrat=rxncureinfo['Rrat'])
+            #            cure_denom = cure_weight(refrxn=mcGreater, refeq=mcGreaterCrvmin, rrat=rxncureinfo['Rrat'])
+            #            balanced_mask, balwt = balanced_error(refrxn=mcGreater, refeq=mcGreaterCrvmin, rrat=rxncureinfo['Rrat'])
 
-            if lbench == 'ZEROS':
+            if lbench == "ZEROS":
                 err[rxn] = [mcLesser, 0.0, 0.0, 0.0, 1.0]  # FAKE
             else:
                 err[rxn] = [
@@ -1056,25 +1103,22 @@ class WrappedDatabase(object):
                     (mcLesser - mcGreater) / abs(mcGreater),
                     (mcLesser - mcGreater) / abs(mcGreater),  # FAKE
                     (mcLesser - mcGreater) / abs(mcGreater),  # FKAE
-                    1.0  # FAKE
+                    1.0,  # FAKE
                 ]
 
-
-#                        (mcLesser - mcGreater) / abs(cure_denom),
-#                        (mcLesser - mcGreater) * balanced_mask / abs(mcGreaterCrvmin),
-#                        balwt]
+            #                        (mcLesser - mcGreater) / abs(cure_denom),
+            #                        (mcLesser - mcGreater) * balanced_mask / abs(mcGreaterCrvmin),
+            #                        balwt]
             if verbose:
-                print("""p = %8.4f, pe = %8.3f%%, pbe = %8.3f%% pce = %8.3f%% reaction %s.""" %
-                      (err[rxn][0], 100 * err[rxn][1], 100 * err[rxn][3], 100 * err[rxn][2], str(rxn)))
+                print(
+                    """p = %8.4f, pe = %8.3f%%, pbe = %8.3f%% pce = %8.3f%% reaction %s."""
+                    % (err[rxn][0], 100 * err[rxn][1], 100 * err[rxn][3], 100 * err[rxn][2], str(rxn))
+                )
         return err
 
-    def compute_statistics(self,
-                           modelchem,
-                           benchmark='default',
-                           sset='default',
-                           failoninc=True,
-                           verbose=False,
-                           returnindiv=False):
+    def compute_statistics(
+        self, modelchem, benchmark="default", sset="default", failoninc=True, verbose=False, returnindiv=False
+    ):
         """For full database or subset *sset*, computes many error
         statistics between single *modelchem* and *benchmark* model
         chemistries. Returns error if model chemistries are missing
@@ -1093,49 +1137,52 @@ class WrappedDatabase(object):
             error = OrderedDict()
             # linear (absolute) error
             linear = [val[0] for val in err.values()]
-            error['pexe'] = max(linear)
-            error['nexe'] = min(linear)
-            error['maxe'] = max(linear, key=lambda x: abs(x))
-            error['mine'] = min(linear, key=lambda x: abs(x))
-            error['me'] = sum(linear) / Nrxn
-            error['mae'] = sum(map(abs, linear)) / Nrxn
-            error['rmse'] = math.sqrt(sum(map(lambda x: x**2, linear)) / Nrxn)
-            error['stde'] = math.sqrt((sum(map(lambda x: x**2, linear)) - (sum(linear)**2) / Nrxn) / Nrxn)
+            error["pexe"] = max(linear)
+            error["nexe"] = min(linear)
+            error["maxe"] = max(linear, key=lambda x: abs(x))
+            error["mine"] = min(linear, key=lambda x: abs(x))
+            error["me"] = sum(linear) / Nrxn
+            error["mae"] = sum(map(abs, linear)) / Nrxn
+            error["rmse"] = math.sqrt(sum(map(lambda x: x**2, linear)) / Nrxn)
+            error["stde"] = math.sqrt((sum(map(lambda x: x**2, linear)) - (sum(linear) ** 2) / Nrxn) / Nrxn)
             # fractional (relative) error
             relative = [val[1] for val in err.values()]
-            error['pexpe'] = max(relative)
-            error['nexpe'] = min(relative)
-            error['maxpe'] = max(relative, key=lambda x: abs(x))
-            error['minpe'] = min(relative, key=lambda x: abs(x))
-            error['mpe'] = sum(relative) / Nrxn
-            error['mape'] = sum(map(abs, relative)) / Nrxn
-            error['rmspe'] = math.sqrt(sum(map(lambda x: x**2, relative)) / Nrxn)
-            error['stdpe'] = math.sqrt((sum(map(lambda x: x**2, relative)) - (sum(relative)**2) / Nrxn) / Nrxn)
+            error["pexpe"] = max(relative)
+            error["nexpe"] = min(relative)
+            error["maxpe"] = max(relative, key=lambda x: abs(x))
+            error["minpe"] = min(relative, key=lambda x: abs(x))
+            error["mpe"] = sum(relative) / Nrxn
+            error["mape"] = sum(map(abs, relative)) / Nrxn
+            error["rmspe"] = math.sqrt(sum(map(lambda x: x**2, relative)) / Nrxn)
+            error["stdpe"] = math.sqrt((sum(map(lambda x: x**2, relative)) - (sum(relative) ** 2) / Nrxn) / Nrxn)
             # balanced (relative) error
             balanced = [val[3] for val in err.values()]
             balwt = sum([val[4] for val in err.values()])  # get the wt fn. highly irregular TODO
-            error['pexpbe'] = max(balanced)
-            error['nexpbe'] = min(balanced)
-            error['maxpbe'] = max(balanced, key=lambda x: abs(x))
-            error['minpbe'] = min(balanced, key=lambda x: abs(x))
-            error['mpbe'] = sum(balanced) / balwt  #Nrxn
-            error['mapbe'] = sum(map(abs, balanced)) / balwt  #Nrxn
-            error['rmspbe'] = math.sqrt(sum(map(lambda x: x**2, balanced)) / balwt)  #Nrxn)
-            error[
-                'stdpbe'] = None  # get math domain errors w/wt in denom math.sqrt((sum(map(lambda x: x ** 2, balanced)) - (sum(balanced) ** 2) / balwt) / balwt) #/ Nrxn) / Nrxn)
+            error["pexpbe"] = max(balanced)
+            error["nexpbe"] = min(balanced)
+            error["maxpbe"] = max(balanced, key=lambda x: abs(x))
+            error["minpbe"] = min(balanced, key=lambda x: abs(x))
+            error["mpbe"] = sum(balanced) / balwt  # Nrxn
+            error["mapbe"] = sum(map(abs, balanced)) / balwt  # Nrxn
+            error["rmspbe"] = math.sqrt(sum(map(lambda x: x**2, balanced)) / balwt)  # Nrxn)
+            error["stdpbe"] = (
+                None  # get math domain errors w/wt in denom math.sqrt((sum(map(lambda x: x ** 2, balanced)) - (sum(balanced) ** 2) / balwt) / balwt) #/ Nrxn) / Nrxn)
+            )
             # capped (relative) error
             capped = [val[2] for val in err.values()]
-            error['pexpce'] = max(capped)
-            error['nexpce'] = min(capped)
-            error['maxpce'] = max(capped, key=lambda x: abs(x))
-            error['minpce'] = min(capped, key=lambda x: abs(x))
-            error['mpce'] = sum(capped) / Nrxn
-            error['mapce'] = sum(map(abs, capped)) / Nrxn
-            error['rmspce'] = math.sqrt(sum(map(lambda x: x**2, capped)) / Nrxn)
-            error['stdpce'] = math.sqrt((sum(map(lambda x: x**2, capped)) - (sum(capped)**2) / Nrxn) / Nrxn)
+            error["pexpce"] = max(capped)
+            error["nexpce"] = min(capped)
+            error["maxpce"] = max(capped, key=lambda x: abs(x))
+            error["minpce"] = min(capped, key=lambda x: abs(x))
+            error["mpce"] = sum(capped) / Nrxn
+            error["mapce"] = sum(map(abs, capped)) / Nrxn
+            error["rmspce"] = math.sqrt(sum(map(lambda x: x**2, capped)) / Nrxn)
+            error["stdpce"] = math.sqrt((sum(map(lambda x: x**2, capped)) - (sum(capped) ** 2) / Nrxn) / Nrxn)
             if verbose:
-                print("""%d systems in %s for %s vs. %s, subset %s.\n%s""" %
-                      (len(err), self.dbse, modelchem, benchmark, sset, format_errors(error, mode=2)))
+                print(
+                    """%d systems in %s for %s vs. %s, subset %s.\n%s"""
+                    % (len(err), self.dbse, modelchem, benchmark, sset, format_errors(error, mode=2))
+                )
         if returnindiv:
             return error, err
         else:
@@ -1149,7 +1196,7 @@ class WrappedDatabase(object):
         if pythonpath is not None:
             sys.path.insert(1, pythonpath)
         else:
-            sys.path.append(os.path.dirname(__file__) + '/../data')
+            sys.path.append(os.path.dirname(__file__) + "/../data")
         try:
             datamodule = __import__(modname)
         except ImportError:
@@ -1159,7 +1206,7 @@ class WrappedDatabase(object):
             else:
                 print("""\nPython module for database data %s failed to load\n\n""" % (modname))
                 print("""\nSearch path that was tried:\n""")
-                print(', '.join(map(str, sys.path)))
+                print(", ".join(map(str, sys.path)))
                 raise ValidationError("""Python module loading problem for database data """ + str(modname))
         try:
             getattr(datamodule, funcname)(self)
@@ -1178,20 +1225,21 @@ class WrappedDatabase(object):
         can be prepended with *pythonpath*.
 
         """
-        mod = self.dbse + '_' + project
-        func = 'load_' + project
+        mod = self.dbse + "_" + project
+        func = "load_" + project
         self.load_qcdata(modname=mod, funcname=func, pythonpath=pythonpath)
 
     def load_qcdata_hrxn_byproject(self, project, path=None):
         """"""
         if path is None:
-            path = os.path.dirname(__file__) + '/../data'
-        pklfile = os.path.abspath(path) + os.sep + self.dbse + '_hrxn_' + project + '.pickle'
+            path = os.path.dirname(__file__) + "/../data"
+        pklfile = os.path.abspath(path) + os.sep + self.dbse + "_hrxn_" + project + ".pickle"
         if not os.path.isfile(pklfile):
-            raise ValidationError("Reactions pickle file for loading database data from file %s does not exist" %
-                                  (pklfile))
+            raise ValidationError(
+                "Reactions pickle file for loading database data from file %s does not exist" % (pklfile)
+            )
 
-        with open(pklfile, 'rb') as handle:
+        with open(pklfile, "rb") as handle:
             hrxns = pickle.load(handle)
         # no error checking for speed
         for rxn, data in hrxns.items():
@@ -1204,8 +1252,8 @@ class WrappedDatabase(object):
 
         """
         if path is None:
-            path = os.path.dirname(__file__) + '/../data'
-        hdf5file = os.path.abspath(path) + os.sep + self.dbse + '_' + project + '.h5'
+            path = os.path.dirname(__file__) + "/../data"
+        hdf5file = os.path.abspath(path) + os.sep + self.dbse + "_" + project + ".h5"
         if not os.path.isfile(hdf5file):
             raise ValidationError("HDF5 file for loading database data from file %s does not exist" % (hdf5file))
         try:
@@ -1221,23 +1269,20 @@ class WrappedDatabase(object):
             intrxn = True
 
         with pd.get_store(hdf5file) as handle:
-            for mc in handle['pdie'].keys():
-                lmc = mc.split('-')  # TODO could be done better
+            for mc in handle["pdie"].keys():
+                lmc = mc.split("-")  # TODO could be done better
                 method = lmc[0]
-                bsse = '_'.join(lmc[1:-1])
+                bsse = "_".join(lmc[1:-1])
                 basis = lmc[-1]
 
-                df = handle['pdie'][mc]
+                df = handle["pdie"][mc]
                 for dbrxn in df.index[df.notnull()].values:
-                    [dbse, rxn] = dbrxn.split('-', 1)
+                    [dbse, rxn] = dbrxn.split("-", 1)
                     if intrxn:
                         rxn = int(rxn)
-                    self.hrxn[rxn].data[mc] = ReactionDatum.library_modelchem(dbse=dbse,
-                                                                              rxn=rxn,
-                                                                              method=method,
-                                                                              mode=bsse,
-                                                                              basis=basis,
-                                                                              value=df[dbrxn])
+                    self.hrxn[rxn].data[mc] = ReactionDatum.library_modelchem(
+                        dbse=dbse, rxn=rxn, method=method, mode=bsse, basis=basis, value=df[dbrxn]
+                    )
 
     def integer_reactions(self):
         """Returns boolean of whether reaction names need to be cast to integer"""
@@ -1250,18 +1295,18 @@ class WrappedDatabase(object):
 
     @staticmethod
     def load_pickled(dbname, path=None):
-        """
-
-        """
+        """ """
         if path is None:
-            path = os.path.dirname(__file__) + '/../data'
-        picklefile = psiutil.findfile_ignorecase(dbname, pre=os.path.abspath(path) + os.sep, post='_WDb.pickle')
+            path = os.path.dirname(__file__) + "/../data"
+        picklefile = psiutil.findfile_ignorecase(dbname, pre=os.path.abspath(path) + os.sep, post="_WDb.pickle")
         if not picklefile:
-            raise ValidationError("Pickle file for loading database data from file %s does not exist" %
-                                  (os.path.abspath(path) + os.sep + dbname + '.pickle'))
+            raise ValidationError(
+                "Pickle file for loading database data from file %s does not exist"
+                % (os.path.abspath(path) + os.sep + dbname + ".pickle")
+            )
         # with open('/var/www/html/bfdb_devel/bfdb/scratch/ASDFlogfile.txt', 'a') as handle:
         #    handle.write('<!-- PICKLE %s\n' % (picklefile))
-        with open(picklefile, 'rb') as handle:
+        with open(picklefile, "rb") as handle:
             instance = pickle.load(handle)
         return instance
 
@@ -1292,10 +1337,8 @@ class WrappedDatabase(object):
         # TODO all rxns have same bench in db module so all have same here in obj
         #   but the way things stored in Reactions, this doesn't have to be so
 
-    def load_subsets(self, modname='subsetgenerator', pythonpath=None):
-        """Loads subsets from all functions in module *modname*.
-
-        """
+    def load_subsets(self, modname="subsetgenerator", pythonpath=None):
+        """Loads subsets from all functions in module *modname*."""
         if pythonpath is not None:
             sys.path.insert(1, pythonpath)
         else:
@@ -1305,7 +1348,7 @@ class WrappedDatabase(object):
         except ImportError:
             print("""\nPython module for database data %s failed to load\n\n""" % (modname))
             print("""\nSearch path that was tried:\n""")
-            print(', '.join(map(str, sys.path)))
+            print(", ".join(map(str, sys.path)))
             raise ValidationError("Python module loading problem for database subset generator " + str(modname))
 
         for func in dir(ssmod):
@@ -1315,18 +1358,16 @@ class WrappedDatabase(object):
         print("""WrappedDatabase %s: Defined subsets loaded""" % (self.dbse))
 
     def get_pec_weightinfo(self):
-        """
-
-        """
+        """ """
 
         def closest(u, options):
             return max(options, key=lambda v: len(os.path.commonprefix([u, v])))
 
         dbdat = {}
-        oss = self.oss['default']
-        eqrxns = [rxn for rxn, rr in zip(oss.hrxn, oss.axis['Rrat']) if rr == 1.0]
+        oss = self.oss["default"]
+        eqrxns = [rxn for rxn, rr in zip(oss.hrxn, oss.axis["Rrat"]) if rr == 1.0]
         for rxnix, rxn in enumerate(oss.hrxn):
-            dbdat[rxn] = {'eq': closest(rxn, eqrxns), 'Rrat': oss.axis['Rrat'][rxnix]}
+            dbdat[rxn] = {"eq": closest(rxn, eqrxns), "Rrat": oss.axis["Rrat"][rxnix]}
         return dbdat
 
     # def table_simple1(self, mtd, bas, opt=['CP'], err=['mae'], benchmark='default', failoninc=True,
@@ -1427,7 +1468,7 @@ class Database(object):
         elif all(isinstance(item, basestring) for item in dbnamelist):
             pass
         else:
-            raise ValidationError('Database::constructor: Inappropriate configuration of constructor arguments')
+            raise ValidationError("Database::constructor: Inappropriate configuration of constructor arguments")
 
         # load databases
         for db in dbnamelist:
@@ -1442,13 +1483,13 @@ class Database(object):
         if len(set(consolidated_bench)) == 1:
             self.benchmark = consolidated_bench[0]
         else:
-            self.benchmark = ''.join(consolidated_bench)
+            self.benchmark = "".join(consolidated_bench)
         self.mcs[self.benchmark] = consolidated_bench
 
         # methods[ref] = Method(name=ref)
         # bases[ref] = BasisSet(name=ref)
 
-        self.mcs['default'] = consolidated_bench
+        self.mcs["default"] = consolidated_bench
         # self.mcs['default'] = [odb.benchmark() for odb in self.dbdict.values()]
         self._intersect_subsets()
         self._intersect_modelchems()
@@ -1457,7 +1498,7 @@ class Database(object):
         self.load_subsets()
 
         # collection name
-        self.dbse = ''.join(self.dbdict.keys()) if dbse is None else dbse
+        self.dbse = "".join(self.dbdict.keys()) if dbse is None else dbse
 
         # merge Reaction-s
         self.hrxn = OrderedDict()
@@ -1471,21 +1512,22 @@ class Database(object):
             for rgt, orgt in odb.hrgt.items():
                 self.hrgt[orgt.name] = orgt
 
-        print("""Database %s: %s""" % (self.dbse, ', '.join(self.dbdict.keys())))
+        print("""Database %s: %s""" % (self.dbse, ", ".join(self.dbdict.keys())))
 
     def __str__(self):
-        text = ''
+        text = ""
         text += """  ===> %s Database <===\n\n""" % (self.dbse)
         # text += """  Reagents:             %s\n""" % (self.hrgt.keys())
         # text += """  Reactions:            %s\n""" % (self.hrxn.keys())
         text += """  Subsets:              %s\n""" % (self.sset.keys())
         # text += """  Reference:            %s\n""" % ('default: ' + ' + '.join(self.mcs['default']))
         try:
-            text += """  Reference:            %s\n""" % (self.benchmark + ': ' + ' + '.join(self.mcs[self.benchmark]))
+            text += """  Reference:            %s\n""" % (self.benchmark + ": " + " + ".join(self.mcs[self.benchmark]))
         except TypeError:
-            text += """  Reference:            %s\n""" % ('UNDEFINED')
-        text += """  Model Chemistries:    %s\n""" % (', '.join(
-            sorted([mc for mc in self.mcs.keys() if mc is not None])))
+            text += """  Reference:            %s\n""" % ("UNDEFINED")
+        text += """  Model Chemistries:    %s\n""" % (
+            ", ".join(sorted([mc for mc in self.mcs.keys() if mc is not None]))
+        )
         text += """\n"""
         for db in self.dbdict.keys():
             text += self.dbdict[db].__str__()
@@ -1496,23 +1538,19 @@ class Database(object):
     #     return self.benchmark  #TODO not sure if right way to go about this self.mcs['default']
 
     def fancy_mcs(self, latex=False):
-        """
-
-        """
+        """ """
         fmcs = {}
         for mc in self.mcs.keys():
             try:
-                mtd, mod, bas = mc.split('-')
+                mtd, mod, bas = mc.split("-")
             except ValueError:
                 fmcs[mc] = mc
             else:
                 if latex:
-                    tmp = """%s/%s, %s""" % \
-                          (methods[mtd].latex, bases[bas].latex, mod.replace('_', '\\_'))
+                    tmp = """%s/%s, %s""" % (methods[mtd].latex, bases[bas].latex, mod.replace("_", "\\_"))
                     fmcs[mc] = """%45s""" % (tmp)
                 else:
-                    fmcs[mc] = """%20s / %-20s, %s""" % \
-                               (methods[mtd].fullname, bases[bas].fullname, mod)
+                    fmcs[mc] = """%20s / %-20s, %s""" % (methods[mtd].fullname, bases[bas].fullname, mod)
         return fmcs
 
     # def fancy_mcs_nested(self):
@@ -1571,21 +1609,21 @@ class Database(object):
         import glob
 
         if path is None:
-            path = os.path.dirname(__file__) + '/../data'
+            path = os.path.dirname(__file__) + "/../data"
 
         projects = []
-        for pjfn in glob.glob(path + '/*_hrxn_*.pickle'):
-            pj = pjfn[:-7].split('_')[-1]
+        for pjfn in glob.glob(path + "/*_hrxn_*.pickle"):
+            pj = pjfn[:-7].split("_")[-1]
             projects.append(pj)
 
         complete_projects = []
         for pj in set(projects):
-            if all([os.path.isfile(path + '/' + db + '_hrxn_' + pj + '.pickle') for db in self.dbdict.keys()]):
+            if all([os.path.isfile(path + "/" + db + "_hrxn_" + pj + ".pickle") for db in self.dbdict.keys()]):
                 complete_projects.append(pj)
 
         return complete_projects
 
-    def load_subsets(self, modname='subsetgenerator', pythonpath=None):
+    def load_subsets(self, modname="subsetgenerator", pythonpath=None):
         """For each component database, loads subsets from all functions
         in module *modname*. Default *modname* usues standard generators.
 
@@ -1637,7 +1675,7 @@ class Database(object):
             funcdb[db] = rxnlist
         self.add_Subset(name, funcdb)
 
-    def add_sampled_Subset(self, sset='default', number_of_samples=1, sample_size=5, prefix='rand'):
+    def add_sampled_Subset(self, sset="default", number_of_samples=1, sample_size=5, prefix="rand"):
         """Generate and register *number_of_samples* new subsets of size
         *sample_size* and name built from *prefix*. Reactions chosen from *sset*.
 
@@ -1654,7 +1692,7 @@ class Database(object):
             """
             sample = {db: [] for db in self.dbdict.keys()}
             for dbrxn in random.sample(rxns, sample_size):
-                db, rxn = dbrxn.split('-', 1)
+                db, rxn = dbrxn.split("-", 1)
                 typed_rxn = int(rxn) if intrxn[db] else rxn
                 sample[db].append(typed_rxn)
             self.add_Subset(ssname, sample)
@@ -1663,7 +1701,7 @@ class Database(object):
             if number_of_samples == 1:
                 ssname = prefix
             else:
-                ssname = prefix + '_' + str(sidx)
+                ssname = prefix + "_" + str(sidx)
             random_sample(ssname)
 
     def promote_Subset(self, name=None):
@@ -1688,7 +1726,7 @@ class Database(object):
                 dbix = self.dbdict.keys().index(db)
                 ss = odb.dbse.lower()
                 if ss not in self.sset:
-                    self.sset[ss] = ['default' if ix == dbix else None for ix in range(len(self.dbdict))]
+                    self.sset[ss] = ["default" if ix == dbix else None for ix in range(len(self.dbdict))]
                     print("""Database %s: Subset %s promoted: %s""" % (self.dbse, ss, self.sset[ss]))
 
     def _intersect_subsets(self):
@@ -1719,13 +1757,9 @@ class Database(object):
     #        for rxn, orxn in odb.hrxn.items():
     #            yield orxn
 
-    def compute_statistics(self,
-                           modelchem,
-                           benchmark='default',
-                           sset='default',
-                           failoninc=True,
-                           verbose=False,
-                           returnindiv=False):
+    def compute_statistics(
+        self, modelchem, benchmark="default", sset="default", failoninc=True, verbose=False, returnindiv=False
+    ):
         """Computes summary statistics and, if *returnindiv* True,
         individual errors for single model chemistry *modelchem* versus
         *benchmark* over subset *sset* over all component databases.
@@ -1748,10 +1782,11 @@ class Database(object):
                 errors[db], indiv[db] = odb.compute_statistics(
                     self.mcs[modelchem][dbix],
                     sset=self.sset[sset][dbix],
-                    benchmark='ZEROS' if benchmark == 'ZEROS' else self.mcs[benchmark][dbix],
+                    benchmark="ZEROS" if benchmark == "ZEROS" else self.mcs[benchmark][dbix],
                     failoninc=failoninc,
                     verbose=verbose,
-                    returnindiv=True)
+                    returnindiv=True,
+                )
                 actvdb.append(errors[db])
         errors[self.dbse] = average_errors(*actvdb)
 
@@ -1760,7 +1795,7 @@ class Database(object):
         else:
             return errors
 
-    def analyze_modelchems(self, modelchem, benchmark='default', failoninc=True, verbose=False):
+    def analyze_modelchems(self, modelchem, benchmark="default", failoninc=True, verbose=False):
         """For each component database, compute and print nicely formatted
         summary error statistics for each model chemistry in array
         *modelchem* versus *benchmark* for all available subsets.
@@ -1771,33 +1806,30 @@ class Database(object):
         for mc in modelchem:
             errors[mc] = {}
             for ss in self.sset.keys():
-                errors[mc][ss] = self.compute_statistics(mc,
-                                                         benchmark=benchmark,
-                                                         sset=ss,
-                                                         failoninc=failoninc,
-                                                         verbose=verbose,
-                                                         returnindiv=False)
+                errors[mc][ss] = self.compute_statistics(
+                    mc, benchmark=benchmark, sset=ss, failoninc=failoninc, verbose=verbose, returnindiv=False
+                )
         # present errors
         pre, suf, mid = string_contrast(modelchem)
         text = """\n  ==> %s %s[]%s Errors <==\n""" % (self.dbse, pre, suf)
-        text += """%20s    %44s""" % ('', '==> ' + self.dbse + ' <==')
+        text += """%20s    %44s""" % ("", "==> " + self.dbse + " <==")
         for db, odb in self.dbdict.items():
-            text += """%44s""" % ('=> ' + odb.dbse + ' <=')
-        text += '\n'
+            text += """%44s""" % ("=> " + odb.dbse + " <=")
+        text += "\n"
 
-        collabel = """      {:5}   {:4}   {:6} {:6}    {:6}""".format('ME', 'STDE', 'MAE', 'MA%E', 'MA%BE')
+        collabel = """      {:5}   {:4}   {:6} {:6}    {:6}""".format("ME", "STDE", "MAE", "MA%E", "MA%BE")
 
-        text += """{:20}    """.format('') + collabel
+        text += """{:20}    """.format("") + collabel
         for db in self.dbdict.keys():
             text += collabel
-        text += '\n'
+        text += "\n"
 
-        text += """{:20}    {}""".format('', '=' * 44)
+        text += """{:20}    {}""".format("", "=" * 44)
         ul = False
         for db in self.dbdict.keys():
-            text += """{}""".format('_' * 44 if ul else ' ' * 44)
+            text += """{}""".format("_" * 44 if ul else " " * 44)
             ul = not ul
-        text += '\n'
+        text += "\n"
 
         for ss in self.sset.keys():
             text += """   => %s <=\n""" % (ss)
@@ -1805,20 +1837,22 @@ class Database(object):
                 perr = errors[mc][ss]
                 text += """%20s    %44s""" % (mid[modelchem.index(mc)], format_errors(perr[self.dbse]))
                 for db in self.dbdict.keys():
-                    text += """%44s""" % ('' if perr[db] is None else format_errors(perr[db]))
-                text += '\n'
+                    text += """%44s""" % ("" if perr[db] is None else format_errors(perr[db]))
+                text += "\n"
         print(text)
 
-    def plot_bars(self,
-                  modelchem,
-                  benchmark='default',
-                  sset=['default', 'hb', 'mx', 'dd'],
-                  failoninc=True,
-                  verbose=False,
-                  view=True,
-                  saveas=None,
-                  relpath=False,
-                  graphicsformat=['pdf']):
+    def plot_bars(
+        self,
+        modelchem,
+        benchmark="default",
+        sset=["default", "hb", "mx", "dd"],
+        failoninc=True,
+        verbose=False,
+        view=True,
+        saveas=None,
+        relpath=False,
+        graphicsformat=["pdf"],
+    ):
         """Prepares 'grey bars' diagram for each model chemistry in array
         *modelchem* versus *benchmark* over all component databases. A wide bar
         is plotted with three smaller bars, corresponding to the 'mae'
@@ -1842,12 +1876,9 @@ class Database(object):
             if mc is not None:
                 errors[mc] = {}
                 for ss in sset:
-                    errors[mc][ss] = self.compute_statistics(mc,
-                                                             benchmark=benchmark,
-                                                             sset=ss,
-                                                             failoninc=failoninc,
-                                                             verbose=verbose,
-                                                             returnindiv=False)
+                    errors[mc][ss] = self.compute_statistics(
+                        mc, benchmark=benchmark, sset=ss, failoninc=failoninc, verbose=verbose, returnindiv=False
+                    )
         # repackage
         pre, suf, mid = string_contrast(modelchem)
         dbdat = []
@@ -1855,28 +1886,26 @@ class Database(object):
             if mc is None:
                 dbdat.append(None)
             else:
-                dbdat.append({
-                    'mc': mid[modelchem.index(mc)],
-                    'data': [errors[mc][ss][self.dbse]['mae'] for ss in sset]
-                })
-        title = self.dbse + ' ' + pre + '[]' + suf + ' ' + ','.join(sset)
+                dbdat.append(
+                    {"mc": mid[modelchem.index(mc)], "data": [errors[mc][ss][self.dbse]["mae"] for ss in sset]}
+                )
+        title = self.dbse + " " + pre + "[]" + suf + " " + ",".join(sset)
         # generate matplotlib instructions and call or print
         try:
-            from . import mpl
             import matplotlib.pyplot as plt
+
+            from . import mpl
         except ImportError:
             # if not running from Canopy, print line to execute from Canopy
             print(
                 """filedict = mpl.bars(%s,\n    title='%s'\n    saveas=%s\n    relpath=%s\n    graphicsformat=%s)\n\n"""
-                % (dbdat, title, repr(saveas), repr(relpath), repr(graphicsformat)))
+                % (dbdat, title, repr(saveas), repr(relpath), repr(graphicsformat))
+            )
         else:
             # if running from Canopy, call mpl directly
-            filedict = mpl.bars(dbdat,
-                                title=title,
-                                view=view,
-                                saveas=saveas,
-                                relpath=relpath,
-                                graphicsformat=graphicsformat)
+            filedict = mpl.bars(
+                dbdat, title=title, view=view, saveas=saveas, relpath=relpath, graphicsformat=graphicsformat
+            )
             return filedict
 
     # def get_pec_weightinfo(self):
@@ -1899,30 +1928,27 @@ class Database(object):
     #             dbdat[dbrxn] = {'eq': eq, 'Rrat': rrat}
     #     return dbdat
 
-    def plot_axis(self,
-                  axis,
-                  modelchem,
-                  benchmark='default',
-                  sset='default',
-                  failoninc=True,
-                  verbose=False,
-                  color='sapt',
-                  view=True,
-                  saveas=None,
-                  relpath=False,
-                  graphicsformat=['pdf']):
-        """
-
-        """
+    def plot_axis(
+        self,
+        axis,
+        modelchem,
+        benchmark="default",
+        sset="default",
+        failoninc=True,
+        verbose=False,
+        color="sapt",
+        view=True,
+        saveas=None,
+        relpath=False,
+        graphicsformat=["pdf"],
+    ):
+        """ """
         dbdatdict = OrderedDict()
         for mc in modelchem:
             # compute errors
-            errors, indiv = self.compute_statistics(mc,
-                                                    benchmark=benchmark,
-                                                    sset=sset,
-                                                    failoninc=failoninc,
-                                                    verbose=verbose,
-                                                    returnindiv=True)
+            errors, indiv = self.compute_statistics(
+                mc, benchmark=benchmark, sset=sset, failoninc=failoninc, verbose=verbose, returnindiv=True
+            )
             # repackage
             dbdat = []
             for db, odb in self.dbdict.items():
@@ -1937,34 +1963,41 @@ class Database(object):
                         bmpresent = False if (bm is None or bm not in odb.hrxn[rxn].data) else True
                         mcpresent = False if (self.mcs[mc][dbix] not in odb.hrxn[rxn].data) else True
                         entry = {
-                            'db': db,
-                            'sys': str(rxn),
-                            'color': odb.hrxn[rxn].color,
-                            'axis': oss.axis[axis][rxnix]
+                            "db": db,
+                            "sys": str(rxn),
+                            "color": odb.hrxn[rxn].color,
+                            "axis": oss.axis[axis][rxnix],
                         }
 
                         if bmpresent:
-                            entry['bmdata'] = odb.hrxn[rxn].data[self.mcs[benchmark][dbix]].value
+                            entry["bmdata"] = odb.hrxn[rxn].data[self.mcs[benchmark][dbix]].value
                         else:
-                            entry['bmdata'] = None
+                            entry["bmdata"] = None
 
                         if mcpresent:
-                            entry['mcdata'] = odb.hrxn[rxn].data[self.mcs[mc][dbix]].value
+                            entry["mcdata"] = odb.hrxn[rxn].data[self.mcs[mc][dbix]].value
                         else:
                             continue
 
                         if bmpresent and mcpresent:
-                            entry['error'] = [indiv[db][rxn][0]]
+                            entry["error"] = [indiv[db][rxn][0]]
                         else:
-                            entry['error'] = [None]
+                            entry["error"] = [None]
                         dbdat.append(entry)
             dbdatdict[fancify_mc_tag(mc).strip()] = dbdat
 
         pre, suf, mid = string_contrast(modelchem)
-        title = """%s[%s]%s vs %s axis %s for %s subset %s""" % (pre, str(
-            len(mid)), suf, benchmark, axis, self.dbse, sset)
+        title = """%s[%s]%s vs %s axis %s for %s subset %s""" % (
+            pre,
+            str(len(mid)),
+            suf,
+            benchmark,
+            axis,
+            self.dbse,
+            sset,
+        )
         print(title)
-        #for mc, dbdat in dbdatdict.items():
+        # for mc, dbdat in dbdatdict.items():
         #    print mc
         #    for d in dbdat:
         #        print '{:20s} {:8.2f}    {:8.2f} {:8.2f}'.format(d['sys'], d['axis'],
@@ -1972,51 +2005,56 @@ class Database(object):
         #            0.0 if d['mcdata'] is None else d['mcdata'])
         # generate matplotlib instructions and call or print
         try:
-            from . import mpl
             import matplotlib.pyplot as plt
+
+            from . import mpl
         except ImportError:
             # if not running from Canopy, print line to execute from Canopy
             print(
                 """filedict = mpl.valerr(%s,\n    color='%s',\n    title='%s',\n    xtitle='%s',\n    view=%s\n    saveas=%s\n    relpath=%s\n    graphicsformat=%s)\n\n"""
-                % (dbdat, color, title, axis, view, repr(saveas), repr(relpath), repr(graphicsformat)))
+                % (dbdat, color, title, axis, view, repr(saveas), repr(relpath), repr(graphicsformat))
+            )
         else:
             # if running from Canopy, call mpl directly
-            filedict = mpl.valerr(dbdatdict,
-                                  color=color,
-                                  title=title,
-                                  xtitle=axis,
-                                  view=view,
-                                  saveas=saveas,
-                                  relpath=relpath,
-                                  graphicsformat=graphicsformat)
+            filedict = mpl.valerr(
+                dbdatdict,
+                color=color,
+                title=title,
+                xtitle=axis,
+                view=view,
+                saveas=saveas,
+                relpath=relpath,
+                graphicsformat=graphicsformat,
+            )
             return filedict
 
-    def load_saptdata_frombfdb(self, sset='default', pythonpath='/Users/loriab/linux/bfdb/sapt_punt',
-                               failoninc=True):  # pythonpath=None
+    def load_saptdata_frombfdb(
+        self, sset="default", pythonpath="/Users/loriab/linux/bfdb/sapt_punt", failoninc=True
+    ):  # pythonpath=None
         """This is a stopgap function that loads sapt component data from
         sapt_punt in bfdb repo.
 
         """
         saptpackage = OrderedDict()
         for db, odb in self.dbdict.items():
-            modname = 'sapt_' + odb.dbse
+            modname = "sapt_" + odb.dbse
             if pythonpath is not None:
                 sys.path.insert(1, pythonpath)
             else:
-                sys.path.append(os.path.dirname(__file__) + '/../data')
+                sys.path.append(os.path.dirname(__file__) + "/../data")
             try:
                 datamodule = __import__(modname)
             except ImportError:
                 print("""\nPython module for database data %s failed to load\n\n""" % (modname))
                 print("""\nSearch path that was tried:\n""")
-                print(', '.join(map(str, sys.path)))
+                print(", ".join(map(str, sys.path)))
                 raise ValidationError("Python module loading problem for database subset generator " + str(modname))
 
             try:
-                saptdata = getattr(datamodule, 'DATA')
+                saptdata = getattr(datamodule, "DATA")
             except AttributeError:
                 raise ValidationError("SAPT punt module does not contain DATA" + str(modname))
-            saptmc = saptdata['SAPT MODELCHEM']
+            saptmc = saptdata["SAPT MODELCHEM"]
 
             dbix = self.dbdict.keys().index(db)
             for rxn, orxn in odb.hrxn.items():
@@ -2025,33 +2063,36 @@ class Database(object):
                     if rxn in odb.sset[lss]:
                         dbrxn = orxn.dbrxn
                         try:
-                            elst = saptdata['SAPT ELST ENERGY'][dbrxn]
-                            exch = saptdata['SAPT EXCH ENERGY'][dbrxn]
-                            ind = saptdata['SAPT IND ENERGY'][dbrxn]
-                            disp = saptdata['SAPT DISP ENERGY'][dbrxn]
+                            elst = saptdata["SAPT ELST ENERGY"][dbrxn]
+                            exch = saptdata["SAPT EXCH ENERGY"][dbrxn]
+                            ind = saptdata["SAPT IND ENERGY"][dbrxn]
+                            disp = saptdata["SAPT DISP ENERGY"][dbrxn]
                         except (KeyError, AttributeError):
                             print("""Warning: DATA['SAPT * ENERGY'] missing for reaction %s""" % (dbrxn))
                             if failoninc:
                                 break
                         else:
                             if not all([elst, ind, disp]):  # exch sometimes physically zero
-                                print("""Warning: DATA['SAPT * ENERGY'] missing piece for reaction %s: %s""" %
-                                      (dbrxn, [elst, exch, ind, disp]))
+                                print(
+                                    """Warning: DATA['SAPT * ENERGY'] missing piece for reaction %s: %s"""
+                                    % (dbrxn, [elst, exch, ind, disp])
+                                )
                                 if failoninc:
                                     break
-                        saptpackage[dbrxn] = {'mc': saptmc, 'elst': elst, 'exch': exch, 'ind': ind, 'disp': disp}
+                        saptpackage[dbrxn] = {"mc": saptmc, "elst": elst, "exch": exch, "ind": ind, "disp": disp}
         return saptpackage
 
     def plot_ternary(
-            self,
-            sset='default',
-            labeled=True,
-            pythonpath='/Users/loriab/linux/bfdb/sapt_punt',
-            failoninc=True,  # pythonpath=None
-            view=True,
-            saveas=None,
-            relpath=False,
-            graphicsformat=['pdf']):
+        self,
+        sset="default",
+        labeled=True,
+        pythonpath="/Users/loriab/linux/bfdb/sapt_punt",
+        failoninc=True,  # pythonpath=None
+        view=True,
+        saveas=None,
+        relpath=False,
+        graphicsformat=["pdf"],
+    ):
         """This is a stopgap function that loads sapt component data from
         sapt_punt in bfdb repo, then formats it to plot a ternary diagram.
 
@@ -2061,43 +2102,48 @@ class Database(object):
         dbdat = []
         mcs = []
         for dat in saptdata.values():
-            dbdat.append([dat['elst'], dat['ind'], dat['disp']])
-            if dat['mc'] not in mcs:
-                mcs.append(dat['mc'])
+            dbdat.append([dat["elst"], dat["ind"], dat["disp"]])
+            if dat["mc"] not in mcs:
+                mcs.append(dat["mc"])
 
-        title = ' '.join([self.dbse, sset, ' '.join(mcs)])
+        title = " ".join([self.dbse, sset, " ".join(mcs)])
 
         # generate matplotlib instructions and call or print
         try:
-            from . import mpl
             import matplotlib.pyplot as plt
+
+            from . import mpl
         except ImportError:
             pass
             # if not running from Canopy, print line to execute from Canopy
         else:
             # if running from Canopy, call mpl directly
-            filedict = mpl.ternary(dbdat,
-                                   title=title,
-                                   labeled=labeled,
-                                   view=view,
-                                   saveas=saveas,
-                                   relpath=relpath,
-                                   graphicsformat=graphicsformat)
+            filedict = mpl.ternary(
+                dbdat,
+                title=title,
+                labeled=labeled,
+                view=view,
+                saveas=saveas,
+                relpath=relpath,
+                graphicsformat=graphicsformat,
+            )
             return filedict
 
-    def plot_flat(self,
-                  modelchem,
-                  benchmark='default',
-                  sset='default',
-                  failoninc=True,
-                  verbose=False,
-                  color='sapt',
-                  xlimit=4.0,
-                  xlines=[0.0, 0.3, 1.0],
-                  view=True,
-                  saveas=None,
-                  relpath=False,
-                  graphicsformat=['pdf']):
+    def plot_flat(
+        self,
+        modelchem,
+        benchmark="default",
+        sset="default",
+        failoninc=True,
+        verbose=False,
+        color="sapt",
+        xlimit=4.0,
+        xlines=[0.0, 0.3, 1.0],
+        view=True,
+        saveas=None,
+        relpath=False,
+        graphicsformat=["pdf"],
+    ):
         """Computes individual errors and summary statistics for single
         model chemistry *modelchem* versus *benchmark* over
         subset *sset* over all component databases. Thread *color* can be
@@ -2117,52 +2163,61 @@ class Database(object):
         """
         # compute errors
         mc = modelchem
-        errors, indiv = self.compute_statistics(mc,
-                                                benchmark=benchmark,
-                                                sset=sset,
-                                                failoninc=failoninc,
-                                                verbose=verbose,
-                                                returnindiv=True)
+        errors, indiv = self.compute_statistics(
+            mc, benchmark=benchmark, sset=sset, failoninc=failoninc, verbose=verbose, returnindiv=True
+        )
         # repackage
         dbdat = []
         for db, odb in self.dbdict.items():
             if indiv[db] is not None:
                 for rxn in indiv[db].keys():
-                    dbdat.append({
-                        'db': db,
-                        'sys': str(rxn),
-                        'color': odb.hrxn[rxn].color,
-                        'data': [indiv[db][rxn][0]]
-                    })
+                    dbdat.append(
+                        {"db": db, "sys": str(rxn), "color": odb.hrxn[rxn].color, "data": [indiv[db][rxn][0]]}
+                    )
         pre, suf, mid = string_contrast(mc)
-        title = self.dbse + '-' + sset + ' ' + pre + '[]' + suf
-        mae = errors[self.dbse]['mae']
+        title = self.dbse + "-" + sset + " " + pre + "[]" + suf
+        mae = errors[self.dbse]["mae"]
         mape = None
         # mape = 100 * errors[self.dbse]['mape']
         mapbe = None
         # generate matplotlib instructions and call or print
         try:
-            from . import mpl
             import matplotlib.pyplot as plt
+
+            from . import mpl
         except ImportError:
             # if not running from Canopy, print line to execute from Canopy
             print(
                 """filedict = mpl.flat(%s,\n    color='%s',\n    title='%s',\n    mae=%s,\n    mape=%s,\n    xlimit=%s,\n    xlines=%s,\n    view=%s\n    saveas=%s\n    relpath=%s\n    graphicsformat=%s)\n\n"""
-                % (dbdat, color, mc, mae, mape, xlimit, repr(xlines), view, repr(saveas), repr(relpath),
-                   repr(graphicsformat)))
+                % (
+                    dbdat,
+                    color,
+                    mc,
+                    mae,
+                    mape,
+                    xlimit,
+                    repr(xlines),
+                    view,
+                    repr(saveas),
+                    repr(relpath),
+                    repr(graphicsformat),
+                )
+            )
         else:
             # if running from Canopy, call mpl directly
-            filedict = mpl.flat(dbdat,
-                                color=color,
-                                title=mc,
-                                mae=mae,
-                                mape=mape,
-                                xlimit=xlimit,
-                                xlines=xlines,
-                                view=view,
-                                saveas=saveas,
-                                relpath=relpath,
-                                graphicsformat=graphicsformat)
+            filedict = mpl.flat(
+                dbdat,
+                color=color,
+                title=mc,
+                mae=mae,
+                mape=mape,
+                xlimit=xlimit,
+                xlines=xlines,
+                view=view,
+                saveas=saveas,
+                relpath=relpath,
+                graphicsformat=graphicsformat,
+            )
             return filedict
 
     def write_xyz_files(self, path=None):
@@ -2174,7 +2229,7 @@ class Database(object):
 
         """
         if path is None:
-            xyzdir = os.getcwd() + os.sep + self.dbse + '_xyzfiles' + os.sep
+            xyzdir = os.getcwd() + os.sep + self.dbse + "_xyzfiles" + os.sep
         else:
             xyzdir = os.path.abspath(path) + os.sep
         if not os.path.exists(xyzdir):
@@ -2183,16 +2238,19 @@ class Database(object):
         for rgt, orgt in self.hrgt.items():
             omol = Molecule(orgt.mol)
             omol.update_geometry()
-            omol.save_xyz(xyzdir + rgt + '.xyz')
+            omol.save_xyz(xyzdir + rgt + ".xyz")
 
-        with open(xyzdir + 'pymol_xyz2png_script.pml', 'w') as handle:
-            handle.write("""
+        with open(xyzdir + "pymol_xyz2png_script.pml", "w") as handle:
+            handle.write(
+                """
 # Launch PyMOL and run from its command line:
 # PyMOL> cd {}
 # PyMOL> @{}
-""".format(xyzdir, 'pymol_xyz2png_script.pml'))
+""".format(xyzdir, "pymol_xyz2png_script.pml")
+            )
             for rgt in self.hrgt.keys():
-                handle.write("""
+                handle.write(
+                    """
 load {xyzfile}
 hide lines
 show sticks
@@ -2204,16 +2262,19 @@ cmd.zoom(buffer=0.3, complete=1)
 ray
 png {pngfile}
 reinitialize
-""".format(xyzfile=xyzdir + rgt + '.xyz', pngfile=xyzdir + rgt + '.png'))
+""".format(xyzfile=xyzdir + rgt + ".xyz", pngfile=xyzdir + rgt + ".png")
+                )
 
-    def plot_all_flats(self,
-                       modelchem=None,
-                       sset='default',
-                       xlimit=4.0,
-                       failoninc=True,
-                       saveas=None,
-                       relpath=False,
-                       graphicsformat=['pdf']):
+    def plot_all_flats(
+        self,
+        modelchem=None,
+        sset="default",
+        xlimit=4.0,
+        failoninc=True,
+        saveas=None,
+        relpath=False,
+        graphicsformat=["pdf"],
+    ):
         """Generate pieces for inclusion into tables. Supply list of
         modelchemistries to plot from *modelchem*, otherwise defaults to
         all those available. Can modify subset *sset* and plotting
@@ -2224,21 +2285,21 @@ reinitialize
         mcs = self.mcs.keys() if modelchem is None else modelchem
         filedict = OrderedDict()
         for mc in sorted(mcs):
-            minifiledict = self.plot_flat(mc,
-                                          sset=sset,
-                                          xlimit=xlimit,
-                                          view=False,
-                                          failoninc=failoninc,
-                                          saveas=saveas,
-                                          relpath=relpath,
-                                          graphicsformat=graphicsformat)
+            minifiledict = self.plot_flat(
+                mc,
+                sset=sset,
+                xlimit=xlimit,
+                view=False,
+                failoninc=failoninc,
+                saveas=saveas,
+                relpath=relpath,
+                graphicsformat=graphicsformat,
+            )
             filedict[mc] = minifiledict
         return filedict
 
-    def get_hrxn(self, sset='default'):
-        """
-
-        """
+    def get_hrxn(self, sset="default"):
+        """ """
         rhrxn = OrderedDict()
         for db, odb in self.dbdict.items():
             dbix = self.dbdict.keys().index(db)
@@ -2250,10 +2311,8 @@ reinitialize
                         rhrxn[orxn.dbrxn] = orxn  # this is a change and conflict with vergil version
         return rhrxn
 
-    def get_hrgt(self, sset='default', actv='default'):
-        """
-
-        """
+    def get_hrgt(self, sset="default", actv="default"):
+        """ """
         rhrxn = self.get_hrxn(sset=sset)
         rhrgt = OrderedDict()
         for rxn, orxn in rhrxn.items():
@@ -2263,7 +2322,7 @@ reinitialize
 
         return rhrgt
 
-    def get_reactions(self, modelchem, sset='default', benchmark='default', failoninc=True):
+    def get_reactions(self, modelchem, sset="default", benchmark="default", failoninc=True):
         """Collects the reactions present in *sset* from each WrappedDatabase,
         checks that *modelchem* and *benchmark* ReactionDatum are present
         (fails if *failoninc* True), then returns in an array a tuple for
@@ -2275,7 +2334,7 @@ reinitialize
         dbdat = []
         rhrxn = self.get_hrxn(sset=sset)
         for orxn in rhrxn.itervalues():
-            dbix = self.dbdict.keys().index(orxn.dbrxn.split('-')[0])
+            dbix = self.dbdict.keys().index(orxn.dbrxn.split("-")[0])
             lmc = self.mcs[modelchem][dbix]
             lbm = self.mcs[benchmark][dbix]
             try:
@@ -2305,7 +2364,7 @@ reinitialize
             #     dbdat.append((lmc, lbm, orxn))
         return dbdat
 
-    def get_missing_reactions(self, modelchem, sset='default'):
+    def get_missing_reactions(self, modelchem, sset="default"):
         """Returns a dictionary (keys self.dbse and all component
         WrappedDatabase.dbse) of two elements, the first being the number
         of reactions *sset* should contain and the second being a list of
@@ -2319,8 +2378,8 @@ reinitialize
         if not soledb:
             for db in self.dbdict.keys():
                 counts[db] = [0, []]
-        for (lmc, lbm, orxn) in self.get_reactions(modelchem, benchmark='default', sset=sset, failoninc=False):
-            db, rxn = orxn.dbrxn.split('-', 1)
+        for lmc, lbm, orxn in self.get_reactions(modelchem, benchmark="default", sset=sset, failoninc=False):
+            db, rxn = orxn.dbrxn.split("-", 1)
             mcdatum = orxn.data[lmc].value if lmc else None
             counts[self.dbse][0] += 1
             if not soledb:
@@ -2331,17 +2390,19 @@ reinitialize
                     counts[db][1].append(orxn.dbrxn)
         return counts
 
-    def plot_disthist(self,
-                      modelchem,
-                      benchmark='default',
-                      sset='default',
-                      failoninc=True,
-                      verbose=False,
-                      xtitle='',
-                      view=True,
-                      saveas=None,
-                      relpath=False,
-                      graphicsformat=['pdf']):
+    def plot_disthist(
+        self,
+        modelchem,
+        benchmark="default",
+        sset="default",
+        failoninc=True,
+        verbose=False,
+        xtitle="",
+        view=True,
+        saveas=None,
+        relpath=False,
+        graphicsformat=["pdf"],
+    ):
         """Computes individual errors and summary statistics for single
         model chemistry *modelchem* versus *benchmark* over
         subset *sset* over all component databases. Computes histogram
@@ -2361,12 +2422,9 @@ reinitialize
         """
         # compute errors
         mc = modelchem
-        errors, indiv = self.compute_statistics(mc,
-                                                benchmark=benchmark,
-                                                sset=sset,
-                                                failoninc=failoninc,
-                                                verbose=verbose,
-                                                returnindiv=True)
+        errors, indiv = self.compute_statistics(
+            mc, benchmark=benchmark, sset=sset, failoninc=failoninc, verbose=verbose, returnindiv=True
+        )
         # repackage
         dbdat = []
         for db in self.dbdict.keys():
@@ -2374,50 +2432,56 @@ reinitialize
                 for rxn in indiv[db].keys():
                     dbdat.append(indiv[db][rxn][0])
         title = """%s vs %s for %s subset %s""" % (mc, benchmark, self.dbse, sset)
-        me = errors[self.dbse]['me']
-        stde = errors[self.dbse]['stde']
+        me = errors[self.dbse]["me"]
+        stde = errors[self.dbse]["stde"]
         # generate matplotlib instructions and call or print
         try:
-            from . import mpl
             import matplotlib.pyplot as plt
+
+            from . import mpl
         except ImportError:
             # if not running from Canopy, print line to execute from Canopy
             print(
                 """filedict = mpl.disthist(%s,\n    title='%s',\n    xtitle='%s'\n    me=%s,\n    stde=%s,\n    saveas=%s,\n    relpath=%s\n    graphicsformat=%s)\n\n"""
-                % (dbdat, title, xtitle, me, stde, repr(saveas), repr(relpath), repr(graphicsformat)))
+                % (dbdat, title, xtitle, me, stde, repr(saveas), repr(relpath), repr(graphicsformat))
+            )
         else:
             # if running from Canopy, call mpl directly
-            filedict = mpl.disthist(dbdat,
-                                    title=title,
-                                    xtitle=xtitle,
-                                    me=me,
-                                    stde=stde,
-                                    view=view,
-                                    saveas=saveas,
-                                    relpath=relpath,
-                                    graphicsformat=graphicsformat)
+            filedict = mpl.disthist(
+                dbdat,
+                title=title,
+                xtitle=xtitle,
+                me=me,
+                stde=stde,
+                view=view,
+                saveas=saveas,
+                relpath=relpath,
+                graphicsformat=graphicsformat,
+            )
             return filedict
 
-    def plot_modelchems(self,
-                        modelchem,
-                        benchmark='default',
-                        mbenchmark=None,
-                        sset='default',
-                        msset=None,
-                        failoninc=True,
-                        verbose=False,
-                        color='sapt',
-                        xlimit=4.0,
-                        labeled=True,
-                        view=True,
-                        mousetext=None,
-                        mouselink=None,
-                        mouseimag=None,
-                        mousetitle=None,
-                        mousediv=None,
-                        saveas=None,
-                        relpath=False,
-                        graphicsformat=['pdf']):
+    def plot_modelchems(
+        self,
+        modelchem,
+        benchmark="default",
+        mbenchmark=None,
+        sset="default",
+        msset=None,
+        failoninc=True,
+        verbose=False,
+        color="sapt",
+        xlimit=4.0,
+        labeled=True,
+        view=True,
+        mousetext=None,
+        mouselink=None,
+        mouseimag=None,
+        mousetitle=None,
+        mousediv=None,
+        saveas=None,
+        relpath=False,
+        graphicsformat=["pdf"],
+    ):
         """Computes individual errors and summary statistics over all component
         databases for each model chemistry in array *modelchem* versus *benchmark*
         over subset *sset*. *mbenchmark* and *msset* are array options (same
@@ -2443,8 +2507,9 @@ reinitialize
             lbenchmark = [benchmark] * len(modelchem)  # normal bm modelchem name
         else:
             if isinstance(mbenchmark, basestring) or len(mbenchmark) != len(modelchem):
-                raise ValidationError("""mbenchmark must be array of length distributable among modelchem""" %
-                                      (str(mbenchmark)))
+                raise ValidationError(
+                    """mbenchmark must be array of length distributable among modelchem""" % (str(mbenchmark))
+                )
             else:
                 lbenchmark = mbenchmark  # array of bm for each modelchem
         # distribute sset
@@ -2460,14 +2525,11 @@ reinitialize
         errors = {}
         indiv = {}
         for mc, bm, ss in zip(modelchem, lbenchmark, lsset):
-            ix = '%s_%s_%s' % (ss, mc, bm)
+            ix = "%s_%s_%s" % (ss, mc, bm)
             index.append(ix)
-            errors[ix], indiv[ix] = self.compute_statistics(mc,
-                                                            benchmark=bm,
-                                                            sset=ss,
-                                                            failoninc=failoninc,
-                                                            verbose=verbose,
-                                                            returnindiv=True)
+            errors[ix], indiv[ix] = self.compute_statistics(
+                mc, benchmark=bm, sset=ss, failoninc=failoninc, verbose=verbose, returnindiv=True
+            )
         # repackage
         dbdat = []
         for db, odb in self.dbdict.items():
@@ -2491,59 +2553,76 @@ reinitialize
                 if not data or all(item is None for item in data):
                     pass  # filter out empty reactions
                 else:
-                    dbdat.append({
-                        'db': db,
-                        'sys': str(rxn),
-                        'show': str(rxn),
-                        'color': odb.hrxn[rxn].color,
-                        'data': data
-                    })
-        mae = [errors[ix][self.dbse]['mae'] for ix in index]
-        mape = [100 * errors[ix][self.dbse]['mape'] for ix in index]
+                    dbdat.append(
+                        {"db": db, "sys": str(rxn), "show": str(rxn), "color": odb.hrxn[rxn].color, "data": data}
+                    )
+        mae = [errors[ix][self.dbse]["mae"] for ix in index]
+        mape = [100 * errors[ix][self.dbse]["mape"] for ix in index]
         # form unique filename
         ixpre, ixsuf, ixmid = string_contrast(index)
-        title = self.dbse + ' ' + ixpre + '[]' + ixsuf
+        title = self.dbse + " " + ixpre + "[]" + ixsuf
         # generate matplotlib instructions and call or print
         try:
-            from . import mpl
             import matplotlib.pyplot as plt
+
+            from . import mpl
         except ImportError:
             # if not running from Canopy, print line to execute from Canopy
             print(
                 """filedict, htmlcode = mpl.threads(%s,\n    color='%s',\n    title='%s',\n    labels=%s,\n    mae=%s,\n    mape=%s\n    xlimit=%s\n    labeled=%s\n    saveas=%s\n    mousetext=%s\n    mouselink=%s\n    mouseimag=%s\n    mousetitle=%s,\n    mousediv=%s,\n    relpath=%s\n    graphicsformat=%s)\n\n"""
-                % (dbdat, color, title, ixmid, mae, mape, str(xlimit), repr(labeled), repr(saveas), repr(mousetext),
-                   repr(mouselink), repr(mouseimag), repr(mousetitle), repr(mousediv), repr(relpath),
-                   repr(graphicsformat)))
+                % (
+                    dbdat,
+                    color,
+                    title,
+                    ixmid,
+                    mae,
+                    mape,
+                    str(xlimit),
+                    repr(labeled),
+                    repr(saveas),
+                    repr(mousetext),
+                    repr(mouselink),
+                    repr(mouseimag),
+                    repr(mousetitle),
+                    repr(mousediv),
+                    repr(relpath),
+                    repr(graphicsformat),
+                )
+            )
         else:
             # if running from Canopy, call mpl directly
-            filedict, htmlcode = mpl.threads(dbdat,
-                                             color=color,
-                                             title=title,
-                                             labels=ixmid,
-                                             mae=mae,
-                                             mape=mape,
-                                             xlimit=xlimit,
-                                             labeled=labeled,
-                                             view=view,
-                                             mousetext=mousetext,
-                                             mouselink=mouselink,
-                                             mouseimag=mouseimag,
-                                             mousetitle=mousetitle,
-                                             mousediv=mousediv,
-                                             saveas=saveas,
-                                             relpath=relpath,
-                                             graphicsformat=graphicsformat)
+            filedict, htmlcode = mpl.threads(
+                dbdat,
+                color=color,
+                title=title,
+                labels=ixmid,
+                mae=mae,
+                mape=mape,
+                xlimit=xlimit,
+                labeled=labeled,
+                view=view,
+                mousetext=mousetext,
+                mouselink=mouselink,
+                mouseimag=mouseimag,
+                mousetitle=mousetitle,
+                mousediv=mousediv,
+                saveas=saveas,
+                relpath=relpath,
+                graphicsformat=graphicsformat,
+            )
             return filedict, htmlcode
 
-    def plot_liliowa(self,
-                     modelchem,
-                     benchmark='default',
-                     failoninc=True,
-                     xlimit=2.0,
-                     view=True,
-                     saveas=None,
-                     relpath=False,
-                     graphicsformat=['pdf']):
+    def plot_liliowa(
+        self,
+        modelchem,
+        benchmark="default",
+        failoninc=True,
+        xlimit=2.0,
+        view=True,
+        saveas=None,
+        relpath=False,
+        graphicsformat=["pdf"],
+    ):
         """
 
         Note that not possible to access sset of component databases. That is, for Database SSIBBI, SSI-only arylaryl is accessible b/c not defined in BBI, but SSI-only neutral is not accessible.
@@ -2552,66 +2631,82 @@ reinitialize
         mc = modelchem
         errors = {}
         for ss in self.sset.keys():
-            errors[ss] = self.compute_statistics(mc,
-                                                 benchmark=benchmark,
-                                                 sset=ss,
-                                                 failoninc=failoninc,
-                                                 verbose=False,
-                                                 returnindiv=False)
+            errors[ss] = self.compute_statistics(
+                mc, benchmark=benchmark, sset=ss, failoninc=failoninc, verbose=False, returnindiv=False
+            )
 
         # repackage
         dbdat = []
         ssarray = [
-            'pospos', 'posneg', 'pospolar', 'posaliph', 'posaryl', None, 'negneg', 'negpolar', 'negaliph', 'negaryl',
-            None, None, 'polarpolar', 'polaraliph', 'polararyl', None, None, None, 'aliphaliph', 'alipharyl', None,
-            None, None, None, 'arylaryl'
+            "pospos",
+            "posneg",
+            "pospolar",
+            "posaliph",
+            "posaryl",
+            None,
+            "negneg",
+            "negpolar",
+            "negaliph",
+            "negaryl",
+            None,
+            None,
+            "polarpolar",
+            "polaraliph",
+            "polararyl",
+            None,
+            None,
+            None,
+            "aliphaliph",
+            "alipharyl",
+            None,
+            None,
+            None,
+            None,
+            "arylaryl",
         ]
         for ss in ssarray:
-            dbdat.append(0.0 if ss is None else errors[ss][self.dbse]['mae'])
+            dbdat.append(0.0 if ss is None else errors[ss][self.dbse]["mae"])
 
         # generate matplotlib instructions and call or print
         try:
-            from . import mpl
             import matplotlib.pyplot as plt
+
+            from . import mpl
         except ImportError:
-            print('Matplotlib not avail')
+            print("Matplotlib not avail")
         else:
-            filedict = mpl.liliowa(dbdat,
-                                   xlimit=xlimit,
-                                   view=view,
-                                   saveas=saveas,
-                                   relpath=relpath,
-                                   graphicsformat=graphicsformat)
+            filedict = mpl.liliowa(
+                dbdat, xlimit=xlimit, view=view, saveas=saveas, relpath=relpath, graphicsformat=graphicsformat
+            )
             return filedict
 
-    def plot_iowa(self,
-                  modelchem,
-                  benchmark='default',
-                  sset='default',
-                  failoninc=True,
-                  verbose=False,
-                  title='',
-                  xtitle='',
-                  xlimit=2.0,
-                  view=True,
-                  saveas=None,
-                  relpath=False,
-                  graphicsformat=['pdf']):
+    def plot_iowa(
+        self,
+        modelchem,
+        benchmark="default",
+        sset="default",
+        failoninc=True,
+        verbose=False,
+        title="",
+        xtitle="",
+        xlimit=2.0,
+        view=True,
+        saveas=None,
+        relpath=False,
+        graphicsformat=["pdf"],
+    ):
         """Computes individual errors for single *modelchem* versus
         *benchmark* over subset *sset*. Coloring green-to-purple with
         maximum intensity at *xlimit*. Prepares Iowa plot instructions and
         either executes them if matplotlib available (Canopy) or prints them.
 
         """
-        title = self.dbse + ' ' + modelchem
+        title = self.dbse + " " + modelchem
         # compute errors
         mc = modelchem
-        errors, indiv = self.compute_statistics(mc,
-                                                benchmark=benchmark,
-                                                sset=sset,
-                                                failoninc=failoninc,
-                                                verbose=verbose,
-                                                returnindiv=True)
+        errors, indiv = self.compute_statistics(
+            mc, benchmark=benchmark, sset=sset, failoninc=failoninc, verbose=verbose, returnindiv=True
+        )
         # repackage
         dbdat = []
         dblbl = []
@@ -2621,87 +2716,96 @@ reinitialize
                     dbdat.append(indiv[db][rxn][0])
                     dblbl.append(str(rxn))
         title = """%s vs %s for %s subset %s""" % (mc, benchmark, self.dbse, sset)
-        me = errors[self.dbse]['me']
+        me = errors[self.dbse]["me"]
         # generate matplotlib instructions and call or print
         try:
-            from . import mpl
             import matplotlib.pyplot as plt
+
+            from . import mpl
         except ImportError:
             # if not running from Canopy, print line to execute from Canopy
             print(
                 """mpl.iowa(%s,\n    %s,\n    title='%s',\n    xtitle='%s'\n    xlimit=%s,\n    saveas=%s,\n    relpath=%s\n    graphicsformat=%s)\n\n"""
-                % (dbdat, dblbl, title, xtitle, xlimit, repr(saveas), repr(relpath), repr(graphicsformat)))
+                % (dbdat, dblbl, title, xtitle, xlimit, repr(saveas), repr(relpath), repr(graphicsformat))
+            )
         else:
             # if running from Canopy, call mpl directly
-            filedict = mpl.iowa(dbdat,
-                                dblbl,
-                                title=title,
-                                xtitle=xtitle,
-                                xlimit=xlimit,
-                                view=view,
-                                saveas=saveas,
-                                relpath=relpath,
-                                graphicsformat=graphicsformat)
+            filedict = mpl.iowa(
+                dbdat,
+                dblbl,
+                title=title,
+                xtitle=xtitle,
+                xlimit=xlimit,
+                view=view,
+                saveas=saveas,
+                relpath=relpath,
+                graphicsformat=graphicsformat,
+            )
             return filedict
 
-    def export_pandas(self, modelchem=[], benchmark='default', sset='default', modelchemlabels=None, failoninc=True):
+    def export_pandas(self, modelchem=[], benchmark="default", sset="default", modelchemlabels=None, failoninc=True):
         """
         *modelchem* is array of model chemistries, if modelchem is empty, get only benchmark
         is benchmark needed?
         """
-        import pandas as pd
         import numpy as np
+        import pandas as pd
 
-        if self.dbse not in ['ACONF', 'SCONF', 'PCONF', 'CYCONF']:
-            saptdata = self.load_saptdata_frombfdb(sset=sset,
-                                                   pythonpath='/Users/loriab/linux/bfdb/sapt_punt',
-                                                   failoninc=failoninc)
+        if self.dbse not in ["ACONF", "SCONF", "PCONF", "CYCONF"]:
+            saptdata = self.load_saptdata_frombfdb(
+                sset=sset, pythonpath="/Users/loriab/linux/bfdb/sapt_punt", failoninc=failoninc
+            )
 
         listodicts = []
         rhrxn = self.get_hrxn(sset=sset)
         for dbrxn, orxn in rhrxn.items():
-            wdb = dbrxn.split('-')[0]
+            wdb = dbrxn.split("-")[0]
             dbix = self.dbdict.keys().index(wdb)
             wbm = self.mcs[benchmark][dbix]
             wss = self.sset[sset][dbix]
             woss = self.dbdict[wdb].oss[wss]
             try:
-                Rrat = woss.axis['Rrat'][woss.hrxn.index(orxn.name)]
+                Rrat = woss.axis["Rrat"][woss.hrxn.index(orxn.name)]
             except KeyError:
                 Rrat = 1.0  # TODO generic soln?
 
             dictorxn = {}
-            dictorxn['DB'] = wdb
-            dictorxn['System'] = orxn.tagl
-            dictorxn['Name'] = orxn.name
-            dictorxn['R'] = Rrat
-            dictorxn['System #'] = orxn.indx
-            dictorxn['Benchmark'] = np.NaN if orxn.benchmark is None else orxn.data[
-                wbm].value  # this NaN exception is new and experimental
-            dictorxn['QcdbSys'] = orxn.dbrxn
+            dictorxn["DB"] = wdb
+            dictorxn["System"] = orxn.tagl
+            dictorxn["Name"] = orxn.name
+            dictorxn["R"] = Rrat
+            dictorxn["System #"] = orxn.indx
+            dictorxn["Benchmark"] = (
+                np.NaN if orxn.benchmark is None else orxn.data[wbm].value
+            )  # this NaN exception is new and experimental
+            dictorxn["QcdbSys"] = orxn.dbrxn
 
-            if self.dbse not in ['ACONF', 'SCONF', 'PCONF', 'CYCONF']:
-                dictorxn['SAPT ELST ENERGY'] = saptdata[dbrxn]['elst']
-                dictorxn['SAPT EXCH ENERGY'] = saptdata[dbrxn]['exch']
-                dictorxn['SAPT IND ENERGY'] = saptdata[dbrxn]['ind']
-                dictorxn['SAPT DISP ENERGY'] = saptdata[dbrxn]['disp']
-                dictorxn['SAPT TOTAL ENERGY'] = dictorxn['SAPT ELST ENERGY'] + dictorxn['SAPT EXCH ENERGY'] + \
-                                                dictorxn['SAPT IND ENERGY'] + dictorxn['SAPT DISP ENERGY']
+            if self.dbse not in ["ACONF", "SCONF", "PCONF", "CYCONF"]:
+                dictorxn["SAPT ELST ENERGY"] = saptdata[dbrxn]["elst"]
+                dictorxn["SAPT EXCH ENERGY"] = saptdata[dbrxn]["exch"]
+                dictorxn["SAPT IND ENERGY"] = saptdata[dbrxn]["ind"]
+                dictorxn["SAPT DISP ENERGY"] = saptdata[dbrxn]["disp"]
+                dictorxn["SAPT TOTAL ENERGY"] = (
+                    dictorxn["SAPT ELST ENERGY"]
+                    + dictorxn["SAPT EXCH ENERGY"]
+                    + dictorxn["SAPT IND ENERGY"]
+                    + dictorxn["SAPT DISP ENERGY"]
+                )
 
-            orgts = orxn.rxnm['default'].keys()
+            orgts = orxn.rxnm["default"].keys()
             omolD = Molecule(orgts[0].mol)  # TODO this is only going to work with Reaction ~= Reagent databases
             npmolD = omolD.format_molecule_for_numpy()
             omolA = Molecule(orgts[1].mol)  # TODO this is only going to work with Reaction ~= Reagent databases
             omolA.update_geometry()
-            dictorxn['MonA'] = omolA.natom()
+            dictorxn["MonA"] = omolA.natom()
 
             # this whole member fn not well defined for db of varying stoichiometry
-            if self.dbse in ['ACONF', 'SCONF', 'PCONF', 'CYCONF']:
+            if self.dbse in ["ACONF", "SCONF", "PCONF", "CYCONF"]:
                 npmolD = omolD.format_molecule_for_numpy()
                 npmolA = omolA.format_molecule_for_numpy()
-                dictorxn['Geometry'] = np.vstack([npmolD, npmolA])
+                dictorxn["Geometry"] = np.vstack([npmolD, npmolA])
             else:
-                dictorxn['Geometry'] = omolD.format_molecule_for_numpy()
+                dictorxn["Geometry"] = omolD.format_molecule_for_numpy()
             # print '\nD', npmolD.shape[0], npmolA.shape[0], dictorxn['MonA'], npmolD, npmolA, dictorxn['Geometry']
 
             for mc in modelchem:
@@ -2709,7 +2813,7 @@ reinitialize
                     wmc = self.mcs[mc][dbix]
                 except KeyError:
                     # modelchem not in Database at all
-                    print(mc, 'not found')
+                    print(mc, "not found")
                     continue
                 key = mc if modelchemlabels is None else modelchemlabels[modelchem.index(mc)]
                 try:
@@ -2719,28 +2823,30 @@ reinitialize
                     if failoninc:
                         raise ValidationError("""Reaction %s missing datum %s.""" % (key, str(e)))
                     else:
-                        print(mc, str(e), 'not found')
+                        print(mc, str(e), "not found")
                         continue
             listodicts.append(dictorxn)
 
         df = pd.DataFrame(listodicts)
-        pd.set_option('display.width', 500)
+        pd.set_option("display.width", 500)
         print(df.head(5))
         print(df.tail(5))
         return df
 
-    def table_reactions(self,
-                        modelchem,
-                        benchmark='default',
-                        sset='default',
-                        failoninc=True,
-                        columnplan=['indx', 'tagl', 'bm', 'mc', 'e', 'pe'],
-                        title=r"""Reaction energies [kcal/mol] for {sset} $\subset$ {dbse} with {mc}""",
-                        indextitle=r"""Detailed results for {sset} $\subset$ {dbse} with {mc}""",
-                        plotpath='analysis/mols/',
-                        standalone=True,
-                        theme='rxns',
-                        filename=None):
+    def table_reactions(
+        self,
+        modelchem,
+        benchmark="default",
+        sset="default",
+        failoninc=True,
+        columnplan=["indx", "tagl", "bm", "mc", "e", "pe"],
+        title=r"""Reaction energies [kcal/mol] for {sset} $\subset$ {dbse} with {mc}""",
+        indextitle=r"""Detailed results for {sset} $\subset$ {dbse} with {mc}""",
+        plotpath="analysis/mols/",
+        standalone=True,
+        theme="rxns",
+        filename=None,
+    ):
         r"""Prepare single LaTeX table to *filename* or return lines if None showing
         the per-reaction results for reactions in *sset* for single or array
         or 'all' *modelchem*, where the last uses self.mcs(), model chemistries
@@ -2755,21 +2861,21 @@ reinitialize
         """
         # define eligible columns for inclusion
         columnreservoir = {
-            'dbrxn': ['l', r"""\textbf{Reaction}""", """{0:25s}"""],
-            'indx': ['r', '', """{0:14s}"""],
-            'tagl': ['l', r"""\textbf{Reaction}""", """{0:50s}"""],
-            'bm': ['d', r"""\multicolumn{1}{c}{\textbf{Benchmark}}""", """{0:8.2f}"""],
-            'mc': ['d', r"""\multicolumn{1}{c}{\textbf{ModelChem}}""", """{0:8.2f}"""],
-            'e': ['d', r"""\multicolumn{1}{c}{\textbf{Error}}""", """{0:8.2f}"""],
-            'pe': ['d', r"""\multicolumn{1}{c}{\textbf{\% Err.}}""", """{0:8.1f}"""],
-            'imag': ['l', '', r"""\includegraphics[width=1.0cm,height=3.5mm]{%s%%ss.png}""" % (plotpath)],  # untested
+            "dbrxn": ["l", r"""\textbf{Reaction}""", """{0:25s}"""],
+            "indx": ["r", "", """{0:14s}"""],
+            "tagl": ["l", r"""\textbf{Reaction}""", """{0:50s}"""],
+            "bm": ["d", r"""\multicolumn{1}{c}{\textbf{Benchmark}}""", """{0:8.2f}"""],
+            "mc": ["d", r"""\multicolumn{1}{c}{\textbf{ModelChem}}""", """{0:8.2f}"""],
+            "e": ["d", r"""\multicolumn{1}{c}{\textbf{Error}}""", """{0:8.2f}"""],
+            "pe": ["d", r"""\multicolumn{1}{c}{\textbf{\% Err.}}""", """{0:8.1f}"""],
+            "imag": ["l", "", r"""\includegraphics[width=1.0cm,height=3.5mm]{%s%%ss.png}""" % (plotpath)],  # untested
         }
         for col in columnplan:
             if col not in columnreservoir.keys():
-                raise ValidationError('Column {0} not recognized. Register with columnreservoir.'.format(col))
+                raise ValidationError("Column {0} not recognized. Register with columnreservoir.".format(col))
 
         if isinstance(modelchem, basestring):
-            if modelchem.lower() == 'all':
+            if modelchem.lower() == "all":
                 mcs = sorted(self.mcs.keys())
             else:
                 mcs = [modelchem]
@@ -2786,12 +2892,9 @@ reinitialize
         # iterate to produce one LaTeX table per modelchem
         for mc in mcs:
             # prepare summary statistics
-            perr = self.compute_statistics(mc,
-                                           benchmark=benchmark,
-                                           sset=sset,
-                                           failoninc=failoninc,
-                                           verbose=False,
-                                           returnindiv=False)
+            perr = self.compute_statistics(
+                mc, benchmark=benchmark, sset=sset, failoninc=failoninc, verbose=False, returnindiv=False
+            )
             serrors = OrderedDict()
             for db in self.dbdict.keys():
                 serrors[db] = None if perr[db] is None else format_errors(perr[db], mode=3)
@@ -2800,65 +2903,65 @@ reinitialize
             # prepare individual reactions and errors
             terrors = OrderedDict()
             isComplete = True
-            for (lmc, lbm, orxn) in self.get_reactions(mc, benchmark=benchmark, sset=sset, failoninc=failoninc):
+            for lmc, lbm, orxn in self.get_reactions(mc, benchmark=benchmark, sset=sset, failoninc=failoninc):
                 tmp = {}
                 dbrxn = orxn.dbrxn
-                tmp['dbrxn'] = dbrxn.replace('_', '\\_')
-                tmp['indx'] = r"""\textit{""" + str(orxn.indx) + """}"""
-                tmp['tagl'] = dbrxn.split('-')[0] + ' ' + \
-                              (orxn.latex if orxn.latex else orxn.tagl.replace('_', '\\_'))
-                tmp['imag'] = None  # name of primary rgt
+                tmp["dbrxn"] = dbrxn.replace("_", "\\_")
+                tmp["indx"] = r"""\textit{""" + str(orxn.indx) + """}"""
+                tmp["tagl"] = dbrxn.split("-")[0] + " " + (orxn.latex if orxn.latex else orxn.tagl.replace("_", "\\_"))
+                tmp["imag"] = None  # name of primary rgt
                 bmdatum = orxn.data[lbm].value if lbm else None
                 mcdatum = orxn.data[lmc].value if lmc else None
-                tmp['bm'] = bmdatum
-                tmp['mc'] = mcdatum
+                tmp["bm"] = bmdatum
+                tmp["mc"] = mcdatum
                 if lmc and lbm:
-                    tmp['e'] = mcdatum - bmdatum
-                    tmp['pe'] = 100 * (mcdatum - bmdatum) / abs(bmdatum)
+                    tmp["e"] = mcdatum - bmdatum
+                    tmp["pe"] = 100 * (mcdatum - bmdatum) / abs(bmdatum)
                     # TODO redefining errors not good practice
                 else:
                     isComplete = False
-                    tmp['e'] = None
-                    tmp['pe'] = None
+                    tmp["e"] = None
+                    tmp["pe"] = None
 
                 terrors[dbrxn] = {}
                 for c in columnreservoir.keys():
-                    terrors[dbrxn][c] = '' if tmp[c] is None else \
-                        columnreservoir[c][2].format(tmp[c])
+                    terrors[dbrxn][c] = "" if tmp[c] is None else columnreservoir[c][2].format(tmp[c])
 
             fancymodelchem = self.fancy_mcs(latex=True)[mc]
-            thistitle = title.format(dbse=self.dbse,
-                                     mc=fancymodelchem,
-                                     sset='All' if sset == 'default' else sset.upper())
+            thistitle = title.format(
+                dbse=self.dbse, mc=fancymodelchem, sset="All" if sset == "default" else sset.upper()
+            )
             lref = [r"""tbl:qcdb"""]
             if theme:
                 lref.append(theme)
             lref.append(self.dbse)
-            if sset != 'default':
+            if sset != "default":
                 lref.append(sset)
             lref.append(mc)
-            ref = '-'.join(lref)
+            ref = "-".join(lref)
 
             # table intro
             tablelines.append(r"""\begingroup""")
             tablelines.append(r"""\squeezetable""")
             tablelines.append(r"""\LTcapwidth=\textwidth""")
-            tablelines.append(r"""\begin{longtable}{%s}""" % (''.join([columnreservoir[col][0]
-                                                                       for col in columnplan])))
+            tablelines.append(
+                r"""\begin{longtable}{%s}""" % ("".join([columnreservoir[col][0] for col in columnplan]))
+            )
             tablelines.append(r"""\caption{%s""" % (thistitle))
             tablelines.append(r"""\label{%s}} \\ """ % (ref))
             tablelines.append(r"""\hline\hline""")
 
             columntitles = [columnreservoir[col][1] for col in columnplan]
             # initial header
-            tablelines.append(' & '.join(columntitles) + r""" \\ """)
+            tablelines.append(" & ".join(columntitles) + r""" \\ """)
             tablelines.append(r"""\hline""")
             tablelines.append(r"""\endfirsthead""")
             # to be continued header
-            tablelines.append(r"""\multicolumn{%d}{@{}l}{\textit{\ldots continued} %s} \\ """ %
-                              (len(columnplan), fancymodelchem))
+            tablelines.append(
+                r"""\multicolumn{%d}{@{}l}{\textit{\ldots continued} %s} \\ """ % (len(columnplan), fancymodelchem)
+            )
             tablelines.append(r"""\hline\hline""")
-            tablelines.append(' & '.join(columntitles) + r""" \\ """)
+            tablelines.append(" & ".join(columntitles) + r""" \\ """)
             tablelines.append(r"""\hline""")
             tablelines.append(r"""\endhead""")
             # to be continued footer
@@ -2871,22 +2974,26 @@ reinitialize
 
             # table body
             for dbrxn, stuff in terrors.items():
-                tablelines.append(' & '.join([stuff[col] for col in columnplan]) + r""" \\ """)
+                tablelines.append(" & ".join([stuff[col] for col in columnplan]) + r""" \\ """)
 
             # table body summary
-            if any(col in ['e', 'pe'] for col in columnplan):
-                field_to_put_labels = [col for col in ['tagl', 'dbrxn', 'indx'] if col in columnplan]
+            if any(col in ["e", "pe"] for col in columnplan):
+                field_to_put_labels = [col for col in ["tagl", "dbrxn", "indx"] if col in columnplan]
                 if field_to_put_labels:
-
                     for block, blkerrors in serrors.items():
                         if blkerrors:  # skip e.g., NBC block in HB of DB4
                             tablelines.append(r"""\hline""")
                             summlines = [[] for i in range(8)]
                             for col in columnplan:
                                 if col == field_to_put_labels[0]:
-                                    summlines[0].append(r"""\textbf{Summary Statistics: %s%s}%s""" %
-                                                        ('' if sset == 'default' else sset + r""" $\subset$ """, block,
-                                                         '' if isComplete else r""", \textit{partial}"""))
+                                    summlines[0].append(
+                                        r"""\textbf{Summary Statistics: %s%s}%s"""
+                                        % (
+                                            "" if sset == "default" else sset + r""" $\subset$ """,
+                                            block,
+                                            "" if isComplete else r""", \textit{partial}""",
+                                        )
+                                    )
                                     summlines[1].append(r"""\textit{Minimal Signed Error}   """)
                                     summlines[2].append(r"""\textit{Minimal Absolute Error} """)
                                     summlines[3].append(r"""\textit{Maximal Signed Error}   """)
@@ -2894,31 +3001,31 @@ reinitialize
                                     summlines[5].append(r"""\textit{Mean Signed Error}      """)
                                     summlines[6].append(r"""\textit{Mean Absolute Error}    """)
                                     summlines[7].append(r"""\textit{Root-Mean-Square Error} """)
-                                elif col in ['e', 'pe']:
-                                    summlines[0].append('')
-                                    summlines[1].append(blkerrors['nex' + col])
-                                    summlines[2].append(blkerrors['min' + col])
-                                    summlines[3].append(blkerrors['pex' + col])
-                                    summlines[4].append(blkerrors['max' + col])
-                                    summlines[5].append(blkerrors['m' + col])
-                                    summlines[6].append(blkerrors['ma' + col])
-                                    summlines[7].append(blkerrors['rms' + col])
+                                elif col in ["e", "pe"]:
+                                    summlines[0].append("")
+                                    summlines[1].append(blkerrors["nex" + col])
+                                    summlines[2].append(blkerrors["min" + col])
+                                    summlines[3].append(blkerrors["pex" + col])
+                                    summlines[4].append(blkerrors["max" + col])
+                                    summlines[5].append(blkerrors["m" + col])
+                                    summlines[6].append(blkerrors["ma" + col])
+                                    summlines[7].append(blkerrors["rms" + col])
                                 else:
                                     for ln in range(len(summlines)):
-                                        summlines[ln].append('')
+                                        summlines[ln].append("")
                             for ln in range(len(summlines)):
-                                tablelines.append(' & '.join(summlines[ln]) + r""" \\ """)
+                                tablelines.append(" & ".join(summlines[ln]) + r""" \\ """)
 
             # table conclusion
             tablelines.append(r"""\end{longtable}""")
             tablelines.append(r"""\endgroup""")
             tablelines.append(r"""\clearpage""")
-            tablelines.append('\n\n')
+            tablelines.append("\n\n")
 
             # form table index
-            thisindextitle = indextitle.format(dbse=self.dbse,
-                                               mc=fancymodelchem.strip(),
-                                               sset='All' if sset == 'default' else sset.upper())
+            thisindextitle = indextitle.format(
+                dbse=self.dbse, mc=fancymodelchem.strip(), sset="All" if sset == "default" else sset.upper()
+            )
             indexlines.append(r"""\scriptsize \ref{%s} & \scriptsize %s \\ """ % (ref, thisindextitle))
 
         if standalone:
@@ -2928,41 +3035,45 @@ reinitialize
         if filename is None:
             return tablelines, indexlines
         else:
-            if filename.endswith('.tex'):
+            if filename.endswith(".tex"):
                 filename = filename[:-4]
-            with open(filename + '.tex', 'w') as handle:
-                handle.write('\n'.join(tablelines))
-            with open(filename + '_index.tex', 'w') as handle:
-                handle.write('\n'.join(indexlines) + '\n')
-            print("""\n  LaTeX index written to {filename}_index.tex\n"""
-                  """  LaTeX table written to {filename}.tex\n"""
-                  """  >>> pdflatex {filename}\n"""
-                  """  >>> open /Applications/Preview.app {filename}.pdf\n""".format(filename=filename))
-            filedict = {'data': os.path.abspath(filename) + '.tex', 'index': os.path.abspath(filename + '_index.tex')}
+            with open(filename + ".tex", "w") as handle:
+                handle.write("\n".join(tablelines))
+            with open(filename + "_index.tex", "w") as handle:
+                handle.write("\n".join(indexlines) + "\n")
+            print(
+                """\n  LaTeX index written to {filename}_index.tex\n"""
+                """  LaTeX table written to {filename}.tex\n"""
+                """  >>> pdflatex {filename}\n"""
+                """  >>> open /Applications/Preview.app {filename}.pdf\n""".format(filename=filename)
+            )
+            filedict = {"data": os.path.abspath(filename) + ".tex", "index": os.path.abspath(filename + "_index.tex")}
             return filedict
 
-    def table_wrapper(self,
-                      mtd,
-                      bas,
-                      tableplan,
-                      benchmark='default',
-                      opt=['CP'],
-                      err=['mae'],
-                      sset=['default'],
-                      dbse=None,
-                      opttarget=None,
-                      failoninc=True,
-                      xlimit=4.0,
-                      xlines=[0.0, 0.3, 1.0],
-                      ialimit=2.0,
-                      plotpath='autogen',
-                      subjoin=True,
-                      title=None,
-                      indextitle=None,
-                      suppressblanks=False,
-                      standalone=True,
-                      theme=None,
-                      filename=None):
+    def table_wrapper(
+        self,
+        mtd,
+        bas,
+        tableplan,
+        benchmark="default",
+        opt=["CP"],
+        err=["mae"],
+        sset=["default"],
+        dbse=None,
+        opttarget=None,
+        failoninc=True,
+        xlimit=4.0,
+        xlines=[0.0, 0.3, 1.0],
+        ialimit=2.0,
+        plotpath="autogen",
+        subjoin=True,
+        title=None,
+        indextitle=None,
+        suppressblanks=False,
+        standalone=True,
+        theme=None,
+        filename=None,
+    ):
         """Prepares dictionary of errors for all combinations of *mtd*, *opt*,
         *bas* with respect to model chemistry *benchmark*, mindful of *failoninc*.
         The general plan for the table, as well as defaults for landscape,
@@ -2974,32 +3085,31 @@ reinitialize
 
         """
         # get plan for table from *tableplan* and some default values
-        kwargs = {'plotpath': plotpath, 'subjoin': subjoin, 'xlines': xlines, 'xlimit': xlimit, 'ialimit': ialimit}
-        rowplan, columnplan, landscape, footnotes, \
-        suggestedtitle, suggestedtheme = tableplan(**kwargs)
-        #suggestedtitle, suggestedtheme = tableplan(plotpath=plotpath, subjoin=subjoin)
+        kwargs = {"plotpath": plotpath, "subjoin": subjoin, "xlines": xlines, "xlimit": xlimit, "ialimit": ialimit}
+        rowplan, columnplan, landscape, footnotes, suggestedtitle, suggestedtheme = tableplan(**kwargs)
+        # suggestedtitle, suggestedtheme = tableplan(plotpath=plotpath, subjoin=subjoin)
 
         # make figure files write themselves
         autothread = {}
         autoliliowa = {}
-        if plotpath == 'autogen':
+        if plotpath == "autogen":
             for col in columnplan:
-                if col[3].__name__ == 'flat':
+                if col[3].__name__ == "flat":
                     if col[4] and autothread:
-                        print('TODO: merge not handled')
+                        print("TODO: merge not handled")
                     elif col[4] or autothread:
                         autothread.update(col[4])
                     else:
-                        autothread = {'dummy': True}
-                elif col[3].__name__ == 'liliowa':
-                    autoliliowa = {'dummy': True}
+                        autothread = {"dummy": True}
+                elif col[3].__name__ == "liliowa":
+                    autoliliowa = {"dummy": True}
 
         # negotiate some defaults
         dbse = [self.dbse] if dbse is None else dbse
         theme = suggestedtheme if theme is None else theme
         title = suggestedtitle if title is None else title
         indextitle = title if indextitle is None else indextitle
-        opttarget = {'default': ['']} if opttarget is None else opttarget
+        opttarget = {"default": [""]} if opttarget is None else opttarget
 
         def unify_options(orequired, opossible):
             """Perform a merge of options tags in *orequired* and *opossible* so
@@ -3009,32 +3119,33 @@ reinitialize
             opt_combos = []
             for oreq in orequired:
                 for opos in opossible:
-                    pieces = sorted(set(oreq.split('_') + opos.split('_')))
-                    if '' in pieces:
-                        pieces.remove('')
-                    for mode in ['CP', 'unCP', 'SA']:
+                    pieces = sorted(set(oreq.split("_") + opos.split("_")))
+                    if "" in pieces:
+                        pieces.remove("")
+                    for mode in ["CP", "unCP", "SA"]:
                         if mode in pieces:
                             pieces.remove(mode)
                             pieces.append(mode)
-                    pieces = '_'.join(pieces)
+                    pieces = "_".join(pieces)
                     opt_combos.append(pieces)
             return opt_combos
 
         # gather list of model chemistries for table
-        mcs = ['-'.join(prod) for prod in itertools.product(mtd, opt, bas)]
+        mcs = ["-".join(prod) for prod in itertools.product(mtd, opt, bas)]
         mc_translator = {}
         for m, o, b in itertools.product(mtd, opt, bas):
-            nominal_mc = '-'.join([m, o, b])
-            for oo in unify_options([o], opttarget['default']):
-                trial_mc = '-'.join([m, oo, b])
+            nominal_mc = "-".join([m, o, b])
+            for oo in unify_options([o], opttarget["default"]):
+                trial_mc = "-".join([m, oo, b])
                 try:
                     perr = self.compute_statistics(
                         trial_mc,
                         benchmark=benchmark,
-                        sset='default',  # prob. too restrictive by choosing subset
+                        sset="default",  # prob. too restrictive by choosing subset
                         failoninc=False,
                         verbose=False,
-                        returnindiv=False)
+                        returnindiv=False,
+                    )
                 except KeyError as e:
                     continue
                 else:
@@ -3051,59 +3162,65 @@ reinitialize
                 serrors[mc][ss] = {}
                 if mc_translator[mc] in self.mcs:
                     # Note: not handling when one component Wdb has one translated pattern and another another
-                    perr = self.compute_statistics(mc_translator[mc],
-                                                   benchmark=benchmark,
-                                                   sset=ss,
-                                                   failoninc=failoninc,
-                                                   verbose=False,
-                                                   returnindiv=False)
+                    perr = self.compute_statistics(
+                        mc_translator[mc],
+                        benchmark=benchmark,
+                        sset=ss,
+                        failoninc=failoninc,
+                        verbose=False,
+                        returnindiv=False,
+                    )
                     serrors[mc][ss][self.dbse] = format_errors(perr[self.dbse], mode=3)
                     if not failoninc:
                         mcsscounts = self.get_missing_reactions(mc_translator[mc], sset=ss)
-                        serrors[mc][ss][self.dbse]['tgtcnt'] = mcsscounts[self.dbse][0]
-                        serrors[mc][ss][self.dbse]['misscnt'] = len(mcsscounts[self.dbse][1])
+                        serrors[mc][ss][self.dbse]["tgtcnt"] = mcsscounts[self.dbse][0]
+                        serrors[mc][ss][self.dbse]["misscnt"] = len(mcsscounts[self.dbse][1])
                     if autothread:
-                        if ('sset' in autothread and ss in autothread['sset']) or ('sset' not in autothread):
-                            mcssplots = self.plot_flat(mc_translator[mc],
-                                                       benchmark=benchmark,
-                                                       sset=ss,
-                                                       failoninc=failoninc,
-                                                       color='sapt',
-                                                       xlimit=xlimit,
-                                                       xlines=xlines,
-                                                       view=False,
-                                                       saveas='flat_' + '-'.join([self.dbse, ss, mc]),
-                                                       relpath=True,
-                                                       graphicsformat=['pdf'])
-                            serrors[mc][ss][self.dbse]['plotflat'] = mcssplots['pdf']
-                    if autoliliowa and ss == 'default':
-                        mcssplots = self.plot_liliowa(mc_translator[mc],
-                                                      benchmark=benchmark,
-                                                      failoninc=failoninc,
-                                                      xlimit=ialimit,
-                                                      view=False,
-                                                      saveas='liliowa_' + '-'.join([self.dbse, ss, mc]),
-                                                      relpath=True,
-                                                      graphicsformat=['pdf'])
-                        serrors[mc][ss][self.dbse]['plotliliowa'] = mcssplots['pdf']
+                        if ("sset" in autothread and ss in autothread["sset"]) or ("sset" not in autothread):
+                            mcssplots = self.plot_flat(
+                                mc_translator[mc],
+                                benchmark=benchmark,
+                                sset=ss,
+                                failoninc=failoninc,
+                                color="sapt",
+                                xlimit=xlimit,
+                                xlines=xlines,
+                                view=False,
+                                saveas="flat_" + "-".join([self.dbse, ss, mc]),
+                                relpath=True,
+                                graphicsformat=["pdf"],
+                            )
+                            serrors[mc][ss][self.dbse]["plotflat"] = mcssplots["pdf"]
+                    if autoliliowa and ss == "default":
+                        mcssplots = self.plot_liliowa(
+                            mc_translator[mc],
+                            benchmark=benchmark,
+                            failoninc=failoninc,
+                            xlimit=ialimit,
+                            view=False,
+                            saveas="liliowa_" + "-".join([self.dbse, ss, mc]),
+                            relpath=True,
+                            graphicsformat=["pdf"],
+                        )
+                        serrors[mc][ss][self.dbse]["plotliliowa"] = mcssplots["pdf"]
                     for db in self.dbdict.keys():
                         if perr[db] is None:
                             serrors[mc][ss][db] = None
                         else:
                             serrors[mc][ss][db] = format_errors(perr[db], mode=3)
                             if not failoninc:
-                                serrors[mc][ss][db]['tgtcnt'] = mcsscounts[db][0]
-                                serrors[mc][ss][db]['misscnt'] = len(mcsscounts[db][1])
+                                serrors[mc][ss][db]["tgtcnt"] = mcsscounts[db][0]
+                                serrors[mc][ss][db]["misscnt"] = len(mcsscounts[db][1])
                 else:
                     serrors[mc][ss][self.dbse] = format_errors(initialize_errors(), mode=3)
                     for db in self.dbdict.keys():
                         serrors[mc][ss][db] = format_errors(initialize_errors(), mode=3)
         for key in serrors.keys():
-            print("""{:>35}{:>35}{}""".format(key, mc_translator[key], serrors[key]['default'][self.dbse]['mae']))
+            print("""{:>35}{:>35}{}""".format(key, mc_translator[key], serrors[key]["default"][self.dbse]["mae"]))
 
         # find indices that would be neglected in a single sweep over table_generic
         keysinplan = set(sum([col[-1].keys() for col in columnplan], rowplan))
-        obvious = {'dbse': dbse, 'sset': sset, 'mtd': mtd, 'opt': opt, 'bas': bas, 'err': err}
+        obvious = {"dbse": dbse, "sset": sset, "mtd": mtd, "opt": opt, "bas": bas, "err": err}
         for key, vari in obvious.items():
             if len(vari) == 1 or key in keysinplan:
                 del obvious[key]
@@ -3118,34 +3235,36 @@ reinitialize
 
         for io in iteroers:
             actvargs = dict(zip(obvious.keys(), [[k] for k in io]))
-            nudbse = actvargs['dbse'] if 'dbse' in actvargs else dbse
-            nusset = actvargs['sset'] if 'sset' in actvargs else sset
-            numtd = actvargs['mtd'] if 'mtd' in actvargs else mtd
-            nuopt = actvargs['opt'] if 'opt' in actvargs else opt
-            nubas = actvargs['bas'] if 'bas' in actvargs else bas
-            nuerr = actvargs['err'] if 'err' in actvargs else err
+            nudbse = actvargs["dbse"] if "dbse" in actvargs else dbse
+            nusset = actvargs["sset"] if "sset" in actvargs else sset
+            numtd = actvargs["mtd"] if "mtd" in actvargs else mtd
+            nuopt = actvargs["opt"] if "opt" in actvargs else opt
+            nubas = actvargs["bas"] if "bas" in actvargs else bas
+            nuerr = actvargs["err"] if "err" in actvargs else err
 
-            table, index = textables.table_generic(mtd=numtd,
-                                                   bas=nubas,
-                                                   opt=nuopt,
-                                                   err=nuerr,
-                                                   sset=nusset,
-                                                   dbse=nudbse,
-                                                   rowplan=rowplan,
-                                                   columnplan=columnplan,
-                                                   serrors=serrors,
-                                                   plotpath='' if plotpath == 'autogen' else plotpath,
-                                                   subjoin=subjoin,
-                                                   title=title,
-                                                   indextitle=indextitle,
-                                                   suppressblanks=suppressblanks,
-                                                   landscape=landscape,
-                                                   footnotes=footnotes,
-                                                   standalone=False,
-                                                   theme=theme)
+            table, index = textables.table_generic(
+                mtd=numtd,
+                bas=nubas,
+                opt=nuopt,
+                err=nuerr,
+                sset=nusset,
+                dbse=nudbse,
+                rowplan=rowplan,
+                columnplan=columnplan,
+                serrors=serrors,
+                plotpath="" if plotpath == "autogen" else plotpath,
+                subjoin=subjoin,
+                title=title,
+                indextitle=indextitle,
+                suppressblanks=suppressblanks,
+                landscape=landscape,
+                footnotes=footnotes,
+                standalone=False,
+                theme=theme,
+            )
 
             tablelines += table
-            tablelines.append('\n\n')
+            tablelines.append("\n\n")
             indexlines += index
 
         if standalone:
@@ -3155,41 +3274,36 @@ reinitialize
         if filename is None:
             return tablelines, indexlines
         else:
-            if filename.endswith('.tex'):
+            if filename.endswith(".tex"):
                 filename = filename[:-4]
-            with open(filename + '.tex', 'w') as handle:
-                handle.write('\n'.join(tablelines))
-            with open(filename + '_index.tex', 'w') as handle:
-                handle.write('\n'.join(indexlines))
-            print("""\n  LaTeX index written to {filename}_index.tex\n"""
-                  """  LaTeX table written to {filename}.tex\n"""
-                  """  >>> pdflatex {filename}\n"""
-                  """  >>> open /Applications/Preview.app {filename}.pdf\n""".format(filename=filename))
-            filedict = {'data': os.path.abspath(filename) + '.tex', 'index': os.path.abspath(filename + '_index.tex')}
+            with open(filename + ".tex", "w") as handle:
+                handle.write("\n".join(tablelines))
+            with open(filename + "_index.tex", "w") as handle:
+                handle.write("\n".join(indexlines))
+            print(
+                """\n  LaTeX index written to {filename}_index.tex\n"""
+                """  LaTeX table written to {filename}.tex\n"""
+                """  >>> pdflatex {filename}\n"""
+                """  >>> open /Applications/Preview.app {filename}.pdf\n""".format(filename=filename)
+            )
+            filedict = {"data": os.path.abspath(filename) + ".tex", "index": os.path.abspath(filename + "_index.tex")}
             return filedict
 
     def table_scrunch(self, plotpath, subjoin):
-        rowplan = ['mtd']
-        columnplan = [['l', r'Method', '', textables.label, {}], ['c', r'Description', '', textables.empty, {}],
-                      ['d', r'aug-cc-pVDZ', 'unCP', textables.val, {
-                          'bas': 'adz',
-                          'opt': 'unCP'
-                      }], ['d', r'aug-cc-pVDZ', 'CP', textables.val, {
-                          'bas': 'adz',
-                          'opt': 'CP'
-                      }], ['d', r'aug-cc-pVTZ', 'unCP', textables.val, {
-                          'bas': 'atz',
-                          'opt': 'unCP'
-                      }], ['d', r'aug-cc-pVTZ', 'CP', textables.val, {
-                          'bas': 'atz',
-                          'opt': 'CP'
-                      }]]
+        rowplan = ["mtd"]
+        columnplan = [
+            ["l", r"Method", "", textables.label, {}],
+            ["c", r"Description", "", textables.empty, {}],
+            ["d", r"aug-cc-pVDZ", "unCP", textables.val, {"bas": "adz", "opt": "unCP"}],
+            ["d", r"aug-cc-pVDZ", "CP", textables.val, {"bas": "adz", "opt": "CP"}],
+            ["d", r"aug-cc-pVTZ", "unCP", textables.val, {"bas": "atz", "opt": "unCP"}],
+            ["d", r"aug-cc-pVTZ", "CP", textables.val, {"bas": "atz", "opt": "CP"}],
+        ]
 
         footnotes = []
         landscape = False
-        theme = 'summavg'
-        title = r"""Classification and Performance of model chemistries. Interaction energy [kcal/mol] {{err}} statistics.""".format(
-        )
+        theme = "summavg"
+        title = r"""Classification and Performance of model chemistries. Interaction energy [kcal/mol] {{err}} statistics.""".format()
         return rowplan, columnplan, landscape, footnotes, title, theme
 
     def table_merge_abbr(self, plotpath, subjoin):
@@ -3199,39 +3313,32 @@ reinitialize
         lines *mtd* within each section.
 
         """
-        rowplan = ['bas', 'mtd']
-        columnplan = [['l', r"""Method \& Basis Set""", '', textables.label, {}],
-                      ['d', r'S22', 'HB', textables.val, {
-                          'sset': 'hb',
-                          'dbse': 'S22'
-                      }], ['d', r'S22', 'MX/DD', textables.val, {
-                          'sset': 'mxdd',
-                          'dbse': 'S22'
-                      }], ['d', r'S22', 'TT', textables.val, {
-                          'sset': 'tt',
-                          'dbse': 'S22'
-                      }], ['d', r'Overall', 'HB', textables.val, {
-                          'sset': 'hb',
-                          'dbse': 'DB4'
-                      }], ['d', r'Overall', 'MX/DD', textables.val, {
-                          'sset': 'mxdd',
-                          'dbse': 'DB4'
-                      }], ['d', r'Overall', 'TT', textables.val, {
-                          'sset': 'tt',
-                          'dbse': 'DB4'
-                      }],
-                      [
-                          'l', r"""Error Distribution\footnotemark[1]""",
-                          r"""\includegraphics[width=6.67cm,height=3.5mm]{%s%s.pdf}""" % (plotpath, 'blank'),
-                          textables.graphics, {}
-                      ], ['d', r'Time', '', textables.empty, {}]]
+        rowplan = ["bas", "mtd"]
+        columnplan = [
+            ["l", r"""Method \& Basis Set""", "", textables.label, {}],
+            ["d", r"S22", "HB", textables.val, {"sset": "hb", "dbse": "S22"}],
+            ["d", r"S22", "MX/DD", textables.val, {"sset": "mxdd", "dbse": "S22"}],
+            ["d", r"S22", "TT", textables.val, {"sset": "tt", "dbse": "S22"}],
+            ["d", r"Overall", "HB", textables.val, {"sset": "hb", "dbse": "DB4"}],
+            ["d", r"Overall", "MX/DD", textables.val, {"sset": "mxdd", "dbse": "DB4"}],
+            ["d", r"Overall", "TT", textables.val, {"sset": "tt", "dbse": "DB4"}],
+            [
+                "l",
+                r"""Error Distribution\footnotemark[1]""",
+                r"""\includegraphics[width=6.67cm,height=3.5mm]{%s%s.pdf}""" % (plotpath, "blank"),
+                textables.graphics,
+                {},
+            ],
+            ["d", r"Time", "", textables.empty, {}],
+        ]
         # TODO Time column not right at all
 
-        footnotes = [fnreservoir['blankslat']]
+        footnotes = [fnreservoir["blankslat"]]
         landscape = False
-        theme = 'smmerge'
+        theme = "smmerge"
         title = r"""Interaction energy [kcal/mol] {{err}} subset statistics with computed with {{opt}}{0}.""".format(
-            '' if subjoin else r""" and {bas}""")
+            "" if subjoin else r""" and {bas}"""
+        )
         return rowplan, columnplan, landscape, footnotes, title, theme
 
     def table_merge_suppmat(self, plotpath, subjoin):
@@ -3241,80 +3348,54 @@ reinitialize
         formed, one for each in *bas* with lines *mtd* within each table.
 
         """
-        rowplan = ['bas', 'mtd']
-        columnplan = [['l', r"""Method \& Basis Set""", '', textables.label, {}],
-                      ['d', 'S22', 'HB', textables.val, {
-                          'sset': 'hb',
-                          'dbse': 'S22'
-                      }], ['d', 'S22', 'MX', textables.val, {
-                          'sset': 'mx',
-                          'dbse': 'S22'
-                      }], ['d', 'S22', 'DD', textables.val, {
-                          'sset': 'dd',
-                          'dbse': 'S22'
-                      }], ['d', 'S22', 'TT', textables.val, {
-                          'sset': 'tt',
-                          'dbse': 'S22'
-                      }], ['d', 'NBC10', 'MX', textables.val, {
-                          'sset': 'mx',
-                          'dbse': 'NBC1'
-                      }], ['d', 'NBC10', 'DD', textables.val, {
-                          'sset': 'dd',
-                          'dbse': 'NBC1'
-                      }], ['d', 'NBC10', 'TT', textables.val, {
-                          'sset': 'tt',
-                          'dbse': 'NBC1'
-                      }], ['d', 'HBC6', 'HB/TT', textables.val, {
-                          'sset': 'tt',
-                          'dbse': 'HBC1'
-                      }], ['d', 'HSG', 'HB', textables.val, {
-                          'sset': 'hb',
-                          'dbse': 'HSG'
-                      }], ['d', 'HSG', 'MX', textables.val, {
-                          'sset': 'mx',
-                          'dbse': 'HSG'
-                      }], ['d', 'HSG', 'DD', textables.val, {
-                          'sset': 'dd',
-                          'dbse': 'HSG'
-                      }], ['d', 'HSG', 'TT', textables.val, {
-                          'sset': 'tt',
-                          'dbse': 'HSG'
-                      }], ['d', 'Avg', 'TT ', textables.val, {
-                          'sset': 'tt',
-                          'dbse': 'DB4'
-                      }],
-                      [
-                          'l', r"""Error Distribution\footnotemark[1]""",
-                          r"""\includegraphics[width=6.67cm,height=3.5mm]{%s%s.pdf}""" % (plotpath, 'blank'),
-                          textables.graphics, {}
-                      ], ['d', 'NBC10', r"""TT\footnotemark[2]""", textables.val, {
-                          'sset': 'tt-5min',
-                          'dbse': 'NBC1'
-                      }],
-                      ['d', 'HBC6', r"""TT\footnotemark[2] """, textables.val, {
-                          'sset': 'tt-5min',
-                          'dbse': 'HBC1'
-                      }], ['d', 'Avg', r"""TT\footnotemark[2]""", textables.val, {
-                          'sset': 'tt-5min',
-                          'dbse': 'DB4'
-                      }]]
+        rowplan = ["bas", "mtd"]
+        columnplan = [
+            ["l", r"""Method \& Basis Set""", "", textables.label, {}],
+            ["d", "S22", "HB", textables.val, {"sset": "hb", "dbse": "S22"}],
+            ["d", "S22", "MX", textables.val, {"sset": "mx", "dbse": "S22"}],
+            ["d", "S22", "DD", textables.val, {"sset": "dd", "dbse": "S22"}],
+            ["d", "S22", "TT", textables.val, {"sset": "tt", "dbse": "S22"}],
+            ["d", "NBC10", "MX", textables.val, {"sset": "mx", "dbse": "NBC1"}],
+            ["d", "NBC10", "DD", textables.val, {"sset": "dd", "dbse": "NBC1"}],
+            ["d", "NBC10", "TT", textables.val, {"sset": "tt", "dbse": "NBC1"}],
+            ["d", "HBC6", "HB/TT", textables.val, {"sset": "tt", "dbse": "HBC1"}],
+            ["d", "HSG", "HB", textables.val, {"sset": "hb", "dbse": "HSG"}],
+            ["d", "HSG", "MX", textables.val, {"sset": "mx", "dbse": "HSG"}],
+            ["d", "HSG", "DD", textables.val, {"sset": "dd", "dbse": "HSG"}],
+            ["d", "HSG", "TT", textables.val, {"sset": "tt", "dbse": "HSG"}],
+            ["d", "Avg", "TT ", textables.val, {"sset": "tt", "dbse": "DB4"}],
+            [
+                "l",
+                r"""Error Distribution\footnotemark[1]""",
+                r"""\includegraphics[width=6.67cm,height=3.5mm]{%s%s.pdf}""" % (plotpath, "blank"),
+                textables.graphics,
+                {},
+            ],
+            ["d", "NBC10", r"""TT\footnotemark[2]""", textables.val, {"sset": "tt-5min", "dbse": "NBC1"}],
+            ["d", "HBC6", r"""TT\footnotemark[2] """, textables.val, {"sset": "tt-5min", "dbse": "HBC1"}],
+            ["d", "Avg", r"""TT\footnotemark[2]""", textables.val, {"sset": "tt-5min", "dbse": "DB4"}],
+        ]
 
-        footnotes = [fnreservoir['blankslat'], fnreservoir['5min']]
+        footnotes = [fnreservoir["blankslat"], fnreservoir["5min"]]
         landscape = True
-        theme = 'lgmerge'
+        theme = "lgmerge"
         title = r"""Interaction energy [kcal/mol] {{err}} subset statistics with computed with {{opt}}{0}.""".format(
-            '' if subjoin else r""" and {bas}""")
+            "" if subjoin else r""" and {bas}"""
+        )
         return rowplan, columnplan, landscape, footnotes, title, theme
 
 
 class DB4(Database):
     def __init__(self, pythonpath=None, loadfrompickle=False, path=None):
         """Initialize FourDatabases object from SuperDatabase"""
-        Database.__init__(self, ['s22', 'nbc10', 'hbc6', 'hsg'],
-                          dbse='DB4',
-                          pythonpath=pythonpath,
-                          loadfrompickle=loadfrompickle,
-                          path=path)
+        Database.__init__(
+            self,
+            ["s22", "nbc10", "hbc6", "hsg"],
+            dbse="DB4",
+            pythonpath=pythonpath,
+            loadfrompickle=loadfrompickle,
+            path=path,
+        )
 
         # # load up data and definitions
         # self.load_qcdata_byproject('dft')
@@ -3325,116 +3406,175 @@ class DB4(Database):
         self.define_supermodelchems()
 
     def define_supersubsets(self):
-        """
-
-        """
-        self.sset['tt'] = ['default', 'default', 'default', 'default']
-        self.sset['hb'] = ['hb', None, 'default', 'hb']
-        self.sset['mx'] = ['mx', 'mx', None, 'mx']
-        self.sset['dd'] = ['dd', 'dd', None, 'dd']
-        self.sset['mxdd'] = ['mxdd', 'default', None, 'mxdd']
-        self.sset['pp'] = ['mxddpp', 'mxddpp', None, None]
-        self.sset['np'] = ['mxddnp', 'mxddnp', None, 'mxdd']
-        self.sset['tt-5min'] = ['default', '5min', '5min', 'default']
-        self.sset['hb-5min'] = ['hb', None, '5min', 'hb']
-        self.sset['mx-5min'] = ['mx', 'mx-5min', None, 'mx']
-        self.sset['dd-5min'] = ['dd', 'dd-5min', None, 'dd']
-        self.sset['mxdd-5min'] = ['mxdd', '5min', None, 'mxdd']
-        self.sset['pp-5min'] = ['mxddpp', 'mxddpp-5min', None, None]
-        self.sset['np-5min'] = ['mxddnp', 'mxddnp-5min', None, 'mxdd']
+        """ """
+        self.sset["tt"] = ["default", "default", "default", "default"]
+        self.sset["hb"] = ["hb", None, "default", "hb"]
+        self.sset["mx"] = ["mx", "mx", None, "mx"]
+        self.sset["dd"] = ["dd", "dd", None, "dd"]
+        self.sset["mxdd"] = ["mxdd", "default", None, "mxdd"]
+        self.sset["pp"] = ["mxddpp", "mxddpp", None, None]
+        self.sset["np"] = ["mxddnp", "mxddnp", None, "mxdd"]
+        self.sset["tt-5min"] = ["default", "5min", "5min", "default"]
+        self.sset["hb-5min"] = ["hb", None, "5min", "hb"]
+        self.sset["mx-5min"] = ["mx", "mx-5min", None, "mx"]
+        self.sset["dd-5min"] = ["dd", "dd-5min", None, "dd"]
+        self.sset["mxdd-5min"] = ["mxdd", "5min", None, "mxdd"]
+        self.sset["pp-5min"] = ["mxddpp", "mxddpp-5min", None, None]
+        self.sset["np-5min"] = ["mxddnp", "mxddnp-5min", None, "mxdd"]
 
     # def benchmark(self):
     #     """Returns the model chemistry label for the database's benchmark."""
     #     return 'C2001BENCH'
 
     def define_supermodelchems(self):
-        """
+        """ """
+        self.benchmark = "C2011BENCH"
+        self.mcs["C2010BENCH"] = ["S22A", "NBC100", "HBC60", "HSG0"]
+        self.mcs["C2011BENCH"] = ["S22B", "NBC10A", "HBC6A", "HSGA"]
 
-        """
-        self.benchmark = 'C2011BENCH'
-        self.mcs['C2010BENCH'] = ['S22A', 'NBC100', 'HBC60', 'HSG0']
-        self.mcs['C2011BENCH'] = ['S22B', 'NBC10A', 'HBC6A', 'HSGA']
+        self.mcs["CCSD-CP-adz"] = ["CCSD-CP-adz", "CCSD-CP-hadz", "CCSD-CP-adz", "CCSD-CP-hadz"]
+        self.mcs["CCSD-CP-atz"] = ["CCSD-CP-atz", "CCSD-CP-hatz", "CCSD-CP-atz", "CCSD-CP-hatz"]
+        self.mcs["CCSD-CP-adtz"] = ["CCSD-CP-adtz", "CCSD-CP-hadtz", "CCSD-CP-adtz", "CCSD-CP-hadtz"]
+        self.mcs["CCSD-CP-adtzadz"] = ["CCSD-CP-adtzadz", "CCSD-CP-adtzhadz", "CCSD-CP-adtzadz", "CCSD-CP-adtzhadz"]
+        self.mcs["CCSD-CP-atzadz"] = ["CCSD-CP-atzadz", "CCSD-CP-atzhadz", "CCSD-CP-atzadz", "CCSD-CP-atzhadz"]
+        self.mcs["CCSD-CP-atqzadz"] = ["CCSD-CP-atqzadz", "CCSD-CP-atqzhadz", "CCSD-CP-atqzadz", "CCSD-CP-atqzhadz"]
+        self.mcs["CCSD-CP-atzadtz"] = ["CCSD-CP-atzadtz", "CCSD-CP-atzhadtz", "CCSD-CP-atzadtz", "CCSD-CP-atzhadtz"]
+        self.mcs["CCSD-CP-atqzadtz"] = [
+            "CCSD-CP-atqzadtz",
+            "CCSD-CP-atqzhadtz",
+            "CCSD-CP-atqzadtz",
+            "CCSD-CP-atqzhadtz",
+        ]
+        self.mcs["CCSD-CP-atqzatz"] = ["CCSD-CP-atqzatz", "CCSD-CP-atqzhatz", "CCSD-CP-atqzatz", "CCSD-CP-atqzhatz"]
 
-        self.mcs['CCSD-CP-adz'] = ['CCSD-CP-adz', 'CCSD-CP-hadz', 'CCSD-CP-adz', 'CCSD-CP-hadz']
-        self.mcs['CCSD-CP-atz'] = ['CCSD-CP-atz', 'CCSD-CP-hatz', 'CCSD-CP-atz', 'CCSD-CP-hatz']
-        self.mcs['CCSD-CP-adtz'] = ['CCSD-CP-adtz', 'CCSD-CP-hadtz', 'CCSD-CP-adtz', 'CCSD-CP-hadtz']
-        self.mcs['CCSD-CP-adtzadz'] = ['CCSD-CP-adtzadz', 'CCSD-CP-adtzhadz', 'CCSD-CP-adtzadz', 'CCSD-CP-adtzhadz']
-        self.mcs['CCSD-CP-atzadz'] = ['CCSD-CP-atzadz', 'CCSD-CP-atzhadz', 'CCSD-CP-atzadz', 'CCSD-CP-atzhadz']
-        self.mcs['CCSD-CP-atqzadz'] = ['CCSD-CP-atqzadz', 'CCSD-CP-atqzhadz', 'CCSD-CP-atqzadz', 'CCSD-CP-atqzhadz']
-        self.mcs['CCSD-CP-atzadtz'] = ['CCSD-CP-atzadtz', 'CCSD-CP-atzhadtz', 'CCSD-CP-atzadtz', 'CCSD-CP-atzhadtz']
-        self.mcs['CCSD-CP-atqzadtz'] = [
-            'CCSD-CP-atqzadtz', 'CCSD-CP-atqzhadtz', 'CCSD-CP-atqzadtz', 'CCSD-CP-atqzhadtz'
+        self.mcs["SCSCCSD-CP-adz"] = ["SCSCCSD-CP-adz", "SCSCCSD-CP-hadz", "SCSCCSD-CP-adz", "SCSCCSD-CP-hadz"]
+        self.mcs["SCSCCSD-CP-atz"] = ["SCSCCSD-CP-atz", "SCSCCSD-CP-hatz", "SCSCCSD-CP-atz", "SCSCCSD-CP-hatz"]
+        self.mcs["SCSCCSD-CP-adtz"] = ["SCSCCSD-CP-adtz", "SCSCCSD-CP-hadtz", "SCSCCSD-CP-adtz", "SCSCCSD-CP-hadtz"]
+        self.mcs["SCSCCSD-CP-adtzadz"] = [
+            "SCSCCSD-CP-adtzadz",
+            "SCSCCSD-CP-adtzhadz",
+            "SCSCCSD-CP-adtzadz",
+            "SCSCCSD-CP-adtzhadz",
         ]
-        self.mcs['CCSD-CP-atqzatz'] = ['CCSD-CP-atqzatz', 'CCSD-CP-atqzhatz', 'CCSD-CP-atqzatz', 'CCSD-CP-atqzhatz']
-
-        self.mcs['SCSCCSD-CP-adz'] = ['SCSCCSD-CP-adz', 'SCSCCSD-CP-hadz', 'SCSCCSD-CP-adz', 'SCSCCSD-CP-hadz']
-        self.mcs['SCSCCSD-CP-atz'] = ['SCSCCSD-CP-atz', 'SCSCCSD-CP-hatz', 'SCSCCSD-CP-atz', 'SCSCCSD-CP-hatz']
-        self.mcs['SCSCCSD-CP-adtz'] = ['SCSCCSD-CP-adtz', 'SCSCCSD-CP-hadtz', 'SCSCCSD-CP-adtz', 'SCSCCSD-CP-hadtz']
-        self.mcs['SCSCCSD-CP-adtzadz'] = [
-            'SCSCCSD-CP-adtzadz', 'SCSCCSD-CP-adtzhadz', 'SCSCCSD-CP-adtzadz', 'SCSCCSD-CP-adtzhadz'
+        self.mcs["SCSCCSD-CP-atzadz"] = [
+            "SCSCCSD-CP-atzadz",
+            "SCSCCSD-CP-atzhadz",
+            "SCSCCSD-CP-atzadz",
+            "SCSCCSD-CP-atzhadz",
         ]
-        self.mcs['SCSCCSD-CP-atzadz'] = [
-            'SCSCCSD-CP-atzadz', 'SCSCCSD-CP-atzhadz', 'SCSCCSD-CP-atzadz', 'SCSCCSD-CP-atzhadz'
+        self.mcs["SCSCCSD-CP-atqzadz"] = [
+            "SCSCCSD-CP-atqzadz",
+            "SCSCCSD-CP-atqzhadz",
+            "SCSCCSD-CP-atqzadz",
+            "SCSCCSD-CP-atqzhadz",
         ]
-        self.mcs['SCSCCSD-CP-atqzadz'] = [
-            'SCSCCSD-CP-atqzadz', 'SCSCCSD-CP-atqzhadz', 'SCSCCSD-CP-atqzadz', 'SCSCCSD-CP-atqzhadz'
+        self.mcs["SCSCCSD-CP-atzadtz"] = [
+            "SCSCCSD-CP-atzadtz",
+            "SCSCCSD-CP-atzhadtz",
+            "SCSCCSD-CP-atzadtz",
+            "SCSCCSD-CP-atzhadtz",
         ]
-        self.mcs['SCSCCSD-CP-atzadtz'] = [
-            'SCSCCSD-CP-atzadtz', 'SCSCCSD-CP-atzhadtz', 'SCSCCSD-CP-atzadtz', 'SCSCCSD-CP-atzhadtz'
+        self.mcs["SCSCCSD-CP-atqzadtz"] = [
+            "SCSCCSD-CP-atqzadtz",
+            "SCSCCSD-CP-atqzhadtz",
+            "SCSCCSD-CP-atqzadtz",
+            "SCSCCSD-CP-atqzhadtz",
         ]
-        self.mcs['SCSCCSD-CP-atqzadtz'] = [
-            'SCSCCSD-CP-atqzadtz', 'SCSCCSD-CP-atqzhadtz', 'SCSCCSD-CP-atqzadtz', 'SCSCCSD-CP-atqzhadtz'
-        ]
-        self.mcs['SCSCCSD-CP-atqzatz'] = [
-            'SCSCCSD-CP-atqzatz', 'SCSCCSD-CP-atqzhatz', 'SCSCCSD-CP-atqzatz', 'SCSCCSD-CP-atqzhatz'
-        ]
-
-        self.mcs['SCSMICCSD-CP-adz'] = [
-            'SCSMICCSD-CP-adz', 'SCSMICCSD-CP-hadz', 'SCSMICCSD-CP-adz', 'SCSMICCSD-CP-hadz'
-        ]
-        self.mcs['SCSMICCSD-CP-atz'] = [
-            'SCSMICCSD-CP-atz', 'SCSMICCSD-CP-hatz', 'SCSMICCSD-CP-atz', 'SCSMICCSD-CP-hatz'
-        ]
-        self.mcs['SCSMICCSD-CP-adtz'] = [
-            'SCSMICCSD-CP-adtz', 'SCSMICCSD-CP-hadtz', 'SCSMICCSD-CP-adtz', 'SCSMICCSD-CP-hadtz'
-        ]
-        self.mcs['SCSMICCSD-CP-adtzadz'] = [
-            'SCSMICCSD-CP-adtzadz', 'SCSMICCSD-CP-adtzhadz', 'SCSMICCSD-CP-adtzadz', 'SCSMICCSD-CP-adtzhadz'
-        ]
-        self.mcs['SCSMICCSD-CP-atzadz'] = [
-            'SCSMICCSD-CP-atzadz', 'SCSMICCSD-CP-atzhadz', 'SCSMICCSD-CP-atzadz', 'SCSMICCSD-CP-atzhadz'
-        ]
-        self.mcs['SCSMICCSD-CP-atqzadz'] = [
-            'SCSMICCSD-CP-atqzadz', 'SCSMICCSD-CP-atqzhadz', 'SCSMICCSD-CP-atqzadz', 'SCSMICCSD-CP-atqzhadz'
-        ]
-        self.mcs['SCSMICCSD-CP-atzadtz'] = [
-            'SCSMICCSD-CP-atzadtz', 'SCSMICCSD-CP-atzhadtz', 'SCSMICCSD-CP-atzadtz', 'SCSMICCSD-CP-atzhadtz'
-        ]
-        self.mcs['SCSMICCSD-CP-atqzadtz'] = [
-            'SCSMICCSD-CP-atqzadtz', 'SCSMICCSD-CP-atqzhadtz', 'SCSMICCSD-CP-atqzadtz', 'SCSMICCSD-CP-atqzhadtz'
-        ]
-        self.mcs['SCSMICCSD-CP-atqzatz'] = [
-            'SCSMICCSD-CP-atqzatz', 'SCSMICCSD-CP-atqzhatz', 'SCSMICCSD-CP-atqzatz', 'SCSMICCSD-CP-atqzhatz'
+        self.mcs["SCSCCSD-CP-atqzatz"] = [
+            "SCSCCSD-CP-atqzatz",
+            "SCSCCSD-CP-atqzhatz",
+            "SCSCCSD-CP-atqzatz",
+            "SCSCCSD-CP-atqzhatz",
         ]
 
-        self.mcs['CCSDT-CP-adz'] = ['CCSDT-CP-adz', 'CCSDT-CP-hadz', 'CCSDT-CP-adz', 'CCSDT-CP-hadz']
-        self.mcs['CCSDT-CP-atz'] = ['CCSDT-CP-atz', 'CCSDT-CP-hatz', 'CCSDT-CP-atz', 'CCSDT-CP-hatz']
-        self.mcs['CCSDT-CP-adtz'] = ['CCSDT-CP-adtz', 'CCSDT-CP-hadtz', 'CCSDT-CP-adtz', 'CCSDT-CP-hadtz']
-        self.mcs['CCSDT-CP-adtzadz'] = [
-            'CCSDT-CP-adtzadz', 'CCSDT-CP-adtzhadz', 'CCSDT-CP-adtzadz', 'CCSDT-CP-adtzhadz'
+        self.mcs["SCSMICCSD-CP-adz"] = [
+            "SCSMICCSD-CP-adz",
+            "SCSMICCSD-CP-hadz",
+            "SCSMICCSD-CP-adz",
+            "SCSMICCSD-CP-hadz",
         ]
-        self.mcs['CCSDT-CP-atzadz'] = ['CCSDT-CP-atzadz', 'CCSDT-CP-atzhadz', 'CCSDT-CP-atzadz', 'CCSDT-CP-atzhadz']
-        self.mcs['CCSDT-CP-atqzadz'] = [
-            'CCSDT-CP-atqzadz', 'CCSDT-CP-atqzhadz', 'CCSDT-CP-atqzadz', 'CCSDT-CP-atqzhadz'
+        self.mcs["SCSMICCSD-CP-atz"] = [
+            "SCSMICCSD-CP-atz",
+            "SCSMICCSD-CP-hatz",
+            "SCSMICCSD-CP-atz",
+            "SCSMICCSD-CP-hatz",
         ]
-        self.mcs['CCSDT-CP-atzadtz'] = [
-            'CCSDT-CP-atzadtz', 'CCSDT-CP-atzhadtz', 'CCSDT-CP-atzadtz', 'CCSDT-CP-atzhadtz'
+        self.mcs["SCSMICCSD-CP-adtz"] = [
+            "SCSMICCSD-CP-adtz",
+            "SCSMICCSD-CP-hadtz",
+            "SCSMICCSD-CP-adtz",
+            "SCSMICCSD-CP-hadtz",
         ]
-        self.mcs['CCSDT-CP-atqzadtz'] = [
-            'CCSDT-CP-atqzadtz', 'CCSDT-CP-atqzhadtz', 'CCSDT-CP-atqzadtz', 'CCSDT-CP-atqzhadtz'
+        self.mcs["SCSMICCSD-CP-adtzadz"] = [
+            "SCSMICCSD-CP-adtzadz",
+            "SCSMICCSD-CP-adtzhadz",
+            "SCSMICCSD-CP-adtzadz",
+            "SCSMICCSD-CP-adtzhadz",
         ]
-        self.mcs['CCSDT-CP-atqzatz'] = [
-            'CCSDT-CP-atqzatz', 'CCSDT-CP-atqzhatz', 'CCSDT-CP-atqzatz', 'CCSDT-CP-atqzhatz'
+        self.mcs["SCSMICCSD-CP-atzadz"] = [
+            "SCSMICCSD-CP-atzadz",
+            "SCSMICCSD-CP-atzhadz",
+            "SCSMICCSD-CP-atzadz",
+            "SCSMICCSD-CP-atzhadz",
+        ]
+        self.mcs["SCSMICCSD-CP-atqzadz"] = [
+            "SCSMICCSD-CP-atqzadz",
+            "SCSMICCSD-CP-atqzhadz",
+            "SCSMICCSD-CP-atqzadz",
+            "SCSMICCSD-CP-atqzhadz",
+        ]
+        self.mcs["SCSMICCSD-CP-atzadtz"] = [
+            "SCSMICCSD-CP-atzadtz",
+            "SCSMICCSD-CP-atzhadtz",
+            "SCSMICCSD-CP-atzadtz",
+            "SCSMICCSD-CP-atzhadtz",
+        ]
+        self.mcs["SCSMICCSD-CP-atqzadtz"] = [
+            "SCSMICCSD-CP-atqzadtz",
+            "SCSMICCSD-CP-atqzhadtz",
+            "SCSMICCSD-CP-atqzadtz",
+            "SCSMICCSD-CP-atqzhadtz",
+        ]
+        self.mcs["SCSMICCSD-CP-atqzatz"] = [
+            "SCSMICCSD-CP-atqzatz",
+            "SCSMICCSD-CP-atqzhatz",
+            "SCSMICCSD-CP-atqzatz",
+            "SCSMICCSD-CP-atqzhatz",
+        ]
+
+        self.mcs["CCSDT-CP-adz"] = ["CCSDT-CP-adz", "CCSDT-CP-hadz", "CCSDT-CP-adz", "CCSDT-CP-hadz"]
+        self.mcs["CCSDT-CP-atz"] = ["CCSDT-CP-atz", "CCSDT-CP-hatz", "CCSDT-CP-atz", "CCSDT-CP-hatz"]
+        self.mcs["CCSDT-CP-adtz"] = ["CCSDT-CP-adtz", "CCSDT-CP-hadtz", "CCSDT-CP-adtz", "CCSDT-CP-hadtz"]
+        self.mcs["CCSDT-CP-adtzadz"] = [
+            "CCSDT-CP-adtzadz",
+            "CCSDT-CP-adtzhadz",
+            "CCSDT-CP-adtzadz",
+            "CCSDT-CP-adtzhadz",
+        ]
+        self.mcs["CCSDT-CP-atzadz"] = ["CCSDT-CP-atzadz", "CCSDT-CP-atzhadz", "CCSDT-CP-atzadz", "CCSDT-CP-atzhadz"]
+        self.mcs["CCSDT-CP-atqzadz"] = [
+            "CCSDT-CP-atqzadz",
+            "CCSDT-CP-atqzhadz",
+            "CCSDT-CP-atqzadz",
+            "CCSDT-CP-atqzhadz",
+        ]
+        self.mcs["CCSDT-CP-atzadtz"] = [
+            "CCSDT-CP-atzadtz",
+            "CCSDT-CP-atzhadtz",
+            "CCSDT-CP-atzadtz",
+            "CCSDT-CP-atzhadtz",
+        ]
+        self.mcs["CCSDT-CP-atqzadtz"] = [
+            "CCSDT-CP-atqzadtz",
+            "CCSDT-CP-atqzhadtz",
+            "CCSDT-CP-atqzadtz",
+            "CCSDT-CP-atqzhadtz",
+        ]
+        self.mcs["CCSDT-CP-atqzatz"] = [
+            "CCSDT-CP-atqzatz",
+            "CCSDT-CP-atqzhatz",
+            "CCSDT-CP-atqzatz",
+            "CCSDT-CP-atqzhatz",
         ]
 
         # def make_pt2_flats(self):
@@ -3456,90 +3596,336 @@ class DB4(Database):
 
         """
         # Fig. bars (a)
-        self.plot_bars([
-            'MP2-CP-dz', 'MP2-CP-jadz', 'MP2-CP-hadz', 'MP2-CP-adz', 'MP2-CP-tz', 'MP2-CP-matz', 'MP2-CP-jatz',
-            'MP2-CP-hatz', 'MP2-CP-atz', 'MP2-CP-dtz', 'MP2-CP-jadtz', 'MP2-CP-hadtz', 'MP2-CP-adtz', 'MP2-CP-qz',
-            'MP2-CP-aaqz', 'MP2-CP-maqz', 'MP2-CP-jaqz', 'MP2-CP-haqz', 'MP2-CP-aqz', 'MP2-CP-tqz', 'MP2-CP-matqz',
-            'MP2-CP-jatqz', 'MP2-CP-hatqz', 'MP2-CP-atqz', 'MP2-CP-a5z', 'MP2-CP-aq5z'
-        ])
-        self.plot_bars([
-            'SCSMP2-CP-dz', 'SCSMP2-CP-jadz', 'SCSMP2-CP-hadz', 'SCSMP2-CP-adz', 'SCSMP2-CP-tz', 'SCSMP2-CP-matz',
-            'SCSMP2-CP-jatz', 'SCSMP2-CP-hatz', 'SCSMP2-CP-atz', 'SCSMP2-CP-dtz', 'SCSMP2-CP-jadtz', 'SCSMP2-CP-hadtz',
-            'SCSMP2-CP-adtz', 'SCSMP2-CP-qz', 'SCSMP2-CP-aaqz', 'SCSMP2-CP-maqz', 'SCSMP2-CP-jaqz', 'SCSMP2-CP-haqz',
-            'SCSMP2-CP-aqz', 'SCSMP2-CP-tqz', 'SCSMP2-CP-matqz', 'SCSMP2-CP-jatqz', 'SCSMP2-CP-hatqz',
-            'SCSMP2-CP-atqz', 'SCSMP2-CP-a5z', 'SCSMP2-CP-aq5z'
-        ])
-        self.plot_bars([
-            'SCSNMP2-CP-dz', 'SCSNMP2-CP-jadz', 'SCSNMP2-CP-hadz', 'SCSNMP2-CP-adz', 'SCSNMP2-CP-tz',
-            'SCSNMP2-CP-matz', 'SCSNMP2-CP-jatz', 'SCSNMP2-CP-hatz', 'SCSNMP2-CP-atz', 'SCSNMP2-CP-dtz',
-            'SCSNMP2-CP-jadtz', 'SCSNMP2-CP-hadtz', 'SCSNMP2-CP-adtz', 'SCSNMP2-CP-qz', 'SCSNMP2-CP-aaqz',
-            'SCSNMP2-CP-maqz', 'SCSNMP2-CP-jaqz', 'SCSNMP2-CP-haqz', 'SCSNMP2-CP-aqz', 'SCSNMP2-CP-tqz',
-            'SCSNMP2-CP-matqz', 'SCSNMP2-CP-jatqz', 'SCSNMP2-CP-hatqz', 'SCSNMP2-CP-atqz', 'SCSNMP2-CP-a5z',
-            'SCSNMP2-CP-aq5z'
-        ])
-        self.plot_bars([
-            None, None, None, None, 'SCSMIMP2-CP-tz', 'SCSMIMP2-CP-matz', 'SCSMIMP2-CP-jatz', 'SCSMIMP2-CP-hatz',
-            'SCSMIMP2-CP-atz', 'SCSMIMP2-CP-dtz', 'SCSMIMP2-CP-jadtz', 'SCSMIMP2-CP-hadtz', 'SCSMIMP2-CP-adtz',
-            'SCSMIMP2-CP-qz', 'SCSMIMP2-CP-aaqz', 'SCSMIMP2-CP-maqz', 'SCSMIMP2-CP-jaqz', 'SCSMIMP2-CP-haqz',
-            'SCSMIMP2-CP-aqz', 'SCSMIMP2-CP-tqz', 'SCSMIMP2-CP-matqz', 'SCSMIMP2-CP-jatqz', 'SCSMIMP2-CP-hatqz',
-            'SCSMIMP2-CP-atqz', None, None
-        ])
-        self.plot_bars([
-            'DWMP2-CP-dz', 'DWMP2-CP-jadz', 'DWMP2-CP-hadz', 'DWMP2-CP-adz', 'DWMP2-CP-tz', 'DWMP2-CP-matz',
-            'DWMP2-CP-jatz', 'DWMP2-CP-hatz', 'DWMP2-CP-atz', 'DWMP2-CP-dtz', 'DWMP2-CP-jadtz', 'DWMP2-CP-hadtz',
-            'DWMP2-CP-adtz', 'DWMP2-CP-qz', 'DWMP2-CP-aaqz', 'DWMP2-CP-maqz', 'DWMP2-CP-jaqz', 'DWMP2-CP-haqz',
-            'DWMP2-CP-aqz', 'DWMP2-CP-tqz', 'DWMP2-CP-matqz', 'DWMP2-CP-jatqz', 'DWMP2-CP-hatqz', 'DWMP2-CP-atqz',
-            'DWMP2-CP-a5z', 'DWMP2-CP-aq5z'
-        ])
-        self.plot_bars([
-            'MP2C-CP-dz', 'MP2C-CP-jadz', 'MP2C-CP-hadz', 'MP2C-CP-adz', 'MP2C-CP-tz', 'MP2C-CP-matz', 'MP2C-CP-jatz',
-            'MP2C-CP-hatz', 'MP2C-CP-atz', 'MP2C-CP-dtz', 'MP2C-CP-jadtz', 'MP2C-CP-hadtz', 'MP2C-CP-adtz', None, None,
-            None, None, None, 'MP2C-CP-aqz', None, None, None, None, 'MP2C-CP-atqz', None, None
-        ])
-        self.plot_bars([
-            'MP2C-CP-atqzdz', 'MP2C-CP-atqzjadz', 'MP2C-CP-atqzhadz', 'MP2C-CP-atqzadz', 'MP2C-CP-atqztz',
-            'MP2C-CP-atqzmatz', 'MP2C-CP-atqzjatz', 'MP2C-CP-atqzhatz', 'MP2C-CP-atqzatz', 'MP2C-CP-atqzdtz',
-            'MP2C-CP-atqzjadtz', 'MP2C-CP-atqzhadtz', 'MP2C-CP-atqzadtz'
-        ])
+        self.plot_bars(
+            [
+                "MP2-CP-dz",
+                "MP2-CP-jadz",
+                "MP2-CP-hadz",
+                "MP2-CP-adz",
+                "MP2-CP-tz",
+                "MP2-CP-matz",
+                "MP2-CP-jatz",
+                "MP2-CP-hatz",
+                "MP2-CP-atz",
+                "MP2-CP-dtz",
+                "MP2-CP-jadtz",
+                "MP2-CP-hadtz",
+                "MP2-CP-adtz",
+                "MP2-CP-qz",
+                "MP2-CP-aaqz",
+                "MP2-CP-maqz",
+                "MP2-CP-jaqz",
+                "MP2-CP-haqz",
+                "MP2-CP-aqz",
+                "MP2-CP-tqz",
+                "MP2-CP-matqz",
+                "MP2-CP-jatqz",
+                "MP2-CP-hatqz",
+                "MP2-CP-atqz",
+                "MP2-CP-a5z",
+                "MP2-CP-aq5z",
+            ]
+        )
+        self.plot_bars(
+            [
+                "SCSMP2-CP-dz",
+                "SCSMP2-CP-jadz",
+                "SCSMP2-CP-hadz",
+                "SCSMP2-CP-adz",
+                "SCSMP2-CP-tz",
+                "SCSMP2-CP-matz",
+                "SCSMP2-CP-jatz",
+                "SCSMP2-CP-hatz",
+                "SCSMP2-CP-atz",
+                "SCSMP2-CP-dtz",
+                "SCSMP2-CP-jadtz",
+                "SCSMP2-CP-hadtz",
+                "SCSMP2-CP-adtz",
+                "SCSMP2-CP-qz",
+                "SCSMP2-CP-aaqz",
+                "SCSMP2-CP-maqz",
+                "SCSMP2-CP-jaqz",
+                "SCSMP2-CP-haqz",
+                "SCSMP2-CP-aqz",
+                "SCSMP2-CP-tqz",
+                "SCSMP2-CP-matqz",
+                "SCSMP2-CP-jatqz",
+                "SCSMP2-CP-hatqz",
+                "SCSMP2-CP-atqz",
+                "SCSMP2-CP-a5z",
+                "SCSMP2-CP-aq5z",
+            ]
+        )
+        self.plot_bars(
+            [
+                "SCSNMP2-CP-dz",
+                "SCSNMP2-CP-jadz",
+                "SCSNMP2-CP-hadz",
+                "SCSNMP2-CP-adz",
+                "SCSNMP2-CP-tz",
+                "SCSNMP2-CP-matz",
+                "SCSNMP2-CP-jatz",
+                "SCSNMP2-CP-hatz",
+                "SCSNMP2-CP-atz",
+                "SCSNMP2-CP-dtz",
+                "SCSNMP2-CP-jadtz",
+                "SCSNMP2-CP-hadtz",
+                "SCSNMP2-CP-adtz",
+                "SCSNMP2-CP-qz",
+                "SCSNMP2-CP-aaqz",
+                "SCSNMP2-CP-maqz",
+                "SCSNMP2-CP-jaqz",
+                "SCSNMP2-CP-haqz",
+                "SCSNMP2-CP-aqz",
+                "SCSNMP2-CP-tqz",
+                "SCSNMP2-CP-matqz",
+                "SCSNMP2-CP-jatqz",
+                "SCSNMP2-CP-hatqz",
+                "SCSNMP2-CP-atqz",
+                "SCSNMP2-CP-a5z",
+                "SCSNMP2-CP-aq5z",
+            ]
+        )
+        self.plot_bars(
+            [
+                None,
+                None,
+                None,
+                None,
+                "SCSMIMP2-CP-tz",
+                "SCSMIMP2-CP-matz",
+                "SCSMIMP2-CP-jatz",
+                "SCSMIMP2-CP-hatz",
+                "SCSMIMP2-CP-atz",
+                "SCSMIMP2-CP-dtz",
+                "SCSMIMP2-CP-jadtz",
+                "SCSMIMP2-CP-hadtz",
+                "SCSMIMP2-CP-adtz",
+                "SCSMIMP2-CP-qz",
+                "SCSMIMP2-CP-aaqz",
+                "SCSMIMP2-CP-maqz",
+                "SCSMIMP2-CP-jaqz",
+                "SCSMIMP2-CP-haqz",
+                "SCSMIMP2-CP-aqz",
+                "SCSMIMP2-CP-tqz",
+                "SCSMIMP2-CP-matqz",
+                "SCSMIMP2-CP-jatqz",
+                "SCSMIMP2-CP-hatqz",
+                "SCSMIMP2-CP-atqz",
+                None,
+                None,
+            ]
+        )
+        self.plot_bars(
+            [
+                "DWMP2-CP-dz",
+                "DWMP2-CP-jadz",
+                "DWMP2-CP-hadz",
+                "DWMP2-CP-adz",
+                "DWMP2-CP-tz",
+                "DWMP2-CP-matz",
+                "DWMP2-CP-jatz",
+                "DWMP2-CP-hatz",
+                "DWMP2-CP-atz",
+                "DWMP2-CP-dtz",
+                "DWMP2-CP-jadtz",
+                "DWMP2-CP-hadtz",
+                "DWMP2-CP-adtz",
+                "DWMP2-CP-qz",
+                "DWMP2-CP-aaqz",
+                "DWMP2-CP-maqz",
+                "DWMP2-CP-jaqz",
+                "DWMP2-CP-haqz",
+                "DWMP2-CP-aqz",
+                "DWMP2-CP-tqz",
+                "DWMP2-CP-matqz",
+                "DWMP2-CP-jatqz",
+                "DWMP2-CP-hatqz",
+                "DWMP2-CP-atqz",
+                "DWMP2-CP-a5z",
+                "DWMP2-CP-aq5z",
+            ]
+        )
+        self.plot_bars(
+            [
+                "MP2C-CP-dz",
+                "MP2C-CP-jadz",
+                "MP2C-CP-hadz",
+                "MP2C-CP-adz",
+                "MP2C-CP-tz",
+                "MP2C-CP-matz",
+                "MP2C-CP-jatz",
+                "MP2C-CP-hatz",
+                "MP2C-CP-atz",
+                "MP2C-CP-dtz",
+                "MP2C-CP-jadtz",
+                "MP2C-CP-hadtz",
+                "MP2C-CP-adtz",
+                None,
+                None,
+                None,
+                None,
+                None,
+                "MP2C-CP-aqz",
+                None,
+                None,
+                None,
+                None,
+                "MP2C-CP-atqz",
+                None,
+                None,
+            ]
+        )
+        self.plot_bars(
+            [
+                "MP2C-CP-atqzdz",
+                "MP2C-CP-atqzjadz",
+                "MP2C-CP-atqzhadz",
+                "MP2C-CP-atqzadz",
+                "MP2C-CP-atqztz",
+                "MP2C-CP-atqzmatz",
+                "MP2C-CP-atqzjatz",
+                "MP2C-CP-atqzhatz",
+                "MP2C-CP-atqzatz",
+                "MP2C-CP-atqzdtz",
+                "MP2C-CP-atqzjadtz",
+                "MP2C-CP-atqzhadtz",
+                "MP2C-CP-atqzadtz",
+            ]
+        )
 
         # Fig. bars (c)
-        self.plot_bars([
-            'MP2F12-CP-dz', 'MP2F12-CP-jadz', 'MP2F12-CP-hadz', 'MP2F12-CP-adz', 'MP2F12-CP-tz', 'MP2F12-CP-matz',
-            'MP2F12-CP-jatz', 'MP2F12-CP-hatz', 'MP2F12-CP-atz', 'MP2F12-CP-dtz', 'MP2F12-CP-jadtz', 'MP2F12-CP-hadtz',
-            'MP2F12-CP-adtz', 'MP2F12-CP-aqz', 'MP2F12-CP-atqz'
-        ])
-        self.plot_bars([
-            'SCSMP2F12-CP-dz', 'SCSMP2F12-CP-jadz', 'SCSMP2F12-CP-hadz', 'SCSMP2F12-CP-adz', 'SCSMP2F12-CP-tz',
-            'SCSMP2F12-CP-matz', 'SCSMP2F12-CP-jatz', 'SCSMP2F12-CP-hatz', 'SCSMP2F12-CP-atz', 'SCSMP2F12-CP-dtz',
-            'SCSMP2F12-CP-jadtz', 'SCSMP2F12-CP-hadtz', 'SCSMP2F12-CP-adtz', 'SCSMP2F12-CP-aqz', 'SCSMP2F12-CP-atqz'
-        ])
-        self.plot_bars([
-            'SCSNMP2F12-CP-dz', 'SCSNMP2F12-CP-jadz', 'SCSNMP2F12-CP-hadz', 'SCSNMP2F12-CP-adz', 'SCSNMP2F12-CP-tz',
-            'SCSNMP2F12-CP-matz', 'SCSNMP2F12-CP-jatz', 'SCSNMP2F12-CP-hatz', 'SCSNMP2F12-CP-atz', 'SCSNMP2F12-CP-dtz',
-            'SCSNMP2F12-CP-jadtz', 'SCSNMP2F12-CP-adtz', 'SCSNMP2F12-CP-adtz', 'SCSNMP2F12-CP-aqz',
-            'SCSNMP2F12-CP-atqz'
-        ])
-        self.plot_bars([
-            None, None, None, None, 'SCSMIMP2F12-CP-tz', 'SCSMIMP2F12-CP-matz', 'SCSMIMP2F12-CP-jatz',
-            'SCSMIMP2F12-CP-hatz', 'SCSMIMP2F12-CP-atz', 'SCSMIMP2F12-CP-dtz', 'SCSMIMP2F12-CP-jadtz',
-            'SCSMIMP2F12-CP-hadtz', 'SCSMIMP2F12-CP-adtz', 'SCSMIMP2F12-CP-aqz', 'SCSMIMP2F12-CP-atqz'
-        ])
-        self.plot_bars([
-            'DWMP2F12-CP-dz', 'DWMP2F12-CP-jadz', 'DWMP2F12-CP-hadz', 'DWMP2F12-CP-adz', 'DWMP2F12-CP-tz',
-            'DWMP2F12-CP-matz', 'DWMP2F12-CP-jatz', 'DWMP2F12-CP-hatz', 'DWMP2F12-CP-atz', 'DWMP2F12-CP-dtz',
-            'DWMP2F12-CP-jadtz', 'DWMP2F12-CP-hadtz', 'DWMP2F12-CP-adtz', 'DWMP2F12-CP-aqz', 'DWMP2F12-CP-atqz'
-        ])
-        self.plot_bars([
-            'MP2CF12-CP-dz', 'MP2CF12-CP-jadz', 'MP2CF12-CP-hadz', 'MP2CF12-CP-adz', 'MP2CF12-CP-tz',
-            'MP2CF12-CP-matz', 'MP2CF12-CP-jatz', 'MP2CF12-CP-hatz', 'MP2CF12-CP-atz', 'MP2CF12-CP-dtz',
-            'MP2CF12-CP-jadtz', 'MP2CF12-CP-hadtz', 'MP2CF12-CP-adtz', 'MP2CF12-CP-aqz', 'MP2CF12-CP-atqz'
-        ])
-        self.plot_bars([
-            'MP2CF12-CP-atqzdz', 'MP2CF12-CP-atqzjadz', 'MP2CF12-CP-atqzhadz', 'MP2CF12-CP-atqzadz',
-            'MP2CF12-CP-atqztz', 'MP2CF12-CP-atqzmatz', 'MP2CF12-CP-atqzjatz', 'MP2CF12-CP-atqzhatz',
-            'MP2CF12-CP-atqzatz', 'MP2CF12-CP-atqzdtz', 'MP2CF12-CP-atqzjadtz', 'MP2CF12-CP-atqzhadtz',
-            'MP2CF12-CP-atqzadtz'
-        ])
+        self.plot_bars(
+            [
+                "MP2F12-CP-dz",
+                "MP2F12-CP-jadz",
+                "MP2F12-CP-hadz",
+                "MP2F12-CP-adz",
+                "MP2F12-CP-tz",
+                "MP2F12-CP-matz",
+                "MP2F12-CP-jatz",
+                "MP2F12-CP-hatz",
+                "MP2F12-CP-atz",
+                "MP2F12-CP-dtz",
+                "MP2F12-CP-jadtz",
+                "MP2F12-CP-hadtz",
+                "MP2F12-CP-adtz",
+                "MP2F12-CP-aqz",
+                "MP2F12-CP-atqz",
+            ]
+        )
+        self.plot_bars(
+            [
+                "SCSMP2F12-CP-dz",
+                "SCSMP2F12-CP-jadz",
+                "SCSMP2F12-CP-hadz",
+                "SCSMP2F12-CP-adz",
+                "SCSMP2F12-CP-tz",
+                "SCSMP2F12-CP-matz",
+                "SCSMP2F12-CP-jatz",
+                "SCSMP2F12-CP-hatz",
+                "SCSMP2F12-CP-atz",
+                "SCSMP2F12-CP-dtz",
+                "SCSMP2F12-CP-jadtz",
+                "SCSMP2F12-CP-hadtz",
+                "SCSMP2F12-CP-adtz",
+                "SCSMP2F12-CP-aqz",
+                "SCSMP2F12-CP-atqz",
+            ]
+        )
+        self.plot_bars(
+            [
+                "SCSNMP2F12-CP-dz",
+                "SCSNMP2F12-CP-jadz",
+                "SCSNMP2F12-CP-hadz",
+                "SCSNMP2F12-CP-adz",
+                "SCSNMP2F12-CP-tz",
+                "SCSNMP2F12-CP-matz",
+                "SCSNMP2F12-CP-jatz",
+                "SCSNMP2F12-CP-hatz",
+                "SCSNMP2F12-CP-atz",
+                "SCSNMP2F12-CP-dtz",
+                "SCSNMP2F12-CP-jadtz",
+                "SCSNMP2F12-CP-adtz",
+                "SCSNMP2F12-CP-adtz",
+                "SCSNMP2F12-CP-aqz",
+                "SCSNMP2F12-CP-atqz",
+            ]
+        )
+        self.plot_bars(
+            [
+                None,
+                None,
+                None,
+                None,
+                "SCSMIMP2F12-CP-tz",
+                "SCSMIMP2F12-CP-matz",
+                "SCSMIMP2F12-CP-jatz",
+                "SCSMIMP2F12-CP-hatz",
+                "SCSMIMP2F12-CP-atz",
+                "SCSMIMP2F12-CP-dtz",
+                "SCSMIMP2F12-CP-jadtz",
+                "SCSMIMP2F12-CP-hadtz",
+                "SCSMIMP2F12-CP-adtz",
+                "SCSMIMP2F12-CP-aqz",
+                "SCSMIMP2F12-CP-atqz",
+            ]
+        )
+        self.plot_bars(
+            [
+                "DWMP2F12-CP-dz",
+                "DWMP2F12-CP-jadz",
+                "DWMP2F12-CP-hadz",
+                "DWMP2F12-CP-adz",
+                "DWMP2F12-CP-tz",
+                "DWMP2F12-CP-matz",
+                "DWMP2F12-CP-jatz",
+                "DWMP2F12-CP-hatz",
+                "DWMP2F12-CP-atz",
+                "DWMP2F12-CP-dtz",
+                "DWMP2F12-CP-jadtz",
+                "DWMP2F12-CP-hadtz",
+                "DWMP2F12-CP-adtz",
+                "DWMP2F12-CP-aqz",
+                "DWMP2F12-CP-atqz",
+            ]
+        )
+        self.plot_bars(
+            [
+                "MP2CF12-CP-dz",
+                "MP2CF12-CP-jadz",
+                "MP2CF12-CP-hadz",
+                "MP2CF12-CP-adz",
+                "MP2CF12-CP-tz",
+                "MP2CF12-CP-matz",
+                "MP2CF12-CP-jatz",
+                "MP2CF12-CP-hatz",
+                "MP2CF12-CP-atz",
+                "MP2CF12-CP-dtz",
+                "MP2CF12-CP-jadtz",
+                "MP2CF12-CP-hadtz",
+                "MP2CF12-CP-adtz",
+                "MP2CF12-CP-aqz",
+                "MP2CF12-CP-atqz",
+            ]
+        )
+        self.plot_bars(
+            [
+                "MP2CF12-CP-atqzdz",
+                "MP2CF12-CP-atqzjadz",
+                "MP2CF12-CP-atqzhadz",
+                "MP2CF12-CP-atqzadz",
+                "MP2CF12-CP-atqztz",
+                "MP2CF12-CP-atqzmatz",
+                "MP2CF12-CP-atqzjatz",
+                "MP2CF12-CP-atqzhatz",
+                "MP2CF12-CP-atqzatz",
+                "MP2CF12-CP-atqzdtz",
+                "MP2CF12-CP-atqzjadtz",
+                "MP2CF12-CP-atqzhadtz",
+                "MP2CF12-CP-atqzadtz",
+            ]
+        )
 
     def make_pt2_Figure_2(self):
         """Plot all the graphics needed for the diffuse augmented grey
@@ -3552,114 +3938,278 @@ class DB4(Database):
         """
         # Fig. bars (a)
         self.plot_bars(
-            ['MP2-CP-adz', 'MP2-CP-atz', 'MP2-CP-adtz', 'MP2-CP-aqz', 'MP2-CP-atqz', 'MP2-CP-a5z', 'MP2-CP-aq5z'])
-        self.plot_bars([
-            'SCSMP2-CP-adz', 'SCSMP2-CP-atz', 'SCSMP2-CP-adtz', 'SCSMP2-CP-aqz', 'SCSMP2-CP-atqz', 'SCSMP2-CP-a5z',
-            'SCSMP2-CP-aq5z'
-        ])
-        self.plot_bars([
-            'SCSNMP2-CP-adz', 'SCSNMP2-CP-atz', 'SCSNMP2-CP-adtz', 'SCSNMP2-CP-aqz', 'SCSNMP2-CP-atqz',
-            'SCSNMP2-CP-a5z', 'SCSNMP2-CP-aq5z'
-        ])
+            ["MP2-CP-adz", "MP2-CP-atz", "MP2-CP-adtz", "MP2-CP-aqz", "MP2-CP-atqz", "MP2-CP-a5z", "MP2-CP-aq5z"]
+        )
         self.plot_bars(
-            ['SCSMIMP2-CP-atz', 'SCSMIMP2-CP-atz', 'SCSMIMP2-CP-adtz', 'SCSMIMP2-CP-aqz', 'SCSMIMP2-CP-atqz'])
-        self.plot_bars(['SCSMIMP2-CP-tz', 'SCSMIMP2-CP-tz', 'SCSMIMP2-CP-dtz', 'SCSMIMP2-CP-qz', 'SCSMIMP2-CP-tqz'])
-        self.plot_bars([
-            'DWMP2-CP-adz', 'DWMP2-CP-atz', 'DWMP2-CP-adtz', 'DWMP2-CP-aqz', 'DWMP2-CP-atqz', 'DWMP2-CP-a5z',
-            'DWMP2-CP-aq5z'
-        ])
-        self.plot_bars([
-            'MP2C-CP-adz', 'MP2C-CP-adtzadz', 'MP2C-CP-atqzadz', 'MP2C-CP-aq5zadz', 'MP2C-CP-atz', 'MP2C-CP-atqzatz',
-            'MP2C-CP-aq5zatz', 'MP2C-CP-adtz', 'MP2C-CP-atqzadtz', 'MP2C-CP-aqz', 'MP2C-CP-atqz'
-        ])
+            [
+                "SCSMP2-CP-adz",
+                "SCSMP2-CP-atz",
+                "SCSMP2-CP-adtz",
+                "SCSMP2-CP-aqz",
+                "SCSMP2-CP-atqz",
+                "SCSMP2-CP-a5z",
+                "SCSMP2-CP-aq5z",
+            ]
+        )
+        self.plot_bars(
+            [
+                "SCSNMP2-CP-adz",
+                "SCSNMP2-CP-atz",
+                "SCSNMP2-CP-adtz",
+                "SCSNMP2-CP-aqz",
+                "SCSNMP2-CP-atqz",
+                "SCSNMP2-CP-a5z",
+                "SCSNMP2-CP-aq5z",
+            ]
+        )
+        self.plot_bars(
+            ["SCSMIMP2-CP-atz", "SCSMIMP2-CP-atz", "SCSMIMP2-CP-adtz", "SCSMIMP2-CP-aqz", "SCSMIMP2-CP-atqz"]
+        )
+        self.plot_bars(["SCSMIMP2-CP-tz", "SCSMIMP2-CP-tz", "SCSMIMP2-CP-dtz", "SCSMIMP2-CP-qz", "SCSMIMP2-CP-tqz"])
+        self.plot_bars(
+            [
+                "DWMP2-CP-adz",
+                "DWMP2-CP-atz",
+                "DWMP2-CP-adtz",
+                "DWMP2-CP-aqz",
+                "DWMP2-CP-atqz",
+                "DWMP2-CP-a5z",
+                "DWMP2-CP-aq5z",
+            ]
+        )
+        self.plot_bars(
+            [
+                "MP2C-CP-adz",
+                "MP2C-CP-adtzadz",
+                "MP2C-CP-atqzadz",
+                "MP2C-CP-aq5zadz",
+                "MP2C-CP-atz",
+                "MP2C-CP-atqzatz",
+                "MP2C-CP-aq5zatz",
+                "MP2C-CP-adtz",
+                "MP2C-CP-atqzadtz",
+                "MP2C-CP-aqz",
+                "MP2C-CP-atqz",
+            ]
+        )
 
         # Fig. bars (b)
-        self.plot_bars([
-            'MP3-CP-adz', 'MP3-CP-adtzadz', 'MP3-CP-atqzadz', 'MP3-CP-atz', 'MP3-CP-atqzatz', 'MP3-CP-adtz',
-            'MP3-CP-atqzadtz'
-        ])
-        self.plot_bars([
-            'MP25-CP-adz', 'MP25-CP-adtzadz', 'MP25-CP-atqzadz', 'MP25-CP-atz', 'MP25-CP-atqzatz', 'MP25-CP-adtz',
-            'MP25-CP-atqzadtz'
-        ])
-        self.plot_bars([
-            'CCSD-CP-adz', 'CCSD-CP-adtzadz', 'CCSD-CP-atqzadz', 'CCSD-CP-atz', 'CCSD-CP-atqzatz', 'CCSD-CP-adtz',
-            'CCSD-CP-atqzadtz'
-        ])
-        self.plot_bars([
-            'SCSCCSD-CP-adz', 'SCSCCSD-CP-adtzadz', 'SCSCCSD-CP-atqzadz', 'SCSCCSD-CP-atz', 'SCSCCSD-CP-atqzatz',
-            'SCSCCSD-CP-adtz', 'SCSCCSD-CP-atqzadtz'
-        ])
-        self.plot_bars([
-            'SCSMICCSD-CP-adz', 'SCSMICCSD-CP-adtzadz', 'SCSMICCSD-CP-atqzadz', 'SCSMICCSD-CP-atz',
-            'SCSMICCSD-CP-atqzatz', 'SCSMICCSD-CP-adtz', 'SCSMICCSD-CP-atqzadtz'
-        ])
-        self.plot_bars([
-            'CCSDT-CP-adz', 'CCSDT-CP-adtzadz', 'CCSDT-CP-atqzadz', 'CCSDT-CP-atz', 'CCSDT-CP-atqzatz',
-            'CCSDT-CP-adtz', 'CCSDT-CP-atqzadtz'
-        ])
+        self.plot_bars(
+            [
+                "MP3-CP-adz",
+                "MP3-CP-adtzadz",
+                "MP3-CP-atqzadz",
+                "MP3-CP-atz",
+                "MP3-CP-atqzatz",
+                "MP3-CP-adtz",
+                "MP3-CP-atqzadtz",
+            ]
+        )
+        self.plot_bars(
+            [
+                "MP25-CP-adz",
+                "MP25-CP-adtzadz",
+                "MP25-CP-atqzadz",
+                "MP25-CP-atz",
+                "MP25-CP-atqzatz",
+                "MP25-CP-adtz",
+                "MP25-CP-atqzadtz",
+            ]
+        )
+        self.plot_bars(
+            [
+                "CCSD-CP-adz",
+                "CCSD-CP-adtzadz",
+                "CCSD-CP-atqzadz",
+                "CCSD-CP-atz",
+                "CCSD-CP-atqzatz",
+                "CCSD-CP-adtz",
+                "CCSD-CP-atqzadtz",
+            ]
+        )
+        self.plot_bars(
+            [
+                "SCSCCSD-CP-adz",
+                "SCSCCSD-CP-adtzadz",
+                "SCSCCSD-CP-atqzadz",
+                "SCSCCSD-CP-atz",
+                "SCSCCSD-CP-atqzatz",
+                "SCSCCSD-CP-adtz",
+                "SCSCCSD-CP-atqzadtz",
+            ]
+        )
+        self.plot_bars(
+            [
+                "SCSMICCSD-CP-adz",
+                "SCSMICCSD-CP-adtzadz",
+                "SCSMICCSD-CP-atqzadz",
+                "SCSMICCSD-CP-atz",
+                "SCSMICCSD-CP-atqzatz",
+                "SCSMICCSD-CP-adtz",
+                "SCSMICCSD-CP-atqzadtz",
+            ]
+        )
+        self.plot_bars(
+            [
+                "CCSDT-CP-adz",
+                "CCSDT-CP-adtzadz",
+                "CCSDT-CP-atqzadz",
+                "CCSDT-CP-atz",
+                "CCSDT-CP-atqzatz",
+                "CCSDT-CP-adtz",
+                "CCSDT-CP-atqzadtz",
+            ]
+        )
 
         # Fig. bars (c)
-        self.plot_bars(['MP2F12-CP-adz', 'MP2F12-CP-atz', 'MP2F12-CP-adtz', 'MP2F12-CP-aqz', 'MP2F12-CP-atqz'])
+        self.plot_bars(["MP2F12-CP-adz", "MP2F12-CP-atz", "MP2F12-CP-adtz", "MP2F12-CP-aqz", "MP2F12-CP-atqz"])
         self.plot_bars(
-            ['SCSMP2F12-CP-adz', 'SCSMP2F12-CP-atz', 'SCSMP2F12-CP-adtz', 'SCSMP2F12-CP-aqz', 'SCSMP2F12-CP-atqz'])
-        self.plot_bars([
-            'SCSNMP2F12-CP-adz', 'SCSNMP2F12-CP-atz', 'SCSNMP2F12-CP-adtz', 'SCSNMP2F12-CP-aqz', 'SCSNMP2F12-CP-atqz'
-        ])
-        self.plot_bars([
-            'SCSMIMP2F12-CP-atz', 'SCSMIMP2F12-CP-atz', 'SCSMIMP2F12-CP-adtz', 'SCSMIMP2F12-CP-aqz',
-            'SCSMIMP2F12-CP-atqz'
-        ])
-        self.plot_bars(['SCSMIMP2F12-CP-tz', 'SCSMIMP2F12-CP-tz', 'SCSMIMP2F12-CP-dtz'])
+            ["SCSMP2F12-CP-adz", "SCSMP2F12-CP-atz", "SCSMP2F12-CP-adtz", "SCSMP2F12-CP-aqz", "SCSMP2F12-CP-atqz"]
+        )
         self.plot_bars(
-            ['DWMP2F12-CP-adz', 'DWMP2F12-CP-atz', 'DWMP2F12-CP-adtz', 'DWMP2F12-CP-aqz', 'DWMP2F12-CP-atqz'])
-        self.plot_bars([
-            'MP2CF12-CP-adz', 'MP2CF12-CP-adtzadz', 'MP2CF12-CP-atqzadz', 'MP2CF12-CP-atz', 'MP2CF12-CP-atqzatz',
-            'MP2CF12-CP-adtz', 'MP2CF12-CP-atqzadtz', 'MP2CF12-CP-aqz', 'MP2CF12-CP-atqz'
-        ])
+            ["SCSNMP2F12-CP-adz", "SCSNMP2F12-CP-atz", "SCSNMP2F12-CP-adtz", "SCSNMP2F12-CP-aqz", "SCSNMP2F12-CP-atqz"]
+        )
+        self.plot_bars(
+            [
+                "SCSMIMP2F12-CP-atz",
+                "SCSMIMP2F12-CP-atz",
+                "SCSMIMP2F12-CP-adtz",
+                "SCSMIMP2F12-CP-aqz",
+                "SCSMIMP2F12-CP-atqz",
+            ]
+        )
+        self.plot_bars(["SCSMIMP2F12-CP-tz", "SCSMIMP2F12-CP-tz", "SCSMIMP2F12-CP-dtz"])
+        self.plot_bars(
+            ["DWMP2F12-CP-adz", "DWMP2F12-CP-atz", "DWMP2F12-CP-adtz", "DWMP2F12-CP-aqz", "DWMP2F12-CP-atqz"]
+        )
+        self.plot_bars(
+            [
+                "MP2CF12-CP-adz",
+                "MP2CF12-CP-adtzadz",
+                "MP2CF12-CP-atqzadz",
+                "MP2CF12-CP-atz",
+                "MP2CF12-CP-atqzatz",
+                "MP2CF12-CP-adtz",
+                "MP2CF12-CP-atqzadtz",
+                "MP2CF12-CP-aqz",
+                "MP2CF12-CP-atqz",
+            ]
+        )
 
         # Fig. bars (d)
-        self.plot_bars(['CCSDAF12-CP-adz', 'CCSDAF12-CP-adtzadz', 'CCSDAF12-CP-atqzadz'])
-        self.plot_bars(['CCSDBF12-CP-adz', 'CCSDBF12-CP-adtzadz', 'CCSDBF12-CP-atqzadz'])
-        self.plot_bars(['SCSCCSDAF12-CP-adz', 'SCSCCSDAF12-CP-adtzadz', 'SCSCCSDAF12-CP-atqzadz'])
-        self.plot_bars(['SCSCCSDBF12-CP-adz', 'SCSCCSDBF12-CP-adtzadz', 'SCSCCSDBF12-CP-atqzadz'])
-        self.plot_bars(['SCMICCSDAF12-CP-adz', 'SCMICCSDAF12-CP-adtzadz', 'SCMICCSDAF12-CP-atqzadz'])
-        self.plot_bars(['SCMICCSDBF12-CP-adz', 'SCMICCSDBF12-CP-adtzadz', 'SCMICCSDBF12-CP-atqzadz'])
-        self.plot_bars(['CCSDTAF12-CP-adz', 'CCSDTAF12-CP-adtzadz', 'CCSDTAF12-CP-atqzadz'])
-        self.plot_bars(['CCSDTBF12-CP-adz', 'CCSDTBF12-CP-adtzadz', 'CCSDTBF12-CP-atqzadz'])
-        self.plot_bars(['DWCCSDTF12-CP-adz', 'DWCCSDTF12-CP-adtzadz', 'DWCCSDTF12-CP-atqzadz'])
+        self.plot_bars(["CCSDAF12-CP-adz", "CCSDAF12-CP-adtzadz", "CCSDAF12-CP-atqzadz"])
+        self.plot_bars(["CCSDBF12-CP-adz", "CCSDBF12-CP-adtzadz", "CCSDBF12-CP-atqzadz"])
+        self.plot_bars(["SCSCCSDAF12-CP-adz", "SCSCCSDAF12-CP-adtzadz", "SCSCCSDAF12-CP-atqzadz"])
+        self.plot_bars(["SCSCCSDBF12-CP-adz", "SCSCCSDBF12-CP-adtzadz", "SCSCCSDBF12-CP-atqzadz"])
+        self.plot_bars(["SCMICCSDAF12-CP-adz", "SCMICCSDAF12-CP-adtzadz", "SCMICCSDAF12-CP-atqzadz"])
+        self.plot_bars(["SCMICCSDBF12-CP-adz", "SCMICCSDBF12-CP-adtzadz", "SCMICCSDBF12-CP-atqzadz"])
+        self.plot_bars(["CCSDTAF12-CP-adz", "CCSDTAF12-CP-adtzadz", "CCSDTAF12-CP-atqzadz"])
+        self.plot_bars(["CCSDTBF12-CP-adz", "CCSDTBF12-CP-adtzadz", "CCSDTBF12-CP-atqzadz"])
+        self.plot_bars(["DWCCSDTF12-CP-adz", "DWCCSDTF12-CP-adtzadz", "DWCCSDTF12-CP-atqzadz"])
 
     def plot_dhdft_flats(self):
         """Generate pieces for grey bars figure for DH-DFT paper."""
 
-        self.plot_all_flats([
-            'B97D3-CP-adz', 'PBED3-CP-adz', 'M11L-CP-adz', 'DLDFD-CP-adz', 'B3LYPD3-CP-adz', 'PBE0D3-CP-adz',
-            'WB97XD-CP-adz', 'M052X-CP-adz', 'M062X-CP-adz', 'M08HX-CP-adz', 'M08SO-CP-adz', 'M11-CP-adz',
-            'VV10-CP-adz', 'LCVV10-CP-adz', 'WB97XV-CP-adz', 'PBE02-CP-adz', 'WB97X2-CP-adz', 'B2PLYPD3-CP-adz',
-            'DSDPBEP86D2OPT-CP-adz', 'MP2-CP-adz'
-        ],
-                            sset='tt-5min')
-        self.plot_all_flats([
-            'B97D3-unCP-adz', 'PBED3-unCP-adz', 'M11L-unCP-adz', 'DLDFD-unCP-adz', 'B3LYPD3-unCP-adz',
-            'PBE0D3-unCP-adz', 'WB97XD-unCP-adz', 'M052X-unCP-adz', 'M062X-unCP-adz', 'M08HX-unCP-adz',
-            'M08SO-unCP-adz', 'M11-unCP-adz', 'VV10-unCP-adz', 'LCVV10-unCP-adz', 'WB97XV-unCP-adz', 'PBE02-unCP-adz',
-            'WB97X2-unCP-adz', 'B2PLYPD3-unCP-adz', 'DSDPBEP86D2OPT-unCP-adz', 'MP2-unCP-adz'
-        ],
-                            sset='tt-5min')
-        self.plot_all_flats([
-            'B97D3-CP-atz', 'PBED3-CP-atz', 'M11L-CP-atz', 'DLDFD-CP-atz', 'B3LYPD3-CP-atz', 'PBE0D3-CP-atz',
-            'WB97XD-CP-atz', 'M052X-CP-atz', 'M062X-CP-atz', 'M08HX-CP-atz', 'M08SO-CP-atz', 'M11-CP-atz',
-            'VV10-CP-atz', 'LCVV10-CP-atz', 'WB97XV-CP-atz', 'PBE02-CP-atz', 'WB97X2-CP-atz', 'B2PLYPD3-CP-atz',
-            'DSDPBEP86D2OPT-CP-atz', 'MP2-CP-atz'
-        ],
-                            sset='tt-5min')
-        self.plot_all_flats([
-            'B97D3-unCP-atz', 'PBED3-unCP-atz', 'M11L-unCP-atz', 'DLDFD-unCP-atz', 'B3LYPD3-unCP-atz',
-            'PBE0D3-unCP-atz', 'WB97XD-unCP-atz', 'M052X-unCP-atz', 'M062X-unCP-atz', 'M08HX-unCP-atz',
-            'M08SO-unCP-atz', 'M11-unCP-atz', 'VV10-unCP-atz', 'LCVV10-unCP-atz', 'WB97XV-unCP-atz', 'PBE02-unCP-atz',
-            'WB97X2-unCP-atz', 'B2PLYPD3-unCP-atz', 'DSDPBEP86D2OPT-unCP-atz', 'MP2-unCP-atz'
-        ],
-                            sset='tt-5min')
+        self.plot_all_flats(
+            [
+                "B97D3-CP-adz",
+                "PBED3-CP-adz",
+                "M11L-CP-adz",
+                "DLDFD-CP-adz",
+                "B3LYPD3-CP-adz",
+                "PBE0D3-CP-adz",
+                "WB97XD-CP-adz",
+                "M052X-CP-adz",
+                "M062X-CP-adz",
+                "M08HX-CP-adz",
+                "M08SO-CP-adz",
+                "M11-CP-adz",
+                "VV10-CP-adz",
+                "LCVV10-CP-adz",
+                "WB97XV-CP-adz",
+                "PBE02-CP-adz",
+                "WB97X2-CP-adz",
+                "B2PLYPD3-CP-adz",
+                "DSDPBEP86D2OPT-CP-adz",
+                "MP2-CP-adz",
+            ],
+            sset="tt-5min",
+        )
+        self.plot_all_flats(
+            [
+                "B97D3-unCP-adz",
+                "PBED3-unCP-adz",
+                "M11L-unCP-adz",
+                "DLDFD-unCP-adz",
+                "B3LYPD3-unCP-adz",
+                "PBE0D3-unCP-adz",
+                "WB97XD-unCP-adz",
+                "M052X-unCP-adz",
+                "M062X-unCP-adz",
+                "M08HX-unCP-adz",
+                "M08SO-unCP-adz",
+                "M11-unCP-adz",
+                "VV10-unCP-adz",
+                "LCVV10-unCP-adz",
+                "WB97XV-unCP-adz",
+                "PBE02-unCP-adz",
+                "WB97X2-unCP-adz",
+                "B2PLYPD3-unCP-adz",
+                "DSDPBEP86D2OPT-unCP-adz",
+                "MP2-unCP-adz",
+            ],
+            sset="tt-5min",
+        )
+        self.plot_all_flats(
+            [
+                "B97D3-CP-atz",
+                "PBED3-CP-atz",
+                "M11L-CP-atz",
+                "DLDFD-CP-atz",
+                "B3LYPD3-CP-atz",
+                "PBE0D3-CP-atz",
+                "WB97XD-CP-atz",
+                "M052X-CP-atz",
+                "M062X-CP-atz",
+                "M08HX-CP-atz",
+                "M08SO-CP-atz",
+                "M11-CP-atz",
+                "VV10-CP-atz",
+                "LCVV10-CP-atz",
+                "WB97XV-CP-atz",
+                "PBE02-CP-atz",
+                "WB97X2-CP-atz",
+                "B2PLYPD3-CP-atz",
+                "DSDPBEP86D2OPT-CP-atz",
+                "MP2-CP-atz",
+            ],
+            sset="tt-5min",
+        )
+        self.plot_all_flats(
+            [
+                "B97D3-unCP-atz",
+                "PBED3-unCP-atz",
+                "M11L-unCP-atz",
+                "DLDFD-unCP-atz",
+                "B3LYPD3-unCP-atz",
+                "PBE0D3-unCP-atz",
+                "WB97XD-unCP-atz",
+                "M052X-unCP-atz",
+                "M062X-unCP-atz",
+                "M08HX-unCP-atz",
+                "M08SO-unCP-atz",
+                "M11-unCP-atz",
+                "VV10-unCP-atz",
+                "LCVV10-unCP-atz",
+                "WB97XV-unCP-atz",
+                "PBE02-unCP-atz",
+                "WB97X2-unCP-atz",
+                "B2PLYPD3-unCP-atz",
+                "DSDPBEP86D2OPT-unCP-atz",
+                "MP2-unCP-atz",
+            ],
+            sset="tt-5min",
+        )
 
     def make_dhdft_Figure_1(self):
         """Plot all the graphics needed for the grey bars plot
@@ -3667,45 +4217,131 @@ class DB4(Database):
 
         """
         # Fig. bars (a)
-        self.plot_bars([
-            'M052X-unCP-adz', 'M052X-CP-adz', 'M052X-unCP-atz', 'M052X-CP-atz', None, 'M062X-unCP-adz', 'M062X-CP-adz',
-            'M062X-unCP-atz', 'M062X-CP-atz', None, 'M08SO-unCP-adz', 'M08SO-CP-adz', 'M08SO-unCP-atz', 'M08SO-CP-atz',
-            None, 'M08HX-unCP-adz', 'M08HX-CP-adz', 'M08HX-unCP-atz', 'M08HX-CP-atz', None, 'M11-unCP-adz',
-            'M11-CP-adz', 'M11-unCP-atz', 'M11-CP-atz', None, 'M11L-unCP-adz', 'M11L-CP-adz', 'M11L-unCP-atz',
-            'M11L-CP-atz'
-        ],
-                       sset=['tt-5min', 'hb-5min', 'mx-5min', 'dd-5min'])
+        self.plot_bars(
+            [
+                "M052X-unCP-adz",
+                "M052X-CP-adz",
+                "M052X-unCP-atz",
+                "M052X-CP-atz",
+                None,
+                "M062X-unCP-adz",
+                "M062X-CP-adz",
+                "M062X-unCP-atz",
+                "M062X-CP-atz",
+                None,
+                "M08SO-unCP-adz",
+                "M08SO-CP-adz",
+                "M08SO-unCP-atz",
+                "M08SO-CP-atz",
+                None,
+                "M08HX-unCP-adz",
+                "M08HX-CP-adz",
+                "M08HX-unCP-atz",
+                "M08HX-CP-atz",
+                None,
+                "M11-unCP-adz",
+                "M11-CP-adz",
+                "M11-unCP-atz",
+                "M11-CP-atz",
+                None,
+                "M11L-unCP-adz",
+                "M11L-CP-adz",
+                "M11L-unCP-atz",
+                "M11L-CP-atz",
+            ],
+            sset=["tt-5min", "hb-5min", "mx-5min", "dd-5min"],
+        )
 
         # Fig. bars (b)
-        self.plot_bars([
-            'PBED3-unCP-adz', 'PBED3-CP-adz', 'PBED3-unCP-atz', 'PBED3-CP-atz', None, 'B97D3-unCP-adz', 'B97D3-CP-adz',
-            'B97D3-unCP-atz', 'B97D3-CP-atz', None, 'PBE0D3-unCP-adz', 'PBE0D3-CP-adz', 'PBE0D3-unCP-atz',
-            'PBE0D3-CP-atz', None, 'B3LYPD3-unCP-adz', 'B3LYPD3-CP-adz', 'B3LYPD3-unCP-atz', 'B3LYPD3-CP-atz', None,
-            'DLDFD-unCP-adz', 'DLDFD-CP-adz', 'DLDFD-unCP-atz', 'DLDFD-CP-atz', None, 'WB97XD-unCP-adz',
-            'WB97XD-CP-adz', 'WB97XD-unCP-atz', 'WB97XD-CP-atz'
-        ],
-                       sset=['tt-5min', 'hb-5min', 'mx-5min', 'dd-5min'])
+        self.plot_bars(
+            [
+                "PBED3-unCP-adz",
+                "PBED3-CP-adz",
+                "PBED3-unCP-atz",
+                "PBED3-CP-atz",
+                None,
+                "B97D3-unCP-adz",
+                "B97D3-CP-adz",
+                "B97D3-unCP-atz",
+                "B97D3-CP-atz",
+                None,
+                "PBE0D3-unCP-adz",
+                "PBE0D3-CP-adz",
+                "PBE0D3-unCP-atz",
+                "PBE0D3-CP-atz",
+                None,
+                "B3LYPD3-unCP-adz",
+                "B3LYPD3-CP-adz",
+                "B3LYPD3-unCP-atz",
+                "B3LYPD3-CP-atz",
+                None,
+                "DLDFD-unCP-adz",
+                "DLDFD-CP-adz",
+                "DLDFD-unCP-atz",
+                "DLDFD-CP-atz",
+                None,
+                "WB97XD-unCP-adz",
+                "WB97XD-CP-adz",
+                "WB97XD-unCP-atz",
+                "WB97XD-CP-atz",
+            ],
+            sset=["tt-5min", "hb-5min", "mx-5min", "dd-5min"],
+        )
 
         # Fig. bars (c)
-        self.plot_bars([
-            'VV10-unCP-adz', 'VV10-CP-adz', 'VV10-unCP-atz', 'VV10-CP-atz', None, None, 'LCVV10-unCP-adz',
-            'LCVV10-CP-adz', 'LCVV10-unCP-atz', 'LCVV10-CP-atz', None, None, 'WB97XV-unCP-adz', 'WB97XV-CP-adz',
-            'WB97XV-unCP-atz', 'WB97XV-CP-atz'
-        ],
-                       sset=['tt-5min', 'hb-5min', 'mx-5min', 'dd-5min'])
+        self.plot_bars(
+            [
+                "VV10-unCP-adz",
+                "VV10-CP-adz",
+                "VV10-unCP-atz",
+                "VV10-CP-atz",
+                None,
+                None,
+                "LCVV10-unCP-adz",
+                "LCVV10-CP-adz",
+                "LCVV10-unCP-atz",
+                "LCVV10-CP-atz",
+                None,
+                None,
+                "WB97XV-unCP-adz",
+                "WB97XV-CP-adz",
+                "WB97XV-unCP-atz",
+                "WB97XV-CP-atz",
+            ],
+            sset=["tt-5min", "hb-5min", "mx-5min", "dd-5min"],
+        )
 
         # Fig. bars (d)
-        self.plot_bars([
-            'PBE02-unCP-adz', 'PBE02-CP-adz', 'PBE02-unCP-atz', 'PBE02-CP-atz', None, 'WB97X2-unCP-adz',
-            'WB97X2-CP-adz', 'WB97X2-unCP-atz', 'WB97X2-CP-atz', None, 'B2PLYPD3-unCP-adz', 'B2PLYPD3-CP-adz',
-            'B2PLYPD3-unCP-atz', 'B2PLYPD3-CP-atz', None, 'DSDPBEP86D2OPT-unCP-adz', 'DSDPBEP86D2OPT-CP-adz',
-            'DSDPBEP86D2OPT-unCP-atz', 'DSDPBEP86D2OPT-CP-atz'
-        ],
-                       sset=['tt-5min', 'hb-5min', 'mx-5min', 'dd-5min'])
+        self.plot_bars(
+            [
+                "PBE02-unCP-adz",
+                "PBE02-CP-adz",
+                "PBE02-unCP-atz",
+                "PBE02-CP-atz",
+                None,
+                "WB97X2-unCP-adz",
+                "WB97X2-CP-adz",
+                "WB97X2-unCP-atz",
+                "WB97X2-CP-atz",
+                None,
+                "B2PLYPD3-unCP-adz",
+                "B2PLYPD3-CP-adz",
+                "B2PLYPD3-unCP-atz",
+                "B2PLYPD3-CP-atz",
+                None,
+                "DSDPBEP86D2OPT-unCP-adz",
+                "DSDPBEP86D2OPT-CP-adz",
+                "DSDPBEP86D2OPT-unCP-atz",
+                "DSDPBEP86D2OPT-CP-atz",
+            ],
+            sset=["tt-5min", "hb-5min", "mx-5min", "dd-5min"],
+        )
 
         # Fig. bars (e)
-        self.plot_bars(['MP2-unCP-adz', 'MP2-CP-adz', 'MP2-unCP-atz', 'MP2-CP-atz'],
-                       sset=['tt-5min', 'hb-5min', 'mx-5min', 'dd-5min'])
+        self.plot_bars(
+            ["MP2-unCP-adz", "MP2-CP-adz", "MP2-unCP-atz", "MP2-CP-atz"],
+            sset=["tt-5min", "hb-5min", "mx-5min", "dd-5min"],
+        )
 
     def make_dhdft_Figure_2(self):
         """Plot all the graphics needed for the SAPT/DFT/WFN
@@ -3714,230 +4350,483 @@ class DB4(Database):
         Note that benchmark set as reminder, not necessity, since default.
 
         """
-        self.plot_bars([
-            'SAPT0S-CP-jadz', 'SAPTDFT-CP-atz', 'SAPT2P-CP-adz', 'SAPT3M-CP-atz', 'SAPT2PCM-CP-atz', None,
-            'B97D3-unCP-atz', 'B3LYPD3-CP-adz', 'M052X-unCP-adz', 'WB97XD-CP-atz', 'WB97XV-CP-adz', 'WB97X2-CP-atz',
-            'DSDPBEP86D2OPT-CP-atz', 'B2PLYPD3-CP-atz', None, 'MP2-CP-atz', 'SCSMP2-CP-atz', 'SCSMIMP2-CP-qz',
-            'MP2C-CP-atqzadz', 'MP2CF12-CP-adz', 'SCMICCSDAF12-CP-adz', 'CCSDT-CP-atz', 'CCSDT-CP-atqzatz',
-            'DWCCSDTF12-CP-adz'
-        ],
-                       sset=['tt-5min', 'hb-5min', 'mx-5min', 'dd-5min'],
-                       benchmark='C2011BENCH')
+        self.plot_bars(
+            [
+                "SAPT0S-CP-jadz",
+                "SAPTDFT-CP-atz",
+                "SAPT2P-CP-adz",
+                "SAPT3M-CP-atz",
+                "SAPT2PCM-CP-atz",
+                None,
+                "B97D3-unCP-atz",
+                "B3LYPD3-CP-adz",
+                "M052X-unCP-adz",
+                "WB97XD-CP-atz",
+                "WB97XV-CP-adz",
+                "WB97X2-CP-atz",
+                "DSDPBEP86D2OPT-CP-atz",
+                "B2PLYPD3-CP-atz",
+                None,
+                "MP2-CP-atz",
+                "SCSMP2-CP-atz",
+                "SCSMIMP2-CP-qz",
+                "MP2C-CP-atqzadz",
+                "MP2CF12-CP-adz",
+                "SCMICCSDAF12-CP-adz",
+                "CCSDT-CP-atz",
+                "CCSDT-CP-atqzatz",
+                "DWCCSDTF12-CP-adz",
+            ],
+            sset=["tt-5min", "hb-5min", "mx-5min", "dd-5min"],
+            benchmark="C2011BENCH",
+        )
 
     def plot_dhdft_modelchems(self):
-        self.plot_modelchems([
-            'B97D3-CP-adz', 'PBED3-CP-adz', 'M11L-CP-adz', 'DLDFD-CP-adz', 'B3LYPD3-CP-adz', 'PBE0D3-CP-adz',
-            'WB97XD-CP-adz', 'M052X-CP-adz', 'M062X-CP-adz', 'M08HX-CP-adz', 'M08SO-CP-adz', 'M11-CP-adz',
-            'VV10-CP-adz', 'LCVV10-CP-adz', 'WB97XV-CP-adz', 'PBE02-CP-adz', 'WB97X2-CP-adz', 'B2PLYPD3-CP-adz',
-            'DSDPBEP86D2OPT-CP-adz', 'MP2-CP-adz'
-        ],
-                             sset='tt-5min')
-        self.plot_modelchems([
-            'B97D3-unCP-adz', 'PBED3-unCP-adz', 'M11L-unCP-adz', 'DLDFD-unCP-adz', 'B3LYPD3-unCP-adz',
-            'PBE0D3-unCP-adz', 'WB97XD-unCP-adz', 'M052X-unCP-adz', 'M062X-unCP-adz', 'M08HX-unCP-adz',
-            'M08SO-unCP-adz', 'M11-unCP-adz', 'VV10-unCP-adz', 'LCVV10-unCP-adz', 'WB97XV-unCP-adz', 'PBE02-unCP-adz',
-            'WB97X2-unCP-adz', 'B2PLYPD3-unCP-adz', 'DSDPBEP86D2OPT-unCP-adz', 'MP2-unCP-adz'
-        ],
-                             sset='tt-5min')
-        self.plot_modelchems([
-            'B97D3-CP-atz', 'PBED3-CP-atz', 'M11L-CP-atz', 'DLDFD-CP-atz', 'B3LYPD3-CP-atz', 'PBE0D3-CP-atz',
-            'WB97XD-CP-atz', 'M052X-CP-atz', 'M062X-CP-atz', 'M08HX-CP-atz', 'M08SO-CP-atz', 'M11-CP-atz',
-            'VV10-CP-atz', 'LCVV10-CP-atz', 'WB97XV-CP-atz', 'PBE02-CP-atz', 'WB97X2-CP-atz', 'B2PLYPD3-CP-atz',
-            'DSDPBEP86D2OPT-CP-atz', 'MP2-CP-atz'
-        ],
-                             sset='tt-5min')
-        self.plot_modelchems([
-            'B97D3-unCP-atz', 'PBED3-unCP-atz', 'M11L-unCP-atz', 'DLDFD-unCP-atz', 'B3LYPD3-unCP-atz',
-            'PBE0D3-unCP-atz', 'WB97XD-unCP-atz', 'M052X-unCP-atz', 'M062X-unCP-atz', 'M08HX-unCP-atz',
-            'M08SO-unCP-atz', 'M11-unCP-atz', 'VV10-unCP-atz', 'LCVV10-unCP-atz', 'WB97XV-unCP-atz', 'PBE02-unCP-atz',
-            'WB97X2-unCP-atz', 'B2PLYPD3-unCP-atz', 'DSDPBEP86D2OPT-unCP-atz', 'MP2-unCP-atz'
-        ],
-                             sset='tt-5min')
+        self.plot_modelchems(
+            [
+                "B97D3-CP-adz",
+                "PBED3-CP-adz",
+                "M11L-CP-adz",
+                "DLDFD-CP-adz",
+                "B3LYPD3-CP-adz",
+                "PBE0D3-CP-adz",
+                "WB97XD-CP-adz",
+                "M052X-CP-adz",
+                "M062X-CP-adz",
+                "M08HX-CP-adz",
+                "M08SO-CP-adz",
+                "M11-CP-adz",
+                "VV10-CP-adz",
+                "LCVV10-CP-adz",
+                "WB97XV-CP-adz",
+                "PBE02-CP-adz",
+                "WB97X2-CP-adz",
+                "B2PLYPD3-CP-adz",
+                "DSDPBEP86D2OPT-CP-adz",
+                "MP2-CP-adz",
+            ],
+            sset="tt-5min",
+        )
+        self.plot_modelchems(
+            [
+                "B97D3-unCP-adz",
+                "PBED3-unCP-adz",
+                "M11L-unCP-adz",
+                "DLDFD-unCP-adz",
+                "B3LYPD3-unCP-adz",
+                "PBE0D3-unCP-adz",
+                "WB97XD-unCP-adz",
+                "M052X-unCP-adz",
+                "M062X-unCP-adz",
+                "M08HX-unCP-adz",
+                "M08SO-unCP-adz",
+                "M11-unCP-adz",
+                "VV10-unCP-adz",
+                "LCVV10-unCP-adz",
+                "WB97XV-unCP-adz",
+                "PBE02-unCP-adz",
+                "WB97X2-unCP-adz",
+                "B2PLYPD3-unCP-adz",
+                "DSDPBEP86D2OPT-unCP-adz",
+                "MP2-unCP-adz",
+            ],
+            sset="tt-5min",
+        )
+        self.plot_modelchems(
+            [
+                "B97D3-CP-atz",
+                "PBED3-CP-atz",
+                "M11L-CP-atz",
+                "DLDFD-CP-atz",
+                "B3LYPD3-CP-atz",
+                "PBE0D3-CP-atz",
+                "WB97XD-CP-atz",
+                "M052X-CP-atz",
+                "M062X-CP-atz",
+                "M08HX-CP-atz",
+                "M08SO-CP-atz",
+                "M11-CP-atz",
+                "VV10-CP-atz",
+                "LCVV10-CP-atz",
+                "WB97XV-CP-atz",
+                "PBE02-CP-atz",
+                "WB97X2-CP-atz",
+                "B2PLYPD3-CP-atz",
+                "DSDPBEP86D2OPT-CP-atz",
+                "MP2-CP-atz",
+            ],
+            sset="tt-5min",
+        )
+        self.plot_modelchems(
+            [
+                "B97D3-unCP-atz",
+                "PBED3-unCP-atz",
+                "M11L-unCP-atz",
+                "DLDFD-unCP-atz",
+                "B3LYPD3-unCP-atz",
+                "PBE0D3-unCP-atz",
+                "WB97XD-unCP-atz",
+                "M052X-unCP-atz",
+                "M062X-unCP-atz",
+                "M08HX-unCP-atz",
+                "M08SO-unCP-atz",
+                "M11-unCP-atz",
+                "VV10-unCP-atz",
+                "LCVV10-unCP-atz",
+                "WB97XV-unCP-atz",
+                "PBE02-unCP-atz",
+                "WB97X2-unCP-atz",
+                "B2PLYPD3-unCP-atz",
+                "DSDPBEP86D2OPT-unCP-atz",
+                "MP2-unCP-atz",
+            ],
+            sset="tt-5min",
+        )
 
     def plot_minn_modelchems(self):
-        self.plot_modelchems([
-            'DLDFD-unCP-adz', 'M052X-unCP-adz', 'M062X-unCP-adz', 'M08HX-unCP-adz', 'M08SO-unCP-adz', 'M11-unCP-adz',
-            'M11L-unCP-adz', 'DLDFD-CP-adz', 'M052X-CP-adz', 'M062X-CP-adz', 'M08HX-CP-adz', 'M08SO-CP-adz',
-            'M11-CP-adz', 'M11L-CP-adz'
-        ])
-        self.plot_modelchems([
-            'DlDFD-unCP-atz', 'M052X-unCP-atz', 'M062X-unCP-atz', 'M08HX-unCP-atz', 'M08SO-unCP-atz', 'M11-unCP-atz',
-            'M11L-unCP-atz', 'DLDFD-CP-atz', 'M052X-CP-atz', 'M062X-CP-atz', 'M08HX-CP-atz', 'M08SO-CP-atz',
-            'M11-CP-atz', 'M11L-CP-atz'
-        ])
+        self.plot_modelchems(
+            [
+                "DLDFD-unCP-adz",
+                "M052X-unCP-adz",
+                "M062X-unCP-adz",
+                "M08HX-unCP-adz",
+                "M08SO-unCP-adz",
+                "M11-unCP-adz",
+                "M11L-unCP-adz",
+                "DLDFD-CP-adz",
+                "M052X-CP-adz",
+                "M062X-CP-adz",
+                "M08HX-CP-adz",
+                "M08SO-CP-adz",
+                "M11-CP-adz",
+                "M11L-CP-adz",
+            ]
+        )
+        self.plot_modelchems(
+            [
+                "DlDFD-unCP-atz",
+                "M052X-unCP-atz",
+                "M062X-unCP-atz",
+                "M08HX-unCP-atz",
+                "M08SO-unCP-atz",
+                "M11-unCP-atz",
+                "M11L-unCP-atz",
+                "DLDFD-CP-atz",
+                "M052X-CP-atz",
+                "M062X-CP-atz",
+                "M08HX-CP-atz",
+                "M08SO-CP-atz",
+                "M11-CP-atz",
+                "M11L-CP-atz",
+            ]
+        )
 
     def make_dhdft_Table_I(self):
-        """Generate the in-manuscript summary slat table for DHDFT.
-
-        """
-        self.table_wrapper(mtd=[
-            'B97D3', 'PBED3', 'M11L', 'DLDFD', 'B3LYPD3', 'PBE0D3', 'WB97XD', 'M052X', 'M062X', 'M08HX', 'M08SO',
-            'M11', 'VV10', 'LCVV10', 'WB97XV', 'PBE02', 'WB97X2', 'DSDPBEP86D2OPT', 'B2PLYPD3', 'MP2', 'SCSNMP2',
-            'SCSMIMP2', 'MP2CF12', 'SCMICCSDAF12', 'SAPTDFT', 'SAPT0S', 'SAPT2P', 'SAPT3M', 'SAPT2PCM'
-        ],
-                           bas=['adz', 'atz'],
-                           tableplan=self.table_scrunch,
-                           opt=['CP', 'unCP'],
-                           err=['mae'],
-                           subjoin=None,
-                           plotpath=None,
-                           standalone=False,
-                           filename='tblssets_ex1')
+        """Generate the in-manuscript summary slat table for DHDFT."""
+        self.table_wrapper(
+            mtd=[
+                "B97D3",
+                "PBED3",
+                "M11L",
+                "DLDFD",
+                "B3LYPD3",
+                "PBE0D3",
+                "WB97XD",
+                "M052X",
+                "M062X",
+                "M08HX",
+                "M08SO",
+                "M11",
+                "VV10",
+                "LCVV10",
+                "WB97XV",
+                "PBE02",
+                "WB97X2",
+                "DSDPBEP86D2OPT",
+                "B2PLYPD3",
+                "MP2",
+                "SCSNMP2",
+                "SCSMIMP2",
+                "MP2CF12",
+                "SCMICCSDAF12",
+                "SAPTDFT",
+                "SAPT0S",
+                "SAPT2P",
+                "SAPT3M",
+                "SAPT2PCM",
+            ],
+            bas=["adz", "atz"],
+            tableplan=self.table_scrunch,
+            opt=["CP", "unCP"],
+            err=["mae"],
+            subjoin=None,
+            plotpath=None,
+            standalone=False,
+            filename="tblssets_ex1",
+        )
 
     def make_dhdft_Table_II(self):
-        """Generate the in-manuscript CP slat table for DHDFT.
-
-        """
+        """Generate the in-manuscript CP slat table for DHDFT."""
         self.table_wrapper(
             mtd=[
-                'B97D3', 'PBED3', 'M11L', 'DLDFD', 'B3LYPD3', 'PBE0D3', 'WB97XD', 'M052X', 'M062X', 'M08HX', 'M08SO',
-                'M11', 'VV10', 'LCVV10', 'WB97XV', 'PBE02', 'WB97X2', 'DSDPBEP86D2OPT', 'B2PLYPD3', 'MP2'
+                "B97D3",
+                "PBED3",
+                "M11L",
+                "DLDFD",
+                "B3LYPD3",
+                "PBE0D3",
+                "WB97XD",
+                "M052X",
+                "M062X",
+                "M08HX",
+                "M08SO",
+                "M11",
+                "VV10",
+                "LCVV10",
+                "WB97XV",
+                "PBE02",
+                "WB97X2",
+                "DSDPBEP86D2OPT",
+                "B2PLYPD3",
+                "MP2",
             ],
-            bas=['adz', 'atz'],
+            bas=["adz", "atz"],
             tableplan=self.table_merge_abbr,
-            opt=['CP'],
-            err=['mae'],
+            opt=["CP"],
+            err=["mae"],
             subjoin=True,
-            plotpath='analysis/flats/mplflat_',  # proj still has 'mpl' prefix
+            plotpath="analysis/flats/mplflat_",  # proj still has 'mpl' prefix
             standalone=False,
-            filename='tblssets_ex2')
+            filename="tblssets_ex2",
+        )
 
     def make_dhdft_Table_III(self):
-        """Generate the in-manuscript unCP slat table for DHDFT.
-
-        """
+        """Generate the in-manuscript unCP slat table for DHDFT."""
         self.table_wrapper(
             mtd=[
-                'B97D3', 'PBED3', 'M11L', 'DLDFD', 'B3LYPD3', 'PBE0D3', 'WB97XD', 'M052X', 'M062X', 'M08HX', 'M08SO',
-                'M11', 'VV10', 'LCVV10', 'WB97XV', 'PBE02', 'WB97X2', 'DSDPBEP86D2OPT', 'B2PLYPD3', 'MP2'
+                "B97D3",
+                "PBED3",
+                "M11L",
+                "DLDFD",
+                "B3LYPD3",
+                "PBE0D3",
+                "WB97XD",
+                "M052X",
+                "M062X",
+                "M08HX",
+                "M08SO",
+                "M11",
+                "VV10",
+                "LCVV10",
+                "WB97XV",
+                "PBE02",
+                "WB97X2",
+                "DSDPBEP86D2OPT",
+                "B2PLYPD3",
+                "MP2",
             ],
-            bas=['adz', 'atz'],
+            bas=["adz", "atz"],
             tableplan=self.table_merge_abbr,
-            opt=['unCP'],
-            err=['mae'],
+            opt=["unCP"],
+            err=["mae"],
             subjoin=True,
-            plotpath='analysis/flats/mplflat_',  # proj still has 'mpl' prefix
+            plotpath="analysis/flats/mplflat_",  # proj still has 'mpl' prefix
             standalone=False,
-            filename='tblssets_ex3')
+            filename="tblssets_ex3",
+        )
 
     def make_dhdft_Tables_SII(self):
-        """Generate the subset details suppmat Part II tables and their indices for DHDFT.
-
-        """
+        """Generate the subset details suppmat Part II tables and their indices for DHDFT."""
         self.table_wrapper(
             mtd=[
-                'B97D3', 'PBED3', 'M11L', 'DLDFD', 'B3LYPD3', 'PBE0D3', 'WB97XD', 'M052X', 'M062X', 'M08HX', 'M08SO',
-                'M11', 'VV10', 'LCVV10', 'WB97XV', 'PBE02', 'WB97X2', 'DSDPBEP86D2OPT', 'B2PLYPD3'
+                "B97D3",
+                "PBED3",
+                "M11L",
+                "DLDFD",
+                "B3LYPD3",
+                "PBE0D3",
+                "WB97XD",
+                "M052X",
+                "M062X",
+                "M08HX",
+                "M08SO",
+                "M11",
+                "VV10",
+                "LCVV10",
+                "WB97XV",
+                "PBE02",
+                "WB97X2",
+                "DSDPBEP86D2OPT",
+                "B2PLYPD3",
             ],  # 'MP2']
-            bas=['adz', 'atz'],
+            bas=["adz", "atz"],
             tableplan=self.table_merge_suppmat,
-            opt=['CP', 'unCP'],
-            err=['mae', 'mape'],
+            opt=["CP", "unCP"],
+            err=["mae", "mape"],
             subjoin=False,
-            plotpath='analysis/flats/mplflat_',  # proj still has 'mpl' prefix
+            plotpath="analysis/flats/mplflat_",  # proj still has 'mpl' prefix
             standalone=False,
-            filename='tblssets')
+            filename="tblssets",
+        )
 
     def make_dhdft_Tables_SIII(self):
-        """Generate the per-reaction suppmat Part III tables and their indices for DHDFT.
-
-        """
+        """Generate the per-reaction suppmat Part III tables and their indices for DHDFT."""
         self.table_reactions(
             [
-                'B97D3-unCP-adz', 'B97D3-CP-adz', 'B97D3-unCP-atz', 'B97D3-CP-atz', 'PBED3-unCP-adz', 'PBED3-CP-adz',
-                'PBED3-unCP-atz', 'PBED3-CP-atz', 'M11L-unCP-adz', 'M11L-CP-adz', 'M11L-unCP-atz', 'M11L-CP-atz',
-                'DLDFD-unCP-adz', 'DLDFD-CP-adz', 'DLDFD-unCP-atz', 'DLDFD-CP-atz', 'B3LYPD3-unCP-adz',
-                'B3LYPD3-CP-adz', 'B3LYPD3-unCP-atz', 'B3LYPD3-CP-atz', 'PBE0D3-unCP-adz', 'PBE0D3-CP-adz',
-                'PBE0D3-unCP-atz', 'PBE0D3-CP-atz', 'WB97XD-unCP-adz', 'WB97XD-CP-adz', 'WB97XD-unCP-atz',
-                'WB97XD-CP-atz', 'M052X-unCP-adz', 'M052X-CP-adz', 'M052X-unCP-atz', 'M052X-CP-atz', 'M062X-unCP-adz',
-                'M062X-CP-adz', 'M062X-unCP-atz', 'M062X-CP-atz', 'M08HX-unCP-adz', 'M08HX-CP-adz', 'M08HX-unCP-atz',
-                'M08HX-CP-atz', 'M08SO-unCP-adz', 'M08SO-CP-adz', 'M08SO-unCP-atz', 'M08SO-CP-atz', 'M11-unCP-adz',
-                'M11-CP-adz', 'M11-unCP-atz', 'M11-CP-atz', 'VV10-unCP-adz', 'VV10-CP-adz', 'VV10-unCP-atz',
-                'VV10-CP-atz', 'LCVV10-unCP-adz', 'LCVV10-CP-adz', 'LCVV10-unCP-atz', 'LCVV10-CP-atz',
-                'WB97XV-unCP-adz', 'WB97XV-CP-adz', 'WB97XV-unCP-atz', 'WB97XV-CP-atz', 'PBE02-unCP-adz',
-                'PBE02-CP-adz', 'PBE02-unCP-atz', 'PBE02-CP-atz', 'WB97X2-unCP-adz', 'WB97X2-CP-adz',
-                'WB97X2-unCP-atz', 'WB97X2-CP-atz', 'DSDPBEP86D2OPT-unCP-adz', 'DSDPBEP86D2OPT-CP-adz',
-                'DSDPBEP86D2OPT-unCP-atz', 'DSDPBEP86D2OPT-CP-atz', 'B2PLYPD3-unCP-adz', 'B2PLYPD3-CP-adz',
-                'B2PLYPD3-unCP-atz', 'B2PLYPD3-CP-atz'
+                "B97D3-unCP-adz",
+                "B97D3-CP-adz",
+                "B97D3-unCP-atz",
+                "B97D3-CP-atz",
+                "PBED3-unCP-adz",
+                "PBED3-CP-adz",
+                "PBED3-unCP-atz",
+                "PBED3-CP-atz",
+                "M11L-unCP-adz",
+                "M11L-CP-adz",
+                "M11L-unCP-atz",
+                "M11L-CP-atz",
+                "DLDFD-unCP-adz",
+                "DLDFD-CP-adz",
+                "DLDFD-unCP-atz",
+                "DLDFD-CP-atz",
+                "B3LYPD3-unCP-adz",
+                "B3LYPD3-CP-adz",
+                "B3LYPD3-unCP-atz",
+                "B3LYPD3-CP-atz",
+                "PBE0D3-unCP-adz",
+                "PBE0D3-CP-adz",
+                "PBE0D3-unCP-atz",
+                "PBE0D3-CP-atz",
+                "WB97XD-unCP-adz",
+                "WB97XD-CP-adz",
+                "WB97XD-unCP-atz",
+                "WB97XD-CP-atz",
+                "M052X-unCP-adz",
+                "M052X-CP-adz",
+                "M052X-unCP-atz",
+                "M052X-CP-atz",
+                "M062X-unCP-adz",
+                "M062X-CP-adz",
+                "M062X-unCP-atz",
+                "M062X-CP-atz",
+                "M08HX-unCP-adz",
+                "M08HX-CP-adz",
+                "M08HX-unCP-atz",
+                "M08HX-CP-atz",
+                "M08SO-unCP-adz",
+                "M08SO-CP-adz",
+                "M08SO-unCP-atz",
+                "M08SO-CP-atz",
+                "M11-unCP-adz",
+                "M11-CP-adz",
+                "M11-unCP-atz",
+                "M11-CP-atz",
+                "VV10-unCP-adz",
+                "VV10-CP-adz",
+                "VV10-unCP-atz",
+                "VV10-CP-atz",
+                "LCVV10-unCP-adz",
+                "LCVV10-CP-adz",
+                "LCVV10-unCP-atz",
+                "LCVV10-CP-atz",
+                "WB97XV-unCP-adz",
+                "WB97XV-CP-adz",
+                "WB97XV-unCP-atz",
+                "WB97XV-CP-atz",
+                "PBE02-unCP-adz",
+                "PBE02-CP-adz",
+                "PBE02-unCP-atz",
+                "PBE02-CP-atz",
+                "WB97X2-unCP-adz",
+                "WB97X2-CP-adz",
+                "WB97X2-unCP-atz",
+                "WB97X2-CP-atz",
+                "DSDPBEP86D2OPT-unCP-adz",
+                "DSDPBEP86D2OPT-CP-adz",
+                "DSDPBEP86D2OPT-unCP-atz",
+                "DSDPBEP86D2OPT-CP-atz",
+                "B2PLYPD3-unCP-adz",
+                "B2PLYPD3-CP-adz",
+                "B2PLYPD3-unCP-atz",
+                "B2PLYPD3-CP-atz",
             ],
             # 'MP2-unCP-adz', 'MP2-CP-adz', 'MP2-unCP-atz', 'MP2-CP-atz'],
             standalone=False,
-            filename='tblrxn_all')
+            filename="tblrxn_all",
+        )
 
 
 class ThreeDatabases(Database):
-    """
-
-    """
+    """ """
 
     def __init__(self, pythonpath=None):
         """Initialize ThreeDatabases object from Database"""
-        Database.__init__(self, ['s22', 'a24', 'hsg'], dbse='DB3', pythonpath=None)
+        Database.__init__(self, ["s22", "a24", "hsg"], dbse="DB3", pythonpath=None)
 
         # load up data and definitions
-        self.load_qcdata_byproject('pt2')
-        self.load_qcdata_byproject('dilabio')
-        self.load_qcdata_byproject('f12dilabio')
+        self.load_qcdata_byproject("pt2")
+        self.load_qcdata_byproject("dilabio")
+        self.load_qcdata_byproject("f12dilabio")
         self.load_subsets()
         self.define_supersubsets()
         self.define_supermodelchems()
 
     def define_supersubsets(self):
-        """
-
-        """
-        self.sset['tt'] = ['default', 'default', 'default']
-        self.sset['hb'] = ['hb', 'hb', 'hb']
-        self.sset['mx'] = ['mx', 'mx', 'mx']
-        self.sset['dd'] = ['dd', 'dd', 'dd']
-        self.sset['mxdd'] = ['mxdd', 'mxdd', 'mxdd']
-        self.sset['pp'] = ['mxddpp', 'mxddpp', 'mxddpp']
-        self.sset['np'] = ['mxddnp', 'mxddnp', 'mxddnp']
-        self.sset['tt-5min'] = ['default', 'default', 'default']
-        self.sset['hb-5min'] = ['hb', 'hb', 'hb']
-        self.sset['mx-5min'] = ['mx', 'mx', 'mx']
-        self.sset['dd-5min'] = ['dd', 'dd', 'dd']
-        self.sset['mxdd-5min'] = ['mxdd', 'mxdd', 'mxdd']
-        self.sset['pp-5min'] = ['mxddpp', 'mxddpp', 'mxddpp']
-        self.sset['np-5min'] = ['mxddnp', 'mxddnp', 'mxddnp']
-        self.sset['weak'] = ['weak', 'weak', 'weak']
-        self.sset['weak_hb'] = ['weak_hb', None, 'weak_hb']
-        self.sset['weak_mx'] = ['weak_mx', 'weak_mx', 'weak_mx']
-        self.sset['weak_dd'] = ['weak_dd', 'weak_dd', 'weak_dd']
+        """ """
+        self.sset["tt"] = ["default", "default", "default"]
+        self.sset["hb"] = ["hb", "hb", "hb"]
+        self.sset["mx"] = ["mx", "mx", "mx"]
+        self.sset["dd"] = ["dd", "dd", "dd"]
+        self.sset["mxdd"] = ["mxdd", "mxdd", "mxdd"]
+        self.sset["pp"] = ["mxddpp", "mxddpp", "mxddpp"]
+        self.sset["np"] = ["mxddnp", "mxddnp", "mxddnp"]
+        self.sset["tt-5min"] = ["default", "default", "default"]
+        self.sset["hb-5min"] = ["hb", "hb", "hb"]
+        self.sset["mx-5min"] = ["mx", "mx", "mx"]
+        self.sset["dd-5min"] = ["dd", "dd", "dd"]
+        self.sset["mxdd-5min"] = ["mxdd", "mxdd", "mxdd"]
+        self.sset["pp-5min"] = ["mxddpp", "mxddpp", "mxddpp"]
+        self.sset["np-5min"] = ["mxddnp", "mxddnp", "mxddnp"]
+        self.sset["weak"] = ["weak", "weak", "weak"]
+        self.sset["weak_hb"] = ["weak_hb", None, "weak_hb"]
+        self.sset["weak_mx"] = ["weak_mx", "weak_mx", "weak_mx"]
+        self.sset["weak_dd"] = ["weak_dd", "weak_dd", "weak_dd"]
 
     def define_supermodelchems(self):
-        """
+        """ """
+        self.mc["CCSD-CP-adz"] = ["CCSD-CP-adz", "CCSD-CP-hadz", "CCSD-CP-adz"]
+        self.mc["CCSD-CP-atz"] = ["CCSD-CP-atz", "CCSD-CP-hatz", "CCSD-CP-atz"]
+        self.mc["CCSD-CP-adtz"] = ["CCSD-CP-adtz", "CCSD-CP-hadtz", "CCSD-CP-adtz"]
+        self.mc["CCSD-CP-adtzadz"] = ["CCSD-CP-adtzadz", "CCSD-CP-adtzhadz", "CCSD-CP-adtzadz"]
+        self.mc["CCSD-CP-atzadz"] = ["CCSD-CP-atzadz", "CCSD-CP-atzhadz", "CCSD-CP-atzadz"]
+        self.mc["CCSD-CP-atqzadz"] = ["CCSD-CP-atqzadz", "CCSD-CP-atqzhadz", "CCSD-CP-atqzadz"]
+        self.mc["CCSD-CP-atzadtz"] = ["CCSD-CP-atzadtz", "CCSD-CP-atzhadtz", "CCSD-CP-atzadtz"]
+        self.mc["CCSD-CP-atqzadtz"] = ["CCSD-CP-atqzadtz", "CCSD-CP-atqzhadtz", "CCSD-CP-atqzadtz"]
+        self.mc["CCSD-CP-atqzatz"] = ["CCSD-CP-atqzatz", "CCSD-CP-atqzhatz", "CCSD-CP-atqzatz"]
 
-        """
-        self.mc['CCSD-CP-adz'] = ['CCSD-CP-adz', 'CCSD-CP-hadz', 'CCSD-CP-adz']
-        self.mc['CCSD-CP-atz'] = ['CCSD-CP-atz', 'CCSD-CP-hatz', 'CCSD-CP-atz']
-        self.mc['CCSD-CP-adtz'] = ['CCSD-CP-adtz', 'CCSD-CP-hadtz', 'CCSD-CP-adtz']
-        self.mc['CCSD-CP-adtzadz'] = ['CCSD-CP-adtzadz', 'CCSD-CP-adtzhadz', 'CCSD-CP-adtzadz']
-        self.mc['CCSD-CP-atzadz'] = ['CCSD-CP-atzadz', 'CCSD-CP-atzhadz', 'CCSD-CP-atzadz']
-        self.mc['CCSD-CP-atqzadz'] = ['CCSD-CP-atqzadz', 'CCSD-CP-atqzhadz', 'CCSD-CP-atqzadz']
-        self.mc['CCSD-CP-atzadtz'] = ['CCSD-CP-atzadtz', 'CCSD-CP-atzhadtz', 'CCSD-CP-atzadtz']
-        self.mc['CCSD-CP-atqzadtz'] = ['CCSD-CP-atqzadtz', 'CCSD-CP-atqzhadtz', 'CCSD-CP-atqzadtz']
-        self.mc['CCSD-CP-atqzatz'] = ['CCSD-CP-atqzatz', 'CCSD-CP-atqzhatz', 'CCSD-CP-atqzatz']
-
-        self.mc['CCSDT-CP-adz'] = ['CCSDT-CP-adz', 'CCSDT-CP-hadz', 'CCSDT-CP-adz']
-        self.mc['CCSDT-CP-atz'] = ['CCSDT-CP-atz', 'CCSDT-CP-hatz', 'CCSDT-CP-atz']
-        self.mc['CCSDT-CP-adtz'] = ['CCSDT-CP-adtz', 'CCSDT-CP-hadtz', 'CCSDT-CP-adtz']
-        self.mc['CCSDT-CP-adtzadz'] = ['CCSDT-CP-adtzadz', 'CCSDT-CP-adtzhadz', 'CCSDT-CP-adtzadz']
-        self.mc['CCSDT-CP-atzadz'] = ['CCSDT-CP-atzadz', 'CCSDT-CP-atzhadz', 'CCSDT-CP-atzadz']
-        self.mc['CCSDT-CP-atqzadz'] = ['CCSDT-CP-atqzadz', 'CCSDT-CP-atqzhadz', 'CCSDT-CP-atqzadz']
-        self.mc['CCSDT-CP-atzadtz'] = ['CCSDT-CP-atzadtz', 'CCSDT-CP-atzhadtz', 'CCSDT-CP-atzadtz']
-        self.mc['CCSDT-CP-atqzadtz'] = ['CCSDT-CP-atqzadtz', 'CCSDT-CP-atqzhadtz', 'CCSDT-CP-atqzadtz']
-        self.mc['CCSDT-CP-atqzatz'] = ['CCSDT-CP-atqzatz', 'CCSDT-CP-atqzhatz', 'CCSDT-CP-atqzatz']
+        self.mc["CCSDT-CP-adz"] = ["CCSDT-CP-adz", "CCSDT-CP-hadz", "CCSDT-CP-adz"]
+        self.mc["CCSDT-CP-atz"] = ["CCSDT-CP-atz", "CCSDT-CP-hatz", "CCSDT-CP-atz"]
+        self.mc["CCSDT-CP-adtz"] = ["CCSDT-CP-adtz", "CCSDT-CP-hadtz", "CCSDT-CP-adtz"]
+        self.mc["CCSDT-CP-adtzadz"] = ["CCSDT-CP-adtzadz", "CCSDT-CP-adtzhadz", "CCSDT-CP-adtzadz"]
+        self.mc["CCSDT-CP-atzadz"] = ["CCSDT-CP-atzadz", "CCSDT-CP-atzhadz", "CCSDT-CP-atzadz"]
+        self.mc["CCSDT-CP-atqzadz"] = ["CCSDT-CP-atqzadz", "CCSDT-CP-atqzhadz", "CCSDT-CP-atqzadz"]
+        self.mc["CCSDT-CP-atzadtz"] = ["CCSDT-CP-atzadtz", "CCSDT-CP-atzhadtz", "CCSDT-CP-atzadtz"]
+        self.mc["CCSDT-CP-atqzadtz"] = ["CCSDT-CP-atqzadtz", "CCSDT-CP-atqzhadtz", "CCSDT-CP-atqzadtz"]
+        self.mc["CCSDT-CP-atqzatz"] = ["CCSDT-CP-atqzatz", "CCSDT-CP-atqzhatz", "CCSDT-CP-atqzatz"]
 
 
 # print certain statistic for all 4 db and summary and indiv sys if min or max
 
 fnreservoir = {}
-fnreservoir[
-    'blankslat'] = r"""Errors with respect to Benchmark. Guide lines are at 0, 0.3, and 1.0 kcal/mol overbound ($-$) and underbound ($+$)."""
-fnreservoir[
-    '5min'] = r"""Only equilibrium and near-equilibrium systems included. (All S22 and HSG, 50/194 NBC10, 28/118 HBC6.)"""
-fnreservoir[
-    'liliowa'] = r"""{0}MAE (dark by {1} kcal/mol) for subsets in residue classes cation, anion, polar, aliphatic, \& aromatic (L to R)."""
-fnreservoir[
-    'flat'] = r"""{0}Errors with respect to benchmark within $\pm${1} kcal/mol. Guide lines are at {2} overbound ($-$) and underbound ($+$)."""
+fnreservoir["blankslat"] = (
+    r"""Errors with respect to Benchmark. Guide lines are at 0, 0.3, and 1.0 kcal/mol overbound ($-$) and underbound ($+$)."""
+)
+fnreservoir["5min"] = (
+    r"""Only equilibrium and near-equilibrium systems included. (All S22 and HSG, 50/194 NBC10, 28/118 HBC6.)"""
+)
+fnreservoir["liliowa"] = (
+    r"""{0}MAE (dark by {1} kcal/mol) for subsets in residue classes cation, anion, polar, aliphatic, \& aromatic (L to R)."""
+)
+fnreservoir["flat"] = (
+    r"""{0}Errors with respect to benchmark within $\pm${1} kcal/mol. Guide lines are at {2} overbound ($-$) and underbound ($+$)."""
+)

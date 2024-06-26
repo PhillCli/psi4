@@ -26,21 +26,21 @@
 # @END LICENSE
 #
 
+import collections
+import hashlib
+import itertools
 import os
 import sys
-import hashlib
 import warnings
-import itertools
-import collections
 
 import qcelemental as qcel
 
-from .exceptions import *
-from .psiutil import search_file
-from .molecule import Molecule
-from .libmintsgshell import ShellInfo
-from .libmintsbasissetparser import Gaussian94BasisSetParser
 from .basislist import corresponding_basis, corresponding_zeta
+from .exceptions import *
+from .libmintsbasissetparser import Gaussian94BasisSetParser
+from .libmintsgshell import ShellInfo
+from .molecule import Molecule
+from .psiutil import search_file
 
 basishorde = {}
 
@@ -62,7 +62,6 @@ class BasisSet(object):
     exp_ao = [[] for l in range(LIBINT_MAX_AM)]
 
     def __init__(self, *args):
-
         # <<< Basic BasisSet Information >>>
 
         # The name of this basis set (e.g. "BASIS", "RI BASIS")
@@ -130,31 +129,39 @@ class BasisSet(object):
         # Divert to constructor functions
         if len(args) == 0:
             self.constructor_zero_ao_basis()
-        elif len(args) == 2 and \
-            isinstance(args[0], BasisSet) and \
-            isinstance(args[1], int):
+        elif len(args) == 2 and isinstance(args[0], BasisSet) and isinstance(args[1], int):
             self.constructor_basisset_center(*args)
-        elif len(args) == 3 and \
-            isinstance(args[0], str) and \
-            isinstance(args[1], Molecule) and \
-            isinstance(args[2], collections.OrderedDict):
+        elif (
+            len(args) == 3
+            and isinstance(args[0], str)
+            and isinstance(args[1], Molecule)
+            and isinstance(args[2], collections.OrderedDict)
+        ):
             self.constructor_role_mol_shellmap(*args)
-        elif len(args) == 4 and \
-            isinstance(args[0], str) and \
-            isinstance(args[1], Molecule) and \
-            isinstance(args[2], collections.OrderedDict) and \
-            isinstance(args[3], bool):
+        elif (
+            len(args) == 4
+            and isinstance(args[0], str)
+            and isinstance(args[1], Molecule)
+            and isinstance(args[2], collections.OrderedDict)
+            and isinstance(args[3], bool)
+        ):
             self.constructor_role_mol_shellmap(*args)
         else:
-            raise ValidationError('BasisSet::constructor: Inappropriate configuration of constructor arguments')
+            raise ValidationError("BasisSet::constructor: Inappropriate configuration of constructor arguments")
 
     def __eq__(self, other):
         """Naive equality test. Haven't considered exp/coeff distribution among shells or AM"""
 
         if isinstance(other, self.__class__):
-            if ((self.name == other.name) and (self.puream == other.puream) and (self.PYnao == other.PYnao)
-                    and (self.PYnbf == other.PYnbf) and (self.n_prim_per_shell == other.n_prim_per_shell)
-                    and (self.ucoefficients == other.ucoefficients) and (self.uexponents == other.uexponents)):
+            if (
+                (self.name == other.name)
+                and (self.puream == other.puream)
+                and (self.PYnao == other.PYnao)
+                and (self.PYnbf == other.PYnbf)
+                and (self.n_prim_per_shell == other.n_prim_per_shell)
+                and (self.ucoefficients == other.ucoefficients)
+                and (self.uexponents == other.uexponents)
+            ):
                 return True
             else:
                 return False
@@ -163,16 +170,21 @@ class BasisSet(object):
     def __ne__(self, other):
         return not self.__eq__(other)
 
-    def allclose(self, other, atol: float = 1.e-8, verbose: int = 1):
+    def allclose(self, other, atol: float = 1.0e-8, verbose: int = 1):
         """Equality test. Sorts the coefficients so handles different shell orderings. Print any failed exp/coeff differences if verbose > 1."""
         sc, se = (list(t) for t in zip(*sorted(zip(self.uoriginal_coefficients, self.uexponents))))
         oc, oe = (list(t) for t in zip(*sorted(zip(other.uoriginal_coefficients, other.uexponents))))
 
         if isinstance(other, self.__class__):
-            if ((self.name == other.name) and (self.puream == other.puream) and (self.PYnao == other.PYnao)
-                    and (self.PYnbf == other.PYnbf) and (self.n_prim_per_shell == other.n_prim_per_shell)
-                    and (all(abs(isc - ioc) < atol for isc, ioc in zip(sc, oc)))
-                    and (all(abs(ise - ioe) < atol for ise, ioe in zip(se, oe)))):
+            if (
+                (self.name == other.name)
+                and (self.puream == other.puream)
+                and (self.PYnao == other.PYnao)
+                and (self.PYnbf == other.PYnbf)
+                and (self.n_prim_per_shell == other.n_prim_per_shell)
+                and (all(abs(isc - ioc) < atol for isc, ioc in zip(sc, oc)))
+                and (all(abs(ise - ioe) < atol for ise, ioe in zip(se, oe)))
+            ):
                 return True
             else:
                 if verbose > 1:
@@ -207,7 +219,7 @@ class BasisSet(object):
 
         # Add a dummy atom at the origin, to hold this basis function
         self.molecule = Molecule()
-        self.molecule.add_atom(0, 0.0, 0.0, 0.0, 'X')
+        self.molecule.add_atom(0, 0.0, 0.0, 0.0, "X")
         # Fill with data representing a single S function, at the origin, with 0 exponent
         self.n_uprimitive = 1
         self.n_shells = 1
@@ -231,9 +243,9 @@ class BasisSet(object):
         self.PYmax_am = 0
         self.PYmax_nprimitive = 1
         self.xyz = [0.0, 0.0, 0.0]
-        self.name = '(Empty Basis Set)'
+        self.name = "(Empty Basis Set)"
         self.shells = []
-        self.shells.append(ShellInfo(0, self.uoriginal_coefficients, self.uexponents, 'Cartesian', 0, self.xyz, 0))
+        self.shells.append(ShellInfo(0, self.uoriginal_coefficients, self.uexponents, "Cartesian", 0, self.xyz, 0))
 
     def constructor_role_mol_shellmap(self, role, mol, shell_map, is_ecp=False):
         """The most commonly used constructor. Extracts basis set name for *role*
@@ -356,15 +368,17 @@ class BasisSet(object):
                 self.puream = thisshell.is_pure()
                 tst = ustart + atom_nprim
                 tsp = ustart + atom_nprim + shell_nprim
-                self.shells[shell_count] = ShellInfo(am,
-                                                     self.uoriginal_coefficients[tst:tsp],
-                                                     self.uexponents[tst:tsp],
-                                                     'Pure' if self.puream else 'Cartesian',
-                                                     n,
-                                                     xyz_ptr,
-                                                     bf_count,
-                                                     pt='Normalized' if is_ecp else 'Unnormalized',
-                                                     rpowers=rpowers[tst:tsp])
+                self.shells[shell_count] = ShellInfo(
+                    am,
+                    self.uoriginal_coefficients[tst:tsp],
+                    self.uexponents[tst:tsp],
+                    "Pure" if self.puream else "Cartesian",
+                    n,
+                    xyz_ptr,
+                    bf_count,
+                    pt="Normalized" if is_ecp else "Unnormalized",
+                    rpowers=rpowers[tst:tsp],
+                )
                 for thisbf in range(thisshell.nfunction()):
                     self.function_to_shell[bf_count] = shell_count
                     self.function_center[bf_count] = n
@@ -416,11 +430,9 @@ class BasisSet(object):
 
         # Create a "molecule", i.e., an atom, with 1 fragment
         mol = bs.molecule
-        self.molecule = Molecule.from_arrays(elem=[mol.symbol(center)],
-                                             geom=mol.xyz(center),
-                                             units='Bohr',
-                                             fix_com=True,
-                                             verbose=0)
+        self.molecule = Molecule.from_arrays(
+            elem=[mol.symbol(center)], geom=mol.xyz(center), units="Bohr", fix_com=True, verbose=0
+        )
         # Allocate arrays
         self.n_prim_per_shell = [0] * self.n_shells
         # The unique primitives
@@ -457,7 +469,7 @@ class BasisSet(object):
             shell = bs.shell(shelln)
             if shell.ncenter() == center:
                 self.center_to_nshell[0] = self.n_shells
-                #self.center_to_shell[0] = shell_count  # diff from libmints
+                # self.center_to_shell[0] = shell_count  # diff from libmints
                 self.shell_first_ao[shell_count] = ao_count
                 self.shell_first_basis_function[shell_count] = bf_count
                 shell_nprim = shell.nprimitive()
@@ -468,15 +480,17 @@ class BasisSet(object):
                 self.puream = shell.is_pure()
                 tst = prim_count
                 tsp = prim_count + shell_nprim
-                self.shells[shell_count] = ShellInfo(am,
-                                                     self.uoriginal_coefficients[tst:tsp],
-                                                     self.uexponents[tst:tsp],
-                                                     'Pure' if self.puream else 'Cartesian',
-                                                     center,
-                                                     self.xyz,
-                                                     bf_count,
-                                                     pt='Unnormalized',
-                                                     rpowers=None)
+                self.shells[shell_count] = ShellInfo(
+                    am,
+                    self.uoriginal_coefficients[tst:tsp],
+                    self.uexponents[tst:tsp],
+                    "Pure" if self.puream else "Cartesian",
+                    center,
+                    self.xyz,
+                    bf_count,
+                    pt="Unnormalized",
+                    rpowers=None,
+                )
                 self.shells[shell_count].pyprint()
                 for thisbf in range(shell.nfunction()):
                     self.function_to_shell[bf_count] = shell_count
@@ -518,7 +532,7 @@ class BasisSet(object):
         * @return BasisSet corresponding to this molecule and set of shells
 
         """
-        raise FeatureNotImplemented('BasisSet::build')
+        raise FeatureNotImplemented("BasisSet::build")
 
     @staticmethod
     def pyconstruct_combined(mol, keys, targets, fitroles, others):
@@ -583,8 +597,9 @@ class BasisSet(object):
 
         # sort the shells by angular momentum
         for label, basis_map in combined_atom_basis_shell.items():
-            combined_atom_basis_shell[label][name] = sorted(combined_atom_basis_shell[label][name],
-                                                            key=lambda shell: shell.l)
+            combined_atom_basis_shell[label][name] = sorted(
+                combined_atom_basis_shell[label][name], key=lambda shell: shell.l
+            )
 
         # Molecule and parser prepped, call the constructor
         mol.set_basis_all_atoms(name, "CABS")
@@ -595,7 +610,7 @@ class BasisSet(object):
         # Construct all the one-atom BasisSet-s for mol's CoordEntry-s
         for at in range(mol.natom()):
             oneatombasis = BasisSet(basisset, at)
-            oneatombasishash = hashlib.sha1(oneatombasis.print_detail(numbersonly=True).encode('utf-8')).hexdigest()
+            oneatombasishash = hashlib.sha1(oneatombasis.print_detail(numbersonly=True).encode("utf-8")).hexdigest()
             mol.set_shell_by_number(at, oneatombasishash, role="CABS")
         mol.update_geometry()  # re-evaluate symmetry taking basissets into account
 
@@ -609,23 +624,18 @@ class BasisSet(object):
             return basisset
         else:
             bsdict = {}
-            bsdict['message'] = text
-            bsdict['name'] = basisset.name
-            bsdict['key'] = keywords
-            bsdict['blend'] = blends
-            bsdict['puream'] = int(basisset.has_puream())
-            bsdict['shell_map'] = basisset.export_for_libmints("CABS")
+            bsdict["message"] = text
+            bsdict["name"] = basisset.name
+            bsdict["key"] = keywords
+            bsdict["blend"] = blends
+            bsdict["puream"] = int(basisset.has_puream())
+            bsdict["shell_map"] = basisset.export_for_libmints("CABS")
             return bsdict
 
     @staticmethod
-    def pyconstruct(mol,
-                    key,
-                    target,
-                    fitrole='ORBITAL',
-                    other=None,
-                    return_atomlist=False,
-                    return_dict=False,
-                    verbose=1):
+    def pyconstruct(
+        mol, key, target, fitrole="ORBITAL", other=None, return_atomlist=False, return_dict=False, verbose=1
+    ):
         """Builds a BasisSet object for *mol* (either a qcdb.Molecule or
         a string that can be instantiated into one) from basis set
         specifications passed in as python functions or as a string that
@@ -658,7 +668,7 @@ class BasisSet(object):
             Required for `fitrole='ORBITAL'`. For auxiliary bases to be built
             entirely from orbital default, can be empty string.
         fitrole : {'ORBITAL', 'JKFIT', 'RIFIT'}
-        other : 
+        other :
             Only used when building fitting bases. Like `target` only supplies
             the definitions for the orbital basis.
         return_atomlist : bool, optional
@@ -672,9 +682,9 @@ class BasisSet(object):
             Built BasisSet object for `mol`.
         dbas : dict, optional
             Only returned if `return_dict=True`. Suitable for feeding to libmints.
-            
+
         """
-        orbonly = True if (fitrole == 'ORBITAL' and other is None) else False
+        orbonly = True if (fitrole == "ORBITAL" and other is None) else False
         if orbonly:
             orb = target
             aux = None
@@ -683,8 +693,19 @@ class BasisSet(object):
             aux = target
 
         if verbose >= 2:
-            print('BasisSet::pyconstructP', 'key =', key, 'aux =', aux, 'fitrole =', fitrole, 'orb =', orb,
-                  'orbonly =', orbonly)  #, mol)
+            print(
+                "BasisSet::pyconstructP",
+                "key =",
+                key,
+                "aux =",
+                aux,
+                "fitrole =",
+                fitrole,
+                "orb =",
+                orb,
+                "orbonly =",
+                orbonly,
+            )  # , mol)
 
         # Create (if necessary) and update qcdb.Molecule
         if not isinstance(mol, Molecule):
@@ -697,16 +718,16 @@ class BasisSet(object):
         mol.clear_basis_all_atoms()
         # TODO now need to clear shells, too
         basstrings = collections.defaultdict(dict)
-        if orb is None or orb == '':
+        if orb is None or orb == "":
             raise ValidationError("""Orbital basis argument must not be empty.""")
         elif callable(orb):
-            basstrings['BASIS'] = orb(mol, 'BASIS')
-            callby = orb.__name__.replace('basisspec_psi4_yo__', '')
+            basstrings["BASIS"] = orb(mol, "BASIS")
+            callby = orb.__name__.replace("basisspec_psi4_yo__", "")
         elif orb in basishorde:
-            basstrings['BASIS'] = basishorde[orb](mol, 'BASIS')
+            basstrings["BASIS"] = basishorde[orb](mol, "BASIS")
             callby = orb
         elif isinstance(orb, str):
-            mol.set_basis_all_atoms(orb, role='BASIS')
+            mol.set_basis_all_atoms(orb, role="BASIS")
             callby = orb
         else:
             raise ValidationError(
@@ -714,11 +735,11 @@ class BasisSet(object):
             )
 
         if not orbonly:
-            if aux is None or aux == '':
-                callby = '({} Aux)'.format(callby)
+            if aux is None or aux == "":
+                callby = "({} Aux)".format(callby)
             elif callable(aux):
                 basstrings[fitrole] = aux(mol, fitrole)
-                callby = aux.__name__.replace('basisspec_psi4_yo__', '')
+                callby = aux.__name__.replace("basisspec_psi4_yo__", "")
             elif isinstance(aux, str):
                 mol.set_basis_all_atoms(aux, role=fitrole)
                 callby = aux
@@ -731,13 +752,15 @@ class BasisSet(object):
         parser = Gaussian94BasisSetParser()
 
         # Molecule and parser prepped, call the constructor
-        bs, msg, ecp = BasisSet.construct(parser,
-                                          mol,
-                                          'BASIS' if fitrole == 'ORBITAL' else fitrole,
-                                          None if fitrole == 'ORBITAL' else fitrole,
-                                          basstrings['BASIS'] if fitrole == 'ORBITAL' else basstrings[fitrole],
-                                          return_atomlist=return_atomlist,
-                                          verbose=verbose)
+        bs, msg, ecp = BasisSet.construct(
+            parser,
+            mol,
+            "BASIS" if fitrole == "ORBITAL" else fitrole,
+            None if fitrole == "ORBITAL" else fitrole,
+            basstrings["BASIS"] if fitrole == "ORBITAL" else basstrings[fitrole],
+            return_atomlist=return_atomlist,
+            verbose=verbose,
+        )
 
         text = """   => Loading Basis Set <=\n\n"""
         text += """    Name: %s\n""" % (callby.upper())
@@ -750,15 +773,15 @@ class BasisSet(object):
                 atom_basis_list = []
                 for atbs in bs:
                     bsdict = {}
-                    bsdict['message'] = text
-                    bsdict['key'] = key
-                    bsdict['name'] = callby.upper()
-                    bsdict['blend'] = atbs.name.upper()
-                    bsdict['puream'] = int(atbs.has_puream())
-                    bsdict['shell_map'] = atbs.export_for_libmints('BASIS' if fitrole == 'ORBITAL' else fitrole)
+                    bsdict["message"] = text
+                    bsdict["key"] = key
+                    bsdict["name"] = callby.upper()
+                    bsdict["blend"] = atbs.name.upper()
+                    bsdict["puream"] = int(atbs.has_puream())
+                    bsdict["shell_map"] = atbs.export_for_libmints("BASIS" if fitrole == "ORBITAL" else fitrole)
                     if ecp:
-                        bsdict['ecp_shell_map'] = ecp.export_for_libmints('BASIS')
-                    bsdict['molecule'] = atbs.molecule.to_dict(force_c1=True)
+                        bsdict["ecp_shell_map"] = ecp.export_for_libmints("BASIS")
+                    bsdict["molecule"] = atbs.molecule.to_dict(force_c1=True)
                     atom_basis_list.append(bsdict)
                 return bs, atom_basis_list
             else:
@@ -766,14 +789,14 @@ class BasisSet(object):
 
         if return_dict:
             bsdict = {}
-            bsdict['message'] = text
-            bsdict['key'] = key
-            bsdict['name'] = callby.upper()
-            bsdict['blend'] = bs.name.upper()
-            bsdict['puream'] = int(bs.has_puream())
-            bsdict['shell_map'] = bs.export_for_libmints('BASIS' if fitrole == 'ORBITAL' else fitrole)
+            bsdict["message"] = text
+            bsdict["key"] = key
+            bsdict["name"] = callby.upper()
+            bsdict["blend"] = bs.name.upper()
+            bsdict["puream"] = int(bs.has_puream())
+            bsdict["shell_map"] = bs.export_for_libmints("BASIS" if fitrole == "ORBITAL" else fitrole)
             if ecp:
-                bsdict['ecp_shell_map'] = ecp.export_for_libmints('BASIS')
+                bsdict["ecp_shell_map"] = ecp.export_for_libmints("BASIS")
             return bs, bsdict
         else:
             return bs
@@ -797,7 +820,7 @@ class BasisSet(object):
             Additional source for basis data. Keys are regularized basis names and values are gbs strings.
         return_atomlist
             Return list of one-atom BasisSet-s, rather than single whole-mol BasisSet.
-    
+
         """
         # Update geometry in molecule, if there is a problem an exception is thrown.
         mol.update_geometry()
@@ -806,25 +829,25 @@ class BasisSet(object):
         try:
             from psi4 import core
         except ImportError:
-            libraryPath = ''
+            libraryPath = ""
         else:
             psidatadir = core.get_datadir()
-            libraryPath = os.pathsep + os.path.join(os.path.abspath(psidatadir), 'basis')
-        #nolongerenvvar psidatadir = os.environ.get('PSIDATADIR', None)
-        #nolongerpredicatble psidatadir = __file__ + '/../../..' if psidatadir is None else psidatadir
+            libraryPath = os.pathsep + os.path.join(os.path.abspath(psidatadir), "basis")
+        # nolongerenvvar psidatadir = os.environ.get('PSIDATADIR', None)
+        # nolongerpredicatble psidatadir = __file__ + '/../../..' if psidatadir is None else psidatadir
 
-        basisPath = os.path.abspath('.') + os.pathsep
-        basisPath += os.pathsep.join([os.path.abspath(x) for x in os.environ.get('PSIPATH', '').split(os.pathsep)])
+        basisPath = os.path.abspath(".") + os.pathsep
+        basisPath += os.pathsep.join([os.path.abspath(x) for x in os.environ.get("PSIPATH", "").split(os.pathsep)])
         basisPath += libraryPath
 
         # Validate deffit for key
         univdef_zeta = 4
         univdef = {
-            'JFIT': ('def2-universal-jfit', 'def2-universal-jfit', None),
-            'JKFIT': ('def2-universal-jkfit', 'def2-universal-jkfit', None),
-            'RIFIT': ('def2-qzvpp-ri', 'def2-qzvpp-ri', None),
-            'DECON': (None, None, BasisSet.decontract),
-            'F12': ('def2-qzvpp-f12', 'def2-qzvpp-f12', None)
+            "JFIT": ("def2-universal-jfit", "def2-universal-jfit", None),
+            "JKFIT": ("def2-universal-jkfit", "def2-universal-jkfit", None),
+            "RIFIT": ("def2-qzvpp-ri", "def2-qzvpp-ri", None),
+            "DECON": (None, None, BasisSet.decontract),
+            "F12": ("def2-qzvpp-f12", "def2-qzvpp-f12", None),
         }
 
         if deffit is not None:
@@ -854,9 +877,10 @@ class BasisSet(object):
             try:
                 requested_basname = basdict[key]
             except KeyError:
-                if key == 'BASIS' or deffit is None:
-                    raise BasisSetNotDefined("""BasisSet::construct: No basis set specified for %s and %s.""" %
-                                             (symbol, key))
+                if key == "BASIS" or deffit is None:
+                    raise BasisSetNotDefined(
+                        """BasisSet::construct: No basis set specified for %s and %s.""" % (symbol, key)
+                    )
                 else:
                     # No auxiliary / decon basis set for atom, so try darnedest to find one.
                     #   This involves querying the BasisFamily for default and
@@ -864,52 +888,52 @@ class BasisSet(object):
                     #   in this function). Since user hasn't indicated any specifics,
                     #   look for symbol only, not label.
                     tmp = []
-                    tmp.append(corresponding_basis(basdict['BASIS'], deffit))
-                    #NYI#tmp.append(corresponding_basis(basdict['BASIS'], deffit + '-DEFAULT'))
-                    orbital_zeta = corresponding_zeta(basdict['BASIS'])
+                    tmp.append(corresponding_basis(basdict["BASIS"], deffit))
+                    # NYI#tmp.append(corresponding_basis(basdict['BASIS'], deffit + '-DEFAULT'))
+                    orbital_zeta = corresponding_zeta(basdict["BASIS"])
                     if orbital_zeta is None or orbital_zeta <= univdef_zeta:
                         tmp.append(univdef[deffit])
-                    seek['basis'] = [item for item in tmp if item != (None, None, None)]
-                    seek['entry'] = [symbol]
-                    seek['path'] = basisPath
-                    seek['strings'] = ''
+                    seek["basis"] = [item for item in tmp if item != (None, None, None)]
+                    seek["entry"] = [symbol]
+                    seek["path"] = basisPath
+                    seek["strings"] = ""
             else:
                 # User (I hope ... dratted has_changed) has set basis for atom,
                 #   so look only for basis (don't try defaults), look for label (N88)
                 #   or symbol (N) (in that order; don't want to restrict use of atom
                 #   labels to basis set spec), look everywhere (don't just look
                 #   in library)
-                if requested_basname.lower().endswith('-decon'):
+                if requested_basname.lower().endswith("-decon"):
                     bas_recipe = requested_basname, requested_basname[:-6], BasisSet.decontract
                 else:
                     bas_recipe = requested_basname, requested_basname, None
-                seek['basis'] = [bas_recipe]
-                seek['entry'] = [symbol] if symbol == label else [label, symbol]
-                seek['path'] = basisPath
-                seek['strings'] = '' if basstrings is None else list(basstrings.keys())
+                seek["basis"] = [bas_recipe]
+                seek["entry"] = [symbol] if symbol == label else [label, symbol]
+                seek["path"] = basisPath
+                seek["strings"] = "" if basstrings is None else list(basstrings.keys())
 
             if verbose >= 2:
-                print("""  Shell Entries: %s""" % (seek['entry']))
-                print("""  Basis Sets: %s""" % (seek['basis']))
-                print("""  File Path: %s""" % (', '.join(map(str, seek['path'].split(os.pathsep)))))
-                print("""  Input Blocks: %s\n""" % (', '.join(seek['strings'])))
+                print("""  Shell Entries: %s""" % (seek["entry"]))
+                print("""  Basis Sets: %s""" % (seek["basis"]))
+                print("""  File Path: %s""" % (", ".join(map(str, seek["path"].split(os.pathsep)))))
+                print("""  Input Blocks: %s\n""" % (", ".join(seek["strings"])))
 
             # Search through paths, bases, entries
-            for bas in seek['basis']:
+            for bas in seek["basis"]:
                 (bastitle, basgbs, postfunc) = bas
 
                 filename = cls.make_filename(basgbs)
 
                 # If name is prefixed with "bse:", then load from basis set exchange library
-                if bastitle.lower().startswith('bse:'):
-                    if not qcel.util.which_import('basis_set_exchange', return_bool=True):
+                if bastitle.lower().startswith("bse:"):
+                    if not qcel.util.which_import("basis_set_exchange", return_bool=True):
                         raise ModuleNotFoundError(
                             "Python module 'basis_set_exchange' not found. Solve by installing it: `conda install -c conda-forge basis_set_exchange` or `pip install basis_set_exchange`"
                         )
 
                     import basis_set_exchange as bse
 
-                    index = 'bse %s' % (bastitle)
+                    index = "bse %s" % (bastitle)
 
                     if index not in names:
                         basparts = bastitle.split(":")
@@ -922,29 +946,28 @@ class BasisSet(object):
                             _, basname = basparts
                             basver = None
 
-                        names[index] = bse.get_basis(basname, version=basver, fmt='psi4')
+                        names[index] = bse.get_basis(basname, version=basver, fmt="psi4")
 
                 # -- seek bas string in input file strings
-                elif filename[:-4] in seek['strings']:
-                    index = 'inputblock %s' % (filename[:-4])
+                elif filename[:-4] in seek["strings"]:
+                    index = "inputblock %s" % (filename[:-4])
                     # Store contents
                     if index not in names:
-                        names[index] = basstrings[filename[:-4]].split('\n')
+                        names[index] = basstrings[filename[:-4]].split("\n")
                 else:
                     # -- Else seek bas.gbs file in path
-                    fullfilename = search_file(_basis_file_warner_and_aliaser(filename), seek['path'])
+                    fullfilename = search_file(_basis_file_warner_and_aliaser(filename), seek["path"])
                     if fullfilename is None:
                         # -- Else skip to next bas
                         continue
                     # Store contents so not reloading files
-                    index = 'file %s' % (fullfilename)
+                    index = "file %s" % (fullfilename)
                     if index not in names:
                         names[index] = parser.load_file(fullfilename)
 
                 lines = names[index]
 
-                for entry in seek['entry']:
-
+                for entry in seek["entry"]:
                     # Seek entry in lines, else skip to next entry
                     shells, msg, ecp_shells, ecp_msg, ecp_ncore = parser.parse(entry, lines)
                     if shells is None:
@@ -954,13 +977,13 @@ class BasisSet(object):
                     # -- Post-process
                     if postfunc:
                         shells = postfunc(shells)
-                        fmsg = 'func {}'.format(postfunc.__name__)
+                        fmsg = "func {}".format(postfunc.__name__)
                     else:
-                        fmsg = ''
+                        fmsg = ""
                     # -- Assign to Molecule
                     atom_basis_shell[label][bastitle] = shells
                     ecp_atom_basis_shell[label][bastitle] = ecp_shells
-                    if key == 'BASIS':
+                    if key == "BASIS":
                         ecp_atom_basis_ncore[label] = ecp_ncore
                     mol.set_basis_by_number(at, bastitle, role=key)
                     bastitles.append(bastitle.upper())
@@ -977,12 +1000,13 @@ class BasisSet(object):
 
             else:
                 # Ne'er found :-(
-                text2 = """  Shell Entries: %s\n""" % (seek['entry'])
-                text2 += """  Basis Sets: %s\n""" % (seek['basis'])
-                text2 += """  File Path: %s\n""" % (', '.join(map(str, seek['path'].split(os.pathsep))))
-                text2 += """  Input Blocks: %s\n""" % (', '.join(seek['strings']))
+                text2 = """  Shell Entries: %s\n""" % (seek["entry"])
+                text2 += """  Basis Sets: %s\n""" % (seek["basis"])
+                text2 += """  File Path: %s\n""" % (", ".join(map(str, seek["path"].split(os.pathsep))))
+                text2 += """  Input Blocks: %s\n""" % (", ".join(seek["strings"]))
                 raise BasisSetNotFound(
-                    f'BasisSet::construct: Unable to find a basis set for atom {at + 1} for key {key} among:\n{text2}')
+                    f"BasisSet::construct: Unable to find a basis set for atom {at + 1} for key {key} among:\n{text2}"
+                )
 
         # Construct the grand BasisSet for mol
         basisset = BasisSet(key, mol, atom_basis_shell)
@@ -992,7 +1016,7 @@ class BasisSet(object):
         ncore = 0
         for atom in ecp_atom_basis_ncore:
             ncore += ecp_atom_basis_ncore[atom]
-        if ncore and key == 'BASIS':
+        if ncore and key == "BASIS":
             ecpbasisset = BasisSet(key, mol, ecp_atom_basis_shell, True)
             ecpbasisset.ecp_coreinfo = ecp_atom_basis_ncore
 
@@ -1000,7 +1024,7 @@ class BasisSet(object):
         atom_basis_list = []
         for at in range(mol.natom()):
             oneatombasis = BasisSet(basisset, at)
-            oneatombasishash = hashlib.sha1(oneatombasis.print_detail(numbersonly=True).encode('utf-8')).hexdigest()
+            oneatombasishash = hashlib.sha1(oneatombasis.print_detail(numbersonly=True).encode("utf-8")).hexdigest()
             if return_atomlist:
                 oneatombasis.molecule.set_shell_by_number(0, oneatombasishash, role=key)
                 atom_basis_list.append(oneatombasis)
@@ -1010,7 +1034,7 @@ class BasisSet(object):
 
         bastitles = list(set(bastitles))
         bastitles.sort()
-        basisset.name = ' + '.join(bastitles)
+        basisset.name = " + ".join(bastitles)
 
         # Summary printing
         tmp = collections.defaultdict(list)
@@ -1022,13 +1046,13 @@ class BasisSet(object):
             for msg, ats in tmp.items():
                 if item == ats:
                     G = (list(x) for _, x in itertools.groupby(ats, lambda x, c=itertools.count(): next(c) - x))
-                    sats = ", ".join("-".join(map(str, (g[0], g[-1])[:len(g)])) for g in G)
+                    sats = ", ".join("-".join(map(str, (g[0], g[-1])[: len(g)])) for g in G)
                     maxsats = max(maxsats, len(sats))
                     tmp2[sats] = msg
-        text = ''
+        text = ""
         for ats, msg in tmp2.items():
             text += """    atoms %s %s\n""" % (ats.ljust(maxsats), msg)
-        text += '\n'
+        text += "\n"
 
         if return_atomlist:
             return atom_basis_list, text, ecpbasisset
@@ -1045,10 +1069,9 @@ class BasisSet(object):
         """Sets the name of this basis set"""
         self.name = name
 
-
-# JET added but I think should fail
-#+    def atom_shell_map(self):
-#+        return self.atom_shell_map
+    # JET added but I think should fail
+    # +    def atom_shell_map(self):
+    # +        return self.atom_shell_map
 
     def nprimitive(self):
         """Number of primitives.
@@ -1164,8 +1187,10 @@ class BasisSet(object):
         if center is not None:
             si += self.center_to_shell[center]
         if si < 0 or si > self.nshell():
-            text = """BasisSet::shell(si = %d), requested a shell out-of-bound.\n   Max shell size: %d\n   Name: %s\n""" % \
-                (si, self.nshell(), self.name)
+            text = (
+                """BasisSet::shell(si = %d), requested a shell out-of-bound.\n   Max shell size: %d\n   Name: %s\n"""
+                % (si, self.nshell(), self.name)
+            )
             raise ValidationError("BasisSet::shell: requested shell is out-of-bounds:\n%s" % (text))
         return self.shells[si]
 
@@ -1201,7 +1226,7 @@ class BasisSet(object):
         if out is None:
             print(text)
         else:
-            with open(out, mode='w') as handle:
+            with open(out, mode="w") as handle:
                 handle.write(text)
 
     def pyprint(self, out=None):
@@ -1209,19 +1234,19 @@ class BasisSet(object):
         *  @param out The file stream to use for printing. Defaults to outfile.
 
         """
-        text = ''
+        text = ""
         text += """  Basis Set: %s\n""" % (self.name)
         text += """    Number of shells: %d\n""" % (self.nshell())
         text += """    Number of basis function: %d\n""" % (self.nbf())
         text += """    Number of Cartesian functions: %d\n""" % (self.nao())
-        text += """    Spherical Harmonics?: %s\n""" % ('true' if self.has_puream() else 'false')
+        text += """    Spherical Harmonics?: %s\n""" % ("true" if self.has_puream() else "false")
         text += """    Max angular momentum: %d\n\n""" % (self.max_am())
-        #text += """    Source:\n%s\n""" % (self.source())  # TODO
+        # text += """    Source:\n%s\n""" % (self.source())  # TODO
 
         if out is None:
             return text
         else:
-            with open(outfile, mode='w') as handle:
+            with open(outfile, mode="w") as handle:
                 handle.write(text)
 
     def print_summary(self, out=None):
@@ -1229,7 +1254,7 @@ class BasisSet(object):
         *  @param out The file stream to use for printing. Defaults to outfile.
 
         """
-        text = ''
+        text = ""
         text += """  -AO BASIS SET INFORMATION:\n"""
         text += """    Name                   = %s\n""" % (self.name)
         text += """    Total number of shells = %d\n""" % (self.nshell())
@@ -1237,7 +1262,7 @@ class BasisSet(object):
         text += """    Number of AO           = %d\n""" % (self.nao())
         text += """    Number of SO           = %d\n""" % (self.nbf())
         text += """    Maximum AM             = %d\n""" % (self.max_am())
-        text += """    Spherical Harmonics    = %s\n""" % ('TRUE' if self.puream else 'FALSE')
+        text += """    Spherical Harmonics    = %s\n""" % ("TRUE" if self.puream else "FALSE")
         text += """\n"""
         text += """  -Contraction Scheme:\n"""
         text += """    Atom   Type   All Primitives // Shells:\n"""
@@ -1280,7 +1305,7 @@ class BasisSet(object):
         if out is None:
             return text
         else:
-            with open(out, mode='w') as handle:
+            with open(out, mode="w") as handle:
                 handle.write(text)
 
     def print_detail(self, out=None, numbersonly=False):
@@ -1288,11 +1313,11 @@ class BasisSet(object):
         *  @param out The file stream to use for printing. Defaults to outfile.
 
         """
-        text = ''
+        text = ""
         if not numbersonly:
             text += self.print_summary(out=None)
             text += """  ==> AO Basis Functions <==\n"""
-            text += '\n'
+            text += "\n"
             text += """    [ %s ]\n""" % (self.name)
         text += """    spherical\n""" if self.has_puream() else """    cartesian\n"""
         text += """    ****\n"""
@@ -1312,7 +1337,7 @@ class BasisSet(object):
         if out is None:
             return text
         else:
-            with open(out, mode='w') as handle:
+            with open(out, mode="w") as handle:
                 handle.write(text)
 
     def export_for_libmints(self, role):
@@ -1349,11 +1374,11 @@ class BasisSet(object):
         *  @param out The file stream to use for printing. Defaults to outfile.
 
         """
-        text = ''
+        text = ""
         if not numbersonly:
             text += self.print_summary(out=None)
             text += """  ==> AO Basis Functions <==\n"""
-            text += '\n'
+            text += "\n"
             text += """    [ %s ]\n""" % (self.name)
         text += """    spherical\n""" if self.has_puream() else """    cartesian\n"""
         text += """    ****\n"""
@@ -1367,13 +1392,13 @@ class BasisSet(object):
 
             for Q in range(n_shell):
                 text += self.shells[Q + first_shell].pyprint_gamess(outfile=None)
-            #text += """    ****\n"""
+            # text += """    ****\n"""
         text += """\n"""
 
         if out is None:
             return text
         else:
-            with open(out, mode='w') as handle:
+            with open(out, mode="w") as handle:
                 handle.write(text)
 
     def print_detail_cfour(self, out=None):
@@ -1381,21 +1406,27 @@ class BasisSet(object):
         *  Format from https://web.archive.org/web/20221130013041/http://slater.chemie.uni-mainz.de/cfour/index.php?n=Main.OldFormatOfAnEntryInTheGENBASFile
 
         """
-        text = ''
+        text = ""
 
         for uA in range(self.molecule.nunique()):
             A = self.molecule.unique(uA)
             text += """%s:P4_%d\n""" % (self.molecule.symbol(A), A + 1)
-            text += """Psi4 basis %s for element %s atom %d\n\n""" % \
-                (self.name.upper(), self.molecule.symbol(A), A + 1)
+            text += """Psi4 basis %s for element %s atom %d\n\n""" % (
+                self.name.upper(),
+                self.molecule.symbol(A),
+                A + 1,
+            )
 
             first_shell = self.center_to_shell[A]
             n_shell = self.center_to_nshell[A]
 
             max_am_center = 0
             for Q in range(n_shell):
-                max_am_center = self.shells[Q + first_shell].am() if \
-                self.shells[Q + first_shell].am() > max_am_center else max_am_center
+                max_am_center = (
+                    self.shells[Q + first_shell].am()
+                    if self.shells[Q + first_shell].am() > max_am_center
+                    else max_am_center
+                )
 
             shell_per_am = [[] for i in range(max_am_center + 1)]
             for Q in range(n_shell):
@@ -1407,12 +1438,12 @@ class BasisSet(object):
             # Write angular momentum for each shell
             for am in range(max_am_center + 1):
                 text += """%5d""" % (am)
-            text += '\n'
+            text += "\n"
 
             # Write number of contracted basis functions for each shell
             for am in range(max_am_center + 1):
                 text += """%5d""" % (len(shell_per_am[am]))
-            text += '\n'
+            text += "\n"
 
             exp_per_am = [[] for i in range(max_am_center + 1)]
             coef_per_am = [[] for i in range(max_am_center + 1)]
@@ -1437,27 +1468,27 @@ class BasisSet(object):
             # Write number of exponents for each shell
             for am in range(max_am_center + 1):
                 text += """%5d""" % (len(exp_per_am[am]))
-            text += '\n\n'
+            text += "\n\n"
 
             for am in range(max_am_center + 1):
                 # Write exponents for each shell
                 for ep in range(len(exp_per_am[am])):
                     text += """%14.7f""" % (exp_per_am[am][ep])
                     if ((ep + 1) % 5 == 0) or ((ep + 1) == len(exp_per_am[am])):
-                        text += '\n'
-                text += '\n'
+                        text += "\n"
+                text += "\n"
 
                 # Write contraction coefficients for each shell
                 for ep in range(len(exp_per_am[am])):
                     for bf in range(len(shell_per_am[am])):
                         text += """%10.7f """ % (coef_per_am[am][bf * len(exp_per_am[am]) + ep])
-                    text += '\n'
-                text += '\n'
+                    text += "\n"
+                text += "\n"
 
         if out is None:
             return text
         else:
-            with open(out, mode='w') as handle:
+            with open(out, mode="w") as handle:
                 handle.write(text)
 
     # <<< Misc. Methods >>>
@@ -1468,7 +1499,7 @@ class BasisSet(object):
         the parsers will call refresh(). This function is now defunct.
 
         """
-        raise FeatureNotImplemented('BasisSet::refresh')
+        raise FeatureNotImplemented("BasisSet::refresh")
 
     @staticmethod
     def make_filename(name):
@@ -1484,22 +1515,22 @@ class BasisSet(object):
         basisname = basisname.lower()
 
         # Replace all '(' with '_'
-        basisname = basisname.replace('(', '_')
+        basisname = basisname.replace("(", "_")
 
         # Replace all ')' with '_'
-        basisname = basisname.replace(')', '_')
+        basisname = basisname.replace(")", "_")
 
         # Replace all ',' with '_'
-        basisname = basisname.replace(',', '_')
+        basisname = basisname.replace(",", "_")
 
         # Replace all '*' with 's'
-        basisname = basisname.replace('*', 's')
+        basisname = basisname.replace("*", "s")
 
         # Replace all '+' with 'p'
-        basisname = basisname.replace('+', 'p')
+        basisname = basisname.replace("+", "p")
 
         # Add file extension
-        basisname += '.gbs'
+        basisname += ".gbs"
 
         return basisname
 
@@ -1530,8 +1561,9 @@ class BasisSet(object):
                     if abs(exp - _exp) < 1.0e-6:
                         unique = False
                 if unique:
-                    us = ShellInfo(am, [1.0], [exp], 'Pure' if pure else 'Cartesian', nc, center, start,
-                                   'Unnormalized')
+                    us = ShellInfo(
+                        am, [1.0], [exp], "Pure" if pure else "Cartesian", nc, center, start, "Unnormalized"
+                    )
                     shell_list.append(us)
                     exp_map[am].append(exp)
 
@@ -1540,13 +1572,13 @@ class BasisSet(object):
     # <<< Methods not Implemented >>>
 
     def zero_so_basis_set(cls, factory):
-        """ **NYI** Returns an empty SO basis set object.
+        """**NYI** Returns an empty SO basis set object.
         *  Returns an SOBasis object that actually has a single s-function
         *  at the origin with an exponent of 0.0 and contraction of 1.0.
         *  @return A new empty SOBasis object.
 
         """
-        raise FeatureNotImplemented('BasisSet::zero_so_basis_set')  # FINAL
+        raise FeatureNotImplemented("BasisSet::zero_so_basis_set")  # FINAL
 
     @staticmethod
     def test_basis_set(max_am):
@@ -1558,15 +1590,15 @@ class BasisSet(object):
         The libmints version seems not to have been updated along with the classes.
 
         """
-        raise FeatureNotImplemented('BasisSet::test_basis_set')
+        raise FeatureNotImplemented("BasisSet::test_basis_set")
 
     def get_ao_sorted_shell(self, i):
         """Returns the value of the sorted shell list. Defunct"""
-        raise FeatureNotImplemented('BasisSet::get_ao_sorted_shell')
+        raise FeatureNotImplemented("BasisSet::get_ao_sorted_shell")
 
     def get_ao_sorted_list(self):
         """Returns the vector of sorted shell list. Defunct"""
-        raise FeatureNotImplemented('BasisSet::get_ao_sorted_list')
+        raise FeatureNotImplemented("BasisSet::get_ao_sorted_list")
 
     def compute_phi(self, phi_ao, x, y, z):
         """Returns the values of the basis functions at a point"""
@@ -1592,10 +1624,7 @@ class BasisSet(object):
 
             for l in range(INT_NCART(am)):
                 components = exp_ao[am][l]
-                phi_ao[ao + l] += pow(dx, components[0]) * \
-                                pow(dy, components[1]) * \
-                                pow(dz, components[2]) * \
-                                cexpr
+                phi_ao[ao + l] += pow(dx, components[0]) * pow(dy, components[1]) * pow(dz, components[2]) * cexpr
 
             ao += INT_NCART(am)
 
@@ -1605,14 +1634,14 @@ class BasisSet(object):
         use the '+' operator instead of this method. Appears defunct.
 
         """
-        raise FeatureNotImplemented('BasisSet::concatenate')
+        raise FeatureNotImplemented("BasisSet::concatenate")
 
     def add(self, b):
         """Adds this plus another basis set and returns the result.
         Equivalent to the '+' operator. Appears defunct.
 
         """
-        raise FeatureNotImplemented('BasisSet::add')
+        raise FeatureNotImplemented("BasisSet::add")
 
     @staticmethod
     def shell_sorter_ncenter(d1, d2):
@@ -1643,7 +1672,8 @@ def _basis_file_warner_and_aliaser(filename):
             warnings.warn(
                 f"Using basis set `{k}` instead of its generic name `{v}` is deprecated, and as soon as 1.5 it will stop working\n",
                 category=FutureWarning,
-                stacklevel=2)
+                stacklevel=2,
+            )
             return filename.replace(k, v)
     else:
         return filename

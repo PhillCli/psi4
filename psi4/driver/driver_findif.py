@@ -169,8 +169,9 @@ logger = logging.getLogger(__name__)
 # h is the index of an irrep.
 
 
-def _displace_cart(mass: np.ndarray, geom: np.ndarray, salc_list: core.CdSalcList, i_m: Iterator[Tuple],
-                   step_size: float) -> Tuple[np.ndarray, str]:
+def _displace_cart(
+    mass: np.ndarray, geom: np.ndarray, salc_list: core.CdSalcList, i_m: Iterator[Tuple], step_size: float
+) -> Tuple[np.ndarray, str]:
     """Displace a geometry along the specified displacement SALCs.
 
     Parameters
@@ -204,26 +205,29 @@ def _displace_cart(mass: np.ndarray, geom: np.ndarray, salc_list: core.CdSalcLis
         # * Python error if iterate through `salc_list`
         for i in range(len(salc_list[salc_index])):
             component = salc_list[salc_index][i]
-            disp_geom[component.atom, component.xyz] += disp_steps * step_size * component.coef / np.sqrt(
-                mass[component.atom])
+            disp_geom[component.atom, component.xyz] += (
+                disp_steps * step_size * component.coef / np.sqrt(mass[component.atom])
+            )
         label.append(f"{salc_index}: {disp_steps}")
 
     # salc_index is in descending order. We want the label in ascending order, so...
     # ...add the new label part from the left of the string, not the right.
-    label = ', '.join(reversed(label))
+    label = ", ".join(reversed(label))
     return disp_geom, label
 
 
-def _initialize_findif(mol: Union["qcdb.Molecule", core.Molecule],
-                       freq_irrep_only: int,
-                       mode: str,
-                       stencil_size: int,
-                       step_size: float,
-                       initialize_string: Callable,
-                       t_project: bool,
-                       r_project: bool,
-                       initialize: bool,
-                       verbose: int = 0) -> Dict:
+def _initialize_findif(
+    mol: Union["qcdb.Molecule", core.Molecule],
+    freq_irrep_only: int,
+    mode: str,
+    stencil_size: int,
+    step_size: float,
+    initialize_string: Callable,
+    t_project: bool,
+    r_project: bool,
+    initialize: bool,
+    verbose: int = 0,
+) -> Dict:
     """Perform initialization tasks needed by all primary functions.
 
     Parameters
@@ -292,8 +296,9 @@ def _initialize_findif(mol: Union["qcdb.Molecule", core.Molecule],
         info = f"    Number of atoms is {n_atom}.\n"
         if method_allowed_irreps != 0x1:
             info += f"    Number of irreps is {n_irrep}.\n"
-        info += "    Number of {!s}SALCs is {:d}.\n".format("" if method_allowed_irreps != 0x1 else "symmetric ",
-                                                            n_salc)
+        info += "    Number of {!s}SALCs is {:d}.\n".format(
+            "" if method_allowed_irreps != 0x1 else "symmetric ", n_salc
+        )
         info += f"    Translations projected? {t_project:d}. Rotations projected? {r_project:d}.\n"
         core.print_out(info)
         logger.info(info)
@@ -302,16 +307,12 @@ def _initialize_findif(mol: Union["qcdb.Molecule", core.Molecule],
     # Diagonal displacements differ between the totally symmetric irrep, compared to all others.
     # Off-diagonal displacements are the same for both.
     pts_dict = {
-        3: {
-            "sym_irr": ((-1, ), (1, )),
-            "asym_irr": ((-1, ), ),
-            "off": ((1, 1), (-1, -1))
-        },
+        3: {"sym_irr": ((-1,), (1,)), "asym_irr": ((-1,),), "off": ((1, 1), (-1, -1))},
         5: {
-            "sym_irr": ((-2, ), (-1, ), (1, ), (2, )),
-            "asym_irr": ((-2, ), (-1, )),
-            "off": ((-1, -2), (-2, -1), (-1, -1), (1, -1), (-1, 1), (1, 1), (2, 1), (1, 2))
-        }
+            "sym_irr": ((-2,), (-1,), (1,), (2,)),
+            "asym_irr": ((-2,), (-1,)),
+            "off": ((-1, -2), (-2, -1), (-1, -1), (1, -1), (-1, 1), (1, 1), (2, 1), (1, 2)),
+        },
     }
 
     try:
@@ -328,7 +329,8 @@ def _initialize_findif(mol: Union["qcdb.Molecule", core.Molecule],
     except (TypeError, IndexError):
         if freq_irrep_only != -1:
             raise ValidationError(
-                f"FINDIF: 0-indexed Irrep value ({freq_irrep_only}) not in valid range: <{len(salc_indices_pi)}.")
+                f"FINDIF: 0-indexed Irrep value ({freq_irrep_only}) not in valid range: <{len(salc_indices_pi)}."
+            )
 
     # Populate salc_indices_pi for all irreps.
     # * Python error if iterate through `salc_list`
@@ -378,29 +380,33 @@ def _initialize_findif(mol: Union["qcdb.Molecule", core.Molecule],
         for i in range(len(salc_list)):
             salc_list[i].print_out()
 
-    data.update({
-        "n_disp_pi": n_disp_pi,
-        "n_irrep": n_irrep,
-        "n_salc": n_salc,
-        "n_atom": n_atom,
-        "salc_list": salc_list,
-        "salc_indices_pi": salc_indices_pi,
-        "disps": disps,
-        "project_translations": t_project,
-        "project_rotations": r_project
-    })
+    data.update(
+        {
+            "n_disp_pi": n_disp_pi,
+            "n_irrep": n_irrep,
+            "n_salc": n_salc,
+            "n_atom": n_atom,
+            "salc_list": salc_list,
+            "salc_indices_pi": salc_indices_pi,
+            "disps": disps,
+            "project_translations": t_project,
+            "project_rotations": r_project,
+        }
+    )
 
     return data
 
 
-def _geom_generator(mol: Union["qcdb.Molecule", core.Molecule],
-                    freq_irrep_only: int,
-                    mode: str,
-                    *,
-                    t_project: bool = True,
-                    r_project: bool = True,
-                    stencil_size: int = 3,
-                    step_size: float = 0.005) -> Dict:
+def _geom_generator(
+    mol: Union["qcdb.Molecule", core.Molecule],
+    freq_irrep_only: int,
+    mode: str,
+    *,
+    t_project: bool = True,
+    r_project: bool = True,
+    stencil_size: int = 3,
+    step_size: float = 0.005,
+) -> Dict:
     """
     Generate geometries for the specified molecule and derivative levels.
     You probably want to instead use one of the convenience functions:
@@ -494,14 +500,11 @@ def _geom_generator(mol: Union["qcdb.Molecule", core.Molecule],
     """
 
     msg_dict = {
-        "1_0":
-        "energies to determine gradients",
-        "2_1":
-        "gradients to determine vibrational frequencies and \n"
+        "1_0": "energies to determine gradients",
+        "2_1": "gradients to determine vibrational frequencies and \n"
         "  normal modes. Resulting frequencies are only valid at stationary points",
-        "2_0":
-        "gradients to determine vibrational frequencies and \n"
-        "  normal modes. Resulting frequencies are only valid at stationary points"
+        "2_0": "gradients to determine vibrational frequencies and \n"
+        "  normal modes. Resulting frequencies are only valid at stationary points",
     }
 
     try:
@@ -519,33 +522,32 @@ def _geom_generator(mol: Union["qcdb.Molecule", core.Molecule],
     if isinstance(mol, qcdb.Molecule):
         mol = core.Molecule.from_dict(mol.to_dict())
 
-    data = _initialize_findif(mol, freq_irrep_only, mode, stencil_size, step_size, init_string, t_project, r_project,
-                              True, 1)
+    data = _initialize_findif(
+        mol, freq_irrep_only, mode, stencil_size, step_size, init_string, t_project, r_project, True, 1
+    )
 
     # We can finally start generating displacements.
     ref_geom = np.array(mol.geometry())
 
     # Now we generate the metadata...
     findifrec = {
-        "step": {
-            "units": "bohr",
-            "size": data["step_size"]
-        },
+        "step": {"units": "bohr", "size": data["step_size"]},
         "stencil_size": data["stencil_size"],
         "displacement_space": "CdSALC",
         "project_translations": data["project_translations"],
         "project_rotations": data["project_rotations"],
-        "molecule": mol.to_schema(dtype=2, units='Bohr'),
+        "molecule": mol.to_schema(dtype=2, units="Bohr"),
         "displacements": {},
-        "reference": {}
+        "reference": {},
     }
 
     def append_geoms(indices, steps):
         """Given a list of indices and a list of steps to displace each, append the corresponding geometry to the list."""
 
         # Next, to make this salc/magnitude composite.
-        disp_geom, label = _displace_cart(findifrec['molecule']['masses'], ref_geom, data["salc_list"],
-                                          zip(indices, steps), data["step_size"])
+        disp_geom, label = _displace_cart(
+            findifrec["molecule"]["masses"], ref_geom, data["salc_list"], zip(indices, steps), data["step_size"]
+        )
         if data["print_lvl"] > 2:
             info = "\nDisplacement '{}'\n{}\n".format(label, nppp10(disp_geom))
             core.print_out(info)
@@ -559,7 +561,7 @@ def _geom_generator(mol: Union["qcdb.Molecule", core.Molecule],
             # Displace along the diagonal.
             # Remember that the totally symmetric irrep has special displacements.
             for val in data["disps"]["sym_irr" if h == 0 else "asym_irr"]:
-                append_geoms((index, ), val)
+                append_geoms((index,), val)
 
         # Hessian from energies? We have off-diagonal displacements to worry about.
         if mode == "2_0":
@@ -604,9 +606,15 @@ gradient_from_energies_geometries = partial(_geom_generator, freq_irrep_only=-1,
 hessian_from_gradients_geometries = partial(_geom_generator, mode="2_1")
 hessian_from_energies_geometries = partial(_geom_generator, mode="2_0")
 
-gradient_from_energies_geometries.__doc__ = "Generate geometries for a gradient by finite difference of energies." + _der_from_lesser_docstring
-hessian_from_gradients_geometries.__doc__ = "Generate geometries for a Hessian by finite difference of gradients." + _der_from_lesser_docstring
-hessian_from_energies_geometries.__doc__ = "Generate geometries for a Hessian by finite difference of energies." + _der_from_lesser_docstring
+gradient_from_energies_geometries.__doc__ = (
+    "Generate geometries for a gradient by finite difference of energies." + _der_from_lesser_docstring
+)
+hessian_from_gradients_geometries.__doc__ = (
+    "Generate geometries for a Hessian by finite difference of gradients." + _der_from_lesser_docstring
+)
+hessian_from_energies_geometries.__doc__ = (
+    "Generate geometries for a Hessian by finite difference of energies." + _der_from_lesser_docstring
+)
 
 
 def assemble_gradient_from_energies(findifrec: Dict) -> np.ndarray:
@@ -633,8 +641,17 @@ def assemble_gradient_from_energies(findifrec: Dict) -> np.ndarray:
     Check energies below for precision!
     Forces are for mass-weighted, symmetry-adapted cartesians [a0].\n"""
 
-    data = _initialize_findif(mol, -1, "1_0", findifrec['stencil_size'], findifrec['step']['size'], init_string,
-                              findifrec['project_translations'], findifrec['project_rotations'], False)
+    data = _initialize_findif(
+        mol,
+        -1,
+        "1_0",
+        findifrec["stencil_size"],
+        findifrec["step"]["size"],
+        init_string,
+        findifrec["project_translations"],
+        findifrec["project_rotations"],
+        False,
+    )
     salc_indices = data["salc_indices_pi"][0]
 
     # Extract the energies, and turn then into an ndarray for easy manipulating
@@ -674,7 +691,7 @@ def assemble_gradient_from_energies(findifrec: Dict) -> np.ndarray:
     B = data["salc_list"].matrix()
     g_cart = np.dot(g_q, B)
     g_cart = g_cart.reshape(data["n_atom"], 3)
-    massweighter = np.array([mol.mass(a) for a in range(data["n_atom"])])**(0.5)
+    massweighter = np.array([mol.mass(a) for a in range(data["n_atom"])]) ** (0.5)
     g_cart = (g_cart.T * massweighter).T
 
     if data["print_lvl"]:
@@ -685,8 +702,9 @@ def assemble_gradient_from_energies(findifrec: Dict) -> np.ndarray:
     return g_cart
 
 
-def _process_hessian_symmetry_block(H_block: np.ndarray, B_block: np.ndarray, massweighter: np.ndarray, irrep: str,
-                                    print_lvl: int) -> np.ndarray:
+def _process_hessian_symmetry_block(
+    H_block: np.ndarray, B_block: np.ndarray, massweighter: np.ndarray, irrep: str, print_lvl: int
+) -> np.ndarray:
     """Perform post-construction processing for a symmetry block of the Hessian.
        Statements need to be printed, and the Hessian must be made orthogonal.
 
@@ -735,8 +753,9 @@ def _process_hessian_symmetry_block(H_block: np.ndarray, B_block: np.ndarray, ma
     return H_block
 
 
-def _process_hessian(H_blocks: List[np.ndarray], B_blocks: List[np.ndarray], massweighter: np.ndarray,
-                     print_lvl: int) -> np.ndarray:
+def _process_hessian(
+    H_blocks: List[np.ndarray], B_blocks: List[np.ndarray], massweighter: np.ndarray, print_lvl: int
+) -> np.ndarray:
     """Perform post-construction processing for the Hessian.
        Statements need to be printed, and the Hessian must be transformed.
 
@@ -823,16 +842,25 @@ def assemble_dipder_from_dipoles(findifrec: Dict, freq_irrep_only: int) -> np.nd
     displacements = findifrec["displacements"]
 
     def init_string(data):
-        return ("")
+        return ""
 
-    data = _initialize_findif(mol, freq_irrep_only, "2_1", findifrec['stencil_size'], findifrec['step']['size'],
-                              init_string, findifrec['project_translations'], findifrec['project_rotations'], False)
+    data = _initialize_findif(
+        mol,
+        freq_irrep_only,
+        "2_1",
+        findifrec["stencil_size"],
+        findifrec["step"]["size"],
+        init_string,
+        findifrec["project_translations"],
+        findifrec["project_rotations"],
+        False,
+    )
     salc_indices = data["salc_indices_pi"][0]
     max_disp = (findifrec["stencil_size"] - 1) // 2  # The numerator had better be divisible by two.
     d_per_salc = 2 * max_disp
 
     # Populating with positive and negative displacements for the identity point group
-    dipole = np.zeros(shape=(data['n_salc'], d_per_salc, 3))
+    dipole = np.zeros(shape=(data["n_salc"], d_per_salc, 3))
     for salc_index in salc_indices:
         for j in range(1, max_disp + 1):
             dipole[salc_index, max_disp - j] = displacements[f"{salc_index}: {-j}"]["dipole"]
@@ -861,15 +889,16 @@ def assemble_dipder_from_dipoles(findifrec: Dict, freq_irrep_only: int) -> np.nd
     if findifrec["stencil_size"] == 3:
         dipder_q = (dipole[:, 1] - dipole[:, 0]) / (2.0 * findifrec["step"]["size"])
     elif findifrec["stencil_size"] == 5:
-        dipder_q = (dipole[:, 0] - 8.0 * dipole[:, 1] + 8.0 * dipole[:, 2] -
-                    dipole[:, 3]) / (12.0 * findifrec["step"]["size"])
+        dipder_q = (dipole[:, 0] - 8.0 * dipole[:, 1] + 8.0 * dipole[:, 2] - dipole[:, 3]) / (
+            12.0 * findifrec["step"]["size"]
+        )
 
     # Transform the dipole derivates from mass-weighted SALCs to non-mass-weighted Cartesians
     B = np.asarray(data["salc_list"].matrix())
     dipder_cart = np.dot(dipder_q.T, B)
     dipder_cart = dipder_cart.T.reshape(data["n_atom"], 9)
 
-    massweighter = np.array([mol.mass(a) for a in range(data["n_atom"])])**(0.5)
+    massweighter = np.array([mol.mass(a) for a in range(data["n_atom"])]) ** (0.5)
     dipder_cart = (dipder_cart.T * massweighter).T
 
     dipder_cart = dipder_cart.reshape(3 * data["n_atom"], 3)
@@ -899,12 +928,23 @@ def assemble_hessian_from_gradients(findifrec: Dict, freq_irrep_only: int) -> np
     displacements = findifrec["displacements"]
 
     def init_string(data):
-        return ("  Computing second-derivative from gradients using projected, \n"
-                "  symmetry-adapted, cartesian coordinates.\n\n"
-                "  {:d} gradients passed in, including the reference geometry.\n".format(len(displacements) + 1))
+        return (
+            "  Computing second-derivative from gradients using projected, \n"
+            "  symmetry-adapted, cartesian coordinates.\n\n"
+            "  {:d} gradients passed in, including the reference geometry.\n".format(len(displacements) + 1)
+        )
 
-    data = _initialize_findif(mol, freq_irrep_only, "2_1", findifrec['stencil_size'], findifrec['step']['size'],
-                              init_string, findifrec['project_translations'], findifrec['project_rotations'], False)
+    data = _initialize_findif(
+        mol,
+        freq_irrep_only,
+        "2_1",
+        findifrec["stencil_size"],
+        findifrec["step"]["size"],
+        init_string,
+        findifrec["project_translations"],
+        findifrec["project_rotations"],
+        False,
+    )
 
     # For non-totally symmetric CdSALCs, a symmetry operation can convert + and - displacements.
     # Good News: By taking advantage of that, we (potentially) ran less computations.
@@ -950,7 +990,6 @@ def assemble_hessian_from_gradients(findifrec: Dict, freq_irrep_only: int) -> np
     # into a negative displacement.By doing extra things here, we can find the
     # gradients at the positive displacements.
     for h in range(1, data["n_irrep"]):
-
         # If there are no CdSALCs in this irrep, let's skip it.
         if not data["n_disp_pi"][h]:
             gradients_pi.append([])
@@ -970,8 +1009,11 @@ def assemble_hessian_from_gradients(findifrec: Dict, freq_irrep_only: int) -> np
         else:
             raise ValidationError("A symmetric gradient passed for a non-symmetric one.")
         if data["print_lvl"]:
-            core.print_out("    Operation {} takes plus displacements of irrep {} to minus ones.\n".format(
-                group_op + 1, gamma.symbol()))
+            core.print_out(
+                "    Operation {} takes plus displacements of irrep {} to minus ones.\n".format(
+                    group_op + 1, gamma.symbol()
+                )
+            )
 
         sym_op = np.array(ct.symm_operation(group_op).matrix())
         gradients = []
@@ -995,7 +1037,7 @@ def assemble_hessian_from_gradients(findifrec: Dict, freq_irrep_only: int) -> np
 
     # Massweight all gradients.
     # Remember, the atom currently corresponds to our 0 axis, hence these transpose tricks.
-    massweighter = np.asarray([mol.mass(a) for a in range(data["n_atom"])])**(-0.5)
+    massweighter = np.asarray([mol.mass(a) for a in range(data["n_atom"])]) ** (-0.5)
     gradients_pi = [[(grad.T * massweighter).T for grad in gradients] for gradients in gradients_pi]
 
     if data["print_lvl"] >= 3:
@@ -1041,8 +1083,9 @@ def assemble_hessian_from_gradients(findifrec: Dict, freq_irrep_only: int) -> np
         if findifrec["stencil_size"] == 3:
             H_pi[-1] = (grads_adapted[1::2] - grads_adapted[::2]) / (2.0 * findifrec["step"]["size"])
         elif findifrec["stencil_size"] == 5:
-            H_pi[-1] = (grads_adapted[::4] - 8 * grads_adapted[1::4] + 8 * grads_adapted[2::4] -
-                        grads_adapted[3::4]) / (12.0 * findifrec["step"]["size"])
+            H_pi[-1] = (
+                grads_adapted[::4] - 8 * grads_adapted[1::4] + 8 * grads_adapted[2::4] - grads_adapted[3::4]
+            ) / (12.0 * findifrec["step"]["size"])
 
         H_pi[-1] = _process_hessian_symmetry_block(H_pi[-1], B_pi[-1], massweighter, irrep_lbls[h], data["print_lvl"])
 
@@ -1077,18 +1120,30 @@ def assemble_hessian_from_energies(findifrec: Dict, freq_irrep_only: int) -> np.
         out_str = ""
         for label, disp_data in displacements.items():
             out_str += ("    {:" + max_label_len + "s} : {:20.10f}\n").format(label, disp_data["energy"])
-        return ("  Computing second-derivative from energies using projected, \n"
-                "  symmetry-adapted, cartesian coordinates.\n\n"
-                "  {:d} energies passed in, including the reference geometry.\n"
-                "    Using {:d}-point formula.\n"
-                "    Energy without displacement: {:15.10f}\n"
-                "    Check energies below for precision!\n{}".format(
-                    len(displacements) + 1, findifrec["stencil_size"], ref_energy, out_str))
+        return (
+            "  Computing second-derivative from energies using projected, \n"
+            "  symmetry-adapted, cartesian coordinates.\n\n"
+            "  {:d} energies passed in, including the reference geometry.\n"
+            "    Using {:d}-point formula.\n"
+            "    Energy without displacement: {:15.10f}\n"
+            "    Check energies below for precision!\n{}".format(
+                len(displacements) + 1, findifrec["stencil_size"], ref_energy, out_str
+            )
+        )
 
-    data = _initialize_findif(mol, freq_irrep_only, "2_0", findifrec['stencil_size'], findifrec['step']['size'],
-                              init_string, findifrec['project_translations'], findifrec['project_rotations'], False)
+    data = _initialize_findif(
+        mol,
+        freq_irrep_only,
+        "2_0",
+        findifrec["stencil_size"],
+        findifrec["step"]["size"],
+        init_string,
+        findifrec["project_translations"],
+        findifrec["project_rotations"],
+        False,
+    )
 
-    massweighter = np.repeat([mol.mass(a) for a in range(data["n_atom"])], 3)**(-0.5)
+    massweighter = np.repeat([mol.mass(a) for a in range(data["n_atom"])], 3) ** (-0.5)
     B_pi = []
     H_pi = []
     irrep_lbls = mol.irrep_labels()
@@ -1099,7 +1154,8 @@ def assemble_hessian_from_energies(findifrec: Dict, freq_irrep_only: int) -> np.
     # We get to the task directly: assembling the force constants in each irrep block.
     for h in range(data["n_irrep"]):
         salc_indices = data["salc_indices_pi"][h]
-        if not salc_indices: continue
+        if not salc_indices:
+            continue
 
         n_salcs = len(salc_indices)
         E = np.zeros((len(salc_indices), e_per_diag))
@@ -1117,11 +1173,11 @@ def assemble_hessian_from_energies(findifrec: Dict, freq_irrep_only: int) -> np.
         if findifrec["stencil_size"] == 3:
             diag_fcs = E[:, 0] + E[:, 1]
             diag_fcs -= 2 * ref_energy
-            diag_fcs /= (findifrec["step"]["size"]**2)
+            diag_fcs /= findifrec["step"]["size"] ** 2
         elif findifrec["stencil_size"] == 5:
             diag_fcs = -E[:, 0] + 16 * E[:, 1] + 16 * E[:, 2] - E[:, 3]
             diag_fcs -= 30 * ref_energy
-            diag_fcs /= (12 * findifrec["step"]["size"]**2)
+            diag_fcs /= 12 * findifrec["step"]["size"] ** 2
         H_irr = np.diag(diag_fcs)
 
         # TODO: It's a bit ugly to use the salc indices to grab the off-diagonals but the indices
@@ -1133,16 +1189,33 @@ def assemble_hessian_from_energies(findifrec: Dict, freq_irrep_only: int) -> np.
         # ...define offdiag_en to do that for us.
         for i, salc in enumerate(salc_indices):
             for j, salc2 in enumerate(salc_indices[:i]):
-                offdiag_en = lambda index: displacements["{l}: {}, {k}: {}".format(
-                    k=salc, l=salc2, *data["disps"]["off"][index])]["energy"]
+                offdiag_en = lambda index: displacements[
+                    "{l}: {}, {k}: {}".format(k=salc, l=salc2, *data["disps"]["off"][index])
+                ]["energy"]
                 if findifrec["stencil_size"] == 3:
-                    fc = (+offdiag_en(0) + offdiag_en(1) + 2 * ref_energy - E[i][0] - E[i][1] - E[j][0] -
-                          E[j][1]) / (2 * findifrec["step"]["size"]**2)
+                    fc = (+offdiag_en(0) + offdiag_en(1) + 2 * ref_energy - E[i][0] - E[i][1] - E[j][0] - E[j][1]) / (
+                        2 * findifrec["step"]["size"] ** 2
+                    )
                 elif findifrec["stencil_size"] == 5:
-                    fc = (-offdiag_en(0) - offdiag_en(1) + 9 * offdiag_en(2) - offdiag_en(3) - offdiag_en(4) +
-                          9 * offdiag_en(5) - offdiag_en(6) - offdiag_en(7) + E[i][0] - 7 * E[i][1] - 7 * E[i][2] +
-                          E[i][3] + E[j][0] - 7 * E[j][1] - 7 * E[j][2] + E[j][3] +
-                          12 * ref_energy) / (12 * findifrec["step"]["size"]**2)
+                    fc = (
+                        -offdiag_en(0)
+                        - offdiag_en(1)
+                        + 9 * offdiag_en(2)
+                        - offdiag_en(3)
+                        - offdiag_en(4)
+                        + 9 * offdiag_en(5)
+                        - offdiag_en(6)
+                        - offdiag_en(7)
+                        + E[i][0]
+                        - 7 * E[i][1]
+                        - 7 * E[i][2]
+                        + E[i][3]
+                        + E[j][0]
+                        - 7 * E[j][1]
+                        - 7 * E[j][2]
+                        + E[j][3]
+                        + 12 * ref_energy
+                    ) / (12 * findifrec["step"]["size"] ** 2)
                 H_irr[i, j] = fc
                 H_irr[j, i] = fc
 
@@ -1154,7 +1227,6 @@ def assemble_hessian_from_energies(findifrec: Dict, freq_irrep_only: int) -> np.
 
 
 class FiniteDifferenceComputer(BaseComputer):
-
     molecule: Any
     driver: DriverEnum
     metameta: Dict[str, Any] = {}
@@ -1163,15 +1235,15 @@ class FiniteDifferenceComputer(BaseComputer):
     computer: BaseComputer = AtomicComputer
     method: str
 
-    @validator('driver')
+    @validator("driver")
     def set_driver(cls, driver):
-        egh = ['energy', 'gradient', 'hessian']
+        egh = ["energy", "gradient", "hessian"]
         if driver not in egh:
             raise ValidationError(f"""Wrapper is unhappy to be calling function ({driver}) not among {egh}.""")
 
         return driver
 
-    @validator('molecule')
+    @validator("molecule")
     def set_molecule(cls, mol):
         mol.update_geometry()
         mol.fix_com(True)
@@ -1188,66 +1260,74 @@ class FiniteDifferenceComputer(BaseComputer):
         * TODO hangers-on keys present at class initiation get automatically attached to class since `extra = "allow"` but should be pruned
 
         """
-        findif_stencil_size = data.pop('findif_stencil_size')
-        findif_step_size = data.pop('findif_step_size')
+        findif_stencil_size = data.pop("findif_stencil_size")
+        findif_step_size = data.pop("findif_step_size")
 
         BaseComputer.__init__(self, **data)
 
-        translations_projection_sound = (not "external_potentials" in data['keywords']['function_kwargs']
-                                         and not core.get_option('SCF', 'PERTURB_H')
-                                         and not hasattr(self.molecule, 'EFP'))
-        if 'ref_gradient' in data:
+        translations_projection_sound = (
+            not "external_potentials" in data["keywords"]["function_kwargs"]
+            and not core.get_option("SCF", "PERTURB_H")
+            and not hasattr(self.molecule, "EFP")
+        )
+        if "ref_gradient" in data:
             logger.info("""hessian() using ref_gradient to assess stationary point.""")
-            stationary_criterion = 1.e-2  # pulled out of a hat
-            stationary_point = _rms(data['ref_gradient']) < stationary_criterion
+            stationary_criterion = 1.0e-2  # pulled out of a hat
+            stationary_point = _rms(data["ref_gradient"]) < stationary_criterion
         else:
             stationary_point = False  # unknown, so F to be safe
         rotations_projection_sound_grad = translations_projection_sound
         rotations_projection_sound_hess = translations_projection_sound and stationary_point
-        if core.has_option_changed('FINDIF', 'FD_PROJECT'):
-            r_project_grad = core.get_option('FINDIF', 'FD_PROJECT')
-            r_project_hess = core.get_option('FINDIF', 'FD_PROJECT')
+        if core.has_option_changed("FINDIF", "FD_PROJECT"):
+            r_project_grad = core.get_option("FINDIF", "FD_PROJECT")
+            r_project_hess = core.get_option("FINDIF", "FD_PROJECT")
         else:
             r_project_grad = rotations_projection_sound_grad
             r_project_hess = rotations_projection_sound_hess
 
-        for kwg in ['dft_functional']:
+        for kwg in ["dft_functional"]:
             if kwg in data:
-                data['keywords']['function_kwargs'][kwg] = data.pop(kwg)
+                data["keywords"]["function_kwargs"][kwg] = data.pop(kwg)
         # I have the feeling the keywords.function_kwargs should be all left over in data
         #   after the findif control ones are removed, not this by-name procedure
-        data['keywords']['PARENT_SYMMETRY'] = self.molecule.point_group().full_name()
+        data["keywords"]["PARENT_SYMMETRY"] = self.molecule.point_group().full_name()
 
-        self.method = data['method']
+        self.method = data["method"]
 
-        self.metameta['mode'] = str(data['findif_mode'][0]) + '_' + str(data['findif_mode'][1])
-        self.metameta['irrep'] = data.pop('findif_irrep', -1)
+        self.metameta["mode"] = str(data["findif_mode"][0]) + "_" + str(data["findif_mode"][1])
+        self.metameta["irrep"] = data.pop("findif_irrep", -1)
 
-        if self.metameta['mode'] == '1_0':
-            self.metameta['proxy_driver'] = 'energy'
-            self.findifrec = gradient_from_energies_geometries(self.molecule,
-                                                               stencil_size=findif_stencil_size,
-                                                               step_size=findif_step_size,
-                                                               t_project=translations_projection_sound,
-                                                               r_project=r_project_grad)
+        if self.metameta["mode"] == "1_0":
+            self.metameta["proxy_driver"] = "energy"
+            self.findifrec = gradient_from_energies_geometries(
+                self.molecule,
+                stencil_size=findif_stencil_size,
+                step_size=findif_step_size,
+                t_project=translations_projection_sound,
+                r_project=r_project_grad,
+            )
 
-        elif self.metameta['mode'] == '2_1':
-            self.metameta['proxy_driver'] = 'gradient'
-            self.findifrec = hessian_from_gradients_geometries(self.molecule,
-                                                               freq_irrep_only=self.metameta['irrep'],
-                                                               stencil_size=findif_stencil_size,
-                                                               step_size=findif_step_size,
-                                                               t_project=translations_projection_sound,
-                                                               r_project=r_project_hess)
+        elif self.metameta["mode"] == "2_1":
+            self.metameta["proxy_driver"] = "gradient"
+            self.findifrec = hessian_from_gradients_geometries(
+                self.molecule,
+                freq_irrep_only=self.metameta["irrep"],
+                stencil_size=findif_stencil_size,
+                step_size=findif_step_size,
+                t_project=translations_projection_sound,
+                r_project=r_project_hess,
+            )
 
-        elif self.metameta['mode'] == '2_0':
-            self.metameta['proxy_driver'] = 'energy'
-            self.findifrec = hessian_from_energies_geometries(self.molecule,
-                                                              freq_irrep_only=self.metameta['irrep'],
-                                                              stencil_size=findif_stencil_size,
-                                                              step_size=findif_step_size,
-                                                              t_project=translations_projection_sound,
-                                                              r_project=r_project_hess)
+        elif self.metameta["mode"] == "2_0":
+            self.metameta["proxy_driver"] = "energy"
+            self.findifrec = hessian_from_energies_geometries(
+                self.molecule,
+                freq_irrep_only=self.metameta["irrep"],
+                stencil_size=findif_stencil_size,
+                step_size=findif_step_size,
+                t_project=translations_projection_sound,
+                r_project=r_project_hess,
+            )
 
         ndisp = len(self.findifrec["displacements"]) + 1
         info = f""" {ndisp} displacements needed ...\n"""
@@ -1257,15 +1337,15 @@ class FiniteDifferenceComputer(BaseComputer):
         # var_dict = core.variables()
         packet = {
             "molecule": self.molecule,
-            "driver": self.metameta['proxy_driver'],
+            "driver": self.metameta["proxy_driver"],
             "method": self.method,
             "basis": data["basis"],
             "keywords": data["keywords"] or {},
         }
-        if 'cbs_metadata' in data:
-            packet['cbs_metadata'] = data['cbs_metadata']
+        if "cbs_metadata" in data:
+            packet["cbs_metadata"] = data["cbs_metadata"]
         passalong = {k: v for k, v in data.items() if k not in packet}
-        passalong.pop('ptype', None)
+        passalong.pop("ptype", None)
 
         self.task_list["reference"] = self.computer(**packet, **passalong)
 
@@ -1273,14 +1353,14 @@ class FiniteDifferenceComputer(BaseComputer):
         for label, displacement in self.findifrec["displacements"].items():
             clone = self.molecule.clone()
             clone.reinterpret_coordentry(False)
-            #clone.fix_orientation(True)
+            # clone.fix_orientation(True)
 
             # Load in displacement into the active molecule
             clone.set_geometry(core.Matrix.from_array(displacement["geometry"]))
 
             # If the user insists on symmetry, weaken it if some is lost when displacing.
             # or 'fix_symmetry' in self.findifrec.molecule
-            logger.debug(f'SYMM {clone.schoenflies_symbol()}')
+            logger.debug(f"SYMM {clone.schoenflies_symbol()}")
             if self.molecule.symmetry_from_input():
                 disp_group = clone.find_highest_point_group()
                 new_bits = parent_group.bits() & disp_group.bits()
@@ -1289,20 +1369,20 @@ class FiniteDifferenceComputer(BaseComputer):
 
             packet = {
                 "molecule": clone,
-                "driver": self.metameta['proxy_driver'],
+                "driver": self.metameta["proxy_driver"],
                 "method": self.method,
                 "basis": data["basis"],
                 "keywords": data["keywords"] or {},
             }
             # Displacements can run in lower symmetry. Don't overwrite orbitals from reference geom
-            packet['keywords']['function_kwargs'].update({"write_orbitals": False})
-            if 'cbs_metadata' in data:
-                packet['cbs_metadata'] = data['cbs_metadata']
+            packet["keywords"]["function_kwargs"].update({"write_orbitals": False})
+            if "cbs_metadata" in data:
+                packet["cbs_metadata"] = data["cbs_metadata"]
 
             self.task_list[label] = self.computer(**packet, **passalong)
 
-#        for n, displacement in enumerate(findif_meta_dict["displacements"].values(), start=2):
-#            _process_displacement(energy, lowername, molecule, displacement, n, ndisp, write_orbitals=False, **kwargs)
+    #        for n, displacement in enumerate(findif_meta_dict["displacements"].values(), start=2):
+    #            _process_displacement(energy, lowername, molecule, displacement, n, ndisp, write_orbitals=False, **kwargs)
 
     def build_tasks(self, obj, **kwargs):
         # permanently a dummy function
@@ -1331,22 +1411,22 @@ class FiniteDifferenceComputer(BaseComputer):
         response = task.return_result
         reference["module"] = getattr(task.provenance, "module", None)
 
-        if task.driver == 'energy':
-            reference['energy'] = response
+        if task.driver == "energy":
+            reference["energy"] = response
 
-        elif task.driver == 'gradient':
-            reference['gradient'] = response
-            reference['energy'] = task.extras['qcvars']['CURRENT ENERGY']
+        elif task.driver == "gradient":
+            reference["gradient"] = response
+            reference["energy"] = task.extras["qcvars"]["CURRENT ENERGY"]
 
-        elif task.driver == 'hessian':
-            reference['hessian'] = response
-            reference['energy'] = task.extras['qcvars']['CURRENT ENERGY']
-            if 'CURRENT GRADIENT' in task.extras['qcvars']:
-                reference['gradient'] = task.extras['qcvars']['CURRENT GRADIENT']
+        elif task.driver == "hessian":
+            reference["hessian"] = response
+            reference["energy"] = task.extras["qcvars"]["CURRENT ENERGY"]
+            if "CURRENT GRADIENT" in task.extras["qcvars"]:
+                reference["gradient"] = task.extras["qcvars"]["CURRENT GRADIENT"]
 
         dipole_available = False
-        if 'CURRENT DIPOLE' in task.extras['qcvars']:
-            reference['dipole'] = task.extras['qcvars']['CURRENT DIPOLE']
+        if "CURRENT DIPOLE" in task.extras["qcvars"]:
+            reference["dipole"] = task.extras["qcvars"]["CURRENT DIPOLE"]
             dipole_available = True
 
         # load AtomicComputer results into findifrec[displacements]
@@ -1354,36 +1434,36 @@ class FiniteDifferenceComputer(BaseComputer):
             task = results_list[label]
             response = task.return_result
 
-            if task.driver == 'energy':
-                displacement['energy'] = response
+            if task.driver == "energy":
+                displacement["energy"] = response
 
-            elif task.driver == 'gradient':
-                displacement['gradient'] = response
-                displacement['energy'] = task.extras['qcvars']['CURRENT ENERGY']
+            elif task.driver == "gradient":
+                displacement["gradient"] = response
+                displacement["energy"] = task.extras["qcvars"]["CURRENT ENERGY"]
 
-            elif task.driver == 'hessian':
-                displacement['hessian'] = response
-                displacement['energy'] = task.extras['qcvars']['CURRENT ENERGY']
-                if 'CURRENT GRADIENT' in task.extras['qcvars']:
-                    displacement['gradient'] = task.extras['qcvars']['CURRENT GRADIENT']
+            elif task.driver == "hessian":
+                displacement["hessian"] = response
+                displacement["energy"] = task.extras["qcvars"]["CURRENT ENERGY"]
+                if "CURRENT GRADIENT" in task.extras["qcvars"]:
+                    displacement["gradient"] = task.extras["qcvars"]["CURRENT GRADIENT"]
 
-            if 'CURRENT DIPOLE' in task.extras['qcvars']:
-                displacement['dipole'] = task.extras['qcvars']['CURRENT DIPOLE']
+            if "CURRENT DIPOLE" in task.extras["qcvars"]:
+                displacement["dipole"] = task.extras["qcvars"]["CURRENT DIPOLE"]
 
         # apply finite difference formulas and load derivatives into findifrec[reference]
-        if self.metameta['mode'] == '1_0':
+        if self.metameta["mode"] == "1_0":
             G0 = assemble_gradient_from_energies(self.findifrec)
             self.findifrec["reference"][self.driver.name] = G0
 
-        elif self.metameta['mode'] == '2_1':
+        elif self.metameta["mode"] == "2_1":
             if dipole_available:
-                DD0 = assemble_dipder_from_dipoles(self.findifrec, self.metameta['irrep'])
+                DD0 = assemble_dipder_from_dipoles(self.findifrec, self.metameta["irrep"])
                 self.findifrec["reference"]["dipole derivative"] = DD0
 
-            H0 = assemble_hessian_from_gradients(self.findifrec, self.metameta['irrep'])
+            H0 = assemble_hessian_from_gradients(self.findifrec, self.metameta["irrep"])
             self.findifrec["reference"][self.driver.name] = H0
 
-        elif self.metameta['mode'] == '2_0':
+        elif self.metameta["mode"] == "2_0":
             try:
                 G0 = assemble_gradient_from_energies(self.findifrec)
             except KeyError:
@@ -1403,10 +1483,10 @@ class FiniteDifferenceComputer(BaseComputer):
                 self.findifrec["reference"]["gradient"] = G0
 
             if dipole_available:
-                DD0 = assemble_dipder_from_dipoles(self.findifrec, self.metameta['irrep'])
+                DD0 = assemble_dipder_from_dipoles(self.findifrec, self.metameta["irrep"])
                 self.findifrec["reference"]["dipole derivative"] = DD0
 
-            H0 = assemble_hessian_from_energies(self.findifrec, self.metameta['irrep'])
+            H0 = assemble_hessian_from_energies(self.findifrec, self.metameta["irrep"])
             self.findifrec["reference"][self.driver.name] = H0
 
     def get_results(self, client: Optional["qcportal.FractalClient"] = None) -> AtomicResult:
@@ -1418,8 +1498,8 @@ class FiniteDifferenceComputer(BaseComputer):
         self._prepare_results(client=client)  # assembled_results
 
         # load QCVariables & properties
-        qcvars = self.task_list['reference'].get_results().extras['qcvars']
-        E0 = self.findifrec['reference']['energy']
+        qcvars = self.task_list["reference"].get_results().extras["qcvars"]
+        E0 = self.findifrec["reference"]["energy"]
 
         properties = {
             "calcinfo_natom": self.molecule.natom(),
@@ -1427,56 +1507,57 @@ class FiniteDifferenceComputer(BaseComputer):
             "return_energy": E0,
         }
 
-        qcvars['FINDIF NUMBER'] = len(self.task_list)
-        qcvars['NUCLEAR REPULSION ENERGY'] = self.molecule.nuclear_repulsion_energy()
-        qcvars['CURRENT ENERGY'] = E0
+        qcvars["FINDIF NUMBER"] = len(self.task_list)
+        qcvars["NUCLEAR REPULSION ENERGY"] = self.molecule.nuclear_repulsion_energy()
+        qcvars["CURRENT ENERGY"] = E0
 
-        DD0 = self.findifrec['reference'].get('dipole derivative')
+        DD0 = self.findifrec["reference"].get("dipole derivative")
         if DD0 is not None:
-            qcvars['CURRENT DIPOLE GRADIENT'] = DD0
+            qcvars["CURRENT DIPOLE GRADIENT"] = DD0
             qcvars[f"{self.method.upper()} DIPOLE GRADIENT"] = DD0
 
-        G0 = self.findifrec['reference'].get('gradient')
+        G0 = self.findifrec["reference"].get("gradient")
         if G0 is not None:
-            qcvars['CURRENT GRADIENT'] = G0
+            qcvars["CURRENT GRADIENT"] = G0
             qcvars[f"{self.method.upper()} TOTAL GRADIENT"] = G0
             properties["return_gradient"] = G0
 
-        H0 = self.findifrec['reference'].get('hessian')
+        H0 = self.findifrec["reference"].get("hessian")
         if H0 is not None:
-            qcvars['CURRENT HESSIAN'] = H0
+            qcvars["CURRENT HESSIAN"] = H0
             qcvars[f"{self.method.upper()} TOTAL HESSIAN"] = H0
             properties["return_hessian"] = H0
 
-
-#        if isinstance(lowername, str) and lowername in procedures['energy']:
-#            # this correctly filters out cbs fn and "hf/cc-pvtz"
-#            # it probably incorrectly filters out mp5, but reconsider in DDD
+        #        if isinstance(lowername, str) and lowername in procedures['energy']:
+        #            # this correctly filters out cbs fn and "hf/cc-pvtz"
+        #            # it probably incorrectly filters out mp5, but reconsider in DDD
 
         findif_model = AtomicResult(
             **{
-                'driver': self.driver,
-                'model': {
+                "driver": self.driver,
+                "model": {
                     "basis": self.basis,
-                    'method': self.method,
+                    "method": self.method,
                 },
-                'molecule': self.molecule.to_schema(dtype=2),
-                'properties': properties,
-                'provenance': p4util.provenance_stamp(__name__, module=self.findifrec["reference"]["module"]),
-                'extras': {
-                    'qcvars': qcvars,
-                    'findif_record': copy.deepcopy(self.findifrec),
+                "molecule": self.molecule.to_schema(dtype=2),
+                "properties": properties,
+                "provenance": p4util.provenance_stamp(__name__, module=self.findifrec["reference"]["module"]),
+                "extras": {
+                    "qcvars": qcvars,
+                    "findif_record": copy.deepcopy(self.findifrec),
                 },
-                'return_result': self.findifrec['reference'][self.driver.name],
-                'success': True,
-            })
+                "return_result": self.findifrec["reference"][self.driver.name],
+                "success": True,
+            }
+        )
 
-        logger.debug('\nFINDIF QCSchema:\n' + pp.pformat(findif_model.dict()))
+        logger.debug("\nFINDIF QCSchema:\n" + pp.pformat(findif_model.dict()))
 
         return findif_model
 
-    def get_psi_results(self, client: Optional["qcportal.FractalClient"] = None, *,
-                        return_wfn: bool = False) -> EnergyGradientHessianWfnReturn:
+    def get_psi_results(
+        self, client: Optional["qcportal.FractalClient"] = None, *, return_wfn: bool = False
+    ) -> EnergyGradientHessianWfnReturn:
         """Called by driver to assemble results into FiniteDifference-flavored QCSchema,
         then reshape and return them in the customary Psi4 driver interface: ``(e/g/h, wfn)``.
 
@@ -1535,20 +1616,18 @@ def _findif_schema_to_wfn(findif_model: AtomicResult) -> core.Wavefunction:
 
 
 def hessian_write(wfn: core.Wavefunction):
-    if core.get_option('FINDIF', 'HESSIAN_WRITE'):
+    if core.get_option("FINDIF", "HESSIAN_WRITE"):
         filename = core.get_writer_file_prefix(wfn.molecule().name()) + ".hess"
-        with open(filename, 'wb') as handle:
-            qcdb.hessparse.to_string(np.asarray(wfn.hessian()), handle, dtype='psi4')
+        with open(filename, "wb") as handle:
+            qcdb.hessparse.to_string(np.asarray(wfn.hessian()), handle, dtype="psi4")
 
 
 def gradient_write(wfn: core.Wavefunction):
-    if core.get_option('FINDIF', 'GRADIENT_WRITE'):
+    if core.get_option("FINDIF", "GRADIENT_WRITE"):
         filename = core.get_writer_file_prefix(wfn.molecule().name()) + ".grad"
-        qcdb.gradparse.to_string(np.asarray(wfn.gradient()),
-                                 filename,
-                                 dtype='GRD',
-                                 mol=wfn.molecule(),
-                                 energy=wfn.energy())
+        qcdb.gradparse.to_string(
+            np.asarray(wfn.gradient()), filename, dtype="GRD", mol=wfn.molecule(), energy=wfn.energy()
+        )
 
 
 def _rms(arr: Union[core.Matrix, np.ndarray]) -> float:

@@ -29,7 +29,7 @@
 | Database (Truhlar) of several classes of noncovalent interactions.
 | Geometries from Truhlar and coworkers at site http://comp.chem.umn.edu/database_noncov/noncovalent.htm
 | Reference energies from Truhlar and coworkers at site http://comp.chem.umn.edu/database_noncov/noncovalent.htm
-| First comprehensive citation JPCA 109 5656 (2005). 
+| First comprehensive citation JPCA 109 5656 (2005).
 
 - **cp**  ``'off'`` || ``'on'``
 
@@ -51,19 +51,20 @@
   - ``'PPS5'`` pi-pi stacking
 
 """
+
 import qcdb
 
 # <<< NCB31 Database Module >>>
-dbse = 'NCB31'
+dbse = "NCB31"
 
 # <<< Database Members >>>
-HRXN_SM = ['HB6-2', 'WI7-1', 'PPS5-1']
-HRXN_LG = ['PPS5-5']
-HB6 = ['HB6-1', 'HB6-2', 'HB6-3', 'HB6-4', 'HB6-5', 'HB6-6']
-CT7 = ['CT7-1', 'CT7-2', 'CT7-3', 'CT7-4', 'CT7-5', 'CT7-6', 'CT7-7']
-DI6 = ['DI6-1', 'DI6-2', 'DI6-3', 'DI6-4', 'DI6-5', 'DI6-6']
-WI7 = ['WI7-1', 'WI7-2', 'WI7-3', 'WI7-4', 'WI7-5', 'WI7-6', 'WI7-7']
-PPS5 = ['PPS5-1', 'PPS5-2', 'PPS5-3', 'PPS5-4', 'PPS5-5']
+HRXN_SM = ["HB6-2", "WI7-1", "PPS5-1"]
+HRXN_LG = ["PPS5-5"]
+HB6 = ["HB6-1", "HB6-2", "HB6-3", "HB6-4", "HB6-5", "HB6-6"]
+CT7 = ["CT7-1", "CT7-2", "CT7-3", "CT7-4", "CT7-5", "CT7-6", "CT7-7"]
+DI6 = ["DI6-1", "DI6-2", "DI6-3", "DI6-4", "DI6-5", "DI6-6"]
+WI7 = ["WI7-1", "WI7-2", "WI7-3", "WI7-4", "WI7-5", "WI7-6", "WI7-7"]
+PPS5 = ["PPS5-1", "PPS5-2", "PPS5-3", "PPS5-4", "PPS5-5"]
 HRXN = sum([HB6, CT7, DI6, WI7, PPS5], [])
 
 # <<< Chemical Systems Involved >>>
@@ -76,339 +77,343 @@ ACTV_RLX = {}  # order of active reagents for deformation-corrected reaction
 ACTV_CPRLX = {}  # order of active reagents for counterpoise- and deformation-corrected reaction
 
 hold = {}
-hold['CT7-1'] = ['C2H4', 'F2']
-hold['CT7-2'] = ['NH3', 'F2']
-hold['CT7-3'] = ['HCCH', 'ClF']
-hold['CT7-4'] = ['HCN', 'ClF']
-hold['CT7-5'] = ['NH3', 'Cl2']
-hold['CT7-6'] = ['H2O', 'ClF']
-hold['CT7-7'] = ['NH3', 'ClF']
-hold['DI6-1'] = ['H2S', 'H2S']
-hold['DI6-2'] = ['HCl', 'HCl']
-hold['DI6-3'] = ['HCl', 'H2S']
-hold['DI6-4'] = ['CH3Cl', 'HCl']
-hold['DI6-5'] = ['HCN', 'CH3SH']
-hold['DI6-6'] = ['CH3SH', 'HCl']
-hold['HB6-1'] = ['NH3', 'NH3']
-hold['HB6-2'] = ['HF', 'HF']
-hold['HB6-3'] = ['H2O', 'H2O']
-hold['HB6-4'] = ['NH3', 'H2O']
-hold['HB6-5'] = ['HCONH2', 'HCONH2']
-hold['HB6-6'] = ['HCOOH', 'HCOOH']
-hold['PPS5-1'] = ['HCCH', 'HCCH']
-hold['PPS5-2'] = ['C2H4', 'C2H4']
-hold['PPS5-3'] = ['Bz', 'Bz']
-hold['PPS5-4'] = ['Bz', 'Bz']
-hold['PPS5-5'] = ['Bz', 'Bz']
-hold['WI7-1'] = ['He', 'Ne']
-hold['WI7-2'] = ['He', 'Ar']
-hold['WI7-3'] = ['Ne', 'Ne']
-hold['WI7-4'] = ['Ne', 'Ar']
-hold['WI7-5'] = ['CH4', 'Ne']
-hold['WI7-6'] = ['Bz', 'Ne']
-hold['WI7-7'] = ['CH4', 'CH4']
+hold["CT7-1"] = ["C2H4", "F2"]
+hold["CT7-2"] = ["NH3", "F2"]
+hold["CT7-3"] = ["HCCH", "ClF"]
+hold["CT7-4"] = ["HCN", "ClF"]
+hold["CT7-5"] = ["NH3", "Cl2"]
+hold["CT7-6"] = ["H2O", "ClF"]
+hold["CT7-7"] = ["NH3", "ClF"]
+hold["DI6-1"] = ["H2S", "H2S"]
+hold["DI6-2"] = ["HCl", "HCl"]
+hold["DI6-3"] = ["HCl", "H2S"]
+hold["DI6-4"] = ["CH3Cl", "HCl"]
+hold["DI6-5"] = ["HCN", "CH3SH"]
+hold["DI6-6"] = ["CH3SH", "HCl"]
+hold["HB6-1"] = ["NH3", "NH3"]
+hold["HB6-2"] = ["HF", "HF"]
+hold["HB6-3"] = ["H2O", "H2O"]
+hold["HB6-4"] = ["NH3", "H2O"]
+hold["HB6-5"] = ["HCONH2", "HCONH2"]
+hold["HB6-6"] = ["HCOOH", "HCOOH"]
+hold["PPS5-1"] = ["HCCH", "HCCH"]
+hold["PPS5-2"] = ["C2H4", "C2H4"]
+hold["PPS5-3"] = ["Bz", "Bz"]
+hold["PPS5-4"] = ["Bz", "Bz"]
+hold["PPS5-5"] = ["Bz", "Bz"]
+hold["WI7-1"] = ["He", "Ne"]
+hold["WI7-2"] = ["He", "Ar"]
+hold["WI7-3"] = ["Ne", "Ne"]
+hold["WI7-4"] = ["Ne", "Ar"]
+hold["WI7-5"] = ["CH4", "Ne"]
+hold["WI7-6"] = ["Bz", "Ne"]
+hold["WI7-7"] = ["CH4", "CH4"]
 
 for rxn in HRXN:
-    RXNM['%s-%s' % (dbse, rxn)] = {
-        '%s-%s-dimer' % (dbse, rxn): +1,
-        '%s-%s-monoA-CP' % (dbse, rxn): -1,
-        '%s-%s-monoB-CP' % (dbse, rxn): -1,
-        '%s-%s-monoA-unCP' % (dbse, rxn): -1,
-        '%s-%s-monoB-unCP' % (dbse, rxn): -1,
-        '%s-%s-mono-RLX' % (dbse, hold[rxn][0]): -1,
-        '%s-%s-mono-RLX' % (dbse, hold[rxn][1]): -1
+    RXNM["%s-%s" % (dbse, rxn)] = {
+        "%s-%s-dimer" % (dbse, rxn): +1,
+        "%s-%s-monoA-CP" % (dbse, rxn): -1,
+        "%s-%s-monoB-CP" % (dbse, rxn): -1,
+        "%s-%s-monoA-unCP" % (dbse, rxn): -1,
+        "%s-%s-monoB-unCP" % (dbse, rxn): -1,
+        "%s-%s-mono-RLX" % (dbse, hold[rxn][0]): -1,
+        "%s-%s-mono-RLX" % (dbse, hold[rxn][1]): -1,
     }
 
-    RXNM_CPRLX['%s-%s' % (dbse, rxn)] = {
-        '%s-%s-dimer' % (dbse, rxn): +1,
-        '%s-%s-monoA-CP' % (dbse, rxn): -1,
-        '%s-%s-monoB-CP' % (dbse, rxn): -1,
-        '%s-%s-monoA-unCP' % (dbse, rxn): +1,
-        '%s-%s-monoB-unCP' % (dbse, rxn): +1,
-        '%s-%s-mono-RLX' % (dbse, hold[rxn][0]): -1,
-        '%s-%s-mono-RLX' % (dbse, hold[rxn][1]): -1
+    RXNM_CPRLX["%s-%s" % (dbse, rxn)] = {
+        "%s-%s-dimer" % (dbse, rxn): +1,
+        "%s-%s-monoA-CP" % (dbse, rxn): -1,
+        "%s-%s-monoB-CP" % (dbse, rxn): -1,
+        "%s-%s-monoA-unCP" % (dbse, rxn): +1,
+        "%s-%s-monoB-unCP" % (dbse, rxn): +1,
+        "%s-%s-mono-RLX" % (dbse, hold[rxn][0]): -1,
+        "%s-%s-mono-RLX" % (dbse, hold[rxn][1]): -1,
     }
 
-    ACTV_SA['%s-%s' % (dbse, rxn)] = ['%s-%s-dimer' % (dbse, rxn)]
+    ACTV_SA["%s-%s" % (dbse, rxn)] = ["%s-%s-dimer" % (dbse, rxn)]
 
-    ACTV['%s-%s' % (dbse, rxn)] = [
-        '%s-%s-dimer' % (dbse, rxn),
-        '%s-%s-monoA-unCP' % (dbse, rxn),
-        '%s-%s-monoB-unCP' % (dbse, rxn)
+    ACTV["%s-%s" % (dbse, rxn)] = [
+        "%s-%s-dimer" % (dbse, rxn),
+        "%s-%s-monoA-unCP" % (dbse, rxn),
+        "%s-%s-monoB-unCP" % (dbse, rxn),
     ]
 
-    ACTV_CP['%s-%s' % (dbse, rxn)] = [
-        '%s-%s-dimer' % (dbse, rxn),
-        '%s-%s-monoA-CP' % (dbse, rxn),
-        '%s-%s-monoB-CP' % (dbse, rxn)
+    ACTV_CP["%s-%s" % (dbse, rxn)] = [
+        "%s-%s-dimer" % (dbse, rxn),
+        "%s-%s-monoA-CP" % (dbse, rxn),
+        "%s-%s-monoB-CP" % (dbse, rxn),
     ]
 
-    ACTV_RLX['%s-%s' % (dbse, rxn)] = [
-        '%s-%s-dimer' % (dbse, rxn),
-        '%s-%s-mono-RLX' % (dbse, hold[rxn][0]),
-        '%s-%s-mono-RLX' % (dbse, hold[rxn][1])
+    ACTV_RLX["%s-%s" % (dbse, rxn)] = [
+        "%s-%s-dimer" % (dbse, rxn),
+        "%s-%s-mono-RLX" % (dbse, hold[rxn][0]),
+        "%s-%s-mono-RLX" % (dbse, hold[rxn][1]),
     ]
 
-    ACTV_CPRLX['%s-%s' % (dbse, rxn)] = [
-        '%s-%s-dimer' % (dbse, rxn),
-        '%s-%s-monoA-CP' % (dbse, rxn),
-        '%s-%s-monoB-CP' % (dbse, rxn),
-        '%s-%s-monoA-unCP' % (dbse, rxn),
-        '%s-%s-monoB-unCP' % (dbse, rxn),
-        '%s-%s-mono-RLX' % (dbse, hold[rxn][0]),
-        '%s-%s-mono-RLX' % (dbse, hold[rxn][1])
+    ACTV_CPRLX["%s-%s" % (dbse, rxn)] = [
+        "%s-%s-dimer" % (dbse, rxn),
+        "%s-%s-monoA-CP" % (dbse, rxn),
+        "%s-%s-monoB-CP" % (dbse, rxn),
+        "%s-%s-monoA-unCP" % (dbse, rxn),
+        "%s-%s-monoB-unCP" % (dbse, rxn),
+        "%s-%s-mono-RLX" % (dbse, hold[rxn][0]),
+        "%s-%s-mono-RLX" % (dbse, hold[rxn][1]),
     ]
 
 # <<< Reference Values [kcal/mol] >>>
 BIND = {}
-nan = float('NaN')
-BIND['%s-%s' % (dbse, 'CT7-1')] = -1.06
-BIND['%s-%s' % (dbse, 'CT7-2')] = -1.81
-BIND['%s-%s' % (dbse, 'CT7-3')] = -3.81
-BIND['%s-%s' % (dbse, 'CT7-4')] = -4.86
-BIND['%s-%s' % (dbse, 'CT7-5')] = -4.88
-BIND['%s-%s' % (dbse, 'CT7-6')] = -5.36
-BIND['%s-%s' % (dbse, 'CT7-7')] = -10.62
-BIND['%s-%s' % (dbse, 'DI6-1')] = -1.66
-BIND['%s-%s' % (dbse, 'DI6-2')] = -2.01
-BIND['%s-%s' % (dbse, 'DI6-3')] = -3.35
-BIND['%s-%s' % (dbse, 'DI6-4')] = -3.55
-BIND['%s-%s' % (dbse, 'DI6-5')] = -3.59
-BIND['%s-%s' % (dbse, 'DI6-6')] = -4.16
-BIND['%s-%s' % (dbse, 'HB6-1')] = -3.15
-BIND['%s-%s' % (dbse, 'HB6-2')] = -4.57
-BIND['%s-%s' % (dbse, 'HB6-3')] = -4.97
-BIND['%s-%s' % (dbse, 'HB6-4')] = -6.41
-BIND['%s-%s' % (dbse, 'HB6-5')] = -14.94
-BIND['%s-%s' % (dbse, 'HB6-6')] = -16.15
-BIND['%s-%s' % (dbse, 'PPS5-1')] = -1.34
-BIND['%s-%s' % (dbse, 'PPS5-2')] = -1.42
-BIND['%s-%s' % (dbse, 'PPS5-3')] = -1.81
-BIND['%s-%s' % (dbse, 'PPS5-4')] = -2.74
-BIND['%s-%s' % (dbse, 'PPS5-5')] = -2.78
-BIND['%s-%s' % (dbse, 'WI7-1')] = -0.04
-BIND['%s-%s' % (dbse, 'WI7-2')] = -0.06
-BIND['%s-%s' % (dbse, 'WI7-3')] = -0.08
-BIND['%s-%s' % (dbse, 'WI7-4')] = -0.13
-BIND['%s-%s' % (dbse, 'WI7-5')] = -0.22
-BIND['%s-%s' % (dbse, 'WI7-6')] = -0.47
-BIND['%s-%s' % (dbse, 'WI7-7')] = -0.51
+nan = float("NaN")
+BIND["%s-%s" % (dbse, "CT7-1")] = -1.06
+BIND["%s-%s" % (dbse, "CT7-2")] = -1.81
+BIND["%s-%s" % (dbse, "CT7-3")] = -3.81
+BIND["%s-%s" % (dbse, "CT7-4")] = -4.86
+BIND["%s-%s" % (dbse, "CT7-5")] = -4.88
+BIND["%s-%s" % (dbse, "CT7-6")] = -5.36
+BIND["%s-%s" % (dbse, "CT7-7")] = -10.62
+BIND["%s-%s" % (dbse, "DI6-1")] = -1.66
+BIND["%s-%s" % (dbse, "DI6-2")] = -2.01
+BIND["%s-%s" % (dbse, "DI6-3")] = -3.35
+BIND["%s-%s" % (dbse, "DI6-4")] = -3.55
+BIND["%s-%s" % (dbse, "DI6-5")] = -3.59
+BIND["%s-%s" % (dbse, "DI6-6")] = -4.16
+BIND["%s-%s" % (dbse, "HB6-1")] = -3.15
+BIND["%s-%s" % (dbse, "HB6-2")] = -4.57
+BIND["%s-%s" % (dbse, "HB6-3")] = -4.97
+BIND["%s-%s" % (dbse, "HB6-4")] = -6.41
+BIND["%s-%s" % (dbse, "HB6-5")] = -14.94
+BIND["%s-%s" % (dbse, "HB6-6")] = -16.15
+BIND["%s-%s" % (dbse, "PPS5-1")] = -1.34
+BIND["%s-%s" % (dbse, "PPS5-2")] = -1.42
+BIND["%s-%s" % (dbse, "PPS5-3")] = -1.81
+BIND["%s-%s" % (dbse, "PPS5-4")] = -2.74
+BIND["%s-%s" % (dbse, "PPS5-5")] = -2.78
+BIND["%s-%s" % (dbse, "WI7-1")] = -0.04
+BIND["%s-%s" % (dbse, "WI7-2")] = -0.06
+BIND["%s-%s" % (dbse, "WI7-3")] = -0.08
+BIND["%s-%s" % (dbse, "WI7-4")] = -0.13
+BIND["%s-%s" % (dbse, "WI7-5")] = -0.22
+BIND["%s-%s" % (dbse, "WI7-6")] = -0.47
+BIND["%s-%s" % (dbse, "WI7-7")] = -0.51
 
 # <<< Comment Lines >>>
 TAGL = {}
-TAGL['%s-%s' % (dbse, 'CT7-1')] = """Ethene-Fluorine Molecule Complex (C2H4-F2) """
-TAGL['%s-%s-dimer' % (dbse, 'CT7-1')] = """Dimer from Ethene-Fluorine Molecule Complex (C2H4-F2) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'CT7-1')] = """Monomer A from Ethene-Fluorine Molecule Complex (C2H4-F2) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'CT7-1')] = """Monomer B from Ethene-Fluorine Molecule Complex (C2H4-F2) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'CT7-1')] = """Monomer A from Ethene-Fluorine Molecule Complex (C2H4-F2) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'CT7-1')] = """Monomer B from Ethene-Fluorine Molecule Complex (C2H4-F2) """
-TAGL['%s-%s' % (dbse, 'CT7-2')] = """Ammonia-Fluorine Molecule Complex (NH3-F2) """
-TAGL['%s-%s-dimer' % (dbse, 'CT7-2')] = """Dimer from Ammonia-Fluorine Molecule Complex (NH3-F2) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'CT7-2')] = """Monomer A from Ammonia-Fluorine Molecule Complex (NH3-F2) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'CT7-2')] = """Monomer B from Ammonia-Fluorine Molecule Complex (NH3-F2) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'CT7-2')] = """Monomer A from Ammonia-Fluorine Molecule Complex (NH3-F2) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'CT7-2')] = """Monomer B from Ammonia-Fluorine Molecule Complex (NH3-F2) """
-TAGL['%s-%s' % (dbse, 'CT7-3')] = """Ethine-Chlorine Monofluoride Complex (HCCH-ClF) """
-TAGL['%s-%s-dimer' % (dbse, 'CT7-3')] = """Dimer from Ethine-Chlorine Monofluoride Complex (HCCH-ClF) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'CT7-3')] = """Monomer A from Ethine-Chlorine Monofluoride Complex (HCCH-ClF) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'CT7-3')] = """Monomer B from Ethine-Chlorine Monofluoride Complex (HCCH-ClF) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'CT7-3')] = """Monomer A from Ethine-Chlorine Monofluoride Complex (HCCH-ClF) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'CT7-3')] = """Monomer B from Ethine-Chlorine Monofluoride Complex (HCCH-ClF) """
-TAGL['%s-%s' % (dbse, 'CT7-4')] = """Hydrogen Cyanide-Chlorine Monofluoride Complex (HCN-ClF) """
-TAGL['%s-%s-dimer' % (dbse, 'CT7-4')] = """Dimer from Hydrogen Cyanide-Chlorine Monofluoride Complex (HCN-ClF) """
-TAGL['%s-%s-monoA-CP' %
-     (dbse, 'CT7-4')] = """Monomer A from Hydrogen Cyanide-Chlorine Monofluoride Complex (HCN-ClF) """
-TAGL['%s-%s-monoB-CP' %
-     (dbse, 'CT7-4')] = """Monomer B from Hydrogen Cyanide-Chlorine Monofluoride Complex (HCN-ClF) """
-TAGL['%s-%s-monoA-unCP' %
-     (dbse, 'CT7-4')] = """Monomer A from Hydrogen Cyanide-Chlorine Monofluoride Complex (HCN-ClF) """
-TAGL['%s-%s-monoB-unCP' %
-     (dbse, 'CT7-4')] = """Monomer B from Hydrogen Cyanide-Chlorine Monofluoride Complex (HCN-ClF) """
-TAGL['%s-%s' % (dbse, 'CT7-5')] = """Ammonia-Chlorine Molecule (NH3-Cl2) """
-TAGL['%s-%s-dimer' % (dbse, 'CT7-5')] = """Dimer from Ammonia-Chlorine Molecule (NH3-Cl2) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'CT7-5')] = """Monomer A from Ammonia-Chlorine Molecule (NH3-Cl2) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'CT7-5')] = """Monomer B from Ammonia-Chlorine Molecule (NH3-Cl2) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'CT7-5')] = """Monomer A from Ammonia-Chlorine Molecule (NH3-Cl2) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'CT7-5')] = """Monomer B from Ammonia-Chlorine Molecule (NH3-Cl2) """
-TAGL['%s-%s' % (dbse, 'CT7-6')] = """Water-Chlorine Monofluoride Complex (H2O-ClF) """
-TAGL['%s-%s-dimer' % (dbse, 'CT7-6')] = """Dimer from Water-Chlorine Monofluoride Complex (H2O-ClF) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'CT7-6')] = """Monomer A from Water-Chlorine Monofluoride Complex (H2O-ClF) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'CT7-6')] = """Monomer B from Water-Chlorine Monofluoride Complex (H2O-ClF) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'CT7-6')] = """Monomer A from Water-Chlorine Monofluoride Complex (H2O-ClF) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'CT7-6')] = """Monomer B from Water-Chlorine Monofluoride Complex (H2O-ClF) """
-TAGL['%s-%s' % (dbse, 'CT7-7')] = """Ammonia-Chlorine Monofluoride Complex (NH3-ClF) """
-TAGL['%s-%s-dimer' % (dbse, 'CT7-7')] = """Dimer from Ammonia-Chlorine Monofluoride Complex (NH3-ClF) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'CT7-7')] = """Monomer A from Ammonia-Chlorine Monofluoride Complex (NH3-ClF) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'CT7-7')] = """Monomer B from Ammonia-Chlorine Monofluoride Complex (NH3-ClF) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'CT7-7')] = """Monomer A from Ammonia-Chlorine Monofluoride Complex (NH3-ClF) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'CT7-7')] = """Monomer B from Ammonia-Chlorine Monofluoride Complex (NH3-ClF) """
-TAGL['%s-%s' % (dbse, 'DI6-1')] = """Hydrogen Sulfide Dimer (H2S-H2S) """
-TAGL['%s-%s-dimer' % (dbse, 'DI6-1')] = """Dimer from Hydrogen Sulfide Dimer (H2S-H2S) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'DI6-1')] = """Monomer A from Hydrogen Sulfide Dimer (H2S-H2S) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'DI6-1')] = """Monomer B from Hydrogen Sulfide Dimer (H2S-H2S) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'DI6-1')] = """Monomer A from Hydrogen Sulfide Dimer (H2S-H2S) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'DI6-1')] = """Monomer B from Hydrogen Sulfide Dimer (H2S-H2S) """
-TAGL['%s-%s' % (dbse, 'DI6-2')] = """Hydrogen Chloride Dimer (HCl-HCl) """
-TAGL['%s-%s-dimer' % (dbse, 'DI6-2')] = """Dimer from Hydrogen Chloride Dimer (HCl-HCl) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'DI6-2')] = """Monomer A from Hydrogen Chloride Dimer (HCl-HCl) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'DI6-2')] = """Monomer B from Hydrogen Chloride Dimer (HCl-HCl) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'DI6-2')] = """Monomer A from Hydrogen Chloride Dimer (HCl-HCl) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'DI6-2')] = """Monomer B from Hydrogen Chloride Dimer (HCl-HCl) """
-TAGL['%s-%s' % (dbse, 'DI6-3')] = """Hydrogen Chloride-Hydrogen Sulfide Complex (HCl-H2S) """
-TAGL['%s-%s-dimer' % (dbse, 'DI6-3')] = """Dimer from Hydrogen Chloride-Hydrogen Sulfide Complex (HCl-H2S) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'DI6-3')] = """Monomer A from Hydrogen Chloride-Hydrogen Sulfide Complex (HCl-H2S) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'DI6-3')] = """Monomer B from Hydrogen Chloride-Hydrogen Sulfide Complex (HCl-H2S) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'DI6-3')] = """Monomer A from Hydrogen Chloride-Hydrogen Sulfide Complex (HCl-H2S) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'DI6-3')] = """Monomer B from Hydrogen Chloride-Hydrogen Sulfide Complex (HCl-H2S) """
-TAGL['%s-%s' % (dbse, 'DI6-4')] = """Methyl Chloride-Hydrogen Chloride (CH3Cl-HCl) """
-TAGL['%s-%s-dimer' % (dbse, 'DI6-4')] = """Dimer from Methyl Chloride-Hydrogen Chloride (CH3Cl-HCl) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'DI6-4')] = """Monomer A from Methyl Chloride-Hydrogen Chloride (CH3Cl-HCl) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'DI6-4')] = """Monomer B from Methyl Chloride-Hydrogen Chloride (CH3Cl-HCl) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'DI6-4')] = """Monomer A from Methyl Chloride-Hydrogen Chloride (CH3Cl-HCl) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'DI6-4')] = """Monomer B from Methyl Chloride-Hydrogen Chloride (CH3Cl-HCl) """
-TAGL['%s-%s' % (dbse, 'DI6-5')] = """Hydrogen Cyanide-Methanethiol (HCN-CH3SH) """
-TAGL['%s-%s-dimer' % (dbse, 'DI6-5')] = """Dimer from Hydrogen Cyanide-Methanethiol (HCN-CH3SH) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'DI6-5')] = """Monomer A from Hydrogen Cyanide-Methanethiol (HCN-CH3SH) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'DI6-5')] = """Monomer B from Hydrogen Cyanide-Methanethiol (HCN-CH3SH) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'DI6-5')] = """Monomer A from Hydrogen Cyanide-Methanethiol (HCN-CH3SH) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'DI6-5')] = """Monomer B from Hydrogen Cyanide-Methanethiol (HCN-CH3SH) """
-TAGL['%s-%s' % (dbse, 'DI6-6')] = """Methanethiol-Hydrogen Chloride Complex (CH3SH-HCl) """
-TAGL['%s-%s-dimer' % (dbse, 'DI6-6')] = """Dimer from Methanethiol-Hydrogen Chloride Complex (CH3SH-HCl) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'DI6-6')] = """Monomer A from Methanethiol-Hydrogen Chloride Complex (CH3SH-HCl) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'DI6-6')] = """Monomer B from Methanethiol-Hydrogen Chloride Complex (CH3SH-HCl) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'DI6-6')] = """Monomer A from Methanethiol-Hydrogen Chloride Complex (CH3SH-HCl) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'DI6-6')] = """Monomer B from Methanethiol-Hydrogen Chloride Complex (CH3SH-HCl) """
-TAGL['%s-%s' % (dbse, 'HB6-1')] = """Ammonia Dimer (NH3-NH3) """
-TAGL['%s-%s-dimer' % (dbse, 'HB6-1')] = """Dimer from Ammonia Dimer (NH3-NH3) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'HB6-1')] = """Monomer A from Ammonia Dimer (NH3-NH3) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'HB6-1')] = """Monomer B from Ammonia Dimer (NH3-NH3) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'HB6-1')] = """Monomer A from Ammonia Dimer (NH3-NH3) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'HB6-1')] = """Monomer B from Ammonia Dimer (NH3-NH3) """
-TAGL['%s-%s' % (dbse, 'HB6-2')] = """Hydrogen Fluoride Dimer (HF-HF) """
-TAGL['%s-%s-dimer' % (dbse, 'HB6-2')] = """Dimer from Hydrogen Fluoride Dimer (HF-HF) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'HB6-2')] = """Monomer A from Hydrogen Fluoride Dimer (HF-HF) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'HB6-2')] = """Monomer B from Hydrogen Fluoride Dimer (HF-HF) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'HB6-2')] = """Monomer A from Hydrogen Fluoride Dimer (HF-HF) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'HB6-2')] = """Monomer B from Hydrogen Fluoride Dimer (HF-HF) """
-TAGL['%s-%s' % (dbse, 'HB6-3')] = """Water Dimer (H2O-H2O) """
-TAGL['%s-%s-dimer' % (dbse, 'HB6-3')] = """Dimer from Water Dimer (H2O-H2O) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'HB6-3')] = """Monomer A from Water Dimer (H2O-H2O) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'HB6-3')] = """Monomer B from Water Dimer (H2O-H2O) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'HB6-3')] = """Monomer A from Water Dimer (H2O-H2O) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'HB6-3')] = """Monomer B from Water Dimer (H2O-H2O) """
-TAGL['%s-%s' % (dbse, 'HB6-4')] = """Ammonia-Water Complex (NH3-H2O) """
-TAGL['%s-%s-dimer' % (dbse, 'HB6-4')] = """Dimer from Ammonia-Water Complex (NH3-H2O) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'HB6-4')] = """Monomer A from Ammonia-Water Complex (NH3-H2O) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'HB6-4')] = """Monomer B from Ammonia-Water Complex (NH3-H2O) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'HB6-4')] = """Monomer A from Ammonia-Water Complex (NH3-H2O) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'HB6-4')] = """Monomer B from Ammonia-Water Complex (NH3-H2O) """
-TAGL['%s-%s' % (dbse, 'HB6-5')] = """Formamide Dimer (HCONH2-HCONH2) """
-TAGL['%s-%s-dimer' % (dbse, 'HB6-5')] = """Dimer from Formamide Dimer (HCONH2-HCONH2) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'HB6-5')] = """Monomer A from Formamide Dimer (HCONH2-HCONH2) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'HB6-5')] = """Monomer B from Formamide Dimer (HCONH2-HCONH2) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'HB6-5')] = """Monomer A from Formamide Dimer (HCONH2-HCONH2) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'HB6-5')] = """Monomer B from Formamide Dimer (HCONH2-HCONH2) """
-TAGL['%s-%s' % (dbse, 'HB6-6')] = """Formic Acid Dimer (HCOOH-HCOOH) """
-TAGL['%s-%s-dimer' % (dbse, 'HB6-6')] = """Dimer from Formic Acid Dimer (HCOOH-HCOOH) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'HB6-6')] = """Monomer A from Formic Acid Dimer (HCOOH-HCOOH) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'HB6-6')] = """Monomer B from Formic Acid Dimer (HCOOH-HCOOH) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'HB6-6')] = """Monomer A from Formic Acid Dimer (HCOOH-HCOOH) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'HB6-6')] = """Monomer B from Formic Acid Dimer (HCOOH-HCOOH) """
-TAGL['%s-%s' % (dbse, 'PPS5-1')] = """Ethine Dimer (HCCH-HCCH) """
-TAGL['%s-%s-dimer' % (dbse, 'PPS5-1')] = """Dimer from Ethine Dimer (HCCH-HCCH) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'PPS5-1')] = """Monomer A from Ethine Dimer (HCCH-HCCH) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'PPS5-1')] = """Monomer B from Ethine Dimer (HCCH-HCCH) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'PPS5-1')] = """Monomer A from Ethine Dimer (HCCH-HCCH) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'PPS5-1')] = """Monomer B from Ethine Dimer (HCCH-HCCH) """
-TAGL['%s-%s' % (dbse, 'PPS5-2')] = """Ethene Dimer (C2H4-C2H4) """
-TAGL['%s-%s-dimer' % (dbse, 'PPS5-2')] = """Dimer from Ethene Dimer (C2H4-C2H4) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'PPS5-2')] = """Monomer A from Ethene Dimer (C2H4-C2H4) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'PPS5-2')] = """Monomer B from Ethene Dimer (C2H4-C2H4) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'PPS5-2')] = """Monomer A from Ethene Dimer (C2H4-C2H4) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'PPS5-2')] = """Monomer B from Ethene Dimer (C2H4-C2H4) """
-TAGL['%s-%s' % (dbse, 'PPS5-3')] = """Sandwich Benzene Dimer (BzBz_S) """
-TAGL['%s-%s-dimer' % (dbse, 'PPS5-3')] = """Dimer from Sandwich Benzene Dimer (BzBz_S) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'PPS5-3')] = """Monomer A from Sandwich Benzene Dimer (BzBz_S) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'PPS5-3')] = """Monomer B from Sandwich Benzene Dimer (BzBz_S) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'PPS5-3')] = """Monomer A from Sandwich Benzene Dimer (BzBz_S) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'PPS5-3')] = """Monomer B from Sandwich Benzene Dimer (BzBz_S) """
-TAGL['%s-%s' % (dbse, 'PPS5-4')] = """T-Shaped Benzene Dimer (BzBz_T) """
-TAGL['%s-%s-dimer' % (dbse, 'PPS5-4')] = """Dimer from T-Shaped Benzene Dimer (BzBz_T) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'PPS5-4')] = """Monomer A from T-Shaped Benzene Dimer (BzBz_T) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'PPS5-4')] = """Monomer B from T-Shaped Benzene Dimer (BzBz_T) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'PPS5-4')] = """Monomer A from T-Shaped Benzene Dimer (BzBz_T) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'PPS5-4')] = """Monomer B from T-Shaped Benzene Dimer (BzBz_T) """
-TAGL['%s-%s' % (dbse, 'PPS5-5')] = """Parallel-Displaced Benzene Dimer (BzBz_PD) """
-TAGL['%s-%s-dimer' % (dbse, 'PPS5-5')] = """Dimer from Parallel-Displaced Benzene Dimer (BzBz_PD) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'PPS5-5')] = """Monomer A from Parallel-Displaced Benzene Dimer (BzBz_PD) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'PPS5-5')] = """Monomer B from Parallel-Displaced Benzene Dimer (BzBz_PD) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'PPS5-5')] = """Monomer A from Parallel-Displaced Benzene Dimer (BzBz_PD) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'PPS5-5')] = """Monomer B from Parallel-Displaced Benzene Dimer (BzBz_PD) """
-TAGL['%s-%s' % (dbse, 'WI7-1')] = """Helium-Neon Complex (He-Ne) """
-TAGL['%s-%s-dimer' % (dbse, 'WI7-1')] = """Dimer from Helium-Neon Complex (He-Ne) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'WI7-1')] = """Monomer A from Helium-Neon Complex (He-Ne) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'WI7-1')] = """Monomer B from Helium-Neon Complex (He-Ne) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'WI7-1')] = """Monomer A from Helium-Neon Complex (He-Ne) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'WI7-1')] = """Monomer B from Helium-Neon Complex (He-Ne) """
-TAGL['%s-%s' % (dbse, 'WI7-2')] = """Helium-Argon Complex (He-Ar) """
-TAGL['%s-%s-dimer' % (dbse, 'WI7-2')] = """Dimer from Helium-Argon Complex (He-Ar) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'WI7-2')] = """Monomer A from Helium-Argon Complex (He-Ar) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'WI7-2')] = """Monomer B from Helium-Argon Complex (He-Ar) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'WI7-2')] = """Monomer A from Helium-Argon Complex (He-Ar) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'WI7-2')] = """Monomer B from Helium-Argon Complex (He-Ar) """
-TAGL['%s-%s' % (dbse, 'WI7-3')] = """Neon Dimer (Ne-Ne) """
-TAGL['%s-%s-dimer' % (dbse, 'WI7-3')] = """Dimer from Neon Dimer (Ne-Ne) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'WI7-3')] = """Monomer A from Neon Dimer (Ne-Ne) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'WI7-3')] = """Monomer B from Neon Dimer (Ne-Ne) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'WI7-3')] = """Monomer A from Neon Dimer (Ne-Ne) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'WI7-3')] = """Monomer B from Neon Dimer (Ne-Ne) """
-TAGL['%s-%s' % (dbse, 'WI7-4')] = """Neon-Argon Complex (Ne-Ar) """
-TAGL['%s-%s-dimer' % (dbse, 'WI7-4')] = """Dimer from Neon-Argon Complex (Ne-Ar) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'WI7-4')] = """Monomer A from Neon-Argon Complex (Ne-Ar) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'WI7-4')] = """Monomer B from Neon-Argon Complex (Ne-Ar) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'WI7-4')] = """Monomer A from Neon-Argon Complex (Ne-Ar) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'WI7-4')] = """Monomer B from Neon-Argon Complex (Ne-Ar) """
-TAGL['%s-%s' % (dbse, 'WI7-5')] = """Methane-Neon Complex (CH4-Ne) """
-TAGL['%s-%s-dimer' % (dbse, 'WI7-5')] = """Dimer from Methane-Neon Complex (CH4-Ne) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'WI7-5')] = """Monomer A from Methane-Neon Complex (CH4-Ne) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'WI7-5')] = """Monomer B from Methane-Neon Complex (CH4-Ne) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'WI7-5')] = """Monomer A from Methane-Neon Complex (CH4-Ne) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'WI7-5')] = """Monomer B from Methane-Neon Complex (CH4-Ne) """
-TAGL['%s-%s' % (dbse, 'WI7-6')] = """Benzene-Neon Complex (Bz-Ne) """
-TAGL['%s-%s-dimer' % (dbse, 'WI7-6')] = """Dimer from Benzene-Neon Complex (Bz-Ne) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'WI7-6')] = """Monomer A from Benzene-Neon Complex (Bz-Ne) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'WI7-6')] = """Monomer B from Benzene-Neon Complex (Bz-Ne) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'WI7-6')] = """Monomer A from Benzene-Neon Complex (Bz-Ne) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'WI7-6')] = """Monomer B from Benzene-Neon Complex (Bz-Ne) """
-TAGL['%s-%s' % (dbse, 'WI7-7')] = """Methane Dimer (CH4-CH4) """
-TAGL['%s-%s-dimer' % (dbse, 'WI7-7')] = """Dimer from Methane Dimer (CH4-CH4) """
-TAGL['%s-%s-monoA-CP' % (dbse, 'WI7-7')] = """Monomer A from Methane Dimer (CH4-CH4) """
-TAGL['%s-%s-monoB-CP' % (dbse, 'WI7-7')] = """Monomer B from Methane Dimer (CH4-CH4) """
-TAGL['%s-%s-monoA-unCP' % (dbse, 'WI7-7')] = """Monomer A from Methane Dimer (CH4-CH4) """
-TAGL['%s-%s-monoB-unCP' % (dbse, 'WI7-7')] = """Monomer B from Methane Dimer (CH4-CH4) """
-TAGL['%s-%s-mono-RLX' % (dbse, 'HCCH')] = """Ethine Relaxed Monomer """
-TAGL['%s-%s-mono-RLX' % (dbse, 'C2H4')] = """Ethene Relaxed Monomer """
-TAGL['%s-%s-mono-RLX' % (dbse, 'Bz')] = """Benzene Relaxed Monomer """
-TAGL['%s-%s-mono-RLX' % (dbse, 'CH3Cl')] = """Methyl Chloride Relaxed Monomer """
-TAGL['%s-%s-mono-RLX' % (dbse, 'CH3SH')] = """Methanethiol Relaxed Monomer """
-TAGL['%s-%s-mono-RLX' % (dbse, 'CH4')] = """Methane Relaxed Monomer """
-TAGL['%s-%s-mono-RLX' % (dbse, 'F2')] = """Fluorine Molecule Relaxed Monomer """
-TAGL['%s-%s-mono-RLX' % (dbse, 'H2O')] = """Water Relaxed Monomer """
-TAGL['%s-%s-mono-RLX' % (dbse, 'H2S')] = """Hydrogen Sulfide Relaxed Monomer """
-TAGL['%s-%s-mono-RLX' % (dbse, 'HCl')] = """Hydrogen Chloride Relaxed Monomer """
-TAGL['%s-%s-mono-RLX' % (dbse, 'HCN')] = """Hydrogen Cyanide Relaxed Monomer """
-TAGL['%s-%s-mono-RLX' % (dbse, 'HCONH2')] = """Formamide Relaxed Monomer """
-TAGL['%s-%s-mono-RLX' % (dbse, 'HCOOH')] = """Formic Acid Relaxed Monomer """
-TAGL['%s-%s-mono-RLX' % (dbse, 'He')] = """Helium Relaxed Monomer """
-TAGL['%s-%s-mono-RLX' % (dbse, 'Ne')] = """Neon Relaxed Monomer """
-TAGL['%s-%s-mono-RLX' % (dbse, 'Ar')] = """Argon Relaxed Monomer """
-TAGL['%s-%s-mono-RLX' % (dbse, 'HF')] = """Hydrogen Fluoride Relaxed Monomer """
-TAGL['%s-%s-mono-RLX' % (dbse, 'NH3')] = """Ammonia Relaxed Monomer """
+TAGL["%s-%s" % (dbse, "CT7-1")] = """Ethene-Fluorine Molecule Complex (C2H4-F2) """
+TAGL["%s-%s-dimer" % (dbse, "CT7-1")] = """Dimer from Ethene-Fluorine Molecule Complex (C2H4-F2) """
+TAGL["%s-%s-monoA-CP" % (dbse, "CT7-1")] = """Monomer A from Ethene-Fluorine Molecule Complex (C2H4-F2) """
+TAGL["%s-%s-monoB-CP" % (dbse, "CT7-1")] = """Monomer B from Ethene-Fluorine Molecule Complex (C2H4-F2) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "CT7-1")] = """Monomer A from Ethene-Fluorine Molecule Complex (C2H4-F2) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "CT7-1")] = """Monomer B from Ethene-Fluorine Molecule Complex (C2H4-F2) """
+TAGL["%s-%s" % (dbse, "CT7-2")] = """Ammonia-Fluorine Molecule Complex (NH3-F2) """
+TAGL["%s-%s-dimer" % (dbse, "CT7-2")] = """Dimer from Ammonia-Fluorine Molecule Complex (NH3-F2) """
+TAGL["%s-%s-monoA-CP" % (dbse, "CT7-2")] = """Monomer A from Ammonia-Fluorine Molecule Complex (NH3-F2) """
+TAGL["%s-%s-monoB-CP" % (dbse, "CT7-2")] = """Monomer B from Ammonia-Fluorine Molecule Complex (NH3-F2) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "CT7-2")] = """Monomer A from Ammonia-Fluorine Molecule Complex (NH3-F2) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "CT7-2")] = """Monomer B from Ammonia-Fluorine Molecule Complex (NH3-F2) """
+TAGL["%s-%s" % (dbse, "CT7-3")] = """Ethine-Chlorine Monofluoride Complex (HCCH-ClF) """
+TAGL["%s-%s-dimer" % (dbse, "CT7-3")] = """Dimer from Ethine-Chlorine Monofluoride Complex (HCCH-ClF) """
+TAGL["%s-%s-monoA-CP" % (dbse, "CT7-3")] = """Monomer A from Ethine-Chlorine Monofluoride Complex (HCCH-ClF) """
+TAGL["%s-%s-monoB-CP" % (dbse, "CT7-3")] = """Monomer B from Ethine-Chlorine Monofluoride Complex (HCCH-ClF) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "CT7-3")] = """Monomer A from Ethine-Chlorine Monofluoride Complex (HCCH-ClF) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "CT7-3")] = """Monomer B from Ethine-Chlorine Monofluoride Complex (HCCH-ClF) """
+TAGL["%s-%s" % (dbse, "CT7-4")] = """Hydrogen Cyanide-Chlorine Monofluoride Complex (HCN-ClF) """
+TAGL["%s-%s-dimer" % (dbse, "CT7-4")] = """Dimer from Hydrogen Cyanide-Chlorine Monofluoride Complex (HCN-ClF) """
+TAGL["%s-%s-monoA-CP" % (dbse, "CT7-4")] = (
+    """Monomer A from Hydrogen Cyanide-Chlorine Monofluoride Complex (HCN-ClF) """
+)
+TAGL["%s-%s-monoB-CP" % (dbse, "CT7-4")] = (
+    """Monomer B from Hydrogen Cyanide-Chlorine Monofluoride Complex (HCN-ClF) """
+)
+TAGL["%s-%s-monoA-unCP" % (dbse, "CT7-4")] = (
+    """Monomer A from Hydrogen Cyanide-Chlorine Monofluoride Complex (HCN-ClF) """
+)
+TAGL["%s-%s-monoB-unCP" % (dbse, "CT7-4")] = (
+    """Monomer B from Hydrogen Cyanide-Chlorine Monofluoride Complex (HCN-ClF) """
+)
+TAGL["%s-%s" % (dbse, "CT7-5")] = """Ammonia-Chlorine Molecule (NH3-Cl2) """
+TAGL["%s-%s-dimer" % (dbse, "CT7-5")] = """Dimer from Ammonia-Chlorine Molecule (NH3-Cl2) """
+TAGL["%s-%s-monoA-CP" % (dbse, "CT7-5")] = """Monomer A from Ammonia-Chlorine Molecule (NH3-Cl2) """
+TAGL["%s-%s-monoB-CP" % (dbse, "CT7-5")] = """Monomer B from Ammonia-Chlorine Molecule (NH3-Cl2) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "CT7-5")] = """Monomer A from Ammonia-Chlorine Molecule (NH3-Cl2) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "CT7-5")] = """Monomer B from Ammonia-Chlorine Molecule (NH3-Cl2) """
+TAGL["%s-%s" % (dbse, "CT7-6")] = """Water-Chlorine Monofluoride Complex (H2O-ClF) """
+TAGL["%s-%s-dimer" % (dbse, "CT7-6")] = """Dimer from Water-Chlorine Monofluoride Complex (H2O-ClF) """
+TAGL["%s-%s-monoA-CP" % (dbse, "CT7-6")] = """Monomer A from Water-Chlorine Monofluoride Complex (H2O-ClF) """
+TAGL["%s-%s-monoB-CP" % (dbse, "CT7-6")] = """Monomer B from Water-Chlorine Monofluoride Complex (H2O-ClF) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "CT7-6")] = """Monomer A from Water-Chlorine Monofluoride Complex (H2O-ClF) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "CT7-6")] = """Monomer B from Water-Chlorine Monofluoride Complex (H2O-ClF) """
+TAGL["%s-%s" % (dbse, "CT7-7")] = """Ammonia-Chlorine Monofluoride Complex (NH3-ClF) """
+TAGL["%s-%s-dimer" % (dbse, "CT7-7")] = """Dimer from Ammonia-Chlorine Monofluoride Complex (NH3-ClF) """
+TAGL["%s-%s-monoA-CP" % (dbse, "CT7-7")] = """Monomer A from Ammonia-Chlorine Monofluoride Complex (NH3-ClF) """
+TAGL["%s-%s-monoB-CP" % (dbse, "CT7-7")] = """Monomer B from Ammonia-Chlorine Monofluoride Complex (NH3-ClF) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "CT7-7")] = """Monomer A from Ammonia-Chlorine Monofluoride Complex (NH3-ClF) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "CT7-7")] = """Monomer B from Ammonia-Chlorine Monofluoride Complex (NH3-ClF) """
+TAGL["%s-%s" % (dbse, "DI6-1")] = """Hydrogen Sulfide Dimer (H2S-H2S) """
+TAGL["%s-%s-dimer" % (dbse, "DI6-1")] = """Dimer from Hydrogen Sulfide Dimer (H2S-H2S) """
+TAGL["%s-%s-monoA-CP" % (dbse, "DI6-1")] = """Monomer A from Hydrogen Sulfide Dimer (H2S-H2S) """
+TAGL["%s-%s-monoB-CP" % (dbse, "DI6-1")] = """Monomer B from Hydrogen Sulfide Dimer (H2S-H2S) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "DI6-1")] = """Monomer A from Hydrogen Sulfide Dimer (H2S-H2S) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "DI6-1")] = """Monomer B from Hydrogen Sulfide Dimer (H2S-H2S) """
+TAGL["%s-%s" % (dbse, "DI6-2")] = """Hydrogen Chloride Dimer (HCl-HCl) """
+TAGL["%s-%s-dimer" % (dbse, "DI6-2")] = """Dimer from Hydrogen Chloride Dimer (HCl-HCl) """
+TAGL["%s-%s-monoA-CP" % (dbse, "DI6-2")] = """Monomer A from Hydrogen Chloride Dimer (HCl-HCl) """
+TAGL["%s-%s-monoB-CP" % (dbse, "DI6-2")] = """Monomer B from Hydrogen Chloride Dimer (HCl-HCl) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "DI6-2")] = """Monomer A from Hydrogen Chloride Dimer (HCl-HCl) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "DI6-2")] = """Monomer B from Hydrogen Chloride Dimer (HCl-HCl) """
+TAGL["%s-%s" % (dbse, "DI6-3")] = """Hydrogen Chloride-Hydrogen Sulfide Complex (HCl-H2S) """
+TAGL["%s-%s-dimer" % (dbse, "DI6-3")] = """Dimer from Hydrogen Chloride-Hydrogen Sulfide Complex (HCl-H2S) """
+TAGL["%s-%s-monoA-CP" % (dbse, "DI6-3")] = """Monomer A from Hydrogen Chloride-Hydrogen Sulfide Complex (HCl-H2S) """
+TAGL["%s-%s-monoB-CP" % (dbse, "DI6-3")] = """Monomer B from Hydrogen Chloride-Hydrogen Sulfide Complex (HCl-H2S) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "DI6-3")] = """Monomer A from Hydrogen Chloride-Hydrogen Sulfide Complex (HCl-H2S) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "DI6-3")] = """Monomer B from Hydrogen Chloride-Hydrogen Sulfide Complex (HCl-H2S) """
+TAGL["%s-%s" % (dbse, "DI6-4")] = """Methyl Chloride-Hydrogen Chloride (CH3Cl-HCl) """
+TAGL["%s-%s-dimer" % (dbse, "DI6-4")] = """Dimer from Methyl Chloride-Hydrogen Chloride (CH3Cl-HCl) """
+TAGL["%s-%s-monoA-CP" % (dbse, "DI6-4")] = """Monomer A from Methyl Chloride-Hydrogen Chloride (CH3Cl-HCl) """
+TAGL["%s-%s-monoB-CP" % (dbse, "DI6-4")] = """Monomer B from Methyl Chloride-Hydrogen Chloride (CH3Cl-HCl) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "DI6-4")] = """Monomer A from Methyl Chloride-Hydrogen Chloride (CH3Cl-HCl) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "DI6-4")] = """Monomer B from Methyl Chloride-Hydrogen Chloride (CH3Cl-HCl) """
+TAGL["%s-%s" % (dbse, "DI6-5")] = """Hydrogen Cyanide-Methanethiol (HCN-CH3SH) """
+TAGL["%s-%s-dimer" % (dbse, "DI6-5")] = """Dimer from Hydrogen Cyanide-Methanethiol (HCN-CH3SH) """
+TAGL["%s-%s-monoA-CP" % (dbse, "DI6-5")] = """Monomer A from Hydrogen Cyanide-Methanethiol (HCN-CH3SH) """
+TAGL["%s-%s-monoB-CP" % (dbse, "DI6-5")] = """Monomer B from Hydrogen Cyanide-Methanethiol (HCN-CH3SH) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "DI6-5")] = """Monomer A from Hydrogen Cyanide-Methanethiol (HCN-CH3SH) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "DI6-5")] = """Monomer B from Hydrogen Cyanide-Methanethiol (HCN-CH3SH) """
+TAGL["%s-%s" % (dbse, "DI6-6")] = """Methanethiol-Hydrogen Chloride Complex (CH3SH-HCl) """
+TAGL["%s-%s-dimer" % (dbse, "DI6-6")] = """Dimer from Methanethiol-Hydrogen Chloride Complex (CH3SH-HCl) """
+TAGL["%s-%s-monoA-CP" % (dbse, "DI6-6")] = """Monomer A from Methanethiol-Hydrogen Chloride Complex (CH3SH-HCl) """
+TAGL["%s-%s-monoB-CP" % (dbse, "DI6-6")] = """Monomer B from Methanethiol-Hydrogen Chloride Complex (CH3SH-HCl) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "DI6-6")] = """Monomer A from Methanethiol-Hydrogen Chloride Complex (CH3SH-HCl) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "DI6-6")] = """Monomer B from Methanethiol-Hydrogen Chloride Complex (CH3SH-HCl) """
+TAGL["%s-%s" % (dbse, "HB6-1")] = """Ammonia Dimer (NH3-NH3) """
+TAGL["%s-%s-dimer" % (dbse, "HB6-1")] = """Dimer from Ammonia Dimer (NH3-NH3) """
+TAGL["%s-%s-monoA-CP" % (dbse, "HB6-1")] = """Monomer A from Ammonia Dimer (NH3-NH3) """
+TAGL["%s-%s-monoB-CP" % (dbse, "HB6-1")] = """Monomer B from Ammonia Dimer (NH3-NH3) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "HB6-1")] = """Monomer A from Ammonia Dimer (NH3-NH3) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "HB6-1")] = """Monomer B from Ammonia Dimer (NH3-NH3) """
+TAGL["%s-%s" % (dbse, "HB6-2")] = """Hydrogen Fluoride Dimer (HF-HF) """
+TAGL["%s-%s-dimer" % (dbse, "HB6-2")] = """Dimer from Hydrogen Fluoride Dimer (HF-HF) """
+TAGL["%s-%s-monoA-CP" % (dbse, "HB6-2")] = """Monomer A from Hydrogen Fluoride Dimer (HF-HF) """
+TAGL["%s-%s-monoB-CP" % (dbse, "HB6-2")] = """Monomer B from Hydrogen Fluoride Dimer (HF-HF) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "HB6-2")] = """Monomer A from Hydrogen Fluoride Dimer (HF-HF) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "HB6-2")] = """Monomer B from Hydrogen Fluoride Dimer (HF-HF) """
+TAGL["%s-%s" % (dbse, "HB6-3")] = """Water Dimer (H2O-H2O) """
+TAGL["%s-%s-dimer" % (dbse, "HB6-3")] = """Dimer from Water Dimer (H2O-H2O) """
+TAGL["%s-%s-monoA-CP" % (dbse, "HB6-3")] = """Monomer A from Water Dimer (H2O-H2O) """
+TAGL["%s-%s-monoB-CP" % (dbse, "HB6-3")] = """Monomer B from Water Dimer (H2O-H2O) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "HB6-3")] = """Monomer A from Water Dimer (H2O-H2O) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "HB6-3")] = """Monomer B from Water Dimer (H2O-H2O) """
+TAGL["%s-%s" % (dbse, "HB6-4")] = """Ammonia-Water Complex (NH3-H2O) """
+TAGL["%s-%s-dimer" % (dbse, "HB6-4")] = """Dimer from Ammonia-Water Complex (NH3-H2O) """
+TAGL["%s-%s-monoA-CP" % (dbse, "HB6-4")] = """Monomer A from Ammonia-Water Complex (NH3-H2O) """
+TAGL["%s-%s-monoB-CP" % (dbse, "HB6-4")] = """Monomer B from Ammonia-Water Complex (NH3-H2O) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "HB6-4")] = """Monomer A from Ammonia-Water Complex (NH3-H2O) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "HB6-4")] = """Monomer B from Ammonia-Water Complex (NH3-H2O) """
+TAGL["%s-%s" % (dbse, "HB6-5")] = """Formamide Dimer (HCONH2-HCONH2) """
+TAGL["%s-%s-dimer" % (dbse, "HB6-5")] = """Dimer from Formamide Dimer (HCONH2-HCONH2) """
+TAGL["%s-%s-monoA-CP" % (dbse, "HB6-5")] = """Monomer A from Formamide Dimer (HCONH2-HCONH2) """
+TAGL["%s-%s-monoB-CP" % (dbse, "HB6-5")] = """Monomer B from Formamide Dimer (HCONH2-HCONH2) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "HB6-5")] = """Monomer A from Formamide Dimer (HCONH2-HCONH2) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "HB6-5")] = """Monomer B from Formamide Dimer (HCONH2-HCONH2) """
+TAGL["%s-%s" % (dbse, "HB6-6")] = """Formic Acid Dimer (HCOOH-HCOOH) """
+TAGL["%s-%s-dimer" % (dbse, "HB6-6")] = """Dimer from Formic Acid Dimer (HCOOH-HCOOH) """
+TAGL["%s-%s-monoA-CP" % (dbse, "HB6-6")] = """Monomer A from Formic Acid Dimer (HCOOH-HCOOH) """
+TAGL["%s-%s-monoB-CP" % (dbse, "HB6-6")] = """Monomer B from Formic Acid Dimer (HCOOH-HCOOH) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "HB6-6")] = """Monomer A from Formic Acid Dimer (HCOOH-HCOOH) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "HB6-6")] = """Monomer B from Formic Acid Dimer (HCOOH-HCOOH) """
+TAGL["%s-%s" % (dbse, "PPS5-1")] = """Ethine Dimer (HCCH-HCCH) """
+TAGL["%s-%s-dimer" % (dbse, "PPS5-1")] = """Dimer from Ethine Dimer (HCCH-HCCH) """
+TAGL["%s-%s-monoA-CP" % (dbse, "PPS5-1")] = """Monomer A from Ethine Dimer (HCCH-HCCH) """
+TAGL["%s-%s-monoB-CP" % (dbse, "PPS5-1")] = """Monomer B from Ethine Dimer (HCCH-HCCH) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "PPS5-1")] = """Monomer A from Ethine Dimer (HCCH-HCCH) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "PPS5-1")] = """Monomer B from Ethine Dimer (HCCH-HCCH) """
+TAGL["%s-%s" % (dbse, "PPS5-2")] = """Ethene Dimer (C2H4-C2H4) """
+TAGL["%s-%s-dimer" % (dbse, "PPS5-2")] = """Dimer from Ethene Dimer (C2H4-C2H4) """
+TAGL["%s-%s-monoA-CP" % (dbse, "PPS5-2")] = """Monomer A from Ethene Dimer (C2H4-C2H4) """
+TAGL["%s-%s-monoB-CP" % (dbse, "PPS5-2")] = """Monomer B from Ethene Dimer (C2H4-C2H4) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "PPS5-2")] = """Monomer A from Ethene Dimer (C2H4-C2H4) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "PPS5-2")] = """Monomer B from Ethene Dimer (C2H4-C2H4) """
+TAGL["%s-%s" % (dbse, "PPS5-3")] = """Sandwich Benzene Dimer (BzBz_S) """
+TAGL["%s-%s-dimer" % (dbse, "PPS5-3")] = """Dimer from Sandwich Benzene Dimer (BzBz_S) """
+TAGL["%s-%s-monoA-CP" % (dbse, "PPS5-3")] = """Monomer A from Sandwich Benzene Dimer (BzBz_S) """
+TAGL["%s-%s-monoB-CP" % (dbse, "PPS5-3")] = """Monomer B from Sandwich Benzene Dimer (BzBz_S) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "PPS5-3")] = """Monomer A from Sandwich Benzene Dimer (BzBz_S) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "PPS5-3")] = """Monomer B from Sandwich Benzene Dimer (BzBz_S) """
+TAGL["%s-%s" % (dbse, "PPS5-4")] = """T-Shaped Benzene Dimer (BzBz_T) """
+TAGL["%s-%s-dimer" % (dbse, "PPS5-4")] = """Dimer from T-Shaped Benzene Dimer (BzBz_T) """
+TAGL["%s-%s-monoA-CP" % (dbse, "PPS5-4")] = """Monomer A from T-Shaped Benzene Dimer (BzBz_T) """
+TAGL["%s-%s-monoB-CP" % (dbse, "PPS5-4")] = """Monomer B from T-Shaped Benzene Dimer (BzBz_T) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "PPS5-4")] = """Monomer A from T-Shaped Benzene Dimer (BzBz_T) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "PPS5-4")] = """Monomer B from T-Shaped Benzene Dimer (BzBz_T) """
+TAGL["%s-%s" % (dbse, "PPS5-5")] = """Parallel-Displaced Benzene Dimer (BzBz_PD) """
+TAGL["%s-%s-dimer" % (dbse, "PPS5-5")] = """Dimer from Parallel-Displaced Benzene Dimer (BzBz_PD) """
+TAGL["%s-%s-monoA-CP" % (dbse, "PPS5-5")] = """Monomer A from Parallel-Displaced Benzene Dimer (BzBz_PD) """
+TAGL["%s-%s-monoB-CP" % (dbse, "PPS5-5")] = """Monomer B from Parallel-Displaced Benzene Dimer (BzBz_PD) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "PPS5-5")] = """Monomer A from Parallel-Displaced Benzene Dimer (BzBz_PD) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "PPS5-5")] = """Monomer B from Parallel-Displaced Benzene Dimer (BzBz_PD) """
+TAGL["%s-%s" % (dbse, "WI7-1")] = """Helium-Neon Complex (He-Ne) """
+TAGL["%s-%s-dimer" % (dbse, "WI7-1")] = """Dimer from Helium-Neon Complex (He-Ne) """
+TAGL["%s-%s-monoA-CP" % (dbse, "WI7-1")] = """Monomer A from Helium-Neon Complex (He-Ne) """
+TAGL["%s-%s-monoB-CP" % (dbse, "WI7-1")] = """Monomer B from Helium-Neon Complex (He-Ne) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "WI7-1")] = """Monomer A from Helium-Neon Complex (He-Ne) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "WI7-1")] = """Monomer B from Helium-Neon Complex (He-Ne) """
+TAGL["%s-%s" % (dbse, "WI7-2")] = """Helium-Argon Complex (He-Ar) """
+TAGL["%s-%s-dimer" % (dbse, "WI7-2")] = """Dimer from Helium-Argon Complex (He-Ar) """
+TAGL["%s-%s-monoA-CP" % (dbse, "WI7-2")] = """Monomer A from Helium-Argon Complex (He-Ar) """
+TAGL["%s-%s-monoB-CP" % (dbse, "WI7-2")] = """Monomer B from Helium-Argon Complex (He-Ar) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "WI7-2")] = """Monomer A from Helium-Argon Complex (He-Ar) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "WI7-2")] = """Monomer B from Helium-Argon Complex (He-Ar) """
+TAGL["%s-%s" % (dbse, "WI7-3")] = """Neon Dimer (Ne-Ne) """
+TAGL["%s-%s-dimer" % (dbse, "WI7-3")] = """Dimer from Neon Dimer (Ne-Ne) """
+TAGL["%s-%s-monoA-CP" % (dbse, "WI7-3")] = """Monomer A from Neon Dimer (Ne-Ne) """
+TAGL["%s-%s-monoB-CP" % (dbse, "WI7-3")] = """Monomer B from Neon Dimer (Ne-Ne) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "WI7-3")] = """Monomer A from Neon Dimer (Ne-Ne) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "WI7-3")] = """Monomer B from Neon Dimer (Ne-Ne) """
+TAGL["%s-%s" % (dbse, "WI7-4")] = """Neon-Argon Complex (Ne-Ar) """
+TAGL["%s-%s-dimer" % (dbse, "WI7-4")] = """Dimer from Neon-Argon Complex (Ne-Ar) """
+TAGL["%s-%s-monoA-CP" % (dbse, "WI7-4")] = """Monomer A from Neon-Argon Complex (Ne-Ar) """
+TAGL["%s-%s-monoB-CP" % (dbse, "WI7-4")] = """Monomer B from Neon-Argon Complex (Ne-Ar) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "WI7-4")] = """Monomer A from Neon-Argon Complex (Ne-Ar) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "WI7-4")] = """Monomer B from Neon-Argon Complex (Ne-Ar) """
+TAGL["%s-%s" % (dbse, "WI7-5")] = """Methane-Neon Complex (CH4-Ne) """
+TAGL["%s-%s-dimer" % (dbse, "WI7-5")] = """Dimer from Methane-Neon Complex (CH4-Ne) """
+TAGL["%s-%s-monoA-CP" % (dbse, "WI7-5")] = """Monomer A from Methane-Neon Complex (CH4-Ne) """
+TAGL["%s-%s-monoB-CP" % (dbse, "WI7-5")] = """Monomer B from Methane-Neon Complex (CH4-Ne) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "WI7-5")] = """Monomer A from Methane-Neon Complex (CH4-Ne) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "WI7-5")] = """Monomer B from Methane-Neon Complex (CH4-Ne) """
+TAGL["%s-%s" % (dbse, "WI7-6")] = """Benzene-Neon Complex (Bz-Ne) """
+TAGL["%s-%s-dimer" % (dbse, "WI7-6")] = """Dimer from Benzene-Neon Complex (Bz-Ne) """
+TAGL["%s-%s-monoA-CP" % (dbse, "WI7-6")] = """Monomer A from Benzene-Neon Complex (Bz-Ne) """
+TAGL["%s-%s-monoB-CP" % (dbse, "WI7-6")] = """Monomer B from Benzene-Neon Complex (Bz-Ne) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "WI7-6")] = """Monomer A from Benzene-Neon Complex (Bz-Ne) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "WI7-6")] = """Monomer B from Benzene-Neon Complex (Bz-Ne) """
+TAGL["%s-%s" % (dbse, "WI7-7")] = """Methane Dimer (CH4-CH4) """
+TAGL["%s-%s-dimer" % (dbse, "WI7-7")] = """Dimer from Methane Dimer (CH4-CH4) """
+TAGL["%s-%s-monoA-CP" % (dbse, "WI7-7")] = """Monomer A from Methane Dimer (CH4-CH4) """
+TAGL["%s-%s-monoB-CP" % (dbse, "WI7-7")] = """Monomer B from Methane Dimer (CH4-CH4) """
+TAGL["%s-%s-monoA-unCP" % (dbse, "WI7-7")] = """Monomer A from Methane Dimer (CH4-CH4) """
+TAGL["%s-%s-monoB-unCP" % (dbse, "WI7-7")] = """Monomer B from Methane Dimer (CH4-CH4) """
+TAGL["%s-%s-mono-RLX" % (dbse, "HCCH")] = """Ethine Relaxed Monomer """
+TAGL["%s-%s-mono-RLX" % (dbse, "C2H4")] = """Ethene Relaxed Monomer """
+TAGL["%s-%s-mono-RLX" % (dbse, "Bz")] = """Benzene Relaxed Monomer """
+TAGL["%s-%s-mono-RLX" % (dbse, "CH3Cl")] = """Methyl Chloride Relaxed Monomer """
+TAGL["%s-%s-mono-RLX" % (dbse, "CH3SH")] = """Methanethiol Relaxed Monomer """
+TAGL["%s-%s-mono-RLX" % (dbse, "CH4")] = """Methane Relaxed Monomer """
+TAGL["%s-%s-mono-RLX" % (dbse, "F2")] = """Fluorine Molecule Relaxed Monomer """
+TAGL["%s-%s-mono-RLX" % (dbse, "H2O")] = """Water Relaxed Monomer """
+TAGL["%s-%s-mono-RLX" % (dbse, "H2S")] = """Hydrogen Sulfide Relaxed Monomer """
+TAGL["%s-%s-mono-RLX" % (dbse, "HCl")] = """Hydrogen Chloride Relaxed Monomer """
+TAGL["%s-%s-mono-RLX" % (dbse, "HCN")] = """Hydrogen Cyanide Relaxed Monomer """
+TAGL["%s-%s-mono-RLX" % (dbse, "HCONH2")] = """Formamide Relaxed Monomer """
+TAGL["%s-%s-mono-RLX" % (dbse, "HCOOH")] = """Formic Acid Relaxed Monomer """
+TAGL["%s-%s-mono-RLX" % (dbse, "He")] = """Helium Relaxed Monomer """
+TAGL["%s-%s-mono-RLX" % (dbse, "Ne")] = """Neon Relaxed Monomer """
+TAGL["%s-%s-mono-RLX" % (dbse, "Ar")] = """Argon Relaxed Monomer """
+TAGL["%s-%s-mono-RLX" % (dbse, "HF")] = """Hydrogen Fluoride Relaxed Monomer """
+TAGL["%s-%s-mono-RLX" % (dbse, "NH3")] = """Ammonia Relaxed Monomer """
 
 # <<< Geometry Specification Strings >>>
 GEOS = {}
 
-GEOS['%s-%s-%s' % (dbse, 'CT7-1', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "CT7-1", "dimer")] = qcdb.Molecule("""
 0 1
 C        0.00000000    -2.19285000    -0.66839500
 C       -0.00000000    -2.19286000     0.66839500
@@ -423,7 +428,7 @@ F        0.00000000     2.20564800     0.00000100
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'CT7-2', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "CT7-2", "dimer")] = qcdb.Molecule("""
 0 1
 N        0.00000000     0.00000000    -2.14998500
 H        0.00000000     0.93965200    -2.53440100
@@ -436,7 +441,7 @@ F        0.00000000     0.00000000     1.97124000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'CT7-3', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "CT7-3", "dimer")] = qcdb.Molecule("""
 0 1
 H        0.00000000     1.67189100    -2.21255500
 C        0.00000000     0.60529300    -2.19955900
@@ -450,7 +455,7 @@ F        0.00000000    -0.00000000     2.26865100
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'CT7-4', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "CT7-4", "dimer")] = qcdb.Molecule("""
 0 1
 N        0.00000000     0.00000000    -1.83951900
 C        0.00000000     0.00000000    -2.99573100
@@ -462,7 +467,7 @@ Cl      -0.00000000     0.00000000     0.76957400
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'CT7-5', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "CT7-5", "dimer")] = qcdb.Molecule("""
 0 1
 N        0.00000000     0.00000000    -2.83845100
 H        0.00000000     0.94268700    -3.21538300
@@ -475,7 +480,7 @@ Cl       0.00000000     0.00000000     1.88623900
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'CT7-6', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "CT7-6", "dimer")] = qcdb.Molecule("""
 0 1
 O        2.23981900     0.00002700    -0.08823100
 H        2.60088700     0.76196300     0.37705500
@@ -487,7 +492,7 @@ F       -1.97230800     0.00007400     0.02657000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'CT7-7', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "CT7-7", "dimer")] = qcdb.Molecule("""
 0 1
 N        0.00000000     0.00000000    -2.05789900
 H        0.00000000     0.94960500    -2.41448800
@@ -500,7 +505,7 @@ F        0.00000000     0.00000000     1.94480300
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'DI6-1', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "DI6-1", "dimer")] = qcdb.Molecule("""
 0 1
 S       -2.03099600     0.10323300    -0.00078200
 H       -1.93402000    -0.81846200     0.96967600
@@ -513,7 +518,7 @@ H        0.75384800     0.13412100    -0.00353700
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'DI6-2', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "DI6-2", "dimer")] = qcdb.Molecule("""
 0 1
 Cl       1.86082400    -0.06541100    -0.00006800
 H        1.75394100     1.21098100     0.00034100
@@ -524,7 +529,7 @@ H       -0.65842700    -0.19370300     0.00247600
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'DI6-3', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "DI6-3", "dimer")] = qcdb.Molecule("""
 0 1
 Cl      -1.91163600    -0.00001100     0.00349800
 H       -0.62731700    -0.00005800    -0.10405100
@@ -536,7 +541,7 @@ H        1.82187700     0.96186000     0.83462200
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'DI6-4', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "DI6-4", "dimer")] = qcdb.Molecule("""
 0 1
 C       -1.49512800     1.12579900    -0.00000200
 Cl      -1.40247600    -0.66254400     0.00013900
@@ -550,7 +555,7 @@ H        0.97700200    -0.51405400     0.00007200
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'DI6-5', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "DI6-5", "dimer")] = qcdb.Molecule("""
 0 1
 C        1.99644300     0.05718500    -0.00648300
 N        2.98021800     0.65834500     0.10945000
@@ -566,7 +571,7 @@ H       -2.49314500     1.33992300     0.48665400
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'DI6-6', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "DI6-6", "dimer")] = qcdb.Molecule("""
 0 1
 C       -1.44764800     1.15564900     0.01851300
 S       -1.41459500    -0.65984600    -0.08354400
@@ -581,7 +586,7 @@ H        0.92223800    -0.44463500    -0.09824700
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'HB6-1', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "HB6-1", "dimer")] = qcdb.Molecule("""
 0 1
 N        1.57522500     0.00008500    -0.04260700
 H        2.13110800     0.81394900    -0.28661400
@@ -596,7 +601,7 @@ H       -0.71429700     0.00054300    -0.19240700
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'HB6-2', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "HB6-2", "dimer")] = qcdb.Molecule("""
 0 1
 F        1.32373600    -0.09022600    -0.00000700
 H        1.74043700     0.73339000     0.00001300
@@ -607,7 +612,7 @@ H       -0.53931000    -0.09466400     0.00014500
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'HB6-3', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "HB6-3", "dimer")] = qcdb.Molecule("""
 0 1
 O        1.53175000     0.00592200    -0.12088000
 H        0.57596800    -0.00524900     0.02496600
@@ -620,7 +625,7 @@ H       -1.77703700     0.77763800    -0.30426400
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'HB6-4', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "HB6-4", "dimer")] = qcdb.Molecule("""
 0 1
 N       -1.39559100    -0.02156400     0.00003700
 H       -1.62981100     0.96109600    -0.10622400
@@ -634,7 +639,7 @@ H        1.94051900    -0.78000500     0.00022200
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'HB6-5', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "HB6-5", "dimer")] = qcdb.Molecule("""
 0 1
 O       -1.14108700     1.44521200     0.00000000
 C       -0.06175400     2.03094700     0.00000000
@@ -653,7 +658,7 @@ H       -1.97144600    -2.00209500     0.00000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'HB6-6', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "HB6-6", "dimer")] = qcdb.Molecule("""
 0 1
 C       -0.12023400     1.91407000     0.00000000
 H       -0.16729500     3.00701800     0.00000000
@@ -670,7 +675,7 @@ H        0.16729500    -3.00701800     0.00000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'PPS5-1', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "PPS5-1", "dimer")] = qcdb.Molecule("""
 0 1
 C       -0.41254600     1.67817500     0.00000000
 C        0.41254600     2.56162700     0.00000000
@@ -685,7 +690,7 @@ H       -1.13465100    -3.34577000     0.00000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'PPS5-2', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "PPS5-2", "dimer")] = qcdb.Molecule("""
 0 1
 C        1.85776800     0.47280300     0.47242500
 C        1.85776800    -0.47280300    -0.47242500
@@ -704,7 +709,7 @@ H       -2.78381800    -0.87170900     0.87155600
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'PPS5-3', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "PPS5-3", "dimer")] = qcdb.Molecule("""
 0 1
 C        0.00000000     1.95000000     1.39150000
 H        0.00000000     1.95000000     2.47150000
@@ -735,7 +740,7 @@ H       -2.14038179    -1.95000000     1.23575000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'PPS5-4', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "PPS5-4", "dimer")] = qcdb.Molecule("""
 0 1
 C        1.39150000    -0.00000000     2.49575000
 H        2.47150000    -0.00000000     2.49575000
@@ -766,7 +771,7 @@ H        0.00000000     2.14038179    -1.26000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'PPS5-5', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "PPS5-5", "dimer")] = qcdb.Molecule("""
 0 1
 C       -0.80000000     1.80000000     1.39150000
 H       -0.80000000     1.80000000     2.47150000
@@ -797,7 +802,7 @@ H       -1.34038179    -1.80000000    -1.23575000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'WI7-1', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "WI7-1", "dimer")] = qcdb.Molecule("""
 0 1
 He       0.00000000     0.00000000     0.00000000
 --
@@ -806,7 +811,7 @@ Ne       3.03100000     0.00000000     0.00000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'WI7-2', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "WI7-2", "dimer")] = qcdb.Molecule("""
 0 1
 He       0.00000000     0.00000000     0.00000000
 --
@@ -815,7 +820,7 @@ Ar       3.48000000     0.00000000     0.00000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'WI7-3', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "WI7-3", "dimer")] = qcdb.Molecule("""
 0 1
 Ne       0.00000000     0.00000000     0.00000000
 --
@@ -824,7 +829,7 @@ Ne       3.09100000     0.00000000     0.00000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'WI7-4', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "WI7-4", "dimer")] = qcdb.Molecule("""
 0 1
 Ne       0.00000000     0.00000000     0.00000000
 --
@@ -833,7 +838,7 @@ Ar       3.48900000     0.00000000     0.00000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'WI7-5', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "WI7-5", "dimer")] = qcdb.Molecule("""
 0 1
 Ne       0.00070500    -0.03504900    -1.74260200
 --
@@ -846,7 +851,7 @@ H        0.89915700    -0.46792400     1.39016200
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'WI7-6', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "WI7-6", "dimer")] = qcdb.Molecule("""
 0 1
 C        0.00000000     1.39566300    -0.61935100
 C       -1.20868000     0.69783100    -0.61935100
@@ -866,7 +871,7 @@ Ne       0.00000000     0.00000000     2.60019400
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'WI7-7', 'dimer')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "WI7-7", "dimer")] = qcdb.Molecule("""
 0 1
 C       -0.00000000     0.00000000     1.80727900
 H       -0.00000000     1.02664300     1.44240000
@@ -883,7 +888,7 @@ H       -0.00000000    -1.02664300    -1.44240000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'HCCH', 'mono-RLX')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "HCCH", "mono-RLX")] = qcdb.Molecule("""
 0 1
 C        0.00000400    -0.60420400     0.00000000
 C        0.00000400     0.60419800     0.00000000
@@ -892,7 +897,7 @@ H       -0.00683900     1.67016300     0.00000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'C2H4', 'mono-RLX')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "C2H4", "mono-RLX")] = qcdb.Molecule("""
 0 1
 C        0.00000000     0.00000000     0.66807800
 C        0.00000000     0.00000000    -0.66807800
@@ -903,7 +908,7 @@ H        0.00000000    -0.92453300    -1.23491900
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'Bz', 'mono-RLX')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "Bz", "mono-RLX")] = qcdb.Molecule("""
 0 1
 C        0.00000000     1.39567100    -0.61715800
 C       -1.20868600     0.69783500    -0.61715800
@@ -920,7 +925,7 @@ H        2.14763600     1.23993800    -0.61699800
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'CH3Cl', 'mono-RLX')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "CH3Cl", "mono-RLX")] = qcdb.Molecule("""
 0 1
 C        0.00000000     0.00000000    -1.12626800
 Cl       0.00000000     0.00000000     0.65820600
@@ -930,7 +935,7 @@ H       -0.89284600    -0.51548500    -1.47059600
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'CH3SH', 'mono-RLX')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "CH3SH", "mono-RLX")] = qcdb.Molecule("""
 0 1
 C       -0.04788200     1.15150600     0.00000000
 S       -0.04788200    -0.66495900     0.00000000
@@ -941,7 +946,7 @@ H        0.43188500     1.54736900    -0.89371000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'CH4', 'mono-RLX')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "CH4", "mono-RLX")] = qcdb.Molecule("""
 0 1
 C        0.00000000     0.00000000     0.00000000
 H        0.00000000    -1.08947061     0.00000000
@@ -951,14 +956,14 @@ H        0.34238759     0.36315688    -0.96841832
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'F2', 'mono-RLX')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "F2", "mono-RLX")] = qcdb.Molecule("""
 0 1
 F        0.00000000     0.00000000     1.41423000
 F        0.00000000     0.00000000     0.00000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'H2O', 'mono-RLX')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "H2O", "mono-RLX")] = qcdb.Molecule("""
 0 1
 O        0.00000000     0.00000000     0.00000000
 H        0.00000000     0.00000000     0.96183119
@@ -966,7 +971,7 @@ H        0.00000000     0.93357861    -0.23140921
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'H2S', 'mono-RLX')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "H2S", "mono-RLX")] = qcdb.Molecule("""
 0 1
 S        0.00000000     0.00000000     0.10389400
 H        0.00000000     0.96116200    -0.83115300
@@ -974,14 +979,14 @@ H        0.00000000    -0.96116200    -0.83115300
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'HCl', 'mono-RLX')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "HCl", "mono-RLX")] = qcdb.Molecule("""
 0 1
 Cl       0.00000000     0.00000000     0.00000000
 H        0.00000000     0.00000000     1.27907275
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'HCN', 'mono-RLX')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "HCN", "mono-RLX")] = qcdb.Molecule("""
 0 1
 C        0.00000000     0.00000000    -0.50103200
 N        0.00000000     0.00000000     0.65706900
@@ -989,7 +994,7 @@ H        0.00000000     0.00000000    -1.57005300
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'HCONH2', 'mono-RLX')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "HCONH2", "mono-RLX")] = qcdb.Molecule("""
 0 1
 C       -0.16068500     0.38839900    -0.00053800
 O       -1.19570500    -0.24639200     0.00018900
@@ -1000,7 +1005,7 @@ H        1.90431600     0.41973500     0.00124500
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'HCOOH', 'mono-RLX')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "HCOOH", "mono-RLX")] = qcdb.Molecule("""
 0 1
 C       -0.13470200     0.40125100    -0.00024900
 O       -1.13426200    -0.26458200     0.00006900
@@ -1010,32 +1015,32 @@ H        1.04048400    -1.05771400    -0.00002000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'He', 'mono-RLX')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "He", "mono-RLX")] = qcdb.Molecule("""
 0 1
 He       0.00000000     0.00000000     0.00000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'Ne', 'mono-RLX')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "Ne", "mono-RLX")] = qcdb.Molecule("""
 0 1
 Ne       0.00000000     0.00000000     0.00000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'Ar', 'mono-RLX')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "Ar", "mono-RLX")] = qcdb.Molecule("""
 0 1
 Ar       0.00000000     0.00000000     0.00000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'HF', 'mono-RLX')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "HF", "mono-RLX")] = qcdb.Molecule("""
 0 1
 F        0.00000000     0.00000000     0.00000000
 H        0.00000000     0.00000000     0.92073754
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'NH3', 'mono-RLX')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "NH3", "mono-RLX")] = qcdb.Molecule("""
 0 1
 N        0.00000000     0.00000000     0.11501300
 H        0.00000000     0.93975200    -0.26836400
@@ -1046,7 +1051,7 @@ units angstrom
 
 # <<< Derived Geometry Strings >>>
 for rxn in HRXN:
-    GEOS['%s-%s-monoA-unCP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(1)
-    GEOS['%s-%s-monoB-unCP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(2)
-    GEOS['%s-%s-monoA-CP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(1, 2)
-    GEOS['%s-%s-monoB-CP' % (dbse, rxn)] = GEOS['%s-%s-dimer' % (dbse, rxn)].extract_fragments(2, 1)
+    GEOS["%s-%s-monoA-unCP" % (dbse, rxn)] = GEOS["%s-%s-dimer" % (dbse, rxn)].extract_fragments(1)
+    GEOS["%s-%s-monoB-unCP" % (dbse, rxn)] = GEOS["%s-%s-dimer" % (dbse, rxn)].extract_fragments(2)
+    GEOS["%s-%s-monoA-CP" % (dbse, rxn)] = GEOS["%s-%s-dimer" % (dbse, rxn)].extract_fragments(1, 2)
+    GEOS["%s-%s-monoB-CP" % (dbse, rxn)] = GEOS["%s-%s-dimer" % (dbse, rxn)].extract_fragments(2, 1)

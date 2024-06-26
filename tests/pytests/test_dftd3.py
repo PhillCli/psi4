@@ -1,7 +1,7 @@
-import pytest
 import numpy as np
-from utils import *
+import pytest
 from addons import using, uusing
+from utils import *
 
 import psi4
 
@@ -13,12 +13,16 @@ def test_dftd3_dft_grad_lr3():
     """modified VV10-less B97 functional gradient wB97X-V -> wB97X-D3BJ"""
 
     # stored data from finite differences
-    FD_wb97x_d3 = psi4.core.Matrix.from_list([[0.03637802044642, 0.06718963272193, 0.00000000000000],
-                                              [0.04955519892514, -0.06340333481039, 0.00000000000000],
-                                              [-0.07009043821383, -0.00834477190196, 0.00000000000000],
-                                              [0.02732425404378, -0.05883094637658, 0.00000000000000],
-                                              [-0.02158351760075, 0.03169471018350, 0.05342791683461],
-                                              [-0.02158351760075, 0.03169471018350, -0.05342791683461]])
+    FD_wb97x_d3 = psi4.core.Matrix.from_list(
+        [
+            [0.03637802044642, 0.06718963272193, 0.00000000000000],
+            [0.04955519892514, -0.06340333481039, 0.00000000000000],
+            [-0.07009043821383, -0.00834477190196, 0.00000000000000],
+            [0.02732425404378, -0.05883094637658, 0.00000000000000],
+            [-0.02158351760075, 0.03169471018350, 0.05342791683461],
+            [-0.02158351760075, 0.03169471018350, -0.05342791683461],
+        ]
+    )
 
     psi4.geometry("""
     0 1
@@ -30,15 +34,17 @@ def test_dftd3_dft_grad_lr3():
     H          1.57599       -0.38252        0.75856
     """)
 
-    psi4.set_options({
-        'scf_type': 'pk',
-        'basis': 'minix',
-        'dft_radial_points': 99,
-        'dft_spherical_points': 302,
-        'e_convergence': 8,
-    })
+    psi4.set_options(
+        {
+            "scf_type": "pk",
+            "basis": "minix",
+            "dft_radial_points": 99,
+            "dft_spherical_points": 302,
+            "e_convergence": 8,
+        }
+    )
 
-    analytic = psi4.gradient('wB97X-D3BJ', dertype=1)
+    analytic = psi4.gradient("wB97X-D3BJ", dertype=1)
     assert compare_matrices(analytic, FD_wb97x_d3, 5, "wB97X-D3BJ Analytic vs Store")
 
 
@@ -52,7 +58,7 @@ s16_hf3c_gcp_orca = np.array([-0.040614359, -0.016191870, -0.022746290])
 s16_hf3c_final_orca = np.array([-153.835182748371, -77.515214592777, -76.317565590919])
 
 # > s-dftd3 s16di.tmol --bj-param 1.0 0.8777 0.4171 2.9149
-s16_hf3c_sdftd3 = np.array([-2.4367755433608E-02, -1.4320824084920E-02, -8.0660621301533E-03])
+s16_hf3c_sdftd3 = np.array([-2.4367755433608e-02, -1.4320824084920e-02, -8.0660621301533e-03])
 
 # Orca about 400,770 ! PBEh-3c NoRI TightSCF angs %METHOD AngularGrid 7 IntAcc 29.0 GridPruning Unpruned end
 # grep 'Total Energy'
@@ -65,7 +71,7 @@ s16_pbeh3c_gcp_orca = np.array([0.007221336, 0.004956005, 0.001998163])
 s16_pbeh3c_final_orca = np.array([-155.550860629116, -78.405161432347, -77.142313701120])
 
 # > s-dftd3 s16di.tmol --bj-param 1.0 0.0 0.4860 4.5000
-s16_pbeh3c_sdftd3 = np.array([-2.7171815555163E-03, -1.3016040877044E-03, -6.9806156762005E-04])
+s16_pbeh3c_sdftd3 = np.array([-2.7171815555163e-03, -1.3016040877044e-03, -6.9806156762005e-04])
 
 # Orca about 400,770 ! B97-3c NoRI TightSCF angs %METHOD AngularGrid 7 IntAcc 29.0 GridPruning Unpruned end
 s16_b973c_xc_orca = np.array([-155.79596752, -78.52480800, -77.26992220])
@@ -74,7 +80,7 @@ s16_b973c_gcp_orca = np.array([-0.027189940, -0.014493561, -0.012690835])
 s16_b973c_final_orca = np.array([-155.833790674968, -78.544937023820, -77.285860375503])
 
 # > s-dftd3 s16di.tmol --bj-param 1.0 1.50 0.37 4.10
-s16_b973c_sdftd3 = np.array([-1.0633036221941E-02, -5.6356801553795E-03, -3.2472858339059E-03])
+s16_b973c_sdftd3 = np.array([-1.0633036221941e-02, -5.6356801553795e-03, -3.2472858339059e-03])
 
 # Orca about 400,770 ! R2SCAN NoRI def2-mTZVPP angs %METHOD AngularGrid 7 IntAcc 29.0 GridPruning Unpruned end (note not tight)
 s16_r2scan_final_orca = np.array([-155.86137806, -78.55690019, -77.30233380])
@@ -93,19 +99,19 @@ s16_wb97x3c_final_orca = np.array([-26.275166807430, -13.771538675222, -12.50106
 # > dftd4 s16di.tmol --param 1.0 0.0 0.2464 4.737 --mbdscale 1.0
 s16_wb97x3c_dftd4 = np.array([-4.8257433806220e-03, -2.4982196402379e-03, -1.4323024694511e-03])
 
-#d4.bj-eeq-atm = { s8=0.60187490, a1=0.51559235, a2=5.77342911, doi="10.1063/5.0041008" }
+# d4.bj-eeq-atm = { s8=0.60187490, a1=0.51559235, a2=5.77342911, doi="10.1063/5.0041008" }
 # > dftd4 s16ma.tmol --param 1.0 0.60187490 0.51559235 5.77342911 --mbdscale 1.0
-s16_r2scan_dftd4 = np.array([-1.1296999851733E-03, -4.4567923427274E-04, -2.4728471580494E-04])
+s16_r2scan_dftd4 = np.array([-1.1296999851733e-03, -4.4567923427274e-04, -2.4728471580494e-04])
 
 # > dftd4 s16di.tmol --param 1.0 0.8324 0.4944 5.9019 --mbdscale 1.0
-#s16_r2scanh_dftd4 = np.array([
+# s16_r2scanh_dftd4 = np.array([
 
-#[parameter.r2scan0]
+# [parameter.r2scan0]
 # > dftd4 s16di.tmol --param 1.0 0.8992 0.4778 5.8779 --mbdscale 1.0
-#s16_r2scan0_dftd4 = np.array([
+# s16_r2scan0_dftd4 = np.array([
 
 # > dftd4 s16di.tmol --param 1.0 1.0471 0.4574 5.8969 --mbdscale 1.0
-s16_r2scan50_dftd4 = np.array([-1.4008964960682E-03, -5.5551918498700E-04, -3.1465561625320E-04])
+s16_r2scan50_dftd4 = np.array([-1.4008964960682e-03, -5.5551918498700e-04, -3.1465561625320e-04])
 
 # refs from psi4, not external
 s16_r2scan0_psi4 = np.array([-155.6718657, -78.4640942, -77.2052683])
@@ -114,10 +120,13 @@ s16_r2scan50_psi4 = np.array([-155.6575747, -78.4586347, -77.1962996])
 
 
 @pytest.mark.nbody
-@pytest.mark.parametrize("mode", [
-    pytest.param("abs", marks=pytest.mark.long),
-    pytest.param("ie", marks=pytest.mark.quick),
-])
+@pytest.mark.parametrize(
+    "mode",
+    [
+        pytest.param("abs", marks=pytest.mark.long),
+        pytest.param("ie", marks=pytest.mark.quick),
+    ],
+)
 @pytest.mark.parametrize(
     "mtdbas,ref",
     [
@@ -130,13 +139,15 @@ s16_r2scan50_psi4 = np.array([-155.6575747, -78.4586347, -77.1962996])
         pytest.param("r2scan50/def2-svp", s16_r2scan50_psi4),
         pytest.param("r2scan-d4/def2-mTZVPP", s16_r2scan_final_orca + s16_r2scan_dftd4, marks=using("dftd4")),
         pytest.param("r2scan/def2-mTZVPP", s16_r2scan_final_orca),
-        pytest.param("r2scan-3c/",
-                     s16_r2scan_final_orca + s16_r2scan3c_dftd4 + s16_r2scan3c_mctcgcp,
-                     marks=[*using("dftd4_350"), *using("mctc-gcp")]),  # def2-mTZVPP
+        pytest.param(
+            "r2scan-3c/",
+            s16_r2scan_final_orca + s16_r2scan3c_dftd4 + s16_r2scan3c_mctcgcp,
+            marks=[*using("dftd4_350"), *using("mctc-gcp")],
+        ),  # def2-mTZVPP
         pytest.param("wb97x-3c/", s16_wb97x3c_xc_orca + s16_wb97x3c_dftd4, marks=using("dftd4")),  # vDZP
-    ])
+    ],
+)
 def test_grimme_3c(mtdbas, ref, mode):
-
     s16di = psi4.geometry("""
     # ang C   0.000000  -0.667578  -2.124659
     # ang C   0.000000   0.667578  -2.124659
@@ -166,25 +177,29 @@ def test_grimme_3c(mtdbas, ref, mode):
     kcal = psi4.driver.constants.hartree2kcalmol
 
     if mode == "abs":
-        psi4.set_options({
-            "scf_type": "direct",
-            "dft_radial_points": 300,
-            "dft_spherical_points": 770,
-            "e_convergence": 8,
-            "d_convergence": 8,
-        })
+        psi4.set_options(
+            {
+                "scf_type": "direct",
+                "dft_radial_points": 300,
+                "dft_spherical_points": 770,
+                "e_convergence": 8,
+                "d_convergence": 8,
+            }
+        )
 
         ene = psi4.energy(mtdbas)
         assert psi4.compare_values(ref[0], ene, 5, mtdbas)
 
     if mode == "ie":
-        psi4.set_options({
-            "scf_type": "pk",
-            "dft_radial_points": 99,
-            "dft_spherical_points": 302,
-            "e_convergence": 8,
-            "d_convergence": 8,
-        })
-        psi4.set_options({'basis': 'cc-pvdz'})  # try to confuse method
-        ene = psi4.energy(mtdbas, bsse_type='nocp')
+        psi4.set_options(
+            {
+                "scf_type": "pk",
+                "dft_radial_points": 99,
+                "dft_spherical_points": 302,
+                "e_convergence": 8,
+                "d_convergence": 8,
+            }
+        )
+        psi4.set_options({"basis": "cc-pvdz"})  # try to confuse method
+        ene = psi4.energy(mtdbas, bsse_type="nocp")
         assert psi4.compare_values(kcal * (ref[0] - ref[1] - ref[2]), kcal * ene, 1.1e-3, mtdbas)

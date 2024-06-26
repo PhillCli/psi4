@@ -41,12 +41,13 @@ import psi4
 
 try:
     from ipi.interfaces.clients import Client
+
     ipi_available = True
 except ImportError:
     ipi_available = False
 
     # Define Client to enable testing of the Broker in the unittests
-    class Client():
+    class Client:
         pass
 
 
@@ -118,7 +119,7 @@ class IPIBroker(Client):
 
         self.calculate_gradient(self.LOT, pos=pos, **kwargs)
 
-        self._potential = psi4.variable('CURRENT ENERGY')
+        self._potential = psi4.variable("CURRENT ENERGY")
         self._force = -np.array(self.grd)
         self._vir = np.array([[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]])
 
@@ -135,10 +136,12 @@ class IPIBroker(Client):
         self.timing[LOT] = self.timing.get(LOT, []) + [time_needed]
 
 
-def ipi_broker(LOT: str,
-               molecule: Optional[psi4.core.Molecule] = None,
-               serverdata: Union[str, bool] = False,
-               options: Optional[Dict] = None) -> IPIBroker:
+def ipi_broker(
+    LOT: str,
+    molecule: Optional[psi4.core.Molecule] = None,
+    serverdata: Union[str, bool] = False,
+    options: Optional[Dict] = None,
+) -> IPIBroker:
     """Runs :class:`~psi4.driver.ipi_broker.IPIBroker` to connect to i-PI (https://ipi-code.org/).
 
     Parameters

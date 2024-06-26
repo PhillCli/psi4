@@ -48,7 +48,7 @@ CBSMetadata = List[Dict[str, Any]]
 # of this file.
 
 
-def fake_file11(wfn: "psi4.core.Wavefunction", filename: str = 'fake_file11.dat', **kwargs):
+def fake_file11(wfn: "psi4.core.Wavefunction", filename: str = "fake_file11.dat", **kwargs):
     r"""Function to print a file *filename* of the old file11 format
     from molecule and gradient information in *wfn*.
 
@@ -72,16 +72,18 @@ def fake_file11(wfn: "psi4.core.Wavefunction", filename: str = 'fake_file11.dat'
     molecule.update_geometry()
     gradient = wfn.gradient()
 
-    with open(filename, 'w') as handle:
-        handle.write('%d\n' % (molecule.natom()))
+    with open(filename, "w") as handle:
+        handle.write("%d\n" % (molecule.natom()))
 
         for at in range(molecule.natom()):
-            handle.write('%6s %16.8f %16.8f %16.8f\n' %
-                         (molecule.symbol(at), molecule.x(at), molecule.y(at), molecule.z(at)))
+            handle.write(
+                "%6s %16.8f %16.8f %16.8f\n" % (molecule.symbol(at), molecule.x(at), molecule.y(at), molecule.z(at))
+            )
 
         for at in range(molecule.natom()):
-            handle.write('%6s %16.8f %16.8f %16.8f\n' %
-                         ('', gradient.get(at, 0), gradient.get(at, 1), gradient.get(at, 2)))
+            handle.write(
+                "%6s %16.8f %16.8f %16.8f\n" % ("", gradient.get(at, 0), gradient.get(at, 1), gradient.get(at, 2))
+            )
 
 
 def sherrill_gold_standard(**kwargs) -> CBSMetadata:
@@ -103,25 +105,25 @@ def sherrill_gold_standard(**kwargs) -> CBSMetadata:
 
     """
     scf = {
-        'wfn': 'hf',
-        'basis': kwargs.pop('scf_basis', 'aug-cc-pVQZ'),
-        'scheme': kwargs.pop('scf_scheme', 'xtpl_highest_1'),
-        'options': kwargs.pop('scf_options', {}),
+        "wfn": "hf",
+        "basis": kwargs.pop("scf_basis", "aug-cc-pVQZ"),
+        "scheme": kwargs.pop("scf_scheme", "xtpl_highest_1"),
+        "options": kwargs.pop("scf_options", {}),
     }
     corl = {
-        'wfn': kwargs.pop('corl_wfn', 'mp2'),
-        'basis': kwargs.pop('corl_basis', 'aug-cc-pV[TQ]Z'),
-        'scheme': kwargs.pop('corl_scheme', 'corl_xtpl_helgaker_2'),
-        'options': kwargs.pop('corl_options', {}),
-        'options_lo': kwargs.pop('corl_options_lo', {}),
+        "wfn": kwargs.pop("corl_wfn", "mp2"),
+        "basis": kwargs.pop("corl_basis", "aug-cc-pV[TQ]Z"),
+        "scheme": kwargs.pop("corl_scheme", "corl_xtpl_helgaker_2"),
+        "options": kwargs.pop("corl_options", {}),
+        "options_lo": kwargs.pop("corl_options_lo", {}),
     }
     delta = {
-        'wfn': kwargs.pop('delta_wfn', 'ccsd(t)'),
-        'wfn_lesser': kwargs.pop('delta_wfn_lesser', 'mp2'),
-        'basis': kwargs.pop('delta_basis', 'aug-cc-pVTZ'),
-        'scheme': kwargs.pop('delta_scheme', 'xtpl_highest_1'),
-        'options': kwargs.pop('delta_options', {}),
-        'options_lo': kwargs.pop('delta_options_lo', {}),
+        "wfn": kwargs.pop("delta_wfn", "ccsd(t)"),
+        "wfn_lesser": kwargs.pop("delta_wfn_lesser", "mp2"),
+        "basis": kwargs.pop("delta_basis", "aug-cc-pVTZ"),
+        "scheme": kwargs.pop("delta_scheme", "xtpl_highest_1"),
+        "options": kwargs.pop("delta_options", {}),
+        "options_lo": kwargs.pop("delta_options_lo", {}),
     }
 
     return [scf, corl, delta]
@@ -147,6 +149,7 @@ def allen_focal_point(**kwargs) -> CBSMetadata:
 
     """
     import psi4
+
     if not psi4.addons("mrcc"):
         raise ImportError("Install MRCC (executable 'dmrcc') to use the allen_focal_point function.")
 
@@ -159,49 +162,49 @@ def allen_focal_point(**kwargs) -> CBSMetadata:
     #  MRCC CCSD calcs. This logic can be made smarter if needed.
 
     scf = {  # HF
-        'wfn': 'hf',
-        'basis': kwargs.pop('scf_basis', 'cc-pV[Q56]Z'),
-        'scheme': kwargs.pop('scf_scheme', 'scf_xtpl_helgaker_3'),
-        'options': {"qc_module": "mrcc"},
+        "wfn": "hf",
+        "basis": kwargs.pop("scf_basis", "cc-pV[Q56]Z"),
+        "scheme": kwargs.pop("scf_scheme", "scf_xtpl_helgaker_3"),
+        "options": {"qc_module": "mrcc"},
     }
     corl = {  # MP2 - HF
-        'wfn': kwargs.pop('corl_wfn', 'mp2'),
-        'basis': kwargs.pop('corl_basis', 'cc-pV[56]Z'),
-        'scheme': kwargs.pop('corl_scheme', 'corl_xtpl_helgaker_2'),
-        'options': {"qc_module": "mrcc"},
-        'options_lo': {"qc_module": "mrcc"},
+        "wfn": kwargs.pop("corl_wfn", "mp2"),
+        "basis": kwargs.pop("corl_basis", "cc-pV[56]Z"),
+        "scheme": kwargs.pop("corl_scheme", "corl_xtpl_helgaker_2"),
+        "options": {"qc_module": "mrcc"},
+        "options_lo": {"qc_module": "mrcc"},
     }
     delta = {  # CCSD - MP2
-        'wfn': kwargs.pop('delta_wfn', 'ccsd'),
-        'wfn_lesser': kwargs.pop('delta_wfn_lesser', 'mp2'),
-        'basis': kwargs.pop('delta_basis', 'cc-pV[56]Z'),
-        'scheme': kwargs.pop('delta_scheme', 'corl_xtpl_helgaker_2'),
-        'options': {"qc_module": "mrcc"},
-        'options_lo': {"qc_module": "mrcc"},
+        "wfn": kwargs.pop("delta_wfn", "ccsd"),
+        "wfn_lesser": kwargs.pop("delta_wfn_lesser", "mp2"),
+        "basis": kwargs.pop("delta_basis", "cc-pV[56]Z"),
+        "scheme": kwargs.pop("delta_scheme", "corl_xtpl_helgaker_2"),
+        "options": {"qc_module": "mrcc"},
+        "options_lo": {"qc_module": "mrcc"},
     }
     delta2 = {  # CCSD(T) - CCSD
-        'wfn': kwargs.pop('delta2_wfn', 'ccsd(t)'),
-        'wfn_lesser': kwargs.pop('delta2_wfn_lesser', 'ccsd'),
-        'basis': kwargs.pop('delta2_basis', 'cc-pV[56]Z'),
-        'scheme': kwargs.pop('delta2_scheme', 'corl_xtpl_helgaker_2'),
-        'options': {"qc_module": "mrcc"},
-        'options_lo': {"qc_module": "mrcc"},
+        "wfn": kwargs.pop("delta2_wfn", "ccsd(t)"),
+        "wfn_lesser": kwargs.pop("delta2_wfn_lesser", "ccsd"),
+        "basis": kwargs.pop("delta2_basis", "cc-pV[56]Z"),
+        "scheme": kwargs.pop("delta2_scheme", "corl_xtpl_helgaker_2"),
+        "options": {"qc_module": "mrcc"},
+        "options_lo": {"qc_module": "mrcc"},
     }
     delta3 = {  # CCSDT - CCSD(T)
-        'wfn': kwargs.pop('delta3_wfn', 'ccsdt'),
-        'wfn_lesser': kwargs.pop('delta3_wfn_lesser', 'ccsd(t)'),
-        'basis': kwargs.pop('delta3_basis', 'cc-pVTZ'),
-        'scheme': kwargs.pop('delta3_scheme', 'xtpl_highest_1'),
-        'options': {"qc_module": "mrcc"},
-        'options_lo': {"qc_module": "mrcc"},
+        "wfn": kwargs.pop("delta3_wfn", "ccsdt"),
+        "wfn_lesser": kwargs.pop("delta3_wfn_lesser", "ccsd(t)"),
+        "basis": kwargs.pop("delta3_basis", "cc-pVTZ"),
+        "scheme": kwargs.pop("delta3_scheme", "xtpl_highest_1"),
+        "options": {"qc_module": "mrcc"},
+        "options_lo": {"qc_module": "mrcc"},
     }
     delta4 = {  # CCSDT(Q) - CCSDT
-        'wfn': kwargs.pop('delta4_wfn', 'ccsdt(q)'),
-        'wfn_lesser': kwargs.pop('delta4_wfn_lesser', 'ccsdt'),
-        'basis': kwargs.pop('delta4_basis', 'cc-pVDZ'),
-        'scheme': kwargs.pop('delta4_scheme', 'xtpl_highest_1'),
-        'options': {"qc_module": "mrcc"},
-        'options_lo': {"qc_module": "mrcc"},
+        "wfn": kwargs.pop("delta4_wfn", "ccsdt(q)"),
+        "wfn_lesser": kwargs.pop("delta4_wfn_lesser", "ccsdt"),
+        "basis": kwargs.pop("delta4_basis", "cc-pVDZ"),
+        "scheme": kwargs.pop("delta4_scheme", "xtpl_highest_1"),
+        "options": {"qc_module": "mrcc"},
+        "options_lo": {"qc_module": "mrcc"},
     }
 
     return [scf, corl, delta, delta2, delta3, delta4]

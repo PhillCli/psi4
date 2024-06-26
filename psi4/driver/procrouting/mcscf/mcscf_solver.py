@@ -37,12 +37,13 @@ from .augmented_hessian import ah_iteration
 
 
 def print_iteration(mtype, niter, energy, de, orb_rms, ci_rms, nci, norb, stype):
-    core.print_out("%s %2d:  % 18.12f   % 1.4e  %1.2e  %1.2e  %3d  %3d  %s\n" %
-                   (mtype, niter, energy, de, orb_rms, ci_rms, nci, norb, stype))
+    core.print_out(
+        "%s %2d:  % 18.12f   % 1.4e  %1.2e  %1.2e  %3d  %3d  %s\n"
+        % (mtype, niter, energy, de, orb_rms, ci_rms, nci, norb, stype)
+    )
 
 
 def mcscf_solver(ref_wfn):
-
     # Build CIWavefunction
     core.prepare_options_for_module("DETCI")
     ciwfn = core.CIWavefunction(ref_wfn)
@@ -52,8 +53,8 @@ def mcscf_solver(ref_wfn):
     ciwfn.set_print(0)
 
     # Begin with a normal two-step
-    step_type = 'Initial CI'
-    total_step = core.Matrix("Total step", ciwfn.get_dimension('OA'), ciwfn.get_dimension('AV'))
+    step_type = "Initial CI"
+    total_step = core.Matrix("Total step", ciwfn.get_dimension("OA"), ciwfn.get_dimension("AV"))
     start_orbs = ciwfn.get_orbitals("ROT").clone()
     ciwfn.set_orbitals("ROT", start_orbs)
 
@@ -80,7 +81,7 @@ def mcscf_solver(ref_wfn):
     mcscf_target_conv_type = core.get_option("DETCI", "MCSCF_ALGORITHM")
     mcscf_so_start_grad = core.get_option("DETCI", "MCSCF_SO_START_GRAD")
     mcscf_so_start_e = core.get_option("DETCI", "MCSCF_SO_START_E")
-    mcscf_current_step_type = 'Initial CI'
+    mcscf_current_step_type = "Initial CI"
 
     # Start with SCF energy and other params
     scf_energy = ciwfn.variable("HF TOTAL ENERGY")
@@ -92,8 +93,8 @@ def mcscf_solver(ref_wfn):
     approx_integrals_only = True
 
     # Fake info to start with the initial diagonalization
-    ediff = 1.e-4
-    orb_grad_rms = 1.e-3
+    ediff = 1.0e-4
+    orb_grad_rms = 1.0e-3
 
     # Grab needed objects
     diis_obj = solvers.DIIS(mcscf_diis_max_vecs)
@@ -103,16 +104,19 @@ def mcscf_solver(ref_wfn):
     for rot in mcscf_rotate:
         if len(rot) != 4:
             raise p4util.PsiException(
-                "Each element of the MCSCF rotate command requires 4 arguements (irrep, orb1, orb2, theta).")
+                "Each element of the MCSCF rotate command requires 4 arguements (irrep, orb1, orb2, theta)."
+            )
 
         irrep, orb1, orb2, theta = rot
         if irrep > ciwfn.Ca().nirrep():
-            raise p4util.PsiException("MCSCF_ROTATE: Expression %s irrep number is larger than the number of irreps" %
-                                      (str(rot)))
+            raise p4util.PsiException(
+                "MCSCF_ROTATE: Expression %s irrep number is larger than the number of irreps" % (str(rot))
+            )
 
         if max(orb1, orb2) > ciwfn.Ca().coldim()[irrep]:
             raise p4util.PsiException(
-                "MCSCF_ROTATE: Expression %s orbital number exceeds number of orbitals in irrep" % (str(rot)))
+                "MCSCF_ROTATE: Expression %s orbital number exceeds number of orbitals in irrep" % (str(rot))
+            )
 
         theta = np.deg2rad(theta)
 
@@ -147,10 +151,9 @@ def mcscf_solver(ref_wfn):
 
     # Iterate !
     for mcscf_iter in range(1, mcscf_max_macroiteration + 1):
-
         # Transform integrals, diagonalize H
         ciwfn.transform_mcscf_integrals(approx_integrals_only)
-        nci_iter = ciwfn.diag_h(abs(ediff) * 1.e-2, orb_grad_rms * 1.e-3)
+        nci_iter = ciwfn.diag_h(abs(ediff) * 1.0e-2, orb_grad_rms * 1.0e-3)
 
         # After the first diag we need to switch to READ
         ciwfn.set_ci_guess("DFILE")
@@ -175,17 +178,29 @@ def mcscf_solver(ref_wfn):
         ediff = current_energy - eold
 
         # Print iterations
-        print_iteration(mtype, mcscf_iter, current_energy, ediff, orb_grad_rms, ci_grad_rms, nci_iter, norb_iter,
-                        mcscf_current_step_type)
+        print_iteration(
+            mtype,
+            mcscf_iter,
+            current_energy,
+            ediff,
+            orb_grad_rms,
+            ci_grad_rms,
+            nci_iter,
+            norb_iter,
+            mcscf_current_step_type,
+        )
         eold = current_energy
 
-        if mcscf_current_step_type == 'Initial CI':
-            mcscf_current_step_type = 'TS'
+        if mcscf_current_step_type == "Initial CI":
+            mcscf_current_step_type = "TS"
 
         # Check convergence
-        if (orb_grad_rms < mcscf_orb_grad_conv) and (abs(ediff) < abs(mcscf_e_conv)) and\
-            (mcscf_iter > 3) and not qc_step:
-
+        if (
+            (orb_grad_rms < mcscf_orb_grad_conv)
+            and (abs(ediff) < abs(mcscf_e_conv))
+            and (mcscf_iter > 3)
+            and not qc_step
+        ):
             core.print_out("\n       %s has converged!\n\n" % mtype)
             converged = True
             break
@@ -196,19 +211,19 @@ def mcscf_solver(ref_wfn):
             norb_iter += 1
 
             if converged:
-                mcscf_current_step_type = 'AH'
+                mcscf_current_step_type = "AH"
             else:
                 core.print_out("      !Warning. Augmented Hessian did not converge. Taking an approx step.\n")
                 step = mcscf_obj.approx_solve()
-                mcscf_current_step_type = 'TS, AH failure'
+                mcscf_current_step_type = "TS, AH failure"
 
         else:
             step = mcscf_obj.approx_solve()
-            step_type = 'TS'
+            step_type = "TS"
 
         maxstep = step.absmax()
         if maxstep > mcscf_steplimit:
-            core.print_out('      Warning! Maxstep = %4.2f, scaling to %4.2f\n' % (maxstep, mcscf_steplimit))
+            core.print_out("      Warning! Maxstep = %4.2f, scaling to %4.2f\n" % (maxstep, mcscf_steplimit))
             step.scale(mcscf_steplimit / maxstep)
 
         xstep = total_step.clone()
@@ -216,11 +231,11 @@ def mcscf_solver(ref_wfn):
 
         # Do or add DIIS
         if (mcscf_iter >= mcscf_diis_start) and ("TS" in mcscf_current_step_type):
-
             # Figure out DIIS error vector
             if mcscf_diis_error_type == "GRAD":
-                error = core.triplet(ciwfn.get_orbitals("OA"), mcscf_obj.gradient(), ciwfn.get_orbitals("AV"), False,
-                                     False, True)
+                error = core.triplet(
+                    ciwfn.get_orbitals("OA"), mcscf_obj.gradient(), ciwfn.get_orbitals("AV"), False, False, True
+                )
             else:
                 error = step
 
@@ -228,7 +243,7 @@ def mcscf_solver(ref_wfn):
 
             if not (mcscf_iter % mcscf_diis_freq):
                 total_step = diis_obj.extrapolate()
-                mcscf_current_step_type = 'TS, DIIS'
+                mcscf_current_step_type = "TS, DIIS"
 
         # Build the rotation by continuous updates
         if mcscf_iter == 1:
@@ -247,20 +262,18 @@ def mcscf_solver(ref_wfn):
         ciwfn.set_orbitals("ROT", orbs_mat)
 
         # Figure out what the next step should be
-        if (orb_grad_rms < mcscf_so_start_grad) and (abs(ediff) < abs(mcscf_so_start_e)) and\
-                (mcscf_iter >= 2):
-
-            if mcscf_target_conv_type == 'AH':
+        if (orb_grad_rms < mcscf_so_start_grad) and (abs(ediff) < abs(mcscf_so_start_e)) and (mcscf_iter >= 2):
+            if mcscf_target_conv_type == "AH":
                 approx_integrals_only = False
                 ah_step = True
             else:
                 continue
-        #raise p4util.PsiException("")
+        # raise p4util.PsiException("")
 
     core.print_out(mtype + " Final Energy: %20.15f\n" % current_energy)
 
     # Die if we did not converge
-    if (not converged):
+    if not converged:
         if core.get_global_option("DIE_IF_NOT_CONVERGED"):
             raise p4util.PsiException("MCSCF: Iterations did not converge!")
         else:

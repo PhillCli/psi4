@@ -4,7 +4,7 @@ Tests for Vector class.
 
 import pytest
 
-from psi4.core import Dimension, Vector, IntVector, Slice
+from psi4.core import Dimension, IntVector, Slice, Vector
 
 pytestmark = [pytest.mark.psi, pytest.mark.api, pytest.mark.quick]
 

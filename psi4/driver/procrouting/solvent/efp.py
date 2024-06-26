@@ -50,14 +50,14 @@ def get_qm_atoms_opts(mol):
     # set options
     # * 'chtr', 'qm_exch', 'qm_disp', 'qm_chtr' may be enabled in a future libefp release
     opts = {}
-    for opt in ['elst', 'exch', 'ind', 'disp', 'elst_damping', 'ind_damping', 'disp_damping']:
-        psiopt = 'EFP_' + opt.upper()
-        if core.has_option_changed('EFP', psiopt):
-            opts[opt] = core.get_option('EFP', psiopt)
-    for opt in ['elst', 'ind']:
-        psiopt = 'EFP_QM_' + opt.upper()
-        if core.has_option_changed('EFP', psiopt):
-            opts['qm_' + opt] = core.get_option('EFP', psiopt)
+    for opt in ["elst", "exch", "ind", "disp", "elst_damping", "ind_damping", "disp_damping"]:
+        psiopt = "EFP_" + opt.upper()
+        if core.has_option_changed("EFP", psiopt):
+            opts[opt] = core.get_option("EFP", psiopt)
+    for opt in ["elst", "ind"]:
+        psiopt = "EFP_QM_" + opt.upper()
+        if core.has_option_changed("EFP", psiopt):
+            opts["qm_" + opt] = core.get_option("EFP", psiopt)
 
     return ptc, coords, opts
 
@@ -96,10 +96,30 @@ def modify_Fock_permanent(mol, mints, verbose=1):
     val_mp = np.asarray(efpobj.get_multipole_values(verbose=verbose)).reshape(nmp, 20)
 
     #                    0  X  Y  Z  XX   YY   ZZ   XY   XZ   YZ
-    prefacs = np.array([
-        1, 1, 1, 1, 1 / 3, 1 / 3, 1 / 3, 2 / 3, 2 / 3, 2 / 3, 1 / 15, 1 / 15, 1 / 15, 3 / 15, 3 / 15, 3 / 15, 3 / 15,
-        3 / 15, 3 / 15, 6 / 15
-    ])
+    prefacs = np.array(
+        [
+            1,
+            1,
+            1,
+            1,
+            1 / 3,
+            1 / 3,
+            1 / 3,
+            2 / 3,
+            2 / 3,
+            2 / 3,
+            1 / 15,
+            1 / 15,
+            1 / 15,
+            3 / 15,
+            3 / 15,
+            3 / 15,
+            3 / 15,
+            3 / 15,
+            3 / 15,
+            6 / 15,
+        ]
+    )
     #   XXX   YYY   ZZZ   XXY   XXZ   XYY   YYZ   XZZ   YZZ   XYZ
 
     # EFP permanent moment contribution to the Fock Matrix
@@ -121,9 +141,9 @@ def modify_Fock_permanent(mol, mints, verbose=1):
         for ifr in range(nfr):
             atoms = efpobj.get_frag_atoms(ifr)
             for iat in range(natoms[ifr]):
-                xyz_atom = [atoms[iat]['x'], atoms[iat]['y'], atoms[iat]['z']]
+                xyz_atom = [atoms[iat]["x"], atoms[iat]["y"], atoms[iat]["z"]]
                 if np.allclose(xyz_atom, origin, atol=1e-10):
-                    val_mp[imp, 0] += atoms[iat]['Z']
+                    val_mp[imp, 0] += atoms[iat]["Z"]
 
         # scale multipole integrals by multipole magnitudes. result goes into V
         for pole in range(20):

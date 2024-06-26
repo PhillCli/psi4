@@ -4,7 +4,6 @@ from pathlib import Path
 from typing import List
 
 import pytest
-
 from qcelemental.util import parse_version, which, which_import
 from qcengine.testing import _programs as _programs_qcng
 
@@ -20,16 +19,18 @@ __all__ = [
 
 
 def is_psi4_new_enough(version_feature_introduced):
-    if not which_import('psi4', return_bool=True):
+    if not which_import("psi4", return_bool=True):
         return False
     import psi4
+
     return parse_version(psi4.__version__) >= parse_version(version_feature_introduced)
 
 
 def is_qcfractal_new_enough(version_feature_introduced):
-    if not which_import('qcfractal', return_bool=True):
+    if not which_import("qcfractal", return_bool=True):
         return False
     import qcfractal
+
     return parse_version(qcfractal.__version__) >= parse_version(version_feature_introduced)
 
 
@@ -59,9 +60,8 @@ def is_nvidia_gpu_present():
 # * `which` not taking PSIPATH into account
 _programs = {
     # non-QC
-    "memory_profiler": which_import('memory_profiler', return_bool=True),
+    "memory_profiler": which_import("memory_profiler", return_bool=True),
     "networkx": which_import("networkx", return_bool=True),
-
     # QC
     "adcc": which_import("adcc", return_bool=True),
     "ambit": psi4.addons("ambit"),
@@ -114,7 +114,6 @@ _using_cache = {}
 
 
 def _using(program: str) -> None:
-
     if program not in _using_cache:
         import_message = f"Not detecting module {program}. Install package if necessary to enable tests."
         skip = pytest.mark.skipif(has_program(program) is False, reason=import_message)
@@ -173,8 +172,9 @@ def ctest_labeler(labels: str):
 
 
 hardware_nvidia_gpu = pytest.mark.skipif(
-    True,  #is_nvidia_gpu_present() is False,
-    reason='Psi4 not detecting Nvidia GPU via `nvidia-smi`. Install one')
+    True,  # is_nvidia_gpu_present() is False,
+    reason="Psi4 not detecting Nvidia GPU via `nvidia-smi`. Install one",
+)
 
 
 def ctest_runner(inputdatloc, *, extra_infiles: List = None, outfiles: List = None, setenv: List = None):
@@ -185,6 +185,7 @@ def ctest_runner(inputdatloc, *, extra_infiles: List = None, outfiles: List = No
 
     """
     from qcengine.util import execute
+
     import psi4
 
     # Pass runtime env through to `execute`
@@ -210,8 +211,9 @@ def ctest_runner(inputdatloc, *, extra_infiles: List = None, outfiles: List = No
     infiles = [inputdat]
     if extra_infiles:
         infiles.extend(extra_infiles)
-    infiles_with_contents = {(Path(fl).name if Path(fl).is_absolute() else fl): (ctestdir / fl).read_text()
-                             for fl in infiles}
+    infiles_with_contents = {
+        (Path(fl).name if Path(fl).is_absolute() else fl): (ctestdir / fl).read_text() for fl in infiles
+    }
 
     # Note:  The simple `command = ["psi4", "input.dat"]` works fine for Linux and Mac but not for Windows.
     #   L/M/W   ok with `command = [which("psi4"), "input.dat"]` where `which` on Windows finds the psi4.bat file that points to the psi4 python script. -or-

@@ -10,7 +10,7 @@ h2o = psi4.geometry("""
   H 2 0.957 1 104.5
 """)
 
-psi4.set_options({'freeze_core': 'false'})
+psi4.set_options({"freeze_core": "false"})
 
 psi4.basis_helper("""
 # Sadlej-pVTZ
@@ -99,5 +99,5 @@ D 2 1.00
 ****
 """)
 
-ccsd_e, wfn = psi4.properties('ccsd', properties=['dipole'], return_wfn=True)
+ccsd_e, wfn = psi4.properties("ccsd", properties=["dipole"], return_wfn=True)
 psi4.oeprop(wfn, "DIPOLE", "QUADRUPOLE", title="(OEPROP)CC")

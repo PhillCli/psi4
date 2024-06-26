@@ -36,9 +36,8 @@ from .driver import *
 from .p4util.exceptions import UpgradeHelper
 
 
-class Diffuse():
+class Diffuse:
     def __init__(self, molecule, basisname, ribasisname):
-
         self.molecule = molecule
         self.basisname = basisname
         self.ribasisname = ribasisname
@@ -49,12 +48,11 @@ class Diffuse():
         self.wfn = None
 
     def __str__(self):
-
-        s = '    => Diffuse <=\n\n'
-        s = s + '    ' + str(self.molecule) + '\n'
-        s = s + '    ' + self.basisname + '\n'
-        s = s + '    ' + self.ribasisname + '\n'
-        s = s + '\n'
+        s = "    => Diffuse <=\n\n"
+        s = s + "    " + str(self.molecule) + "\n"
+        s = s + "    " + self.basisname + "\n"
+        s = s + "    " + self.ribasisname + "\n"
+        s = s + "\n"
 
         return s
 
@@ -76,7 +74,7 @@ class Diffuse():
         core.set_global_option("BASIS", self.basisname)
         core.set_global_option("DF_BASIS_SCF", self.ribasisname)
         core.set_global_option("SCF_TYPE", "DF")
-        E, ref = energy('scf', return_wfn=True, molecule=self.molecule)
+        E, ref = energy("scf", return_wfn=True, molecule=self.molecule)
         self.wfn = ref
         core.print_out("\n")
 
@@ -121,17 +119,19 @@ class Diffuse():
             extern.addCharge(self.molecule.Z(A), self.molecule.x(A), self.molecule.y(A), self.molecule.z(A))
 
 
-class QMMM():
+class QMMM:
     """Hold charges and :py:class:`psi4.core.ExternalPotential`. Use :py:class:`psi4.driver.QMMMbohr` instead."""
 
     def __init__(self):
         raise UpgradeHelper(
-            self.__class__.__name__, "QMMMbohr", 1.6,
-            ' Replace object with a list of charges and locations in Bohr passed as keyword argument, e.g., `energy(..., external_potentials=[[0.5, [0, 0, 1]], [-0.5, [0, 0, -1]]])`.'
+            self.__class__.__name__,
+            "QMMMbohr",
+            1.6,
+            " Replace object with a list of charges and locations in Bohr passed as keyword argument, e.g., `energy(..., external_potentials=[[0.5, [0, 0, 1]], [-0.5, [0, 0, -1]]])`.",
         )
 
 
-class QMMMbohr():
+class QMMMbohr:
     """Hold charges and :py:class:`psi4.core.ExternalPotential`. To add external charges to a calculation, prefer
     passing the array of charges with kwarg ``external_potentials``, as in extern2 example."""
 
@@ -157,20 +157,24 @@ class QMMMbohr():
 
         """
         self.charges.append(
-            [Q, x / constants.bohr2angstroms, y / constants.bohr2angstroms, z / constants.bohr2angstroms])
+            [Q, x / constants.bohr2angstroms, y / constants.bohr2angstroms, z / constants.bohr2angstroms]
+        )
 
     def __str__(self):
+        s = "   ==> QMMM <==\n\n"
 
-        s = '   ==> QMMM <==\n\n'
-
-        s = s + '   => Charges (a.u.) <=\n\n'
-        s = s + '    %11s %11s %11s %11s\n' % ('Z', 'x', 'y', 'z')
+        s = s + "   => Charges (a.u.) <=\n\n"
+        s = s + "    %11s %11s %11s %11s\n" % ("Z", "x", "y", "z")
         for k in range(0, len(self.charges)):
-            s = s + '    %11.7f %11.3E %11.3E %11.3E\n' % (self.charges[k][0], self.charges[k][1], self.charges[k][2],
-                                                           self.charges[k][3])
-        s = s + '\n'
+            s = s + "    %11.7f %11.3E %11.3E %11.3E\n" % (
+                self.charges[k][0],
+                self.charges[k][1],
+                self.charges[k][2],
+                self.charges[k][3],
+            )
+        s = s + "\n"
 
-        s = s + '    => Diffuses <=\n\n'
+        s = s + "    => Diffuses <=\n\n"
 
         for k in range(0, len(self.diffuses)):
             s = s + str(self.diffuses[k])

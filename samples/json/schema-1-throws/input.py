@@ -1,33 +1,35 @@
 #! test QCSchema noncontiguous mol
 
-import numpy as np
-import psi4
 import json
+
+import numpy as np
+
+import psi4
 
 # Generate JSON data
 json_data = {
     "schema_name": "qc_schema_input",
     "schema_version": 1,
     "molecule": {
-        "schema_name":
-        "qcschema_molecule",
-        "schema_version":
-        2,
+        "schema_name": "qcschema_molecule",
+        "schema_version": 2,
         "geometry": [
-            0.0, 0.0, -0.1294769411935893, 0.0, -1.494187339479985, 1.0274465079245698, 0.0, 1.494187339479985,
-            1.0274465079245698
+            0.0,
+            0.0,
+            -0.1294769411935893,
+            0.0,
+            -1.494187339479985,
+            1.0274465079245698,
+            0.0,
+            1.494187339479985,
+            1.0274465079245698,
         ],
         "symbols": ["O", "H", "H"],
-        "fragments": [[2, 0, 1]]
+        "fragments": [[2, 0, 1]],
     },
     "driver": "energy",
-    "model": {
-        "method": "SCF",
-        "basis": "cc-pVDZ"
-    },
-    "keywords": {
-        "scf_type": "df"
-    }
+    "model": {"method": "SCF", "basis": "cc-pVDZ"},
+    "keywords": {"scf_type": "df"},
 }
 
 # Check non-contiguous fragment throws

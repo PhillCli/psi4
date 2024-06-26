@@ -1,32 +1,32 @@
 import os
 import pprint
-import sys
 import shutil
+import sys
 
+import pytest
 import qcengine as qcng
 
 import psi4
-import pytest
 
 pp = pprint.PrettyPrinter(width=120)
 
 __all__ = [
-    'a2a',
-    'compare',
-    'compare_integers',
-    'compare_strings',
-    'compare_values',
-    'compare_arrays',
-    'compare_recursive',
-    'compare_molrecs',
-    'compare_cubes',
-    'compare_vectors',
-    'compare_matrices',
-    'compare_wavefunctions',
-    'compare_fcidumps',
-    'compare_fchkfiles',
-    'run_psi4_cli',
-    'tnm',
+    "a2a",
+    "compare",
+    "compare_integers",
+    "compare_strings",
+    "compare_values",
+    "compare_arrays",
+    "compare_recursive",
+    "compare_molrecs",
+    "compare_cubes",
+    "compare_vectors",
+    "compare_matrices",
+    "compare_wavefunctions",
+    "compare_fcidumps",
+    "compare_fchkfiles",
+    "run_psi4_cli",
+    "tnm",
 ]
 
 # CODATA ratio 2014 / 2010 Bohr to Angstroms conversion factor
@@ -92,7 +92,7 @@ def run_psi4_cli(inputs, outputs, extra_commands=None, as_binary=None):
     # Check test install
     if cmds is None:
         binpath = os.path.join(os.path.dirname(os.path.dirname(psidir)), "bin")
-        psi_bin = shutil.which('psi4', path=binpath)
+        psi_bin = shutil.which("psi4", path=binpath)
         if psi_bin:
             cmds = [psi_bin]
 

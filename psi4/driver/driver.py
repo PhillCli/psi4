@@ -31,6 +31,7 @@ single-point energies, geometry optimizations, properties, and vibrational
 frequency calculations.
 
 """
+
 import copy
 import json
 import logging
@@ -55,7 +56,7 @@ from .task_base import AtomicComputer
 logger = logging.getLogger(__name__)
 
 
-def _energy_is_invariant(gradient_rms, stationary_criterion=1.e-2):
+def _energy_is_invariant(gradient_rms, stationary_criterion=1.0e-2):
     """Polls options and probes `gradient` to return whether current method
     and system expected to be invariant to translations and rotations of
     the coordinate system.
@@ -64,11 +65,12 @@ def _energy_is_invariant(gradient_rms, stationary_criterion=1.e-2):
     stationary_point = gradient_rms < stationary_criterion  # 1.e-2 pulled out of a hat
 
     mol = core.get_active_molecule()
-    efp_present = hasattr(mol, 'EFP')
+    efp_present = hasattr(mol, "EFP")
 
-    translations_projection_sound = (not core.get_option('SCF', 'EXTERN') and not core.get_option('SCF', 'PERTURB_H')
-                                     and not efp_present)
-    rotations_projection_sound = (translations_projection_sound and stationary_point)
+    translations_projection_sound = (
+        not core.get_option("SCF", "EXTERN") and not core.get_option("SCF", "PERTURB_H") and not efp_present
+    )
+    rotations_projection_sound = translations_projection_sound and stationary_point
 
     return translations_projection_sound, rotations_projection_sound
 
@@ -76,8 +78,9 @@ def _energy_is_invariant(gradient_rms, stationary_criterion=1.e-2):
 def _filter_renamed_methods(compute, method):
     r"""Raises UpgradeHelper when a method has been renamed."""
     if method == "dcft":
-        raise UpgradeHelper(compute + "('dcft')", compute + "('dct')", 1.4,
-                            " All instances of 'dcft' should be replaced with 'dct'.")
+        raise UpgradeHelper(
+            compute + "('dcft')", compute + "('dct')", 1.4, " All instances of 'dcft' should be replaced with 'dct'."
+        )
 
 
 def energy(name, **kwargs):
@@ -114,7 +117,7 @@ def energy(name, **kwargs):
         calculation result as the second element (after *float* energy) of a tuple.
 
     :type write_orbitals: str, :ref:`boolean <op_py_boolean>`
-    :param write_orbitals: ``filename`` || |dl| ``'on'`` |dr| || ``'off'`` 
+    :param write_orbitals: ``filename`` || |dl| ``'on'`` |dr| || ``'off'``
 
         (str) Save wfn containing current orbitals to the given file name after each SCF iteration
         and retain after |PSIfour| finishes.
@@ -424,17 +427,17 @@ def energy(name, **kwargs):
     kwargs = p4util.kwargs_lower(kwargs)
 
     # Bounce to MDI (MolSSI driver interface) if mdi kwarg
-    use_mdi = kwargs.pop('mdi', False)
+    use_mdi = kwargs.pop("mdi", False)
     if use_mdi:
         return mdi_run(name, **kwargs)
 
     core.print_out("\nScratch directory: %s\n" % core.IOManager.shared_object().get_default_path())
 
-    basisstash = p4util.OptionsState(['BASIS'])
-    return_wfn = kwargs.pop('return_wfn', False)
+    basisstash = p4util.OptionsState(["BASIS"])
+    return_wfn = kwargs.pop("return_wfn", False)
 
     # Make sure the molecule the user provided is the active one
-    molecule = kwargs.pop('molecule', core.get_active_molecule())
+    molecule = kwargs.pop("molecule", core.get_active_molecule())
     molecule.update_geometry()
 
     ## Pre-planning interventions
@@ -445,13 +448,13 @@ def energy(name, **kwargs):
     _filter_renamed_methods("energy", lowername)
 
     # * Avert pydantic anger at incomplete modelchem spec
-    userbas = core.get_global_option('BASIS') or kwargs.get('basis')
+    userbas = core.get_global_option("BASIS") or kwargs.get("basis")
     if lowername in integrated_basis_methods and userbas is None:
-        kwargs['basis'] = '(auto)'
+        kwargs["basis"] = "(auto)"
 
     # Are we planning?
     plan = task_planner.task_planner("energy", lowername, molecule, **kwargs)
-    logger.debug('ENERGY PLAN')
+    logger.debug("ENERGY PLAN")
     logger.debug(pp.pformat(plan.dict()))
 
     if kwargs.get("return_plan", False):
@@ -474,12 +477,12 @@ def energy(name, **kwargs):
     # Commit to procedures['energy'] call hereafter
     core.clean_variables()
 
-    #for precallback in hooks['energy']['pre']:
+    # for precallback in hooks['energy']['pre']:
     #    precallback(lowername, **kwargs)
 
     # needed (+restore below) so long as AtomicComputer-s aren't run through json (where convcrit also lives)
     optstash = driver_util.negotiate_convergence_criterion((0, 0), lowername, return_optstash=True)
-    optstash2 = p4util.OptionsState(['SCF', 'GUESS'])
+    optstash2 = p4util.OptionsState(["SCF", "GUESS"])
 
     # Before invoking the procedure, we rename any file that should be read.
     # This is a workaround to do restarts with the current PSI4 capabilities
@@ -487,20 +490,20 @@ def energy(name, **kwargs):
     # Restartfile is always converted to a single-element list if
     # it contains a single string
     # DGAS Note: This is hacked together at this point and should be revamped.
-    if 'restart_file' in kwargs:
-        restartfile = kwargs['restart_file']  # Option still available for procedure-specific action
+    if "restart_file" in kwargs:
+        restartfile = kwargs["restart_file"]  # Option still available for procedure-specific action
         if not isinstance(restartfile, (list, tuple)):
-            restartfile = (restartfile, )
+            restartfile = (restartfile,)
         # Rename the files to be read to be consistent with psi4's file system
         for item in restartfile:
             is_numpy_file = (os.path.isfile(item) and item.endswith(".npy")) or os.path.isfile(item + ".npy")
-            name_split = re.split(r'\.', item)
+            name_split = re.split(r"\.", item)
             if is_numpy_file:
-                core.set_local_option('SCF', 'GUESS', 'READ')
+                core.set_local_option("SCF", "GUESS", "READ")
                 core.print_out(" Found user provided orbital data. Setting orbital guess to READ")
                 fname = os.path.split(os.path.abspath(core.get_writer_file_prefix(molecule.name())))[1]
                 psi_scratch = core.IOManager.shared_object().get_default_path()
-                file_num = item.split('.')[-2] if "180" in item else "180"
+                file_num = item.split(".")[-2] if "180" in item else "180"
                 targetfile = os.path.join(psi_scratch, fname + "." + file_num + ".npy")
                 if not item.endswith(".npy"):
                     item = item + ".npy"
@@ -515,8 +518,8 @@ def energy(name, **kwargs):
                 filepath = psioh.get_file_path(filenum)
                 namespace = psio.get_default_namespace()
                 pid = str(os.getpid())
-                prefix = 'psi'
-                targetfile = filepath + prefix + '.' + pid + '.' + namespace + '.' + str(filenum)
+                prefix = "psi"
+                targetfile = filepath + prefix + "." + pid + "." + namespace + "." + str(filenum)
             core.print_out(f" \n Copying restart file <{item}> to <{targetfile}> for internal processing\n")
             shutil.copy(item, targetfile)
 
@@ -524,10 +527,10 @@ def energy(name, **kwargs):
         f"Compute energy(): method={lowername}, basis={core.get_global_option('BASIS').lower()}, molecule={molecule.name()}, nre={'w/EFP' if hasattr(molecule, 'EFP') else molecule.nuclear_repulsion_energy()}"
     )
     logger.debug("w/EFP" if hasattr(molecule, "EFP") else pp.pformat(molecule.to_dict()))
-    wfn = procedures['energy'][lowername](lowername, molecule=molecule, **kwargs)
+    wfn = procedures["energy"][lowername](lowername, molecule=molecule, **kwargs)
     logger.info(f"Return energy(): {core.variable('CURRENT ENERGY')}")
 
-    for postcallback in hooks['energy']['post']:
+    for postcallback in hooks["energy"]["post"]:
         postcallback(lowername, wfn=wfn, **kwargs)
 
     basisstash.restore()
@@ -535,18 +538,17 @@ def energy(name, **kwargs):
     optstash2.restore()
 
     if return_wfn:  # TODO current energy safer than wfn.energy() for now, but should be revisited
-
         # TODO place this with the associated call, very awkward to call this in other areas at the moment
-        if lowername in ['efp', 'mrcc', 'dmrg']:
+        if lowername in ["efp", "mrcc", "dmrg"]:
             core.print_out("\n\nWarning! %s does not have an associated derived wavefunction." % name)
             core.print_out("The returned wavefunction is the incoming reference wavefunction.\n\n")
-        elif 'sapt' in lowername:
+        elif "sapt" in lowername:
             core.print_out("\n\nWarning! %s does not have an associated derived wavefunction." % name)
             core.print_out("The returned wavefunction is the dimer SCF wavefunction.\n\n")
 
-        return (core.variable('CURRENT ENERGY'), wfn)
+        return (core.variable("CURRENT ENERGY"), wfn)
     else:
-        return core.variable('CURRENT ENERGY')
+        return core.variable("CURRENT ENERGY")
 
 
 def gradient(name, **kwargs):
@@ -573,17 +575,17 @@ def gradient(name, **kwargs):
 
     core.print_out("\nScratch directory: %s\n" % core.IOManager.shared_object().get_default_path())
 
-    basisstash = p4util.OptionsState(['BASIS'])
-    return_wfn = kwargs.pop('return_wfn', False)
+    basisstash = p4util.OptionsState(["BASIS"])
+    return_wfn = kwargs.pop("return_wfn", False)
 
     # Make sure the molecule the user provided is the active one
-    molecule = kwargs.pop('molecule', core.get_active_molecule())
+    molecule = kwargs.pop("molecule", core.get_active_molecule())
     molecule.update_geometry()
 
     # Convert wrapper directives from options (where ppl know to find them) to kwargs (suitable for non-globals transmitting)
-    kwargs['findif_verbose'] = core.get_option("FINDIF", "PRINT")
-    kwargs['findif_stencil_size'] = core.get_option("FINDIF", "POINTS")
-    kwargs['findif_step_size'] = core.get_option("FINDIF", "DISP_SIZE")
+    kwargs["findif_verbose"] = core.get_option("FINDIF", "PRINT")
+    kwargs["findif_stencil_size"] = core.get_option("FINDIF", "POINTS")
+    kwargs["findif_step_size"] = core.get_option("FINDIF", "DISP_SIZE")
 
     ## Pre-planning interventions
 
@@ -596,13 +598,13 @@ def gradient(name, **kwargs):
         raise ValidationError(f"`gradient('{name}')` does not have an associated gradient.")
 
     # * Avert pydantic anger at incomplete modelchem spec
-    userbas = core.get_global_option('BASIS') or kwargs.get('basis')
+    userbas = core.get_global_option("BASIS") or kwargs.get("basis")
     if lowername in integrated_basis_methods and userbas is None:
-        kwargs['basis'] = '(auto)'
+        kwargs["basis"] = "(auto)"
 
     # Are we planning?
     plan = task_planner.task_planner("gradient", lowername, molecule, **kwargs)
-    logger.debug('GRADIENT PLAN')
+    logger.debug("GRADIENT PLAN")
     logger.debug(pp.pformat(plan.dict()))
 
     if kwargs.get("return_plan", False):
@@ -629,7 +631,7 @@ def gradient(name, **kwargs):
     core.clean_variables()
 
     # no analytic derivatives for scf_type cd
-    if core.get_global_option('SCF_TYPE') == 'CD':
+    if core.get_global_option("SCF_TYPE") == "CD":
         raise ValidationError("""No analytic derivatives for SCF_TYPE CD.""")
 
     core.print_out("""gradient() will perform analytic gradient computation.\n""")
@@ -639,7 +641,7 @@ def gradient(name, **kwargs):
         f"Compute gradient(): method={lowername}, basis={core.get_global_option('BASIS').lower()}, molecule={molecule.name()}, nre={'w/EFP' if hasattr(molecule, 'EFP') else molecule.nuclear_repulsion_energy()}"
     )
     logger.debug("w/EFP" if hasattr(molecule, "EFP") else pp.pformat(molecule.to_dict()))
-    wfn = procedures['gradient'][lowername](lowername, molecule=molecule, **kwargs)
+    wfn = procedures["gradient"][lowername](lowername, molecule=molecule, **kwargs)
     logger.info(f"Return gradient(): {core.variable('CURRENT ENERGY')}")
     logger.info(nppp(wfn.gradient().np))
 
@@ -737,11 +739,11 @@ def properties(*args, **kwargs):
     """
     kwargs = p4util.kwargs_lower(kwargs)
 
-    basisstash = p4util.OptionsState(['BASIS'])
-    return_wfn = kwargs.pop('return_wfn', False)
+    basisstash = p4util.OptionsState(["BASIS"])
+    return_wfn = kwargs.pop("return_wfn", False)
 
     # Make sure the molecule the user provided is the active one
-    molecule = kwargs.pop('molecule', core.get_active_molecule())
+    molecule = kwargs.pop("molecule", core.get_active_molecule())
     molecule.update_geometry()
 
     ## Pre-planning interventions
@@ -751,19 +753,19 @@ def properties(*args, **kwargs):
 
     _filter_renamed_methods("properties", lowername)
 
-    props = kwargs.get('properties', ['dipole', 'quadrupole'])
+    props = kwargs.get("properties", ["dipole", "quadrupole"])
     if len(args) > 1:
         props += args[1:]
-    kwargs['properties'] = p4util.drop_duplicates(props)
+    kwargs["properties"] = p4util.drop_duplicates(props)
 
     # * Avert pydantic anger at incomplete modelchem spec
-    userbas = core.get_global_option('BASIS') or kwargs.get('basis')
+    userbas = core.get_global_option("BASIS") or kwargs.get("basis")
     if lowername in integrated_basis_methods and userbas is None:
-        kwargs['basis'] = '(auto)'
+        kwargs["basis"] = "(auto)"
 
     # Are we planning?
     plan = task_planner.task_planner("properties", lowername, molecule, **kwargs)
-    logger.debug('PROPERTIES PLAN')
+    logger.debug("PROPERTIES PLAN")
     logger.debug(pp.pformat(plan.dict()))
 
     if kwargs.get("return_plan", False):
@@ -800,29 +802,27 @@ def properties(*args, **kwargs):
     optstash.restore()
 
     if return_wfn:
-        return (core.variable('CURRENT ENERGY'), wfn)
+        return (core.variable("CURRENT ENERGY"), wfn)
     else:
-        return core.variable('CURRENT ENERGY')
+        return core.variable("CURRENT ENERGY")
 
 
 def optimize_geometric(name, **kwargs):
-
     import qcelemental as qcel
     from qcelemental.util import which_import
 
-    if not which_import('geometric', return_bool=True):
+    if not which_import("geometric", return_bool=True):
         raise ModuleNotFoundError(
-            'Python module geometric not found. Solve by installing it: `conda install -c conda-forge geometric` or `pip install geometric`'
+            "Python module geometric not found. Solve by installing it: `conda install -c conda-forge geometric` or `pip install geometric`"
         )
     import geometric
 
     class Psi4NativeEngine(geometric.engine.Engine):
         """
-        Internally run an energy and gradient calculation for geometric 
+        Internally run an energy and gradient calculation for geometric
         """
 
         def __init__(self, p4_name, p4_mol, p4_return_wfn, **p4_kwargs):
-
             self.p4_name = p4_name
             self.p4_mol = p4_mol
             self.p4_return_wfn = p4_return_wfn
@@ -844,11 +844,11 @@ def optimize_geometric(name, **kwargs):
                 self.p4_wfn = wfn
             else:
                 g = gradient(self.p4_name, return_wfn=False, molecule=self.p4_mol, **self.p4_kwargs)
-            e = core.variable('CURRENT ENERGY')
-            return {'energy': e, 'gradient': g.np.ravel()}
+            e = core.variable("CURRENT ENERGY")
+            return {"energy": e, "gradient": g.np.ravel()}
 
-    return_wfn = kwargs.pop('return_wfn', False)
-    return_history = kwargs.pop('return_history', False)
+    return_wfn = kwargs.pop("return_wfn", False)
+    return_history = kwargs.pop("return_history", False)
 
     if return_history:
         step_energies = []
@@ -856,7 +856,7 @@ def optimize_geometric(name, **kwargs):
         step_coordinates = []
 
     # Make sure the molecule the user provided is the active one
-    molecule = kwargs.pop('molecule', core.get_active_molecule())
+    molecule = kwargs.pop("molecule", core.get_active_molecule())
 
     # Do not change orientation or COM
     molecule.fix_orientation(True)
@@ -866,24 +866,25 @@ def optimize_geometric(name, **kwargs):
     # Get geometric-specific options
     optimizer_keywords = {k.lower(): v for k, v in kwargs.get("optimizer_keywords", {}).items()}
 
-    core.print_out('\n')
+    core.print_out("\n")
     core.print_out(
-        "\n  ==> GeomeTRIC Optimizer <==                                                                   ~\n")
+        "\n  ==> GeomeTRIC Optimizer <==                                                                   ~\n"
+    )
 
     # Default to Psi4 maxiter unless overridden
-    if 'maxiter' not in optimizer_keywords:
-        optimizer_keywords['maxiter'] = core.get_global_option('GEOM_MAXITER')
+    if "maxiter" not in optimizer_keywords:
+        optimizer_keywords["maxiter"] = core.get_global_option("GEOM_MAXITER")
 
     # Default to Psi4 geometry convergence criteria unless overridden
-    if 'convergence_set' not in optimizer_keywords:
-        optimizer_keywords['convergence_set'] = core.get_global_option('G_CONVERGENCE')
+    if "convergence_set" not in optimizer_keywords:
+        optimizer_keywords["convergence_set"] = core.get_global_option("G_CONVERGENCE")
 
         # GeomeTRIC doesn't know these convergence criterion
-        if optimizer_keywords['convergence_set'] in ['CFOUR', 'QCHEM', 'MOLPRO']:
+        if optimizer_keywords["convergence_set"] in ["CFOUR", "QCHEM", "MOLPRO"]:
             core.print_out(
                 f"\n  Psi4 convergence criteria {optimizer_keywords['convergence_set']:6s} not recognized by GeomeTRIC, switching to GAU_TIGHT          ~"
             )
-            optimizer_keywords['convergence_set'] = 'GAU_TIGHT'
+            optimizer_keywords["convergence_set"] = "GAU_TIGHT"
 
     engine = Psi4NativeEngine(name, molecule, return_wfn, **kwargs)
     M = engine.M
@@ -893,28 +894,30 @@ def optimize_geometric(name, **kwargs):
     constraints_string = geometric.run_json.make_constraints_string(constraints_dict)
     Cons, CVals = None, None
     if constraints_string:
-        if 'scan' in constraints_dict:
+        if "scan" in constraints_dict:
             raise ValueError("Coordinate scans are not yet available through the Psi4-GeomeTRIC interface")
         Cons, CVals = geometric.prepare.parse_constraints(M, constraints_string)
 
     # Set up the internal coordinate system
-    coordsys = optimizer_keywords.get('coordsys', 'tric')
+    coordsys = optimizer_keywords.get("coordsys", "tric")
     CoordSysDict = {
-        'cart': (geometric.internal.CartesianCoordinates, False, False),
-        'prim': (geometric.internal.PrimitiveInternalCoordinates, True, False),
-        'dlc': (geometric.internal.DelocalizedInternalCoordinates, True, False),
-        'hdlc': (geometric.internal.DelocalizedInternalCoordinates, False, True),
-        'tric': (geometric.internal.DelocalizedInternalCoordinates, False, False)
+        "cart": (geometric.internal.CartesianCoordinates, False, False),
+        "prim": (geometric.internal.PrimitiveInternalCoordinates, True, False),
+        "dlc": (geometric.internal.DelocalizedInternalCoordinates, True, False),
+        "hdlc": (geometric.internal.DelocalizedInternalCoordinates, False, True),
+        "tric": (geometric.internal.DelocalizedInternalCoordinates, False, False),
     }
 
     # Build internal coordinates
     CoordClass, connect, addcart = CoordSysDict[coordsys.lower()]
-    IC = CoordClass(M,
-                    build=True,
-                    connect=connect,
-                    addcart=addcart,
-                    constraints=Cons,
-                    cvals=CVals[0] if CVals is not None else None)
+    IC = CoordClass(
+        M,
+        build=True,
+        connect=connect,
+        addcart=addcart,
+        constraints=Cons,
+        cvals=CVals[0] if CVals is not None else None,
+    )
 
     # Get initial coordinates in bohr
     coords = M.xyzs[0].flatten() / constants.bohr2angstroms
@@ -928,26 +931,40 @@ def optimize_geometric(name, **kwargs):
     optimizer.calcEnergyForce()
     optimizer.prepareFirstStep()
     grms, gmax = optimizer.calcGradNorm()
-    conv_gmax = '*' if gmax < params.Convergence_gmax else ' '
-    conv_grms = '*' if grms < params.Convergence_grms else ' '
+    conv_gmax = "*" if gmax < params.Convergence_gmax else " "
+    conv_grms = "*" if grms < params.Convergence_grms else " "
     core.print_out(
-        "\n  Measures of convergence in internal coordinates in au.                                        ~")
+        "\n  Measures of convergence in internal coordinates in au.                                        ~"
+    )
     core.print_out(
-        "\n  Criteria marked as inactive (o), active & met (*), and active & unmet ( ).                    ~")
+        "\n  Criteria marked as inactive (o), active & met (*), and active & unmet ( ).                    ~"
+    )
     core.print_out(
-        "\n  --------------------------------------------------------------------------------------------- ~")
+        "\n  --------------------------------------------------------------------------------------------- ~"
+    )
     core.print_out(
-        "\n   Step     Total Energy     Delta E     MAX Force     RMS Force      MAX Disp      RMS Disp    ~")
+        "\n   Step     Total Energy     Delta E     MAX Force     RMS Force      MAX Disp      RMS Disp    ~"
+    )
     core.print_out(
-        "\n  --------------------------------------------------------------------------------------------- ~")
-    core.print_out((f"\n    Convergence Criteria  {params.Convergence_energy:10.2e}    "
-                    f"{params.Convergence_gmax:10.2e}    {params.Convergence_grms:10.2e}    "
-                    f"{params.Convergence_dmax:10.2e}    {params.Convergence_drms:10.2e}    ~"))
+        "\n  --------------------------------------------------------------------------------------------- ~"
+    )
     core.print_out(
-        "\n  --------------------------------------------------------------------------------------------- ~")
+        (
+            f"\n    Convergence Criteria  {params.Convergence_energy:10.2e}    "
+            f"{params.Convergence_gmax:10.2e}    {params.Convergence_grms:10.2e}    "
+            f"{params.Convergence_dmax:10.2e}    {params.Convergence_drms:10.2e}    ~"
+        )
+    )
+    core.print_out(
+        "\n  --------------------------------------------------------------------------------------------- ~"
+    )
 
-    core.print_out((f"\n   {optimizer.Iteration:4d} {optimizer.E:16.8e}    --------    "
-                    f"{gmax:10.2e} {conv_gmax}  {grms:10.2e} {conv_grms}    --------      --------    ~"))
+    core.print_out(
+        (
+            f"\n   {optimizer.Iteration:4d} {optimizer.E:16.8e}    --------    "
+            f"{gmax:10.2e} {conv_gmax}  {grms:10.2e} {conv_grms}    --------      --------    ~"
+        )
+    )
     while True:
         if optimizer.state == geometric.optimize.OPT_STATE.CONVERGED:
             core.print_out(
@@ -964,14 +981,18 @@ def optimize_geometric(name, **kwargs):
         optimizer.evaluateStep()
         grms, gmax = optimizer.calcGradNorm()
         drms, dmax = geometric.optimize.calc_drms_dmax(optimizer.X, optimizer.Xprev)
-        conv_energy = '*' if np.abs(optimizer.E - optimizer.Eprev) < params.Convergence_energy else ' '
-        conv_gmax = '*' if gmax < params.Convergence_gmax else ' '
-        conv_grms = '*' if grms < params.Convergence_grms else ' '
-        conv_dmax = '*' if dmax < params.Convergence_dmax else ' '
-        conv_drms = '*' if drms < params.Convergence_drms else ' '
-        core.print_out((f'\n   {optimizer.Iteration:4d} {optimizer.E:16.8e}  '
-                        f'{optimizer.E-optimizer.Eprev:10.2e} {conv_energy}  {gmax:10.2e} {conv_gmax}  '
-                        f'{grms:10.2e} {conv_grms}  {dmax:10.2e} {conv_dmax}  {drms:10.2e} {conv_drms}  ~'))
+        conv_energy = "*" if np.abs(optimizer.E - optimizer.Eprev) < params.Convergence_energy else " "
+        conv_gmax = "*" if gmax < params.Convergence_gmax else " "
+        conv_grms = "*" if grms < params.Convergence_grms else " "
+        conv_dmax = "*" if dmax < params.Convergence_dmax else " "
+        conv_drms = "*" if drms < params.Convergence_drms else " "
+        core.print_out(
+            (
+                f"\n   {optimizer.Iteration:4d} {optimizer.E:16.8e}  "
+                f"{optimizer.E-optimizer.Eprev:10.2e} {conv_energy}  {gmax:10.2e} {conv_gmax}  "
+                f"{grms:10.2e} {conv_grms}  {dmax:10.2e} {conv_dmax}  {drms:10.2e} {conv_drms}  ~"
+            )
+        )
 
         if return_history:
             step_energies.append(optimizer.E)
@@ -982,15 +1003,15 @@ def optimize_geometric(name, **kwargs):
     opt_geometry = core.Matrix.from_array(optimizer.X.reshape(-1, 3))
     molecule.set_geometry(opt_geometry)
     molecule.update_geometry()
-    core.print_out(f'\n  Final Energy : {return_energy} \n')
-    core.print_out('\n  Final Geometry : \n')
+    core.print_out(f"\n  Final Energy : {return_energy} \n")
+    core.print_out("\n  Final Geometry : \n")
     molecule.print_in_input_format()
 
     if return_history:
         history = {
-            'energy': step_energies,
-            'gradient': step_gradients,
-            'coordinates': step_coordinates,
+            "energy": step_energies,
+            "gradient": step_gradients,
+            "coordinates": step_coordinates,
         }
 
     if return_wfn:
@@ -1168,120 +1189,125 @@ def optimize(name, **kwargs):
     """
     kwargs = p4util.kwargs_lower(kwargs)
 
-    engine = kwargs.pop('engine', 'optking')
-    if engine == 'geometric':
+    engine = kwargs.pop("engine", "optking")
+    if engine == "geometric":
         return optimize_geometric(name, **kwargs)
-    elif engine != 'optking':
+    elif engine != "optking":
         raise ValidationError(f"Optimizer {engine} is not supported.")
 
     import optking
 
     name = driver_util.upgrade_interventions(name)
-    if hasattr(name, '__call__'):
+    if hasattr(name, "__call__"):
         lowername = name
         custom_gradient = True
     else:
         lowername = name.lower()
         custom_gradient = False
 
-    return_wfn = kwargs.pop('return_wfn', False)
+    return_wfn = kwargs.pop("return_wfn", False)
 
-    return_history = kwargs.pop('return_history', False)
+    return_history = kwargs.pop("return_history", False)
 
     # This might be incorrect now?
-    if custom_gradient and core.has_option_changed('OPTKING', 'FULL_HESS_EVERY'):
+    if custom_gradient and core.has_option_changed("OPTKING", "FULL_HESS_EVERY"):
         raise ValidationError("Optimize: Does not support custom Hessian's yet.")
     else:
-        hessian_with_method = kwargs.get('hessian_with', lowername)
+        hessian_with_method = kwargs.get("hessian_with", lowername)
 
     _filter_renamed_methods("optimize", lowername)
 
     optstash = p4util.OptionsState(
-        ['FINDIF', 'HESSIAN_WRITE'],
-        ['OPTKING', 'CART_HESS_READ'],
-        ['SCF', 'GUESS_PERSIST'],  # handle on behalf of cbs()
-        ['SCF', 'GUESS'])
+        ["FINDIF", "HESSIAN_WRITE"],
+        ["OPTKING", "CART_HESS_READ"],
+        ["SCF", "GUESS_PERSIST"],  # handle on behalf of cbs()
+        ["SCF", "GUESS"],
+    )
 
-    n = kwargs.get('opt_iter', 1)
+    n = kwargs.get("opt_iter", 1)
 
     # Make sure the molecule the user provided is the active one
-    molecule = kwargs.pop('molecule', core.get_active_molecule())
+    molecule = kwargs.pop("molecule", core.get_active_molecule())
 
     # If we are freezing cartesian, do not orient or COM
-    if any([core.get_option('OPTKING', 'FROZEN_CARTESIAN'), core.get_option('OPTKING', 'EXT_FORCE_CARTESIAN')]):
+    if any([core.get_option("OPTKING", "FROZEN_CARTESIAN"), core.get_option("OPTKING", "EXT_FORCE_CARTESIAN")]):
         if molecule.has_zmatrix():
-            raise ValidationError("Job includes cartesian coordinate constraints. This cannot be fully "
-                                  "obeyed due to zmatrix in input. Please convert your zmatrix to cartesian "
-                                  "coordinates if cartesian constraints are needed ")
+            raise ValidationError(
+                "Job includes cartesian coordinate constraints. This cannot be fully "
+                "obeyed due to zmatrix in input. Please convert your zmatrix to cartesian "
+                "coordinates if cartesian constraints are needed "
+            )
         molecule.fix_orientation(True)
         molecule.fix_com(True)
     molecule.update_geometry()
 
-    if core.get_option('OPTKING', 'OPT_RESTART'):
+    if core.get_option("OPTKING", "OPT_RESTART"):
         # Recreate all of optking's internal classes to restart an optimization
         # This has not been well tested - Experimental
         opt_object = optking.opt_helper.CustomHelper(molecule)
-        with open(f"{core.get_writer_file_prefix(molecule.name())}.1.dat", 'r') as f:
+        with open(f"{core.get_writer_file_prefix(molecule.name())}.1.dat", "r") as f:
             stashed_opt = json.load(f)
         opt_object.from_dict(stashed_opt)
     else:
         # create an OptHelper to run an optimization through
         # Optking will ignore any keywords it doesn't recognize.
         params = p4util.prepare_options_for_modules()
-        optimizer_params = {k: v.get('value') for k, v in params.pop("OPTKING").items() if v.get('has_changed')}
+        optimizer_params = {k: v.get("value") for k, v in params.pop("OPTKING").items() if v.get("has_changed")}
         optimizer_params.update(kwargs.get("optimizer_keywords", {}))
         opt_object = optking.opt_helper.CustomHelper(molecule, params=optimizer_params)
 
     initial_sym = molecule.schoenflies_symbol()
-    while n <= core.get_option('OPTKING', 'GEOM_MAXITER'):
+    while n <= core.get_option("OPTKING", "GEOM_MAXITER"):
         current_sym = molecule.schoenflies_symbol()
         if initial_sym != current_sym:
-
-            if any([core.get_option('OPTKING', 'FROZEN_CARTESIAN'),
-                    core.get_option('OPTKING', 'EXT_FORCE_CARTESIAN')]):
-                raise ValidationError("Symmetrize cannot be called while cartesian constraints are active "
-                                      "symmetrize was about to be called. Please check symmetry dependent input "
-                                      ", such as DOCC, is correct or turn off symmetry")
+            if any(
+                [core.get_option("OPTKING", "FROZEN_CARTESIAN"), core.get_option("OPTKING", "EXT_FORCE_CARTESIAN")]
+            ):
+                raise ValidationError(
+                    "Symmetrize cannot be called while cartesian constraints are active "
+                    "symmetrize was about to be called. Please check symmetry dependent input "
+                    ", such as DOCC, is correct or turn off symmetry"
+                )
 
             # Try to resymmetrize molecule if slightly broken.
             molecule.symmetrize(core.get_option("OPTKING", "CARTESIAN_SYM_TOLERANCE"))
 
             if molecule.schoenflies_symbol() != initial_sym:
-                raise ValidationError("Point group changed! (%s <-- %s) You should restart "
-                                      "using the last geometry in the output, after "
-                                      "carefully making sure all symmetry-dependent "
-                                      "input, such as DOCC, is correct." % (current_sym, initial_sym))
+                raise ValidationError(
+                    "Point group changed! (%s <-- %s) You should restart "
+                    "using the last geometry in the output, after "
+                    "carefully making sure all symmetry-dependent "
+                    "input, such as DOCC, is correct." % (current_sym, initial_sym)
+                )
 
-        kwargs['opt_iter'] = n
-        core.set_variable('GEOMETRY ITERATIONS', n)
+        kwargs["opt_iter"] = n
+        core.set_variable("GEOMETRY ITERATIONS", n)
 
         # Use orbitals from previous iteration as a guess
         #   set within loop so that can be influenced by fns to optimize (e.g., cbs)
-        if (n > 1) and (not core.get_option('SCF', 'GUESS_PERSIST')):
-            core.set_local_option('SCF', 'GUESS', 'READ')
+        if (n > 1) and (not core.get_option("SCF", "GUESS_PERSIST")):
+            core.set_local_option("SCF", "GUESS", "READ")
 
         # We'll currently ignore the possibility that the gradient isn't needed
         opt_calcs = opt_object.calculations_needed()  # tuple of strings ('energy', 'gradient', etc)
 
         # Compute the gradient - no longer need to worry about opt_data being wiped
         G, wfn = gradient(lowername, return_wfn=True, molecule=molecule, **kwargs)
-        thisenergy = core.variable('CURRENT ENERGY')
+        thisenergy = core.variable("CURRENT ENERGY")
         opt_object.E = thisenergy
         opt_object.gX = G.np
 
-        if core.get_option('OPTKING', 'CART_HESS_READ') and (n == 1):
+        if core.get_option("OPTKING", "CART_HESS_READ") and (n == 1):
             opt_object.params.cart_hess_read = True
             opt_object.params.hessian_file = f"{core.get_writer_file_prefix(molecule.name())}.hess"
             # compute Hessian as requested; frequency wipes out gradient so stash it
-        elif 'hessian' in opt_calcs:
+        elif "hessian" in opt_calcs:
             # compute hessian as requested.
 
             # procedures proctable analytic hessians
-            _, hess_wfn = frequencies(hessian_with_method,
-                                      molecule=molecule,
-                                      ref_gradient=G,
-                                      return_wfn=True,
-                                      **kwargs)
+            _, hess_wfn = frequencies(
+                hessian_with_method, molecule=molecule, ref_gradient=G, return_wfn=True, **kwargs
+            )
             opt_object.HX = hess_wfn.hessian().np
 
         # force optking to update its molecule to psi4's.
@@ -1300,7 +1326,10 @@ def optimize(name, **kwargs):
             else:
                 raise ConvergenceError(
                     "Psi4 caught an AlgError. This should only happen after optking resets the history"
-                    "and needs another Hessian", n, wfn)
+                    "and needs another Hessian",
+                    n,
+                    wfn,
+                )
 
         core.print_out(opt_object.post_step_str())  # print convergence and step info
 
@@ -1309,8 +1338,7 @@ def optimize(name, **kwargs):
         molecule.update_geometry()
 
         opt_status = opt_object.status()  # Query optking for convergence, failure or continuing opt.
-        if opt_status == 'CONVERGED':
-
+        if opt_status == "CONVERGED":
             # Last geom is normally last in history. For IRC last geom is last in IRC trajectory
             # Not sure how to handle ensuring that wfn corresponds to last point.
             final_energy, final_geom = opt_object.summarize_result()
@@ -1319,11 +1347,11 @@ def optimize(name, **kwargs):
             molecule.set_geometry(core.Matrix.from_array(final_geom))
             molecule.update_geometry()
 
-            print('Optimizer: Optimization complete!')
-            core.print_out('\n    Final optimized geometry and variables:\n')
+            print("Optimizer: Optimization complete!")
+            core.print_out("\n    Final optimized geometry and variables:\n")
             molecule.print_in_input_format()
 
-            for postcallback in hooks['optimize']['post']:
+            for postcallback in hooks["optimize"]["post"]:
                 postcallback(lowername, wfn=wfn, **kwargs)
             core.clean()
 
@@ -1331,15 +1359,15 @@ def optimize(name, **kwargs):
 
             if return_history:
                 history = {
-                    'energy': [step.E for step in opt_object.history.steps],
-                    'gradient': [step.cart_grad for step in opt_object.history.steps],
-                    'coordinates': [step.geom for step in opt_object.history.steps],
+                    "energy": [step.E for step in opt_object.history.steps],
+                    "gradient": [step.cart_grad for step in opt_object.history.steps],
+                    "coordinates": [step.geom for step in opt_object.history.steps],
                 }
 
             # Create OptimizationResult like Schema. Not validated since optimize() does not pass AtomicResults.
             opt_data = opt_object.close()
-            if core.get_option('OPTKING', 'WRITE_OPT_HISTORY'):
-                with open(f"{core.get_writer_file_prefix(molecule.name())}.opt.json", 'w+') as f:
+            if core.get_option("OPTKING", "WRITE_OPT_HISTORY"):
+                with open(f"{core.get_writer_file_prefix(molecule.name())}.opt.json", "w+") as f:
                     json.dump(opt_data, f, indent=2)
 
             if return_wfn and return_history:
@@ -1351,22 +1379,21 @@ def optimize(name, **kwargs):
             else:
                 return thisenergy
 
-        elif opt_status == 'FAILED':
-
-            print('Optimizer: Optimization failed!')
+        elif opt_status == "FAILED":
+            print("Optimizer: Optimization failed!")
             molecule.set_geometry(core.Matrix.from_array(opt_object.molsys.geom))
             molecule.update_geometry()
             core.clean()
             optstash.restore()
 
             opt_data = opt_object.to_dict()
-            if core.get_option('OPTKING', 'WRITE_OPT_HISTORY'):
-                with open(f"{core.get_writer_file_prefix(molecule.name())}.opt.json", 'w+') as f:
+            if core.get_option("OPTKING", "WRITE_OPT_HISTORY"):
+                with open(f"{core.get_writer_file_prefix(molecule.name())}.opt.json", "w+") as f:
                     json.dump(opt_data, f, indent=2)
 
             raise OptimizationConvergenceError("""geometry optimization""", n - 1, wfn)
 
-        core.print_out('\n    Structure for next step:\n')
+        core.print_out("\n    Structure for next step:\n")
         molecule.print_in_input_format()
 
         n += 1
@@ -1400,26 +1427,26 @@ def hessian(name, **kwargs):
     ## First half of this fn -- entry means user wants a 2nd derivative by any means
 
     kwargs = p4util.kwargs_lower(kwargs)
-    basisstash = p4util.OptionsState(['BASIS'])
-    return_wfn = kwargs.pop('return_wfn', False)
+    basisstash = p4util.OptionsState(["BASIS"])
+    return_wfn = kwargs.pop("return_wfn", False)
 
     # Make sure the molecule the user provided is the active one
-    molecule = kwargs.pop('molecule', core.get_active_molecule())
+    molecule = kwargs.pop("molecule", core.get_active_molecule())
     molecule.update_geometry()
 
     # Convert wrapper directives from options (where ppl know to find them) to kwargs (suitable for non-globals transmitting)
-    kwargs['findif_verbose'] = core.get_option("FINDIF", "PRINT")
-    kwargs['findif_stencil_size'] = core.get_option("FINDIF", "POINTS")
-    kwargs['findif_step_size'] = core.get_option("FINDIF", "DISP_SIZE")
+    kwargs["findif_verbose"] = core.get_option("FINDIF", "PRINT")
+    kwargs["findif_stencil_size"] = core.get_option("FINDIF", "POINTS")
+    kwargs["findif_step_size"] = core.get_option("FINDIF", "DISP_SIZE")
 
     # Select certain irreps
-    irrep = kwargs.pop('irrep', -1)
+    irrep = kwargs.pop("irrep", -1)
     if irrep == -1:
         pass  # do all irreps
     else:
         irrep = driver_util.parse_cotton_irreps(irrep, molecule.schoenflies_symbol())
         irrep -= 1  # A1 irrep is externally 1, internally 0
-    kwargs['findif_irrep'] = irrep
+    kwargs["findif_irrep"] = irrep
 
     ## Pre-planning interventions
 
@@ -1432,13 +1459,13 @@ def hessian(name, **kwargs):
         raise ValidationError(f"`hessian('{name}')` does not have an associated Hessian.")
 
     # * Avert pydantic anger at incomplete modelchem spec
-    userbas = core.get_global_option('BASIS') or kwargs.get('basis')
+    userbas = core.get_global_option("BASIS") or kwargs.get("basis")
     if lowername in integrated_basis_methods and userbas is None:
-        kwargs['basis'] = '(auto)'
+        kwargs["basis"] = "(auto)"
 
     # Are we planning?
     plan = task_planner.task_planner("hessian", lowername, molecule, **kwargs)
-    logger.debug('HESSIAN PLAN')
+    logger.debug("HESSIAN PLAN")
     logger.debug(pp.pformat(plan.dict()))
 
     if kwargs.get("return_plan", False):
@@ -1462,28 +1489,29 @@ def hessian(name, **kwargs):
     core.clean_variables()
 
     optstash = p4util.OptionsState(
-        ['FINDIF', 'HESSIAN_WRITE'],
-        ['FINDIF', 'FD_PROJECT'],
+        ["FINDIF", "HESSIAN_WRITE"],
+        ["FINDIF", "FD_PROJECT"],
     )
 
     # Set method-dependent scf convergence criteria (test on procedures['energy'] since that's guaranteed)
     optstash_conv = driver_util.negotiate_convergence_criterion((2, 2), lowername, return_optstash=True)
 
     # At stationary point?
-    if 'ref_gradient' in kwargs:
+    if "ref_gradient" in kwargs:
         core.print_out("""hessian() using ref_gradient to assess stationary point.\n""")
-        G0 = kwargs['ref_gradient']
+        G0 = kwargs["ref_gradient"]
     else:
         tmpkwargs = copy.deepcopy(kwargs)
-        tmpkwargs.pop('dertype', None)
+        tmpkwargs.pop("dertype", None)
         G0 = gradient(lowername, molecule=molecule, **tmpkwargs)
     translations_projection_sound, rotations_projection_sound = _energy_is_invariant(G0.rms())
     core.print_out(
-        '\n  Based on options and gradient (rms={:.2E}), recommend {}projecting translations and {}projecting rotations.\n'
-        .format(G0.rms(), '' if translations_projection_sound else 'not ',
-                '' if rotations_projection_sound else 'not '))
-    if not core.has_option_changed('FINDIF', 'FD_PROJECT'):
-        core.set_local_option('FINDIF', 'FD_PROJECT', rotations_projection_sound)
+        "\n  Based on options and gradient (rms={:.2E}), recommend {}projecting translations and {}projecting rotations.\n".format(
+            G0.rms(), "" if translations_projection_sound else "not ", "" if rotations_projection_sound else "not "
+        )
+    )
+    if not core.has_option_changed("FINDIF", "FD_PROJECT"):
+        core.set_local_option("FINDIF", "FD_PROJECT", rotations_projection_sound)
 
     # We have the desired method. Do it.
     logger.info(
@@ -1491,7 +1519,7 @@ def hessian(name, **kwargs):
     )
     logger.debug("w/EFP" if hasattr(molecule, "EFP") else pp.pformat(molecule.to_dict()))
     core.print_out("""hessian() will perform analytic frequency computation.\n""")
-    wfn = procedures['hessian'][lowername](lowername, molecule=molecule, **kwargs)
+    wfn = procedures["hessian"][lowername](lowername, molecule=molecule, **kwargs)
     logger.info(f"Return hessian(): {wfn.energy()}")
     logger.info(nppp(wfn.hessian().np))
 
@@ -1500,7 +1528,7 @@ def hessian(name, **kwargs):
     optstash.restore()
     optstash_conv.restore()
 
-    #if isinstance(lowername, str) and lowername in procedures['energy']:
+    # if isinstance(lowername, str) and lowername in procedures['energy']:
     #    # this correctly filters out cbs fn and "hf/cc-pvtz"
     #    # it probably incorrectly filters out mp5, but reconsider in DDD
     #    core.set_variable(f"CURRENT HESSIAN", H)
@@ -1509,7 +1537,7 @@ def hessian(name, **kwargs):
     #    wfn.set_variable(f"{lowername.upper()} TOTAL HESSIAN", H)
     #    wfn.set_variable(f"{lowername.upper()} TOTAL GRADIENT", G0)
     # TODO: check that current energy's being set to the right figure when this code is actually used
-    core.set_variable('CURRENT ENERGY', wfn.energy())
+    core.set_variable("CURRENT ENERGY", wfn.energy())
     core.set_variable("CURRENT GRADIENT", G0)
     driver_findif.hessian_write(wfn)
 
@@ -1605,10 +1633,10 @@ def frequency(name, **kwargs):
     """
     kwargs = p4util.kwargs_lower(kwargs)
 
-    return_wfn = kwargs.pop('return_wfn', False)
+    return_wfn = kwargs.pop("return_wfn", False)
 
     # Make sure the molecule the user provided is the active one
-    molecule = kwargs.pop('molecule', core.get_active_molecule())
+    molecule = kwargs.pop("molecule", core.get_active_molecule())
     molecule.update_geometry()
 
     # Compute the hessian
@@ -1621,29 +1649,29 @@ def frequency(name, **kwargs):
         gradient_rms = 1  # choose to force non-projection of rotations
     translations_projection_sound, rotations_projection_sound = _energy_is_invariant(gradient_rms)
 
-    project_trans = kwargs.get('project_trans', translations_projection_sound)
-    project_rot = kwargs.get('project_rot', rotations_projection_sound)
+    project_trans = kwargs.get("project_trans", translations_projection_sound)
+    project_rot = kwargs.get("project_rot", rotations_projection_sound)
 
-    irrep = kwargs.get('irrep', None)
+    irrep = kwargs.get("irrep", None)
     vibinfo = vibanal_wfn(wfn, irrep=irrep, project_trans=project_trans, project_rot=project_rot)
     wfn.frequency_analysis = vibinfo
 
-    for postcallback in hooks['frequency']['post']:
+    for postcallback in hooks["frequency"]["post"]:
         postcallback(lowername, wfn=wfn, **kwargs)
 
     if return_wfn:
-        return (core.variable('CURRENT ENERGY'), wfn)
+        return (core.variable("CURRENT ENERGY"), wfn)
     else:
-        return core.variable('CURRENT ENERGY')
+        return core.variable("CURRENT ENERGY")
 
 
 def vibanal_wfn(
-        wfn: core.Wavefunction,
-        hess: Optional[np.ndarray] = None,
-        irrep: Optional[Union[int, str]] = None,
-        molecule=None,
-        project_trans: bool = True,
-        project_rot: bool = True,
+    wfn: core.Wavefunction,
+    hess: Optional[np.ndarray] = None,
+    irrep: Optional[Union[int, str]] = None,
+    molecule=None,
+    project_trans: bool = True,
+    project_rot: bool = True,
 ) -> Dict[str, np.ndarray]:
     """Function to perform analysis of a hessian or hessian block, specifically...
     calling for and printing vibrational and thermochemical analysis, setting thermochemical variables,
@@ -1688,19 +1716,23 @@ def vibanal_wfn(
     geom = np.asarray(mol.geometry())
     symbols = [mol.symbol(at) for at in range(mol.natom())]
 
-    vibrec = {'molecule': mol.to_dict(np_out=False), 'hessian': nmwhess.tolist()}
+    vibrec = {"molecule": mol.to_dict(np_out=False), "hessian": nmwhess.tolist()}
 
     if molecule is not None:
         molecule.update_geometry()
         if mol.natom() != molecule.natom():
-            raise ValidationError('Impostor molecule trying to be analyzed! natom {} != {}'.format(
-                mol.natom(), molecule.natom()))
-        if abs(mol.nuclear_repulsion_energy() - molecule.nuclear_repulsion_energy()) > 1.e-6:
-            raise ValidationError('Impostor molecule trying to be analyzed! NRE {} != {}'.format(
-                mol.nuclear_repulsion_energy(), molecule.nuclear_repulsion_energy()))
-        if not np.allclose(np.asarray(mol.geometry()), np.asarray(molecule.geometry()), atol=1.e-6):
+            raise ValidationError(
+                "Impostor molecule trying to be analyzed! natom {} != {}".format(mol.natom(), molecule.natom())
+            )
+        if abs(mol.nuclear_repulsion_energy() - molecule.nuclear_repulsion_energy()) > 1.0e-6:
+            raise ValidationError(
+                "Impostor molecule trying to be analyzed! NRE {} != {}".format(
+                    mol.nuclear_repulsion_energy(), molecule.nuclear_repulsion_energy()
+                )
+            )
+        if not np.allclose(np.asarray(mol.geometry()), np.asarray(molecule.geometry()), atol=1.0e-6):
             core.print_out(
-                'Warning: geometry center/orientation mismatch. Normal modes may not be in expected coordinate system.'
+                "Warning: geometry center/orientation mismatch. Normal modes may not be in expected coordinate system."
             )
         #    raise ValidationError('Impostor molecule trying to be analyzed! geometry\n{}\n   !=\n{}'.format(
         #        np.asarray(mol.geometry()), np.asarray(molecule.geometry())))
@@ -1709,21 +1741,23 @@ def vibanal_wfn(
     m = np.asarray([mol.mass(at) for at in range(mol.natom())])
     irrep_labels = mol.irrep_labels()
 
-    vibinfo, vibtext = qcdb.vib.harmonic_analysis(nmwhess,
-                                                  geom,
-                                                  m,
-                                                  wfn.basisset(),
-                                                  irrep_labels,
-                                                  dipder=dipder,
-                                                  project_trans=project_trans,
-                                                  project_rot=project_rot)
+    vibinfo, vibtext = qcdb.vib.harmonic_analysis(
+        nmwhess,
+        geom,
+        m,
+        wfn.basisset(),
+        irrep_labels,
+        dipder=dipder,
+        project_trans=project_trans,
+        project_rot=project_rot,
+    )
     vibrec.update({k: qca.json() for k, qca in vibinfo.items()})
 
     core.print_out(vibtext)
-    core.print_out(qcdb.vib.print_vibs(vibinfo, shortlong=True, normco='x', atom_lbl=symbols))
+    core.print_out(qcdb.vib.print_vibs(vibinfo, shortlong=True, normco="x", atom_lbl=symbols))
 
-    if core.has_option_changed('THERMO', 'ROTATIONAL_SYMMETRY_NUMBER'):
-        rsn = core.get_option('THERMO', 'ROTATIONAL_SYMMETRY_NUMBER')
+    if core.has_option_changed("THERMO", "ROTATIONAL_SYMMETRY_NUMBER"):
+        rsn = core.get_option("THERMO", "ROTATIONAL_SYMMETRY_NUMBER")
     else:
         rsn = mol.rotational_symmetry_number()
 
@@ -1737,31 +1771,32 @@ def vibanal_wfn(
             sigma=rsn,
             rotor_type=mol.rotor_type(),
             rot_const=np.asarray(mol.rotational_constants()),
-            E0=core.variable('CURRENT ENERGY'))  # someday, wfn.energy()
+            E0=core.variable("CURRENT ENERGY"),
+        )  # someday, wfn.energy()
         vibrec.update({k: qca.json() for k, qca in therminfo.items()})
 
-        core.set_variable("ZPVE", therminfo['ZPE_corr'].data)  # P::e THERMO
-        core.set_variable("THERMAL ENERGY CORRECTION", therminfo['E_corr'].data)  # P::e THERMO
-        core.set_variable("ENTHALPY CORRECTION", therminfo['H_corr'].data)  # P::e THERMO
-        core.set_variable("GIBBS FREE ENERGY CORRECTION", therminfo['G_corr'].data)  # P::e THERMO
+        core.set_variable("ZPVE", therminfo["ZPE_corr"].data)  # P::e THERMO
+        core.set_variable("THERMAL ENERGY CORRECTION", therminfo["E_corr"].data)  # P::e THERMO
+        core.set_variable("ENTHALPY CORRECTION", therminfo["H_corr"].data)  # P::e THERMO
+        core.set_variable("GIBBS FREE ENERGY CORRECTION", therminfo["G_corr"].data)  # P::e THERMO
 
-        core.set_variable("ZERO K ENTHALPY", therminfo['ZPE_tot'].data)  # P::e THERMO
-        core.set_variable("THERMAL ENERGY", therminfo['E_tot'].data)  # P::e THERMO
-        core.set_variable("ENTHALPY", therminfo['H_tot'].data)  # P::e THERMO
-        core.set_variable("GIBBS FREE ENERGY", therminfo['G_tot'].data)  # P::e THERMO
+        core.set_variable("ZERO K ENTHALPY", therminfo["ZPE_tot"].data)  # P::e THERMO
+        core.set_variable("THERMAL ENERGY", therminfo["E_tot"].data)  # P::e THERMO
+        core.set_variable("ENTHALPY", therminfo["H_tot"].data)  # P::e THERMO
+        core.set_variable("GIBBS FREE ENERGY", therminfo["G_tot"].data)  # P::e THERMO
 
         core.print_out(thermtext)
     else:
-        core.print_out('  Thermochemical analysis skipped for partial frequency calculation.\n')
+        core.print_out("  Thermochemical analysis skipped for partial frequency calculation.\n")
 
-    if core.get_option('FINDIF', 'HESSIAN_WRITE'):
+    if core.get_option("FINDIF", "HESSIAN_WRITE"):
         filename = core.get_writer_file_prefix(mol.name()) + ".vibrec"
-        with open(filename, 'w') as handle:
+        with open(filename, "w") as handle:
             json.dump(vibrec, handle, sort_keys=True, indent=4)
 
-    if core.get_option('FINDIF', 'NORMAL_MODES_WRITE'):
+    if core.get_option("FINDIF", "NORMAL_MODES_WRITE"):
         filename = core.get_writer_file_prefix(mol.name()) + ".molden_normal_modes"
-        with open(filename, 'w') as handle:
+        with open(filename, "w") as handle:
             handle.write(qcdb.vib.print_molden_vibs(vibinfo, symbols, geom, standalone=True))
 
     return vibinfo
@@ -1794,7 +1829,7 @@ def gdma(wfn, datafile=""):
     fw = core.FCHKWriter(wfn)
     molname = wfn.molecule().name()
     prefix = core.get_writer_file_prefix(molname)
-    fchkfile = prefix + '.fchk'
+    fchkfile = prefix + ".fchk"
     fw.write(fchkfile)
 
     if datafile:
@@ -1804,39 +1839,42 @@ def gdma(wfn, datafile=""):
             densname = "CC"
         else:
             densname = "SCF"
-        commands = 'psi4_dma_datafile.dma'
-        radii = core.get_option('GDMA', 'GDMA_RADIUS')
-        origin = core.get_option('GDMA', 'GDMA_ORIGIN')
-        with open(commands, 'w') as f:
+        commands = "psi4_dma_datafile.dma"
+        radii = core.get_option("GDMA", "GDMA_RADIUS")
+        origin = core.get_option("GDMA", "GDMA_ORIGIN")
+        with open(commands, "w") as f:
             f.write("File %s Density %s\n" % (fchkfile, densname))
             f.write("Angstrom\n")
-            f.write("%s\n" % core.get_option('GDMA', 'GDMA_MULTIPOLE_UNITS'))
+            f.write("%s\n" % core.get_option("GDMA", "GDMA_MULTIPOLE_UNITS"))
             f.write("Multipoles\n")
             if origin:
                 try:
                     f.write("Origin %f %f %f\n" % (float(origin[0]), float(origin[1]), float(origin[2])))
                 except IndexError:
                     raise ValidationError("The GDMA origin array should contain three entries: x, y, and z.")
-            f.write("Switch %f\n" % core.get_option('GDMA', 'GDMA_SWITCH'))
+            f.write("Switch %f\n" % core.get_option("GDMA", "GDMA_SWITCH"))
             if radii:
                 f.write("Radius %s\n" % " ".join([str(r) for r in radii]))
-            f.write("Limit %d\n" % core.get_option('GDMA', 'GDMA_LIMIT'))
+            f.write("Limit %d\n" % core.get_option("GDMA", "GDMA_LIMIT"))
             f.write("Start\n")
             f.write("Finish\n")
 
     # from outside the Psi4 ecosystem
     from qcelemental.util import which_import
+
     if not which_import("gdma", return_bool=True):
         raise ModuleNotFoundError(
-            'Python module gdma not found. Solve by installing it: `conda install -c conda-forge gdma` or recompile with `-DENABLE_gdma`'
+            "Python module gdma not found. Solve by installing it: `conda install -c conda-forge gdma` or recompile with `-DENABLE_gdma`"
         )
     import gdma
 
     min_version = "2.3.3"
     from qcelemental.util import parse_version
+
     if parse_version(gdma.__version__) < parse_version(min_version):
         raise ModuleNotFoundError(
-            f"GDMA version {min_version} is required at least. Version {gdma.__version__} was found.")
+            f"GDMA version {min_version} is required at least. Version {gdma.__version__} was found."
+        )
 
     core.prepare_options_for_module("GDMA")
 
@@ -1927,18 +1965,18 @@ def fchk(wfn: core.Wavefunction, filename: str, *, debug: bool = False, strict_l
     # OCC: (occ theory module only, not dfocc) is turned off as densities are not correctly set.
     # DFMP2: Contains natural orbitals in wfn.C() and wfn.epsilon() data. This is fixed to contain respective HF data.
 
-    allowed = ['DFMP2', 'SCF', 'CCENERGY', 'DCT', 'DFOCC']
+    allowed = ["DFMP2", "SCF", "CCENERGY", "DCT", "DFOCC"]
     module_ = wfn.module().upper()
     if module_ not in allowed:
         core.print_out(f"FCHKWriter: Theory module {module_} is currently not supported by the FCHK writer.")
         return None
 
-    if (wfn.basisset().has_ECP()):
+    if wfn.basisset().has_ECP():
         core.print_out(f"FCHKWriter: Limited ECP support! No ECP data will be written to the FCHK file.")
 
     # fix orbital coefficients and energies for DFMP2
-    if module_ in ['DFMP2']:
-        wfn_ = core.Wavefunction.build(wfn.molecule(), core.get_global_option('BASIS'))
+    if module_ in ["DFMP2"]:
+        wfn_ = core.Wavefunction.build(wfn.molecule(), core.get_global_option("BASIS"))
         wfn_.deep_copy(wfn)
         refwfn = wfn.reference_wavefunction()
         wfn_.set_reference_wavefunction(refwfn)  # refwfn not deep_copied
@@ -1950,7 +1988,7 @@ def fchk(wfn: core.Wavefunction, filename: str, *, debug: bool = False, strict_l
     else:
         fw = core.FCHKWriter(wfn)
 
-    if module_ in ['DCT', 'DFOCC']:
+    if module_ in ["DCT", "DFOCC"]:
         core.print_out("""FCHKWriter: Caution! For orbital-optimized correlated methods
             the 'Orbital Energy' field contains ambiguous data. \n""")
 
@@ -1958,15 +1996,15 @@ def fchk(wfn: core.Wavefunction, filename: str, *, debug: bool = False, strict_l
     # idea: get the method from the variable matching closely the 'current energy'
     # for varlist, wfn is long-term and to allow from-file wfns. core is b/c some modules not storing in wfn yet
     varlist = {**wfn.scalar_variables(), **core.scalar_variables()}
-    current = varlist['CURRENT ENERGY']
+    current = varlist["CURRENT ENERGY"]
 
     # delete problematic entries
-    for key in ['CURRENT ENERGY', 'CURRENT REFERENCE ENERGY']:
+    for key in ["CURRENT ENERGY", "CURRENT REFERENCE ENERGY"]:
         varlist.pop(key, None)
 
     # find closest matching energy
-    for (key, val) in varlist.items():
-        if (np.isclose(val, current, 1e-12)):
+    for key, val in varlist.items():
+        if np.isclose(val, current, 1e-12):
             method = key.split()[0]
             break
 
@@ -2113,8 +2151,10 @@ def molden(wfn, filename=None, density_a=None, density_b=None, dovirtual=None):
             occa = wfn.occupation_a()
             occb = wfn.occupation_b()
         except AttributeError:
-            core.print_out("\n!Molden warning: This wavefunction does not have occupation numbers.\n"
-                           "Writing zero's for occupation numbers\n\n")
+            core.print_out(
+                "\n!Molden warning: This wavefunction does not have occupation numbers.\n"
+                "Writing zero's for occupation numbers\n\n"
+            )
             occa = core.Vector(wfn.nmopi())
             occb = core.Vector(wfn.nmopi())
 

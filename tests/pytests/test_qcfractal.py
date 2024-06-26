@@ -1,8 +1,7 @@
 import numpy as np
-
 import pytest
-from utils import *
 from addons import uusing
+from utils import *
 
 import psi4
 
@@ -14,13 +13,16 @@ pytestmark = [pytest.mark.psi, pytest.mark.api]
 @pytest.mark.cbs
 @pytest.mark.smoke
 @pytest.mark.quick
-@pytest.mark.parametrize("distributed", [
-    pytest.param(False, id="internal"),
-    pytest.param(True, id="snowflake"),
-])
+@pytest.mark.parametrize(
+    "distributed",
+    [
+        pytest.param(False, id="internal"),
+        pytest.param(True, id="snowflake"),
+    ],
+)
 def test_qcf_cbs_mbe(distributed, snowflake):
-
     import psi4
+
     dimer = psi4.geometry("""
     He 2 0 0
     --
@@ -28,9 +30,9 @@ def test_qcf_cbs_mbe(distributed, snowflake):
     """)
 
     # << pk >> (just to test options passing works)
-    #psi4.set_options({"scf_type": "pk"}) #, "e_convergence": 10, "d_convergence": 9})
-    #ref_ene = -5.725227008286358
-    #ref_grad = [[-7.01014982e-07, 0.0, 0.0], [ 7.01014982e-07, 0.0, 0.0]]
+    # psi4.set_options({"scf_type": "pk"}) #, "e_convergence": 10, "d_convergence": 9})
+    # ref_ene = -5.725227008286358
+    # ref_grad = [[-7.01014982e-07, 0.0, 0.0], [ 7.01014982e-07, 0.0, 0.0]]
 
     # << df >>
     ref_ene = -5.72527135604184
@@ -47,7 +49,7 @@ def test_qcf_cbs_mbe(distributed, snowflake):
         grad = psi4.gradient("HF/cc-pV[D,T]Z", bsse_type="CP", return_total_data=True)
 
     assert compare_values(ref_ene, psi4.variable("CURRENT ENERGY"))
-    assert compare_values(ref_grad, grad, atol=1.e-7)
+    assert compare_values(ref_grad, grad, atol=1.0e-7)
 
     if distributed:
         # `get_results` is a closer-to-internals alternative to `get_psi_results`.
@@ -57,8 +59,8 @@ def test_qcf_cbs_mbe(distributed, snowflake):
 
         print(f'Final energy   = {ret.extras["qcvars"]["CURRENT ENERGY"]} [E_h]')
         print(f'Final gradient = {ret.extras["qcvars"]["CURRENT GRADIENT"]} [E_h/a0]')
-        print(f'Final gradient = {ret.return_result} [E_h/a0]')
-        print(f'Final energy   = {ret.properties.return_energy} [E_h]')
+        print(f"Final gradient = {ret.return_result} [E_h/a0]")
+        print(f"Final energy   = {ret.properties.return_energy} [E_h]")
 
         assert compare_values(ref_ene, ret.extras["qcvars"]["CURRENT ENERGY"], atol=1e-5)
         assert compare_values(ref_grad, ret.extras["qcvars"]["CURRENT GRADIENT"], atol=1e-4)

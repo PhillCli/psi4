@@ -44,545 +44,613 @@
   - ``'<subset>'`` <members_description>
 
 """
+
 import re
 
 import qcdb
 
 # <<< RSE42 Database Module >>>
-dbse = 'RSE42'
-isOS = 'True'
+dbse = "RSE42"
+isOS = "True"
 
 # <<< Database Members >>>
 HRXN = [
-    '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
-    '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35', '36', '37', '38', '39',
-    '40', '41', '42'
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "17",
+    "18",
+    "19",
+    "20",
+    "21",
+    "22",
+    "23",
+    "24",
+    "25",
+    "26",
+    "27",
+    "28",
+    "29",
+    "30",
+    "31",
+    "32",
+    "33",
+    "34",
+    "35",
+    "36",
+    "37",
+    "38",
+    "39",
+    "40",
+    "41",
+    "42",
 ]
 HRXN_SM = []
 HRXN_LG = []
 RSE30 = [
-    '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
-    '21', '22', '23', '24', '25', '26', '27', '28', '29', '30'
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "16",
+    "17",
+    "18",
+    "19",
+    "20",
+    "21",
+    "22",
+    "23",
+    "24",
+    "25",
+    "26",
+    "27",
+    "28",
+    "29",
+    "30",
 ]
 
 # <<< Chemical Systems Involved >>>
 RXNM = {}  # reaction matrix of reagent contributions per reaction
 ACTV = {}  # order of active reagents per reaction
-ACTV['%s-%s' % (dbse, '1')] = [
-    '%s-%s-reagent' % (dbse, 'ch3no2'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2no2'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "1")] = [
+    "%s-%s-reagent" % (dbse, "ch3no2"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2no2"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '1')] = dict(zip(ACTV['%s-%s' % (dbse, '1')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "1")] = dict(zip(ACTV["%s-%s" % (dbse, "1")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '2')] = [
-    '%s-%s-reagent' % (dbse, 'ch3ocho'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2ocho'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "2")] = [
+    "%s-%s-reagent" % (dbse, "ch3ocho"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2ocho"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '2')] = dict(zip(ACTV['%s-%s' % (dbse, '2')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "2")] = dict(zip(ACTV["%s-%s" % (dbse, "2")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '3')] = [
-    '%s-%s-reagent' % (dbse, 'ch3sch3'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2sch3'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "3")] = [
+    "%s-%s-reagent" % (dbse, "ch3sch3"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2sch3"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '3')] = dict(zip(ACTV['%s-%s' % (dbse, '3')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "3")] = dict(zip(ACTV["%s-%s" % (dbse, "3")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '4')] = [
-    '%s-%s-reagent' % (dbse, 'cfhch2'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'cfch2'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "4")] = [
+    "%s-%s-reagent" % (dbse, "cfhch2"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "cfch2"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '4')] = dict(zip(ACTV['%s-%s' % (dbse, '4')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "4")] = dict(zip(ACTV["%s-%s" % (dbse, "4")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '5')] = [
-    '%s-%s-reagent' % (dbse, 'ch3ch2f'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2ch2f'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "5")] = [
+    "%s-%s-reagent" % (dbse, "ch3ch2f"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2ch2f"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '5')] = dict(zip(ACTV['%s-%s' % (dbse, '5')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "5")] = dict(zip(ACTV["%s-%s" % (dbse, "5")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '6')] = [
-    '%s-%s-reagent' % (dbse, 'ch3cho'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2cho'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "6")] = [
+    "%s-%s-reagent" % (dbse, "ch3cho"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2cho"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '6')] = dict(zip(ACTV['%s-%s' % (dbse, '6')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "6")] = dict(zip(ACTV["%s-%s" % (dbse, "6")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '7')] = [
-    '%s-%s-reagent' % (dbse, 'ch3cn'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2cn'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "7")] = [
+    "%s-%s-reagent" % (dbse, "ch3cn"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2cn"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '7')] = dict(zip(ACTV['%s-%s' % (dbse, '7')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "7")] = dict(zip(ACTV["%s-%s" % (dbse, "7")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '8')] = [
-    '%s-%s-reagent' % (dbse, 'ch3f'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2f'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "8")] = [
+    "%s-%s-reagent" % (dbse, "ch3f"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2f"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '8')] = dict(zip(ACTV['%s-%s' % (dbse, '8')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "8")] = dict(zip(ACTV["%s-%s" % (dbse, "8")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '9')] = [
-    '%s-%s-reagent' % (dbse, 'ch3nh2'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2nh2'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "9")] = [
+    "%s-%s-reagent" % (dbse, "ch3nh2"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2nh2"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '9')] = dict(zip(ACTV['%s-%s' % (dbse, '9')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "9")] = dict(zip(ACTV["%s-%s" % (dbse, "9")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '10')] = [
-    '%s-%s-reagent' % (dbse, 'ch3nh3'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2nh3'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "10")] = [
+    "%s-%s-reagent" % (dbse, "ch3nh3"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2nh3"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '10')] = dict(zip(ACTV['%s-%s' % (dbse, '10')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "10")] = dict(zip(ACTV["%s-%s" % (dbse, "10")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '11')] = [
-    '%s-%s-reagent' % (dbse, 'ch3nhoh'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2nhoh'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "11")] = [
+    "%s-%s-reagent" % (dbse, "ch3nhoh"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2nhoh"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '11')] = dict(zip(ACTV['%s-%s' % (dbse, '11')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "11")] = dict(zip(ACTV["%s-%s" % (dbse, "11")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '12')] = [
-    '%s-%s-reagent' % (dbse, 'ch3oh'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2oh'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "12")] = [
+    "%s-%s-reagent" % (dbse, "ch3oh"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2oh"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '12')] = dict(zip(ACTV['%s-%s' % (dbse, '12')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "12")] = dict(zip(ACTV["%s-%s" % (dbse, "12")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '13')] = [
-    '%s-%s-reagent' % (dbse, 'ch3ph3'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2ph3'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "13")] = [
+    "%s-%s-reagent" % (dbse, "ch3ph3"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2ph3"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '13')] = dict(zip(ACTV['%s-%s' % (dbse, '13')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "13")] = dict(zip(ACTV["%s-%s" % (dbse, "13")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '14')] = [
-    '%s-%s-reagent' % (dbse, 'ch3sh2'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2sh2'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "14")] = [
+    "%s-%s-reagent" % (dbse, "ch3sh2"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2sh2"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '14')] = dict(zip(ACTV['%s-%s' % (dbse, '14')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "14")] = dict(zip(ACTV["%s-%s" % (dbse, "14")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '15')] = [
-    '%s-%s-reagent' % (dbse, 'ch3sh'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2sh'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "15")] = [
+    "%s-%s-reagent" % (dbse, "ch3sh"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2sh"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '15')] = dict(zip(ACTV['%s-%s' % (dbse, '15')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "15")] = dict(zip(ACTV["%s-%s" % (dbse, "15")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '16')] = [
-    '%s-%s-reagent' % (dbse, 'ch3cch'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2cch'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "16")] = [
+    "%s-%s-reagent" % (dbse, "ch3cch"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2cch"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '16')] = dict(zip(ACTV['%s-%s' % (dbse, '16')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "16")] = dict(zip(ACTV["%s-%s" % (dbse, "16")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '17')] = [
-    '%s-%s-reagent' % (dbse, 'ch3ch3'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2ch3'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "17")] = [
+    "%s-%s-reagent" % (dbse, "ch3ch3"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2ch3"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '17')] = dict(zip(ACTV['%s-%s' % (dbse, '17')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "17")] = dict(zip(ACTV["%s-%s" % (dbse, "17")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '18')] = [
-    '%s-%s-reagent' % (dbse, 'ch3cl'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2cl'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "18")] = [
+    "%s-%s-reagent" % (dbse, "ch3cl"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2cl"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '18')] = dict(zip(ACTV['%s-%s' % (dbse, '18')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "18")] = dict(zip(ACTV["%s-%s" % (dbse, "18")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '19')] = [
-    '%s-%s-reagent' % (dbse, 'ch3bh2'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2bh2'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "19")] = [
+    "%s-%s-reagent" % (dbse, "ch3bh2"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2bh2"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '19')] = dict(zip(ACTV['%s-%s' % (dbse, '19')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "19")] = dict(zip(ACTV["%s-%s" % (dbse, "19")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '20')] = [
-    '%s-%s-reagent' % (dbse, 'ch2o'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'cho'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "20")] = [
+    "%s-%s-reagent" % (dbse, "ch2o"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "cho"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '20')] = dict(zip(ACTV['%s-%s' % (dbse, '20')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "20")] = dict(zip(ACTV["%s-%s" % (dbse, "20")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '21')] = [
-    '%s-%s-reagent' % (dbse, 'ch3ph2'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2ph2'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "21")] = [
+    "%s-%s-reagent" % (dbse, "ch3ph2"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2ph2"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '21')] = dict(zip(ACTV['%s-%s' % (dbse, '21')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "21")] = dict(zip(ACTV["%s-%s" % (dbse, "21")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '22')] = [
-    '%s-%s-reagent' % (dbse, 'ch2clf'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'chclf'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "22")] = [
+    "%s-%s-reagent" % (dbse, "ch2clf"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "chclf"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '22')] = dict(zip(ACTV['%s-%s' % (dbse, '22')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "22")] = dict(zip(ACTV["%s-%s" % (dbse, "22")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '23')] = [
-    '%s-%s-reagent' % (dbse, 'ch2fch3'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'chfch3'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "23")] = [
+    "%s-%s-reagent" % (dbse, "ch2fch3"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "chfch3"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '23')] = dict(zip(ACTV['%s-%s' % (dbse, '23')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "23")] = dict(zip(ACTV["%s-%s" % (dbse, "23")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '24')] = [
-    '%s-%s-reagent' % (dbse, 'ch2ohoh'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'chohoh'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "24")] = [
+    "%s-%s-reagent" % (dbse, "ch2ohoh"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "chohoh"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '24')] = dict(zip(ACTV['%s-%s' % (dbse, '24')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "24")] = dict(zip(ACTV["%s-%s" % (dbse, "24")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '25')] = [
-    '%s-%s-reagent' % (dbse, 'ch2cl2'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'chcl2'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "25")] = [
+    "%s-%s-reagent" % (dbse, "ch2cl2"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "chcl2"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '25')] = dict(zip(ACTV['%s-%s' % (dbse, '25')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "25")] = dict(zip(ACTV["%s-%s" % (dbse, "25")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '26')] = [
-    '%s-%s-reagent' % (dbse, 'ch2f2'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'chf2'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "26")] = [
+    "%s-%s-reagent" % (dbse, "ch2f2"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "chf2"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '26')] = dict(zip(ACTV['%s-%s' % (dbse, '26')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "26")] = dict(zip(ACTV["%s-%s" % (dbse, "26")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '27')] = [
-    '%s-%s-reagent' % (dbse, 'ch2chcn'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2ccn'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "27")] = [
+    "%s-%s-reagent" % (dbse, "ch2chcn"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2ccn"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '27')] = dict(zip(ACTV['%s-%s' % (dbse, '27')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "27")] = dict(zip(ACTV["%s-%s" % (dbse, "27")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '28')] = [
-    '%s-%s-reagent' % (dbse, 'c2h2'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'hcc'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "28")] = [
+    "%s-%s-reagent" % (dbse, "c2h2"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "hcc"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '28')] = dict(zip(ACTV['%s-%s' % (dbse, '28')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "28")] = dict(zip(ACTV["%s-%s" % (dbse, "28")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '29')] = [
-    '%s-%s-reagent' % (dbse, 'c2h4'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'c2h3'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "29")] = [
+    "%s-%s-reagent" % (dbse, "c2h4"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "c2h3"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '29')] = dict(zip(ACTV['%s-%s' % (dbse, '29')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "29")] = dict(zip(ACTV["%s-%s" % (dbse, "29")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '30')] = [
-    '%s-%s-reagent' % (dbse, 'ch3chch2'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2chch2'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "30")] = [
+    "%s-%s-reagent" % (dbse, "ch3chch2"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2chch2"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '30')] = dict(zip(ACTV['%s-%s' % (dbse, '30')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "30")] = dict(zip(ACTV["%s-%s" % (dbse, "30")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '31')] = [
-    '%s-%s-reagent' % (dbse, 'cyclopropane'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'cyclopropyl'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "31")] = [
+    "%s-%s-reagent" % (dbse, "cyclopropane"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "cyclopropyl"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '31')] = dict(zip(ACTV['%s-%s' % (dbse, '31')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "31")] = dict(zip(ACTV["%s-%s" % (dbse, "31")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '32')] = [
-    '%s-%s-reagent' % (dbse, 'ch3ch2cl'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2ch2cl'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "32")] = [
+    "%s-%s-reagent" % (dbse, "ch3ch2cl"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2ch2cl"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '32')] = dict(zip(ACTV['%s-%s' % (dbse, '32')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "32")] = dict(zip(ACTV["%s-%s" % (dbse, "32")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '33')] = [
-    '%s-%s-reagent' % (dbse, 'ch3ch2oh'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2ch2oh'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "33")] = [
+    "%s-%s-reagent" % (dbse, "ch3ch2oh"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2ch2oh"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '33')] = dict(zip(ACTV['%s-%s' % (dbse, '33')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "33")] = dict(zip(ACTV["%s-%s" % (dbse, "33")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '34')] = [
-    '%s-%s-reagent' % (dbse, 'methylcyclopropane'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'cyclopropylmethyl'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "34")] = [
+    "%s-%s-reagent" % (dbse, "methylcyclopropane"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "cyclopropylmethyl"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '34')] = dict(zip(ACTV['%s-%s' % (dbse, '34')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "34")] = dict(zip(ACTV["%s-%s" % (dbse, "34")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '35')] = [
-    '%s-%s-reagent' % (dbse, 'ch3coch3'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2coch3'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "35")] = [
+    "%s-%s-reagent" % (dbse, "ch3coch3"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2coch3"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '35')] = dict(zip(ACTV['%s-%s' % (dbse, '35')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "35")] = dict(zip(ACTV["%s-%s" % (dbse, "35")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '36')] = [
-    '%s-%s-reagent' % (dbse, 'ch3conh2'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2conh2'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "36")] = [
+    "%s-%s-reagent" % (dbse, "ch3conh2"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2conh2"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '36')] = dict(zip(ACTV['%s-%s' % (dbse, '36')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "36")] = dict(zip(ACTV["%s-%s" % (dbse, "36")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '37')] = [
-    '%s-%s-reagent' % (dbse, 'ch3cooh'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2cooh'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "37")] = [
+    "%s-%s-reagent" % (dbse, "ch3cooh"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2cooh"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '37')] = dict(zip(ACTV['%s-%s' % (dbse, '37')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "37")] = dict(zip(ACTV["%s-%s" % (dbse, "37")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '38')] = [
-    '%s-%s-reagent' % (dbse, 'ch3nhch3'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2nhch3'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "38")] = [
+    "%s-%s-reagent" % (dbse, "ch3nhch3"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2nhch3"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '38')] = dict(zip(ACTV['%s-%s' % (dbse, '38')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "38")] = dict(zip(ACTV["%s-%s" % (dbse, "38")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '39')] = [
-    '%s-%s-reagent' % (dbse, 'ch3nhcho'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2nhcho'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "39")] = [
+    "%s-%s-reagent" % (dbse, "ch3nhcho"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2nhcho"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '39')] = dict(zip(ACTV['%s-%s' % (dbse, '39')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "39")] = dict(zip(ACTV["%s-%s" % (dbse, "39")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '40')] = [
-    '%s-%s-reagent' % (dbse, 'ch3och3'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch2och3'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "40")] = [
+    "%s-%s-reagent" % (dbse, "ch3och3"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch2och3"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '40')] = dict(zip(ACTV['%s-%s' % (dbse, '40')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "40")] = dict(zip(ACTV["%s-%s" % (dbse, "40")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '41')] = [
-    '%s-%s-reagent' % (dbse, 'nh2ch2cn'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'nh2chcn'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "41")] = [
+    "%s-%s-reagent" % (dbse, "nh2ch2cn"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "nh2chcn"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '41')] = dict(zip(ACTV['%s-%s' % (dbse, '41')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "41")] = dict(zip(ACTV["%s-%s" % (dbse, "41")], [-1, -1, 1, 1]))
 
-ACTV['%s-%s' % (dbse, '42')] = [
-    '%s-%s-reagent' % (dbse, 'ch3chch2'),
-    '%s-%s-reagent' % (dbse, 'ch3'),
-    '%s-%s-reagent' % (dbse, 'ch3cch2'),
-    '%s-%s-reagent' % (dbse, 'ch4')
+ACTV["%s-%s" % (dbse, "42")] = [
+    "%s-%s-reagent" % (dbse, "ch3chch2"),
+    "%s-%s-reagent" % (dbse, "ch3"),
+    "%s-%s-reagent" % (dbse, "ch3cch2"),
+    "%s-%s-reagent" % (dbse, "ch4"),
 ]
-RXNM['%s-%s' % (dbse, '42')] = dict(zip(ACTV['%s-%s' % (dbse, '42')], [-1, -1, 1, 1]))
+RXNM["%s-%s" % (dbse, "42")] = dict(zip(ACTV["%s-%s" % (dbse, "42")], [-1, -1, 1, 1]))
 
 # <<< Reference Values [kcal/mol] >>>
 BIND = {}
-BIND['%s-%s' % (dbse, '1')] = -3.18
-BIND['%s-%s' % (dbse, '2')] = -4.74
-BIND['%s-%s' % (dbse, '3')] = -10.86
-BIND['%s-%s' % (dbse, '4')] = 6.72
-BIND['%s-%s' % (dbse, '5')] = -1.49
-BIND['%s-%s' % (dbse, '6')] = -9.65
-BIND['%s-%s' % (dbse, '7')] = -8.20
-BIND['%s-%s' % (dbse, '8')] = -4.17
-BIND['%s-%s' % (dbse, '9')] = -12.00
-BIND['%s-%s' % (dbse, '10')] = 4.59
-BIND['%s-%s' % (dbse, '11')] = -8.67
-BIND['%s-%s' % (dbse, '12')] = -9.21
-BIND['%s-%s' % (dbse, '13')] = 0.55
-BIND['%s-%s' % (dbse, '14')] = 2.35
-BIND['%s-%s' % (dbse, '15')] = -9.56
-BIND['%s-%s' % (dbse, '16')] = -12.66
-BIND['%s-%s' % (dbse, '17')] = -3.32
-BIND['%s-%s' % (dbse, '18')] = -5.58
-BIND['%s-%s' % (dbse, '19')] = -11.61
-BIND['%s-%s' % (dbse, '20')] = -17.41
-BIND['%s-%s' % (dbse, '21')] = -6.39
-BIND['%s-%s' % (dbse, '22')] = -6.48
-BIND['%s-%s' % (dbse, '23')] = -5.79
-BIND['%s-%s' % (dbse, '24')] = -6.59
-BIND['%s-%s' % (dbse, '25')] = -9.41
-BIND['%s-%s' % (dbse, '26')] = -3.97
-BIND['%s-%s' % (dbse, '27')] = 3.78
-BIND['%s-%s' % (dbse, '28')] = 27.08
-BIND['%s-%s' % (dbse, '29')] = 5.87
-BIND['%s-%s' % (dbse, '30')] = -17.05
-BIND['%s-%s' % (dbse, '31')] = 0.000
-BIND['%s-%s' % (dbse, '32')] = 0.000
-BIND['%s-%s' % (dbse, '33')] = 0.000
-BIND['%s-%s' % (dbse, '34')] = 0.000
-BIND['%s-%s' % (dbse, '35')] = 0.000
-BIND['%s-%s' % (dbse, '36')] = 0.000
-BIND['%s-%s' % (dbse, '37')] = 0.000
-BIND['%s-%s' % (dbse, '38')] = 0.000
-BIND['%s-%s' % (dbse, '39')] = 0.000
-BIND['%s-%s' % (dbse, '40')] = 0.000
-BIND['%s-%s' % (dbse, '41')] = 0.000
-BIND['%s-%s' % (dbse, '42')] = 0.000
+BIND["%s-%s" % (dbse, "1")] = -3.18
+BIND["%s-%s" % (dbse, "2")] = -4.74
+BIND["%s-%s" % (dbse, "3")] = -10.86
+BIND["%s-%s" % (dbse, "4")] = 6.72
+BIND["%s-%s" % (dbse, "5")] = -1.49
+BIND["%s-%s" % (dbse, "6")] = -9.65
+BIND["%s-%s" % (dbse, "7")] = -8.20
+BIND["%s-%s" % (dbse, "8")] = -4.17
+BIND["%s-%s" % (dbse, "9")] = -12.00
+BIND["%s-%s" % (dbse, "10")] = 4.59
+BIND["%s-%s" % (dbse, "11")] = -8.67
+BIND["%s-%s" % (dbse, "12")] = -9.21
+BIND["%s-%s" % (dbse, "13")] = 0.55
+BIND["%s-%s" % (dbse, "14")] = 2.35
+BIND["%s-%s" % (dbse, "15")] = -9.56
+BIND["%s-%s" % (dbse, "16")] = -12.66
+BIND["%s-%s" % (dbse, "17")] = -3.32
+BIND["%s-%s" % (dbse, "18")] = -5.58
+BIND["%s-%s" % (dbse, "19")] = -11.61
+BIND["%s-%s" % (dbse, "20")] = -17.41
+BIND["%s-%s" % (dbse, "21")] = -6.39
+BIND["%s-%s" % (dbse, "22")] = -6.48
+BIND["%s-%s" % (dbse, "23")] = -5.79
+BIND["%s-%s" % (dbse, "24")] = -6.59
+BIND["%s-%s" % (dbse, "25")] = -9.41
+BIND["%s-%s" % (dbse, "26")] = -3.97
+BIND["%s-%s" % (dbse, "27")] = 3.78
+BIND["%s-%s" % (dbse, "28")] = 27.08
+BIND["%s-%s" % (dbse, "29")] = 5.87
+BIND["%s-%s" % (dbse, "30")] = -17.05
+BIND["%s-%s" % (dbse, "31")] = 0.000
+BIND["%s-%s" % (dbse, "32")] = 0.000
+BIND["%s-%s" % (dbse, "33")] = 0.000
+BIND["%s-%s" % (dbse, "34")] = 0.000
+BIND["%s-%s" % (dbse, "35")] = 0.000
+BIND["%s-%s" % (dbse, "36")] = 0.000
+BIND["%s-%s" % (dbse, "37")] = 0.000
+BIND["%s-%s" % (dbse, "38")] = 0.000
+BIND["%s-%s" % (dbse, "39")] = 0.000
+BIND["%s-%s" % (dbse, "40")] = 0.000
+BIND["%s-%s" % (dbse, "41")] = 0.000
+BIND["%s-%s" % (dbse, "42")] = 0.000
 
 # <<< Comment Lines >>>
 TAGL = {}
-TAGL['%s-%s' % (dbse, '1')] = """Reaction 1 """
-TAGL['%s-%s' % (dbse, '2')] = """Reaction 2 """
-TAGL['%s-%s' % (dbse, '3')] = """Reaction 3 """
-TAGL['%s-%s' % (dbse, '4')] = """Reaction 4 """
-TAGL['%s-%s' % (dbse, '5')] = """Reaction 5 """
-TAGL['%s-%s' % (dbse, '6')] = """Reaction 6 """
-TAGL['%s-%s' % (dbse, '7')] = """Reaction 7 """
-TAGL['%s-%s' % (dbse, '8')] = """Reaction 8 """
-TAGL['%s-%s' % (dbse, '9')] = """Reaction 9 """
-TAGL['%s-%s' % (dbse, '10')] = """Reaction 10 """
-TAGL['%s-%s' % (dbse, '11')] = """Reaction 11 """
-TAGL['%s-%s' % (dbse, '12')] = """Reaction 12 """
-TAGL['%s-%s' % (dbse, '13')] = """Reaction 13 """
-TAGL['%s-%s' % (dbse, '14')] = """Reaction 14 """
-TAGL['%s-%s' % (dbse, '15')] = """Reaction 15 """
-TAGL['%s-%s' % (dbse, '16')] = """Reaction 16 """
-TAGL['%s-%s' % (dbse, '17')] = """Reaction 17 """
-TAGL['%s-%s' % (dbse, '18')] = """Reaction 18 """
-TAGL['%s-%s' % (dbse, '19')] = """Reaction 19 """
-TAGL['%s-%s' % (dbse, '20')] = """Reaction 20 """
-TAGL['%s-%s' % (dbse, '21')] = """Reaction 21 """
-TAGL['%s-%s' % (dbse, '22')] = """Reaction 22 """
-TAGL['%s-%s' % (dbse, '23')] = """Reaction 23 """
-TAGL['%s-%s' % (dbse, '24')] = """Reaction 24 """
-TAGL['%s-%s' % (dbse, '25')] = """Reaction 25 """
-TAGL['%s-%s' % (dbse, '26')] = """Reaction 26 """
-TAGL['%s-%s' % (dbse, '27')] = """Reaction 27 """
-TAGL['%s-%s' % (dbse, '28')] = """Reaction 28 """
-TAGL['%s-%s' % (dbse, '29')] = """Reaction 29 """
-TAGL['%s-%s' % (dbse, '30')] = """Reaction 30 """
-TAGL['%s-%s' % (dbse, '31')] = """Reaction 31 """
-TAGL['%s-%s' % (dbse, '32')] = """Reaction 32 """
-TAGL['%s-%s' % (dbse, '33')] = """Reaction 33 """
-TAGL['%s-%s' % (dbse, '34')] = """Reaction 34 """
-TAGL['%s-%s' % (dbse, '35')] = """Reaction 35 """
-TAGL['%s-%s' % (dbse, '36')] = """Reaction 36 """
-TAGL['%s-%s' % (dbse, '37')] = """Reaction 37 """
-TAGL['%s-%s' % (dbse, '38')] = """Reaction 38 """
-TAGL['%s-%s' % (dbse, '39')] = """Reaction 39 """
-TAGL['%s-%s' % (dbse, '40')] = """Reaction 40 """
-TAGL['%s-%s' % (dbse, '41')] = """Reaction 41 """
-TAGL['%s-%s' % (dbse, '42')] = """Reaction 42 """
-TAGL['%s-%s-reagent' % (dbse, 'ch2clf')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2fch3')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2chch2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3f')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'nh2ch2cn')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2coch3')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3cl')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2ch2cl')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3ch2cl')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'cyclopropylmethyl')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'chohoh')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3nhch3')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3cch')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'cfch2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3bh2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2cl')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'cyclopropane')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3ocho')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2f')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2ccn')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2nhoh')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'methylcyclopropane')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3ch2f')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2chcn')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3ph2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'chfch3')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'c2h2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3cho')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3cch2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2cho')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2nhch3')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2bh2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3nh2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3cn')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3nhcho')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2ph2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2conh2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2ocho')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3conh2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'c2h3')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2ch2oh')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3sh2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'hcc')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2ohoh')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2o')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2cl2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3sch3')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2cooh')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2ch2f')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2f2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'chclf')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch4')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2nh2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'chf2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3nhoh')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3chch2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3coch3')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'cfhch2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3oh')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2sh2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2ph3')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3sh')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3och3')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3ch2oh')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2cch')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'c2h4')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2sh')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'cho')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3cooh')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2cn')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2ch3')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2nhcho')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2oh')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2nh3')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3ph3')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2och3')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'nh2chcn')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2sch3')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'chcl2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3nh3')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3ch3')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch3no2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'ch2no2')] = """ """
-TAGL['%s-%s-reagent' % (dbse, 'cyclopropyl')] = """ """
+TAGL["%s-%s" % (dbse, "1")] = """Reaction 1 """
+TAGL["%s-%s" % (dbse, "2")] = """Reaction 2 """
+TAGL["%s-%s" % (dbse, "3")] = """Reaction 3 """
+TAGL["%s-%s" % (dbse, "4")] = """Reaction 4 """
+TAGL["%s-%s" % (dbse, "5")] = """Reaction 5 """
+TAGL["%s-%s" % (dbse, "6")] = """Reaction 6 """
+TAGL["%s-%s" % (dbse, "7")] = """Reaction 7 """
+TAGL["%s-%s" % (dbse, "8")] = """Reaction 8 """
+TAGL["%s-%s" % (dbse, "9")] = """Reaction 9 """
+TAGL["%s-%s" % (dbse, "10")] = """Reaction 10 """
+TAGL["%s-%s" % (dbse, "11")] = """Reaction 11 """
+TAGL["%s-%s" % (dbse, "12")] = """Reaction 12 """
+TAGL["%s-%s" % (dbse, "13")] = """Reaction 13 """
+TAGL["%s-%s" % (dbse, "14")] = """Reaction 14 """
+TAGL["%s-%s" % (dbse, "15")] = """Reaction 15 """
+TAGL["%s-%s" % (dbse, "16")] = """Reaction 16 """
+TAGL["%s-%s" % (dbse, "17")] = """Reaction 17 """
+TAGL["%s-%s" % (dbse, "18")] = """Reaction 18 """
+TAGL["%s-%s" % (dbse, "19")] = """Reaction 19 """
+TAGL["%s-%s" % (dbse, "20")] = """Reaction 20 """
+TAGL["%s-%s" % (dbse, "21")] = """Reaction 21 """
+TAGL["%s-%s" % (dbse, "22")] = """Reaction 22 """
+TAGL["%s-%s" % (dbse, "23")] = """Reaction 23 """
+TAGL["%s-%s" % (dbse, "24")] = """Reaction 24 """
+TAGL["%s-%s" % (dbse, "25")] = """Reaction 25 """
+TAGL["%s-%s" % (dbse, "26")] = """Reaction 26 """
+TAGL["%s-%s" % (dbse, "27")] = """Reaction 27 """
+TAGL["%s-%s" % (dbse, "28")] = """Reaction 28 """
+TAGL["%s-%s" % (dbse, "29")] = """Reaction 29 """
+TAGL["%s-%s" % (dbse, "30")] = """Reaction 30 """
+TAGL["%s-%s" % (dbse, "31")] = """Reaction 31 """
+TAGL["%s-%s" % (dbse, "32")] = """Reaction 32 """
+TAGL["%s-%s" % (dbse, "33")] = """Reaction 33 """
+TAGL["%s-%s" % (dbse, "34")] = """Reaction 34 """
+TAGL["%s-%s" % (dbse, "35")] = """Reaction 35 """
+TAGL["%s-%s" % (dbse, "36")] = """Reaction 36 """
+TAGL["%s-%s" % (dbse, "37")] = """Reaction 37 """
+TAGL["%s-%s" % (dbse, "38")] = """Reaction 38 """
+TAGL["%s-%s" % (dbse, "39")] = """Reaction 39 """
+TAGL["%s-%s" % (dbse, "40")] = """Reaction 40 """
+TAGL["%s-%s" % (dbse, "41")] = """Reaction 41 """
+TAGL["%s-%s" % (dbse, "42")] = """Reaction 42 """
+TAGL["%s-%s-reagent" % (dbse, "ch2clf")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2fch3")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2chch2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3f")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "nh2ch2cn")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2coch3")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3cl")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2ch2cl")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3ch2cl")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "cyclopropylmethyl")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "chohoh")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3nhch3")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3cch")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "cfch2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3bh2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2cl")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "cyclopropane")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3ocho")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2f")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2ccn")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2nhoh")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "methylcyclopropane")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3ch2f")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2chcn")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3ph2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "chfch3")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "c2h2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3cho")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3cch2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2cho")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2nhch3")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2bh2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3nh2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3cn")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3nhcho")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2ph2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2conh2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2ocho")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3conh2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "c2h3")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2ch2oh")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3sh2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "hcc")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2ohoh")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2o")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2cl2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3sch3")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2cooh")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2ch2f")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2f2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "chclf")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch4")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2nh2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "chf2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3nhoh")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3chch2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3coch3")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "cfhch2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3oh")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2sh2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2ph3")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3sh")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3och3")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3ch2oh")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2cch")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "c2h4")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2sh")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "cho")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3cooh")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2cn")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2ch3")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2nhcho")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2oh")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2nh3")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3ph3")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2och3")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "nh2chcn")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2sch3")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "chcl2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3nh3")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3ch3")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch3no2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "ch2no2")] = """ """
+TAGL["%s-%s-reagent" % (dbse, "cyclopropyl")] = """ """
 
 # <<< Geometry Specification Strings >>>
 GEOS = {}
 
-GEOS['%s-%s-%s' % (dbse, 'ch2clf', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2clf", "reagent")] = qcdb.Molecule("""
 0 1
 C          0.58067800       0.57509900       0.00000000
 H          0.68300400       1.16697100       0.90686900
@@ -592,7 +660,7 @@ CL        -1.08296100      -0.11624900       0.00000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2fch3', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2fch3", "reagent")] = qcdb.Molecule("""
 0 1
 C         -0.10731600       0.55006900      -0.00001800
 C          1.19344700      -0.22296700      -0.00006600
@@ -605,7 +673,7 @@ F         -1.18716300      -0.34115500      -0.00002700
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2chch2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2chch2", "reagent")] = qcdb.Molecule("""
 0 2
 H          1.29620400       1.27814700       0.00031500
 C          1.22747600       0.19569600       0.00007500
@@ -618,7 +686,7 @@ H         -1.29630000       1.27817500      -0.00046200
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3f', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3f", "reagent")] = qcdb.Molecule("""
 0 1
 C         -0.63474800       0.00000000      -0.00000500
 H         -0.99345300       0.93604800      -0.43577500
@@ -628,7 +696,7 @@ F          0.75431900       0.00000000       0.00000200
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'nh2ch2cn', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "nh2ch2cn", "reagent")] = qcdb.Molecule("""
 0 1
 H         -2.42292000      -0.10756500      -0.17398600
 N         -1.48513000      -0.48905400      -0.11388600
@@ -641,7 +709,7 @@ H         -0.62000100       1.18510500       0.97768400
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2coch3', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2coch3", "reagent")] = qcdb.Molecule("""
 0 2
 C         -1.12950700      -0.87211300      -0.00005500
 C         -0.08591400       0.11935900      -0.00029700
@@ -655,7 +723,7 @@ H          1.56164700      -0.98401000      -0.87274100
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3cl', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3cl", "reagent")] = qcdb.Molecule("""
 0 1
 C          1.14172600       0.00001000      -0.00001100
 CL        -0.66455600      -0.00000200       0.00000300
@@ -665,7 +733,7 @@ H          1.48231600       0.96218500      -0.37410500
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2ch2cl', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2ch2cl", "reagent")] = qcdb.Molecule("""
 0 2
 C          1.65215500      -0.36546200      -0.00002000
 C          0.61456300       0.65491000       0.00017500
@@ -677,7 +745,7 @@ H          0.59752100       1.26954500      -0.89561800
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3ch2cl', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3ch2cl", "reagent")] = qcdb.Molecule("""
 0 1
 C         -1.61792700      -0.35828400       0.00000300
 C         -0.49398800       0.65857000       0.00000500
@@ -690,7 +758,7 @@ H         -0.50913600       1.28862100       0.88748100
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'cyclopropylmethyl', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "cyclopropylmethyl", "reagent")] = qcdb.Molecule("""
 0 2
 C          1.57690500       0.00025700      -0.16395700
 C          0.27580500      -0.00015600       0.48454100
@@ -706,7 +774,7 @@ H         -0.72937600      -1.26087000      -1.07067900
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'chohoh', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "chohoh", "reagent")] = qcdb.Molecule("""
 0 2
 C          0.00688400       0.51186100      -0.14492200
 O         -1.14672000      -0.22110200      -0.07812600
@@ -717,7 +785,7 @@ H         -1.36657400      -0.43480400       0.84328900
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3nhch3', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3nhch3", "reagent")] = qcdb.Molecule("""
 0 1
 H          2.08967400       0.42785800      -0.06224700
 C          1.21538900      -0.22241300       0.02028200
@@ -732,7 +800,7 @@ H         -1.27608400      -0.76442700       0.98167300
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3cch', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3cch", "reagent")] = qcdb.Molecule("""
 0 1
 H          1.62986900      -0.22418700       0.99608700
 C          1.23811600      -0.00000200      -0.00001400
@@ -744,7 +812,7 @@ H          1.62985800      -0.75053900      -0.69223100
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'cfch2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "cfch2", "reagent")] = qcdb.Molecule("""
 0 2
 F          1.18236000       0.12888300       0.00008300
 C         -0.00743100      -0.42937300      -0.00017000
@@ -754,7 +822,7 @@ H         -1.31193900       1.20158500      -0.00015200
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3bh2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3bh2", "reagent")] = qcdb.Molecule("""
 0 1
 C         -0.68214300      -0.00001300      -0.01636900
 B          0.87205600      -0.00003500      -0.02090300
@@ -766,7 +834,7 @@ H          1.48648600      -1.02423100       0.00906800
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2cl', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2cl", "reagent")] = qcdb.Molecule("""
 0 2
 C          1.12668100       0.00000000      -0.00045200
 CL        -0.58859200       0.00000000       0.00003600
@@ -775,7 +843,7 @@ H          1.62298700       0.95630300       0.00105100
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'cyclopropane', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "cyclopropane", "reagent")] = qcdb.Molecule("""
 0 1
 C          0.26222500       0.82955100       0.00000100
 C          0.58730900      -0.64189800       0.00000100
@@ -789,7 +857,7 @@ H          0.98533000      -1.07658600      -0.90916300
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3ocho', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3ocho", "reagent")] = qcdb.Molecule("""
 0 1
 C          1.36739400       0.41209300       0.00000000
 O          0.00000000       0.87018200       0.00000000
@@ -802,7 +870,7 @@ O         -0.72375300      -1.27387900       0.00000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2f', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2f", "reagent")] = qcdb.Molecule("""
 0 2
 C          0.65517400       0.00000000      -0.05820600
 H          1.12122500      -0.95818100       0.12958600
@@ -811,7 +879,7 @@ F         -0.68594400       0.00000000       0.01000700
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2ccn', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2ccn", "reagent")] = qcdb.Molecule("""
 0 2
 C         -1.80740300       0.05630000       0.00026900
 C         -0.52077400      -0.14829300      -0.00056500
@@ -822,7 +890,7 @@ H         -2.51811100      -0.76812000       0.00035400
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2nhoh', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2nhoh", "reagent")] = qcdb.Molecule("""
 0 2
 H         -2.10110400       0.31208400      -0.21944500
 C         -1.19615900      -0.26035100      -0.06713800
@@ -834,7 +902,7 @@ H         -0.02612900       1.35187600      -0.32055700
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'methylcyclopropane', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "methylcyclopropane", "reagent")] = qcdb.Molecule("""
 0 1
 H          2.12855200       0.88463900       0.15688700
 C          1.55441500       0.00000200      -0.13663300
@@ -851,7 +919,7 @@ H         -0.76255500      -1.26035500      -1.08014900
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3ch2f', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3ch2f", "reagent")] = qcdb.Molecule("""
 0 1
 H          2.04393800       0.46531400      -0.00025500
 C          1.19346600      -0.22298200       0.00000300
@@ -864,7 +932,7 @@ H         -0.20230000       1.17911900      -0.89014800
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2chcn', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2chcn", "reagent")] = qcdb.Molecule("""
 0 1
 H         -2.62698000       0.00343300       0.00127500
 C         -1.60537600      -0.35564600       0.00019100
@@ -876,7 +944,7 @@ H         -0.75075800       1.57437800       0.00049800
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3ph2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3ph2", "reagent")] = qcdb.Molecule("""
 0 1
 C         -1.19705600      -0.00003100       0.02529600
 P          0.66982000       0.00000200      -0.12443800
@@ -888,7 +956,7 @@ H          0.93459700      -1.03630900       0.81643200
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'chfch3', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "chfch3", "reagent")] = qcdb.Molecule("""
 0 2
 C          0.11105500       0.51607700      -0.10093000
 C         -1.19373800      -0.17214000       0.01228500
@@ -900,7 +968,7 @@ F          1.20246600      -0.28051100       0.01783000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'c2h2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "c2h2", "reagent")] = qcdb.Molecule("""
 0 1
 C         -0.00000000       0.00000000       0.60499861
 C          0.00000000       0.00000000      -0.60499861
@@ -909,7 +977,7 @@ H          0.00000000       0.00000000      -1.66488377
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3cho', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3cho", "reagent")] = qcdb.Molecule("""
 0 1
 H          1.15548300      -1.23749400      -0.00007400
 C          1.16884900      -0.14775500      -0.00000800
@@ -921,7 +989,7 @@ O         -1.23314000      -0.27658300       0.00000100
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3cch2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3cch2", "reagent")] = qcdb.Molecule("""
 0 2
 H         -1.80737800      -0.28751200      -0.88203600
 C         -1.27092200       0.07589700       0.00003200
@@ -934,7 +1002,7 @@ H          1.53470900       1.17609600       0.00032000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2cho', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2cho", "reagent")] = qcdb.Molecule("""
 0 2
 H          1.26423000      -1.25074500      -0.00022300
 C          1.16786100      -0.17141500      -0.00003900
@@ -945,7 +1013,7 @@ O         -1.16778800      -0.26460200       0.00006200
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2nhch3', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2nhch3", "reagent")] = qcdb.Molecule("""
 0 2
 C          1.25665700      -0.25296800       0.09101800
 N          0.09359200       0.47138600      -0.13643100
@@ -959,7 +1027,7 @@ H         -1.38526200      -0.49985500       1.07010400
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2bh2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2bh2", "reagent")] = qcdb.Molecule("""
 0 2
 C          0.71330600       0.00000000       0.00000200
 B         -0.81296800      -0.00000200      -0.00002100
@@ -970,7 +1038,7 @@ H         -1.41496300      -1.02724800       0.07390900
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3nh2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3nh2", "reagent")] = qcdb.Molecule("""
 0 1
 H         -1.11810600      -0.87790900      -0.48746900
 C         -0.70669300      -0.00000300       0.01773400
@@ -982,7 +1050,7 @@ H          1.14731900      -0.81203100       0.33991600
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3cn', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3cn", "reagent")] = qcdb.Molecule("""
 0 1
 H          1.55303200      -0.19362100       1.00615000
 C          1.17602200       0.00000000      -0.00000200
@@ -993,7 +1061,7 @@ H          1.55311000      -0.77452900      -0.67072400
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3nhcho', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3nhcho", "reagent")] = qcdb.Molecule("""
 0 1
 C          1.45060800      -0.43388200       0.00000600
 N          0.47537300       0.64484300      -0.00000900
@@ -1007,7 +1075,7 @@ O         -1.40621900      -0.66050400       0.00000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2ph2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2ph2", "reagent")] = qcdb.Molecule("""
 0 2
 C          1.18935200       0.00005700       0.07043000
 P         -0.58298700      -0.00011500      -0.12323900
@@ -1018,7 +1086,7 @@ H         -0.93860700       1.06075100       0.75701500
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2conh2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2conh2", "reagent")] = qcdb.Molecule("""
 0 2
 H          2.18625900      -0.02366000       0.02261200
 C          1.27446100      -0.60287200       0.00168800
@@ -1031,7 +1099,7 @@ O         -0.02732600       1.35327500       0.00432700
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2ocho', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2ocho", "reagent")] = qcdb.Molecule("""
 0 2
 C          1.39696200      -0.44693100      -0.00027000
 O          0.57750500       0.64559700       0.00004800
@@ -1043,7 +1111,7 @@ O         -1.31402900      -0.61908100      -0.00000200
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3", "reagent")] = qcdb.Molecule("""
 0 2
 C          0.00000000       0.00000000       0.00021400
 H          0.00000000       1.08040900      -0.00042800
@@ -1052,7 +1120,7 @@ H         -0.93566200      -0.54020500      -0.00042800
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3conh2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3conh2", "reagent")] = qcdb.Molecule("""
 0 1
 H          1.90246300       0.16251900      -0.79962900
 C          1.36161600      -0.34591400      -0.00025200
@@ -1066,7 +1134,7 @@ O         -0.35503700       1.33158200       0.00078500
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'c2h3', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "c2h3", "reagent")] = qcdb.Molecule("""
 0 2
 C          0.04825900      -0.58537400       0.00000000
 C          0.04825900       0.71905900       0.00000000
@@ -1076,7 +1144,7 @@ H         -0.66767700       1.52789000       0.00000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2ch2oh', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2ch2oh", "reagent")] = qcdb.Molecule("""
 0 2
 H         -2.18970300       0.23835000      -0.24005400
 C         -1.25191200      -0.25471300      -0.01994900
@@ -1089,7 +1157,7 @@ H          0.06002400       1.08609600       0.98837600
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3sh2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3sh2", "reagent")] = qcdb.Molecule("""
 1 1
 H         -1.51535400      -0.00004800       1.07239600
 C         -1.21297000      -0.00000100       0.02856200
@@ -1101,7 +1169,7 @@ H          0.92763100      -0.99337500       0.76357900
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'hcc', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "hcc", "reagent")] = qcdb.Molecule("""
 0 2
 C          0.00000000       0.00000000       0.00000000
 C          1.21283562       0.00000000       0.00000000
@@ -1109,7 +1177,7 @@ H         -1.05818189       0.00000000       0.00000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2ohoh', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2ohoh", "reagent")] = qcdb.Molecule("""
 0 1
 C         -0.00005100       0.53181800       0.00000000
 O          1.16882200      -0.24677600       0.09147700
@@ -1121,7 +1189,7 @@ H          1.21998200      -0.78365400      -0.70751500
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2o', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2o", "reagent")] = qcdb.Molecule("""
 0 1
 C          0.00000100      -0.52592000       0.00000000
 O          0.00000100       0.67402700       0.00000000
@@ -1130,7 +1198,7 @@ H         -0.93861700      -1.11835000       0.00000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2cl2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2cl2", "reagent")] = qcdb.Molecule("""
 0 1
 C          0.00000000       0.76838400       0.00000000
 CL         1.49583700      -0.21639700       0.00000000
@@ -1140,7 +1208,7 @@ H         -0.00000700       1.37372600      -0.89921100
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3sch3', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3sch3", "reagent")] = qcdb.Molecule("""
 0 1
 C          1.39450900      -0.51481700       0.00000000
 S          0.00000000       0.66160700       0.00000000
@@ -1154,7 +1222,7 @@ H         -1.38175200      -1.14140000       0.89387100
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2cooh', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2cooh", "reagent")] = qcdb.Molecule("""
 0 2
 C          1.37652700      -0.27885400       0.00007400
 C         -0.01480300       0.11096500       0.00004500
@@ -1166,7 +1234,7 @@ O         -0.41486400       1.25917100      -0.00012700
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2ch2f', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2ch2f", "reagent")] = qcdb.Molecule("""
 0 2
 C         -1.22285000      -0.25059600      -0.02923000
 C          0.03294900       0.52095200       0.06492100
@@ -1178,7 +1246,7 @@ H          0.13375700       1.02525400       1.03907300
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2f2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2f2", "reagent")] = qcdb.Molecule("""
 0 1
 C          0.00000400       0.50314900       0.00000000
 F         -1.10821200      -0.29035800      -0.00000100
@@ -1188,7 +1256,7 @@ F          1.10820900      -0.29036000      -0.00000100
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'chclf', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "chclf", "reagent")] = qcdb.Molecule("""
 0 2
 C         -0.55167800       0.55013700      -0.13353900
 H         -0.72586900       1.49900600       0.36337900
@@ -1197,7 +1265,7 @@ CL         1.04603500      -0.10108300       0.01121200
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch4', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch4", "reagent")] = qcdb.Molecule("""
 0 1
 C          0.00000000       0.00000000       0.00000000
 H          0.62958700       0.62958700       0.62958700
@@ -1207,7 +1275,7 @@ H          0.62958700      -0.62958700      -0.62958700
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2nh2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2nh2", "reagent")] = qcdb.Molecule("""
 0 2
 H          1.24137600       0.92884200      -0.13169100
 C          0.72878100      -0.00007100       0.08564100
@@ -1218,7 +1286,7 @@ H         -1.13017600       0.83321100       0.22205700
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'chf2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "chf2", "reagent")] = qcdb.Molecule("""
 0 2
 C          0.00000000       0.48713600      -0.15110400
 F         -1.10027700      -0.24185600       0.02841400
@@ -1227,7 +1295,7 @@ F          1.10027700      -0.24185600       0.02841400
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3nhoh', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3nhoh", "reagent")] = qcdb.Molecule("""
 0 1
 H          2.02509400       0.44185800      -0.06388800
 C          1.16605500      -0.23232900       0.00456500
@@ -1240,7 +1308,7 @@ H         -0.07697800       1.24466600       0.60825200
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3chch2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3chch2", "reagent")] = qcdb.Molecule("""
 0 1
 H         -1.80765000      -0.15368300      -0.87813100
 C         -1.23352400       0.16233900       0.00002500
@@ -1254,7 +1322,7 @@ H          1.30166500       1.30642200       0.00020600
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3coch3', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3coch3", "reagent")] = qcdb.Molecule("""
 0 1
 C         -1.29144800      -0.61344900       0.00162800
 C         -0.00000100       0.18639500      -0.00001300
@@ -1269,7 +1337,7 @@ H          1.30079800      -1.33630500      -0.82311200
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'cfhch2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "cfhch2", "reagent")] = qcdb.Molecule("""
 0 1
 F          1.15775800      -0.22307000       0.00000600
 C         -0.02075700       0.43302300      -0.00002200
@@ -1280,7 +1348,7 @@ H         -1.23261900      -1.27943700      -0.00000900
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3oh', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3oh", "reagent")] = qcdb.Molecule("""
 0 1
 H          1.08276700       0.98760000      -0.00028200
 C          0.66362300      -0.01954600       0.00000100
@@ -1291,7 +1359,7 @@ H          1.03513400      -0.54195800       0.89219400
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2sh2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2sh2", "reagent")] = qcdb.Molecule("""
 1 2
 C         -1.20662600       0.02170400       0.02219700
 H         -1.68207400       0.97499900       0.20542400
@@ -1302,7 +1370,7 @@ H          0.91939200      -0.16885000       1.23828900
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2ph3', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2ph3", "reagent")] = qcdb.Molecule("""
 1 2
 C         -1.24118800      -0.00000500      -0.00420900
 P          0.52397100       0.00000300      -0.00112200
@@ -1314,7 +1382,7 @@ H          1.03403900      -1.13485700      -0.64892800
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3sh', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3sh", "reagent")] = qcdb.Molecule("""
 0 1
 H         -1.52774200      -1.00777000      -0.00169900
 C         -1.16516100       0.01984900       0.00004300
@@ -1325,7 +1393,7 @@ H         -1.53269700       0.51984700       0.89518300
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3och3', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3och3", "reagent")] = qcdb.Molecule("""
 0 1
 H          2.02193500      -0.48923200      -0.00071000
 C          1.17294200       0.19529900       0.00000000
@@ -1339,7 +1407,7 @@ H         -1.23283200       0.83773500      -0.89160200
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3ch2oh', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3ch2oh", "reagent")] = qcdb.Molecule("""
 0 1
 H          2.07592400       0.45870400      -0.00139100
 C          1.22080500      -0.22279500       0.00033800
@@ -1353,7 +1421,7 @@ H         -0.13551500       1.19679300      -0.88864500
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2cch', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2cch", "reagent")] = qcdb.Molecule("""
 0 2
 C          0.11561300      -0.00003000      -0.00001300
 C          1.33791000       0.00002600      -0.00000900
@@ -1364,7 +1432,7 @@ H         -1.80668700      -0.92999900       0.00004100
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'c2h4', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "c2h4", "reagent")] = qcdb.Molecule("""
 0 1
 C          0.00000000       0.66349000       0.00000000
 C          0.00000000      -0.66349000       0.00000000
@@ -1375,7 +1443,7 @@ H          0.00000000      -1.23461800       0.92256200
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2sh', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2sh", "reagent")] = qcdb.Molecule("""
 0 2
 H          1.68655500      -0.90997600       0.00055800
 C          1.14729300       0.02417600      -0.03176100
@@ -1385,7 +1453,7 @@ H          1.65041300       0.96355500       0.13578900
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'cho', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "cho", "reagent")] = qcdb.Molecule("""
 0 2
 C          0.06228700       0.58421000       0.00000000
 O          0.06228700      -0.59005800       0.00000000
@@ -1393,7 +1461,7 @@ H         -0.87201400       1.21520500       0.00000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3cooh', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3cooh", "reagent")] = qcdb.Molecule("""
 0 1
 H         -1.91951200       0.83381100      -0.00001900
 C         -1.39368200      -0.11802900      -0.00000300
@@ -1406,7 +1474,7 @@ O          0.63401500       1.20221400       0.00000100
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2cn', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2cn", "reagent")] = qcdb.Molecule("""
 0 2
 C          0.18727900      -0.00000100      -0.00000500
 N          1.35587400       0.00000100       0.00000300
@@ -1416,7 +1484,7 @@ H         -1.73431500      -0.93521200       0.00000700
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2ch3', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2ch3", "reagent")] = qcdb.Molecule("""
 0 2
 C          0.79404000      -0.00001000      -0.01898900
 C         -0.69354400       0.00011200      -0.00171900
@@ -1428,7 +1496,7 @@ H         -1.09236600      -0.00838900       1.02626600
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2nhcho', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2nhcho", "reagent")] = qcdb.Molecule("""
 0 2
 C         -1.44716800      -0.49182200      -0.00025100
 N         -0.57509300       0.57056600      -0.00005000
@@ -1441,7 +1509,7 @@ O          1.38670900      -0.61221600      -0.00000900
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2oh', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2oh", "reagent")] = qcdb.Molecule("""
 0 2
 H         -1.23081700      -0.88927600       0.10207100
 C         -0.68449600       0.02764800      -0.06653200
@@ -1451,7 +1519,7 @@ H         -1.12317500       0.98957200       0.17739600
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2nh3', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2nh3", "reagent")] = qcdb.Molecule("""
 1 2
 H          1.31094400       0.95958500       0.06254700
 C          0.82661100      -0.00000600      -0.02780600
@@ -1463,7 +1531,7 @@ H         -1.03022800      -0.82566500      -0.47141100
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3ph3', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3ph3", "reagent")] = qcdb.Molecule("""
 1 1
 H          1.58306100       0.47144600      -0.91637400
 C          1.22355800      -0.00000600       0.00000000
@@ -1476,7 +1544,7 @@ H         -1.10833400      -0.70287400      -1.09402100
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2och3', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2och3", "reagent")] = qcdb.Molecule("""
 0 2
 C          1.20368100       0.22731000       0.07010300
 O          0.09172500      -0.54123500      -0.03988900
@@ -1489,7 +1557,7 @@ H         -1.19401900       0.91592200      -0.78718500
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'nh2chcn', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "nh2chcn", "reagent")] = qcdb.Molecule("""
 0 2
 H         -2.45610400      -0.01444300       0.23937200
 N         -1.55523600      -0.34528300      -0.07015500
@@ -1501,7 +1569,7 @@ H         -0.72565300       1.59439500      -0.00866900
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2sch3', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2sch3", "reagent")] = qcdb.Molecule("""
 0 2
 C         -1.38974300       0.43014600       0.02091500
 S          0.11017200      -0.60914300      -0.01904600
@@ -1514,7 +1582,7 @@ H          2.36799900       0.21686200       0.12689900
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'chcl2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "chcl2", "reagent")] = qcdb.Molecule("""
 0 2
 C          0.00000000       0.68873000      -0.09737200
 CL        -1.48435900      -0.17167400       0.00930300
@@ -1523,7 +1591,7 @@ H          0.00000000       1.70452500       0.26792100
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3nh3', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3nh3", "reagent")] = qcdb.Molecule("""
 1 1
 H          1.14365300      -0.16818600       1.01921200
 C          0.80331800      -0.00000100      -0.00000600
@@ -1536,7 +1604,7 @@ H         -1.08818700       0.15524400      -0.94087200
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3ch3', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3ch3", "reagent")] = qcdb.Molecule("""
 0 1
 C          0.00000000      -0.76522200       0.00000000
 C          0.00000000       0.76522200       0.00000000
@@ -1549,7 +1617,7 @@ H          0.50924900       1.16358400      -0.88196200
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch3no2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch3no2", "reagent")] = qcdb.Molecule("""
 0 1
 C                 -0.03891200   -1.32592100    0.00000000
 H                  0.49240200   -1.65949700    0.88961400
@@ -1561,7 +1629,7 @@ N                  0.00000000    0.17657000    0.00000000
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'ch2no2', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "ch2no2", "reagent")] = qcdb.Molecule("""
 0 2
 C                 -1.30974800   -0.00015200   -0.00012900
 H                 -1.79634400    0.96237700    0.00044400
@@ -1572,7 +1640,7 @@ N                  0.10590800   -0.00014800    0.00003600
 units angstrom
 """)
 
-GEOS['%s-%s-%s' % (dbse, 'cyclopropyl', 'reagent')] = qcdb.Molecule("""
+GEOS["%s-%s-%s" % (dbse, "cyclopropyl", "reagent")] = qcdb.Molecule("""
 0 2
 C                     0.00000   0.87112  -0.16751 
 C                     0.76811  -0.36353   0.0305 

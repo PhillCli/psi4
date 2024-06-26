@@ -1,8 +1,10 @@
 #! test QCSchema for gradient
 
-import numpy as np
-import psi4
 import json
+
+import numpy as np
+
+import psi4
 
 # Generate JSON data
 json_data = {
@@ -10,25 +12,34 @@ json_data = {
     "schema_version": 1,
     "molecule": {
         "geometry": [
-            0.0, 0.0, -0.1294769411935893, 0.0, -1.494187339479985, 1.0274465079245698, 0.0, 1.494187339479985,
-            1.0274465079245698
+            0.0,
+            0.0,
+            -0.1294769411935893,
+            0.0,
+            -1.494187339479985,
+            1.0274465079245698,
+            0.0,
+            1.494187339479985,
+            1.0274465079245698,
         ],
-        "symbols": ["O", "H", "H"]
+        "symbols": ["O", "H", "H"],
     },
     "driver": "gradient",
-    "model": {
-        "method": "HF",
-        "basis": "cc-pVDZ"
-    },
-    "keywords": {
-        "scf_type": "df"
-    }
+    "model": {"method": "HF", "basis": "cc-pVDZ"},
+    "keywords": {"scf_type": "df"},
 }
 
 # Write expected output
 expected_return_result = [
-    0.0, 0.0, -0.05959774096119619, 0.0, -0.043039786289375104, 0.02979887048056895, 0.0, 0.043039786289375104,
-    0.02979887048056895
+    0.0,
+    0.0,
+    -0.05959774096119619,
+    0.0,
+    -0.043039786289375104,
+    0.02979887048056895,
+    0.0,
+    0.043039786289375104,
+    0.02979887048056895,
 ]
 expected_properties = {
     "calcinfo_nbasis": 24,
@@ -40,7 +51,7 @@ expected_properties = {
     "scf_two_electron_energy": 37.62243738251799,
     "nuclear_repulsion_energy": 8.80146206062943,
     "scf_total_energy": -76.02139738600329,
-    "return_energy": -76.02139738600329
+    "return_energy": -76.02139738600329,
 }
 
 json_ret = psi4.schema_wrapper.run_qcschema(json_data)
@@ -48,8 +59,8 @@ json_ret = psi4.schema_wrapper.run_qcschema(json_data)
 with open("output.json", "w") as ofile:
     json.dump(json_ret.json(), ofile, indent=2)
 
-psi4.compare_integers(True, json_ret.success, "JSON Success")  #TEST
-psi4.compare_arrays(expected_return_result, json_ret.return_result.ravel(), 5, "Return Value")  #TEST
+psi4.compare_integers(True, json_ret.success, "JSON Success")  # TEST
+psi4.compare_arrays(expected_return_result, json_ret.return_result.ravel(), 5, "Return Value")  # TEST
 
-for k in expected_properties.keys():  #TEST
-    psi4.compare_values(expected_properties[k], getattr(json_ret.properties, k), 5, k.upper())  #TEST
+for k in expected_properties.keys():  # TEST
+    psi4.compare_values(expected_properties[k], getattr(json_ret.properties, k), 5, k.upper())  # TEST

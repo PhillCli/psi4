@@ -33,12 +33,13 @@ Vectors that use these functions are overwhelmingly of length 3, so
 pure python instead of NumPy is the right choice efficiency-wise.
 
 """
+
 import copy
 import math
 
 from .exceptions import *
 
-ZERO = 1.0E-14
+ZERO = 1.0e-14
 
 
 def norm(v):
@@ -69,7 +70,7 @@ def scale(v, d):
 def naivemult(v, u):
     """Compute by-element multiplication of vectors *v* and *u*."""
     if len(u) != len(v):
-        raise ValidationError('naivemult() only defined for vectors of same length \n')
+        raise ValidationError("naivemult() only defined for vectors of same length \n")
     return [u[i] * v[i] for i in range(len(v))]
 
 
@@ -87,7 +88,7 @@ def distance(v, u):
 def cross(v, u):
     """Compute cross product of length 3 vectors *v* and *u*."""
     if len(u) != 3 or len(v) != 3:
-        raise ValidationError('cross() only defined for vectors of length 3\n')
+        raise ValidationError("cross() only defined for vectors of length 3\n")
     return [v[1] * u[2] - v[2] * u[1],
             v[2] * u[0] - v[0] * u[2],
             v[0] * u[1] - v[1] * u[0]]  # yapf: disable
@@ -96,7 +97,7 @@ def cross(v, u):
 def rotate(v, theta, axis):
     """Rotate length 3 vector *v* about *axis* by *theta* radians."""
     if len(v) != 3 or len(axis) != 3:
-        raise ValidationError('rotate() only defined for vectors of length 3\n')
+        raise ValidationError("rotate() only defined for vectors of length 3\n")
 
     unitaxis = normalize(copy.deepcopy(axis))
     # split into parallel and perpendicular components along axis
@@ -116,13 +117,13 @@ def rotate(v, theta, axis):
 def perp_unit(u, v):
     """Compute unit vector perpendicular to length 3 vectors *u* and *v*."""
     if len(u) != 3 or len(v) != 3:
-        raise ValidationError('perp_unit() only defined for vectors of length 3\n')
+        raise ValidationError("perp_unit() only defined for vectors of length 3\n")
 
     # try cross product
     result = cross(u, v)
     resultdotresult = dot(result, result)
 
-    if resultdotresult < 1.E-16:
+    if resultdotresult < 1.0e-16:
         # cross product is too small to normalize
         # find the largest of this and v
         dotprodt = dot(u, u)
@@ -135,7 +136,7 @@ def perp_unit(u, v):
             dotprodd = dotprodt
 
         # see if d is big enough
-        if dotprodd < 1.e-16:
+        if dotprodd < 1.0e-16:
             # choose an arbitrary vector, since the biggest vector is small
             result = [1.0, 0.0, 0.0]
             return result
@@ -145,17 +146,17 @@ def perp_unit(u, v):
             # choose the plane to be that which contains the two largest components of d
             absd = [math.fabs(d[0]), math.fabs(d[1]), math.fabs(d[2])]
             if (absd[1] - absd[0]) > 1.0e-12:
-                #if absd[0] < absd[1]:
+                # if absd[0] < absd[1]:
                 axis0 = 1
                 if (absd[2] - absd[0]) > 1.0e-12:
-                    #if absd[0] < absd[2]:
+                    # if absd[0] < absd[2]:
                     axis1 = 2
                 else:
                     axis1 = 0
             else:
                 axis0 = 0
                 if (absd[2] - absd[1]) > 1.0e-12:
-                    #if absd[1] < absd[2]:
+                    # if absd[1] < absd[2]:
                     axis1 = 2
                 else:
                     axis1 = 1
@@ -173,24 +174,25 @@ def perp_unit(u, v):
 
 
 def determinant(mat):
-    """Given 3x3 matrix *mat*, compute the determinat
-
-    """
+    """Given 3x3 matrix *mat*, compute the determinat"""
     if len(mat) != 3 or len(mat[0]) != 3 or len(mat[1]) != 3 or len(mat[2]) != 3:
-        raise ValidationError('determinant() only defined for arrays of dimension 3x3\n')
+        raise ValidationError("determinant() only defined for arrays of dimension 3x3\n")
 
-    det = mat[0][0] * mat[1][1] * mat[2][2] - mat[0][2] * mat[1][1] * mat[2][0] + \
-          mat[0][1] * mat[1][2] * mat[2][0] - mat[0][1] * mat[1][0] * mat[2][2] + \
-          mat[0][2] * mat[1][0] * mat[2][1] - mat[0][0] * mat[1][2] * mat[2][1]
+    det = (
+        mat[0][0] * mat[1][1] * mat[2][2]
+        - mat[0][2] * mat[1][1] * mat[2][0]
+        + mat[0][1] * mat[1][2] * mat[2][0]
+        - mat[0][1] * mat[1][0] * mat[2][2]
+        + mat[0][2] * mat[1][0] * mat[2][1]
+        - mat[0][0] * mat[1][2] * mat[2][1]
+    )
     return det
 
 
 def diagonalize3x3symmat(M):
-    """Given an real symmetric 3x3 matrix *M*, compute the eigenvalues
-
-    """
+    """Given an real symmetric 3x3 matrix *M*, compute the eigenvalues"""
     if len(M) != 3 or len(M[0]) != 3 or len(M[1]) != 3 or len(M[2]) != 3:
-        raise ValidationError('diagonalize3x3symmat() only defined for arrays of dimension 3x3\n')
+        raise ValidationError("diagonalize3x3symmat() only defined for arrays of dimension 3x3\n")
 
     A = copy.deepcopy(M)  # Symmetric input matrix
     Q = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]  # Storage buffer for eigenvectors
@@ -207,7 +209,6 @@ def diagonalize3x3symmat(M):
 
     # Main iteration loop
     for nIter in range(50):
-
         # Test for convergence
         so = 0.0
         for p in range(3):
@@ -224,14 +225,11 @@ def diagonalize3x3symmat(M):
         # Do sweep
         for p in range(3):
             for q in range(p + 1, 3):
-
                 g = 100.0 * math.fabs(A[p][q])
-                if nIter > 4  and (math.fabs(w[p]) + g == math.fabs(w[p])) and \
-                    (math.fabs(w[q]) + g == math.fabs(w[q])):
+                if nIter > 4 and (math.fabs(w[p]) + g == math.fabs(w[p])) and (math.fabs(w[q]) + g == math.fabs(w[q])):
                     A[p][q] = 0.0
 
                 elif math.fabs(A[p][q]) > thresh:
-
                     # Calculate Jacobi transformation
                     h = w[q] - w[p]
                     if math.fabs(h) + g == math.fabs(h):
@@ -277,7 +275,7 @@ def diagonalize3x3symmat(M):
 
 
 def zero(m, n):
-    """ Create zero matrix"""
+    """Create zero matrix"""
     new_matrix = [[0 for row in range(n)] for col in range(m)]
     return new_matrix
 
@@ -291,7 +289,7 @@ def identity(m):
 
 
 def show(matrix):
-    """ Print out matrix"""
+    """Print out matrix"""
     for col in matrix:
         print(col)
 
@@ -305,10 +303,10 @@ def mscale(matrix, d):
 
 
 def mult(matrix1, matrix2):
-    """ Matrix multiplication"""
+    """Matrix multiplication"""
     if len(matrix1[0]) != len(matrix2):
         # Check matrix dimensions
-        raise ValidationError('Matrices must be m*n and n*p to multiply!')
+        raise ValidationError("Matrices must be m*n and n*p to multiply!")
 
     else:
         # Multiply if correct dimensions
@@ -330,7 +328,7 @@ def transpose(matrix):
     """Return matrix transpose"""
     if len(matrix[0]) != len(matrix):
         # Check matrix dimensions
-        raise ValidationError('Matrices must be square.')
+        raise ValidationError("Matrices must be square.")
 
     tmat = [list(i) for i in zip(*matrix)]
     return tmat
@@ -339,7 +337,7 @@ def transpose(matrix):
 def matadd(matrix1, matrix2, fac1=1.0, fac2=1.0):
     """Matrix addition"""
     if (len(matrix1[0]) != len(matrix2[0])) or (len(matrix1) != len(matrix2)):
-        raise ValidationError('Matrices must be same dimension to add.')
+        raise ValidationError("Matrices must be same dimension to add.")
     new_matrix = zero(len(matrix1), len(matrix1[0]))
     for i in range(len(matrix1)):
         for j in range(len(matrix1[0])):

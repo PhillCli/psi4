@@ -31,6 +31,7 @@ query appropriate fitting bases for any orbital basis distributed
 with Psi4.
 
 """
+
 import os
 
 basisfamily_list = []
@@ -61,28 +62,28 @@ class BasisFamily(object):
         # gbs file name of DECON designed for orbital basis
         self.decon = self.orbital
         # gbs file name of JKFIT default when self.jkfit unavailable
-        #self.jkdef = jkdef
+        # self.jkdef = jkdef
         # gbs file name of JFIT default when self.jfit unavailable
-        #self.jdef = jdef
+        # self.jdef = jdef
         # gbs file name of CFIT default when self.rifit unavailable
-        #self.ridef = ridef
+        # self.ridef = ridef
         # zeta
         self.zeta = zeta
         # guess
         self.guess = None
 
     def __str__(self):
-        text = ''
+        text = ""
         text += """  ==> %s Family <==\n\n""" % (self.ornate)
         text += """  Orbital basis:        %s\n""" % (self.orbital)
         text += """  JK auxiliary basis:   %s\n""" % (self.jkfit)
         text += """  MP2 auxiliary basis:  %s\n""" % (self.rifit)
-        #text += """  JK auxiliary basis:   %s  Def: %s\n""" % (self.jkfit, self.jkdef)
-        #text += """  J auxiliary basis:    %s  Def: %s\n""" % (self.jfit, self.jdef)
-        #text += """  MP2 auxiliary basis:  %s  Def: %s\n""" % (self.rifit, self.ridef)
+        # text += """  JK auxiliary basis:   %s  Def: %s\n""" % (self.jkfit, self.jkdef)
+        # text += """  J auxiliary basis:    %s  Def: %s\n""" % (self.jfit, self.jdef)
+        # text += """  MP2 auxiliary basis:  %s  Def: %s\n""" % (self.rifit, self.ridef)
         text += """  DUAL auxiliary basis: %s\n""" % (self.dualfit)
         text += """  DECON auxiliary basis:%s\n""" % (self.decon)
-        text += """  Zeta:                 %s\n""" % ('(unset)' if self.zeta is None else str(self.zeta))
+        text += """  Zeta:                 %s\n""" % ("(unset)" if self.zeta is None else str(self.zeta))
         text += """\n"""
         return text
 
@@ -158,11 +159,11 @@ def sanitize_basisname(name):
 
     """
     temp = name.lower()
-    temp = temp.replace('+', 'p')
-    temp = temp.replace('*', 's')
-    temp = temp.replace('(', '_')
-    temp = temp.replace(')', '_')
-    temp = temp.replace(',', '_')
+    temp = temp.replace("+", "p")
+    temp = temp.replace("*", "s")
+    temp = temp.replace("(", "_")
+    temp = temp.replace(")", "_")
+    temp = temp.replace(",", "_")
     return temp
 
 
@@ -188,9 +189,9 @@ def print_basis_families():
     """
     basisfamily_list = load_basis_families()
 
-    text = ''
+    text = ""
     for fam in basisfamily_list:
-        text += '%s' % (fam)
+        text += "%s" % (fam)
     return text
 
 
@@ -201,7 +202,7 @@ def corresponding_zeta(name):
             return fam.zeta
 
 
-def corresponding_basis(name, role='BASIS'):
+def corresponding_basis(name, role="BASIS"):
     """Function to validate if the orbital basis *name* in coded or
     ornate form is in Psi4's standard installed bases list. ``None``
     is returned if the orbital basis is not found.
@@ -210,34 +211,35 @@ def corresponding_basis(name, role='BASIS'):
 
     """
     from .libmintsbasisset import BasisSet
+
     role = role.upper()
     basisfamily_list = load_basis_families()
 
     for fam in basisfamily_list:
-        if sanitize_basisname(name).endswith('-decon'):
-            if sanitize_basisname(fam.ornate + '-decon') == sanitize_basisname(name):
-                if role == 'JKFIT':
-                    return fam.jkfit + '-decon', fam.jkfit, BasisSet.decontract
+        if sanitize_basisname(name).endswith("-decon"):
+            if sanitize_basisname(fam.ornate + "-decon") == sanitize_basisname(name):
+                if role == "JKFIT":
+                    return fam.jkfit + "-decon", fam.jkfit, BasisSet.decontract
         if sanitize_basisname(fam.ornate) == sanitize_basisname(name):
-            if role == 'ORNATE':
+            if role == "ORNATE":
                 return fam.ornate, fam.orbital, None  # is fam.orbital right for 2nd posn? it's the corresponding gbs
-            elif role in ['BASIS', 'ORBITAL']:
+            elif role in ["BASIS", "ORBITAL"]:
                 return fam.orbital, fam.orbital, None
-            elif role == 'JFIT':
+            elif role == "JFIT":
                 return fam.jfit, fam.jfit, None
-            elif role == 'JKFIT':
+            elif role == "JKFIT":
                 return fam.jkfit, fam.jkfit, None
-            elif role == 'RIFIT':
+            elif role == "RIFIT":
                 return fam.rifit, fam.rifit, None
-            elif role == 'DUALFIT':
+            elif role == "DUALFIT":
                 return fam.dualfit, fam.dualfit, None
-            elif role == 'DECON':
-                return fam.decon + '-decon', fam.decon, BasisSet.decontract
-            elif role == 'GUESS':
+            elif role == "DECON":
+                return fam.decon + "-decon", fam.decon, BasisSet.decontract
+            elif role == "GUESS":
                 return fam.guess, fam.guess, None
 
     # catches decontract signmal when name not in a BasisFamily entry
-    if role == 'DECON':
-        return sanitize_basisname(name) + '-decon', sanitize_basisname(name), BasisSet.decontract
+    if role == "DECON":
+        return sanitize_basisname(name) + "-decon", sanitize_basisname(name), BasisSet.decontract
 
     return None, None, None

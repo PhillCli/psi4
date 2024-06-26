@@ -63,9 +63,11 @@ def get_ddx_options(molecule):
         for i in range(molecule.natom()):
             element = molecule.label(i).lower()
             if element not in radii_lookup:
-                raise ValidationError(f"Element {element} not known in radii_set {radii_set}. "
-                                      "Please choose a different radii_set or provide radii "
-                                      "manually using the 'RADII' option.")
+                raise ValidationError(
+                    f"Element {element} not known in radii_set {radii_set}. "
+                    "Please choose a different radii_set or provide radii "
+                    "manually using the 'RADII' option."
+                )
             radii[i] = radii_scaling * radii_lookup[element]
 
     solvent = core.get_option("DDX", "DDX_SOLVENT").lower()
@@ -138,8 +140,9 @@ def _print_cavity(charges, centres, radii, unit="Angstrom"):
     elif unit == "Bohr":
         convfac = 1.0
     core.print_out(f"\n    Cavity sphere setup (in {unit}):\n\n")
-    core.print_out(("    {0:^6s}   {1:^10s}   {2:^10s}   {3:^10s}   {4:^10s}"
-                    "\n").format("Charge", "X", "Y", "Z", "Radius"))
+    core.print_out(
+        ("    {0:^6s}   {1:^10s}   {2:^10s}   {3:^10s}   {4:^10s}" "\n").format("Charge", "X", "Y", "Z", "Radius")
+    )
     core.print_out("    " + "-" * 6 + ("   " + "-" * 10) * 4 + "\n")
     for i in range(len(charges)):
         core.print_out(f"    {charges[i]:6.2f}")
@@ -154,9 +157,11 @@ class DdxInterface:
         # from outside the Psi4 ecosystem
         min_version = "0.4.2"
         if parse_version(pyddx.__version__) < parse_version(min_version):
-            raise ModuleNotFoundError("pyddx version {} is required at least. "
-                                      "Version {}"
-                                      " was found.".format(min_version, pyddx.__version__))
+            raise ModuleNotFoundError(
+                "pyddx version {} is required at least. " "Version {}" " was found.".format(
+                    min_version, pyddx.__version__
+                )
+            )
 
         self.basisset = basisset
         self.mints = core.MintsHelper(self.basisset)
@@ -167,7 +172,7 @@ class DdxInterface:
         # Setup the model
         try:
             self.model = pyddx.Model(**options["model"], solvent_epsilon=op_dielectric["solvent_epsilon"])
-            if (e_optical := op_dielectric["solvent_epsilon_optical"]):
+            if e_optical := op_dielectric["solvent_epsilon_optical"]:
                 self.model_optical = pyddx.Model(**options["model"], solvent_epsilon=e_optical)
             else:
                 self.model_optical = None
@@ -203,7 +208,7 @@ class DdxInterface:
         self.scaled_ylms = []
         for block in self.dftgrid.blocks():
             mtx = np.zeros((block.npoints(), self.model.n_basis))
-            for (i, (x, y, z)) in enumerate(zip(block.x().np, block.y().np, block.z().np)):
+            for i, (x, y, z) in enumerate(zip(block.x().np, block.y().np, block.z().np)):
                 # Notice mtx[i, :] is contiguous in (row-major) memory
                 self.model.scaled_ylm([x, y, z], block.parent_atom(), out=mtx[i, :])
             self.scaled_ylms.append(core.Matrix.from_array(mtx.T))
@@ -240,11 +245,12 @@ class DdxInterface:
         if not nonequilibrium:
             model = self.model  # Use standard dielectric constant
         elif self.model_optical is None:  # Non-equilibrium not available
-            raise ValueError("Non-equilibrium solvation not available, likely because no optical dielectric "
-                             "constant is tabulated for the chosen solvent. Pleise provide the optical "
-                             "dielectric constant manually using the option DDX_SOLVENT_EPSILON_OPTICAL "
-                             "or change to a supported solvent (one of " +
-                             ", ".join(pyddx.data.solvent_epsilon_optical) + ").")
+            raise ValueError(
+                "Non-equilibrium solvation not available, likely because no optical dielectric "
+                "constant is tabulated for the chosen solvent. Pleise provide the optical "
+                "dielectric constant manually using the option DDX_SOLVENT_EPSILON_OPTICAL "
+                "or change to a supported solvent (one of " + ", ".join(pyddx.data.solvent_epsilon_optical) + ")."
+            )
         else:
             model = self.model_optical  # Use optical dielectric constant
 
@@ -274,7 +280,7 @@ class DdxInterface:
         ]
         V_ddx = self.numints.potential_integral(eta)
 
-        if model.model in ("lpb", ):
+        if model.model in ("lpb",):
             V_ind = self.mints.induction_operator(cavcoords, core.Matrix.from_array(state.zeta_dip.T))
             V_ddx.add(V_ind)
 

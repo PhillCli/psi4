@@ -2,9 +2,12 @@
 This file tests the ao_multipole_potential integrals
 using finite differences
 """
-import numpy as np
+
 import itertools
+
+import numpy as np
 import pytest
+
 import psi4
 
 pytestmark = [pytest.mark.psi, pytest.mark.api, pytest.mark.quick]
@@ -72,7 +75,7 @@ def test_multipole_potential_integrals():
     no_com
     no_reorient
     """)
-    basis_obj = psi4.core.BasisSet.build(mol, 'ORBITAL', "cc-pvdz")
+    basis_obj = psi4.core.BasisSet.build(mol, "ORBITAL", "cc-pvdz")
     mints_helper = psi4.core.MintsHelper(basis_obj)
     point = [1.0, 2.0, 3.0]
     compare_charge_integrals(mints_helper, point=point)

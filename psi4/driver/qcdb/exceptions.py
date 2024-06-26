@@ -30,6 +30,7 @@
 
 class QcdbException(Exception):
     """Error class for QCDB."""
+
     pass
 
 
@@ -42,7 +43,7 @@ class FeatureNotImplemented(QcdbException):
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
-        print('\nQcdbException: Feature %s is not yet implemented.\n\n' % (msg))
+        print("\nQcdbException: Feature %s is not yet implemented.\n\n" % (msg))
 
 
 class ValidationError(QcdbException):
@@ -54,7 +55,7 @@ class ValidationError(QcdbException):
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
-        print('\nQcdbException: %s\n\n' % (msg))
+        print("\nQcdbException: %s\n\n" % (msg))
 
 
 class IncompleteAtomError(QcdbException):
@@ -78,7 +79,7 @@ class ParsingValidationError(QcdbException):
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
-        print('\nQcdbException: %s\n\n' % (msg))
+        print("\nQcdbException: %s\n\n" % (msg))
 
 
 class FragmentCountError(QcdbException):
@@ -90,52 +91,44 @@ class FragmentCountError(QcdbException):
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
-        #print('\nQcdbException: %s\n\n' % (msg))
+        # print('\nQcdbException: %s\n\n' % (msg))
 
 
 class BasisSetFileNotFound(QcdbException):
-    """
-
-    """
+    """ """
 
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
-        print('\nQcdbException BasisSetFileNotFound: %s\n\n' % (msg))
+        print("\nQcdbException BasisSetFileNotFound: %s\n\n" % (msg))
 
 
 class BasisSetNotFound(QcdbException):
-    """
-
-    """
+    """ """
 
     def __init__(self, msg, silent=False):
         QcdbException.__init__(self, msg)
         self.msg = msg
         if not silent:
-            print('\nQcdbException BasisSetNotFound: %s\n\n' % (msg))
+            print("\nQcdbException BasisSetNotFound: %s\n\n" % (msg))
 
 
 class BasisSetNotDefined(QcdbException):
-    """
-
-    """
+    """ """
 
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
-        print('\nQcdbException BasisSetNotDefined: %s\n\n' % (msg))
+        print("\nQcdbException BasisSetNotDefined: %s\n\n" % (msg))
 
 
 class Dftd3Error(QcdbException):
-    """
-
-    """
+    """ """
 
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
-        print('\nDftd3Error: %s\n\n' % (msg))
+        print("\nDftd3Error: %s\n\n" % (msg))
 
 
 class TestComparisonError(QcdbException):
@@ -148,7 +141,7 @@ class TestComparisonError(QcdbException):
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
-        print('\nQcdbException: %s\n\n' % msg)
+        print("\nQcdbException: %s\n\n" % msg)
 
 
 class MoleculeFormatError(QcdbException):
@@ -168,7 +161,7 @@ class FeatureDeprecated(QcdbException):
     def __init__(self, msg):
         QcdbException.__init__(self, msg)
         self.msg = msg
-        print('\nFeature deprecated: {}\n\n'.format(msg))
+        print("\nFeature deprecated: {}\n\n".format(msg))
 
 
 class UpgradeHelper(QcdbException):
@@ -185,4 +178,4 @@ class UpgradeHelper(QcdbException):
     def __init__(self, old, new, version, elaboration):
         msg = "Using `{}` instead of `{}` is obsolete as of {}.{}".format(old, new, version, elaboration)
         QcdbException.__init__(self, msg)
-        print('\nQcdbException: %s\n\n' % (msg))
+        print("\nQcdbException: %s\n\n" % (msg))

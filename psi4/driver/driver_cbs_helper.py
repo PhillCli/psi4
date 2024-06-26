@@ -40,7 +40,7 @@ from .p4util.exceptions import ValidationError
 
 logger = logging.getLogger(__name__)
 
-_zeta_val2sym = {k + 2: v for k, v in enumerate('dtq5678')}
+_zeta_val2sym = {k + 2: v for k, v in enumerate("dtq5678")}
 Extrapolatable = Union[float, core.Matrix, core.Vector]
 
 
@@ -76,10 +76,9 @@ def xtpl_highest_1(functionname: str, zHI: int, valueHI: Extrapolatable, verbose
 
     """
     if isinstance(valueHI, float):
-
         if verbose:
             # Output string with extrapolation parameters
-            cbsscheme = ''
+            cbsscheme = ""
             cbsscheme += f"""\n   ==> {functionname.upper()} <==\n\n"""
             cbsscheme += f"""   HI-zeta ({zHI}) Energy:               {valueHI: 16.12f}\n"""
 
@@ -89,7 +88,6 @@ def xtpl_highest_1(functionname: str, zHI: int, valueHI: Extrapolatable, verbose
         return valueHI
 
     elif isinstance(valueHI, np.ndarray):
-
         if verbose > 2:
             cbsscheme = f"""\n   ==> {functionname.upper()} <==\n\n"""
             cbsscheme += f"""   HI-zeta ({zHI}) Data\n"""
@@ -100,13 +98,15 @@ def xtpl_highest_1(functionname: str, zHI: int, valueHI: Extrapolatable, verbose
         return valueHI
 
 
-def scf_xtpl_helgaker_2(functionname: str,
-                        zLO: int,
-                        valueLO: Extrapolatable,
-                        zHI: int,
-                        valueHI: Extrapolatable,
-                        verbose: int = 1,
-                        alpha: Optional[float] = None) -> Extrapolatable:
+def scf_xtpl_helgaker_2(
+    functionname: str,
+    zLO: int,
+    valueLO: Extrapolatable,
+    zHI: int,
+    valueHI: Extrapolatable,
+    verbose: int = 1,
+    alpha: Optional[float] = None,
+) -> Extrapolatable:
     r"""Extrapolation scheme using exponential form for reference energies with two adjacent
     zeta-level bases. Used by :py:func:`~psi4.driver.cbs`.
 
@@ -155,7 +155,8 @@ def scf_xtpl_helgaker_2(functionname: str,
 
     if type(valueLO) != type(valueHI):
         raise ValidationError(
-            f"scf_xtpl_helgaker_2: Inputs must be of the same datatype! ({type(valueLO)}, {type(valueHI)})")
+            f"scf_xtpl_helgaker_2: Inputs must be of the same datatype! ({type(valueLO)}, {type(valueHI)})"
+        )
 
     if alpha is None:
         alpha = 1.63
@@ -169,9 +170,10 @@ def scf_xtpl_helgaker_2(functionname: str,
 
         if verbose:
             # Output string with extrapolation parameters
-            cbsscheme = ''
+            cbsscheme = ""
             cbsscheme += """\n   ==> Helgaker 2-point exponential SCF extrapolation for method: %s <==\n\n""" % (
-                functionname.upper())
+                functionname.upper()
+            )
             cbsscheme += """   LO-zeta (%s) Energy:               % 16.12f\n""" % (str(zLO), valueLO)
             cbsscheme += """   HI-zeta (%s) Energy:               % 16.12f\n""" % (str(zHI), valueHI)
             cbsscheme += """   Alpha (exponent) Value:           % 16.12f\n""" % (alpha)
@@ -179,7 +181,7 @@ def scf_xtpl_helgaker_2(functionname: str,
 
             name_str = "%s/(%s,%s)" % (functionname.upper(), _zeta_val2sym[zLO].upper(), _zeta_val2sym[zHI].upper())
             cbsscheme += """   @Extrapolated """
-            cbsscheme += name_str + ':'
+            cbsscheme += name_str + ":"
             cbsscheme += " " * (18 - len(name_str))
             cbsscheme += """% 16.12f\n\n""" % value
             core.print_out(cbsscheme)
@@ -188,12 +190,13 @@ def scf_xtpl_helgaker_2(functionname: str,
         return value
 
     elif isinstance(valueLO, np.ndarray):
-
         beta = (valueHI - valueLO) * beta_division
         value = valueHI - beta * beta_mult
 
         if verbose > 2:
-            cbsscheme = f"""\n   ==> Helgaker 2-point exponential SCF extrapolation for method: {functionname.upper()} <==\n"""
+            cbsscheme = (
+                f"""\n   ==> Helgaker 2-point exponential SCF extrapolation for method: {functionname.upper()} <==\n"""
+            )
             cbsscheme += f"""\n   LO-zeta ({zLO}) Data\n"""
             cbsscheme += nppp(valueLO)
             cbsscheme += f"""\n   HI-zeta ({zHI}) Data\n"""
@@ -214,13 +217,15 @@ def scf_xtpl_helgaker_2(functionname: str,
         raise ValidationError(f"scf_xtpl_helgaker_2: datatype is not recognized '{type(valueLO)}'.")
 
 
-def scf_xtpl_truhlar_2(functionname: str,
-                       zLO: int,
-                       valueLO: Extrapolatable,
-                       zHI: int,
-                       valueHI: Extrapolatable,
-                       verbose: int = 1,
-                       alpha: Optional[float] = None) -> Extrapolatable:
+def scf_xtpl_truhlar_2(
+    functionname: str,
+    zLO: int,
+    valueLO: Extrapolatable,
+    zHI: int,
+    valueHI: Extrapolatable,
+    verbose: int = 1,
+    alpha: Optional[float] = None,
+) -> Extrapolatable:
     r"""Extrapolation scheme using power form for reference energies with two adjacent
     zeta-level bases. Used by :py:func:`~psi4.driver.cbs`.
 
@@ -264,13 +269,14 @@ def scf_xtpl_truhlar_2(functionname: str,
 
     if type(valueLO) != type(valueHI):
         raise ValidationError(
-            f"scf_xtpl_truhlar_2: Inputs must be of the same datatype! ({type(valueLO)}, {type(valueHI)})")
+            f"scf_xtpl_truhlar_2: Inputs must be of the same datatype! ({type(valueLO)}, {type(valueHI)})"
+        )
 
     if alpha is None:
         alpha = 3.40
 
-    beta_division = 1 / (zHI**(-1 * alpha) - zLO**(-1 * alpha))
-    beta_mult = zHI**(-1 * alpha)
+    beta_division = 1 / (zHI ** (-1 * alpha) - zLO ** (-1 * alpha))
+    beta_mult = zHI ** (-1 * alpha)
 
     if isinstance(valueLO, float):
         beta = (valueHI - valueLO) * beta_division
@@ -278,9 +284,10 @@ def scf_xtpl_truhlar_2(functionname: str,
 
         if verbose:
             # Output string with extrapolation parameters
-            cbsscheme = ''
+            cbsscheme = ""
             cbsscheme += """\n   ==> Truhlar 2-point power form SCF extrapolation for method: %s <==\n\n""" % (
-                functionname.upper())
+                functionname.upper()
+            )
             cbsscheme += """   LO-zeta (%s) Energy:               % 16.12f\n""" % (str(zLO), valueLO)
             cbsscheme += """   HI-zeta (%s) Energy:               % 16.12f\n""" % (str(zHI), valueHI)
             cbsscheme += """   Alpha (exponent) Value:           % 16.12f\n""" % (alpha)
@@ -288,7 +295,7 @@ def scf_xtpl_truhlar_2(functionname: str,
 
             name_str = "%s/(%s,%s)" % (functionname.upper(), _zeta_val2sym[zLO].upper(), _zeta_val2sym[zHI].upper())
             cbsscheme += """   @Extrapolated """
-            cbsscheme += name_str + ':'
+            cbsscheme += name_str + ":"
             cbsscheme += " " * (18 - len(name_str))
             cbsscheme += """% 16.12f\n\n""" % value
             core.print_out(cbsscheme)
@@ -297,12 +304,13 @@ def scf_xtpl_truhlar_2(functionname: str,
         return value
 
     elif isinstance(valueLO, np.ndarray):
-
         beta = (valueHI - valueLO) * beta_division
         value = valueHI - beta * beta_mult
 
         if verbose > 2:
-            cbsscheme = f"""\n   ==> Truhlar 2-point power SCF extrapolation for method: {functionname.upper()} <==\n"""
+            cbsscheme = (
+                f"""\n   ==> Truhlar 2-point power SCF extrapolation for method: {functionname.upper()} <==\n"""
+            )
             cbsscheme += f"""\n   LO-zeta ({zLO}) Data\n"""
             cbsscheme += nppp(valueLO)
             cbsscheme += f"""\n   HI-zeta ({zHI}) Data\n"""
@@ -323,13 +331,15 @@ def scf_xtpl_truhlar_2(functionname: str,
         raise ValidationError(f"scf_xtpl_truhlar_2: datatype is not recognized '{type(valueLO)}'.")
 
 
-def scf_xtpl_karton_2(functionname: str,
-                      zLO: int,
-                      valueLO: Extrapolatable,
-                      zHI: int,
-                      valueHI: Extrapolatable,
-                      verbose: int = 1,
-                      alpha: Optional[float] = None) -> Extrapolatable:
+def scf_xtpl_karton_2(
+    functionname: str,
+    zLO: int,
+    valueLO: Extrapolatable,
+    zHI: int,
+    valueHI: Extrapolatable,
+    verbose: int = 1,
+    alpha: Optional[float] = None,
+) -> Extrapolatable:
     r"""Extrapolation scheme using root-power form for reference energies with two adjacent
     zeta-level bases. Used by :py:func:`~psi4.driver.cbs`.
 
@@ -373,7 +383,8 @@ def scf_xtpl_karton_2(functionname: str,
 
     if type(valueLO) != type(valueHI):
         raise ValidationError(
-            f"scf_xtpl_karton_2: Inputs must be of the same datatype! ({type(valueLO)}, {type(valueHI)})")
+            f"scf_xtpl_karton_2: Inputs must be of the same datatype! ({type(valueLO)}, {type(valueHI)})"
+        )
 
     if alpha is None:
         alpha = 6.30
@@ -389,9 +400,10 @@ def scf_xtpl_karton_2(functionname: str,
 
         if verbose:
             # Output string with extrapolation parameters
-            cbsscheme = ''
+            cbsscheme = ""
             cbsscheme += """\n   ==> Karton 2-point power form SCF extrapolation for method: %s <==\n\n""" % (
-                functionname.upper())
+                functionname.upper()
+            )
             cbsscheme += """   LO-zeta (%s) Energy:               % 16.12f\n""" % (str(zLO), valueLO)
             cbsscheme += """   HI-zeta (%s) Energy:               % 16.12f\n""" % (str(zHI), valueHI)
             cbsscheme += """   Alpha (exponent) Value:           % 16.12f\n""" % (alpha)
@@ -399,7 +411,7 @@ def scf_xtpl_karton_2(functionname: str,
 
             name_str = "%s/(%s,%s)" % (functionname.upper(), _zeta_val2sym[zLO].upper(), _zeta_val2sym[zHI].upper())
             cbsscheme += """   @Extrapolated """
-            cbsscheme += name_str + ':'
+            cbsscheme += name_str + ":"
             cbsscheme += " " * (18 - len(name_str))
             cbsscheme += """% 16.12f\n\n""" % value
             core.print_out(cbsscheme)
@@ -408,7 +420,6 @@ def scf_xtpl_karton_2(functionname: str,
         return value
 
     elif isinstance(valueLO, np.ndarray):
-
         beta = (valueHI - valueLO) * beta_division
         value = valueHI - beta * beta_mult
 
@@ -434,15 +445,17 @@ def scf_xtpl_karton_2(functionname: str,
         raise ValidationError(f"scf_xtpl_Karton_2: datatype is not recognized '{type(valueLO)}'.")
 
 
-def scf_xtpl_helgaker_3(functionname: str,
-                        zLO: int,
-                        valueLO: Extrapolatable,
-                        zMD: int,
-                        valueMD: Extrapolatable,
-                        zHI: int,
-                        valueHI: Extrapolatable,
-                        verbose: int = 1,
-                        alpha: Optional[float] = None) -> Extrapolatable:
+def scf_xtpl_helgaker_3(
+    functionname: str,
+    zLO: int,
+    valueLO: Extrapolatable,
+    zMD: int,
+    valueMD: Extrapolatable,
+    zHI: int,
+    valueHI: Extrapolatable,
+    verbose: int = 1,
+    alpha: Optional[float] = None,
+) -> Extrapolatable:
     r"""Extrapolation scheme for reference energies with three adjacent zeta-level bases.
     Used by :py:func:`~psi4.driver.cbs`.
 
@@ -501,7 +514,6 @@ def scf_xtpl_helgaker_3(functionname: str,
         )
 
     if isinstance(valueLO, float):
-
         ratio = (valueHI - valueMD) / (valueMD - valueLO)
         alpha = -1 * math.log(ratio)
         beta = (valueHI - valueMD) / (math.exp(-1 * alpha * zMD) * (ratio - 1))
@@ -509,19 +521,24 @@ def scf_xtpl_helgaker_3(functionname: str,
 
         if verbose:
             # Output string with extrapolation parameters
-            cbsscheme = ''
+            cbsscheme = ""
             cbsscheme += """\n   ==> Helgaker 3-point SCF extrapolation for method: %s <==\n\n""" % (
-                functionname.upper())
+                functionname.upper()
+            )
             cbsscheme += """   LO-zeta (%s) Energy:               % 16.12f\n""" % (str(zLO), valueLO)
             cbsscheme += """   MD-zeta (%s) Energy:               % 16.12f\n""" % (str(zMD), valueMD)
             cbsscheme += """   HI-zeta (%s) Energy:               % 16.12f\n""" % (str(zHI), valueHI)
             cbsscheme += """   Alpha (exponent) Value:           % 16.12f\n""" % (alpha)
             cbsscheme += """   Beta (coefficient) Value:         % 16.12f\n\n""" % (beta)
 
-            name_str = "%s/(%s,%s,%s)" % (functionname.upper(), _zeta_val2sym[zLO].upper(), _zeta_val2sym[zMD].upper(),
-                                          _zeta_val2sym[zHI].upper())
+            name_str = "%s/(%s,%s,%s)" % (
+                functionname.upper(),
+                _zeta_val2sym[zLO].upper(),
+                _zeta_val2sym[zMD].upper(),
+                _zeta_val2sym[zHI].upper(),
+            )
             cbsscheme += """   @Extrapolated """
-            cbsscheme += name_str + ':'
+            cbsscheme += name_str + ":"
             cbsscheme += " " * (18 - len(name_str))
             cbsscheme += """% 16.12f\n\n""" % value
             core.print_out(cbsscheme)
@@ -530,8 +547,7 @@ def scf_xtpl_helgaker_3(functionname: str,
         return value
 
     elif isinstance(valueLO, np.ndarray):
-
-        nonzero_mask = np.abs(valueHI) > 1.e-14
+        nonzero_mask = np.abs(valueHI) > 1.0e-14
         top = (valueHI - valueMD)[nonzero_mask]
         bot = (valueMD - valueLO)[nonzero_mask]
 
@@ -543,7 +559,9 @@ def scf_xtpl_helgaker_3(functionname: str,
         np_value[~nonzero_mask] = 0.0
 
         if verbose > 2:
-            cbsscheme = f"""\n   ==> Helgaker 3-point power SCF extrapolation for method: {functionname.upper()} <==\n"""
+            cbsscheme = (
+                f"""\n   ==> Helgaker 3-point power SCF extrapolation for method: {functionname.upper()} <==\n"""
+            )
             cbsscheme += f"""\n   LO-zeta ({zLO}) Data\n"""
             cbsscheme += nppp(valueLO)
             cbsscheme += f"""\n   MD-zeta ({zMD}) Data\n"""
@@ -562,10 +580,10 @@ def scf_xtpl_helgaker_3(functionname: str,
             logger.debug(cbsscheme)
 
         ## Build and set from numpy routines
-        #value = core.Matrix(*valueHI.shape)
-        #value_view = np.asarray(value)
-        #value_view[:] = np_value
-        #return value
+        # value = core.Matrix(*valueHI.shape)
+        # value_view = np.asarray(value)
+        # value_view[:] = np_value
+        # return value
 
         return np_value
 
@@ -573,13 +591,15 @@ def scf_xtpl_helgaker_3(functionname: str,
         raise ValidationError(f"scf_xtpl_helgaker_3: datatype is not recognized '{type(valueLO)}'.")
 
 
-def corl_xtpl_helgaker_2(functionname: str,
-                         zLO: int,
-                         valueLO: Extrapolatable,
-                         zHI: int,
-                         valueHI: Extrapolatable,
-                         verbose: int = 1,
-                         alpha: Optional[float] = None) -> Extrapolatable:
+def corl_xtpl_helgaker_2(
+    functionname: str,
+    zLO: int,
+    valueLO: Extrapolatable,
+    zHI: int,
+    valueHI: Extrapolatable,
+    verbose: int = 1,
+    alpha: Optional[float] = None,
+) -> Extrapolatable:
     r"""Extrapolation scheme for correlation energies with two adjacent zeta-level bases.
     Used by :py:func:`~psi4.driver.cbs`.
 
@@ -628,19 +648,22 @@ def corl_xtpl_helgaker_2(functionname: str,
     """
     if type(valueLO) != type(valueHI):
         raise ValidationError(
-            f"corl_xtpl_helgaker_2: Inputs must be of the same datatype! ({type(valueLO)}, {type(valueHI)})")
+            f"corl_xtpl_helgaker_2: Inputs must be of the same datatype! ({type(valueLO)}, {type(valueHI)})"
+        )
 
     if alpha is None:
         alpha = 3.0
 
     if isinstance(valueLO, float):
         value = (valueHI * zHI**alpha - valueLO * zLO**alpha) / (zHI**alpha - zLO**alpha)
-        beta = (valueHI - valueLO) / (zHI**(-alpha) - zLO**(-alpha))
+        beta = (valueHI - valueLO) / (zHI ** (-alpha) - zLO ** (-alpha))
 
         final = value
         if verbose:
             # Output string with extrapolation parameters
-            cbsscheme = f"""\n\n   ==> Helgaker 2-point correlated extrapolation for method: {functionname.upper()} <==\n\n"""
+            cbsscheme = (
+                f"""\n\n   ==> Helgaker 2-point correlated extrapolation for method: {functionname.upper()} <==\n\n"""
+            )
             cbsscheme += """   LO-zeta (%s) Energy:               % 16.12f\n""" % (str(zLO), valueLO)
             cbsscheme += """   HI-zeta (%s) Energy:               % 16.12f\n""" % (str(zHI), valueHI)
             cbsscheme += """   Alpha (exponent) Value:           % 16.12f\n""" % alpha
@@ -650,7 +673,7 @@ def corl_xtpl_helgaker_2(functionname: str,
 
             name_str = "%s/(%s,%s)" % (functionname.upper(), _zeta_val2sym[zLO].upper(), _zeta_val2sym[zHI].upper())
             cbsscheme += """   @Extrapolated """
-            cbsscheme += name_str + ':'
+            cbsscheme += name_str + ":"
             cbsscheme += " " * (19 - len(name_str))
             cbsscheme += """% 16.12f\n\n""" % final
             core.print_out(cbsscheme)
@@ -659,12 +682,13 @@ def corl_xtpl_helgaker_2(functionname: str,
         return final
 
     elif isinstance(valueLO, np.ndarray):
-
         value = (valueHI * zHI**alpha - valueLO * zLO**alpha) / (zHI**alpha - zLO**alpha)
-        beta = (valueHI - valueLO) / (zHI**(-alpha) - zLO**(-alpha))
+        beta = (valueHI - valueLO) / (zHI ** (-alpha) - zLO ** (-alpha))
 
         if verbose > 2:
-            cbsscheme = f"""\n   ==> Helgaker 2-point correlated extrapolation for method: {functionname.upper()} <==\n"""
+            cbsscheme = (
+                f"""\n   ==> Helgaker 2-point correlated extrapolation for method: {functionname.upper()} <==\n"""
+            )
             cbsscheme += f"""\n   LO-zeta ({zLO}) Data\n"""
             cbsscheme += nppp(valueLO)
             cbsscheme += f"""\n   HI-zeta ({zHI}) Data\n"""

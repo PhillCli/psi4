@@ -34,8 +34,8 @@ from psi4 import core
 
 
 def auto_fragments(
-        molecule: Optional[core.Molecule] = None,
-        seed_atoms: Optional[List[List[int]]] = None,
+    molecule: Optional[core.Molecule] = None,
+    seed_atoms: Optional[List[List[int]]] = None,
 ) -> core.Molecule:
     r"""Detects fragments in unfragmented molecule using BFS algorithm.
     Currently only used for the WebMO implementation of SAPT.

@@ -1,9 +1,11 @@
 #! test QCSchema mol orientation
 
-import numpy as np
-import psi4
-import json
 import copy
+import json
+
+import numpy as np
+
+import psi4
 
 # Generate JSON data
 json_data = {
@@ -20,16 +22,11 @@ json_data = {
             1.732,
             0.0,
         ],
-        "symbols": ["F", "H"]
+        "symbols": ["F", "H"],
     },
     "driver": "energy",
-    "model": {
-        "method": "SCF",
-        "basis": "cc-pVDZ"
-    },
-    "keywords": {
-        "scf_type": "df"
-    }
+    "model": {"method": "SCF", "basis": "cc-pVDZ"},
+    "keywords": {"scf_type": "df"},
 }
 
 noorient_data = copy.deepcopy(json_data)

@@ -113,8 +113,15 @@ for fl in sorted(tests.rglob("*")):
                 cmakeliststxt = fp.read()
 
             mobj = re.search(
-                r"^\s*" + r"add_regression_test\(" + r"(?P<name>([a-zA-Z0-9-+_]+))" + r'\s+\"' +
-                r"(?P<marks>([a-z0-9-_;]+))" + r'\"\)', cmakeliststxt, re.MULTILINE)
+                r"^\s*"
+                + r"add_regression_test\("
+                + r"(?P<name>([a-zA-Z0-9-+_]+))"
+                + r"\s+\""
+                + r"(?P<marks>([a-z0-9-_;]+))"
+                + r"\"\)",
+                cmakeliststxt,
+                re.MULTILINE,
+            )
             if mobj:
                 if mobj.group("name") != ctest_name:
                     complaints.append(
@@ -143,12 +150,13 @@ for fl in sorted(tests.rglob("*")):
 
             pymarks = []
             pyplugins = []
-            mobj = re.findall(r'^@uusing\("' + r"([a-z0-9-_;]+)" + r'\"\)', testinputpy, re.MULTILINE)
+            mobj = re.findall(r'^@uusing\("' + r"([a-z0-9-_;]+)" + r"\"\)", testinputpy, re.MULTILINE)
             if mobj:
                 pyplugins = mobj
 
-            mobj = re.search(r'^@ctest_labeler\("' + r"(?P<pymarks>([a-z0-9-_;]+))" + r'\"\)', testinputpy,
-                             re.MULTILINE)
+            mobj = re.search(
+                r'^@ctest_labeler\("' + r"(?P<pymarks>([a-z0-9-_;]+))" + r"\"\)", testinputpy, re.MULTILINE
+            )
             if mobj:
                 pymarks = mobj.group("pymarks").split(";")
 
@@ -171,7 +179,8 @@ for fl in sorted(tests.rglob("*")):
                 copyfilesstr = ", [\n    ]" if copyfiles else ""
                 with open(tipy, "w") as fp:
                     fp.write(
-                        model_testinputpy.format(markstr=markstr, pytest_name=pytest_name, copyfilesstr=copyfilesstr))
+                        model_testinputpy.format(markstr=markstr, pytest_name=pytest_name, copyfilesstr=copyfilesstr)
+                    )
 
 if complaints:
     print("Complaints\n----------")

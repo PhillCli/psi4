@@ -1,6 +1,6 @@
-from sphinx.pygments_styles import SphinxStyle
 from pygments.style import Style
 from pygments.token import Error
+from sphinx.pygments_styles import SphinxStyle
 
 
 class PsiStyle(Style):
@@ -10,6 +10,7 @@ class PsiStyle(Style):
 
     To change the code highlighting style, simply import something other than SphinxStyle.
     """
+
     background_color = SphinxStyle.background_color
     styles = SphinxStyle.styles
-    styles.update({Error: ''})
+    styles.update({Error: ""})

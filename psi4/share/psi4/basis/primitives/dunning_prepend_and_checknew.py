@@ -34,15 +34,16 @@ import os
 import subprocess
 import sys
 
-qcdb_module = os.path.normpath(os.path.dirname(os.path.abspath(__file__)) + '../../../../../driver')
+qcdb_module = os.path.normpath(os.path.dirname(os.path.abspath(__file__)) + "../../../../../driver")
 sys.path.append(qcdb_module)
 import qcdb
 from qcdb.libmintsbasissetparser import Gaussian94BasisSetParser
 
 output = subprocess.check_output(
     "ls -1 *cc-*.gbs | grep -v 'autogen' | grep -v 'tight' | grep -v 'polarization' | grep -v 'molpro' | grep -v 'diffuse' | grep -v 'basis' | grep -v 'corevalence' | grep -v 'hold'",
-    shell=True)
-real_dunnings = output.decode().split('\n')
+    shell=True,
+)
+real_dunnings = output.decode().split("\n")
 
 parser = Gaussian94BasisSetParser()
 os.system("echo '#differing basis sets' > basisdunningfiles.txt")
@@ -51,20 +52,20 @@ for bfl in real_dunnings:
     if not bfl:
         continue
 
-    with open(bfl, 'r') as basfile:
+    with open(bfl, "r") as basfile:
         bascontents = basfile.readlines()
 
     if bascontents[0] != "spherical\n":
-        print('{:30} {:4}'.format(bfl, 'sph '))
-        with open(bfl, 'w') as basfile:
+        print("{:30} {:4}".format(bfl, "sph "))
+        with open(bfl, "w") as basfile:
             basfile.write("spherical\n\n")
             for ln in bascontents:
                 basfile.write(ln)
     else:
-        print('{:30} {:4}'.format(bfl, ''))
+        print("{:30} {:4}".format(bfl, ""))
 
 for bfl in sorted(real_dunnings, key=lambda v: v[::-1], reverse=True):
     if not bfl:
         continue
 
-    os.system('./diff_gbs.py {} ../{}'.format(bfl, bfl))
+    os.system("./diff_gbs.py {} ../{}".format(bfl, bfl))

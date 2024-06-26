@@ -1,8 +1,11 @@
 #! coded full CI vs. detci
 
 import time
+
 import numpy as np
+
 import psi4
+
 np.set_printoptions(precision=7, linewidth=200, threshold=2000, suppress=True)
 
 psi4.set_output_file("output.dat", False)
@@ -15,27 +18,27 @@ Be   0.000000000   0.000000000   0.000000000
 psi4.set_options({"scf_type": "out_of_core", "basis": "cc-pVTZ", "e_convergence": 1e-8, "d_convergence": 1e-8})
 
 # Build the SCF wavefunction
-scf_energy, wfn = psi4.energy('SCF', return_wfn=True)
+scf_energy, wfn = psi4.energy("SCF", return_wfn=True)
 
 # Going FCI!
 psi4.set_options({"ACTIVE": list(wfn.nmopi())})
 
 # Python based options
 num_eig = 1
-ctol = 1.e-5
-etol = 1.e-7
+ctol = 1.0e-5
+etol = 1.0e-7
 
 # Get the CI Wavefunction and compute required integrals
 psi4.core.prepare_options_for_module("DETCI")
 ciwfn = psi4.core.CIWavefunction(wfn)
-print('The number of determinants is %d\n' % ciwfn.ndet())
+print("The number of determinants is %d\n" % ciwfn.ndet())
 
 # Transform integrals required for CI
 ciwfn.transform_ci_integrals()
 
 # Build trial vectors
 guess_size = 10
-print('Using %d determinants in the guess\n' % guess_size)
+print("Using %d determinants in the guess\n" % guess_size)
 H = np.array(ciwfn.hamiltonian(guess_size))
 
 gvecs = []
@@ -82,7 +85,6 @@ Eold = scf_energy
 G = np.zeros((max_guess, max_guess))
 
 for CI_ITER in range(max_guess - 1):
-
     # Subspace Matrix, Gij = < bi | H | bj >
     for i in range(num_vecs - num_eig, num_vecs):
         ciwfn.sigma(cvecs, svecs, i, i)
@@ -92,15 +94,14 @@ for CI_ITER in range(max_guess - 1):
     evals, evecs = np.linalg.eigh(G[:num_vecs, :num_vecs])
 
     CI_E = evals[0]
-    print('CI Iteration %3d: Energy = %4.16f   dE = % 1.5E   dC = %1.5E' % (CI_ITER, CI_E, (CI_E - Eold), delta_c))
+    print("CI Iteration %3d: Energy = %4.16f   dE = % 1.5E   dC = %1.5E" % (CI_ITER, CI_E, (CI_E - Eold), delta_c))
     if (abs(CI_E - Eold) < etol) and (delta_c < ctol) and (CI_ITER > 3):
-        print('\nCI has converged!')
+        print("\nCI has converged!")
         break
     Eold = CI_E
 
     # Build new vectors as linear combinations of the subspace matrix, H
     for n in range(num_eig):
-
         # Build as linear combinations of previous vectors
         dvecs.zero()
         dvecs.write(dwork_vec, 0)
@@ -135,5 +136,5 @@ for CI_ITER in range(max_guess - 1):
             num_vecs += 1
 
 print("\nComparison to Psi4's DETCI module:")
-psi_ci_energy, ciwfn = psi4.energy('DETCI', return_wfn=True)
-psi4.compare_values(CI_E, psi_ci_energy, 6, 'CI Energy')
+psi_ci_energy, ciwfn = psi4.energy("DETCI", return_wfn=True)
+psi4.compare_values(CI_E, psi_ci_energy, 6, "CI Energy")

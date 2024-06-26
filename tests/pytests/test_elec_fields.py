@@ -2,8 +2,10 @@
 This file tests electric_field_value and induction_operator
 agains the canonical electric_field integral evaluation
 """
+
 import numpy as np
 import pytest
+
 import psi4
 
 pytestmark = [pytest.mark.psi, pytest.mark.api, pytest.mark.quick]
@@ -20,7 +22,7 @@ def test_elec_fields():
     no_com
     no_reorient
     """)
-    basis_obj = psi4.core.BasisSet.build(mol, 'ORBITAL', "cc-pvdz")
+    basis_obj = psi4.core.BasisSet.build(mol, "ORBITAL", "cc-pvdz")
     mints = psi4.core.MintsHelper(basis_obj)
     # generate random points and dipole moments
     coords = 5 * np.random.rand(50, 3)
@@ -62,6 +64,6 @@ def test_elec_fields():
         field_ref[ipt] = [
             np.vdot(mock_dmat.np, np.asarray(p4_field_ints[0])),  # Ex
             np.vdot(mock_dmat.np, np.asarray(p4_field_ints[1])),  # Ey
-            np.vdot(mock_dmat.np, np.asarray(p4_field_ints[2]))  # Ez
+            np.vdot(mock_dmat.np, np.asarray(p4_field_ints[2])),  # Ez
         ]
     np.testing.assert_allclose(field_ref, field_val)

@@ -1,6 +1,6 @@
 import numpy as np
-from utils import compare
 import pytest
+from utils import compare
 
 import psi4
 
@@ -17,16 +17,18 @@ def test_ls_thc_df():
     symmetry c1
     """)
 
-    psi4.set_options({
-        'basis': 'cc-pVDZ',
-        'ls_thc_df': True,
-        'ls_thc_radial_points': 10,
-        'ls_thc_spherical_points': 50,
-        'ls_thc_basis_tolerance': 1.0e-10,
-        'ls_thc_weights_tolerance': 1.0e-12
-    })
+    psi4.set_options(
+        {
+            "basis": "cc-pVDZ",
+            "ls_thc_df": True,
+            "ls_thc_radial_points": 10,
+            "ls_thc_spherical_points": 50,
+            "ls_thc_basis_tolerance": 1.0e-10,
+            "ls_thc_weights_tolerance": 1.0e-12,
+        }
+    )
 
-    e, wfn = psi4.energy('scf', return_wfn=True)
+    e, wfn = psi4.energy("scf", return_wfn=True)
 
     primary = wfn.basisset()
     aux = psi4.core.BasisSet.build(mol, "DF_BASIS_MP2", "", "RIFIT", "cc-pVDZ")
@@ -37,7 +39,7 @@ def test_ls_thc_df():
     # THC-Factored ERI
     Z_PQ = np.array(ls_thc_computer.get_Z())
     x1 = np.array(ls_thc_computer.get_x1())
-    I_guess_thc = np.einsum('pu,pv,pq,qr,qt->uvrt', x1, x1, Z_PQ, x1, x1, optimize=True)
+    I_guess_thc = np.einsum("pu,pv,pq,qr,qt->uvrt", x1, x1, Z_PQ, x1, x1, optimize=True)
 
     mints = psi4.core.MintsHelper(primary)
     zero = psi4.core.BasisSet.zero_ao_basis_set()
@@ -46,13 +48,13 @@ def test_ls_thc_df():
     Ppq = np.squeeze(mints.ao_eri(aux, zero, primary, primary))
     J_PQ = np.squeeze(mints.ao_eri(aux, zero, aux, zero))
     J_PQ_inv = np.linalg.pinv(J_PQ)
-    I_guess_df = np.einsum('Ppq,PQ,Qrs->pqrs', Ppq, J_PQ_inv, Ppq, optimize=True)
+    I_guess_df = np.einsum("Ppq,PQ,Qrs->pqrs", Ppq, J_PQ_inv, Ppq, optimize=True)
 
     # AO 4-index ERIs
     I = np.array(mints.ao_eri(primary, primary, primary, primary))
 
-    assert compare(True, np.sqrt(np.average(np.square(I_guess_thc - I))) < 3e-4, 'LS_THC_DF ERIs accurate')
-    assert compare(True, np.sqrt(np.average(np.square(I_guess_df - I))) < 3e-4, 'DF ERIs accurate')
+    assert compare(True, np.sqrt(np.average(np.square(I_guess_thc - I))) < 3e-4, "LS_THC_DF ERIs accurate")
+    assert compare(True, np.sqrt(np.average(np.square(I_guess_df - I))) < 3e-4, "DF ERIs accurate")
 
 
 @pytest.mark.smoke
@@ -65,16 +67,18 @@ def test_ls_thc_exact():
     symmetry c1
     """)
 
-    psi4.set_options({
-        'basis': 'cc-pVDZ',
-        'ls_thc_df': False,
-        'ls_thc_radial_points': 10,
-        'ls_thc_spherical_points': 50,
-        'ls_thc_basis_tolerance': 1.0e-10,
-        'ls_thc_weights_tolerance': 1.0e-12
-    })
+    psi4.set_options(
+        {
+            "basis": "cc-pVDZ",
+            "ls_thc_df": False,
+            "ls_thc_radial_points": 10,
+            "ls_thc_spherical_points": 50,
+            "ls_thc_basis_tolerance": 1.0e-10,
+            "ls_thc_weights_tolerance": 1.0e-12,
+        }
+    )
 
-    e, wfn = psi4.energy('scf', return_wfn=True)
+    e, wfn = psi4.energy("scf", return_wfn=True)
 
     primary = wfn.basisset()
     aux = psi4.core.BasisSet.build(mol, "DF_BASIS_SCF", "", "RIFIT", "cc-pVDZ")
@@ -85,10 +89,10 @@ def test_ls_thc_exact():
     # THC-Factored ERI
     Z_PQ = np.array(ls_thc_computer.get_Z())
     x1 = np.array(ls_thc_computer.get_x1())
-    I_guess_thc = np.einsum('pu,pv,pq,qr,qt->uvrt', x1, x1, Z_PQ, x1, x1, optimize=True)
+    I_guess_thc = np.einsum("pu,pv,pq,qr,qt->uvrt", x1, x1, Z_PQ, x1, x1, optimize=True)
 
     # AO 4-index ERIs
     mints = psi4.core.MintsHelper(primary)
     I = np.array(mints.ao_eri(primary, primary, primary, primary))
 
-    assert compare(True, np.sqrt(np.average(np.square(I_guess_thc - I))) < 1e-4, 'LS_THC_exact ERIs accurate')
+    assert compare(True, np.sqrt(np.average(np.square(I_guess_thc - I))) < 1e-4, "LS_THC_exact ERIs accurate")

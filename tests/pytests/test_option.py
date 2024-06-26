@@ -17,7 +17,7 @@ def test_spacious_option():
       H 1 0.96 2 104.5
     """)
 
-    psi4.set_options({' basis ': "cc-pVDZ"})
-    psi4.energy('scf')
+    psi4.set_options({" basis ": "cc-pVDZ"})
+    psi4.energy("scf")
 
-    assert psi4.compare_values(-76.0266327341067125, psi4.variable('SCF TOTAL ENERGY'), 6, 'SCF energy')
+    assert psi4.compare_values(-76.0266327341067125, psi4.variable("SCF TOTAL ENERGY"), 6, "SCF energy")

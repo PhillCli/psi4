@@ -4,26 +4,25 @@ import sys
 import time
 
 # <<<  run ctest  >>>
-retcode = subprocess.Popen(['ctest', '-j2', '-L', "plug|smoke"],
-                           bufsize=0,
-                           stdout=subprocess.PIPE,
-                           universal_newlines=True)
+retcode = subprocess.Popen(
+    ["ctest", "-j2", "-L", "plug|smoke"], bufsize=0, stdout=subprocess.PIPE, universal_newlines=True
+)
 print_all = False
-ctestout = ''
+ctestout = ""
 while True:
     data = retcode.stdout.readline()
     if not data:
         break
 
-    if '% tests passed,' in data:
+    if "% tests passed," in data:
         print_all = True
 
     sdata = data.split()
-    test_line = ('Test' in sdata) and ('sec' in sdata)
-    start_line = ('Start' in sdata)
+    test_line = ("Test" in sdata) and ("sec" in sdata)
+    start_line = "Start" in sdata
     if test_line or start_line or print_all:
         sys.stdout.write(data)  # screen
-    #print sys.stdout.write(data)
+    # print sys.stdout.write(data)
     ctestout += data  # string
 
 while True:
@@ -39,7 +38,7 @@ sys.stdout.write("""\n  <<<  CTest complete with status %d.  >>>\n\n""" % (ctest
 
 ctestout = str(ctest_exit_status) + "\n" + ctestout
 
-with open('full_ctest_output.dat', 'w') as outfile:
+with open("full_ctest_output.dat", "w") as outfile:
     outfile.write(ctestout)
 
 # if ctest_exit_status:

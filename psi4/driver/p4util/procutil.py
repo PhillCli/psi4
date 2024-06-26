@@ -81,7 +81,7 @@ def kwargs_lower(kwargs: Dict[str, Any]) -> Dict[str, Any]:
     caseless_kwargs = {}
     for key, value in kwargs.items():
         lkey = key.lower()
-        if lkey in ['subset', 'banner', 'restart_file', 'write_orbitals']:  # only kw for which case matters
+        if lkey in ["subset", "banner", "restart_file", "write_orbitals"]:  # only kw for which case matters
             lvalue = value
         else:
             try:
@@ -89,10 +89,10 @@ def kwargs_lower(kwargs: Dict[str, Any]) -> Dict[str, Any]:
             except (AttributeError, KeyError):
                 lvalue = value
 
-        if lkey in ['irrep', 'check_bsse', 'linkage', 'bsse_type']:
+        if lkey in ["irrep", "check_bsse", "linkage", "bsse_type"]:
             caseless_kwargs[lkey] = lvalue
 
-        elif 'dertype' in lkey:
+        elif "dertype" in lkey:
             if p4regex.der0th.match(str(lvalue)):
                 caseless_kwargs[lkey] = 0
             elif p4regex.der1st.match(str(lvalue)):
@@ -100,7 +100,7 @@ def kwargs_lower(kwargs: Dict[str, Any]) -> Dict[str, Any]:
             elif p4regex.der2nd.match(str(lvalue)):
                 caseless_kwargs[lkey] = 2
             else:
-                raise KeyError(f'Derivative type key {key} was not recognized')
+                raise KeyError(f"Derivative type key {key} was not recognized")
 
         elif lvalue is None:
             caseless_kwargs[lkey] = None
@@ -136,11 +136,11 @@ def get_psifile(fileno: int, pidspace: str = str(os.getpid())) -> str:
     psio = core.IO.shared_object()
     filepath = psioh.get_file_path(fileno)
     namespace = psio.get_default_namespace()
-    targetfile = filepath + 'psi' + '.' + pidspace + '.' + namespace + '.' + str(fileno)
+    targetfile = filepath + "psi" + "." + pidspace + "." + namespace + "." + str(fileno)
     return targetfile
 
 
-def format_molecule_for_input(mol: Union[str, core.Molecule], name: str = '', forcexyz: bool = False) -> str:
+def format_molecule_for_input(mol: Union[str, core.Molecule], name: str = "", forcexyz: bool = False) -> str:
     """Old function for input string from molecule.
 
     Function to return a string of the output of
@@ -164,7 +164,8 @@ def format_molecule_for_input(mol: Union[str, core.Molecule], name: str = '', fo
     warnings.warn(
         "Using `psi4.driver.p4util.format_molecule_for_input` instead of `Molecule.to_string(dtype='psi4')` is deprecated, and as soon as 1.8 it will stop working\n",
         category=FutureWarning,
-        stacklevel=2)
+        stacklevel=2,
+    )
 
     # when mol is already a string
     if isinstance(mol, str):
@@ -181,9 +182,9 @@ def format_molecule_for_input(mol: Union[str, core.Molecule], name: str = '', fo
             mol_string = mol.save_string_xyz()
         else:
             mol_string = mol.create_psi4_string_from_molecule()
-        mol_name = mol.name() if name == '' else name
+        mol_name = mol.name() if name == "" else name
 
-    commands = """\nmolecule %s {\n%s%s\n}\n""" % (mol_name, mol_string, '\nno_com\nno_reorient' if forcexyz else '')
+    commands = """\nmolecule %s {\n%s%s\n}\n""" % (mol_name, mol_string, "\nno_com\nno_reorient" if forcexyz else "")
     return commands
 
 
@@ -200,11 +201,12 @@ def format_options_for_input(molecule: Optional[core.Molecule] = None, **kwargs)
     warnings.warn(
         "Using `psi4.driver.p4util.format_molecule_for_input` instead of `Molecule.to_string(dtype='psi4')` is deprecated, and as soon as 1.8 it will stop working\n",
         category=FutureWarning,
-        stacklevel=2)
+        stacklevel=2,
+    )
 
     if molecule is not None:
         symmetry = molecule.find_point_group(0.00001).symbol()
-    commands = ''
+    commands = ""
     commands += """\ncore.set_memory_bytes(%s)\n\n""" % (core.get_memory())
     for chgdopt in core.get_global_option_list():
         if core.has_global_option_changed(chgdopt):
@@ -218,8 +220,7 @@ def format_options_for_input(molecule: Optional[core.Molecule] = None, **kwargs)
             if isinstance(chgdoptval, str):
                 commands += """core.set_global_option('%s', '%s')\n""" % (chgdopt, chgdoptval)
 
-
-# Next four lines were conflict between master and roa branches (TDC, 10/29/2014)
+            # Next four lines were conflict between master and roa branches (TDC, 10/29/2014)
             elif isinstance(chgdoptval, int) or isinstance(chgdoptval, float):
                 commands += """core.set_global_option('%s', %s)\n""" % (chgdopt, chgdoptval)
             elif isinstance(chgdoptval, list):
@@ -369,10 +370,9 @@ def hold_options_state() -> Iterator[None]:
     and restore the collected keywords state when exiting the with-statement.
 
     """
-    pofm = prepare_options_for_modules(changedOnly=True,
-                                       commandsInsteadDict=False,
-                                       globalsOnly=False,
-                                       stateInsteadMediated=True)
+    pofm = prepare_options_for_modules(
+        changedOnly=True, commandsInsteadDict=False, globalsOnly=False, stateInsteadMediated=True
+    )
     yield
     _reset_pe_options(pofm)
 
@@ -391,14 +391,14 @@ def _reset_pe_options(pofm: Dict):
     """
     core.clean_options()
 
-    for go, dgo in pofm['GLOBALS'].items():
-        if dgo['has_changed']:
-            core.set_global_option(go, dgo['value'])
+    for go, dgo in pofm["GLOBALS"].items():
+        if dgo["has_changed"]:
+            core.set_global_option(go, dgo["value"])
 
     for module in _modules:
         for lo, dlo in pofm[module].items():
-            if dlo['has_changed']:
-                core.set_local_option(module, lo, dlo['value'])
+            if dlo["has_changed"]:
+                core.set_local_option(module, lo, dlo["value"])
 
     ## this is a more defensive version if defaults may have changed
     # for go, dgo in pofm['GLOBALS'].items():
@@ -413,10 +413,10 @@ def _reset_pe_options(pofm: Dict):
 
 
 def prepare_options_for_modules(
-        changedOnly: bool = False,
-        commandsInsteadDict: bool = False,
-        globalsOnly: bool = False,
-        stateInsteadMediated: bool = False,
+    changedOnly: bool = False,
+    commandsInsteadDict: bool = False,
+    globalsOnly: bool = False,
+    stateInsteadMediated: bool = False,
 ) -> Union[Dict, str]:
     """Capture current state of :py:class:`psi4.core.Options` information.
 
@@ -457,14 +457,14 @@ def prepare_options_for_modules(
     """
     has_changed_snapshot = {module: core.options_to_python(module) for module in _modules}
     options = collections.defaultdict(dict)
-    commands = ''
+    commands = ""
     for opt in core.get_global_option_list():
         hoc = core.has_global_option_changed(opt)
         if hoc or not changedOnly:
-            if opt in ['DFT_CUSTOM_FUNCTIONAL', 'EXTERN']:  # Feb 2017 hack
+            if opt in ["DFT_CUSTOM_FUNCTIONAL", "EXTERN"]:  # Feb 2017 hack
                 continue
             val = core.get_global_option(opt)
-            options['GLOBALS'][opt] = {'value': val, 'has_changed': hoc}
+            options["GLOBALS"][opt] = {"value": val, "has_changed": hoc}
             if isinstance(val, str):
                 commands += """core.set_global_option('%s', '%s')\n""" % (opt, val)
             else:
@@ -483,7 +483,7 @@ def prepare_options_for_modules(
                     val = core.get_local_option(module, opt)
                 else:
                     val = core.get_option(module, opt)
-                options[module][opt] = {'value': val, 'has_changed': hoc}
+                options[module][opt] = {"value": val, "has_changed": hoc}
                 if isinstance(val, str):
                     commands += """core.set_local_option('%s', '%s', '%s')\n""" % (module, opt, val)
                 else:
@@ -517,7 +517,7 @@ def prepare_options_for_set_options() -> Dict[str, Any]:
         for module, (lhoc, ohoc) in opt_snapshot.items():
             if ohoc:
                 if lhoc:
-                    key = module + '__' + opt
+                    key = module + "__" + opt
                     val = core.get_local_option(module, opt)
                 else:
                     key = opt
@@ -561,12 +561,14 @@ def prepare_options_for_set_options() -> Dict[str, Any]:
     return flat_options
 
 
-def state_to_atomicinput(*,
-                         driver: str,
-                         method: str,
-                         basis: Optional[str] = None,
-                         molecule: Optional[core.Molecule] = None,
-                         function_kwargs: Optional[Dict[str, Any]] = None) -> AtomicInput:
+def state_to_atomicinput(
+    *,
+    driver: str,
+    method: str,
+    basis: Optional[str] = None,
+    molecule: Optional[core.Molecule] = None,
+    function_kwargs: Optional[Dict[str, Any]] = None,
+) -> AtomicInput:
     """Form a QCSchema for job input from the current state of |PSIfour| settings.
 
     Parameters
@@ -613,7 +615,8 @@ def state_to_atomicinput(*,
             "keywords": keywords,
             "molecule": molecule.to_schema(dtype=2),
             "provenance": provenance_stamp(__name__),
-        })
+        }
+    )
 
     return resi
 
@@ -635,10 +638,11 @@ def mat2arr(mat: core.Matrix) -> List[List[float]]:
     warnings.warn(
         "Using `psi4.driver.p4util.mat2arr` instead of `MatrixInstance.to_array().tolist()` is deprecated, and as soon as 1.4 it will stop working\n",
         category=FutureWarning,
-        stacklevel=2)
+        stacklevel=2,
+    )
 
     if mat.rowdim().n() != 1:
-        raise ValidationError('Cannot convert Matrix with symmetry.')
+        raise ValidationError("Cannot convert Matrix with symmetry.")
     arr = []
     for row in range(mat.rowdim()[0]):
         temp = []
@@ -673,16 +677,16 @@ def expand_psivars(pvdefs: Dict[str, Dict[str, Union[List[str], Callable]]], ver
 
     """
     if verbose is None:
-        verbose = core.get_global_option('PRINT')
+        verbose = core.get_global_option("PRINT")
 
     for pvar, action in pvdefs.items():
         if verbose >= 2:
-            print("""building %s %s""" % (pvar, '.' * (50 - len(pvar))), end='')
+            print("""building %s %s""" % (pvar, "." * (50 - len(pvar))), end="")
 
         psivars = core.scalar_variables()
         data_rich_args = []
 
-        for pv in action['args']:
+        for pv in action["args"]:
             if isinstance(pv, str):
                 if pv in psivars:
                     data_rich_args.append(psivars[pv])
@@ -693,7 +697,7 @@ def expand_psivars(pvdefs: Dict[str, Dict[str, Union[List[str], Callable]]], ver
             else:
                 data_rich_args.append(pv)
         else:
-            result = action['func'](data_rich_args)
+            result = action["func"](data_rich_args)
             core.set_variable(pvar, result)
             if verbose >= 2:
                 print("""SUCCESS""")
@@ -717,7 +721,7 @@ def provenance_stamp(routine: str, module: str = None) -> Dict[str, str]:
         https://github.com/MolSSI/QCSchema/blob/master/qcschema/dev/definitions.py#L23-L41
 
     """
-    prov = {'creator': 'Psi4', 'version': __version__, 'routine': routine}
+    prov = {"creator": "Psi4", "version": __version__, "routine": routine}
     if module:
         prov["module"] = module
 

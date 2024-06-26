@@ -1,8 +1,10 @@
 #! examine JK packing forms
 
-import psi4
-import numpy as np
 from collections import OrderedDict
+
+import numpy as np
+
+import psi4
 
 psi4.set_output_file("output.dat", False)
 
@@ -19,7 +21,7 @@ primary = psi4.core.BasisSet.build(mol, "ORBITAL", "cc-pVTZ")
 aux = psi4.core.BasisSet.build(mol, "ORBITAL", "cc-pVTZ-jkfit")
 
 # don't sieve the integrals, because we're checking to high precision
-psi4.set_options({'ints_tolerance': 0.0, 'scf_subtype': 'auto'})
+psi4.set_options({"ints_tolerance": 0.0, "scf_subtype": "auto"})
 
 # setup ~
 nbf = primary.nbf()
@@ -35,7 +37,7 @@ Jmetric = np.squeeze(mints.ao_eri(aux, zero_bas, aux, zero_bas))
 
 # form inverse metric
 Jmetric_inv = mints.ao_eri(aux, zero_bas, aux, zero_bas)
-Jmetric_inv.power(-0.5, 1.e-12)
+Jmetric_inv.power(-0.5, 1.0e-12)
 Jmetric_inv = np.squeeze(Jmetric_inv)
 
 # form Qpq
@@ -44,7 +46,7 @@ Qpq = Jmetric_inv.dot(Qpq.reshape(naux, -1))
 Qpq = Qpq.reshape(naux, nbf, -1)
 
 # construct spaces
-names = ['C1', 'C2', 'C3', 'C4']
+names = ["C1", "C2", "C3", "C4"]
 sizes = [_ * 5 for _ in range(1, 5)]
 spaces = {names[ind]: psi4.core.Matrix.from_array(np.random.rand(nbf, _)) for ind, _ in enumerate(sizes)}
 
@@ -69,9 +71,9 @@ for i in range(ntransforms):
     Qmo_pqQ.append(np.swapaxes(np.swapaxes(Qmo[i], 0, 2), 0, 1))
 
 # setup ~
-methods = ['STORE', 'DIRECT', 'DIRECT_iaQ']
-forms = ['Qpq', 'pQq', 'pqQ']
-transformation_names = ['Qmo1', 'Qmo2', 'Qmo3', 'Qmo4', 'Qmo5', 'Qmo6']
+methods = ["STORE", "DIRECT", "DIRECT_iaQ"]
+forms = ["Qpq", "pQq", "pqQ"]
+transformation_names = ["Qmo1", "Qmo2", "Qmo3", "Qmo4", "Qmo5", "Qmo6"]
 transformations = OrderedDict({})
 for ind, i in enumerate(transformation_names):
     transformations[i] = [names[space_pairs[ind][0]], names[space_pairs[ind][1]]]
@@ -79,11 +81,11 @@ for ind, i in enumerate(transformation_names):
 # somewhat exhuastive search on all options
 for method in methods:
     for form in forms:
-        if (form != 'pqQ' and method == 'DIRECT_iaQ'): continue
+        if form != "pqQ" and method == "DIRECT_iaQ":
+            continue
         for AO_core in [False, True]:
             for MO_core in [False, True]:
                 for hold_met in [False, True]:
-
                     # get object
                     dfh = psi4.core.DFHelper(primary, aux)
 
@@ -114,26 +116,27 @@ for method in methods:
 
                     # grab transformed integrals
                     dfh_Qmo = []
-                    if (form == 'pqQ'):
+                    if form == "pqQ":
                         for ind, i in enumerate(transformations):
                             j = space_pairs[ind]
                             dfh_Qmo.append(np.zeros((sizes[j[0]], sizes[j[1]], naux)))
                             for k in range(sizes[j[0]]):
                                 dfh_Qmo[ind][k, :, :] = np.asarray(
-                                    dfh.get_tensor(i, [k, k + 1], [0, sizes[j[1]]], [0, naux]))
+                                    dfh.get_tensor(i, [k, k + 1], [0, sizes[j[1]]], [0, naux])
+                                )
                     else:
                         for ind, i in enumerate(transformations):
                             dfh_Qmo.append(np.asarray(dfh.get_tensor(i)))
 
-                    test_string = 'Alg: ' + method + ' + ' + form + ' core (AOs, MOs, met): ['
-                    test_string += str(AO_core) + ', ' + str(MO_core) + ', ' + str(hold_met) + ']'
+                    test_string = "Alg: " + method + " + " + form + " core (AOs, MOs, met): ["
+                    test_string += str(AO_core) + ", " + str(MO_core) + ", " + str(hold_met) + "]"
 
                     print(test_string)
                     # am i right?
                     for i in range(ntransforms):
-                        if (form == 'pqQ'):
+                        if form == "pqQ":
                             psi4.compare_arrays(np.asarray(dfh_Qmo[i]), Qmo_pqQ[i], 9, test_string)
-                        elif (form == 'pQq'):
+                        elif form == "pQq":
                             psi4.compare_arrays(np.asarray(dfh_Qmo[i]), Qmo_pQq[i], 9, test_string)
                         else:
                             psi4.compare_arrays(np.asarray(dfh_Qmo[i]), Qmo[i], 9, test_string)

@@ -1,8 +1,10 @@
 """
 This file tests the ao_potential_erf/ao_potential_erf_complement integrals
 """
+
 import numpy as np
 import pytest
+
 import psi4
 
 pytestmark = pytest.mark.quick
@@ -19,7 +21,7 @@ def test_potential_erf_integrals():
     no_com
     no_reorient
     """)
-    basis_obj = psi4.core.BasisSet.build(mol, 'ORBITAL', "cc-pvtz")
+    basis_obj = psi4.core.BasisSet.build(mol, "ORBITAL", "cc-pvtz")
     mints = psi4.core.MintsHelper(basis_obj)
     C = [1, 2, 3]
     # corner cases

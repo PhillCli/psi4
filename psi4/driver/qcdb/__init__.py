@@ -29,32 +29,27 @@
 databases. Contains Molecule class and physical constants from psi4 suite.
 
 """
-__version__ = '0.4'
-__author__ = 'Lori A. Burns'
+
+__version__ = "0.4"
+__author__ = "Lori A. Burns"
 
 # Load Python modules
 import sys
+
+from . import align, cfour, gradparse, hessparse, jajo, orca, vib
+from .basislist import *
 from .constants import constants
-from .molecule import Molecule, compute_atom_map
 from .dbproc import *
-from .options import *
-from .qcformat import *
-from . import cfour
-from . import jajo
-from . import orca
-from .dbwrap import Database, DB4  #DatabaseWrapper, ReactionDatum, Reagent, Reaction
-from .libmintspointgrp import SymmetryOperation, PointGroup
+from .dbwrap import DB4, Database  # DatabaseWrapper, ReactionDatum, Reagent, Reaction
 from .libmintsbasisset import BasisSet
 from .libmintsmolecule import LibmintsMolecule
-from .basislist import *
-from . import align
-from . import vib
-from .vib import compare_vibinfos
-from . import hessparse
-from . import gradparse
+from .libmintspointgrp import PointGroup, SymmetryOperation
+from .molecule import Molecule, compute_atom_map
+from .options import *
 
 # Load items that are useful to access from an input file
 from .psiutil import *
+from .qcformat import *
 from .testing import *
-
 from .util import *
+from .vib import compare_vibinfos

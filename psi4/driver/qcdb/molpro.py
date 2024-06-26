@@ -28,9 +28,8 @@
 
 import math
 
+from . import molpro_basissets, qcformat
 from .exceptions import *
-from . import qcformat
-from . import molpro_basissets
 
 
 class MolproIn(qcformat.InputFormat):
@@ -43,11 +42,11 @@ class MolproIn(qcformat.InputFormat):
         [self.unaugbasis, self.augbasis, self.auxbasis] = self.corresponding_aux_basis()
 
     def format_global_parameters(self):
-        text = ''
+        text = ""
 
-        if self.method in ['mp2c', 'dft-sapt-shift', 'dft-sapt', 'dft-sapt-pbe0ac', 'dft-sapt-pbe0acalda']:
+        if self.method in ["mp2c", "dft-sapt-shift", "dft-sapt", "dft-sapt-pbe0ac", "dft-sapt-pbe0acalda"]:
             text += """GTHRESH,ZERO=1.e-14,ONEINT=1.e-14,TWOINT=1.e-14,ENERGY=1.e-8,ORBITAL=1.e-8,GRID=1.e-8\n\n"""
-        elif self.method in ['b3lyp', 'b3lyp-d', 'df-b3lyp', 'df-b3lyp-d']:
+        elif self.method in ["b3lyp", "b3lyp-d", "df-b3lyp", "df-b3lyp-d"]:
             text += """GTHRESH,ZERO=1.e-14,ONEINT=1.e-14,TWOINT=1.e-14,ENERGY=1.e-8,ORBITAL=1.e-7,GRID=1.e-8\n\n"""
         else:
             text += """GTHRESH,ZERO=1.e-14,ONEINT=1.e-14,TWOINT=1.e-14,ENERGY=1.e-9\n\n"""
@@ -55,27 +54,28 @@ class MolproIn(qcformat.InputFormat):
         return text
 
     def format_basis(self):
-        text = ''
+        text = ""
         text += """basis={\n"""
 
         try:
             # jaxz, maxz, etc.
             for line in molpro_basissets.altbasis[self.basis]:
                 text += """%s\n""" % (line)
-            text += '\n'
+            text += "\n"
         except KeyError:
             # haxz
-            if self.basis.startswith('heavy-aug-'):
+            if self.basis.startswith("heavy-aug-"):
                 text += """set,orbital; default,%s,H=%s\n""" % (self.basis[6:], self.unaugbasis)
             # xz, axz, 6-31g*
             else:
                 text += """set,orbital; default,%s\n""" % (self.basis)
 
-        if ('df-' in self.method) or ('f12' in self.method) or (self.method in [
-                'mp2c', 'dft-sapt', 'dft-sapt-pbe0acalda'
-        ]):
+        if (
+            ("df-" in self.method)
+            or ("f12" in self.method)
+            or (self.method in ["mp2c", "dft-sapt", "dft-sapt-pbe0acalda"])
+        ):
             if self.unaugbasis and self.auxbasis:
-
                 text += """set,jkfit;   default,%s/jkfit\n""" % (self.auxbasis)
                 text += """set,jkfitb;  default,%s/jkfit\n""" % (self.unaugbasis)
                 text += """set,mp2fit;  default,%s/mp2fit\n""" % (self.auxbasis)
@@ -87,7 +87,7 @@ class MolproIn(qcformat.InputFormat):
         return text
 
     def format_infile_string(self):
-        text = ''
+        text = ""
 
         # format comment and memory
         text += """***, %s %s\n""" % (self.index, self.molecule.tagline)
@@ -103,7 +103,7 @@ class MolproIn(qcformat.InputFormat):
         if self.castup is True:
             text += """basis=sto-3g\n"""
             text += """rhf\n"""
-            text += '\n'
+            text += "\n"
 
         # format basis set
         text += self.format_basis()
@@ -113,56 +113,102 @@ class MolproIn(qcformat.InputFormat):
             text += """%s\n""" % (line)
         text += """show[1,20f20.12],ee*,ce*,te*\n"""
         text += """show[1,60f20.12],_E*\n"""
-        text += '\n'
+        text += "\n"
 
         return text
 
 
 qcmtdIN = {
-    'ccsd(t)-f12': [
-        'rhf', 'eehf=energy', 'ccsd(t)-f12,df_basis=mp2fit,df_basis_exch=jkfitb,ri_basis=jkfitb', 'eemp2=emp2',
-        'cemp2=eemp2-eehf', 'eemp3=emp3', 'cemp3=eemp3-eehf', 'eeccsd=energc', 'ceccsd=eeccsd-eehf', 'eeccsdt=energy',
-        'ceccsdt=eeccsdt-eehf', 'temp2=emp2_trip', 'teccsd=ectrip'
+    "ccsd(t)-f12": [
+        "rhf",
+        "eehf=energy",
+        "ccsd(t)-f12,df_basis=mp2fit,df_basis_exch=jkfitb,ri_basis=jkfitb",
+        "eemp2=emp2",
+        "cemp2=eemp2-eehf",
+        "eemp3=emp3",
+        "cemp3=eemp3-eehf",
+        "eeccsd=energc",
+        "ceccsd=eeccsd-eehf",
+        "eeccsdt=energy",
+        "ceccsdt=eeccsdt-eehf",
+        "temp2=emp2_trip",
+        "teccsd=ectrip",
     ],
-    'ccsd(t)': [
-        'rhf', 'eehf=energy', 'ccsd(t)', 'eemp2=emp2', 'cemp2=eemp2-eehf', 'eemp3=emp3', 'cemp3=eemp3-eehf',
-        'eeccsd=energc', 'ceccsd=eeccsd-eehf', 'eeccsdt=energy', 'ceccsdt=eeccsdt-eehf', 'temp2=emp2_trip',
-        'teccsd=ectrip'
+    "ccsd(t)": [
+        "rhf",
+        "eehf=energy",
+        "ccsd(t)",
+        "eemp2=emp2",
+        "cemp2=eemp2-eehf",
+        "eemp3=emp3",
+        "cemp3=eemp3-eehf",
+        "eeccsd=energc",
+        "ceccsd=eeccsd-eehf",
+        "eeccsdt=energy",
+        "ceccsdt=eeccsdt-eehf",
+        "temp2=emp2_trip",
+        "teccsd=ectrip",
     ],
-    'mp3': [
-        'gdirect', 'rhf', 'eehf=energy', 'mp3', 'eemp2=emp2', 'eemp3=emp3', 'eemp25=0.5*(eemp2+eemp3)',
-        'cemp2=eemp2-eehf', 'cemp3=eemp3-eehf', 'cemp25=eemp25-eehf', 'temp2=emp2_trip', 'temp3=ectrip'
+    "mp3": [
+        "gdirect",
+        "rhf",
+        "eehf=energy",
+        "mp3",
+        "eemp2=emp2",
+        "eemp3=emp3",
+        "eemp25=0.5*(eemp2+eemp3)",
+        "cemp2=eemp2-eehf",
+        "cemp3=eemp3-eehf",
+        "cemp25=eemp25-eehf",
+        "temp2=emp2_trip",
+        "temp3=ectrip",
     ],
-    'mp2': ['gdirect', 'rhf', 'eehf=energy', 'mp2', 'eemp2=emp2', 'cemp2=eemp2-eehf', 'temp2=emp2_trip'],
-    'df-hf-mp2':
-    ['gdirect', '{df-hf,basis=jkfit}', 'eehf=energy', 'mp2', 'eemp2=emp2', 'cemp2=eemp2-eehf', 'temp2=emp2_trip'],
-    'hf-df-mp2': [
-        'gdirect', 'rhf', 'eehf=energy', '{df-mp2,basis_mp2=mp2fit}', 'eemp2=emp2', 'cemp2=eemp2-eehf',
-        'temp2=emp2_trip'
+    "mp2": ["gdirect", "rhf", "eehf=energy", "mp2", "eemp2=emp2", "cemp2=eemp2-eehf", "temp2=emp2_trip"],
+    "df-hf-mp2": [
+        "gdirect",
+        "{df-hf,basis=jkfit}",
+        "eehf=energy",
+        "mp2",
+        "eemp2=emp2",
+        "cemp2=eemp2-eehf",
+        "temp2=emp2_trip",
     ],
-    'hf': ['rhf', 'eehf=energy'],
-    'mp2-f12': ['gdirect', 'rhf', 'eehf=energy', 'mp2-f12', 'eemp2=emp2', 'cemp2=eemp2-eehf', 'temp2=emp2_trip'],
-    'df-mp2-f12': [
-        'gdirect',
+    "hf-df-mp2": [
+        "gdirect",
+        "rhf",
+        "eehf=energy",
+        "{df-mp2,basis_mp2=mp2fit}",
+        "eemp2=emp2",
+        "cemp2=eemp2-eehf",
+        "temp2=emp2_trip",
+    ],
+    "hf": ["rhf", "eehf=energy"],
+    "mp2-f12": ["gdirect", "rhf", "eehf=energy", "mp2-f12", "eemp2=emp2", "cemp2=eemp2-eehf", "temp2=emp2_trip"],
+    "df-mp2-f12": [
+        "gdirect",
         #'rhf',
-        '{df-hf,basis=jkfit}',
-        'eehf=energy',
+        "{df-hf,basis=jkfit}",
+        "eehf=energy",
         #'{df-mp2-f12,df_basis=mp2fit,df_basis_exch=jkfit,ri_basis=optrib}',
-        '{df-mp2-f12,df_basis=mp2fit,df_basis_exch=jkfitb,ri_basis=jkfitb}',
-        'eemp2=emp2',
-        'cemp2=eemp2-eehf',
-        'temp2=emp2_trip'
+        "{df-mp2-f12,df_basis=mp2fit,df_basis_exch=jkfitb,ri_basis=jkfitb}",
+        "eemp2=emp2",
+        "cemp2=eemp2-eehf",
+        "temp2=emp2_trip",
     ],
-    'df-mp2': [
-        'gdirect', '{df-hf,basis=jkfit}', 'eehf=energy', '{df-mp2,basis_mp2=mp2fit}', 'eemp2=emp2', 'cemp2=eemp2-eehf',
-        'temp2=emp2_trip'
+    "df-mp2": [
+        "gdirect",
+        "{df-hf,basis=jkfit}",
+        "eehf=energy",
+        "{df-mp2,basis_mp2=mp2fit}",
+        "eemp2=emp2",
+        "cemp2=eemp2-eehf",
+        "temp2=emp2_trip",
     ],
-    'df-hf': ['gdirect', '{df-hf,basis=jkfit}', 'eehf=energy'],
-    'b3lyp-d': ['gdirect', 'rks,b3lyp3', 'eehf=energy', 'dispcorr', 'eehfd=eehf+edisp'],
-    'df-b3lyp-d': ['gdirect', '{df-rks,b3lyp3,basis=jkfit}', 'eehf=energy', 'dispcorr', 'eehfd=eehf+edisp'],
-    'b3lyp': ['gdirect', 'rks,b3lyp3', 'eehf=energy'],
-    'df-b3lyp': ['gdirect', '{df-rks,b3lyp3,basis=jkfit}', 'eehf=energy'],
-
+    "df-hf": ["gdirect", "{df-hf,basis=jkfit}", "eehf=energy"],
+    "b3lyp-d": ["gdirect", "rks,b3lyp3", "eehf=energy", "dispcorr", "eehfd=eehf+edisp"],
+    "df-b3lyp-d": ["gdirect", "{df-rks,b3lyp3,basis=jkfit}", "eehf=energy", "dispcorr", "eehfd=eehf+edisp"],
+    "b3lyp": ["gdirect", "rks,b3lyp3", "eehf=energy"],
+    "df-b3lyp": ["gdirect", "{df-rks,b3lyp3,basis=jkfit}", "eehf=energy"],
     #'mp2c': [ # this job computes one part [E_disp(TDDFT)] of the three parts of a MP2C calculation
     #        # check that nfrag = 2
     #         'gdirect',

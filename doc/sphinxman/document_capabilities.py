@@ -17,23 +17,26 @@ method_governing_type_keywords["b2plyp"] = "scf_type"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--sphinx", action="store_true", help="Sphinx format vs. eyes format")
-parser.add_argument("--mode",
-                    default="details",
-                    choices=["details", "summary", "ccenergy", "fnocc", "dfmp2", "occ", "occ_oo", "occ_nonoo", "scf"],
-                    help="summary table vs. detailed (per-module) table vs. single-module table")
-parser.add_argument("--stdsuite",
-                    default="stdsuite_psi4.txt",
-                    help="where is recorder file written by standard_suite_runner.py")
+parser.add_argument(
+    "--mode",
+    default="details",
+    choices=["details", "summary", "ccenergy", "fnocc", "dfmp2", "occ", "occ_oo", "occ_nonoo", "scf"],
+    help="summary table vs. detailed (per-module) table vs. single-module table",
+)
+parser.add_argument(
+    "--stdsuite", default="stdsuite_psi4.txt", help="where is recorder file written by standard_suite_runner.py"
+)
 parser.add_argument(
     "--writefile",
     action="append",
-    help=
-    "where should table file be saved? defaults to autodoc_capabilities_{mode}.rst . repeat arg for multiple outputs")
+    help="where should table file be saved? defaults to autodoc_capabilities_{mode}.rst . repeat arg for multiple outputs",
+)
 parser.add_argument("--quiet", action="store_true", help="Don't also print to screen")
 parser.add_argument(
     "--second-in-rst",
     action="store_true",
-    help="Suppress Sphinx substitution definitions to avoid warnings if multiple tables included in rst file")
+    help="Suppress Sphinx substitution definitions to avoid warnings if multiple tables included in rst file",
+)
 parser.add_argument("--driver", default="eg", choices=["e", "eg", "egh"], help="maximum deriv column")
 args = parser.parse_args()
 
@@ -44,15 +47,15 @@ dashh = "-"
 notes = []
 
 trans_cell = {
-    "pass": ('\u2713', "|y|"),
-    "(pass)": ('\u2713\u0332', "|d|"),
-    "[pass]": ('\u2713\u0333', "|g|"),
-    "fd": ('\u2237', "|e|"),
-    "(fd)": ('\u2237\u0332', "|b|"),
-    "[fd]": ('\u2237\u0333', "|c|"),
-    "error": ('', ""),  # toggle for " " in visual mode
+    "pass": ("\u2713", "|y|"),
+    "(pass)": ("\u2713\u0332", "|d|"),
+    "[pass]": ("\u2713\u0333", "|g|"),
+    "fd": ("\u2237", "|e|"),
+    "(fd)": ("\u2237\u0332", "|b|"),
+    "[fd]": ("\u2237\u0333", "|c|"),
+    "error": ("", ""),  # toggle for " " in visual mode
     # "error":  ('\u2717',       ""   ),  # toggle for "X" in visual mode
-    "wrong": ('\u0021', "|w|"),
+    "wrong": ("\u0021", "|w|"),
 }
 
 # need indep letter for footnotes `[#f1]_` for each table so multiple can be included on one page, plus "h" for common headers. used are: a, c, d, e, f, m, n, o, r, s
@@ -65,7 +68,7 @@ fn_lbl = {
     "occ": "o",
     "occ_oo": "c",
     "occ_nonoo": "n",
-    "scf": "r"
+    "scf": "r",
 }[args.mode]
 
 
@@ -97,7 +100,7 @@ def fcell(module, winnowed, contrast=False):
             cell = "(" + cell + ")"
 
         if False:
-            #if note:
+            # if note:
             notes.append(note)
             notes = unique(notes)
             idx = notes.index(note) + 10
@@ -165,11 +168,13 @@ def fline_data(outer, mid, inner, guts, *, span=1, contrast=1):
 
     if args.sphinx:
         csguts = [f"{fheader(item, eff_width, contrast=True):^{compute_width(item, eff_width)}}" for item in guts]
-        lguts = [(csguts[i:i + contrast] if (b % 2) else sguts[i:i + contrast])
-                 for b, i in enumerate(range(0, len(sguts), contrast))]
+        lguts = [
+            (csguts[i : i + contrast] if (b % 2) else sguts[i : i + contrast])
+            for b, i in enumerate(range(0, len(sguts), contrast))
+        ]
         lguts = [vertex.join(i) for i in lguts]
     else:
-        lguts = [sguts[i:i + contrast] for i in range(0, len(sguts), contrast)]
+        lguts = [sguts[i : i + contrast] for i in range(0, len(sguts), contrast)]
         lguts = [blank.join(i) for i in lguts]
 
     datasection = vertex.join(lguts)
@@ -266,10 +271,11 @@ notes_holder = {
     ("cisd", None): (r", ci\ *n*", "Arbitrary-order *n* through DETCI is inefficient byproduct of CI", ["fnocc"]),
     ("zapt2", None): (r", zapt\ *n*", "Arbitrary-order *n* through DETCI is inefficient byproduct of CI", None),
     ("mp4", None): (r", mp\ *n*", "Arbitrary-order *n* through DETCI is inefficient byproduct of CI", ["fnocc"]),
-    ("ccsd(t)", "CCENERGY"):
-    ("FN",
-     r"Analytic gradients for conventional all-electron RHF/UHF computations can be requested through |globals__qc_module|\ ``=ccenergy``, but their scaling is best suited to small molecules.",
-     None),
+    ("ccsd(t)", "CCENERGY"): (
+        "FN",
+        r"Analytic gradients for conventional all-electron RHF/UHF computations can be requested through |globals__qc_module|\ ``=ccenergy``, but their scaling is best suited to small molecules.",
+        None,
+    ),
 }
 
 
@@ -347,7 +353,6 @@ cwidth = 3  # 13 minimum for footnotes
 
 
 def table_builder__ref_driver_type_fcae():
-
     #  +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
     #  |               Restricted (RHF)                |              Unrestricted (UHF)               |            Restricted Open (ROHF)             |
     #  +---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+
@@ -358,9 +363,9 @@ def table_builder__ref_driver_type_fcae():
     #  | A | F | A | F | A | F | A | F | A | F | A | F | A | F | A | F | A | F | A | F | A | F | A | F | A | F | A | F | A | F | A | F | A | F | A | F |
     #  +===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+===+
 
-    place = '\u25fb'
-    down_arrow = '\u2193'
-    right_arrow = '\u2192'
+    place = "\u25fb"
+    down_arrow = "\u2193"
+    right_arrow = "\u2192"
 
     # row headers
     nameh = "name " + down_arrow + " " + right_arrow
@@ -379,20 +384,20 @@ def table_builder__ref_driver_type_fcae():
 
     if args.sphinx and not args.second_in_rst:
         lines.append("")
-        lines.append('.. role:: gbg')
-        lines.append('.. raw:: html')
-        lines.append('')
+        lines.append(".. role:: gbg")
+        lines.append(".. raw:: html")
+        lines.append("")
         lines.append(
             '   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>'
         )
-        lines.append('   <script>')
-        lines.append('     $(document).ready(function() {')
+        lines.append("   <script>")
+        lines.append("     $(document).ready(function() {")
         lines.append('       $(".gbg").parent().addClass("gbg-parent");')
-        lines.append('     });')
-        lines.append('   </script>')
-        lines.append('   <style>')
-        lines.append('      .gbg-parent {background-color:#cceecc;}')
-        lines.append('   </style>')
+        lines.append("     });")
+        lines.append("   </script>")
+        lines.append("   <style>")
+        lines.append("      .gbg-parent {background-color:#cceecc;}")
+        lines.append("   </style>")
         lines.append("")
 
         lines.append("")
@@ -451,10 +456,10 @@ def table_builder__ref_driver_type_fcae():
     else:
         pass
 
-    legend_lines.append(f'''"{trans_cell['pass'][args.sphinx]}" runs analytically.''')
+    legend_lines.append(f""""{trans_cell['pass'][args.sphinx]}" runs analytically.""")
 
     if args.mode in ["details", "summary"]:
-        legend_lines.append(f'''"{trans_cell['fd'][args.sphinx]}" runs derivative with internal finite difference.''')
+        legend_lines.append(f""""{trans_cell['fd'][args.sphinx]}" runs derivative with internal finite difference.""")
 
     if args.mode == "details":
         legend_lines.append(
@@ -487,7 +492,6 @@ def table_builder__ref_driver_type_fcae():
     contrast_span = 6
 
     if args.mode == "summary":
-
         #  +------------+----------------------+--------------------------+
         #  | ◻          |                      | |scf__reference| →       |
         #  +            +                      +                          +
@@ -506,16 +510,13 @@ def table_builder__ref_driver_type_fcae():
         lines.append(fline_data(place, blank, typeh, len(refs) * len(eghs) * corl_types, span=len(fcaes)))
         lines.append(fline_fill(blank, blank, blank, [dashh] * ncol))
         lines.append(
-            fline_data(place,
-                       blank,
-                       fcaeh,
-                       len(refs) * len(eghs) * len(corl_types) * fcaes,
-                       span=1,
-                       contrast=contrast_span))
+            fline_data(
+                place, blank, fcaeh, len(refs) * len(eghs) * len(corl_types) * fcaes, span=1, contrast=contrast_span
+            )
+        )
         lines.append(fline_fill(equal, equal, equal, [equal] * ncol))
 
     elif args.mode == "details":
-
         #  +-------------------------+--------------------------+
         #  | ◻                       | |globals__qc_module| ↓   |
         #  +                         +                          +
@@ -540,12 +541,10 @@ def table_builder__ref_driver_type_fcae():
         lines.append(fline_data(typeh, blank, place, len(refs) * len(eghs) * corl_types, span=len(fcaes)))
         lines.append(fline_fill(blank, blank, blank, [dashh] * ncol))
         lines.append(
-            fline_data(place,
-                       blank,
-                       fcaeh,
-                       len(refs) * len(eghs) * len(corl_types) * fcaes,
-                       span=1,
-                       contrast=contrast_span))
+            fline_data(
+                place, blank, fcaeh, len(refs) * len(eghs) * len(corl_types) * fcaes, span=1, contrast=contrast_span
+            )
+        )
         lines.append(fline_fill(equal, blank, equal, [equal] * ncol))
 
     else:
@@ -572,7 +571,8 @@ def table_builder__ref_driver_type_fcae():
 
         lines.append(fline_fill(dashh, dashh, dashh, [dashh] * ncol))
         lines.append(
-            fline_data(place, blank, place, [rf"{spacer}{qcmoduleh[:-2]}\ ={module_caption} Capabilities"], span=ncol))
+            fline_data(place, blank, place, [rf"{spacer}{qcmoduleh[:-2]}\ ={module_caption} Capabilities"], span=ncol)
+        )
         lines.append(fline_fill(blank, blank, blank, [dashh] * ncol))
         lines.append(fline_data(place, blank, referenceh, refs, span=len(fcaes) * len(corl_types) * len(eghs)))
         lines.append(fline_fill(blank, blank, blank, [dashh] * ncol))
@@ -581,17 +581,16 @@ def table_builder__ref_driver_type_fcae():
         lines.append(fline_data(place, blank, typeh, len(refs) * len(eghs) * corl_types, span=len(fcaes)))
         lines.append(fline_fill(blank, blank, blank, [dashh] * ncol))
         lines.append(
-            fline_data(place,
-                       blank,
-                       fcaeh,
-                       len(refs) * len(eghs) * len(corl_types) * fcaes,
-                       span=1,
-                       contrast=contrast_span))
+            fline_data(
+                place, blank, fcaeh, len(refs) * len(eghs) * len(corl_types) * fcaes, span=1, contrast=contrast_span
+            )
+        )
         lines.append(fline_fill(equal, equal, equal, [equal] * ncol))
 
     for method in methods:
-        if (args.mode == "occ_oo" and not method.startswith("o")) or (args.mode == "occ_nonoo"
-                                                                      and method.startswith("o")):
+        if (args.mode == "occ_oo" and not method.startswith("o")) or (
+            args.mode == "occ_nonoo" and method.startswith("o")
+        ):
             continue
 
         subset1 = [entry for entry in stuff if entry["method"] == method]
@@ -633,12 +632,20 @@ def table_builder__ref_driver_type_fcae():
                     for corl_type in corl_types:
                         for fcae in fcaes:
                             subset4 = [
-                                entry for entry in subset2
-                                if (entry["fcae"] == fcae and entry["reference"] == ref and entry["driver"] == egh and
-                                    (natural_ref_rev[entry["scf_type"]] == corl_type if (
-                                        method_governing_type_keywords[method] == "scf_type") else entry["corl_type"]
-                                     == corl_type) and entry["scf_type"] == natural_ref[corl_type] and (
-                                         entry["status"] != "fd" or module.startswith("aaaa-")))
+                                entry
+                                for entry in subset2
+                                if (
+                                    entry["fcae"] == fcae
+                                    and entry["reference"] == ref
+                                    and entry["driver"] == egh
+                                    and (
+                                        natural_ref_rev[entry["scf_type"]] == corl_type
+                                        if (method_governing_type_keywords[method] == "scf_type")
+                                        else entry["corl_type"] == corl_type
+                                    )
+                                    and entry["scf_type"] == natural_ref[corl_type]
+                                    and (entry["status"] != "fd" or module.startswith("aaaa-"))
+                                )
                             ]
 
                             line.append(fcell(module, subset4, column_block))
@@ -727,8 +734,8 @@ def table_builder__ref_driver_type_fcae():
 
 
 def pts(category, pyfile):
-    print('Auto-documenting %s file %s' % (category, pyfile))
+    print("Auto-documenting %s file %s" % (category, pyfile))
 
 
 table_builder__ref_driver_type_fcae()
-pts('capabilities', args.mode)
+pts("capabilities", args.mode)

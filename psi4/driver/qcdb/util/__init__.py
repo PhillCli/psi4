@@ -27,4 +27,4 @@
 #
 
 from .mpl import plot_coord
-from .regex import yes, no, parse_dertype
+from .regex import no, parse_dertype, yes

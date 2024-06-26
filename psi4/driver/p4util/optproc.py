@@ -25,9 +25,7 @@
 #
 # @END LICENSE
 #
-r"""Module to provide mechanism to store and restore option states in driver.
-
-"""
+r"""Module to provide mechanism to store and restore option states in driver."""
 
 __all__ = [
     "OptionState",
@@ -43,7 +41,7 @@ from psi4 import core
 from .exceptions import ValidationError
 
 
-class OptionState():
+class OptionState:
     """Store the state (value and changed status) of a single `option`.
 
     Parameters
@@ -85,19 +83,27 @@ class OptionState():
             self.haschanged_used = None
 
     def __str__(self):
-        text = ''
+        text = ""
         if self.module:
             text += """  ==> %s Option in Module %s <==\n\n""" % (self.option, self.module)
-            text += """  Global (has changed?) value: %7s %s\n""" % ('(' + str(self.haschanged_global) + ')',
-                                                                     self.value_global)
-            text += """  Local (has changed?) value:  %7s %s\n""" % ('(' + str(self.haschanged_local) + ')',
-                                                                     self.value_local)
-            text += """  Used (has changed?) value:   %7s %s\n""" % ('(' + str(self.haschanged_used) + ')',
-                                                                     self.value_used)
+            text += """  Global (has changed?) value: %7s %s\n""" % (
+                "(" + str(self.haschanged_global) + ")",
+                self.value_global,
+            )
+            text += """  Local (has changed?) value:  %7s %s\n""" % (
+                "(" + str(self.haschanged_local) + ")",
+                self.value_local,
+            )
+            text += """  Used (has changed?) value:   %7s %s\n""" % (
+                "(" + str(self.haschanged_used) + ")",
+                self.value_used,
+            )
         else:
             text += """  ==> %s Option in Global Scope <==\n\n""" % (self.option)
-            text += """  Global (has changed?) value: %7s %s\n""" % ('(' + str(self.haschanged_global) + ')',
-                                                                     self.value_global)
+            text += """  Global (has changed?) value: %7s %s\n""" % (
+                "(" + str(self.haschanged_global) + ")",
+                self.value_global,
+            )
         text += """\n"""
         return text
 
@@ -112,7 +118,7 @@ class OptionState():
                 core.revoke_local_option_changed(self.module, self.option)
 
 
-class OptionsState():
+class OptionsState:
     """Store multiple :py:func:`OptionState` objects.
     Use in driver functions to collect several keywords before altering them,
     then restore them before function return.
@@ -153,21 +159,24 @@ class OptionsState():
         if len(item) == 2:
             key = (item[1], item[0])
         elif len(item) == 1:
-            key = (item[0], )
+            key = (item[0],)
         else:
             raise ValidationError(
-                'Each argument to OptionsState should be an array, the first element of which is     the module scope and the second element of which is the module name. Bad argument: %s'
-                % (item))
+                "Each argument to OptionsState should be an array, the first element of which is     the module scope and the second element of which is the module name. Bad argument: %s"
+                % (item)
+            )
 
         if key in self.data:
             raise ValidationError(
-                'Malformed options state, duplicate key adds of "{}". This should not happen, please raise a issue on github.com/psi4/psi4'
-                .format(key))
+                'Malformed options state, duplicate key adds of "{}". This should not happen, please raise a issue on github.com/psi4/psi4'.format(
+                    key
+                )
+            )
         else:
             self.data[key] = OptionState(*key)
 
     def __str__(self):
-        text = ''
+        text = ""
         for key, item in self.data.items():
             text += str(item)
         return text

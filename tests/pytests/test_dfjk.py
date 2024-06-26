@@ -1,10 +1,12 @@
 #! compare MemJK and DiskJK
 
-import psi4
-import pytest
-import numpy as np
 import random
+
+import numpy as np
+import pytest
 from utils import *
+
+import psi4
 
 pytestmark = [pytest.mark.psi, pytest.mark.api]
 
@@ -27,7 +29,7 @@ def build_system(request):
     naux = aux.nbf()
 
     # construct spaces
-    names = ['C1', 'C2', 'C3', 'C4', 'C5']
+    names = ["C1", "C2", "C3", "C4", "C5"]
     sizes = [16, 16, 20, 20, 30]
     spaces = {names[ind]: psi4.core.Matrix.from_array(np.random.rand(nbf, size)) for ind, size in enumerate(sizes)}
     space_pairs = [[0, 0], [0, 1], [1, 1], [2, 2], [3, 2], [3, 3], [4, 4]]
@@ -66,10 +68,9 @@ def build_system(request):
 
 
 def test_dfjk_compare(build_system):
-
     disk, mem = build_system
 
     # compare
-    for j, t in enumerate(['J', 'K']):
+    for j, t in enumerate(["J", "K"]):
         for i in range(len(disk[0])):
             assert compare_arrays(np.asarray(disk[j][i]), np.asarray(mem[j][i]), 9, t + str(i))

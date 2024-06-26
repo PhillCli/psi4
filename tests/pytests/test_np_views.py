@@ -3,10 +3,9 @@ This is a simple script that verifies several ways of accessing numpy arrays
 and ensures that their memory is properly cleaned.
 """
 
+import numpy as np
 import pytest
 from addons import uusing
-
-import numpy as np
 
 import psi4
 
@@ -22,7 +21,7 @@ def snapshot_memory():
     return mp.memory_usage()[0] * 1048576
 
 
-def check_leak(func, tol=1.e6):
+def check_leak(func, tol=1.0e6):
     start = snapshot_memory()
     func()
     diff = abs(start - snapshot_memory())
@@ -114,7 +113,7 @@ def test_totals():
 
     # Double check totals
     diff = abs(start - snapshot_memory())
-    if diff > 1.e6:
+    if diff > 1.0e6:
         raise MemoryError("\nA function leaked %d bytes of memory!" % diff)
     else:
         print("\nNo leaks detected!")

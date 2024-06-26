@@ -1,6 +1,5 @@
-from utils import *
-
 import qcdb
+from utils import *
 
 
 def test_mints4():
@@ -11,23 +10,24 @@ def test_mints4():
 
     refENuc = 268.6171792624
 
-    refGEOM = \
-          [[   0.710500000000,    -0.794637665924,    -1.230622098778],
-           [   1.421000000000,    -0.794637665924,     0.000000000000],
-           [   0.710500000000,    -0.794637665924,     1.230622098778],
-           [  -0.710500000000,    -0.794637665924,     1.230622098778],
-           [   1.254500000000,    -0.794637665924,    -2.172857738095],
-           [  -1.254500000000,    -0.794637665924,     2.172857738095],
-           [  -0.710500000000,    -0.794637665924,    -1.230622098778],
-           [  -1.421000000000,    -0.794637665924,     0.000000000000],
-           [   2.509000000000,    -0.794637665924,     0.000000000000],
-           [   1.254500000000,    -0.794637665924,     2.172857738095],
-           [  -1.254500000000,    -0.794637665924,    -2.172857738095],
-           [  -2.509000000000,    -0.794637665924,     0.000000000000],
-           [   0.000000000000,     3.205362334076,     0.000000000000],
-           [   0.494974746831,     3.555362334076,    -0.857321409974],
-           [   0.494974746831,     3.555362334076,     0.857321409974],
-           [  -0.989949493661,     3.555362334076,     0.000000000000]]
+    refGEOM = [
+        [0.710500000000, -0.794637665924, -1.230622098778],
+        [1.421000000000, -0.794637665924, 0.000000000000],
+        [0.710500000000, -0.794637665924, 1.230622098778],
+        [-0.710500000000, -0.794637665924, 1.230622098778],
+        [1.254500000000, -0.794637665924, -2.172857738095],
+        [-1.254500000000, -0.794637665924, 2.172857738095],
+        [-0.710500000000, -0.794637665924, -1.230622098778],
+        [-1.421000000000, -0.794637665924, 0.000000000000],
+        [2.509000000000, -0.794637665924, 0.000000000000],
+        [1.254500000000, -0.794637665924, 2.172857738095],
+        [-1.254500000000, -0.794637665924, -2.172857738095],
+        [-2.509000000000, -0.794637665924, 0.000000000000],
+        [0.000000000000, 3.205362334076, 0.000000000000],
+        [0.494974746831, 3.555362334076, -0.857321409974],
+        [0.494974746831, 3.555362334076, 0.857321409974],
+        [-0.989949493661, 3.555362334076, 0.000000000000],
+    ]
 
     dimer = qcdb.Molecule("""
     1 1
@@ -75,7 +75,12 @@ def test_scf4():
     import math
 
     refENuc = [
-        9.78588587740, 9.780670144878629, 8.807297289661147, 8.802603130390768, 8.006633899691952, 8.002366482173423
+        9.78588587740,
+        9.780670144878629,
+        8.807297289661147,
+        8.802603130390768,
+        8.006633899691952,
+        8.002366482173423,
     ]
 
     # Define the points on the potential energy surface using standard Python list functions
@@ -94,12 +99,13 @@ def test_scf4():
 
     count = 0
     for R in Rvals:
-        h2o.set_variable('R', R)  # alternately, h2o.R = R
+        h2o.set_variable("R", R)  # alternately, h2o.R = R
         for A in Avals:
             h2o.A = A  # alternately, h2o.set_variable('A', A)
             h2o.update_geometry()
-            assert compare_values(refENuc[count], h2o.nuclear_repulsion_energy(), 10,
-                                  "Nuclear repulsion energy %d" % count)
+            assert compare_values(
+                refENuc[count], h2o.nuclear_repulsion_energy(), 10, "Nuclear repulsion energy %d" % count
+            )
             count = count + 1
 
     # And now the same thing, using Python's trigonometry functions, and Cartesian input.  This time
@@ -120,10 +126,11 @@ def test_scf4():
             # The non-numeric entries above just define placeholders with names.  They still need
             # to be set, which we do below.
             h2o.R = R
-            h2o.set_variable('RCosA', R * math.cos(math.radians(A)))
+            h2o.set_variable("RCosA", R * math.cos(math.radians(A)))
             h2o.RSinA = R * math.sin(math.radians(A))
             h2o.update_geometry()
 
-            assert compare_values(refENuc[count], h2o.nuclear_repulsion_energy(), 10,
-                                  "Nuclear repulsion energy %d" % count)
+            assert compare_values(
+                refENuc[count], h2o.nuclear_repulsion_energy(), 10, "Nuclear repulsion energy %d" % count
+            )
             count = count + 1

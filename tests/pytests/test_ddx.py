@@ -1,11 +1,10 @@
-import psi4
-import pytest
 import numpy as np
-
-from psi4 import core
-
-from utils import *
+import pytest
 from addons import using, uusing
+from utils import *
+
+import psi4
+from psi4 import core
 
 pytestmark = [pytest.mark.psi, pytest.mark.api]
 
@@ -90,53 +89,39 @@ def _base_test_fock(fock_term, density_matrix, eps=1e-4, tol=1e-8):
         pytest.param(
             {
                 "geom": __geoms["h"],
-                "dm": core.Matrix.from_array(np.array([[0.]])),
-                "ddx": {
-                    "model": "cosmo",
-                    "solvent_epsilon": 1e8,
-                    "eta": 0,
-                    "radii": [1.0]
-                },
+                "dm": core.Matrix.from_array(np.array([[0.0]])),
+                "ddx": {"model": "cosmo", "solvent_epsilon": 1e8, "eta": 0, "radii": [1.0]},
                 "ref": -0.2645886054599999,  # from Gaussian
             },
-            id='h'),
+            id="h",
+        ),
         pytest.param(
             {
                 "geom": __geoms["h2"],
                 "dm": core.Matrix.from_array(0.6682326961201372 * np.ones((2, 2))),
-                "ddx": {
-                    "model": "cosmo",
-                    "solvent_epsilon": 1e8,
-                    "eta": 0,
-                    "radii": [1.5873, 1.5873]
-                },
+                "ddx": {"model": "cosmo", "solvent_epsilon": 1e8, "eta": 0, "radii": [1.5873, 1.5873]},
                 "ref": -0.0002016948,  # from Gaussian
             },
-            id='h2cosmo'),
+            id="h2cosmo",
+        ),
         pytest.param(
             {
                 "geom": __geoms["h2"],
                 "dm": core.Matrix.from_array(0.6682326961201372 * np.ones((2, 2))),
-                "ddx": {
-                    "model": "pcm",
-                    "solvent_epsilon": 80,
-                    "radii": [1.5873, 1.5873]
-                },
+                "ddx": {"model": "pcm", "solvent_epsilon": 80, "radii": [1.5873, 1.5873]},
             },
-            id='h2pcm'),
+            id="h2pcm",
+        ),
         pytest.param(
             {
                 "geom": __geoms["h2"],
                 "dm": core.Matrix.from_array(0.6682326961201372 * np.ones((2, 2))),
-                "ddx": {
-                    "model": "lpb",
-                    "solvent_epsilon": 80,
-                    "solvent_kappa": 1.5,
-                    "radii": [1.5873, 1.5873]
-                },
+                "ddx": {"model": "lpb", "solvent_epsilon": 80, "solvent_kappa": 1.5, "radii": [1.5873, 1.5873]},
             },
-            id='h2lpb'),
-    ])
+            id="h2lpb",
+        ),
+    ],
+)
 def test_ddx_fock_build(inp):
     """
     Tests COSMO / LPB energy against reference from Gaussian
@@ -144,14 +129,16 @@ def test_ddx_fock_build(inp):
     """
     from psi4.driver.procrouting.solvent import ddx
 
-    psi4.set_options({
-        "df_scf_guess": False,
-        #
-        "ddx_lmax": 3,
-        "ddx_n_lebedev": 302,
-        "ddx_solute_spherical_points": 350,
-        "ddx_solute_radial_points": 99,
-    })
+    psi4.set_options(
+        {
+            "df_scf_guess": False,
+            #
+            "ddx_lmax": 3,
+            "ddx_n_lebedev": 302,
+            "ddx_solute_spherical_points": 350,
+            "ddx_solute_radial_points": 99,
+        }
+    )
     for key in inp["ddx"].keys():
         psi4.set_options({"ddx_" + key: inp["ddx"][key]})
 
@@ -178,32 +165,36 @@ def test_ddx_limiting_cases():
     """Test consistency of limiting cases in PCM / COSMO / LPB"""
     from psi4.driver.procrouting.solvent import ddx
 
-    psi4.set_options({
-        "df_scf_guess": False,
-        "ddx_lmax": 20,
-        "ddx_n_lebedev": 590,
-        "ddx_solute_spherical_points": 590,
-        "ddx_solute_radial_points": 100,
-        "ddx_shift": 0.0,
-        "ddx_eta": 0.1,
-        "ddx_radii_scaling": 7.1,
-        "basis": "3-21g",
-        "ddx": False,
-    })
+    psi4.set_options(
+        {
+            "df_scf_guess": False,
+            "ddx_lmax": 20,
+            "ddx_n_lebedev": 590,
+            "ddx_solute_spherical_points": 590,
+            "ddx_solute_radial_points": 100,
+            "ddx_shift": 0.0,
+            "ddx_eta": 0.1,
+            "ddx_radii_scaling": 7.1,
+            "basis": "3-21g",
+            "ddx": False,
+        }
+    )
 
     # get a realistic guess density
     mol = psi4.geometry(__geoms["nh3"])
     basis = psi4.core.BasisSet.build(mol, "BASIS", "sto-3g")
-    _, wfn = psi4.energy('SCF', molecule=mol, return_wfn=True)
+    _, wfn = psi4.energy("SCF", molecule=mol, return_wfn=True)
     density_matrix = core.Matrix.from_array(wfn.Da().np)
 
     def ddenergy(model, solvent_kappa=0.0, solvent_epsilon=80.0):
-        psi4.set_options({
-            "ddx_solvent_kappa": solvent_kappa,
-            "ddx_model": model,
-            "ddx_solvent_epsilon": solvent_epsilon,
-            "ddx_solvation_convergence": 1e-10
-        })
+        psi4.set_options(
+            {
+                "ddx_solvent_kappa": solvent_kappa,
+                "ddx_model": model,
+                "ddx_solvent_epsilon": solvent_epsilon,
+                "ddx_solvation_convergence": 1e-10,
+            }
+        )
         ddx_options = ddx.get_ddx_options(mol)
         ddx_iface = ddx.DdxInterface(mol, ddx_options, basis)
         E, V, _ = ddx_iface.get_solvation_contributions(density_matrix)
@@ -253,7 +244,8 @@ def test_ddx_limiting_cases():
                 "ref": -75.5946789010,  # from Gaussian
                 "solvation": -0.009402,
             },
-            id='h2o'),
+            id="h2o",
+        ),
         #
         pytest.param(
             {
@@ -265,7 +257,8 @@ def test_ddx_limiting_cases():
                 "ref": -594.993575419,  # from Gaussian
                 "solvation": -0.006719,
             },
-            id='fcm'),
+            id="fcm",
+        ),
         #
         pytest.param(
             {
@@ -277,7 +270,8 @@ def test_ddx_limiting_cases():
                 "ref": -594.990420855,  # from Gaussian
                 "solvation": -0.002964,
             },
-            id='fcmeps'),
+            id="fcmeps",
+        ),
         #
         pytest.param(
             {
@@ -289,7 +283,8 @@ def test_ddx_limiting_cases():
                 "ref": -594.990487330,  # from Gaussian
                 "solvation": -0.003041,
             },
-            id='fcmepseta'),
+            id="fcmepseta",
+        ),
         #
         pytest.param(
             {
@@ -301,27 +296,31 @@ def test_ddx_limiting_cases():
                 "ref": -229.420391688,  # from Gaussian
                 "solvation": -0.005182,
             },
-            id='benzene'),
-    ])
+            id="benzene",
+        ),
+    ],
+)
 def test_ddx_rhf_reference(inp):
     mol = psi4.geometry(inp["geom"])
-    psi4.set_options({
-        "ddx": True,
-        "basis": "3-21g",
-        "guess": "core",
-        "scf_type": "direct",
-        #
-        "ddx_model": "cosmo",
-        "ddx_radii_set": "uff",
-        "ddx_lmax": 3,
-        "ddx_n_lebedev": 302,
-        "ddx_solute_spherical_points": 302,
-        "ddx_solute_radial_points": 75,
-        "ddx_shift": 0.0,
-    })
+    psi4.set_options(
+        {
+            "ddx": True,
+            "basis": "3-21g",
+            "guess": "core",
+            "scf_type": "direct",
+            #
+            "ddx_model": "cosmo",
+            "ddx_radii_set": "uff",
+            "ddx_lmax": 3,
+            "ddx_n_lebedev": 302,
+            "ddx_solute_spherical_points": 302,
+            "ddx_solute_radial_points": 75,
+            "ddx_shift": 0.0,
+        }
+    )
     for key in inp["ddx"].keys():
         psi4.set_options({"ddx_" + key: inp["ddx"][key]})
-    scf_e, wfn = psi4.energy('SCF', return_wfn=True, molecule=mol)
+    scf_e, wfn = psi4.energy("SCF", return_wfn=True, molecule=mol)
     ddx_e = wfn.scalar_variable("dd solvation energy")
 
     assert compare_values(inp["solvation"], ddx_e, 4, "DDX solvation energy versus Gaussian")
@@ -330,59 +329,62 @@ def test_ddx_rhf_reference(inp):
 
 @pytest.mark.quick
 @uusing("ddx")
-@pytest.mark.parametrize("inp", [
-    pytest.param(
-        {
-            "geom": __geoms["h2o"],
-            "basis": "cc-pvdz",
-            "ddx": {
-                "model": "cosmo",
-                "solvent": "water",
-                "radii_set": "bondi",
+@pytest.mark.parametrize(
+    "inp",
+    [
+        pytest.param(
+            {
+                "geom": __geoms["h2o"],
+                "basis": "cc-pvdz",
+                "ddx": {
+                    "model": "cosmo",
+                    "solvent": "water",
+                    "radii_set": "bondi",
+                },
+                "ref": -76.0346355428018,
             },
-            "ref": -76.0346355428018,
-        },
-        id='h2o-cosmo'),
-    pytest.param(
-        {
-            "geom": __geoms["fcm"],
-            "basis": "cc-pvdz",
-            "ddx": {
-                "model": "pcm",
-                "solvent": "water",
-                "radii_set": "uff",
+            id="h2o-cosmo",
+        ),
+        pytest.param(
+            {
+                "geom": __geoms["fcm"],
+                "basis": "cc-pvdz",
+                "ddx": {
+                    "model": "pcm",
+                    "solvent": "water",
+                    "radii_set": "uff",
+                },
+                "ref": -597.9718943192062,
             },
-            "ref": -597.9718943192062,
-        },
-        id='fcm-pcm'),
-    pytest.param(
-        {
-            "geom": __geoms["nh3"],
-            "basis": "cc-pvdz",
-            "ddx": {
-                "model": "lpb",
-                "solvent": "water",
-                "radii_set": "uff",
-                "solvent_kappa": 0.11
+            id="fcm-pcm",
+        ),
+        pytest.param(
+            {
+                "geom": __geoms["nh3"],
+                "basis": "cc-pvdz",
+                "ddx": {"model": "lpb", "solvent": "water", "radii_set": "uff", "solvent_kappa": 0.11},
+                "ref": -56.1988043810054,
             },
-            "ref": -56.1988043810054,
-        },
-        id='nh3-lpb'),
-])
+            id="nh3-lpb",
+        ),
+    ],
+)
 def test_ddx_rhf_consistency(inp):
     mol = psi4.geometry(inp["geom"])
-    psi4.set_options({
-        "ddx": True,
-        "basis": inp["basis"],
-        #
-        "ddx_lmax": 10,
-        "ddx_n_lebedev": 302,
-        "ddx_solute_spherical_points": 302,
-        "ddx_solute_radial_points": 75,
-    })
+    psi4.set_options(
+        {
+            "ddx": True,
+            "basis": inp["basis"],
+            #
+            "ddx_lmax": 10,
+            "ddx_n_lebedev": 302,
+            "ddx_solute_spherical_points": 302,
+            "ddx_solute_radial_points": 75,
+        }
+    )
     for key in inp["ddx"].keys():
         psi4.set_options({"ddx_" + key: inp["ddx"][key]})
-    scf_e, wfn = psi4.energy('SCF', return_wfn=True, molecule=mol)
+    scf_e, wfn = psi4.energy("SCF", return_wfn=True, molecule=mol)
     assert compare_values(inp["ref"], scf_e, 9, "Total SCF energy with DDX versus reference data")
 
 
@@ -390,21 +392,23 @@ def test_ddx_rhf_consistency(inp):
 @pytest.mark.parametrize("scf_type", ["pk", "out_of_core", "direct", "df", "cd"])
 def test_ddx_eri_algorithms(scf_type):
     mol = psi4.geometry(__geoms["nh3"])
-    psi4.set_options({
-        "scf_type": scf_type,
-        "basis": "6-31g",
-        "ddx": True,
-        "ddx_model": "pcm",
-        "ddx_solvent": "water",
-        "ddx_radii_set": "uff",
-    })
+    psi4.set_options(
+        {
+            "scf_type": scf_type,
+            "basis": "6-31g",
+            "ddx": True,
+            "ddx_model": "pcm",
+            "ddx_solvent": "water",
+            "ddx_radii_set": "uff",
+        }
+    )
     if scf_type in ("df", "cd"):
         tol = 4
     else:
         tol = 9
 
     ref = -56.171546236617495
-    scf_e = psi4.energy('SCF')
+    scf_e = psi4.energy("SCF")
     assert compare_values(ref, scf_e, tol, "Total SCF energy with DDX versus reference data")
 
 
@@ -412,21 +416,25 @@ def test_ddx_eri_algorithms(scf_type):
 @uusing("ddx")
 def test_ddx_tdscf_pcmsolver():
     # PCMsolver reference values, same as in tests/pcmsolver/tdscf
-    exc_energies = np.array([  # Hartree
-        0.08972598844884663,
-        0.2719972189552112,
-        0.33525624703045037,
-        0.3713900898382711,
-        0.3762084431466903,
-    ])
+    exc_energies = np.array(
+        [  # Hartree
+            0.08972598844884663,
+            0.2719972189552112,
+            0.33525624703045037,
+            0.3713900898382711,
+            0.3762084431466903,
+        ]
+    )
 
-    osc_strengths = np.array([
-        0.00414272407997719,
-        4.590977316768732e-28,
-        0.005715258102198367,
-        0.018432750255865125,
-        0.006434117688452513,
-    ])
+    osc_strengths = np.array(
+        [
+            0.00414272407997719,
+            4.590977316768732e-28,
+            0.005715258102198367,
+            0.018432750255865125,
+            0.006434117688452513,
+        ]
+    )
 
     scf_ref = -55.5218518303635165
 
@@ -439,20 +447,22 @@ def test_ddx_tdscf_pcmsolver():
         units angstrom
         """)
 
-    psi4.set_options({
-        "reference": "uhf",
-        "scf_type": "pk",
-        "basis": "def2-SVP",
-        "e_convergence": 10,
-        "maxiter": 50,
-        "tdscf_states": 5,
-        #
-        "ddx": True,
-        "ddx_model": "pcm",
-        "ddx_solvent": "water",
-        "ddx_radii_set": "uff",  # Make it compatible with pcmsolver
-        'ddx_radii_scaling': 1.2,  # Make it compatible with pcmsolver
-    })
+    psi4.set_options(
+        {
+            "reference": "uhf",
+            "scf_type": "pk",
+            "basis": "def2-SVP",
+            "e_convergence": 10,
+            "maxiter": 50,
+            "tdscf_states": 5,
+            #
+            "ddx": True,
+            "ddx_model": "pcm",
+            "ddx_solvent": "water",
+            "ddx_radii_set": "uff",  # Make it compatible with pcmsolver
+            "ddx_radii_scaling": 1.2,  # Make it compatible with pcmsolver
+        }
+    )
 
     scf_e = psi4.energy("TD-SCF")
     assert compare_values(scf_ref, scf_e, 4, "Total SCF energy with DDX versus reference data")
@@ -460,28 +470,30 @@ def test_ddx_tdscf_pcmsolver():
     f_calc = []
     e_calc = []
     for i in range(5):
-        e_calc.append(psi4.variable(f'TD-HF ROOT 0 -> ROOT {i+1} EXCITATION ENERGY - A TRANSITION'))
-        f_calc.append(psi4.variable(f'TD-HF ROOT 0 -> ROOT {i+1} OSCILLATOR STRENGTH (LEN) - A TRANSITION'))
-    compare_arrays(exc_energies, e_calc, 4, 'PCM EXCITATION ENERGY ')
-    compare_arrays(osc_strengths, f_calc, 4, 'PCM OSCILLATOR STRENGTH ')
+        e_calc.append(psi4.variable(f"TD-HF ROOT 0 -> ROOT {i+1} EXCITATION ENERGY - A TRANSITION"))
+        f_calc.append(psi4.variable(f"TD-HF ROOT 0 -> ROOT {i+1} OSCILLATOR STRENGTH (LEN) - A TRANSITION"))
+    compare_arrays(exc_energies, e_calc, 4, "PCM EXCITATION ENERGY ")
+    compare_arrays(osc_strengths, f_calc, 4, "PCM OSCILLATOR STRENGTH ")
 
 
 @pytest.mark.quick
 @uusing("ddx")
 def test_ddx_tdscf_gaussian():
     # Reference test against Gaussian
-    exc_energies = np.array([  # eV
-        9.7131,
-        11.6679,
-        11.9693,
-        14.0604,
-        16.0886,
-        20.3350,
-        33.4852,
-        34.1673,
-        35.3953,
-        35.6058,
-    ])
+    exc_energies = np.array(
+        [  # eV
+            9.7131,
+            11.6679,
+            11.9693,
+            14.0604,
+            16.0886,
+            20.3350,
+            33.4852,
+            34.1673,
+            35.3953,
+            35.6058,
+        ]
+    )
     psi4.geometry("""
         O         0.00000000     0.00000000     0.11721877
         H         0.00000000     1.48123757    -0.93017349
@@ -492,30 +504,32 @@ def test_ddx_tdscf_gaussian():
         no_com
         units bohr
     """)
-    psi4.set_options({
-        "basis": "3-21g",
-        "d_convergence": 1e-8,
-        "e_convergence": 1e-12,
-        "tdscf_r_convergence": 1e-6,
-        "scf_type": "direct",
-        "guess": "core",
-        "ddx": True,
-        "tdscf_states": 10,
-        "ddx_lmax": 10,
-        "ddx_n_lebedev": 590,
-        "ddx_model": "pcm",
-        "ddx_radii_set": "uff",
-        "ddx_radii_scaling": 1.1,
-        "ddx_eta": 0.0,
-        "ddx_solvation_convergence": 1e-10,
-        "ddx_solvent_epsilon": 2.0,
-        "ddx_solvent_epsilon_optical": 2.0,
-        "ddx_solute_spherical_points": 590,
-        "ddx_solute_radial_points": 1000,
-    })
-    psi4.energy('TD-HF')
+    psi4.set_options(
+        {
+            "basis": "3-21g",
+            "d_convergence": 1e-8,
+            "e_convergence": 1e-12,
+            "tdscf_r_convergence": 1e-6,
+            "scf_type": "direct",
+            "guess": "core",
+            "ddx": True,
+            "tdscf_states": 10,
+            "ddx_lmax": 10,
+            "ddx_n_lebedev": 590,
+            "ddx_model": "pcm",
+            "ddx_radii_set": "uff",
+            "ddx_radii_scaling": 1.1,
+            "ddx_eta": 0.0,
+            "ddx_solvation_convergence": 1e-10,
+            "ddx_solvent_epsilon": 2.0,
+            "ddx_solvent_epsilon_optical": 2.0,
+            "ddx_solute_spherical_points": 590,
+            "ddx_solute_radial_points": 1000,
+        }
+    )
+    psi4.energy("TD-HF")
 
     e_calc = []
     for i in range(5):
-        e_calc.append(psi4.variable(f'TD-HF ROOT 0 -> ROOT {i+1} EXCITATION ENERGY - A TRANSITION'))
-    compare_arrays(exc_energies, e_calc, 4, 'PCM EXCITATION ENERGY ')
+        e_calc.append(psi4.variable(f"TD-HF ROOT 0 -> ROOT {i+1} EXCITATION ENERGY - A TRANSITION"))
+    compare_arrays(exc_energies, e_calc, 4, "PCM EXCITATION ENERGY ")
