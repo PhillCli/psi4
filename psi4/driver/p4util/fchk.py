@@ -42,6 +42,7 @@ __all__ = [
     "compare_moldenfiles",
 ]
 
+
 def _consume_fchk_section(input_list, index):
     """compare a float or integer matrix section"""
 
@@ -55,12 +56,12 @@ def _consume_fchk_section(input_list, index):
         dtype = np.float64
         format_counter = 6
     else:
-        raise ValidationError('Unknow field type in FCHK reader\n')
+        raise ValidationError("Unknow field type in FCHK reader\n")
 
     extra = 0 if n <= format_counter else n % format_counter
     lines = 1 if n <= format_counter else int(n / format_counter)
     offset = lines + 1 if extra > 0 else lines
-    string = ''
+    string = ""
     for j in range(lines):
         string += "".join(str(x) for x in input_list[index + 1 + j])
     if extra > 0:
@@ -70,8 +71,8 @@ def _consume_fchk_section(input_list, index):
 
 
 def _fchkfile_to_string(fname: str) -> str:
-    """ Load FCHK file into a string"""
-    with open(fname, 'r') as handle:
+    """Load FCHK file into a string"""
+    with open(fname, "r") as handle:
         fchk_string = handle.read()
     return fchk_string
 
@@ -112,10 +113,10 @@ def compare_fchkfiles(expected: str, computed: str, atol_exponent: Union[int, fl
 
     # Those listed below need super high scf convergence (d_conv 1e-12) and might
     # show machine dependence. They will be tested with low_accuracy.
-    sensitive = ['Current cartesian coordinates', 'MO coefficients']
+    sensitive = ["Current cartesian coordinates", "MO coefficients"]
 
     if len(fchk_ref) != len(fchk_calc):
-        raise ValidationError('The two FCHK files to compare have a different file length! \n')
+        raise ValidationError("The two FCHK files to compare have a different file length! \n")
 
     index = 0
     max_length = len(fchk_calc)
@@ -151,10 +152,8 @@ def compare_fchkfiles(expected: str, computed: str, atol_exponent: Union[int, fl
 
 
 def compare_moldenfiles(
-    expected: str,
-    computed: str,
-    atol_exponent: Union[int, float] = 1.e-7,
-    label: str = "Compare Molden"):
+    expected: str, computed: str, atol_exponent: Union[int, float] = 1.0e-7, label: str = "Compare Molden"
+):
     """Comparison function for output data in Molden file format.
     Compares many fields including geometry, basis set, occupations, symmetries, energies.
 
@@ -177,8 +176,9 @@ def compare_moldenfiles(
         Label for passed and error messages.
 
     """
+
     def moldenfile_to_string(fname):
-        with open(fname, 'r') as fn:
+        with open(fname, "r") as fn:
             molden_string = fn.read()
         return molden_string
 
@@ -193,14 +193,14 @@ def compare_moldenfiles(
     tests = []
     section = 0
 
-    geom_re = re.compile(r'^\s*(\w*)\s+(\d+)\s+(\d+)\s+(-?\d+.\d+)\s+(-?\d+.\d+)\s+(-?\d+.\d+)\s*$')
-    basis_header_re = re.compile(r'^\s*([s,p,d,f,g])\s*(\d*)\s*(\d*.\d*)\s*$')
-    s1_re = re.compile(r'^\s*(\d+.?\d*)\s+(\d+.?\d*)$')
-    s2_re = re.compile(r'^\s*(\d+)\s+(-?\d+.\d+[e,E][\+,-]\d+)\s*$')
-    sym_re = re.compile(r'^\s*Sym\s*=\s*(\w*)\s*$')
-    energy_re = re.compile(r'^\s*Ene\s*=\s*(-?\d*.?\d*[e,E]?\+?-?\d*)\s*$')
-    spin_re = re.compile(r'^\s*Spin\s*=\s*(\w*)\s*$')
-    occ_re = re.compile(r'^\s*Occup\s*=\s*(-?\d*.\d*[e,E]?-?\+?\d*)\s*$')
+    geom_re = re.compile(r"^\s*(\w*)\s+(\d+)\s+(\d+)\s+(-?\d+.\d+)\s+(-?\d+.\d+)\s+(-?\d+.\d+)\s*$")
+    basis_header_re = re.compile(r"^\s*([s,p,d,f,g])\s*(\d*)\s*(\d*.\d*)\s*$")
+    s1_re = re.compile(r"^\s*(\d+.?\d*)\s+(\d+.?\d*)$")
+    s2_re = re.compile(r"^\s*(\d+)\s+(-?\d+.\d+[e,E][\+,-]\d+)\s*$")
+    sym_re = re.compile(r"^\s*Sym\s*=\s*(\w*)\s*$")
+    energy_re = re.compile(r"^\s*Ene\s*=\s*(-?\d*.?\d*[e,E]?\+?-?\d*)\s*$")
+    spin_re = re.compile(r"^\s*Spin\s*=\s*(\w*)\s*$")
+    occ_re = re.compile(r"^\s*Occup\s*=\s*(-?\d*.\d*[e,E]?-?\+?\d*)\s*$")
 
     for i in range(max_len):
         line = calc[i]
@@ -208,12 +208,19 @@ def compare_moldenfiles(
         if geom_re.match(line):
             c1, c2, c3, c4, c5, c6 = geom_re.match(line).groups()
             r1, r2, r3, r4, r5, r6 = geom_re.match(line).groups()
-            test = compare_strings(r1, c1) and compare_integers(r2, c2) and compare_integers(r3, c3) and compare_values(r4, c4, high_accuracy) and compare_values(r5, c5, high_accuracy) and compare_values(r6, c6, high_accuracy)
+            test = (
+                compare_strings(r1, c1)
+                and compare_integers(r2, c2)
+                and compare_integers(r3, c3)
+                and compare_values(r4, c4, high_accuracy)
+                and compare_values(r5, c5, high_accuracy)
+                and compare_values(r6, c6, high_accuracy)
+            )
 
         elif basis_header_re.match(line):
             c1, c2, c3 = basis_header_re.match(line).groups()
             r1, r2, r3 = basis_header_re.match(ref[i]).groups()
-            test = compare_strings(r1,c1) and compare_integers(r2,c2) and compare_values(r3,c3,3)
+            test = compare_strings(r1, c1) and compare_integers(r2, c2) and compare_values(r3, c3, 3)
 
         elif s1_re.match(line):
             c1, c2 = s1_re.match(line).groups()
@@ -223,27 +230,29 @@ def compare_moldenfiles(
         elif sym_re.match(line):
             c = sym_re.match(line).group(1)
             r = sym_re.match(ref[i]).group(1)
-            test = compare_strings(r, c, f'text line: {line}')
+            test = compare_strings(r, c, f"text line: {line}")
 
         elif energy_re.match(line):
             c = energy_re.match(line).group(1)
             r = energy_re.match(ref[i]).group(1)
-            test = compare_values(r, c, high_accuracy, f'float value: {line}')
+            test = compare_values(r, c, high_accuracy, f"float value: {line}")
 
         elif spin_re.match(line):
             c = spin_re.match(line).group(1)
             r = spin_re.match(ref[i]).group(1)
-            test = compare_strings(r, c, f'text line: {line}')
+            test = compare_strings(r, c, f"text line: {line}")
 
         elif occ_re.match(line):
             c = occ_re.match(line).group(1)
             r = occ_re.match(ref[i]).group(1)
-            test = compare_values(r, c, high_accuracy, f'float value: {line}')
+            test = compare_values(r, c, high_accuracy, f"float value: {line}")
 
         elif s2_re.match(line):
             c1, c2 = s2_re.match(line).groups()
             r1, r2 = s2_re.match(line).groups()
-            test = compare_integers(r1, c1, f'int value: {line}') and compare_values(r2, c2, high_accuracy, f'float value: {line}')
+            test = compare_integers(r1, c1, f"int value: {line}") and compare_values(
+                r2, c2, high_accuracy, f"float value: {line}"
+            )
 
         else:
             test = compare_strings(line, ref[i])

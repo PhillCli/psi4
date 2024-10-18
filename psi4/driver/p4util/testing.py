@@ -73,15 +73,16 @@ def _mergedapis_compare_vectors(expected, computed, *args, **kwargs):
     qcdb.testing._merge_psi4_qcel_apis(args, kwargs)
 
     if kwargs.pop("check_name", False):
-        compare(expected.name, computed.name, f'{expected.name} vs. {computed.name} name', quiet=True)
+        compare(expected.name, computed.name, f"{expected.name} vs. {computed.name} name", quiet=True)
 
-    compare(expected.nirrep(), computed.nirrep(), f'{expected.name} vs. {computed.name} irreps', quiet=True)
+    compare(expected.nirrep(), computed.nirrep(), f"{expected.name} vs. {computed.name} irreps", quiet=True)
     for irrep in range(expected.nirrep()):
         compare(
             expected.dim(irrep),
             computed.dim(irrep),
-            f'{expected.name} vs. {computed.name} irrep {irrep} dimensions ({expected.dim(irrep)} vs {computed.dim(irrep)})',
-            quiet=True)
+            f"{expected.name} vs. {computed.name} irrep {irrep} dimensions ({expected.dim(irrep)} vs {computed.dim(irrep)})",
+            quiet=True,
+        )
 
     expected = expected.to_array()
     computed = computed.to_array()
@@ -95,21 +96,23 @@ def _mergedapis_compare_matrices(expected, computed, *args, **kwargs):
     qcdb.testing._merge_psi4_qcel_apis(args, kwargs)
 
     if kwargs.pop("check_name", False):
-        compare(expected.name, computed.name, f'{expected.name} vs. {computed.name} name', quiet=True)
+        compare(expected.name, computed.name, f"{expected.name} vs. {computed.name} name", quiet=True)
 
-    compare(expected.nirrep(), computed.nirrep(), f'{expected.name} vs. {computed.name} irreps', quiet=True)
-    compare(expected.symmetry(), computed.symmetry(), f'{expected.name} vs. {computed.name} symmetry', quiet=True)
+    compare(expected.nirrep(), computed.nirrep(), f"{expected.name} vs. {computed.name} irreps", quiet=True)
+    compare(expected.symmetry(), computed.symmetry(), f"{expected.name} vs. {computed.name} symmetry", quiet=True)
     for irrep in range(expected.nirrep()):
         compare(
             expected.rows(irrep),
             computed.rows(irrep),
-            f'{expected.name} vs. {computed.name} irrep {irrep} rows ({expected.rows(irrep)} vs {computed.rows(irrep)})',
-            quiet=True)
+            f"{expected.name} vs. {computed.name} irrep {irrep} rows ({expected.rows(irrep)} vs {computed.rows(irrep)})",
+            quiet=True,
+        )
         compare(
             expected.cols(irrep ^ expected.symmetry()),
             computed.cols(irrep ^ expected.symmetry()),
-            f'{expected.name} vs. {computed.name} irrep {irrep} columns ({expected.cols(irrep)} vs {computed.cols(irrep)})',
-            quiet=True)
+            f"{expected.name} vs. {computed.name} irrep {irrep} columns ({expected.cols(irrep)} vs {computed.cols(irrep)})",
+            quiet=True,
+        )
 
     expected = expected.to_array()
     computed = computed.to_array()
@@ -122,11 +125,11 @@ def _mergedapis_compare_wavefunctions(expected, computed, *args, **kwargs):
 
     qcdb.testing._merge_psi4_qcel_apis(args, kwargs)
 
-    if kwargs['label'] == '<module>':
-        kwargs['label'] = 'Wavefunctions equal'
+    if kwargs["label"] == "<module>":
+        kwargs["label"] = "Wavefunctions equal"
     kwargscopy = kwargs.copy()
-    kwargscopy.pop('label')
-    atol = kwargscopy.pop('atol', 1.e-9)
+    kwargscopy.pop("label")
+    atol = kwargscopy.pop("atol", 1.0e-9)
 
     # yapf: disable
     if expected.Ca():          compare_matrices(expected.Ca(), computed.Ca(), 'compare Ca', atol=atol, **kwargscopy)
@@ -145,46 +148,63 @@ def _mergedapis_compare_wavefunctions(expected, computed, *args, **kwargs):
     if expected.epsilon_b():   compare_vectors(expected.epsilon_b(), computed.epsilon_b(), 'compare epsilon_b', atol=atol, **kwargscopy)
     if expected.frequencies(): compare_vectors(expected.frequencies(), computed.frequencies(), 'compare frequencies', atol=atol, **kwargscopy)
     # yapf: enable
-    compare(expected.nalpha(), computed.nalpha(), 'compare nalpha', **kwargscopy)
-    compare(expected.nbeta(), computed.nbeta(), 'compare nbeta', **kwargscopy)
-    compare(expected.nfrzc(), computed.nfrzc(), 'compare nfrzc', **kwargscopy)
-    compare(expected.nirrep(), computed.nirrep(), 'compare nirrep', **kwargscopy)
-    compare(expected.nmo(), computed.nmo(), 'compare nmo', **kwargscopy)
-    compare(expected.nso(), computed.nso(), 'compare nso', **kwargscopy)
-    compare(expected.name(), computed.name(), 'compare name', **kwargscopy)
-    compare(expected.module(), computed.module(), 'compare module', **kwargscopy)
-    compare_values(expected.energy(), computed.energy(), 'compare energy', atol=atol, **kwargscopy)
-    compare_values(expected.efzc(), computed.efzc(), 'compare frozen core energy', atol=atol, **kwargscopy)
-    compare_values(expected.get_dipole_field_strength()[0],
-                   computed.get_dipole_field_strength()[0],
-                   'compare dipole field strength x',
-                   atol=atol,
-                   **kwargscopy)
-    compare_values(expected.get_dipole_field_strength()[1],
-                   computed.get_dipole_field_strength()[1],
-                   'compare dipole field strength y',
-                   atol=atol,
-                   **kwargscopy)
-    compare_values(expected.get_dipole_field_strength()[2],
-                   computed.get_dipole_field_strength()[2],
-                   'compare dipole field strength z',
-                   atol=atol,
-                   **kwargscopy)
+    compare(expected.nalpha(), computed.nalpha(), "compare nalpha", **kwargscopy)
+    compare(expected.nbeta(), computed.nbeta(), "compare nbeta", **kwargscopy)
+    compare(expected.nfrzc(), computed.nfrzc(), "compare nfrzc", **kwargscopy)
+    compare(expected.nirrep(), computed.nirrep(), "compare nirrep", **kwargscopy)
+    compare(expected.nmo(), computed.nmo(), "compare nmo", **kwargscopy)
+    compare(expected.nso(), computed.nso(), "compare nso", **kwargscopy)
+    compare(expected.name(), computed.name(), "compare name", **kwargscopy)
+    compare(expected.module(), computed.module(), "compare module", **kwargscopy)
+    compare_values(expected.energy(), computed.energy(), "compare energy", atol=atol, **kwargscopy)
+    compare_values(expected.efzc(), computed.efzc(), "compare frozen core energy", atol=atol, **kwargscopy)
+    compare_values(
+        expected.get_dipole_field_strength()[0],
+        computed.get_dipole_field_strength()[0],
+        "compare dipole field strength x",
+        atol=atol,
+        **kwargscopy,
+    )
+    compare_values(
+        expected.get_dipole_field_strength()[1],
+        computed.get_dipole_field_strength()[1],
+        "compare dipole field strength y",
+        atol=atol,
+        **kwargscopy,
+    )
+    compare_values(
+        expected.get_dipole_field_strength()[2],
+        computed.get_dipole_field_strength()[2],
+        "compare dipole field strength z",
+        atol=atol,
+        **kwargscopy,
+    )
 
-    compare(expected.basisset().name(), computed.basisset().name(), 'compare basis set name', **kwargscopy)
-    compare(expected.basisset().nbf(),
-            computed.basisset().nbf(), 'compare number of basis functions in set', **kwargscopy)
-    compare(expected.basisset().nprimitive(),
-            computed.basisset().nprimitive(), 'compare total number of primitives in basis set', **kwargscopy)
+    compare(expected.basisset().name(), computed.basisset().name(), "compare basis set name", **kwargscopy)
+    compare(
+        expected.basisset().nbf(), computed.basisset().nbf(), "compare number of basis functions in set", **kwargscopy
+    )
+    compare(
+        expected.basisset().nprimitive(),
+        computed.basisset().nprimitive(),
+        "compare total number of primitives in basis set",
+        **kwargscopy,
+    )
 
-    compare(expected.molecule().name(), computed.molecule().name(), 'compare molecule name', **kwargscopy)
-    compare(expected.molecule().get_full_point_group(),
-            computed.molecule().get_full_point_group(), 'compare molecule point group', **kwargscopy)
-    compare_matrices(expected.molecule().geometry(),
-                     computed.molecule().geometry(),
-                     'compare molecule geometry',
-                     atol=atol,
-                     **kwargscopy)
+    compare(expected.molecule().name(), computed.molecule().name(), "compare molecule name", **kwargscopy)
+    compare(
+        expected.molecule().get_full_point_group(),
+        computed.molecule().get_full_point_group(),
+        "compare molecule point group",
+        **kwargscopy,
+    )
+    compare_matrices(
+        expected.molecule().geometry(),
+        computed.molecule().geometry(),
+        "compare molecule geometry",
+        atol=atol,
+        **kwargscopy,
+    )
 
     return qcel.testing.compare(True, True, **kwargs)
 
@@ -195,12 +215,12 @@ def _psi4_true_raise_handler(passfail, label, message, return_message=False, qui
     width = 86
     if passfail:
         if not quiet:
-            core.print_out(f'    {label:.<{width}}PASSED\n')
-            print(f'    {label:.<{width}}PASSED')
+            core.print_out(f"    {label:.<{width}}PASSED\n")
+            print(f"    {label:.<{width}}PASSED")
             sys.stdout.flush()
     else:
-        core.print_out(f'    {label:.<{width}}FAILED')
-        print(f'    {label:.<{width}}FAILED')
+        core.print_out(f"    {label:.<{width}}FAILED")
+        print(f"    {label:.<{width}}FAILED")
         sys.stdout.flush()
         raise TestComparisonError(message)
 
@@ -239,12 +259,15 @@ _psi4_style_doc = """
 
 """
 
-compare_values.__doc__ = """Comparison function for float or float array-like data structures.
+compare_values.__doc__ = (
+    """Comparison function for float or float array-like data structures.
     See :py:func:`qcelemental.testing.compare_values` for details.
 
     ``psi4.compare_arrays`` is an old comparison function for float NumPy arrays that is now an alias to this.
 
-""" + _psi4_style_doc
+"""
+    + _psi4_style_doc
+)
 
 compare_strings.__doc__ = """Comparison function for integers, strings, booleans, or integer array-like data structures.
     See :py:func:`qcelemental.testing.compare` for details.
@@ -273,20 +296,29 @@ compare_cubes.__doc__ = """Comparison function for volumetric data in cube file 
 
 """
 
-compare_vectors.__doc__ = """Comparison function for :py:class:`psi4.core.Vector` objects.
+compare_vectors.__doc__ = (
+    """Comparison function for :py:class:`psi4.core.Vector` objects.
     Compares Vector properties of ``name`` (optional through **check_name**), ``nirrep``, and dimension of each irrep.
     For comparing actual numerical contents, the vectors are serialized to NumPy array format and passed to :py:func:`qcelemental.testing.compare_recursive`.
-""" + _psi4_style_doc
+"""
+    + _psi4_style_doc
+)
 
-compare_matrices.__doc__ = """Comparison function for :py:class:`psi4.core.Matrix` objects.
+compare_matrices.__doc__ = (
+    """Comparison function for :py:class:`psi4.core.Matrix` objects.
     Compares Matrix properties of ``name`` (optional through **check_name**), ``nirrep``, ``symmetry``, and number of rows and columns for each irrep.
     For comparing actual numerical contents, the matrices are serialized to NumPy array format and passed to :py:func:`qcelemental.testing.compare_recursive`.
-""" + _psi4_style_doc
+"""
+    + _psi4_style_doc
+)
 
-compare_wavefunctions.__doc__ = """Comparison function for :py:class:`psi4.core.Wavefunction` objects.
+compare_wavefunctions.__doc__ = (
+    """Comparison function for :py:class:`psi4.core.Wavefunction` objects.
     Compares over 30 Wavefunction properties, including ``nirrep``, ``nso``, molecule geometry, basis set ``nbf``, density matrices, gradient results, etc.
 
-""" + _psi4_style_doc
+"""
+    + _psi4_style_doc
+)
 
 compare_recursive.__doc__ = """Comparison function for recursively comparing mixed-type and nested structures such as dictionaries and lists.
     See :py:func:`qcelemental.testing.compare_recursive` for details.

@@ -32,6 +32,7 @@ Also calls to qcdb module are here and not elsewhere in driver.
 Organizationally, this module isolates qcdb code from psi4 code.
 
 """
+
 import datetime
 import difflib
 import glob
@@ -45,16 +46,22 @@ from ..p4util.exceptions import *
 
 # Not maintained: see https://github.com/psi4/psi4/issues/2478
 
+
 def run_cfour_module(xmod):
     # Find environment by merging PSIPATH and PATH environment variables
     lenv = {
-        'PATH': ':'.join([os.path.abspath(x) for x in os.environ.get('PSIPATH', '').split(':') if x != '']) +
-                ':' + os.environ.get('PATH') +
-                ':' + core.get_datadir() + '/basis' +
-                ':' + core.psi_top_srcdir() + '/share/basis',
-        'CFOUR_NUM_CORES': os.environ.get('CFOUR_NUM_CORES'),
-        'LD_LIBRARY_PATH': os.environ.get('LD_LIBRARY_PATH')
-        }
+        "PATH": ":".join([os.path.abspath(x) for x in os.environ.get("PSIPATH", "").split(":") if x != ""])
+        + ":"
+        + os.environ.get("PATH")
+        + ":"
+        + core.get_datadir()
+        + "/basis"
+        + ":"
+        + core.psi_top_srcdir()
+        + "/share/basis",
+        "CFOUR_NUM_CORES": os.environ.get("CFOUR_NUM_CORES"),
+        "LD_LIBRARY_PATH": os.environ.get("LD_LIBRARY_PATH"),
+    }
     #   Filter out None values as subprocess will fault on them
     lenv = {k: v for k, v in lenv.items() if v is not None}
 
@@ -62,23 +69,23 @@ def run_cfour_module(xmod):
     try:
         retcode = subprocess.Popen([xmod], bufsize=0, stdout=subprocess.PIPE, env=lenv)
     except OSError as e:
-        sys.stderr.write('Program %s not found in path or execution failed: %s\n' % (cfour_executable, e.strerror))
-        #p4out.write('Program %s not found in path or execution failed: %s\n' % (cfour_executable, e.strerror))
-        message = ('Program %s not found in path or execution failed: %s\n' % (cfour_executable, e.strerror))
-        raise ValidationError(message)        
+        sys.stderr.write("Program %s not found in path or execution failed: %s\n" % (cfour_executable, e.strerror))
+        # p4out.write('Program %s not found in path or execution failed: %s\n' % (cfour_executable, e.strerror))
+        message = "Program %s not found in path or execution failed: %s\n" % (cfour_executable, e.strerror)
+        raise ValidationError(message)
 
-    c4out = ''
+    c4out = ""
     while True:
         data = retcode.stdout.readline()
         if not data:
             break
-        #if core.outfile_name() == 'stdout':
+        # if core.outfile_name() == 'stdout':
         #    sys.stdout.write(data)
-        #else:
+        # else:
         #    p4out.write(data)
         #    p4out.flush()
         c4out += data
-    #internal_p4c4_info['output'] = c4out
+    # internal_p4c4_info['output'] = c4out
     return c4out
 
 
@@ -121,35 +128,36 @@ def vpt2(name, **kwargs):
     lowername = name.lower()
     kwargs = p4util.kwargs_lower(kwargs)
 
-    optstash = p4util.OptionsState(
-        ['BASIS'])
+    optstash = p4util.OptionsState(["BASIS"])
 
     # Option mode of operation- whether vpt2 run in one job or files farmed out
-    if not('vpt2_mode' in kwargs):
-        if ('mode' in kwargs):
-            kwargs['vpt2_mode'] = kwargs['mode']
-            del kwargs['mode']
+    if not ("vpt2_mode" in kwargs):
+        if "mode" in kwargs:
+            kwargs["vpt2_mode"] = kwargs["mode"]
+            del kwargs["mode"]
         else:
-            kwargs['vpt2_mode'] = 'continuous'
+            kwargs["vpt2_mode"] = "continuous"
 
     # Switches for route through code- S/R or continuous & Psi4 or Cfour gradients
-    isSowReap = True if kwargs['vpt2_mode'].lower() == 'sowreap' else False
-    isC4notP4 = bool(re.match('cfour', lowername)) or bool(re.match('c4-', lowername))
-    isC4fully = True if ('c4full' in kwargs and yes.match(str(kwargs['c4full'])) and isC4notP4 and isSowReap) else False
+    isSowReap = True if kwargs["vpt2_mode"].lower() == "sowreap" else False
+    isC4notP4 = bool(re.match("cfour", lowername)) or bool(re.match("c4-", lowername))
+    isC4fully = (
+        True if ("c4full" in kwargs and yes.match(str(kwargs["c4full"])) and isC4notP4 and isSowReap) else False
+    )
 
     # Save submission directory and basis set
     current_directory = os.getcwd()
-    user_basis = core.get_global_option('BASIS')
+    user_basis = core.get_global_option("BASIS")
 
     # Open data persistence shelf- vital for sowreap, checkpoint for continuouw
-    shelf = shelve.open(current_directory + '/' + os.path.splitext(core.outfile_name())[0] + '.shelf', writeback=True)
+    shelf = shelve.open(current_directory + "/" + os.path.splitext(core.outfile_name())[0] + ".shelf", writeback=True)
 
     # Cfour keywords to request vpt2 analysis through findif gradients
-    core.set_local_option('CFOUR', 'CFOUR_VIBRATION', 'FINDIF')
-    core.set_local_option('CFOUR', 'CFOUR_FREQ_ALGORITHM', 'PARALLEL')
-    core.set_local_option('CFOUR', 'CFOUR_ANH_ALGORITHM', 'PARALLEL')
-    core.set_local_option('CFOUR', 'CFOUR_ANHARMONIC', 'VPT2')
-    core.set_local_option('CFOUR', 'CFOUR_FD_PROJECT', 'OFF')
+    core.set_local_option("CFOUR", "CFOUR_VIBRATION", "FINDIF")
+    core.set_local_option("CFOUR", "CFOUR_FREQ_ALGORITHM", "PARALLEL")
+    core.set_local_option("CFOUR", "CFOUR_ANH_ALGORITHM", "PARALLEL")
+    core.set_local_option("CFOUR", "CFOUR_ANHARMONIC", "VPT2")
+    core.set_local_option("CFOUR", "CFOUR_FD_PROJECT", "OFF")
 
     # When a Psi4 method is requested for vpt2, a skeleton of
     #   computations in Cfour is still required to hang the gradients
@@ -158,16 +166,16 @@ def vpt2(name, **kwargs):
     if isC4notP4:
         skelname = lowername
     else:
-        skelname = 'c4-scf'
-        core.set_global_option('BASIS', 'STO-3G')
+        skelname = "c4-scf"
+        core.set_global_option("BASIS", "STO-3G")
     #    P4  'c4-scf'/'cfour'CALC_LEVEL      lowername  # temporary
     #    C4  lowername                       cfour{}  # temporary
 
-    if 'status' not in shelf:
-        shelf['status'] = 'initialized'
-        shelf['linkage'] = os.getpid()
-        shelf['zmat'] = {}  # Cfour-generated ZMAT files with finite difference geometries
-        shelf['fjobarc'] = {}  # Cfour- or Psi4-generated ascii files with packaged gradient results
+    if "status" not in shelf:
+        shelf["status"] = "initialized"
+        shelf["linkage"] = os.getpid()
+        shelf["zmat"] = {}  # Cfour-generated ZMAT files with finite difference geometries
+        shelf["fjobarc"] = {}  # Cfour- or Psi4-generated ascii files with packaged gradient results
         shelf.sync()
     else:
         pass
@@ -177,92 +185,102 @@ def vpt2(name, **kwargs):
     psioh = core.IOManager.shared_object()
     psio = core.IO.shared_object()
     os.chdir(psioh.get_default_path())  # psi_scratch
-    cfour_tmpdir = kwargs['path'] if 'path' in kwargs else \
-        'psi.' + str(os.getpid()) + '.' + psio.get_default_namespace() + \
-        '.cfour.' + str(uuid.uuid4())[:8]
+    cfour_tmpdir = (
+        kwargs["path"]
+        if "path" in kwargs
+        else "psi." + str(os.getpid()) + "." + psio.get_default_namespace() + ".cfour." + str(uuid.uuid4())[:8]
+    )
     if not os.path.exists(cfour_tmpdir):
         os.mkdir(cfour_tmpdir)
     os.chdir(cfour_tmpdir)  # psi_scratch/cfour
-    if not os.path.exists('harm'):
-        os.mkdir('harm')
-    os.chdir('harm')  # psi_scratch/cfour/harm
+    if not os.path.exists("harm"):
+        os.mkdir("harm")
+    os.chdir("harm")  # psi_scratch/cfour/harm
 
     psioh.set_specific_retention(32, True)  # temporary, to track p4 scratch
-    #shelf['status'] = 'anharm_jobs_sown'  # temporary to force backtrack
-    print('STAT', shelf['status'])  # temporary
+    # shelf['status'] = 'anharm_jobs_sown'  # temporary to force backtrack
+    print("STAT", shelf["status"])  # temporary
 
     # Generate the ZMAT input file in scratch
-    with open('ZMAT', 'w') as handle:
+    with open("ZMAT", "w") as handle:
         cfour_infile = write_zmat(skelname, 1)
         handle.write(cfour_infile)
-    print('\n====== Begin ZMAT input for CFOUR ======')
-    print(open('ZMAT', 'r').read())
-    print('======= End ZMAT input for CFOUR =======\n')
-    shelf['genbas'] = open('GENBAS', 'r').read()
+    print("\n====== Begin ZMAT input for CFOUR ======")
+    print(open("ZMAT", "r").read())
+    print("======= End ZMAT input for CFOUR =======\n")
+    shelf["genbas"] = open("GENBAS", "r").read()
 
     # Check existing shelf consistent with generated ZMAT, store
-    if ('000-000' in shelf['zmat']) and (shelf['zmat']['000-000'] != cfour_infile):
-        diff = difflib.Differ().compare(shelf['zmat']['000-000'].splitlines(), cfour_infile.splitlines())
-        raise ValidationError("""Input file translated to Cfour ZMAT does not match ZMAT stored in shelf.\n\n""" +
-            '\n'.join(list(diff)))
-    shelf['zmat']['000-000'] = cfour_infile
+    if ("000-000" in shelf["zmat"]) and (shelf["zmat"]["000-000"] != cfour_infile):
+        diff = difflib.Differ().compare(shelf["zmat"]["000-000"].splitlines(), cfour_infile.splitlines())
+        raise ValidationError(
+            """Input file translated to Cfour ZMAT does not match ZMAT stored in shelf.\n\n""" + "\n".join(list(diff))
+        )
+    shelf["zmat"]["000-000"] = cfour_infile
     shelf.sync()
 
     # Reset basis after Cfour skeleton seeded
-    core.set_global_option('BASIS', user_basis)
+    core.set_global_option("BASIS", user_basis)
 
-    if shelf['status'] == 'initialized':
-        p4util.banner(' VPT2 Setup: Harmonic ')
+    if shelf["status"] == "initialized":
+        p4util.banner(" VPT2 Setup: Harmonic ")
 
         # Generate the displacements that will form the harmonic freq
-        os.chdir(psioh.get_default_path() + cfour_tmpdir + '/harm')  # psi_scratch/cfour/harm
-        with open('partial.out', 'w') as handle:
-            handle.write(run_cfour_module('xjoda'))
-            handle.write(run_cfour_module('xsymcor'))
+        os.chdir(psioh.get_default_path() + cfour_tmpdir + "/harm")  # psi_scratch/cfour/harm
+        with open("partial.out", "w") as handle:
+            handle.write(run_cfour_module("xjoda"))
+            handle.write(run_cfour_module("xsymcor"))
 
         # Read the displacements that will form the harmonic freq
-        zmats0N = ['000-' + item[-3:] for item in sorted(glob.glob('zmat*'))]
+        zmats0N = ["000-" + item[-3:] for item in sorted(glob.glob("zmat*"))]
         for zm12 in zmats0N:
-            zm1, zm2 = zm12.split('-')
-            with open('zmat' + zm2, 'r') as handle:
-                shelf['zmat'][zm12] = handle.read()
+            zm1, zm2 = zm12.split("-")
+            with open("zmat" + zm2, "r") as handle:
+                shelf["zmat"][zm12] = handle.read()
                 shelf.sync()
-            core.print_out('  CFOUR scratch file %s for %s-%s has been read\n' % ('zmat' + zm2, zm1, zm2))
-            core.print_out('%s\n' % shelf['zmat'][zm12])
+            core.print_out("  CFOUR scratch file %s for %s-%s has been read\n" % ("zmat" + zm2, zm1, zm2))
+            core.print_out("%s\n" % shelf["zmat"][zm12])
 
         # S/R: Write distributed input files for harmonic freq
         if isSowReap:
             os.chdir(current_directory)
             inputSansMol = p4util.format_currentstate_for_input(gradient, lowername, allButMol=True, **kwargs)
             for zm12 in zmats0N:
-                zm1, zm2 = zm12.split('-')
+                zm1, zm2 = zm12.split("-")
 
-                ifile = vpt2_sow_files(zm12, shelf['linkage'], isC4notP4, isC4fully,
-                    shelf['zmat'][zm12], inputSansMol, shelf['genbas'])
+                ifile = vpt2_sow_files(
+                    zm12, shelf["linkage"], isC4notP4, isC4fully, shelf["zmat"][zm12], inputSansMol, shelf["genbas"]
+                )
 
-                with open('VPT2-' + zm12 + '.in', 'w') as handle:
+                with open("VPT2-" + zm12 + ".in", "w") as handle:
                     handle.write(ifile)
 
-            msg = vpt2_instructions('harmonic', current_directory, zmats0N)
+            msg = vpt2_instructions("harmonic", current_directory, zmats0N)
             core.print_out(msg)
             print(msg)
 
-        shelf['status'] = 'harm_jobs_sown'
+        shelf["status"] = "harm_jobs_sown"
 
         # S/R: Pause for distributed calculations
         if isSowReap:
             shelf.close()
             return 0.0
 
-    if shelf['status'] == 'harm_jobs_sown':
-        zmats0N = [item for item in sorted(shelf['zmat'].keys()) if (item[:3] == '000' and item[-3:] != '000')]
+    if shelf["status"] == "harm_jobs_sown":
+        zmats0N = [item for item in sorted(shelf["zmat"].keys()) if (item[:3] == "000" and item[-3:] != "000")]
 
         # S/R: Check that distributed calcs all completed correctly
         if isSowReap:
-            msg = vpt2_instructions('harmonic', current_directory, zmats0N)
+            msg = vpt2_instructions("harmonic", current_directory, zmats0N)
             core.print_out(msg)
-            isOk, msg = sown_jobs_status(current_directory, 'VPT2', zmats0N, reap_job_validate,
-                shelf['linkage'], ['CURRENT ENERGY', 'CURRENT DIPOLE', 'CURRENT GRADIENT'])
+            isOk, msg = sown_jobs_status(
+                current_directory,
+                "VPT2",
+                zmats0N,
+                reap_job_validate,
+                shelf["linkage"],
+                ["CURRENT ENERGY", "CURRENT DIPOLE", "CURRENT GRADIENT"],
+            )
             core.print_out(msg)
             print(msg)
             if not isOk:
@@ -271,55 +289,65 @@ def vpt2(name, **kwargs):
 
         # Collect all results from gradients forming the harmonic freq
         for zm12 in zmats0N:
-            zm1, zm2 = zm12.split('-')
-            if zm12 not in shelf['fjobarc']:
-                p4util.banner(' VPT2 Computation: %s ' % (zm12))
-                print(' VPT2 Computation: %s ' % (zm12))
+            zm1, zm2 = zm12.split("-")
+            if zm12 not in shelf["fjobarc"]:
+                p4util.banner(" VPT2 Computation: %s " % (zm12))
+                print(" VPT2 Computation: %s " % (zm12))
 
-                fjobarc = vpt2_reaprun_files(zm12, shelf['linkage'], isSowReap, isC4notP4, isC4fully,
-                    shelf['zmat'][zm12], current_directory, psioh.get_default_path(), cfour_tmpdir,
-                    lowername, kwargs)
-                shelf['fjobarc'][zm12] = fjobarc
+                fjobarc = vpt2_reaprun_files(
+                    zm12,
+                    shelf["linkage"],
+                    isSowReap,
+                    isC4notP4,
+                    isC4fully,
+                    shelf["zmat"][zm12],
+                    current_directory,
+                    psioh.get_default_path(),
+                    cfour_tmpdir,
+                    lowername,
+                    kwargs,
+                )
+                shelf["fjobarc"][zm12] = fjobarc
                 shelf.sync()
-        shelf['status'] = 'harm_jobs_reaped'
+        shelf["status"] = "harm_jobs_reaped"
 
-    if shelf['status'] == 'harm_jobs_reaped':
-        zmats0N = [item for item in sorted(shelf['zmat'].keys()) if (item[:3] == '000' and item[-3:] != '000')]
+    if shelf["status"] == "harm_jobs_reaped":
+        zmats0N = [item for item in sorted(shelf["zmat"].keys()) if (item[:3] == "000" and item[-3:] != "000")]
 
-        p4util.banner(' VPT2 Results: Harmonic ')
+        p4util.banner(" VPT2 Results: Harmonic ")
 
         # Process the gradients into harmonic freq
-        os.chdir(psioh.get_default_path() + cfour_tmpdir + '/harm')  # psi_scratch/cfour/harm
-        harmout = run_cfour_module('xjoda')
-        harmout += run_cfour_module('xsymcor')
+        os.chdir(psioh.get_default_path() + cfour_tmpdir + "/harm")  # psi_scratch/cfour/harm
+        harmout = run_cfour_module("xjoda")
+        harmout += run_cfour_module("xsymcor")
         for zm12 in zmats0N:
-            zm1, zm2 = zm12.split('-')
-            with open('FJOBARC', 'w') as handle:
-                handle.write(shelf['fjobarc'][zm12])
-            harmout += run_cfour_module('xja2fja')
-            harmout += run_cfour_module('xsymcor')
-            shutil.move('FJOBARC', 'fja.' + zm12)
+            zm1, zm2 = zm12.split("-")
+            with open("FJOBARC", "w") as handle:
+                handle.write(shelf["fjobarc"][zm12])
+            harmout += run_cfour_module("xja2fja")
+            harmout += run_cfour_module("xsymcor")
+            shutil.move("FJOBARC", "fja." + zm12)
             try:
-                os.remove('zmat' + zm2)
+                os.remove("zmat" + zm2)
             except OSError:
                 pass
-        harmout += run_cfour_module('xjoda')
-        harmout += run_cfour_module('xcubic')
+        harmout += run_cfour_module("xjoda")
+        harmout += run_cfour_module("xcubic")
 
         core.print_out(harmout)
-        with open('harm.out', 'w') as handle:
+        with open("harm.out", "w") as handle:
             handle.write(harmout)
 
         # Generate displacements along harmonic normal modes
-        zmatsN0 = [item[-3:] for item in sorted(glob.glob('zmat*'))]
-        os.chdir('..')  # psi_scratch/cfour
+        zmatsN0 = [item[-3:] for item in sorted(glob.glob("zmat*"))]
+        os.chdir("..")  # psi_scratch/cfour
         for zm1 in zmatsN0:
-            zm12 = zm1 + '-000'
-            with open(psioh.get_default_path() + cfour_tmpdir + '/harm/zmat' + zm1, 'r') as handle:
-                shelf['zmat'][zm12] = handle.read()
+            zm12 = zm1 + "-000"
+            with open(psioh.get_default_path() + cfour_tmpdir + "/harm/zmat" + zm1, "r") as handle:
+                shelf["zmat"][zm12] = handle.read()
                 shelf.sync()
-                core.print_out('  CFOUR scratch file %s for %s has been read\n' % ('zmat' + zm1, zm12))
-                core.print_out('%s\n' % shelf['zmat'][zm12])
+                core.print_out("  CFOUR scratch file %s for %s has been read\n" % ("zmat" + zm1, zm12))
+                core.print_out("%s\n" % shelf["zmat"][zm12])
 
             # Collect displacements along the normal coordinates generated by the harmonic freq.
             #   Further harmonic freqs are to be run at each of these to produce quartic force field.
@@ -328,61 +356,67 @@ def vpt2(name, **kwargs):
                 shutil.rmtree(zm1)
             os.mkdir(zm1)
             os.chdir(zm1)  # psi_scratch/cfour/004
-            with open('ZMAT', 'w') as handle:
-                handle.write(shelf['zmat'][zm12])
-            shutil.copy2('../harm/GENBAS', 'GENBAS')  # ln -s $ecpdir/ECPDATA $j/ECPDATA
-            with open('partial.out', 'w') as handle:
-                handle.write(run_cfour_module('xjoda'))
-                handle.write(run_cfour_module('xsymcor'))
+            with open("ZMAT", "w") as handle:
+                handle.write(shelf["zmat"][zm12])
+            shutil.copy2("../harm/GENBAS", "GENBAS")  # ln -s $ecpdir/ECPDATA $j/ECPDATA
+            with open("partial.out", "w") as handle:
+                handle.write(run_cfour_module("xjoda"))
+                handle.write(run_cfour_module("xsymcor"))
 
             # Read the displacements that will form the anharmonic freq
-            zmatsNN = [item[-3:] for item in sorted(glob.glob('zmat*'))]
+            zmatsNN = [item[-3:] for item in sorted(glob.glob("zmat*"))]
             for zm2 in zmatsNN:
-                zm12 = zm1 + '-' + zm2
-                with open(psioh.get_default_path() + cfour_tmpdir + '/' + zm1 + '/zmat' + zm2, 'r') as handle:
-                    shelf['zmat'][zm12] = handle.read()
+                zm12 = zm1 + "-" + zm2
+                with open(psioh.get_default_path() + cfour_tmpdir + "/" + zm1 + "/zmat" + zm2, "r") as handle:
+                    shelf["zmat"][zm12] = handle.read()
                     shelf.sync()
-                    core.print_out('  CFOUR scratch file %s for %s has been read\n' % ('zmat' + zm2, zm12))
-                    core.print_out('%s\n' % shelf['zmat'][zm12])
-            os.chdir('..')  # psi_scratch/cfour
+                    core.print_out("  CFOUR scratch file %s for %s has been read\n" % ("zmat" + zm2, zm12))
+                    core.print_out("%s\n" % shelf["zmat"][zm12])
+            os.chdir("..")  # psi_scratch/cfour
 
-        zmatsNN = [item for item in sorted(shelf['zmat'].keys()) if (item[:3] != '000' and item[-3:] != '000')]
+        zmatsNN = [item for item in sorted(shelf["zmat"].keys()) if (item[:3] != "000" and item[-3:] != "000")]
 
         # S/R: Write distributed input files for anharmonic freq
         if isSowReap:
             os.chdir(current_directory)
             inputSansMol = p4util.format_currentstate_for_input(gradient, lowername, allButMol=True, **kwargs)
             for zm12 in zmatsNN:
-                zm1, zm2 = zm12.split('-')
+                zm1, zm2 = zm12.split("-")
 
-                ifile = vpt2_sow_files(zm12, shelf['linkage'], isC4notP4, isC4fully,
-                    shelf['zmat'][zm12], inputSansMol, shelf['genbas'])
+                ifile = vpt2_sow_files(
+                    zm12, shelf["linkage"], isC4notP4, isC4fully, shelf["zmat"][zm12], inputSansMol, shelf["genbas"]
+                )
                 # GENBAS needed here
 
-                with open('VPT2-' + zm12 + '.in', 'w') as handle:
+                with open("VPT2-" + zm12 + ".in", "w") as handle:
                     handle.write(ifile)
 
-            msg = vpt2_instructions('anharmonic', current_directory, zmatsNN)
+            msg = vpt2_instructions("anharmonic", current_directory, zmatsNN)
             core.print_out(msg)
             print(msg)
 
-        shelf['status'] = 'anharm_jobs_sown'
+        shelf["status"] = "anharm_jobs_sown"
 
         # S/R: Pause for distributed calculations
         if isSowReap:
             shelf.close()
             return 0.0
 
-    if shelf['status'] == 'anharm_jobs_sown':
-        zmatsNN = [item for item in sorted(shelf['zmat'].keys()) if (item[:3] != '000' and item[-3:] != '000')]
+    if shelf["status"] == "anharm_jobs_sown":
+        zmatsNN = [item for item in sorted(shelf["zmat"].keys()) if (item[:3] != "000" and item[-3:] != "000")]
 
         # S/R: Check that distributed calcs all completed correctly
         if isSowReap:
-            msg = vpt2_instructions('anharmonic', current_directory, zmatsNN)
+            msg = vpt2_instructions("anharmonic", current_directory, zmatsNN)
             core.print_out(msg)
-            isOk, msg = sown_jobs_status(current_directory, 'VPT2', zmatsNN, 
-                reap_job_validate, shelf['linkage'], 
-                ['CURRENT ENERGY', 'CURRENT DIPOLE', 'CURRENT GRADIENT'])
+            isOk, msg = sown_jobs_status(
+                current_directory,
+                "VPT2",
+                zmatsNN,
+                reap_job_validate,
+                shelf["linkage"],
+                ["CURRENT ENERGY", "CURRENT DIPOLE", "CURRENT GRADIENT"],
+            )
             core.print_out(msg)
             print(msg)
             if not isOk:
@@ -391,51 +425,61 @@ def vpt2(name, **kwargs):
 
         # Collect all results from gradients forming the anharmonic freq
         for zm12 in zmatsNN:
-            zm1, zm2 = zm12.split('-')
-            if zm12 not in shelf['fjobarc']:
-                p4util.banner(' VPT2 Computation: %s ' % (zm12))
-                print(' VPT2 Computation: %s ' % (zm12))
+            zm1, zm2 = zm12.split("-")
+            if zm12 not in shelf["fjobarc"]:
+                p4util.banner(" VPT2 Computation: %s " % (zm12))
+                print(" VPT2 Computation: %s " % (zm12))
 
-                fjobarc = vpt2_reaprun_files(zm12, shelf['linkage'], isSowReap, isC4notP4, isC4fully,
-                    shelf['zmat'][zm12], current_directory, psioh.get_default_path(), cfour_tmpdir,
-                    lowername, kwargs)
-                shelf['fjobarc'][zm12] = fjobarc
+                fjobarc = vpt2_reaprun_files(
+                    zm12,
+                    shelf["linkage"],
+                    isSowReap,
+                    isC4notP4,
+                    isC4fully,
+                    shelf["zmat"][zm12],
+                    current_directory,
+                    psioh.get_default_path(),
+                    cfour_tmpdir,
+                    lowername,
+                    kwargs,
+                )
+                shelf["fjobarc"][zm12] = fjobarc
                 shelf.sync()
-        shelf['status'] = 'anharm_jobs_reaped'
+        shelf["status"] = "anharm_jobs_reaped"
 
-    if shelf['status'] == 'anharm_jobs_reaped':
-        zmats0N = [item for item in sorted(shelf['zmat'].keys()) if (item[:3] == '000' and item[-3:] != '000')]
-        zmatsN0 = [item for item in sorted(shelf['zmat'].keys()) if (item[:3] != '000' and item[-3:] == '000')]
-        zmatsNN = [item for item in sorted(shelf['zmat'].keys()) if (item[:3] != '000' and item[-3:] != '000')]
+    if shelf["status"] == "anharm_jobs_reaped":
+        zmats0N = [item for item in sorted(shelf["zmat"].keys()) if (item[:3] == "000" and item[-3:] != "000")]
+        zmatsN0 = [item for item in sorted(shelf["zmat"].keys()) if (item[:3] != "000" and item[-3:] == "000")]
+        zmatsNN = [item for item in sorted(shelf["zmat"].keys()) if (item[:3] != "000" and item[-3:] != "000")]
 
-        p4util.banner(' VPT2 Results: Harmonic ')
+        p4util.banner(" VPT2 Results: Harmonic ")
 
         # Process the gradients into harmonic freq
         os.chdir(psioh.get_default_path() + cfour_tmpdir)  # psi_scratch/cfour
-        if os.path.exists('anharm'):
-            shutil.rmtree('anharm')
-        os.mkdir('anharm')
-        os.chdir('harm')  # psi_scratch/cfour/harm
-        run_cfour_module('xclean')
-        anharmout = run_cfour_module('xjoda')
-        anharmout += run_cfour_module('xsymcor')
+        if os.path.exists("anharm"):
+            shutil.rmtree("anharm")
+        os.mkdir("anharm")
+        os.chdir("harm")  # psi_scratch/cfour/harm
+        run_cfour_module("xclean")
+        anharmout = run_cfour_module("xjoda")
+        anharmout += run_cfour_module("xsymcor")
 
         for zm12 in zmats0N:
-            zm1, zm2 = zm12.split('-')
-            with open('FJOBARC', 'w') as handle:
-                handle.write(shelf['fjobarc'][zm12])
-            anharmout += run_cfour_module('xja2fja')
-            anharmout += run_cfour_module('xsymcor')
-            shutil.move('FJOBARC', 'fja.' + zm12)
-        anharmout += run_cfour_module('xjoda')
-        anharmout += run_cfour_module('xcubic')
+            zm1, zm2 = zm12.split("-")
+            with open("FJOBARC", "w") as handle:
+                handle.write(shelf["fjobarc"][zm12])
+            anharmout += run_cfour_module("xja2fja")
+            anharmout += run_cfour_module("xsymcor")
+            shutil.move("FJOBARC", "fja." + zm12)
+        anharmout += run_cfour_module("xjoda")
+        anharmout += run_cfour_module("xcubic")
 
         core.print_out(anharmout)
-        with open('harm.out', 'w') as handle:
+        with open("harm.out", "w") as handle:
             handle.write(anharmout)
 
         # Process the gradients into harmonic freq at each normco displaced point
-        os.chdir('..')  # psi_scratch/cfour
+        os.chdir("..")  # psi_scratch/cfour
         for zm11 in zmatsN0:
             zm1 = zm11[:3]
             if os.path.exists(zm1):
@@ -443,53 +487,53 @@ def vpt2(name, **kwargs):
             os.mkdir(zm1)
             os.chdir(zm1)  # psi_scratch/cfour/004
 
-            run_cfour_module('xclean')
-            with open('ZMAT', 'w') as handle:
-                handle.write(shelf['zmat'][zm11])
-            shutil.copy2('../harm/GENBAS', 'GENBAS')
-            anharmout = run_cfour_module('xjoda')
-            anharmout += run_cfour_module('xsymcor')
+            run_cfour_module("xclean")
+            with open("ZMAT", "w") as handle:
+                handle.write(shelf["zmat"][zm11])
+            shutil.copy2("../harm/GENBAS", "GENBAS")
+            anharmout = run_cfour_module("xjoda")
+            anharmout += run_cfour_module("xsymcor")
 
-            for zm22 in [item for item in zmatsNN if (item[:3] == zm1 and item[-3:] != '000')]:
+            for zm22 in [item for item in zmatsNN if (item[:3] == zm1 and item[-3:] != "000")]:
                 zm2 = zm22[-3:]
-                zm12 = zm1 + '-' + zm2
+                zm12 = zm1 + "-" + zm2
                 print(zm12)
-                with open('FJOBARC', 'w') as handle:
-                    handle.write(shelf['fjobarc'][zm12])
-                anharmout += run_cfour_module('xja2fja')
-                anharmout += run_cfour_module('xsymcor')
-                shutil.move('FJOBARC', 'fja.' + zm12)
-            anharmout += run_cfour_module('xjoda')
-            anharmout += run_cfour_module('xja2fja')
-            with open('FJOBARC', 'r') as handle:
-                shelf['fjobarc'][zm11] = handle.read()
+                with open("FJOBARC", "w") as handle:
+                    handle.write(shelf["fjobarc"][zm12])
+                anharmout += run_cfour_module("xja2fja")
+                anharmout += run_cfour_module("xsymcor")
+                shutil.move("FJOBARC", "fja." + zm12)
+            anharmout += run_cfour_module("xjoda")
+            anharmout += run_cfour_module("xja2fja")
+            with open("FJOBARC", "r") as handle:
+                shelf["fjobarc"][zm11] = handle.read()
                 shelf.sync()
 
             core.print_out(anharmout)
-            with open('partial.out', 'w') as handle:
+            with open("partial.out", "w") as handle:
                 handle.write(anharmout)
 
-            os.chdir('..')  # psi_scratch/cfour
+            os.chdir("..")  # psi_scratch/cfour
 
         # Process the harmonic freqs at normco displacements into anharmonic freq
-        p4util.banner(' VPT2 Results: Anharmonic ')
+        p4util.banner(" VPT2 Results: Anharmonic ")
 
-        os.chdir('anharm')  # psi_scratch/cfour/anharm
-        shutil.copy2('../harm/JOBARC', 'JOBARC')
-        shutil.copy2('../harm/JAINDX', 'JAINDX')
+        os.chdir("anharm")  # psi_scratch/cfour/anharm
+        shutil.copy2("../harm/JOBARC", "JOBARC")
+        shutil.copy2("../harm/JAINDX", "JAINDX")
 
         for zm12 in zmatsN0:
-            with open('FJOBARC', 'w') as handle:
-                handle.write(shelf['fjobarc'][zm12])
-            anharmout = run_cfour_module('xja2fja')
-            anharmout += run_cfour_module('xcubic')
-            shutil.move('FJOBARC', 'fja.' + zm12)
+            with open("FJOBARC", "w") as handle:
+                handle.write(shelf["fjobarc"][zm12])
+            anharmout = run_cfour_module("xja2fja")
+            anharmout += run_cfour_module("xcubic")
+            shutil.move("FJOBARC", "fja." + zm12)
 
         core.print_out(anharmout)
-        with open('anharm.out', 'w') as handle:
+        with open("anharm.out", "w") as handle:
             handle.write(anharmout)
 
-        shelf['status'] = 'vpt2_completed'
+        shelf["status"] = "vpt2_completed"
 
     # Finish up
     os.chdir(current_directory)
@@ -514,13 +558,13 @@ print_out('VPT2 RESULT: linkage {0} for item {1} yields CURRENT DIPOLE being [%r
     # Direct Cfour for gradients
     if isC4fully:
         inputString = zmat
-        with open('VPT2-GENBAS', 'w') as handle:
+        with open("VPT2-GENBAS", "w") as handle:
             handle.write(inputGenbas)
 
     # Cfour for gradients
     elif isC4notP4:
         # GENBAS needed here
-        inputString = 'extracted_genbas = """\n' + inputGenbas.replace('\n\n', '\nblankline\n') + '\n"""\n\n'
+        inputString = 'extracted_genbas = """\n' + inputGenbas.replace("\n\n", "\nblankline\n") + '\n"""\n\n'
         inputString += """cfour {\n%s\n}\n\nenergy('cfour', genbas=extracted_genbas)\n\n""" % (zmat)
         inputString += inputReapOrders
         inputString += r"""
@@ -530,15 +574,17 @@ print_out('VPT2 RESULT: linkage {0} for item {1} yields CURRENT MOLECULE being %
     # Psi4 for gradients
     else:
         inputString = p4util.format_molecule_for_input(
-            qcdb.cfour.harvest_zmat(zmat).create_psi4_string_from_molecule(),
-            name='disp' + item[:3] + item[-3:])
+            qcdb.cfour.harvest_zmat(zmat).create_psi4_string_from_molecule(), name="disp" + item[:3] + item[-3:]
+        )
         inputString += inputSansMol
         inputString += inputReapOrders
 
     return inputString
 
 
-def vpt2_reaprun_files(item, linkage, isSowReap, isC4notP4, isC4fully, zmat, outdir, scrdir, c4scrdir, lowername, kwargs):
+def vpt2_reaprun_files(
+    item, linkage, isSowReap, isC4notP4, isC4fully, zmat, outdir, scrdir, c4scrdir, lowername, kwargs
+):
     """Provided with the particular displacement number *item* and the
     associated *zmat* file with geometry and *linkage*, returns the
     FJOBARC contents. Depending on the mode settings of *isC4notP4*,
@@ -554,107 +600,118 @@ def vpt2_reaprun_files(item, linkage, isSowReap, isC4notP4, isC4fully, zmat, out
 
     # Cfour S/R Direct for gradients
     if isC4fully:
-        with open('VPT2-' + item + '.fja', 'r') as handle:
+        with open("VPT2-" + item + ".fja", "r") as handle:
             fjobarc = handle.read()
 
     # Cfour for gradients
     elif isC4notP4:
-
         # S/R: Reap results from output file
         if isSowReap:
-            isOk, msg, results = reap_job_validate(outdir, 'VPT2', item, linkage,
-                ['CURRENT ENERGY', 'CURRENT DIPOLE', 'CURRENT GRADIENT', 'CURRENT MOLECULE'])
+            isOk, msg, results = reap_job_validate(
+                outdir,
+                "VPT2",
+                item,
+                linkage,
+                ["CURRENT ENERGY", "CURRENT DIPOLE", "CURRENT GRADIENT", "CURRENT MOLECULE"],
+            )
             if not isOk:
                 raise ValidationError(msg)
 
-            fje = results['CURRENT ENERGY']
-            fjgrd = results['CURRENT GRADIENT']
-            fjdip = [item / constants.dipmom_au2debye for item in results['CURRENT DIPOLE']]
-            c4mol = qcdb.Molecule(results['CURRENT MOLECULE'])
+            fje = results["CURRENT ENERGY"]
+            fjgrd = results["CURRENT GRADIENT"]
+            fjdip = [item / constants.dipmom_au2debye for item in results["CURRENT DIPOLE"]]
+            c4mol = qcdb.Molecule(results["CURRENT MOLECULE"])
             c4mol.update_geometry()
 
         # C: Run the job and collect results
         else:
             # Prepare Cfour skeleton calc directory
             os.chdir(scrdir + c4scrdir)  # psi_scratch/cfour
-            if os.path.exists('scr.' + item):
-                shutil.rmtree('scr.' + item)
-            os.mkdir('scr.' + item)
-            os.chdir('scr.' + item)  # psi_scratch/cfour/scr.000-004
-            with open('ZMAT', 'w') as handle:
+            if os.path.exists("scr." + item):
+                shutil.rmtree("scr." + item)
+            os.mkdir("scr." + item)
+            os.chdir("scr." + item)  # psi_scratch/cfour/scr.000-004
+            with open("ZMAT", "w") as handle:
                 handle.write(zmat)
-            shutil.copy2('../harm/GENBAS', 'GENBAS')
+            shutil.copy2("../harm/GENBAS", "GENBAS")
 
-            #os.chdir(scrdir + '/scr.' + item)
-            #run_cfour_module('xja2fja')
-            #with open('FJOBARC', 'r') as handle:
+            # os.chdir(scrdir + '/scr.' + item)
+            # run_cfour_module('xja2fja')
+            # with open('FJOBARC', 'r') as handle:
             #    fjobarc = handle.read()
 
             # Run Cfour calc using ZMAT & GENBAS in scratch, outdir redirects to outfile
             os.chdir(outdir)  # current_directory
-            core.get_active_molecule().set_name('blank_molecule_psi4_yo')
-            energy('cfour', path=c4scrdir + '/scr.' + item)
-#            os.chdir(scrdir + '/scr.' + item)
+            core.get_active_molecule().set_name("blank_molecule_psi4_yo")
+            energy("cfour", path=c4scrdir + "/scr." + item)
+            #            os.chdir(scrdir + '/scr.' + item)
 
-            fje = core.variable('CURRENT ENERGY')
+            fje = core.variable("CURRENT ENERGY")
             fjgrd = p4util.mat2arr(core.get_gradient())
-            fjdip = [core.variable('CURRENT DIPOLE X') / constants.dipmom_au2debye,
-                     core.variable('CURRENT DIPOLE Y') / constants.dipmom_au2debye,
-                     core.variable('CURRENT DIPOLE Z') / constants.dipmom_au2debye]
+            fjdip = [
+                core.variable("CURRENT DIPOLE X") / constants.dipmom_au2debye,
+                core.variable("CURRENT DIPOLE Y") / constants.dipmom_au2debye,
+                core.variable("CURRENT DIPOLE Z") / constants.dipmom_au2debye,
+            ]
             c4mol = qcdb.Molecule(core.get_active_molecule().create_psi4_string_from_molecule())
             c4mol.update_geometry()
 
         # Get map btwn ZMAT and C4 orientation, then use it, grad and dipole to forge FJOBARC file
-        fjobarc = qcdb.cfour.format_fjobarc(fje,
-            *qcdb.cfour.backtransform(chgeMol=zmmol, permMol=c4mol), gradient=fjgrd, dipole=fjdip)
+        fjobarc = qcdb.cfour.format_fjobarc(
+            fje, *qcdb.cfour.backtransform(chgeMol=zmmol, permMol=c4mol), gradient=fjgrd, dipole=fjdip
+        )
 
     # Psi4 for gradients
     else:
         # Prepare Cfour skeleton calc directory
         os.chdir(scrdir + c4scrdir)  # psi_scratch/cfour
-        if os.path.exists('scr.' + item):
-            shutil.rmtree('scr.' + item)
-        os.mkdir('scr.' + item)
-        os.chdir('scr.' + item)  # psi_scratch/cfour/scr.000-004
-        with open('ZMAT', 'w') as handle:
+        if os.path.exists("scr." + item):
+            shutil.rmtree("scr." + item)
+        os.mkdir("scr." + item)
+        os.chdir("scr." + item)  # psi_scratch/cfour/scr.000-004
+        with open("ZMAT", "w") as handle:
             handle.write(zmat)
-        shutil.copy2('../harm/GENBAS', 'GENBAS')
+        shutil.copy2("../harm/GENBAS", "GENBAS")
 
         # Run Cfour skeleton calc and extract qcdb.Molecule at needed C4 orientation
-        with open('partial.out', 'w') as handle:
-            handle.write(run_cfour_module('xjoda'))
-            handle.write(run_cfour_module('xvmol'))
-            handle.write(run_cfour_module('xvmol2ja'))
-        core.print_out('  CFOUR scratch file %s for %s has been read\n' % ('JOBARC (binary)', item))
-        c4mol = qcdb.cfour.jajo2mol(qcdb.jajo.getrec(['COORD   ', 'ATOMCHRG', 'MAP2ZMAT', 'IFLAGS  ']))
+        with open("partial.out", "w") as handle:
+            handle.write(run_cfour_module("xjoda"))
+            handle.write(run_cfour_module("xvmol"))
+            handle.write(run_cfour_module("xvmol2ja"))
+        core.print_out("  CFOUR scratch file %s for %s has been read\n" % ("JOBARC (binary)", item))
+        c4mol = qcdb.cfour.jajo2mol(qcdb.jajo.getrec(["COORD   ", "ATOMCHRG", "MAP2ZMAT", "IFLAGS  "]))
 
         # S/R: Reap results from output file
         if isSowReap:
-            isOk, msg, results = reap_job_validate(outdir, 'VPT2', item, linkage,
-                ['CURRENT ENERGY', 'CURRENT DIPOLE', 'CURRENT GRADIENT'])
+            isOk, msg, results = reap_job_validate(
+                outdir, "VPT2", item, linkage, ["CURRENT ENERGY", "CURRENT DIPOLE", "CURRENT GRADIENT"]
+            )
             if not isOk:
                 raise ValidationError(msg)
 
-            fje = results['CURRENT ENERGY']
-            fjgrd = results['CURRENT GRADIENT']
-            fjdip = [item / constants.dipmom_au2debye for item in results['CURRENT DIPOLE']]
+            fje = results["CURRENT ENERGY"]
+            fjgrd = results["CURRENT GRADIENT"]
+            fjdip = [item / constants.dipmom_au2debye for item in results["CURRENT DIPOLE"]]
 
         # C: Run the job and collect results
         else:
             core.IO.set_default_namespace(item)
-            molecule = geometry(zmmol.create_psi4_string_from_molecule(), 'disp-' + item)
+            molecule = geometry(zmmol.create_psi4_string_from_molecule(), "disp-" + item)
             molecule.update_geometry()
             gradient(lowername, **kwargs)
 
-            fje = core.variable('CURRENT ENERGY')
+            fje = core.variable("CURRENT ENERGY")
             fjgrd = p4util.mat2arr(core.get_gradient())
-            fjdip = [core.variable('CURRENT DIPOLE X') / constants.dipmom_au2debye,
-                     core.variable('CURRENT DIPOLE Y') / constants.dipmom_au2debye,
-                     core.variable('CURRENT DIPOLE Z') / constants.dipmom_au2debye]
+            fjdip = [
+                core.variable("CURRENT DIPOLE X") / constants.dipmom_au2debye,
+                core.variable("CURRENT DIPOLE Y") / constants.dipmom_au2debye,
+                core.variable("CURRENT DIPOLE Z") / constants.dipmom_au2debye,
+            ]
 
         # Transform results into C4 orientation (defined by c4mol) & forge FJOBARC file
-        fjobarc = qcdb.cfour.format_fjobarc(fje,
-            *qcdb.cfour.backtransform(chgeMol=zmmol, permMol=c4mol, chgeGrad=fjgrd, chgeDip=fjdip))
+        fjobarc = qcdb.cfour.format_fjobarc(
+            fje, *qcdb.cfour.backtransform(chgeMol=zmmol, permMol=c4mol, chgeGrad=fjgrd, chgeDip=fjdip)
+        )
 
     return fjobarc
 
@@ -667,9 +724,9 @@ def vpt2_instructions(stage, dir, zmats):
     *zmats* information.
 
     """
-    stepFiles = ''
+    stepFiles = ""
     for zm12 in sorted(zmats):
-        stepFiles += """             psi4 %-27s %-27s\n""" % ('VPT2-' + zm12 + '.in', 'VPT2-' + zm12 + '.out')
+        stepFiles += """             psi4 %-27s %-27s\n""" % ("VPT2-" + zm12 + ".in", "VPT2-" + zm12 + ".out")
 
     step0 = """
     The vpt2 sow/reap procedure has been selected through mode='sowreap'. This
@@ -697,9 +754,11 @@ def vpt2_instructions(stage, dir, zmats):
        %s
        %s
 
-""" % (dir + '/' + os.path.splitext(core.outfile_name())[0] + '.in',
-       dir + '/' + core.outfile_name(),
-       dir + '/' + os.path.splitext(core.outfile_name())[0] + '.shelf')
+""" % (
+        dir + "/" + os.path.splitext(core.outfile_name())[0] + ".in",
+        dir + "/" + core.outfile_name(),
+        dir + "/" + os.path.splitext(core.outfile_name())[0] + ".shelf",
+    )
     step1 = """
     (1)  Sow
     --------
@@ -718,7 +777,7 @@ def vpt2_instructions(stage, dir, zmats):
 
              psi4 %-27s %-27s
 
-""" % (os.path.splitext(core.outfile_name())[0] + '.in', core.outfile_name())
+""" % (os.path.splitext(core.outfile_name())[0] + ".in", core.outfile_name())
     step3 = """
     (3)  Sow
     --------
@@ -737,11 +796,11 @@ def vpt2_instructions(stage, dir, zmats):
 
              psi4 %-27s %-27s
 
-""" % (os.path.splitext(core.outfile_name())[0] + '.in', core.outfile_name())
+""" % (os.path.splitext(core.outfile_name())[0] + ".in", core.outfile_name())
 
-    if stage == 'harmonic':
+    if stage == "harmonic":
         instructions = step0 + step1 + stepFiles + step2
-    elif stage == 'anharmonic':
+    elif stage == "anharmonic":
         instructions = step0 + step3 + stepFiles + step4
 
     return instructions
@@ -756,38 +815,40 @@ def sown_jobs_status(dir, prefix, zmats, validate_func=None, linkage=None, keys=
 
     """
     isOk = True
-    msgError = ''
-    instructions = '\n'
-    instructions += p4util.banner(prefix + ' Status: ' + datetime.datetime.now().strftime("%Y-%m-%d %H:%M"), strNotOutfile=True)
-    instructions += '\n'
+    msgError = ""
+    instructions = "\n"
+    instructions += p4util.banner(
+        prefix + " Status: " + datetime.datetime.now().strftime("%Y-%m-%d %H:%M"), strNotOutfile=True
+    )
+    instructions += "\n"
     for job in sorted(zmats):
-        outfile = dir + '/' + prefix + '-' + job + '.out'
-        fjafile = dir + '/' + prefix + '-' + job + '.fja'
-        formatArgs = [prefix + '-' + job, '', '', '', '']
+        outfile = dir + "/" + prefix + "-" + job + ".out"
+        fjafile = dir + "/" + prefix + "-" + job + ".fja"
+        formatArgs = [prefix + "-" + job, "", "", "", ""]
         if os.path.isfile(outfile):
-            with open(outfile, 'r') as handle:
+            with open(outfile, "r") as handle:
                 for line in handle:
-                    if line.find('Buy a developer a beer!') > -1:
-                        formatArgs[3] = 'Completed'
+                    if line.find("Buy a developer a beer!") > -1:
+                        formatArgs[3] = "Completed"
                         if reap_job_validate is not None:
                             isOkJob, msg, temp = reap_job_validate(dir, prefix, job, linkage, keys)
                             if isOkJob:
-                                formatArgs[4] = '& Validated'
+                                formatArgs[4] = "& Validated"
                             else:
                                 isOk = False
                                 msgError += msg
-                                formatArgs[4] = 'INVALID'
+                                formatArgs[4] = "INVALID"
                         break
                 else:
                     isOk = False
-                    formatArgs[2] = 'Running'
+                    formatArgs[2] = "Running"
         elif os.path.isfile(fjafile):
-            formatArgs[3] = 'Completed'
+            formatArgs[3] = "Completed"
         else:
             isOk = False
-            formatArgs[1] = 'Waiting'
+            formatArgs[1] = "Waiting"
         instructions += """             {0:<27} {1:^10} {2:^10} {3:^10} {4:^10}\n""".format(*formatArgs)
-    instructions += '\n' + msgError + '\n\n'
+    instructions += "\n" + msgError + "\n\n"
 
     return isOk, instructions
 
@@ -804,24 +865,24 @@ def reap_job_validate(dir, prefix, item, linkage, keys):
 
     """
     isOk = True
-    instructions = ''
+    instructions = ""
     reapings = {}
-    outfile = dir + '/' + prefix + '-' + item + '.out'
+    outfile = dir + "/" + prefix + "-" + item + ".out"
 
     try:
-        with open(outfile, 'r') as handle:
+        with open(outfile, "r") as handle:
             for line in handle:
-                if line.find(prefix + ' RESULT:') == 0:
+                if line.find(prefix + " RESULT:") == 0:
                     sline = line.split()
-                    if sline[2:7] == ['linkage', str(linkage), 'for', 'item', item]:
-                        yieldsAt = line.find('yields')
-                        beingAt = line.find('being')
+                    if sline[2:7] == ["linkage", str(linkage), "for", "item", item]:
+                        yieldsAt = line.find("yields")
+                        beingAt = line.find("being")
                         if beingAt > yieldsAt > -1:
-                            key = line[yieldsAt + 6:beingAt].strip()
-                            val = line[beingAt + 5:].strip()
+                            key = line[yieldsAt + 6 : beingAt].strip()
+                            val = line[beingAt + 5 :].strip()
                             if key in keys:
                                 reapings[key] = eval(val)
-                                #core.print_out('  CFOUR scratch file %s for %s has been read\n' % ('JOBARC', zm12))
+                                # core.print_out('  CFOUR scratch file %s for %s has been read\n' % ('JOBARC', zm12))
                         else:
                             isOk = False
                             instructions += """Outfile file %s
@@ -830,14 +891,12 @@ def reap_job_validate(dir, prefix, item, linkage, keys):
                         isOk = False
                         instructions += """Outfile file %s
     has sowreap result of either incompatible linkage (observed: %s, expected: %s)
-    or incompatible job affiliation (observed: %s, expected: %s).\n\n""" % \
-                            (outfile, sline[3], linkage, sline[6], item)
+    or incompatible job affiliation (observed: %s, expected: %s).\n\n""" % (outfile, sline[3], linkage, sline[6], item)
             else:
                 if len(reapings) != len(keys):
                     isOk = False
                     instructions += """Output file %s
-    has missing results (observed: %s, expected: %s).\n\n""" % \
-                        (outfile, reapings.keys(), keys)
+    has missing results (observed: %s, expected: %s).\n\n""" % (outfile, reapings.keys(), keys)
     except IOError:
         isOk = False
         instructions += """Output file %s

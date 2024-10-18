@@ -40,14 +40,14 @@ from ...qcdb import libmintsbasisset
 
 
 def get_pe_options():
-    if core.get_option('SCF', 'PCM') or core.get_option('SCF', 'DDX'):
+    if core.get_option("SCF", "PCM") or core.get_option("SCF", "DDX"):
         raise ValidationError("""Error: 3-layer QM/PE/continuum solvation not implemented.\n""")
-    rmin = core.get_option('PE', 'BORDER_RMIN')
-    if core.get_option('PE', 'BORDER_RMIN_UNIT').upper() == "AA":
+    rmin = core.get_option("PE", "BORDER_RMIN")
+    if core.get_option("PE", "BORDER_RMIN_UNIT").upper() == "AA":
         rmin *= 1.0 / constants.bohr2angstroms
 
     # potfile option can be filename or contents
-    potfile_keyword = core.get_option('PE', 'POTFILE')
+    potfile_keyword = core.get_option("PE", "POTFILE")
     if "@COORDINATES" in potfile_keyword:
         fl = NamedTemporaryFile(mode="w+t", delete=False)
         fl.write(potfile_keyword)
@@ -58,26 +58,26 @@ def get_pe_options():
 
     pol_embed_options = {
         "potfile": potfile_name,
-        "iso_pol": core.get_option('PE', 'ISOTROPIC_POL'),
-        "induced_thresh": core.get_option('PE', 'INDUCED_CONVERGENCE'),
-        "maxiter": core.get_option('PE', 'MAXITER'),
+        "iso_pol": core.get_option("PE", "ISOTROPIC_POL"),
+        "induced_thresh": core.get_option("PE", "INDUCED_CONVERGENCE"),
+        "maxiter": core.get_option("PE", "MAXITER"),
         # tree options
-        "summation_induced_fields": core.get_option('PE', 'SUMMATION_FIELDS').lower(),
-        "tree_expansion_order": core.get_option('PE', 'TREE_EXPANSION_ORDER'),
-        "theta": core.get_option('PE', 'TREE_THETA'),
+        "summation_induced_fields": core.get_option("PE", "SUMMATION_FIELDS").lower(),
+        "tree_expansion_order": core.get_option("PE", "TREE_EXPANSION_ORDER"),
+        "theta": core.get_option("PE", "TREE_THETA"),
         # damping options
-        "damp_induced": core.get_option('PE', 'DAMP_INDUCED'),
-        "damping_factor_induced": core.get_option('PE', 'DAMPING_FACTOR_INDUCED'),
-        "damp_multipole": core.get_option('PE', 'DAMP_MULTIPOLE'),
-        "damping_factor_multipole": core.get_option('PE', 'DAMPING_FACTOR_MULTIPOLE'),
-        "pe_border": core.get_option('PE', 'BORDER'),
-        "border_type": core.get_option('PE', 'BORDER_TYPE').lower(),
+        "damp_induced": core.get_option("PE", "DAMP_INDUCED"),
+        "damping_factor_induced": core.get_option("PE", "DAMPING_FACTOR_INDUCED"),
+        "damp_multipole": core.get_option("PE", "DAMP_MULTIPOLE"),
+        "damping_factor_multipole": core.get_option("PE", "DAMPING_FACTOR_MULTIPOLE"),
+        "pe_border": core.get_option("PE", "BORDER"),
+        "border_type": core.get_option("PE", "BORDER_TYPE").lower(),
         "border_rmin": rmin,
-        "border_nredist": core.get_option('PE', 'BORDER_N_REDIST'),
-        "border_redist_order": core.get_option('PE', 'BORDER_REDIST_ORDER'),
-        "border_redist_pol": core.get_option('PE', 'BORDER_REDIST_POL'),
+        "border_nredist": core.get_option("PE", "BORDER_N_REDIST"),
+        "border_redist_order": core.get_option("PE", "BORDER_REDIST_ORDER"),
+        "border_redist_pol": core.get_option("PE", "BORDER_REDIST_POL"),
         # PE(ECP)
-        "pe_ecp": core.get_option('PE', 'PE_ECP'),
+        "pe_ecp": core.get_option("PE", "PE_ECP"),
     }
     return pol_embed_options
 
@@ -97,10 +97,11 @@ class CppeInterface:
         # from outside the Psi4 ecosystem
         min_version = "0.3.1"
         if parse_version(cppe.__version__) < parse_version(min_version):
-            raise ModuleNotFoundError("CPPE version {} is required at least. "
-                                      "Version {}"
-                                      " was found.".format(min_version,
-                                                           cppe.__version__))
+            raise ModuleNotFoundError(
+                "CPPE version {} is required at least. " "Version {}" " was found.".format(
+                    min_version, cppe.__version__
+                )
+            )
         # setup the initial CppeState
         self.molecule = molecule
         self.options = options
@@ -140,8 +141,7 @@ class CppeInterface:
             elems.append(f"{p.element}_pe")
             geom.append([p.x, p.y, p.z])
         qmmm_mol = core.Molecule.from_arrays(
-            geom=geom, elbl=elems, units="Bohr",
-            fix_com=True, fix_orientation=True, fix_symmetry="c1"
+            geom=geom, elbl=elems, units="Bohr", fix_com=True, fix_orientation=True, fix_symmetry="c1"
         )
         n_qmmmatoms = len(elems)
 
@@ -157,7 +157,6 @@ class CppeInterface:
         self.pe_ecp_basis = core.BasisSet.build(qmmm_mol, "BASIS", "PE_ECP_BASIS")
         ecp_mints = core.MintsHelper(self.pe_ecp_basis)
         self.V_pe_ecp = ecp_mints.ao_ecp().np
-
 
     def get_pe_contribution(self, density_matrix, elec_only=False):
         # build electrostatics operator

@@ -177,17 +177,17 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
-zeta_values = 'dtq5678'
+zeta_values = "dtq5678"
 _zeta_val2sym = {k + 2: v for k, v in enumerate(zeta_values)}
 _zeta_sym2val = {v: k for k, v in _zeta_val2sym.items()}
-_addlremark = {'energy': '', 'gradient': ', GRADIENT', 'hessian': ', HESSIAN'}
-_f_fields = ['f_wfn', 'f_basis', 'f_zeta', 'f_options', 'f_energy', 'f_gradient', 'f_hessian', 'f_dipole', 'f_dipder']
+_addlremark = {"energy": "", "gradient": ", GRADIENT", "hessian": ", HESSIAN"}
+_f_fields = ["f_wfn", "f_basis", "f_zeta", "f_options", "f_energy", "f_gradient", "f_hessian", "f_dipole", "f_dipder"]
 _lmh_labels = {
-    1: ['HI'],
-    2: ['LO', 'HI'],
-    3: ['LO', 'MD', 'HI'],
-    4: ['LO', 'MD', 'M2', 'HI'],
-    5: ['LO', 'MD', 'M2', 'M3', 'HI']
+    1: ["HI"],
+    2: ["LO", "HI"],
+    3: ["LO", "MD", "HI"],
+    4: ["LO", "MD", "M2", "HI"],
+    5: ["LO", "MD", "M2", "M3", "HI"],
 }
 CBSMetadata = List[Dict[str, Any]]
 
@@ -218,7 +218,9 @@ def corl_xtpl_helgaker_2():
     pass
 
 
-def _expand_bracketed_basis(basisstring: str, molecule: Union["qcdb.Molecule", core.Molecule] = None) -> Tuple[List[str], List[int]]:
+def _expand_bracketed_basis(
+    basisstring: str, molecule: Union["qcdb.Molecule", core.Molecule] = None
+) -> Tuple[List[str], List[int]]:
     """Function to transform and validate basis series specification for cbs().
 
     Parameters
@@ -247,45 +249,49 @@ def _expand_bracketed_basis(basisstring: str, molecule: Union["qcdb.Molecule", c
     BSET = []
     ZSET = []
     legit_compound_basis = re.compile(
-        r'^(?P<pre>.*cc-.*|def2-|.*pcs+eg-|.*)\[(?P<zeta>[dtq2345678,s1]*)\](?P<post>.*z.*|)$', re.IGNORECASE)
-    pc_basis = re.compile(r'.*pcs+eg-$', re.IGNORECASE)
-    def2_basis = re.compile(r'def2-', re.IGNORECASE)
-    zapa_basis = re.compile(r'.*zapa.*', re.IGNORECASE)
+        r"^(?P<pre>.*cc-.*|def2-|.*pcs+eg-|.*)\[(?P<zeta>[dtq2345678,s1]*)\](?P<post>.*z.*|)$", re.IGNORECASE
+    )
+    pc_basis = re.compile(r".*pcs+eg-$", re.IGNORECASE)
+    def2_basis = re.compile(r"def2-", re.IGNORECASE)
+    zapa_basis = re.compile(r".*zapa.*", re.IGNORECASE)
 
     if legit_compound_basis.match(basisstring):
         basisname = legit_compound_basis.match(basisstring)
         # handle def2-svp* basis sets as double-zeta
-        if def2_basis.match(basisname.group('pre')):
-            bn_gz = basisname.group('zeta').replace("s", "d")
+        if def2_basis.match(basisname.group("pre")):
+            bn_gz = basisname.group("zeta").replace("s", "d")
         # handle pc-n basis set polarisation -> zeta conversion
-        elif pc_basis.match(basisname.group('pre')):
-            bn_gz = basisname.group('zeta').replace("4", "5").replace("3", "4").replace("2", "3").replace("1", "2")
+        elif pc_basis.match(basisname.group("pre")):
+            bn_gz = basisname.group("zeta").replace("4", "5").replace("3", "4").replace("2", "3").replace("1", "2")
         else:
-            bn_gz = basisname.group('zeta')
+            bn_gz = basisname.group("zeta")
         # filter out commas and be forgiving of e.g., t5q or 3q
         zetas = [z for z in zeta_values if (z in bn_gz or str(zeta_values.index(z) + 2) in bn_gz)]
         for b in zetas:
             if ZSET and (int(ZSET[len(ZSET) - 1]) - zeta_values.index(b)) != 1:
-                raise ValidationError("""Basis set '%s' has skipped zeta level '%s'.""" %
-                                      (basisstring, _zeta_val2sym[_zeta_sym2val[b] - 1]))
+                raise ValidationError(
+                    """Basis set '%s' has skipped zeta level '%s'."""
+                    % (basisstring, _zeta_val2sym[_zeta_sym2val[b] - 1])
+                )
             # reassemble def2-svp* properly instead of def2-dzvp*
-            if def2_basis.match(basisname.group('pre')) and b == "d":
-                BSET.append(basisname.group('pre') + "s" + basisname.group('post')[1:])
+            if def2_basis.match(basisname.group("pre")) and b == "d":
+                BSET.append(basisname.group("pre") + "s" + basisname.group("post")[1:])
             # reassemble pc-n basis sets properly
-            elif pc_basis.match(basisname.group('pre')):
-                BSET.append(basisname.group('pre') + "{0:d}".format(_zeta_sym2val[b] - 1))
+            elif pc_basis.match(basisname.group("pre")):
+                BSET.append(basisname.group("pre") + "{0:d}".format(_zeta_sym2val[b] - 1))
             # assemble nZaPa basis sets
-            elif zapa_basis.match(basisname.group('post')):
+            elif zapa_basis.match(basisname.group("post")):
                 bzapa = b.replace("d", "2").replace("t", "3").replace("q", "4")
-                BSET.append(basisname.group('pre') + bzapa + basisname.group('post'))
+                BSET.append(basisname.group("pre") + bzapa + basisname.group("post"))
             else:
-                BSET.append(basisname.group('pre') + b + basisname.group('post'))
+                BSET.append(basisname.group("pre") + b + basisname.group("post"))
             ZSET.append(zeta_values.index(b) + 2)
-    elif re.match(r'.*\[.*\].*$', basisstring, flags=re.IGNORECASE):
+    elif re.match(r".*\[.*\].*$", basisstring, flags=re.IGNORECASE):
         raise ValidationError(
             """Basis series '%s' invalid. Specify a basis series matching"""
-            """ '*cc-*[dtq2345678,]*z*'. or 'def2-[sdtq]zvp*' or '*pcs[s]eg-[1234]' or '[1234567]ZaPa' """ %
-            (basisstring))
+            """ '*cc-*[dtq2345678,]*z*'. or 'def2-[sdtq]zvp*' or '*pcs[s]eg-[1234]' or '[1234567]ZaPa' """
+            % (basisstring)
+        )
     else:
         BSET.append(basisstring)
         ZSET.append(0)
@@ -329,7 +335,7 @@ def _contract_bracketed_basis(basisarray: List[str]) -> str:
         zetaindx = [i for i in range(len(basisarray[0])) if basisarray[0][i] != basisarray[1][i]][0]
         ZSET = [bas[zetaindx] for bas in basisarray]
         pre = basisarray[1][:zetaindx]
-        post = basisarray[1][zetaindx + 1:]
+        post = basisarray[1][zetaindx + 1 :]
 
         return "".join([pre, "[", *ZSET, "]", post])
 
@@ -529,7 +535,7 @@ VARH = return_energy_components()
 
 
 def _get_default_xtpl(nbasis: int, xtpl_type: str) -> Callable:
-    """ A helper function to determine default extrapolation type.
+    """A helper function to determine default extrapolation type.
 
     Parameters
     ----------
@@ -565,7 +571,7 @@ def _get_default_xtpl(nbasis: int, xtpl_type: str) -> Callable:
 
 
 def _validate_cbs_inputs(cbs_metadata: CBSMetadata, molecule: Union["qcdb.Molecule", core.Molecule]) -> CBSMetadata:
-    """ A helper function which validates the ``cbs_metadata`` format,
+    """A helper function which validates the ``cbs_metadata`` format,
     expands basis sets, and provides sensible defaults for optional arguments.
 
     Parameters
@@ -589,10 +595,10 @@ def _validate_cbs_inputs(cbs_metadata: CBSMetadata, molecule: Union["qcdb.Molecu
         # 1a) all items must have wfn
         if "wfn" not in item:
             raise ValidationError(f"Stage {iitem} doesn't have defined level of theory!")
-    # 1b) all items must have basis set
+        # 1b) all items must have basis set
         if "basis" not in item:
             raise ValidationError(f"Stage {iitem} doesn't have defined basis sets!")
-    # 2a) process required stage parameters and assign defaults
+        # 2a) process required stage parameters and assign defaults
         stage = {}
         stage["wfn"] = item["wfn"].lower()
         stage["basis"] = _expand_bracketed_basis(item["basis"].lower(), molecule)
@@ -611,7 +617,7 @@ def _validate_cbs_inputs(cbs_metadata: CBSMetadata, molecule: Union["qcdb.Molecu
             scf["options"] = False
             scf["options_lo"] = False
             metadata.append(scf)
-    # 2c) keep processing current stage
+        # 2c) keep processing current stage
         stage["treatment"] = item.get("treatment", "scf" if len(metadata) == 0 else "corl")
         stage["stage"] = item.get("stage", False)
         if not stage["stage"]:
@@ -626,9 +632,12 @@ def _validate_cbs_inputs(cbs_metadata: CBSMetadata, molecule: Union["qcdb.Molecu
             stage["wfn_lo"] = item.get("wfn_lo", metadata[-1].get("wfn")).lower()
             stage["basis_lo"] = _expand_bracketed_basis(item.get("basis_lo", item["basis"]).lower(), molecule)
             if len(stage["basis"][0]) != len(stage["basis_lo"][0]):
-                raise ValidationError("""Number of basis sets inconsistent
+                raise ValidationError(
+                    """Number of basis sets inconsistent
                                             between high ({}) and low ({}) levels.""".format(
-                    len(stage["basis"][0]), len(stage["basis_lo"][0])))
+                        len(stage["basis"][0]), len(stage["basis_lo"][0])
+                    )
+                )
         stage["alpha"] = item.get("alpha", None)
         stage["options"] = item.get("options", False)
         stage["options_lo"] = item.get("options_lo", False)
@@ -637,7 +646,7 @@ def _validate_cbs_inputs(cbs_metadata: CBSMetadata, molecule: Union["qcdb.Molecu
 
 
 def _process_cbs_kwargs(kwargs: Dict) -> CBSMetadata:
-    """ A helper function which translates supplied kwargs into the
+    """A helper function which translates supplied kwargs into the
     ``cbs_metadata`` format and passes it for validation.
 
     Parameters
@@ -652,7 +661,7 @@ def _process_cbs_kwargs(kwargs: Dict) -> CBSMetadata:
         stage. All validation takes place here.
     """
 
-    molecule = kwargs.get('molecule', core.get_active_molecule())
+    molecule = kwargs.get("molecule", core.get_active_molecule())
 
     if "cbs_metadata" in kwargs:
         # if we passed in a dict, validate it right away
@@ -941,7 +950,7 @@ def cbs(func, label, **kwargs):
            * :py:func:`~psi4.driver.driver_cbs_helper.scf_xtpl_karton_2`
 
     :type corl_alpha: float
-    :param corl_alpha: |dl| ``3.00`` |dr| 
+    :param corl_alpha: |dl| ``3.00`` |dr|
 
         Overrides the default \alpha parameter used in the listed :py:func:`~psi4.driver.driver_cbs_helper.corl_xtpl_helgaker_2` correlation
         extrapolation to the corl stage. The supplied \alpha does not impact delta or any further stages.
@@ -952,7 +961,7 @@ def cbs(func, label, **kwargs):
            * :py:func:`~psi4.driver.driver_cbs_helper.corl_xtpl_helgaker_2`
 
     :type delta_alpha: float
-    :param delta_alpha: |dl| ``3.00`` |dr| 
+    :param delta_alpha: |dl| ``3.00`` |dr|
 
         Overrides the default \alpha parameter used in the listed
         :py:func:`~psi4.driver.driver_cbs_helper.corl_xtpl_helgaker_2` correlation extrapolation for the delta correction. Useful when
@@ -965,7 +974,7 @@ def cbs(func, label, **kwargs):
            * :py:func:`~psi4.driver.driver_cbs_helper.corl_xtpl_helgaker_2`
 
     * Combined interface
-    
+
     :type cbs_metadata: List[Dict]
     :param cbs_metadata: |dl| autogenerated from above keywords |dr| || ``[{"wfn": "hf", "basis": "cc-pv[TQ5]z"}]`` || etc.
 
@@ -1002,26 +1011,53 @@ def cbs(func, label, **kwargs):
 
 
     >>> # [1] replicates with cbs() the simple model chemistry scf/cc-pVDZ: set basis cc-pVDZ energy('scf')
-    >>> energy(cbs, scf_wfn='scf', scf_basis='cc-pVDZ')
+    >>> energy(cbs, scf_wfn="scf", scf_basis="cc-pVDZ")
 
     >>> # [2] replicates with cbs() the simple model chemistry mp2/jun-cc-pVDZ: set basis jun-cc-pVDZ energy('mp2')
-    >>> energy(cbs, corl_wfn='mp2', corl_basis='jun-cc-pVDZ')
+    >>> energy(cbs, corl_wfn="mp2", corl_basis="jun-cc-pVDZ")
 
     >>> # [3] DTQ-zeta extrapolated scf reference energy
-    >>> energy('cbs', scf_wfn='scf', scf_basis='cc-pV[DTQ]Z', scf_scheme='scf_xtpl_helgaker_3')
+    >>> energy("cbs", scf_wfn="scf", scf_basis="cc-pV[DTQ]Z", scf_scheme="scf_xtpl_helgaker_3")
 
     >>> # [4] DT-zeta extrapolated mp2 correlation energy atop a T-zeta reference
-    >>> energy('cbs', corl_wfn='mp2', corl_basis='cc-pv[dt]z', corl_scheme='corl_xtpl_helgaker_2')
+    >>> energy("cbs", corl_wfn="mp2", corl_basis="cc-pv[dt]z", corl_scheme="corl_xtpl_helgaker_2")
 
     >>> # [5] a DT-zeta extrapolated coupled-cluster correction atop a TQ-zeta extrapolated mp2 correlation energy atop a Q-zeta reference (both equivalent)
-    >>> energy('cbs', corl_wfn='mp2', corl_basis='aug-cc-pv[tq]z', delta_wfn='ccsd(t)', delta_basis='aug-cc-pv[dt]z')
-    >>> energy('cbs', corl_wfn='mp2', corl_basis='aug-cc-pv[tq]z', corl_scheme='corl_xtpl_helgaker_2', delta_wfn='ccsd(t)', delta_basis='aug-cc-pv[dt]z', delta_scheme='corl_xtpl_helgaker_2')
+    >>> energy("cbs", corl_wfn="mp2", corl_basis="aug-cc-pv[tq]z", delta_wfn="ccsd(t)", delta_basis="aug-cc-pv[dt]z")
+    >>> energy(
+    ...     "cbs",
+    ...     corl_wfn="mp2",
+    ...     corl_basis="aug-cc-pv[tq]z",
+    ...     corl_scheme="corl_xtpl_helgaker_2",
+    ...     delta_wfn="ccsd(t)",
+    ...     delta_basis="aug-cc-pv[dt]z",
+    ...     delta_scheme="corl_xtpl_helgaker_2",
+    ... )
 
     >>> # [6] a D-zeta ccsd(t) correction atop a DT-zeta extrapolated ccsd cluster correction atop a TQ-zeta extrapolated mp2 correlation energy atop a Q-zeta reference
-    >>> energy('cbs', corl_wfn='mp2', corl_basis='aug-cc-pv[tq]z', corl_scheme=corl_xtpl_helgaker_2, delta_wfn='ccsd', delta_basis='aug-cc-pv[dt]z', delta_scheme='corl_xtpl_helgaker_2', delta2_wfn='ccsd(t)', delta2_wfn_lesser='ccsd', delta2_basis='aug-cc-pvdz')
+    >>> energy(
+    ...     "cbs",
+    ...     corl_wfn="mp2",
+    ...     corl_basis="aug-cc-pv[tq]z",
+    ...     corl_scheme=corl_xtpl_helgaker_2,
+    ...     delta_wfn="ccsd",
+    ...     delta_basis="aug-cc-pv[dt]z",
+    ...     delta_scheme="corl_xtpl_helgaker_2",
+    ...     delta2_wfn="ccsd(t)",
+    ...     delta2_wfn_lesser="ccsd",
+    ...     delta2_basis="aug-cc-pvdz",
+    ... )
 
     >>> # [7] a Q5-zeta MP2 calculation, corrected by CCSD(T) at the TQ-zeta extrapolated level, and all-electron CCSD(T) correlation at T-zeta level
-    >>> energy(cbs, cbs_metadata=[{"wfn": "hf", "basis": "cc-pv5z"}, {"wfn": "mp2", "basis": "cc-pv[q5]z"}, {"wfn": "ccsd(t)", "basis": "cc-pv[tq]z"}, {"wfn": "ccsd(t)", "basis": "cc-pvtz", "options": {"freeze_core": "False"}}])
+    >>> energy(
+    ...     cbs,
+    ...     cbs_metadata=[
+    ...         {"wfn": "hf", "basis": "cc-pv5z"},
+    ...         {"wfn": "mp2", "basis": "cc-pv[q5]z"},
+    ...         {"wfn": "ccsd(t)", "basis": "cc-pv[tq]z"},
+    ...         {"wfn": "ccsd(t)", "basis": "cc-pvtz", "options": {"freeze_core": "False"}},
+    ...     ],
+    ... )
 
     >>> # [8] cbs() coupled with database()
     >>> TODO database('mp2', 'BASIC', subset=['h2o','nh3'], symm='on', func=cbs, corl_basis='cc-pV[tq]z', corl_scheme='corl_xtpl_helgaker_2', delta_wfn='ccsd(t)', delta_basis='sto-3g')
@@ -1057,7 +1093,9 @@ complete_basis_set = cbs
 #    psioh.set_specific_retention(psif.PSIF_SCF_MOS, False)
 
 
-def _expand_scheme_orders(scheme: str, basisname: List[str], basiszeta: List[int], wfnname: str, options: Dict) -> Dict[str, Dict[str, Any]]:
+def _expand_scheme_orders(
+    scheme: str, basisname: List[str], basiszeta: List[int], wfnname: str, options: Dict
+) -> Dict[str, Dict[str, Any]]:
     """Check that the length of *basiszeta* array matches the implied degree of
     extrapolation in *scheme* name. Return a dictionary of same length as
     basiszeta, with *basisname* and *basiszeta* distributed therein.
@@ -1068,10 +1106,12 @@ def _expand_scheme_orders(scheme: str, basisname: List[str], basiszeta: List[int
     try:
         scheme.split()
     except AttributeError:
-        raise UpgradeHelper(scheme, repr(scheme.__name__), 1.6, ' Replace extrapolation function with function name.')
+        raise UpgradeHelper(scheme, repr(scheme.__name__), 1.6, " Replace extrapolation function with function name.")
 
     if scheme not in xtpl_procedures:
-        raise ValidationError(f"Extrapolation function ({scheme}) not among registered extrapolation schemes: {list(xtpl_procedures.keys())}. Use 'register_xtpl_function' function.")
+        raise ValidationError(
+            f"Extrapolation function ({scheme}) not among registered extrapolation schemes: {list(xtpl_procedures.keys())}. Use 'register_xtpl_function' function."
+        )
 
     if int(scheme.split("_")[-1]) != Nxtpl:
         raise ValidationError(f"""Call to '{scheme}' not valid with '{len(basiszeta)}' basis sets.""")
@@ -1079,11 +1119,12 @@ def _expand_scheme_orders(scheme: str, basisname: List[str], basiszeta: List[int
     NEED = {}
     for idx in range(Nxtpl):
         NEED[_lmh_labels[Nxtpl][idx]] = dict(
-            zip(_f_fields, [wfnname, basisname[idx], basiszeta[idx], options, 0.0, None, None, None, None]))
+            zip(_f_fields, [wfnname, basisname[idx], basiszeta[idx], options, 0.0, None, None, None, None])
+        )
     return NEED
 
 
-def _contract_scheme_orders(needdict, datakey: str = 'f_energy') -> Dict[str, Any]:
+def _contract_scheme_orders(needdict, datakey: str = "f_energy") -> Dict[str, Any]:
     """Prepared named arguments for extrapolation functions by
     extracting zetas and values (which one determined by *datakey*) out
     of *needdict* and returning a dictionary whose keys are constructed
@@ -1091,20 +1132,20 @@ def _contract_scheme_orders(needdict, datakey: str = 'f_energy') -> Dict[str, An
 
     """
     largs = {}
-    largs['functionname'] = needdict['HI']['f_wfn']
+    largs["functionname"] = needdict["HI"]["f_wfn"]
     Nxtpl = len(needdict)
     zlabels = _lmh_labels[Nxtpl]  # e.g., ['LO', 'HI']
 
     for zeta in range(Nxtpl):
         zlab = zlabels[zeta]  # e.g., LO
-        largs['z' + zlab] = needdict[zlab]['f_zeta']
-        largs['value' + zlab] = needdict[zlab][datakey]
+        largs["z" + zlab] = needdict[zlab]["f_zeta"]
+        largs["value" + zlab] = needdict[zlab][datakey]
 
     return largs
 
 
 def _parse_cbs_gufunc_string(method_name: str):
-    """ A helper function that parses a ``"method/basis"`` input string
+    """A helper function that parses a ``"method/basis"`` input string
     into separate method and basis components. Also handles delta corrections.
 
     Parameters
@@ -1125,7 +1166,8 @@ def _parse_cbs_gufunc_string(method_name: str):
     method_name_list = re.split(r"""\+(?=\s*[Dd]:)""", method_name)
     if len(method_name_list) > 2:
         raise ValidationError(
-            "CBS gufunc: Text parsing is only valid for a single delta, please use the CBS wrapper directly")
+            "CBS gufunc: Text parsing is only valid for a single delta, please use the CBS wrapper directly"
+        )
 
     method_list = []
     basis_list = []
@@ -1133,16 +1175,16 @@ def _parse_cbs_gufunc_string(method_name: str):
         if (method_str.count("[") > 1) or (method_str.count("]") > 1):
             raise ValidationError(f"""CBS gufunc: Too many brackets given! {method_str}""")
 
-        if method_str.count('/') != 1:
+        if method_str.count("/") != 1:
             raise ValidationError(f"""CBS gufunc: All methods must specify a basis with '/'. {method_str}""")
 
         if num > 0:
             method_str = method_str.strip()
-            if method_str[:2].lower() != 'd:':
+            if method_str[:2].lower() != "d:":
                 raise ValidationError("""CBS gufunc: Delta method must start with 'D:'.""")
             else:
                 method_str = method_str[2:]
-        method, basis = method_str.split('/')
+        method, basis = method_str.split("/")
         method_list.append(method)
         basis_list.append(basis)
     return method_list, basis_list
@@ -1167,25 +1209,25 @@ def cbs_text_parser(total_method_name: str, **kwargs) -> Dict:
     dict of updated CBS keyword arguments
     """
 
-    ptype = kwargs.pop('ptype', None)
+    ptype = kwargs.pop("ptype", None)
 
     # Sanitize total_method_name
     total_method_name = total_method_name.lower()
-    total_method_name = total_method_name.replace(' ', '')
+    total_method_name = total_method_name.replace(" ", "")
 
     # Split into components
     method_list, basis_list = _parse_cbs_gufunc_string(total_method_name)
 
     # Single energy call?
     single_call = len(method_list) == 1
-    single_call &= '[' not in basis_list[0]
-    single_call &= ']' not in basis_list[0]
+    single_call &= "[" not in basis_list[0]
+    single_call &= "]" not in basis_list[0]
 
     if single_call:
         method_name = method_list[0]
         basis = basis_list[0]
 
-        return {'method': method_name, 'basis': basis}
+        return {"method": method_name, "basis": basis}
 
     # Drop out for unsupported calls
     if ptype is None:
@@ -1194,48 +1236,48 @@ def cbs_text_parser(total_method_name: str, **kwargs) -> Dict:
         raise ValidationError(f"{ptype.title()}: Cannot extrapolate or delta correct {ptype} yet.")
 
     # Catch kwarg issues for CBS methods only
-    user_dertype = kwargs.pop('dertype', None)
-    cbs_verbose = kwargs.pop('cbs_verbose', False)
+    user_dertype = kwargs.pop("dertype", None)
+    cbs_verbose = kwargs.pop("cbs_verbose", False)
 
     # If we are not a single call, let CBS wrapper handle it!
     cbs_kwargs = {}
-    cbs_kwargs['ptype'] = ptype
-    cbs_kwargs['verbose'] = cbs_verbose
+    cbs_kwargs["ptype"] = ptype
+    cbs_kwargs["verbose"] = cbs_verbose
 
     if user_dertype is not None:
-        cbs_kwargs['dertype'] = user_dertype
+        cbs_kwargs["dertype"] = user_dertype
 
     # Find method and basis
     metadata = []
-    if method_list[0] in ['scf', 'hf', 'c4-scf', 'c4-hf']:
+    if method_list[0] in ["scf", "hf", "c4-scf", "c4-hf"]:
         stage = {}
-        stage['wfn'] = method_list[0]
-        stage['basis'] = basis_list[0]
-        if 'scf_scheme' in kwargs:
-            stage['scheme'] = kwargs.pop('scf_scheme')
-        stage['stage'] = "scf"
-        stage['treatment'] = "scf"
+        stage["wfn"] = method_list[0]
+        stage["basis"] = basis_list[0]
+        if "scf_scheme" in kwargs:
+            stage["scheme"] = kwargs.pop("scf_scheme")
+        stage["stage"] = "scf"
+        stage["treatment"] = "scf"
     else:
         # _validate_cbs_inputs will produce scf stage automatically
         stage = {}
-        stage['wfn'] = method_list[0]
-        stage['basis'] = basis_list[0]
-        if 'corl_scheme' in kwargs:
-            stage['scheme'] = kwargs.pop('corl_scheme')
-        stage['stage'] = "corl"
-        stage['treatment'] = "corl"
+        stage["wfn"] = method_list[0]
+        stage["basis"] = basis_list[0]
+        if "corl_scheme" in kwargs:
+            stage["scheme"] = kwargs.pop("corl_scheme")
+        stage["stage"] = "corl"
+        stage["treatment"] = "corl"
     metadata.append(stage)
 
     # "method/basis" syntax only allows for one delta correction
     # via "method/basis+D:delta/basis". Maximum length of method_list is 2.
     if len(method_list) == 2:
         stage = {}
-        stage['wfn'] = method_list[1]
-        stage['basis'] = basis_list[1]
-        if 'delta_scheme' in kwargs:
-            stage['scheme'] = kwargs.pop('delta_scheme')
-        stage['stage'] = "delta1"
-        stage['treatment'] = "corl"
+        stage["wfn"] = method_list[1]
+        stage["basis"] = basis_list[1]
+        if "delta_scheme" in kwargs:
+            stage["scheme"] = kwargs.pop("delta_scheme")
+        stage["stage"] = "delta1"
+        stage["treatment"] = "corl"
         metadata.append(stage)
 
     cbs_kwargs["cbs_metadata"] = metadata
@@ -1244,48 +1286,108 @@ def cbs_text_parser(total_method_name: str, **kwargs) -> Dict:
 
 
 def _build_cbs_compute(metameta: Dict[str, Any], metadata: CBSMetadata):
-    label = metameta['label']
-    ptype = metameta['ptype']
-    verbose = metameta['verbose']
+    label = metameta["label"]
+    ptype = metameta["ptype"]
+    verbose = metameta["verbose"]
 
     # Build string of title banner
     instructions = "\n" + p4util.banner(f" CBS Setup{':' + label if label else ''} ", strNotOutfile=True) + "\n"
 
     # Call schemes for each portion of total energy to 'place orders' for calculations needed
     d_fields = [
-        'd_stage', 'd_scheme', 'd_basis', 'd_wfn', 'd_alpha', 'd_need', 'd_coef', 'd_energy', 'd_gradient', 'd_hessian', 'd_dipole', 'd_dipder'
+        "d_stage",
+        "d_scheme",
+        "d_basis",
+        "d_wfn",
+        "d_alpha",
+        "d_need",
+        "d_coef",
+        "d_energy",
+        "d_gradient",
+        "d_hessian",
+        "d_dipole",
+        "d_dipder",
     ]
     GRAND_NEED = []
 
-    NEED = _expand_scheme_orders(metadata[0]["scheme"], metadata[0]["basis"][0], metadata[0]["basis"][1],
-                                 metadata[0]["wfn"], metadata[0]["options"])
+    NEED = _expand_scheme_orders(
+        metadata[0]["scheme"],
+        metadata[0]["basis"][0],
+        metadata[0]["basis"][1],
+        metadata[0]["wfn"],
+        metadata[0]["options"],
+    )
     GRAND_NEED.append(
         dict(
-            zip(d_fields, [
-                'scf', metadata[0]["scheme"],
-                _contract_bracketed_basis(metadata[0]["basis"][0]), metadata[0]["wfn"], metadata[0]["alpha"], NEED, +1,
-                0.0, None, None, None, None
-            ])))
+            zip(
+                d_fields,
+                [
+                    "scf",
+                    metadata[0]["scheme"],
+                    _contract_bracketed_basis(metadata[0]["basis"][0]),
+                    metadata[0]["wfn"],
+                    metadata[0]["alpha"],
+                    NEED,
+                    +1,
+                    0.0,
+                    None,
+                    None,
+                    None,
+                    None,
+                ],
+            )
+        )
+    )
     if len(metadata) > 1:
         for delta in metadata[1:]:
-            NEED = _expand_scheme_orders(delta["scheme"], delta["basis"][0], delta["basis"][1], delta["wfn"],
-                                         delta["options"])
+            NEED = _expand_scheme_orders(
+                delta["scheme"], delta["basis"][0], delta["basis"][1], delta["wfn"], delta["options"]
+            )
             GRAND_NEED.append(
                 dict(
-                    zip(d_fields, [
-                        delta["stage"], delta["scheme"],
-                        _contract_bracketed_basis(delta["basis"][0]), delta["wfn"], delta["alpha"], NEED, +1, 0.0,
-                        None, None, None, None
-                    ])))
-            NEED = _expand_scheme_orders(delta["scheme"], delta["basis_lo"][0], delta["basis_lo"][1], delta["wfn_lo"],
-                                         delta["options_lo"])
+                    zip(
+                        d_fields,
+                        [
+                            delta["stage"],
+                            delta["scheme"],
+                            _contract_bracketed_basis(delta["basis"][0]),
+                            delta["wfn"],
+                            delta["alpha"],
+                            NEED,
+                            +1,
+                            0.0,
+                            None,
+                            None,
+                            None,
+                            None,
+                        ],
+                    )
+                )
+            )
+            NEED = _expand_scheme_orders(
+                delta["scheme"], delta["basis_lo"][0], delta["basis_lo"][1], delta["wfn_lo"], delta["options_lo"]
+            )
             GRAND_NEED.append(
                 dict(
-                    zip(d_fields, [
-                        delta["stage"], delta["scheme"],
-                        _contract_bracketed_basis(delta["basis_lo"][0]), delta["wfn_lo"], delta["alpha"], NEED, -1,
-                        0.0, None, None, None, None
-                    ])))
+                    zip(
+                        d_fields,
+                        [
+                            delta["stage"],
+                            delta["scheme"],
+                            _contract_bracketed_basis(delta["basis_lo"][0]),
+                            delta["wfn_lo"],
+                            delta["alpha"],
+                            NEED,
+                            -1,
+                            0.0,
+                            None,
+                            None,
+                            None,
+                            None,
+                        ],
+                    )
+                )
+            )
 
     # MODELCHEM is unordered, possibly redundant list of single result *entries* needed to satisfy full CBS
     # JOBS is subset of MODELCHEM with minimal list of single result *jobs* needed to satisfy full CBS
@@ -1295,7 +1397,7 @@ def _build_cbs_compute(metameta: Dict[str, Any], metadata: CBSMetadata):
 
     MODELCHEM = []
     for stage in GRAND_NEED:
-        for lvl in stage['d_need'].values():
+        for lvl in stage["d_need"].values():
             MODELCHEM.append(lvl)
 
     # Apply chemical reasoning to choose the minimum computations to run
@@ -1309,43 +1411,64 @@ def _build_cbs_compute(metameta: Dict[str, Any], metadata: CBSMetadata):
     for mc in MODELCHEM:
         dups = -1
         for indx_job, job in enumerate(JOBS):
-            if ((job['f_wfn'] == mc['f_wfn']) and (job['f_basis'] == mc['f_basis'])
-                    and (job['f_options'] == mc['f_options'])):
+            if (
+                (job["f_wfn"] == mc["f_wfn"])
+                and (job["f_basis"] == mc["f_basis"])
+                and (job["f_options"] == mc["f_options"])
+            ):
                 dups += 1
                 if dups >= 1:
                     del JOBS[indx_job]
 
     instructions += """    Naive listing of computations required.\n"""
     for mc in JOBS:
-        instructions += listfmt.format(mc['f_wfn'], mc['f_basis'] + " + options" * bool(mc['f_options']),
-                                       VARH[mc['f_wfn']][mc['f_wfn']], _addlremark[ptype])
+        instructions += listfmt.format(
+            mc["f_wfn"],
+            mc["f_basis"] + " + options" * bool(mc["f_options"]),
+            VARH[mc["f_wfn"]][mc["f_wfn"]],
+            _addlremark[ptype],
+        )
 
     #     Remove chemically subsumed modelchem portion listings
-    if ptype == 'energy':
+    if ptype == "energy":
         for mc in MODELCHEM:
-            for wfn in VARH[mc['f_wfn']]:
+            for wfn in VARH[mc["f_wfn"]]:
                 for indx_job, job in enumerate(JOBS):
-                    if ((VARH[mc['f_wfn']][wfn] == VARH[job['f_wfn']][job['f_wfn']])
-                            and (mc['f_basis'] == job['f_basis'])
-                            and not (mc['f_wfn'] == job['f_wfn'])
-                            and (mc['f_options'] == job['f_options'])):
+                    if (
+                        (VARH[mc["f_wfn"]][wfn] == VARH[job["f_wfn"]][job["f_wfn"]])
+                        and (mc["f_basis"] == job["f_basis"])
+                        and not (mc["f_wfn"] == job["f_wfn"])
+                        and (mc["f_options"] == job["f_options"])
+                    ):
                         del JOBS[indx_job]
 
     instructions += """\n    Enlightened listing of computations required.\n"""
     for mc in JOBS:
-        instructions += listfmt.format(mc['f_wfn'], mc['f_basis'] + " + options" * bool(mc['f_options']),
-                                       VARH[mc['f_wfn']][mc['f_wfn']], _addlremark[ptype])
+        instructions += listfmt.format(
+            mc["f_wfn"],
+            mc["f_basis"] + " + options" * bool(mc["f_options"]),
+            VARH[mc["f_wfn"]][mc["f_wfn"]],
+            _addlremark[ptype],
+        )
 
     #     Expand listings to all that will be obtained
     TROVE = []
     for job in JOBS:
-        for wfn in VARH[job['f_wfn']]:
-            TROVE.append(dict(zip(_f_fields, [wfn, job['f_basis'], job['f_zeta'], job['f_options'], 0.0, None, None, None, None])))
+        for wfn in VARH[job["f_wfn"]]:
+            TROVE.append(
+                dict(
+                    zip(_f_fields, [wfn, job["f_basis"], job["f_zeta"], job["f_options"], 0.0, None, None, None, None])
+                )
+            )
 
     instructions += """\n    Full listing of computations to be obtained (required and bonus).\n"""
     for mc in TROVE:
-        instructions += listfmt.format(mc['f_wfn'], mc['f_basis'] + " + options" * bool(mc['f_options']),
-                                       VARH[mc['f_wfn']][mc['f_wfn']], _addlremark[ptype])
+        instructions += listfmt.format(
+            mc["f_wfn"],
+            mc["f_basis"] + " + options" * bool(mc["f_options"]),
+            VARH[mc["f_wfn"]][mc["f_wfn"]],
+            _addlremark[ptype],
+        )
     if verbose:
         core.print_out(instructions)
         logger.info(instructions)
@@ -1359,10 +1482,10 @@ def _assemble_cbs_components(metameta, TROVE, GRAND_NEED):
     Accumulate into final E/G/H quantities, returning them in dict.
 
     """
-    label = metameta['label']
-    nat = metameta['molecule'].natom()
-    ptype = metameta['ptype']
-    verbose = metameta['verbose']
+    label = metameta["label"]
+    nat = metameta["molecule"].natom()
+    ptype = metameta["ptype"]
+    verbose = metameta["verbose"]
 
     # Build string of title banner
     instructions = "\n" + p4util.banner(f" CBS Results{':' + label if label else ''} ", strNotOutfile=True) + "\n"
@@ -1371,19 +1494,25 @@ def _assemble_cbs_components(metameta, TROVE, GRAND_NEED):
 
     # Insert obtained energies into the array that stores the cbs stages
     for stage in GRAND_NEED:
-        for lvl in stage['d_need'].values():
+        for lvl in stage["d_need"].values():
             for job in TROVE:
                 # Don't ask
-                if (((lvl['f_wfn'] == job['f_wfn']) or
-                     ((lvl['f_wfn'][3:] == job['f_wfn']) and lvl['f_wfn'].startswith('c4-')) or
-                     ((lvl['f_wfn'] == job['f_wfn'][3:]) and job['f_wfn'].startswith('c4-')) or
-                     (('c4-' + lvl['f_wfn']) == job['f_wfn']) or (lvl['f_wfn'] == ('c4-' + job['f_wfn'])))
-                        and (lvl['f_basis'] == job['f_basis']) and (lvl['f_options'] == job['f_options'])):
-                    lvl['f_energy'] = job['f_energy']
-                    lvl['f_gradient'] = job['f_gradient']
-                    lvl['f_hessian'] = job['f_hessian']
-                    lvl['f_dipole'] = job['f_dipole']
-                    lvl['f_dipder'] = job['f_dipder']
+                if (
+                    (
+                        (lvl["f_wfn"] == job["f_wfn"])
+                        or ((lvl["f_wfn"][3:] == job["f_wfn"]) and lvl["f_wfn"].startswith("c4-"))
+                        or ((lvl["f_wfn"] == job["f_wfn"][3:]) and job["f_wfn"].startswith("c4-"))
+                        or (("c4-" + lvl["f_wfn"]) == job["f_wfn"])
+                        or (lvl["f_wfn"] == ("c4-" + job["f_wfn"]))
+                    )
+                    and (lvl["f_basis"] == job["f_basis"])
+                    and (lvl["f_options"] == job["f_options"])
+                ):
+                    lvl["f_energy"] = job["f_energy"]
+                    lvl["f_gradient"] = job["f_gradient"]
+                    lvl["f_hessian"] = job["f_hessian"]
+                    lvl["f_dipole"] = job["f_dipole"]
+                    lvl["f_dipder"] = job["f_dipder"]
 
     # Make xtpl() call
     finalenergy = 0.0
@@ -1393,56 +1522,56 @@ def _assemble_cbs_components(metameta, TROVE, GRAND_NEED):
     finaldipder = None
 
     for stage in GRAND_NEED:
-        hiloargs = {'alpha': stage['d_alpha'], 'verbose': verbose}
+        hiloargs = {"alpha": stage["d_alpha"], "verbose": verbose}
 
-        grad_available = all([lmh['f_gradient'] is not None for lmh in stage['d_need'].values()])
-        hess_available = all([lmh['f_hessian'] is not None for lmh in stage['d_need'].values()])
-        dipole_available = all([lmh['f_dipole'] is not None for lmh in stage['d_need'].values()])
-        dipder_available = all([lmh['f_dipder'] is not None for lmh in stage['d_need'].values()])
+        grad_available = all([lmh["f_gradient"] is not None for lmh in stage["d_need"].values()])
+        hess_available = all([lmh["f_hessian"] is not None for lmh in stage["d_need"].values()])
+        dipole_available = all([lmh["f_dipole"] is not None for lmh in stage["d_need"].values()])
+        dipder_available = all([lmh["f_dipder"] is not None for lmh in stage["d_need"].values()])
 
-        hiloargs.update(_contract_scheme_orders(stage['d_need'], 'f_energy'))
-        stage['d_energy'] = xtpl_procedures[stage['d_scheme']](**hiloargs)
-        finalenergy += stage['d_energy'] * stage['d_coef']
+        hiloargs.update(_contract_scheme_orders(stage["d_need"], "f_energy"))
+        stage["d_energy"] = xtpl_procedures[stage["d_scheme"]](**hiloargs)
+        finalenergy += stage["d_energy"] * stage["d_coef"]
 
-        if ptype == 'gradient' or grad_available:
+        if ptype == "gradient" or grad_available:
             if finalgradient is None:
                 finalgradient = np.zeros((nat, 3))
-            hiloargs.update(_contract_scheme_orders(stage['d_need'], 'f_gradient'))
-            stage['d_gradient'] = xtpl_procedures[stage['d_scheme']](**hiloargs)
-            finalgradient += stage['d_gradient'] * stage['d_coef']
+            hiloargs.update(_contract_scheme_orders(stage["d_need"], "f_gradient"))
+            stage["d_gradient"] = xtpl_procedures[stage["d_scheme"]](**hiloargs)
+            finalgradient += stage["d_gradient"] * stage["d_coef"]
 
-        if ptype == 'hessian' or hess_available:
+        if ptype == "hessian" or hess_available:
             if finalhessian is None:
                 finalhessian = np.zeros((3 * nat, 3 * nat))
-            hiloargs.update(_contract_scheme_orders(stage['d_need'], 'f_hessian'))
-            stage['d_hessian'] = xtpl_procedures[stage['d_scheme']](**hiloargs)
-            finalhessian += stage['d_hessian'] * stage['d_coef']
+            hiloargs.update(_contract_scheme_orders(stage["d_need"], "f_hessian"))
+            stage["d_hessian"] = xtpl_procedures[stage["d_scheme"]](**hiloargs)
+            finalhessian += stage["d_hessian"] * stage["d_coef"]
 
         if dipole_available:
             if finaldipole is None:
                 finaldipole = np.zeros((3))
-            hiloargs.update(_contract_scheme_orders(stage['d_need'], 'f_dipole'))
-            stage['d_dipole'] = xtpl_procedures[stage['d_scheme']](**hiloargs)
-            finaldipole += stage['d_dipole'] * stage['d_coef']
+            hiloargs.update(_contract_scheme_orders(stage["d_need"], "f_dipole"))
+            stage["d_dipole"] = xtpl_procedures[stage["d_scheme"]](**hiloargs)
+            finaldipole += stage["d_dipole"] * stage["d_coef"]
 
         if dipder_available:
             if finaldipder is None:
                 finaldipder = np.zeros((3 * nat, 3))
-            hiloargs.update(_contract_scheme_orders(stage['d_need'], 'f_dipder'))
-            stage['d_dipder'] = xtpl_procedures[stage['d_scheme']](**hiloargs)
-            finaldipder += stage['d_dipder'] * stage['d_coef']
+            hiloargs.update(_contract_scheme_orders(stage["d_need"], "f_dipder"))
+            stage["d_dipder"] = xtpl_procedures[stage["d_scheme"]](**hiloargs)
+            finaldipder += stage["d_dipder"] * stage["d_coef"]
 
     cbs_results = {
-        'ret_ptype': {
-            'energy': finalenergy,
-            'gradient': finalgradient,
-            'hessian': finalhessian,
+        "ret_ptype": {
+            "energy": finalenergy,
+            "gradient": finalgradient,
+            "hessian": finalhessian,
         }[ptype],
-        'energy': finalenergy,
-        'gradient': finalgradient,
-        'hessian': finalhessian,
-        'dipole': finaldipole,
-        'dipole gradient': finaldipder,
+        "energy": finalenergy,
+        "gradient": finalgradient,
+        "hessian": finalhessian,
+        "dipole": finaldipole,
+        "dipole gradient": finaldipder,
     }
 
     return cbs_results, GRAND_NEED
@@ -1451,68 +1580,94 @@ def _assemble_cbs_components(metameta, TROVE, GRAND_NEED):
 def _summary_table(metadata, TROVE, GRAND_NEED) -> str:
     """Build string of results table"""
 
-    delimit = '  ' + '-' * 105 + '\n'
+    delimit = "  " + "-" * 105 + "\n"
     blckfmt = """\n   ==> {} <==\n\n"""
     headfmt = """     {:>6} {:>20} {:1} {:26} {:>3} {:>16}   {}\n"""
     linefmt = """     {:>6} {:>20} {:1} {:27} {:2} {:16.8f}   {}\n"""
 
-    tables = ''
-    tables += blckfmt.format('Components')
+    tables = ""
+    tables += blckfmt.format("Components")
     tables += delimit
 
     required = []
     finalenergy = 0.0
     for stage in GRAND_NEED:
-        finalenergy += stage['d_energy'] * stage['d_coef']
-        for lvl in stage['d_need'].values():
-            required.append((lvl['f_wfn'], lvl['f_basis'], lvl['f_options']))
+        finalenergy += stage["d_energy"] * stage["d_coef"]
+        for lvl in stage["d_need"].values():
+            required.append((lvl["f_wfn"], lvl["f_basis"], lvl["f_options"]))
 
-    tables += headfmt.format('', 'Method', '/', 'Basis', 'Rqd', 'Energy [Eh]', 'Variable')
+    tables += headfmt.format("", "Method", "/", "Basis", "Rqd", "Energy [Eh]", "Variable")
     tables += delimit
     for job in TROVE:
-        star = ''
+        star = ""
         for mc in required:
-            if (job['f_wfn'], job['f_basis'], job['f_options']) == mc:
-                star = '*'
-        tables += linefmt.format('', job['f_wfn'], '/', job['f_basis'] + " + options" * bool(job['f_options']), star,
-                                 job['f_energy'], VARH[job['f_wfn']][job['f_wfn']])
+            if (job["f_wfn"], job["f_basis"], job["f_options"]) == mc:
+                star = "*"
+        tables += linefmt.format(
+            "",
+            job["f_wfn"],
+            "/",
+            job["f_basis"] + " + options" * bool(job["f_options"]),
+            star,
+            job["f_energy"],
+            VARH[job["f_wfn"]][job["f_wfn"]],
+        )
     tables += delimit
 
-    tables += blckfmt.format('Stages')
+    tables += blckfmt.format("Stages")
     tables += delimit
-    tables += headfmt.format('Stage', 'Method', '/', 'Basis', 'Wt', 'Energy [Eh]', 'Scheme')
+    tables += headfmt.format("Stage", "Method", "/", "Basis", "Wt", "Energy [Eh]", "Scheme")
     tables += delimit
     for stage in GRAND_NEED:
-        tables += linefmt.format(stage['d_stage'], stage['d_wfn'], '/', stage['d_basis'], stage['d_coef'],
-                                 stage['d_energy'], stage['d_scheme'])
+        tables += linefmt.format(
+            stage["d_stage"],
+            stage["d_wfn"],
+            "/",
+            stage["d_basis"],
+            stage["d_coef"],
+            stage["d_energy"],
+            stage["d_scheme"],
+        )
     tables += delimit
 
-    tables += blckfmt.format('CBS')
+    tables += blckfmt.format("CBS")
     tables += delimit
-    tables += headfmt.format('Stage', 'Method', '/', 'Basis', '', 'Energy [Eh]', 'Scheme')
+    tables += headfmt.format("Stage", "Method", "/", "Basis", "", "Energy [Eh]", "Scheme")
     tables += delimit
-    tables += linefmt.format(GRAND_NEED[0]['d_stage'], GRAND_NEED[0]['d_wfn'], '/', GRAND_NEED[0]['d_basis'], '',
-                             GRAND_NEED[0]['d_energy'], GRAND_NEED[0]['d_scheme'])
+    tables += linefmt.format(
+        GRAND_NEED[0]["d_stage"],
+        GRAND_NEED[0]["d_wfn"],
+        "/",
+        GRAND_NEED[0]["d_basis"],
+        "",
+        GRAND_NEED[0]["d_energy"],
+        GRAND_NEED[0]["d_scheme"],
+    )
 
     if len(metadata) > 1:
         dc = 1
         for delta in metadata[1:]:
-            mtdstr = GRAND_NEED[dc]['d_wfn']
+            mtdstr = GRAND_NEED[dc]["d_wfn"]
             if dc != 1:
-                mtdstr += ' - ' + GRAND_NEED[dc + 1]['d_wfn']
-            tables += linefmt.format(GRAND_NEED[dc]['d_stage'], mtdstr, '/', GRAND_NEED[dc]['d_basis'], '',
-                                     GRAND_NEED[dc]['d_energy'] - GRAND_NEED[dc + 1]['d_energy'],
-                                     GRAND_NEED[dc]['d_scheme'])
+                mtdstr += " - " + GRAND_NEED[dc + 1]["d_wfn"]
+            tables += linefmt.format(
+                GRAND_NEED[dc]["d_stage"],
+                mtdstr,
+                "/",
+                GRAND_NEED[dc]["d_basis"],
+                "",
+                GRAND_NEED[dc]["d_energy"] - GRAND_NEED[dc + 1]["d_energy"],
+                GRAND_NEED[dc]["d_scheme"],
+            )
             dc += 2
 
-    tables += linefmt.format('total', 'CBS', '', '', '', finalenergy, '')
+    tables += linefmt.format("total", "CBS", "", "", "", finalenergy, "")
     tables += delimit
 
     return tables
 
 
 class CompositeComputer(BaseComputer):
-
     molecule: Any
     basis: str = "(auto)"
     method: str = "(auto)"
@@ -1538,7 +1693,7 @@ class CompositeComputer(BaseComputer):
     # One-to-One list of QCSchema corresponding to `task_list`.
     results_list: List[Any] = []
 
-    @validator('molecule')
+    @validator("molecule")
     def set_molecule(cls, mol):
         mol.update_geometry()
         mol.fix_com(True)
@@ -1551,19 +1706,20 @@ class CompositeComputer(BaseComputer):
         BaseComputer.__init__(self, **data)
 
         self.metameta = {
-            'kwargs': data,
-            'ptype': self.driver,
-            'verbose': self.verbose,
-            'label': None,
-            'molecule': self.molecule,
+            "kwargs": data,
+            "ptype": self.driver,
+            "verbose": self.verbose,
+            "label": None,
+            "molecule": self.molecule,
         }
         # logger.debug("METAMETA\n" + pp.pformat(self.metameta))
 
-        if data['metadata']:
-            if data['metadata'][0]["wfn"] not in VARH.keys():
+        if data["metadata"]:
+            if data["metadata"][0]["wfn"] not in VARH.keys():
                 raise ValidationError(
-                    """Requested SCF method '%s' is not recognized. Add it to VARH in driver_cbs.py to proceed.""" %
-                    (metadata[0]["wfn"]))
+                    """Requested SCF method '%s' is not recognized. Add it to VARH in driver_cbs.py to proceed."""
+                    % (metadata[0]["wfn"])
+                )
 
             if len(self.metadata) > 1:
                 for delta in self.metadata[1:]:
@@ -1579,7 +1735,7 @@ class CompositeComputer(BaseComputer):
             self.cbsrec, self.compute_list, self.trove = _build_cbs_compute(self.metameta, self.metadata)
 
             for job in self.compute_list:
-                keywords = copy.deepcopy(self.metameta['kwargs']['keywords'])
+                keywords = copy.deepcopy(self.metameta["kwargs"]["keywords"])
                 if job["f_options"] is not False:
                     stage_keywords = dict(job["f_options"].items())
                     keywords = {**keywords, **stage_keywords}
@@ -1590,7 +1746,8 @@ class CompositeComputer(BaseComputer):
                         "method": job["f_wfn"],
                         "basis": job["f_basis"],
                         "keywords": keywords or {},
-                    })
+                    }
+                )
                 self.task_list.append(task)
 
                 # logger.debug("TASK\n" + pp.pformat(task.dict()))
@@ -1604,9 +1761,10 @@ class CompositeComputer(BaseComputer):
         return [t.plan() for t in self.task_list]
 
     def compute(self, client: Optional["qcportal.FractalClient"] = None):
-        label = self.metameta['label']
-        instructions = "\n" + p4util.banner(f" CBS Computations{':' + label if label else ''} ",
-                                            strNotOutfile=True) + "\n"
+        label = self.metameta["label"]
+        instructions = (
+            "\n" + p4util.banner(f" CBS Computations{':' + label if label else ''} ", strNotOutfile=True) + "\n"
+        )
         logger.debug(instructions)
         core.print_out(instructions)
 
@@ -1630,42 +1788,48 @@ class CompositeComputer(BaseComputer):
             task = results_list[itask]
             response = task.return_result
 
-            if self.metameta['ptype'] == 'energy':
-                mc['f_energy'] = response
+            if self.metameta["ptype"] == "energy":
+                mc["f_energy"] = response
 
-            elif self.metameta['ptype'] == 'gradient':
-                mc['f_gradient'] = response
-                mc['f_energy'] = task.extras['qcvars']['CURRENT ENERGY']
+            elif self.metameta["ptype"] == "gradient":
+                mc["f_gradient"] = response
+                mc["f_energy"] = task.extras["qcvars"]["CURRENT ENERGY"]
 
-            elif self.metameta['ptype'] == 'hessian':
-                mc['f_hessian'] = response
-                mc['f_energy'] = task.extras['qcvars']['CURRENT ENERGY']
-                if 'CURRENT GRADIENT' in task.extras['qcvars']:
-                    mc['f_gradient'] = task.extras['qcvars']['CURRENT GRADIENT']
+            elif self.metameta["ptype"] == "hessian":
+                mc["f_hessian"] = response
+                mc["f_energy"] = task.extras["qcvars"]["CURRENT ENERGY"]
+                if "CURRENT GRADIENT" in task.extras["qcvars"]:
+                    mc["f_gradient"] = task.extras["qcvars"]["CURRENT GRADIENT"]
 
-            if 'CURRENT DIPOLE' in task.extras['qcvars']:
-                mc['f_dipole'] = task.extras['qcvars']['CURRENT DIPOLE']
+            if "CURRENT DIPOLE" in task.extras["qcvars"]:
+                mc["f_dipole"] = task.extras["qcvars"]["CURRENT DIPOLE"]
 
-            if 'CURRENT DIPOLE GRADIENT' in task.extras['qcvars']:
-                mc['f_dipder'] = task.extras['qcvars']['CURRENT DIPOLE GRADIENT']
+            if "CURRENT DIPOLE GRADIENT" in task.extras["qcvars"]:
+                mc["f_dipder"] = task.extras["qcvars"]["CURRENT DIPOLE GRADIENT"]
 
             # Fill in energies for subsumed methods
-            if self.metameta['ptype'] == 'energy':
-                for wfn in VARH[mc['f_wfn']]:
+            if self.metameta["ptype"] == "energy":
+                for wfn in VARH[mc["f_wfn"]]:
                     for job in self.trove:
-                        if ((wfn == job['f_wfn']) and (mc['f_basis'] == job['f_basis'])
-                                and (mc['f_options'] == job['f_options'])):
-                            job['f_energy'] = task.extras['qcvars'][VARH[wfn][wfn]]
+                        if (
+                            (wfn == job["f_wfn"])
+                            and (mc["f_basis"] == job["f_basis"])
+                            and (mc["f_options"] == job["f_options"])
+                        ):
+                            job["f_energy"] = task.extras["qcvars"][VARH[wfn][wfn]]
 
             # Copy data from 'run' to 'obtained' table
             for mce in self.trove:
-                if ((mc['f_wfn'] == mce['f_wfn']) and (mc['f_basis'] == mce['f_basis'])
-                        and (mc['f_options'] == mce['f_options'])):
-                    mce['f_energy'] = mc['f_energy']
-                    mce['f_gradient'] = mc['f_gradient']
-                    mce['f_hessian'] = mc['f_hessian']
-                    mce['f_dipole'] = mc['f_dipole']
-                    mce['f_dipder'] = mc['f_dipder']
+                if (
+                    (mc["f_wfn"] == mce["f_wfn"])
+                    and (mc["f_basis"] == mce["f_basis"])
+                    and (mc["f_options"] == mce["f_options"])
+                ):
+                    mce["f_energy"] = mc["f_energy"]
+                    mce["f_gradient"] = mc["f_gradient"]
+                    mce["f_hessian"] = mc["f_hessian"]
+                    mce["f_dipole"] = mc["f_dipole"]
+                    mce["f_dipder"] = mc["f_dipder"]
 
             # logger.debug("MC\n" + pp.pformat(mc))
 
@@ -1689,8 +1853,8 @@ class CompositeComputer(BaseComputer):
 
         # load QCVariables & properties
         qcvars = {
-            'CBS NUMBER': len(self.compute_list),
-            'NUCLEAR REPULSION ENERGY': self.molecule.nuclear_repulsion_energy(),
+            "CBS NUMBER": len(self.compute_list),
+            "NUCLEAR REPULSION ENERGY": self.molecule.nuclear_repulsion_energy(),
         }
 
         properties = {
@@ -1699,16 +1863,18 @@ class CompositeComputer(BaseComputer):
             "return_energy": E0,
         }
 
-        for qcv in ['CBS', 'CURRENT']:
-            qcvars[qcv + ' REFERENCE ENERGY'] = self.cbsrec[0]['d_energy']
-            qcvars[qcv + ' CORRELATION ENERGY'] = E0 - self.cbsrec[0]['d_energy']
-            qcvars[qcv + ('' if qcv == 'CURRENT' else ' TOTAL') + ' ENERGY'] = E0
+        for qcv in ["CBS", "CURRENT"]:
+            qcvars[qcv + " REFERENCE ENERGY"] = self.cbsrec[0]["d_energy"]
+            qcvars[qcv + " CORRELATION ENERGY"] = E0 - self.cbsrec[0]["d_energy"]
+            qcvars[qcv + ("" if qcv == "CURRENT" else " TOTAL") + " ENERGY"] = E0
 
         for idelta in range(int(len(self.cbsrec) / 2)):
             if idelta == 0:
                 continue
             dc = idelta * 2 + 1
-            qcvars[f"CBS {self.cbsrec[dc]['d_stage'].upper()} TOTAL ENERGY"] = self.cbsrec[dc]["d_energy"] - self.cbsrec[dc + 1]["d_energy"]
+            qcvars[f"CBS {self.cbsrec[dc]['d_stage'].upper()} TOTAL ENERGY"] = (
+                self.cbsrec[dc]["d_energy"] - self.cbsrec[dc + 1]["d_energy"]
+            )
 
         G0 = assembled_results["gradient"]
         if G0 is not None:
@@ -1734,32 +1900,31 @@ class CompositeComputer(BaseComputer):
 
         cbs_model = AtomicResult(
             **{
-                'driver': self.driver,
+                "driver": self.driver,
                 #'keywords': self.keywords,
-                'model': {
-                    'method': self.method,
-                    'basis': self.basis,
+                "model": {
+                    "method": self.method,
+                    "basis": self.basis,
                 },
-                'molecule': self.molecule.to_schema(dtype=2),
-                'properties': properties,
-                'provenance': p4util.provenance_stamp(__name__, module=assembled_results["module"]),
-                'extras': {
-                    'qcvars': qcvars,
-                    'cbs_record': copy.deepcopy(self.cbsrec),
+                "molecule": self.molecule.to_schema(dtype=2),
+                "properties": properties,
+                "provenance": p4util.provenance_stamp(__name__, module=assembled_results["module"]),
+                "extras": {
+                    "qcvars": qcvars,
+                    "cbs_record": copy.deepcopy(self.cbsrec),
                 },
-                'return_result': assembled_results['ret_ptype'],
-                'success': True,
-            })
+                "return_result": assembled_results["ret_ptype"],
+                "success": True,
+            }
+        )
 
-        logger.debug('CBS QCSchema:\n' + pp.pformat(cbs_model.dict()))
+        logger.debug("CBS QCSchema:\n" + pp.pformat(cbs_model.dict()))
 
         return cbs_model
 
     def get_psi_results(
-        self,
-        client: Optional["qcportal.FractalClient"] = None,
-        *,
-        return_wfn: bool = False) -> EnergyGradientHessianWfnReturn:
+        self, client: Optional["qcportal.FractalClient"] = None, *, return_wfn: bool = False
+    ) -> EnergyGradientHessianWfnReturn:
         """Called by driver to assemble results into Composite-flavored QCSchema,
         then reshape and return them in the customary Psi4 driver interface: ``(e/g/h, wfn)``.
 
@@ -1785,7 +1950,7 @@ class CompositeComputer(BaseComputer):
         """
         cbs_model = self.get_results(client=client)
 
-        if cbs_model.driver == 'energy':
+        if cbs_model.driver == "energy":
             ret_ptype = cbs_model.return_result
         else:
             ret_ptype = core.Matrix.from_array(cbs_model.return_result)
@@ -1801,13 +1966,13 @@ def _cbs_schema_to_wfn(cbs_model):
     """Helper function to produce Wavefunction from a Composite-flavored AtomicResult."""
 
     mol = core.Molecule.from_schema(cbs_model.molecule.dict())
-    basis = core.BasisSet.build(mol, "ORBITAL", 'def2-svp', quiet=True)
+    basis = core.BasisSet.build(mol, "ORBITAL", "def2-svp", quiet=True)
     wfn = core.Wavefunction(mol, basis)
     if hasattr(cbs_model.provenance, "module"):
         wfn.set_module(cbs_model.provenance.module)
 
     # wfn.set_energy(cbs_model['extras'['qcvars'].get('CBS TOTAL ENERGY'))  # catches Wfn.energy_
-    for qcv, val in cbs_model.extras['qcvars'].items():
+    for qcv, val in cbs_model.extras["qcvars"].items():
         for obj in [core, wfn]:
             obj.set_variable(qcv, val)
 

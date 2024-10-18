@@ -35,6 +35,7 @@ Properties that are able to use this module should be added to
 the registered_props dictionary.
 
 """
+
 import collections
 import os
 
@@ -43,7 +44,7 @@ from psi4 import core
 from ... import p4util
 
 
-def generate_inputs(db,name):
+def generate_inputs(db, name):
     """
         Generates the input files in each sub-directory of the
         distributed finite differences property calculation.
@@ -64,33 +65,35 @@ def generate_inputs(db,name):
     # Sanity Check
     # there should be 3 cords * natoms *2 directions (+/-)
     if not (6 * natom) == len(displacement_geoms):
-        raise Exception('The number of atomic displacements should be 6 times'
-                        ' the number of atoms!')
+        raise Exception("The number of atomic displacements should be 6 times" " the number of atoms!")
 
-    displacement_names = db['job_status'].keys()
+    displacement_names = db["job_status"].keys()
 
     for n, entry in enumerate(displacement_names):
         if not os.path.exists(entry):
             os.makedirs(entry)
 
         # Setup up input file string
-        inp_template = 'molecule {molname}_{disp}'
-        inp_template += ' {{\n{molecule_info}\n}}\n{options}\n{jobspec}\n'
+        inp_template = "molecule {molname}_{disp}"
+        inp_template += " {{\n{molecule_info}\n}}\n{options}\n{jobspec}\n"
         molecule.set_geometry(displacement_geoms[n])
         molecule.fix_orientation(True)
         molecule.fix_com(True)
-        inputfile = open('{0}/input.dat'.format(entry), 'w')
-        inputfile.write("# This is a psi4 input file auto-generated for"
-            "computing properties by finite differences.\n\n")
+        inputfile = open("{0}/input.dat".format(entry), "w")
+        inputfile.write(
+            "# This is a psi4 input file auto-generated for" "computing properties by finite differences.\n\n"
+        )
         inputfile.write(
             inp_template.format(
                 molname=molecule.name(),
                 disp=entry,
                 molecule_info=molecule.create_psi4_string_from_molecule(),
                 options=p4util.format_options_for_input(),
-                jobspec=db['prop_cmd']))
+                jobspec=db["prop_cmd"],
+            )
+        )
         inputfile.close()
-    db['inputs_generated'] = True
+    db["inputs_generated"] = True
 
     # END generate_inputs
 
@@ -114,8 +117,8 @@ def initialize_database(database, name, prop, properties_array, additional_kwarg
     Returns: nothing
     Throws: nothing
     """
-    database['inputs_generated'] = False
-    database['jobs_complete'] = False
+    database["inputs_generated"] = False
+    database["jobs_complete"] = False
     prop_cmd = "property('{0}',".format(name)
     prop_cmd += "properties=[ '{}' ".format(properties_array[0])
     if len(properties_array) > 1:
@@ -126,21 +129,21 @@ def initialize_database(database, name, prop, properties_array, additional_kwarg
         for arg in additional_kwargs:
             prop_cmd += ", {}".format(arg)
     prop_cmd += ")"
-    database['prop_cmd'] = prop_cmd
-    database['job_status'] = collections.OrderedDict()
+    database["prop_cmd"] = prop_cmd
+    database["job_status"] = collections.OrderedDict()
     # Populate the job_status dict
     molecule = core.get_active_molecule()
     natom = molecule.natom()
-    coordinates = ['x', 'y', 'z']
-    #step_direction = ['p', 'm'] changing due to change in findif atomic_displacements
-    step_direction = ['m', 'p']
+    coordinates = ["x", "y", "z"]
+    # step_direction = ['p', 'm'] changing due to change in findif atomic_displacements
+    step_direction = ["m", "p"]
 
     for atom in range(1, natom + 1):
         for coord in coordinates:
             for step in step_direction:
-                job_name = '{}_{}_{}'.format(atom, coord, step)
-                database['job_status'].update({job_name: 'not_started'})
-    database['{}_computed'.format(prop)] = False
+                job_name = "{}_{}_{}".format(atom, coord, step)
+                database["job_status"].update({job_name: "not_started"})
+    database["{}_computed".format(prop)] = False
 
     # END initialize_database()
 
@@ -157,24 +160,24 @@ def stat(db):
     Throws: nothing
     """
     n_finished = 0
-    for job, status in db['job_status'].items():
-        if status == 'finished':
+    for job, status in db["job_status"].items():
+        if status == "finished":
             n_finished += 1
-        elif status in ('not_started', 'running'):
+        elif status in ("not_started", "running"):
             try:
                 with open("{}/output.dat".format(job)) as outfile:
                     outfile.seek(-150, 2)
                     for line in outfile:
-                        if 'Psi4 exiting successfully' in line:
-                            db['job_status'][job] = 'finished'
+                        if "Psi4 exiting successfully" in line:
+                            db["job_status"][job] = "finished"
                             n_finished += 1
                             break
                         else:
-                            db['job_status'][job] = 'running'
+                            db["job_status"][job] = "running"
             except Exception:
                 pass
     # check all jobs done?
-    if n_finished == len(db['job_status'].keys()):
-        db['jobs_complete'] = True
+    if n_finished == len(db["job_status"].keys()):
+        db["jobs_complete"] = True
 
     # END stat()

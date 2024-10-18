@@ -232,38 +232,44 @@ procedures = {
         'cvs-adc(2)'   : proc.run_adcc_property,
         'cvs-adc(2)-x' : proc.run_adcc_property,
         'cvs-adc(3)'   : proc.run_adcc_property,
-    }} # yapf: disable
+    }}  # yapf: disable
 
 # Will only allow energy to be run for the following methods
-energy_only_methods = [x for x in procedures['energy'].keys() if 'sapt' in x]
-energy_only_methods += ['efp', 'cphf', 'tdhf', 'cis']
+energy_only_methods = [x for x in procedures["energy"].keys() if "sapt" in x]
+energy_only_methods += ["efp", "cphf", "tdhf", "cis"]
 
 # Catch all SAPT-D variants
 for key in functionals:
     # Grab the available -Ds from HF, since that's what SAPT0-D calls
-    if key.startswith('hf-d'):
-        disp = key.split('-')[-1]
-        procedures['energy']['sapt0-' + disp] = proc.run_sapt
-        procedures['energy']['fisapt0-' + disp] = proc.run_fisapt
+    if key.startswith("hf-d"):
+        disp = key.split("-")[-1]
+        procedures["energy"]["sapt0-" + disp] = proc.run_sapt
+        procedures["energy"]["fisapt0-" + disp] = proc.run_fisapt
 
 # Will complete modelchem spec with basis='(auto)' for following methods
 integrated_basis_methods = [
-    'g2', 'gaussian-2',
-    'hf3c', 'hf-3c',
-    'pbeh3c', 'pbeh-3c',
-    'b973c', 'b97-3c',
-    'r2scan3c', 'r2scan-3c',
-    'wb97x3c', 'wb97x-3c',
-    'sns-mp2',
+    "g2",
+    "gaussian-2",
+    "hf3c",
+    "hf-3c",
+    "pbeh3c",
+    "pbeh-3c",
+    "b973c",
+    "b97-3c",
+    "r2scan3c",
+    "r2scan-3c",
+    "wb97x3c",
+    "wb97x-3c",
+    "sns-mp2",
 ]
 
 # Integrate arbitrary order with driver routines
 for lvl in range(2, 99):
-    procedures['energy'][f'ci{lvl}'] = proc.run_detci
-    procedures['energy'][f'zapt{lvl}'] = proc.run_detci
+    procedures["energy"][f"ci{lvl}"] = proc.run_detci
+    procedures["energy"][f"zapt{lvl}"] = proc.run_detci
     if lvl >= 5:
-        procedures['energy'][f'mp{lvl}'] = proc.run_detci
-    procedures['properties'][f'ci{lvl}'] = proc.run_detci_property
+        procedures["energy"][f"mp{lvl}"] = proc.run_detci
+    procedures["properties"][f"ci{lvl}"] = proc.run_detci_property
 
 # Integrate MRCC with driver routines
 if which("dmrcc", return_bool=True):
@@ -276,32 +282,32 @@ for key in functionals:
     ssuper = build_superfunctional_from_dictionary(functionals[key], 1, 1, True)[0]
 
     # Energy
-    procedures['energy'][key] = proc.run_scf
+    procedures["energy"][key] = proc.run_scf
 
     if not (ssuper.is_c_hybrid() or ssuper.is_c_lrc() or ssuper.needs_vv10()):
-        procedures['energy']['td-' + key] = proc.run_tdscf_energy
+        procedures["energy"]["td-" + key] = proc.run_tdscf_energy
 
     # Properties
     if not ssuper.is_c_hybrid():
-        procedures['properties'][key] = proc.run_scf_property
+        procedures["properties"][key] = proc.run_scf_property
 
     # Gradients
     if not (ssuper.is_c_hybrid() or ssuper.is_c_lrc() or ssuper.needs_vv10()):
-        procedures['gradient'][key] = proc.select_scf_gradient
+        procedures["gradient"][key] = proc.select_scf_gradient
 
     # Hessians
-    if not ssuper.is_gga(): # N.B. this eliminates both GGA and m-GGA, as the latter contains GGA terms
-        procedures['hessian'][key] = proc.run_scf_hessian
+    if not ssuper.is_gga():  # N.B. this eliminates both GGA and m-GGA, as the latter contains GGA terms
+        procedures["hessian"][key] = proc.run_scf_hessian
 
 # Integrate CFOUR with driver routines
 for ssuper in interface_cfour.cfour_list():
-    procedures['energy'][ssuper.lower()] = interface_cfour.run_cfour
+    procedures["energy"][ssuper.lower()] = interface_cfour.run_cfour
 
 for ssuper in interface_cfour.cfour_gradient_list():
-    procedures['gradient'][ssuper.lower()] = interface_cfour.run_cfour
+    procedures["gradient"][ssuper.lower()] = interface_cfour.run_cfour
 
 for ssuper in interface_cfour.cfour_hessian_list():
-    procedures['hessian'][ssuper.lower()] = interface_cfour.run_cfour
+    procedures["hessian"][ssuper.lower()] = interface_cfour.run_cfour
 
 # dictionary to register pre- and post-compute hooks for driver routines
-hooks = dict((k1, dict((k2, []) for k2 in ['pre', 'post'])) for k1 in ['energy', 'optimize', 'frequency'])
+hooks = dict((k1, dict((k2, []) for k2 in ["pre", "post"])) for k1 in ["energy", "optimize", "frequency"])

@@ -58,7 +58,8 @@ def cg_solver(
     printer: Optional[Callable] = None,
     printlvl: int = 1,
     maxiter: int = 20,
-    rcond: float = 1.e-6) -> List[core.Matrix]:
+    rcond: float = 1.0e-6,
+) -> List[core.Matrix]:
     """
     Solves the :math:`Ax = b` linear equations via Conjugate Gradient. The `A` matrix must be a hermitian, positive definite matrix.
 
@@ -132,14 +133,16 @@ def cg_solver(
     # First RMS
     grad_dot = [x.sum_of_squares() for x in rhs_vec]
 
-    resid = [(r_vec[x].sum_of_squares() / grad_dot[x])**0.5 for x in range(nrhs)]
+    resid = [(r_vec[x].sum_of_squares() / grad_dot[x]) ** 0.5 for x in range(nrhs)]
 
     if printer:
         resid = printer(0, x_vec, r_vec)
     elif printlvl:
         # core.print_out('         CG Iteration Guess:    Rel. RMS = %1.5e\n' %  np.mean(resid))
-        core.print_out("    %5s %14.3e %12.3e %7d %9d\n" %
-                       ("Guess", np.mean(resid), np.max(resid), len(z_vec), time.time() - tstart))
+        core.print_out(
+            "    %5s %14.3e %12.3e %7d %9d\n"
+            % ("Guess", np.mean(resid), np.max(resid), len(z_vec), time.time() - tstart)
+        )
 
     rms = np.mean(resid)
     rz_old = [0.0 for x in range(nrhs)]
@@ -148,7 +151,6 @@ def cg_solver(
 
     # CG iterations
     for rot_iter in range(maxiter):
-
         # Build old RZ so we can discard vectors
         for x in active:
             rz_old[x] = r_vec[x].vector_dot(z_vec[x])
@@ -166,7 +168,7 @@ def cg_solver(
 
             x_vec[x].axpy(alpha[x], p_vec[x])
             r_vec[x].axpy(-alpha[x], Ap_vec[x])
-            resid[x] = (r_vec[x].sum_of_squares() / grad_dot[x])**0.5
+            resid[x] = (r_vec[x].sum_of_squares() / grad_dot[x]) ** 0.5
 
         # Print out or compute the resid function
         if printer:
@@ -174,13 +176,15 @@ def cg_solver(
 
         # Figure out active updated active mask
         for x in active:
-            if (resid[x] < rcond):
+            if resid[x] < rcond:
                 active_mask[x] = False
 
         # Print out if requested
         if printlvl:
-            core.print_out("    %5d %14.3e %12.3e %7d %9d\n" %
-                           (rot_iter + 1, np.mean(resid), np.max(resid), sum(active_mask), time.time() - tstart))
+            core.print_out(
+                "    %5d %14.3e %12.3e %7d %9d\n"
+                % (rot_iter + 1, np.mean(resid), np.max(resid), sum(active_mask), time.time() - tstart)
+            )
 
         active = np.where(active_mask)[0]
 
@@ -264,7 +268,6 @@ class DIIS:
             return self.state[0]
 
         if diis_count > self.max_vec:
-
             if self.removal_policy == "OLDEST":
                 pos = 0
             else:
@@ -305,7 +308,7 @@ class DIIS:
         # Then we gotta do a custom inverse
         B *= S[:, None] * S
         invB = core.Matrix.from_array(B)
-        invB.power(-1.0, 1.e-12)
+        invB.power(-1.0, 1.0e-12)
 
         ci = np.dot(invB, resid)
         ci *= S
@@ -355,26 +358,27 @@ def _diag_print_info(solver_name, info, verbose=1):
     elif verbose == 1:
         # print iter  maxde max|R| conv/restart
         flags = []
-        if info['collapse']:
+        if info["collapse"]:
             flags.append("Restart")
-        if info['done']:
+        if info["done"]:
             flags.append("Converged")
 
-        m_de = np.max(info['delta_val'])
-        m_r = np.max(info['res_norm'])
+        m_de = np.max(info["delta_val"])
+        m_r = np.max(info["res_norm"])
         nvec = info["nvec"]
         flgs = "/".join(flags)
         core.print_out(
-            f"  {solver_name} iter {info['count']:3d}:   {m_de:-11.5e} {m_r:12.5e} {nvec:>6d}      {flgs}\n")
+            f"  {solver_name} iter {info['count']:3d}:   {m_de:-11.5e} {m_r:12.5e} {nvec:>6d}      {flgs}\n"
+        )
     else:
         # print iter / ssdim folowed by de/|R| for each root
         core.print_out(f"  {solver_name} iter {info['count']:3d}: {info['nvec']:4d} guess vectors\n")
-        for i, (e, de, rn) in enumerate(zip(info['val'], info['delta_val'], info['res_norm'])):
+        for i, (e, de, rn) in enumerate(zip(info["val"], info["delta_val"], info["res_norm"])):
             s = " " * len(solver_name)
             core.print_out(f"     {i+1:2d}: {s:} {e:-11.5f} {de:-11.5e} {rn:12.5e}\n")
-        if info['done']:
+        if info["done"]:
             core.print_out("  Solver Converged! all roots\n\n")
-        elif info['collapse']:
+        elif info["collapse"]:
             core.print_out("  Subspace limits exceeded restarting\n\n")
 
 
@@ -386,9 +390,9 @@ def _diag_print_converged(solver_name, stats, vals, verbose=1, **kwargs):
     if verbose > 1:
         # print values summary + number of iterations + # of "big" product evals
         core.print_out("  Root #    eigenvalue\n")
-        for (i, vi) in enumerate(vals):
+        for i, vi in enumerate(vals):
             core.print_out(f"  {i+1:^6}    {vi:20.12f}\n")
-        max_nvec = max(istat['nvec'] for istat in stats)
+        max_nvec = max(istat["nvec"] for istat in stats)
         core.print_out(f"\n {solver_name} converged in {stats[-1]['count']} iterations\n")
         core.print_out(f"  Computed a total of {stats[-1]['product_count']} large products\n\n")
 
@@ -662,11 +666,12 @@ def davidson_solver(
     guess: List,
     *,
     nroot: int,
-    r_convergence: float = 1.0E-4,
+    r_convergence: float = 1.0e-4,
     max_ss_size: int = 100,
     maxiter: int = 60,
     verbose: int = 1,
-    nonneg_only: bool = False) -> Dict[str, Any]:
+    nonneg_only: bool = False,
+) -> Dict[str, Any]:
     """Solves for the lowest few eigenvalues and eigenvectors of a large problem emulated through an engine.
 
     If the large matrix `A` has dimension `{NxN}` and N is very large, and only
@@ -732,7 +737,6 @@ def davidson_solver(
         "res_norm": np.zeros((nk)),
         "val": np.zeros((nk)),
         "delta_val": np.zeros((nk)),
-
         # conv defaults to true, and will be flipped when a non-conv root is hit
         "done": True,
         "nvec": 0,
@@ -749,27 +753,26 @@ def davidson_solver(
     stats = []
     best_eigvecs = []
     best_eigvals = []
-    while iter_info['count'] < maxiter:
-
+    while iter_info["count"] < maxiter:
         # increment iteration/ save old vals
-        iter_info['count'] += 1
-        old_vals = iter_info['val'].copy()
+        iter_info["count"] += 1
+        old_vals = iter_info["val"].copy()
 
         # reset flags
-        iter_info['collapse'] = False
-        iter_info['done'] = True
+        iter_info["collapse"] = False
+        iter_info["done"] = True
 
         # get subspace dimension
         l = len(vecs)
-        iter_info['nvec'] = l
+        iter_info["nvec"] = l
 
         # check if ss dimension has exceeded limits
         if l >= max_ss_size:
-            iter_info['collapse'] = True
+            iter_info["collapse"] = True
 
         # compute A times trial vector products
         Ax, nprod = engine.compute_products(vecs)
-        iter_info['product_count'] += nprod
+        iter_info["product_count"] += nprod
 
         # Build Subspace matrix
         G = np.zeros((l, l))
@@ -803,7 +806,6 @@ def davidson_solver(
         # check convergence of each solution
         new_vecs = []
         for k in range(nk):
-
             # residual vector
             Rk = engine.new_vector()
             lam_k = lam[k]
@@ -813,13 +815,13 @@ def davidson_solver(
 
             Rk = engine.vector_axpy(-1.0 * lam_k, best_eigvecs[k], Rk)
 
-            iter_info['val'][k] = lam_k
-            iter_info['delta_val'][k] = abs(old_vals[k] - lam_k)
-            iter_info['res_norm'][k] = np.sqrt((engine.vector_dot(Rk, Rk)))
+            iter_info["val"][k] = lam_k
+            iter_info["delta_val"][k] = abs(old_vals[k] - lam_k)
+            iter_info["res_norm"][k] = np.sqrt((engine.vector_dot(Rk, Rk)))
 
             # augment guess vector for non-converged roots
-            if (iter_info["res_norm"][k] > r_convergence):
-                iter_info['done'] = False
+            if iter_info["res_norm"][k] > r_convergence:
+                iter_info["done"] = False
                 Qk = engine.precondition(Rk, lam_k)
                 new_vecs.append(Qk)
 
@@ -829,17 +831,14 @@ def davidson_solver(
         # save stats for this iteration
         stats.append(iter_info.copy())
 
-        if iter_info['done']:
-
+        if iter_info["done"]:
             # finished
             _diag_print_converged(print_name, stats, best_eigvals, verbose)
             break
-        elif iter_info['collapse']:
-
+        elif iter_info["collapse"]:
             # restart needed
             vecs = best_eigvecs
         else:
-
             # Regular subspace update, orthonormalize preconditioned residuals and add to the trial set
             vecs = _gs_orth(engine, vecs, new_vecs)
 
@@ -852,10 +851,11 @@ def hamiltonian_solver(
     guess: List,
     *,
     nroot: int,
-    r_convergence: float = 1.0E-4,
+    r_convergence: float = 1.0e-4,
     max_ss_size: int = 100,
     maxiter: int = 60,
-    verbose: int = 1):
+    verbose: int = 1,
+):
     """Finds the smallest eigenvalues and associated right and left hand
     eigenvectors of a large real Hamiltonian eigenvalue problem emulated
     through an engine.
@@ -947,7 +947,6 @@ def hamiltonian_solver(
         "res_norm": np.zeros((nk)),
         "val": np.zeros((nk)),
         "delta_val": np.zeros((nk)),
-
         # conv defaults to true, and will be flipped when a non-conv root is hit
         "conv": True,
         "nvec": 0,
@@ -963,27 +962,26 @@ def hamiltonian_solver(
     best_R = []
     best_vals = []
     stats = []
-    while iter_info['count'] < maxiter:
-
+    while iter_info["count"] < maxiter:
         # increment iteration/ save old vals
-        iter_info['count'] += 1
-        old_w = iter_info['val'].copy()
+        iter_info["count"] += 1
+        old_w = iter_info["val"].copy()
 
         # reset flags
-        iter_info['collapse'] = False
-        iter_info['done'] = True
+        iter_info["collapse"] = False
+        iter_info["done"] = True
 
         # get subspace dimension
         l = len(vecs)
-        iter_info['nvec'] = l
+        iter_info["nvec"] = l
 
         # check if subspace dimension has exceeded limits
         if l >= max_ss_size:
-            iter_info['collapse'] = True
+            iter_info["collapse"] = True
 
         # compute [A+B]*v (H1x) and [A-B]*v (H2x)
         H1x, H2x, nprod = engine.compute_products(vecs)
-        iter_info['product_count'] += nprod
+        iter_info["product_count"] += nprod
 
         # form x*H1x (H1_ss) and x*H2x (H2_ss)
         H1_ss = np.zeros((l, l))
@@ -1009,7 +1007,7 @@ def hamiltonian_solver(
         #    - User would probably not expect this
         # 3. Perform Stability update and restart with new reference
         if np.any(H2_ss_val < 0.0):
-            msg = ("The H2 matrix is not Positive Definite. " "This means the reference state is not stable.")
+            msg = "The H2 matrix is not Positive Definite. " "This means the reference state is not stable."
             raise RuntimeError(msg)
 
         # Build H2^(1/2)
@@ -1017,10 +1015,10 @@ def hamiltonian_solver(
         _print_array("SS Transformed (A-B)^(1/2)", H2_ss_half, verbose)
 
         # Build Hermitian SS product (H2)^(1/2)(H1)(H2)^(1/2)
-        Hss = np.einsum('ij,jk,km->im', H2_ss_half, H1_ss, H2_ss_half, optimize=True)
+        Hss = np.einsum("ij,jk,km->im", H2_ss_half, H1_ss, H2_ss_half, optimize=True)
         _print_array("(H2)^(1/2)(H1)(H2)^(1/2)", Hss, verbose)
 
-        #diagonalize Hss -> w^2, Tss
+        # diagonalize Hss -> w^2, Tss
         w2, Tss = np.linalg.eigh(Hss)
         _print_array("Eigenvalues (A-B)^(1/2)(A+B)(A-B)^(1/2)", w2, verbose)
         _print_array("Eigvectors (A-B)^(1/2)(A+B)(A-B)^(1/2)", Tss, verbose)
@@ -1030,7 +1028,7 @@ def hamiltonian_solver(
         w2 = w2[w2 > 1.0e-10]
 
         # check for invalid eigvals
-        with np.errstate(invalid='raise'):
+        with np.errstate(invalid="raise"):
             w = np.sqrt(w2)
 
         # sort roots
@@ -1046,8 +1044,8 @@ def hamiltonian_solver(
 
         # Biorthonormalize R/L solution vectors
         inners = np.einsum("ix,ix->x", Rss, Lss, optimize=True)
-        Rss = np.einsum("x,ix->ix", 1. / np.sqrt(inners), Rss, optimize=True)
-        Lss = np.einsum("x,ix->ix", 1. / np.sqrt(inners), Lss, optimize=True)
+        Rss = np.einsum("x,ix->ix", 1.0 / np.sqrt(inners), Rss, optimize=True)
+        Lss = np.einsum("x,ix->ix", 1.0 / np.sqrt(inners), Lss, optimize=True)
 
         # Save best R/L vectors and eigenvalues
         best_R = _best_vectors(engine, Rss[:, :nk], vecs)
@@ -1057,7 +1055,6 @@ def hamiltonian_solver(
         # check convergence of each solution
         new_vecs = []
         for k in range(nk):
-
             # residual vectors for right and left eigenvectors
             WR_k = engine.new_vector()
             WL_k = engine.new_vector()
@@ -1076,13 +1073,13 @@ def hamiltonian_solver(
 
             norm = norm_R + norm_L
 
-            iter_info['res_norm'][k] = norm
-            iter_info['delta_val'][k] = np.abs(old_w[k] - w[k])
-            iter_info['val'][k] = w[k]
+            iter_info["res_norm"][k] = norm
+            iter_info["delta_val"][k] = np.abs(old_w[k] - w[k])
+            iter_info["val"][k] = w[k]
 
             # augment the guess space for non-converged roots
-            if (iter_info['res_norm'][k] > r_convergence):
-                iter_info['done'] = False
+            if iter_info["res_norm"][k] > r_convergence:
+                iter_info["done"] = False
                 new_vecs.append(engine.precondition(WR_k, w[k]))
                 new_vecs.append(engine.precondition(WL_k, w[k]))
 
@@ -1092,18 +1089,15 @@ def hamiltonian_solver(
         # save stats for this iteration
         stats.append(iter_info.copy())
 
-        if iter_info['done']:
-
+        if iter_info["done"]:
             # Finished
             _diag_print_converged(print_name, stats, w[:nk], rvec=best_R, lvec=best_L, verbose=verbose)
             break
 
-        elif iter_info['collapse']:
-
+        elif iter_info["collapse"]:
             # need to orthonormalize union of the Left/Right solutions on restart
             vecs = _gs_orth(engine, [], best_R + best_L)
         else:
-
             # Regular subspace update, orthonormalize preconditioned residuals and add to the trial set
             vecs = _gs_orth(engine, vecs, new_vecs)
 

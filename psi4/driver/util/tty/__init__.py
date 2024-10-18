@@ -69,44 +69,42 @@ def msg(message, *args):
 
 
 def info(message, *args, **kwargs):
-    fmt = kwargs.get('format', '*b')
-    stream = kwargs.get('stream', sys.stdout)
-    wrap = kwargs.get('wrap', False)
+    fmt = kwargs.get("format", "*b")
+    stream = kwargs.get("stream", sys.stdout)
+    wrap = kwargs.get("wrap", False)
 
     cprint("@%s{==>} %s" % (fmt, cescape(str(message))), stream=stream)
     for arg in args:
         if wrap:
-            lines = textwrap.wrap(
-                str(arg), initial_indent=indent, subsequent_indent=indent
-            )
+            lines = textwrap.wrap(str(arg), initial_indent=indent, subsequent_indent=indent)
             for line in lines:
-                stream.write(line + '\n')
+                stream.write(line + "\n")
         else:
-            stream.write(indent + str(arg) + '\n')
+            stream.write(indent + str(arg) + "\n")
 
 
 def verbose(message, *args, **kwargs):
     if _verbose:
-        kwargs.setdefault('format', 'c')
+        kwargs.setdefault("format", "c")
         info(message, *args, **kwargs)
 
 
 def debug(message, *args, **kwargs):
     if _debug:
-        kwargs.setdefault('format', 'g')
-        kwargs.setdefault('stream', sys.stderr)
+        kwargs.setdefault("format", "g")
+        kwargs.setdefault("stream", sys.stderr)
         info(message, *args, **kwargs)
 
 
 def error(message, *args, **kwargs):
-    kwargs.setdefault('format', '*r')
-    kwargs.setdefault('stream', sys.stderr)
+    kwargs.setdefault("format", "*r")
+    kwargs.setdefault("stream", sys.stderr)
     info("Error: " + str(message), *args, **kwargs)
 
 
 def warn(message, *args, **kwargs):
-    kwargs.setdefault('format', '*Y')
-    kwargs.setdefault('stream', sys.stderr)
+    kwargs.setdefault("format", "*Y")
+    kwargs.setdefault("stream", sys.stderr)
     info("Warning: " + str(message), *args, **kwargs)
 
 
@@ -117,15 +115,14 @@ def die(message, *args, **kwargs):
 
 def hline(label=None, **kwargs):
     """Draw a labeled horizontal line.
-       Options:
-           char       Char to draw the line with. Default '-'
-           max_width  Maximum width of the line. Default is 64 chars.
+    Options:
+        char       Char to draw the line with. Default '-'
+        max_width  Maximum width of the line. Default is 64 chars.
     """
-    char = kwargs.pop('char', '-')
-    max_width = kwargs.pop('max_width', 64)
+    char = kwargs.pop("char", "-")
+    max_width = kwargs.pop("max_width", 64)
     if kwargs:
-        raise TypeError("'%s' is an invalid keyword argument for this function."
-                        % next(kwargs.iterkeys()))
+        raise TypeError("'%s' is an invalid keyword argument for this function." % next(kwargs.iterkeys()))
 
     rows, cols = terminal_size()
     if not cols:
@@ -153,7 +150,8 @@ def terminal_size():
         try:
             import fcntl  # Not available on Windows
             import termios  # Not available on Windows
-            rc = struct.unpack('hh', fcntl.ioctl(fd, termios.TIOCGWINSZ, '1234'))
+
+            rc = struct.unpack("hh", fcntl.ioctl(fd, termios.TIOCGWINSZ, "1234"))
         except Exception:
             return
         return rc
@@ -167,6 +165,6 @@ def terminal_size():
         except Exception:
             pass
     if not rc:
-        rc = (os.environ.get('LINES', 25), os.environ.get('COLUMNS', 80))
+        rc = (os.environ.get("LINES", 25), os.environ.get("COLUMNS", 80))
 
     return int(rc[0]), int(rc[1])

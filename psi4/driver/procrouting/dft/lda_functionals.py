@@ -31,25 +31,9 @@ List of LDA functionals
 
 funcs = []
 
-funcs.append({
-    "name": "SVWN",
-    "x_functionals": {
-        "LDA_X": {}
-    },
-    "c_functionals": {
-        "LDA_C_VWN_RPA": {}
-    }
-})
+funcs.append({"name": "SVWN", "x_functionals": {"LDA_X": {}}, "c_functionals": {"LDA_C_VWN_RPA": {}}})
 
-funcs.append({
-    "name": "SPW92",
-    "x_functionals": {
-        "LDA_X": {}
-    },
-    "c_functionals": {
-        "LDA_C_PW": {}
-    }
-})
+funcs.append({"name": "SPW92", "x_functionals": {"LDA_X": {}}, "c_functionals": {"LDA_C_PW": {}}})
 
 functional_list = {}
 for functional in funcs:

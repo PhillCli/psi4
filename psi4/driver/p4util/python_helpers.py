@@ -70,18 +70,19 @@ from .exceptions import TestComparisonError, UpgradeHelper, ValidationError
 
 ## Python basis helps
 
+
 @staticmethod
 def _pybuild_basis(
-        mol: core.Molecule,
-        key: Optional[str] = None,
-        target: Optional[Union[str, Callable]] = None,
-        fitrole: str = "ORBITAL",
-        other: Optional[Union[str, Callable]] = None,
-        puream: int = -1,
-        return_atomlist: bool = False,
-        *,
-        quiet: bool = False,
-    ) -> Union[core.BasisSet, List[core.BasisSet]]:
+    mol: core.Molecule,
+    key: Optional[str] = None,
+    target: Optional[Union[str, Callable]] = None,
+    fitrole: str = "ORBITAL",
+    other: Optional[Union[str, Callable]] = None,
+    puream: int = -1,
+    return_atomlist: bool = False,
+    *,
+    quiet: bool = False,
+) -> Union[core.BasisSet, List[core.BasisSet]]:
     """Build a primary or auxiliary basis set.
 
     Parameters
@@ -130,16 +131,15 @@ def _pybuild_basis(
         Single basis for `mol`, unless `return_atomlist` is True.
 
     """
-    if key == 'ORBITAL':
-        key = 'BASIS'
+    if key == "ORBITAL":
+        key = "BASIS"
 
     def _resolve_target(key, target):
-        """Figure out exactly what basis set was intended by (key, target)
-        """
+        """Figure out exactly what basis set was intended by (key, target)"""
         horde = qcdb.libmintsbasisset.basishorde
         if not target:
             if not key:
-                key = 'BASIS'
+                key = "BASIS"
             target = core.get_global_option(key)
 
         if target in horde:
@@ -153,33 +153,29 @@ def _pybuild_basis(
     # if a string, they search for a gbs file with that name.
     # if a function, it needs to apply a basis to each atom.
 
-    bs, basisdict = qcdb.BasisSet.pyconstruct(mol.to_dict(),
-                                              key,
-                                              resolved_target,
-                                              fitrole,
-                                              other,
-                                              return_dict=True,
-                                              return_atomlist=return_atomlist)
+    bs, basisdict = qcdb.BasisSet.pyconstruct(
+        mol.to_dict(), key, resolved_target, fitrole, other, return_dict=True, return_atomlist=return_atomlist
+    )
 
     if return_atomlist:
         atom_basis_list = []
         for atbs in basisdict:
-            atommol = core.Molecule.from_dict(atbs['molecule'])
+            atommol = core.Molecule.from_dict(atbs["molecule"])
             lmbs = core.BasisSet.construct_from_pydict(atommol, atbs, puream)
             atom_basis_list.append(lmbs)
         return atom_basis_list
     if isinstance(resolved_target, str):
-        basisdict['name'] = basisdict['name'].split('/')[-1].replace('.gbs', '')
+        basisdict["name"] = basisdict["name"].split("/")[-1].replace(".gbs", "")
     if callable(resolved_target):
-        basisdict['name'] = resolved_target.__name__.replace('basisspec_psi4_yo__', '').upper()
+        basisdict["name"] = resolved_target.__name__.replace("basisspec_psi4_yo__", "").upper()
 
     if not quiet:
-        core.print_out(basisdict['message'])
-        if 'ECP' in basisdict['message']:
-            core.print_out('    !!!  WARNING: ECP capability is in beta. Please check occupations closely.  !!!\n\n')
+        core.print_out(basisdict["message"])
+        if "ECP" in basisdict["message"]:
+            core.print_out("    !!!  WARNING: ECP capability is in beta. Please check occupations closely.  !!!\n\n")
 
-    if basisdict['key'] is None:
-        basisdict['key'] = 'BASIS'
+    if basisdict["key"] is None:
+        basisdict["key"] = "BASIS"
     psibasis = core.BasisSet.construct_from_pydict(mol, basisdict, puream)
     return psibasis
 
@@ -191,11 +187,11 @@ core.BasisSet.build = _pybuild_basis
 
 @staticmethod
 def _core_wavefunction_build(
-        mol: core.Molecule,
-        basis: Union[None, str, core.BasisSet] = None,
-        *,
-        quiet: bool = False,
-    ) -> core.Wavefunction:
+    mol: core.Molecule,
+    basis: Union[None, str, core.BasisSet] = None,
+    *,
+    quiet: bool = False,
+) -> core.Wavefunction:
     """Build a wavefunction from minimal inputs, molecule and basis set.
 
     Parameters
@@ -238,7 +234,7 @@ def _core_wavefunction_get_scratch_filename(self: core.Wavefunction, filenumber:
     """
     fname = os.path.split(os.path.abspath(core.get_writer_file_prefix(self.molecule().name())))[1]
     psi_scratch = core.IOManager.shared_object().get_default_path()
-    return os.path.join(psi_scratch, fname + '.' + str(filenumber))
+    return os.path.join(psi_scratch, fname + "." + str(filenumber))
 
 
 core.Wavefunction.get_scratch_filename = _core_wavefunction_get_scratch_filename
@@ -273,27 +269,27 @@ def _core_wavefunction_from_file(wfn_data: Union[str, Dict, Path]) -> core.Wavef
         wfn_data = np.load(wfn_data, allow_pickle=True).item()
 
     # variable type specific dictionaries to be passed into C++ constructor
-    wfn_matrix = wfn_data['matrix']
-    wfn_vector = wfn_data['vector']
-    wfn_dimension = wfn_data['dimension']
-    wfn_int = wfn_data['int']
-    wfn_string = wfn_data['string']
-    wfn_boolean = wfn_data['boolean']
-    wfn_float = wfn_data['float']
-    wfn_floatvar = wfn_data['floatvar']
-    wfn_matrixarr = wfn_data['matrixarr']
+    wfn_matrix = wfn_data["matrix"]
+    wfn_vector = wfn_data["vector"]
+    wfn_dimension = wfn_data["dimension"]
+    wfn_int = wfn_data["int"]
+    wfn_string = wfn_data["string"]
+    wfn_boolean = wfn_data["boolean"]
+    wfn_float = wfn_data["float"]
+    wfn_floatvar = wfn_data["floatvar"]
+    wfn_matrixarr = wfn_data["matrixarr"]
 
     # reconstruct molecule from dictionary representation
-    wfn_molecule = wfn_data['molecule']
+    wfn_molecule = wfn_data["molecule"]
     molecule = core.Molecule.from_dict(wfn_molecule)
 
     # get basis set name and spherical harmonics boolean
-    basis_name = wfn_string['basisname']
+    basis_name = wfn_string["basisname"]
     if ".gbs" in basis_name:
-        basis_name = basis_name.split('/')[-1].replace('.gbs', '')
+        basis_name = basis_name.split("/")[-1].replace(".gbs", "")
 
-    basis_puream = wfn_boolean['basispuream']
-    basisset = core.BasisSet.build(molecule, 'ORBITAL', basis_name, puream=basis_puream)
+    basis_puream = wfn_boolean["basispuream"]
+    basisset = core.BasisSet.build(molecule, "ORBITAL", basis_name, puream=basis_puream)
 
     # change some variables to psi4 specific data types (Matrix, Vector, Dimension)
     for label in wfn_matrix:
@@ -313,8 +309,9 @@ def _core_wavefunction_from_file(wfn_data: Union[str, Dict, Path]) -> core.Wavef
         wfn_matrixarr[label] = core.Matrix.from_array(array, name=label) if array is not None else None
 
     # make the wavefunction
-    wfn = core.Wavefunction(molecule, basisset, wfn_matrix, wfn_vector, wfn_dimension, wfn_int, wfn_string,
-                            wfn_boolean, wfn_float)
+    wfn = core.Wavefunction(
+        molecule, basisset, wfn_matrix, wfn_vector, wfn_dimension, wfn_int, wfn_string, wfn_boolean, wfn_float
+    )
 
     # some of the wavefunction's variables can be changed directly
     for k, v in wfn_floatvar.items():
@@ -414,7 +411,8 @@ def _core_wavefunction_to_file(wfn: core.Wavefunction, filename: str = None) -> 
     }  # yapf: disable
 
     if filename is not None:
-        if not filename.endswith('.npy'): filename += '.npy'
+        if not filename.endswith(".npy"):
+            filename += ".npy"
         np.save(filename, wfn_data, allow_pickle=True)
 
     return wfn_data
@@ -427,12 +425,12 @@ core.Wavefunction.to_file = _core_wavefunction_to_file
 
 @staticmethod
 def _core_jk_build(
-        orbital_basis: core.BasisSet,
-        aux: Optional[core.BasisSet] = None,
-        jk_type: Optional[str] = None,
-        do_wK: Optional[bool] = None,
-        memory: Optional[int] = None,
-    ) -> core.JK:
+    orbital_basis: core.BasisSet,
+    aux: Optional[core.BasisSet] = None,
+    jk_type: Optional[str] = None,
+    do_wK: Optional[bool] = None,
+    memory: Optional[int] = None,
+) -> core.JK:
     """
     Constructs a Psi4 JK object from an input basis.
 
@@ -479,8 +477,14 @@ def _core_jk_build(
 
     if aux is None:
         if core.get_global_option("SCF_TYPE") == "DF":
-            aux = core.BasisSet.build(orbital_basis.molecule(), "DF_BASIS_SCF", core.get_option("SCF", "DF_BASIS_SCF"),
-                                      "JKFIT", orbital_basis.name(), orbital_basis.has_puream())
+            aux = core.BasisSet.build(
+                orbital_basis.molecule(),
+                "DF_BASIS_SCF",
+                core.get_option("SCF", "DF_BASIS_SCF"),
+                "JKFIT",
+                orbital_basis.name(),
+                orbital_basis.has_puream(),
+            )
         else:
             aux = core.BasisSet.zero_ao_basis_set()
 
@@ -515,7 +519,6 @@ def _core_vbase_get_np_xyzw(self: core.VBase) -> Tuple[np.ndarray, np.ndarray, n
 
     # Loop over every block in the potenital
     for b in range(self.nblocks()):
-
         # Obtain the block
         block = self.get_block(b)
 
@@ -566,24 +569,28 @@ def set_options(options_dict: Dict[str, Any], verbose: int = 1):
             "print": 2})
 
     """
-    optionre = re.compile(r'\A(?P<module>\w+__)?(?P<option>\w+)\Z', re.IGNORECASE)
+    optionre = re.compile(r"\A(?P<module>\w+__)?(?P<option>\w+)\Z", re.IGNORECASE)
     rejected = {}
 
-    for k, v, in options_dict.items():
-
+    for (
+        k,
+        v,
+    ) in options_dict.items():
         mobj = optionre.match(k.strip())
-        module = mobj.group('module').upper()[:-2] if mobj.group('module') else None
-        option = mobj.group('option').upper()
+        module = mobj.group("module").upper()[:-2] if mobj.group("module") else None
+        option = mobj.group("option").upper()
 
         if module:
-            if ((module, option, v) not in [('SCF', 'GUESS', 'READ')]) and ((module, option) not in [('PCM', 'INPUT')]):
+            if ((module, option, v) not in [("SCF", "GUESS", "READ")]) and (
+                (module, option) not in [("PCM", "INPUT")]
+            ):
                 # TODO guess/read exception is for distributed driver. should be handled differently.
                 try:
                     core.set_local_option(module, option, v)
                 except RuntimeError as err:
                     rejected[k] = (v, err)
                 if verbose > 1:
-                    print('Setting: core.set_local_option', module, option, v)
+                    print("Setting: core.set_local_option", module, option, v)
 
             if (module, option) == ("PCM", "INPUT"):
                 pcm_helper(v)
@@ -594,10 +601,10 @@ def set_options(options_dict: Dict[str, Any], verbose: int = 1):
             except RuntimeError as err:
                 rejected[k] = (v, err)
             if verbose > 1:
-                print('Setting: core.set_global_option', option, v)
+                print("Setting: core.set_global_option", option, v)
 
     if rejected:
-        raise ValidationError(f'Error setting options: {rejected}')
+        raise ValidationError(f"Error setting options: {rejected}")
         # TODO could subclass ValidationError and append rejected so that run_json could handle remanants.
 
 
@@ -612,9 +619,13 @@ def set_module_options(module: str, options_dict: Dict[str, Any]) -> None:
     warnings.warn(
         "Using `psi4.set_module_options(<module>, {<key>: <val>})` instead of `psi4.set_options({<module>__<key>: <val>})` is deprecated, and as soon as 1.5 it will stop working\n",
         category=FutureWarning,
-        stacklevel=2)
+        stacklevel=2,
+    )
 
-    for k, v, in options_dict.items():
+    for (
+        k,
+        v,
+    ) in options_dict.items():
         core.set_local_option(module.upper(), k.upper(), v)
 
 
@@ -648,10 +659,10 @@ def pcm_helper(block: str):
 
 def _basname(name: str) -> str:
     """Imitates :py:meth:`core.BasisSet.make_filename` without the gbs extension."""
-    return name.lower().replace('+', 'p').replace('*', 's').replace('(', '_').replace(')', '_').replace(',', '_')
+    return name.lower().replace("+", "p").replace("*", "s").replace("(", "_").replace(")", "_").replace(",", "_")
 
 
-def basis_helper(block: str, name: str = '', key: str = 'BASIS', set_option: bool = True):
+def basis_helper(block: str, name: str = "", key: str = "BASIS", set_option: bool = True):
     """Helper to specify a custom basis set in PsiAPI mode.
 
     This function forms a basis specification function from *block*
@@ -673,17 +684,17 @@ def basis_helper(block: str, name: str = '', key: str = 'BASIS', set_option: boo
 
     """
     key = key.upper()
-    name = ('anonymous' + str(uuid.uuid4())[:8]) if name == '' else name
-    cleanbas = _basname(name).replace('-', '')  # further remove hyphens so can be function name
+    name = ("anonymous" + str(uuid.uuid4())[:8]) if name == "" else name
+    cleanbas = _basname(name).replace("-", "")  # further remove hyphens so can be function name
     block = qcel.util.filter_comments(block)
-    command_lines = re.split('\n', block)
+    command_lines = re.split("\n", block)
 
-    symbol_re = re.compile(r'^\s*assign\s+(?P<symbol>[A-Z]{1,3})\s+(?P<basis>[-+*\(\)\w]+)\s*$', re.IGNORECASE)
+    symbol_re = re.compile(r"^\s*assign\s+(?P<symbol>[A-Z]{1,3})\s+(?P<basis>[-+*\(\)\w]+)\s*$", re.IGNORECASE)
     label_re = re.compile(
-        r'^\s*assign\s+(?P<label>(?P<symbol>[A-Z]{1,3})(?:(_\w+)|(\d+))?)\s+(?P<basis>[-+*\(\)\w]+)\s*$',
-        re.IGNORECASE)
-    all_re = re.compile(r'^\s*assign\s+(?P<basis>[-+*\(\)\w]+)\s*$', re.IGNORECASE)
-    basislabel = re.compile(r'\s*\[\s*([-*\(\)\w]+)\s*\]\s*')
+        r"^\s*assign\s+(?P<label>(?P<symbol>[A-Z]{1,3})(?:(_\w+)|(\d+))?)\s+(?P<basis>[-+*\(\)\w]+)\s*$", re.IGNORECASE
+    )
+    all_re = re.compile(r"^\s*assign\s+(?P<basis>[-+*\(\)\w]+)\s*$", re.IGNORECASE)
+    basislabel = re.compile(r"\s*\[\s*([-*\(\)\w]+)\s*\]\s*")
 
     def anon(mol, role):
         basstrings = {}
@@ -694,17 +705,17 @@ def basis_helper(block: str, name: str = '', key: str = 'BASIS', set_option: boo
         for line in command_lines:
             if symbol_re.match(line):
                 m = symbol_re.match(line)
-                mol.set_basis_by_symbol(m.group('symbol'), m.group('basis'), role=role)
+                mol.set_basis_by_symbol(m.group("symbol"), m.group("basis"), role=role)
                 assignments = True
 
             elif label_re.match(line):
                 m = label_re.match(line)
-                mol.set_basis_by_label(m.group('label'), m.group('basis'), role=role)
+                mol.set_basis_by_label(m.group("label"), m.group("basis"), role=role)
                 assignments = True
 
             elif all_re.match(line):
                 m = all_re.match(line)
-                mol.set_basis_all_atoms(m.group('basis'), role=role)
+                mol.set_basis_all_atoms(m.group("basis"), role=role)
                 assignments = True
 
             else:
@@ -713,7 +724,7 @@ def basis_helper(block: str, name: str = '', key: str = 'BASIS', set_option: boo
                     leftover_lines.append(line.strip())
 
         # Now look for regular basis set definitions
-        basblock = list(filter(None, basislabel.split('\n'.join(leftover_lines))))
+        basblock = list(filter(None, basislabel.split("\n".join(leftover_lines))))
         if len(basblock) == 1:
             if not assignments:
                 # case with no [basname] markers where whole block is contents of gbs file
@@ -721,8 +732,8 @@ def basis_helper(block: str, name: str = '', key: str = 'BASIS', set_option: boo
                 basstrings[_basname(name)] = basblock[0]
             else:
                 message = (
-                    "Conflicting basis set specification: assign lines present but shells have no [basname] label."
-                    "")
+                    "Conflicting basis set specification: assign lines present but shells have no [basname] label." ""
+                )
                 raise TestComparisonError(message)
         else:
             # case with specs separated by [basname] markers
@@ -731,15 +742,26 @@ def basis_helper(block: str, name: str = '', key: str = 'BASIS', set_option: boo
 
         return basstrings
 
-    anon.__name__ = 'basisspec_psi4_yo__' + cleanbas
+    anon.__name__ = "basisspec_psi4_yo__" + cleanbas
     qcdb.libmintsbasisset.basishorde[name.upper()] = anon
     if set_option:
         core.set_global_option(key, name)
 
 
 core.OEProp.valid_methods = [
-    'DIPOLE', 'QUADRUPOLE', 'MULLIKEN_CHARGES', 'LOWDIN_CHARGES', 'WIBERG_LOWDIN_INDICES', 'MAYER_INDICES',
-    'MBIS_CHARGES','MBIS_VOLUME_RATIOS', 'MO_EXTENTS', 'GRID_FIELD', 'GRID_ESP', 'ESP_AT_NUCLEI', 'NO_OCCUPATIONS'
+    "DIPOLE",
+    "QUADRUPOLE",
+    "MULLIKEN_CHARGES",
+    "LOWDIN_CHARGES",
+    "WIBERG_LOWDIN_INDICES",
+    "MAYER_INDICES",
+    "MBIS_CHARGES",
+    "MBIS_VOLUME_RATIOS",
+    "MO_EXTENTS",
+    "GRID_FIELD",
+    "GRID_ESP",
+    "ESP_AT_NUCLEI",
+    "NO_OCCUPATIONS",
 ]
 
 ## Option helpers
@@ -749,7 +771,7 @@ def _core_set_global_option_python(key, EXTERN):
     """
     This is a fairly hacky way to get around EXTERN issues. Effectively we are routing this option Python side through attributes until the general Options overhaul.
     """
-    if (key != "EXTERN"):
+    if key != "EXTERN":
         raise ValidationError("Options: set_global_option_python does not recognize keyword %s" % key)
 
     if EXTERN is None:
@@ -794,8 +816,14 @@ _qcvar_transitions = {
     "COUNTERPOISE CORRECTED INTERACTION ENERGY": ("CP-CORRECTED INTERACTION ENERGY", 1.7),
     "NON-COUNTERPOISE CORRECTED TOTAL ENERGY": ("NOCP-CORRECTED TOTAL ENERGY", 1.7),
     "NON-COUNTERPOISE CORRECTED INTERACTION ENERGY": ("NOCP-CORRECTED INTERACTION ENERGY", 1.7),
-    "VALIRON-MAYER FUNCTION COUTERPOISE TOTAL ENERGY": ("VALIRON-MAYER FUNCTION COUNTERPOISE TOTAL ENERGY", 1.7),  # note misspelling
-    "VALIRON-MAYER FUNCTION COUTERPOISE INTERACTION ENERGY": ("VMFC-CORRECTED INTERACTION ENERGY", 1.7),  # note misspelling
+    "VALIRON-MAYER FUNCTION COUTERPOISE TOTAL ENERGY": (
+        "VALIRON-MAYER FUNCTION COUNTERPOISE TOTAL ENERGY",
+        1.7,
+    ),  # note misspelling
+    "VALIRON-MAYER FUNCTION COUTERPOISE INTERACTION ENERGY": (
+        "VMFC-CORRECTED INTERACTION ENERGY",
+        1.7,
+    ),  # note misspelling
 }
 
 _qcvar_cancellations = {
@@ -828,18 +856,22 @@ def _qcvar_warnings(key: str) -> str:
         warnings.warn(
             f"Using QCVariable `{key.upper()}` instead of `{replacement}` is deprecated, and as soon as {version} it will stop working\n",
             category=FutureWarning,
-            stacklevel=3)
+            stacklevel=3,
+        )
         return replacement
 
     if key.upper() in _qcvar_cancellations:
-        raise UpgradeHelper(key.upper(), "no direct replacement", 1.4, " Consult QCVariables " + ", ".join(_qcvar_cancellations[key.upper()]) + " to recompose the quantity.")
+        raise UpgradeHelper(
+            key.upper(),
+            "no direct replacement",
+            1.4,
+            " Consult QCVariables " + ", ".join(_qcvar_cancellations[key.upper()]) + " to recompose the quantity.",
+        )
 
     return key
 
 
-def plump_qcvar(
-    key: str,
-    val: Union[float, str, List]) -> Union[float, np.ndarray]:
+def plump_qcvar(key: str, val: Union[float, str, List]) -> Union[float, np.ndarray]:
     """Prepare serialized QCVariables for QCSchema AtomicResult.extras["qcvars"] by
     converting flat arrays into numpy, shaped ones and floating strings.
     Unlike _qcvar_reshape_get/set, multipoles aren't compressed or plumped, only reshaped.
@@ -868,7 +900,7 @@ def plump_qcvar(
 
     if key.upper().startswith("MBIS"):
         if key.upper().endswith("CHARGES"):
-            reshaper = (-1, )
+            reshaper = (-1,)
         elif key.upper().endswith("DIPOLES"):
             reshaper = (-1, 3)
         elif key.upper().endswith("QUADRUPOLES"):
@@ -876,21 +908,27 @@ def plump_qcvar(
         elif key.upper().endswith("OCTUPOLES"):
             reshaper = (-1, 3, 3, 3)
     elif key.upper().endswith("DIPOLE") or "DIPOLE -" in key.upper():
-        reshaper = (3, )
+        reshaper = (3,)
     elif "QUADRUPOLE POLARIZABILITY TENSOR" in key.upper():
         reshaper = (3, 3, 3)
     elif any((key.upper().endswith(p) or f"{p} -" in key.upper()) for p in _multipole_order):
         p = [p for p in _multipole_order if (key.upper().endswith(p) or f"{p} -" in key.upper())]
         reshaper = tuple([3] * _multipole_order.index(p[0]))
-    elif key.upper() in ["MULLIKEN_CHARGES", "LOWDIN_CHARGES", "MULLIKEN CHARGES", "LOWDIN CHARGES", "SCF TOTAL ENERGIES"]:
-        reshaper = (-1, )
+    elif key.upper() in [
+        "MULLIKEN_CHARGES",
+        "LOWDIN_CHARGES",
+        "MULLIKEN CHARGES",
+        "LOWDIN CHARGES",
+        "SCF TOTAL ENERGIES",
+    ]:
+        reshaper = (-1,)
     elif "GRADIENT" in key.upper():
         reshaper = (-1, 3)
     elif "HESSIAN" in key.upper():
         ndof = int(math.sqrt(len(tgt)))
         reshaper = (ndof, ndof)
     else:
-        raise ValidationError(f'Uncertain how to reshape array: {key}')
+        raise ValidationError(f"Uncertain how to reshape array: {key}")
 
     return tgt.reshape(reshaper)
 
@@ -928,7 +966,13 @@ def _qcvar_reshape_set(key: str, val: np.ndarray) -> np.ndarray:
         p = [p for p in _multipole_order if (key.upper().endswith(p) or f"{p} -" in key.upper())]
         val = _multipole_compressor(val, _multipole_order.index(p[0]))
         reshaper = (1, -1)
-    elif key.upper() in ["MULLIKEN_CHARGES", "LOWDIN_CHARGES", "MULLIKEN CHARGES", "LOWDIN CHARGES", "SCF TOTAL ENERGIES"]:
+    elif key.upper() in [
+        "MULLIKEN_CHARGES",
+        "LOWDIN_CHARGES",
+        "MULLIKEN CHARGES",
+        "LOWDIN CHARGES",
+        "SCF TOTAL ENERGIES",
+    ]:
         reshaper = (1, -1)
 
     if reshaper:
@@ -958,14 +1002,20 @@ def _qcvar_reshape_get(key: str, val: core.Matrix) -> Union[core.Matrix, np.ndar
             val = np.array([_multipole_plumper(val[iat], 3) for iat in range(len(val))])
             return val
     elif key.upper().endswith("DIPOLE") or "DIPOLE -" in key.upper():
-        reshaper = (3, )
+        reshaper = (3,)
     elif "QUADRUPOLE POLARIZABILITY TENSOR" in key.upper():
         reshaper = (3, 3, 3)
     elif any((key.upper().endswith(p) or f"{p} -" in key.upper()) for p in _multipole_order):
         p = [p for p in _multipole_order if (key.upper().endswith(p) or f"{p} -" in key.upper())]
-        return _multipole_plumper(val.np.reshape((-1, )), _multipole_order.index(p[0]))
-    elif key.upper() in ["MULLIKEN_CHARGES", "LOWDIN_CHARGES", "MULLIKEN CHARGES", "LOWDIN CHARGES", "SCF TOTAL ENERGIES"]:
-        reshaper = (-1, )
+        return _multipole_plumper(val.np.reshape((-1,)), _multipole_order.index(p[0]))
+    elif key.upper() in [
+        "MULLIKEN_CHARGES",
+        "LOWDIN_CHARGES",
+        "MULLIKEN CHARGES",
+        "LOWDIN CHARGES",
+        "SCF TOTAL ENERGIES",
+    ]:
+        reshaper = (-1,)
     if reshaper:
         return val.np.reshape(reshaper)
     else:
@@ -1030,8 +1080,9 @@ def _multipole_plumper(compressed: np.ndarray, order: int) -> np.ndarray:
         # thanks, https://www.pamoc.it/tpc_cart_mom.html Eqn 2.2!
         # jn = nz + (ny + nz)(ny + nz + 1) / 2
         return int(
-            counter.get("2", 0) + (counter.get("1", 0) + counter.get("2", 0)) *
-            (counter.get("1", 0) + counter.get("2", 0) + 1) / 2)
+            counter.get("2", 0)
+            + (counter.get("1", 0) + counter.get("2", 0)) * (counter.get("1", 0) + counter.get("2", 0) + 1) / 2
+        )
 
     for idx in product("012", repeat=order):
         xyz_counts = Counter(idx)  # "010" --> {"0": 2, "1": 1}
@@ -1212,7 +1263,9 @@ def _core_set_variable(key: str, val: Union[core.Matrix, np.ndarray, float]) -> 
     # TODO _qcvar_warnings(key)
 
 
-def _core_wavefunction_set_variable(self: core.Wavefunction, key: str, val: Union[core.Matrix, np.ndarray, float]) -> None:
+def _core_wavefunction_set_variable(
+    self: core.Wavefunction, key: str, val: Union[core.Matrix, np.ndarray, float]
+) -> None:
     """Sets scalar or array :ref:`QCVariable <sec:appendices:qcvars>` *key* to *val* on *self*.
 
     Parameters
@@ -1241,17 +1294,23 @@ def _core_wavefunction_set_variable(self: core.Wavefunction, key: str, val: Unio
     """
     if isinstance(val, core.Matrix):
         if self.has_scalar_variable(key):
-            raise ValidationError("psi4.core.Wavefunction.set_variable: Target variable '{key}' already a scalar variable!")
+            raise ValidationError(
+                "psi4.core.Wavefunction.set_variable: Target variable '{key}' already a scalar variable!"
+            )
         else:
             self.set_array_variable(key, val)
     elif isinstance(val, np.ndarray):
         if self.has_scalar_variable(key):
-            raise ValidationError("psi4.core.Wavefunction.set_variable: Target variable '{key}' already a scalar variable!")
+            raise ValidationError(
+                "psi4.core.Wavefunction.set_variable: Target variable '{key}' already a scalar variable!"
+            )
         else:
             self.set_array_variable(key, core.Matrix.from_array(_qcvar_reshape_set(key, val)))
     else:
         if self.has_array_variable(key):
-            raise ValidationError("psi4.core.Wavefunction.set_variable: Target variable '{key}' already an array variable!")
+            raise ValidationError(
+                "psi4.core.Wavefunction.set_variable: Target variable '{key}' already an array variable!"
+            )
         else:
             self.set_scalar_variable(key, val)
 
@@ -1323,7 +1382,9 @@ def _core_variables(include_deprecated_keys: bool = False) -> Dict[str, Union[fl
     return dicary
 
 
-def _core_wavefunction_variables(self, include_deprecated_keys: bool = False) -> Dict[str, Union[float, core.Matrix, np.ndarray]]:
+def _core_wavefunction_variables(
+    self, include_deprecated_keys: bool = False
+) -> Dict[str, Union[float, core.Matrix, np.ndarray]]:
     """Return all scalar or array :ref:`QCVariables <sec:appendices:qcvars>`
     from *self*.
 
@@ -1379,7 +1440,12 @@ def _core_get_variable(key):
        Errors rather than warn-and-forward.
 
     """
-    raise UpgradeHelper("psi4.core.get_variable", "psi4.core.variable", 1.9, f" Replace `get_variable` with `variable` (or `scalar_variable` for scalar variables only).")
+    raise UpgradeHelper(
+        "psi4.core.get_variable",
+        "psi4.core.variable",
+        1.9,
+        f" Replace `get_variable` with `variable` (or `scalar_variable` for scalar variables only).",
+    )
 
 
 def _core_get_variables():
@@ -1390,7 +1456,12 @@ def _core_get_variables():
        Errors rather than warn-and-forward.
 
     """
-    raise UpgradeHelper("psi4.core.get_variables", "psi4.core.variables", 1.9, f" Replace `psi4.core.get_variables` with `psi4.core.variables` (or `psi4.core.scalar_variables` for scalar variables only).")
+    raise UpgradeHelper(
+        "psi4.core.get_variables",
+        "psi4.core.variables",
+        1.9,
+        f" Replace `psi4.core.get_variables` with `psi4.core.variables` (or `psi4.core.scalar_variables` for scalar variables only).",
+    )
 
 
 def _core_get_array_variable(key):
@@ -1401,7 +1472,12 @@ def _core_get_array_variable(key):
        Errors rather than warn-and-forward.
 
     """
-    raise UpgradeHelper("psi4.core.get_array_variable", "psi4.core.variable", 1.9, f" Replace `psi4.core.get_array_variable` with `psi4.core.variable` (or `psi4.core.array_variable` for array variables only).")
+    raise UpgradeHelper(
+        "psi4.core.get_array_variable",
+        "psi4.core.variable",
+        1.9,
+        f" Replace `psi4.core.get_array_variable` with `psi4.core.variable` (or `psi4.core.array_variable` for array variables only).",
+    )
 
 
 def _core_get_array_variables():
@@ -1412,7 +1488,12 @@ def _core_get_array_variables():
        Errors rather than warn-and-forward.
 
     """
-    raise UpgradeHelper("psi4.core.get_array_variables", "psi4.core.variables", 1.9, f" Replace `psi4.core.get_array_variables` with `psi4.core.variables` (or `psi4.core.array_variables` for array variables only).")
+    raise UpgradeHelper(
+        "psi4.core.get_array_variables",
+        "psi4.core.variables",
+        1.9,
+        f" Replace `psi4.core.get_array_variables` with `psi4.core.variables` (or `psi4.core.array_variables` for array variables only).",
+    )
 
 
 core.get_variable = _core_get_variable
@@ -1429,7 +1510,12 @@ def _core_wavefunction_get_variable(cls, key):
        Errors rather than warn-and-forward.
 
     """
-    raise UpgradeHelper("psi4.core.Wavefunction.get_variable", "psi4.core.Wavefunction.variable", 1.9, f" Replace `psi4.core.Wavefunction.get_variable` with `psi4.core.Wavefunction.variable` (or `psi4.core.Wavefunction.scalar_variable` for scalar variables only).")
+    raise UpgradeHelper(
+        "psi4.core.Wavefunction.get_variable",
+        "psi4.core.Wavefunction.variable",
+        1.9,
+        f" Replace `psi4.core.Wavefunction.get_variable` with `psi4.core.Wavefunction.variable` (or `psi4.core.Wavefunction.scalar_variable` for scalar variables only).",
+    )
 
 
 def _core_wavefunction_get_array(cls, key):
@@ -1440,7 +1526,12 @@ def _core_wavefunction_get_array(cls, key):
        Errors rather than warn-and-forward.
 
     """
-    raise UpgradeHelper("psi4.core.Wavefunction.get_array", "psi4.core.Wavefunction.variable", 1.9, f" Replace `psi4.core.Wavefunction.get_array` with `psi4.core.Wavefunction.variable` (or `psi4.core.Wavefunction.array_variable` for array variables only).")
+    raise UpgradeHelper(
+        "psi4.core.Wavefunction.get_array",
+        "psi4.core.Wavefunction.variable",
+        1.9,
+        f" Replace `psi4.core.Wavefunction.get_array` with `psi4.core.Wavefunction.variable` (or `psi4.core.Wavefunction.array_variable` for array variables only).",
+    )
 
 
 def _core_wavefunction_set_array(cls, key, val):
@@ -1451,7 +1542,12 @@ def _core_wavefunction_set_array(cls, key, val):
        Errors rather than warn-and-forward.
 
     """
-    raise UpgradeHelper("psi4.core.Wavefunction.set_array", "psi4.core.Wavefunction.set_variable", 1.9, f" Replace `psi4.core.Wavefunction.set_array` with `psi4.core.Wavefunction.set_variable` (or `psi4.core.Wavefunction.set_array_variable` for array variables only).")
+    raise UpgradeHelper(
+        "psi4.core.Wavefunction.set_array",
+        "psi4.core.Wavefunction.set_variable",
+        1.9,
+        f" Replace `psi4.core.Wavefunction.set_array` with `psi4.core.Wavefunction.set_variable` (or `psi4.core.Wavefunction.set_array_variable` for array variables only).",
+    )
 
 
 def _core_wavefunction_arrays(cls):
@@ -1462,7 +1558,12 @@ def _core_wavefunction_arrays(cls):
        Errors rather than warn-and-forward.
 
     """
-    raise UpgradeHelper("psi4.core.Wavefunction.arrays", "psi4.core.Wavefunction.variables", 1.9, f" Replace `psi4.core.Wavefunction.arrays` with `psi4.core.Wavefunction.variables` (or `psi4.core.Wavefunction.array_variables` for array variables only).")
+    raise UpgradeHelper(
+        "psi4.core.Wavefunction.arrays",
+        "psi4.core.Wavefunction.variables",
+        1.9,
+        f" Replace `psi4.core.Wavefunction.arrays` with `psi4.core.Wavefunction.variables` (or `psi4.core.Wavefunction.array_variables` for array variables only).",
+    )
 
 
 core.Wavefunction.get_variable = _core_wavefunction_get_variable
@@ -1485,12 +1586,12 @@ def _core_wavefunction_frequencies(self):
         A dictionary of vibrational information. See :py:func:`psi4.driver.qcdb.vib.harmonic_analysis`
 
     """
-    if not hasattr(self, 'frequency_analysis'):
+    if not hasattr(self, "frequency_analysis"):
         return None
 
     vibinfo = self.frequency_analysis
     vibonly = qcdb.vib.filter_nonvib(vibinfo)
-    return core.Vector.from_array(qcdb.vib.filter_omega_to_real(vibonly['omega'].data))
+    return core.Vector.from_array(qcdb.vib.filter_omega_to_real(vibonly["omega"].data))
 
 
 core.Wavefunction.frequencies = _core_wavefunction_frequencies
@@ -1506,7 +1607,8 @@ def _core_doublet(A, B, transA, transB):
     warnings.warn(
         "Using `psi4.core.Matrix.doublet` instead of `psi4.core.doublet` is deprecated, and as soon as 1.4 it will stop working\n",
         category=FutureWarning,
-        stacklevel=2)
+        stacklevel=2,
+    )
     return core.doublet(A, B, transA, transB)
 
 
@@ -1520,11 +1622,10 @@ def _core_triplet(A, B, C, transA, transB, transC):
     warnings.warn(
         "Using `psi4.core.Matrix.triplet` instead of `psi4.core.triplet` is deprecated, and as soon as 1.4 it will stop working\n",
         category=FutureWarning,
-        stacklevel=2)
+        stacklevel=2,
+    )
     return core.triplet(A, B, C, transA, transB, transC)
 
 
 core.Matrix.doublet = staticmethod(_core_doublet)
 core.Matrix.triplet = staticmethod(_core_triplet)
-
-

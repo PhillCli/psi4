@@ -43,7 +43,7 @@ def _symmetrize(mat):
     return tmp
 
 
-def _compute_fxc(PQrho, half_Saux, halfp_Saux, x_alpha, rho_thresh=1.e-8):
+def _compute_fxc(PQrho, half_Saux, halfp_Saux, x_alpha, rho_thresh=1.0e-8):
     """
     Computes the gridless (P|fxc|Q) ALDA tensor.
     """
@@ -67,11 +67,11 @@ def _compute_fxc(PQrho, half_Saux, halfp_Saux, x_alpha, rho_thresh=1.e-8):
     inp = {"RHO_A": rho}
     out = {"V": core.Vector(dft_size), "V_RHO_A": core.Vector(dft_size), "V_RHO_A_RHO_A": core.Vector(dft_size)}
 
-    func_x = core.LibXCFunctional('XC_LDA_X', True)
+    func_x = core.LibXCFunctional("XC_LDA_X", True)
     func_x.compute_functional(inp, out, dft_size, 2)
     out["V_RHO_A_RHO_A"].scale(1.0 - x_alpha)
 
-    func_c = core.LibXCFunctional('XC_LDA_C_VWN', True)
+    func_c = core.LibXCFunctional("XC_LDA_C_VWN", True)
     func_c.compute_functional(inp, out, dft_size, 2)
 
     out["V_RHO_A_RHO_A"].np[mask] = 0
@@ -86,7 +86,6 @@ def _compute_fxc(PQrho, half_Saux, halfp_Saux, x_alpha, rho_thresh=1.e-8):
 
 
 def df_fdds_dispersion(primary, auxiliary, cache, is_hybrid, x_alpha, leg_points=10, leg_lambda=0.3, do_print=True):
-
     rho_thresh = core.get_option("SAPT", "SAPT_FDDS_V2_RHO_CUTOFF")
     if do_print:
         core.print_out("\n  ==> E20 Dispersion (CHF FDDS) <== \n\n")
@@ -112,10 +111,10 @@ def df_fdds_dispersion(primary, auxiliary, cache, is_hybrid, x_alpha, leg_points
 
     # Temps
     half_Saux = fdds_obj.aux_overlap().clone()
-    half_Saux.power(-0.5, 1.e-12)
+    half_Saux.power(-0.5, 1.0e-12)
 
     halfp_Saux = fdds_obj.aux_overlap().clone()
-    halfp_Saux.power(0.5, 1.e-12)
+    halfp_Saux.power(0.5, 1.0e-12)
 
     # Builds potentials
     W_A = fdds_obj.metric().clone()
@@ -148,13 +147,12 @@ def df_fdds_dispersion(primary, auxiliary, cache, is_hybrid, x_alpha, leg_points
     if is_hybrid:
         R_A = fdds_obj.R_A().to_array()
         R_B = fdds_obj.R_B().to_array()
-        Rtinv_A = np.linalg.pinv(R_A, rcond=1.e-13).transpose()
-        Rtinv_B = np.linalg.pinv(R_B, rcond=1.e-13).transpose()
+        Rtinv_A = np.linalg.pinv(R_A, rcond=1.0e-13).transpose()
+        Rtinv_B = np.linalg.pinv(R_B, rcond=1.0e-13).transpose()
 
     for point, weight in zip(*np.polynomial.legendre.leggauss(leg_points)):
-
         omega = leg_lambda * (1.0 - point) / (1.0 + point)
-        lambda_scale = ((2.0 * leg_lambda) / (point + 1.0)**2)
+        lambda_scale = (2.0 * leg_lambda) / (point + 1.0) ** 2
 
         # Monomer A
         if is_hybrid:
@@ -177,7 +175,7 @@ def df_fdds_dispersion(primary, auxiliary, cache, is_hybrid, x_alpha, leg_points
         if is_hybrid:
             XSW_A += 0.25 * KRS_A
 
-        amplitude = np.linalg.pinv(metric - XSW_A, rcond=1.e-13)
+        amplitude = np.linalg.pinv(metric - XSW_A, rcond=1.0e-13)
         X_A_coupled = X_A + XSW_A.dot(amplitude).dot(X_A)
 
         del X_A, XSW_A, amplitude
@@ -205,7 +203,7 @@ def df_fdds_dispersion(primary, auxiliary, cache, is_hybrid, x_alpha, leg_points
         if is_hybrid:
             XSW_B += 0.25 * KRS_B
 
-        amplitude = np.linalg.pinv(metric - XSW_B, rcond=1.e-13)
+        amplitude = np.linalg.pinv(metric - XSW_B, rcond=1.0e-13)
         X_B_coupled = X_B + XSW_B.dot(amplitude).dot(X_B)
 
         del X_B, XSW_B, amplitude
@@ -250,7 +248,6 @@ def df_fdds_dispersion(primary, auxiliary, cache, is_hybrid, x_alpha, leg_points
 
 
 def df_mp2_fisapt_dispersion(wfn, primary, auxiliary, cache, nfrozen_A, nfrozen_B, do_print=True):
-
     if do_print:
         core.print_out("\n  ==> E20 Dispersion (MP2) <== \n\n")
 
@@ -271,10 +268,10 @@ def df_mp2_fisapt_dispersion(wfn, primary, auxiliary, cache, nfrozen_A, nfrozen_
 
     # If frozen core, trim the appropriate matrices and vectors. We can do it with NumPy slicing.
     if nfrozen_A > 0:
-        matrix_cache["Caocc0A"] = core.Matrix.from_array(np.asarray(matrix_cache["Caocc0A"])[:,nfrozen_A:])
+        matrix_cache["Caocc0A"] = core.Matrix.from_array(np.asarray(matrix_cache["Caocc0A"])[:, nfrozen_A:])
         vector_cache["eps_aocc0A"] = core.Vector.from_array(np.asarray(vector_cache["eps_aocc0A"])[nfrozen_A:])
     if nfrozen_B > 0:
-        matrix_cache["Caocc0B"] = core.Matrix.from_array(np.asarray(matrix_cache["Caocc0B"])[:,nfrozen_B:])
+        matrix_cache["Caocc0B"] = core.Matrix.from_array(np.asarray(matrix_cache["Caocc0B"])[:, nfrozen_B:])
         vector_cache["eps_aocc0B"] = core.Vector.from_array(np.asarray(vector_cache["eps_aocc0B"])[nfrozen_B:])
 
     wfn.set_basisset("DF_BASIS_SAPT", auxiliary)
@@ -300,23 +297,23 @@ def df_mp2_fisapt_dispersion(wfn, primary, auxiliary, cache, nfrozen_A, nfrozen_
 
 
 def df_mp2_sapt_dispersion(dimer_wfn, wfn_A, wfn_B, primary_basis, aux_basis, cache, do_print=True):
-
     if do_print:
         core.print_out("\n  ==> E20 Dispersion (MP2) <== \n\n")
 
-    optstash = p4util.OptionsState(['SAPT', 'SAPT0_E10'], ['SAPT', 'SAPT0_E20IND'], ['SAPT', 'SAPT0_E20DISP'],
-                                   ['SAPT', 'SAPT_QUIET'])
+    optstash = p4util.OptionsState(
+        ["SAPT", "SAPT0_E10"], ["SAPT", "SAPT0_E20IND"], ["SAPT", "SAPT0_E20DISP"], ["SAPT", "SAPT_QUIET"]
+    )
 
     core.set_local_option("SAPT", "SAPT0_E10", False)
     core.set_local_option("SAPT", "SAPT0_E20IND", False)
     core.set_local_option("SAPT", "SAPT0_E20DISP", True)
     core.set_local_option("SAPT", "SAPT_QUIET", True)
 
-    if core.get_option('SCF', 'REFERENCE') == 'RHF':
-        core.IO.change_file_namespace(psif.PSIF_SAPT_MONOMERA, 'monomerA', 'dimer')
-        core.IO.change_file_namespace(psif.PSIF_SAPT_MONOMERB, 'monomerB', 'dimer')
+    if core.get_option("SCF", "REFERENCE") == "RHF":
+        core.IO.change_file_namespace(psif.PSIF_SAPT_MONOMERA, "monomerA", "dimer")
+        core.IO.change_file_namespace(psif.PSIF_SAPT_MONOMERB, "monomerB", "dimer")
 
-    core.IO.set_default_namespace('dimer')
+    core.IO.set_default_namespace("dimer")
 
     dimer_wfn.set_basisset("DF_BASIS_SAPT", aux_basis)
     dimer_wfn.set_basisset("DF_BASIS_ELST", aux_basis)
