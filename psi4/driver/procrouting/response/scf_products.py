@@ -59,8 +59,7 @@ H1ia,jb =              A                    +       B
 
 
 class SingleMatPerVector:
-    """Operations for RHF-like systems where the `vector` is a single :py:class:`psi4.core.Matrix`
-    """
+    """Operations for RHF-like systems where the `vector` is a single :py:class:`psi4.core.Matrix`"""
 
     @staticmethod
     def vector_dot(X, Y):
@@ -118,8 +117,7 @@ class PairedMatPerVector:
 
 
 class ProductCache:
-    """Caches product vectors
-    """
+    """Caches product vectors"""
 
     def __init__(self, *product_types):
         """Creates a new Product Cache
@@ -151,14 +149,12 @@ class ProductCache:
         return self._products[pkey].copy()
 
     def reset(self):
-        """Resets the ProductCache by clearing all data.
-        """
+        """Resets the ProductCache by clearing all data."""
         for pkey in self._products.keys():
             self._products[pkey].clear()
 
     def count(self):
-        """Return the number of cached products
-        """
+        """Return the number of cached products"""
         lens = [len(self._products[pkey]) for pkey in self._products.keys()]
         all_same = all(lens[0] == x for x in lens)
 
@@ -187,7 +183,6 @@ class TDRSCFEngine(SingleMatPerVector):
     """
 
     def __init__(self, wfn, *, ptype, triplet=False):
-
         # primary data
         self.wfn = wfn
         self.ptype = ptype.lower()
@@ -198,7 +193,7 @@ class TDRSCFEngine(SingleMatPerVector):
 
         # product type
         self.singlet = not triplet
-        if ptype == 'rpa':
+        if ptype == "rpa":
             self.product_cache = ProductCache("H1", "H2")
         else:
             self.product_cache = ProductCache("A")
@@ -234,8 +229,7 @@ class TDRSCFEngine(SingleMatPerVector):
         return core.Matrix(name, self.occpi, self.virpi, self.G_trans)
 
     def reset_for_state_symm(self, symmetry):
-        """Reset internal quantities so the object is prepared to deal with transition to state with symmetry given
-        """
+        """Reset internal quantities so the object is prepared to deal with transition to state with symmetry given"""
         self.G_es = symmetry
         self._build_prec()
         self.product_cache.reset()
@@ -265,7 +259,7 @@ class TDRSCFEngine(SingleMatPerVector):
         Jx, Kx = self._split_twoel(twoel)
 
         # Switch between rpa and tda
-        if self.ptype == 'rpa':
+        if self.ptype == "rpa":
             H1X_new, H2X_new = self._combine_H1_H2(Fx, Jx, Kx)
             for H1x in H1X_new:
                 self.vector_scale(-1.0, H1x)
@@ -295,8 +289,7 @@ class TDRSCFEngine(SingleMatPerVector):
         return Rvec
 
     def generate_guess(self, nguess):
-        """Generate a set of guess vectors based on orbital energy differences
-        """
+        """Generate a set of guess vectors based on orbital energy differences"""
         deltas = []
         guess_vectors = []
         for ho in range(self.wfn.nirrep()):
@@ -396,8 +389,7 @@ class TDRSCFEngine(SingleMatPerVector):
         return core.triplet(self.Co, X, self.Cv, True, False, False)
 
     def _split_twoel(self, twoel):
-        """Unpack J and K matrices
-        """
+        """Unpack J and K matrices"""
         if self.needs_K_like:
             Jx = twoel[0::2]
             Kx = twoel[1::2]
@@ -412,8 +404,7 @@ class TDRSCFEngine(SingleMatPerVector):
         return self.G_gs ^ self.G_es
 
     def _build_prec(self):
-        """Builds energy denominator
-        """
+        """Builds energy denominator"""
         self.prec = self.new_vector()
         for h in range(self.wfn.nirrep()):
             self.prec.nph[h][:] = self.E_vir.nph[h ^ self.G_trans] - self.E_occ.nph[h].reshape(-1, 1)
@@ -436,15 +427,14 @@ class TDUSCFEngine(PairedMatPerVector):
     """
 
     def __init__(self, wfn, *, ptype):
-
         # Primary data
         self.wfn = wfn
         self.ptype = ptype
 
         # Find product type
-        if ptype == 'rpa':
+        if ptype == "rpa":
             self.product_cache = ProductCache("H1", "H2")
-        elif ptype == 'hess':
+        elif ptype == "hess":
             self.product_cache = ProductCache("H1")
         else:
             self.product_cache = ProductCache("A")
@@ -481,7 +471,6 @@ class TDUSCFEngine(PairedMatPerVector):
         value = R / (shift - preconditioner)
         """
         for h in range(self.wfn.nirrep()):
-
             den = shift - self.prec[0].nph[h]
             den[abs(den) < 0.0001] = 1.0
             Rvec[0].nph[h][:] /= den
@@ -542,8 +531,7 @@ class TDUSCFEngine(PairedMatPerVector):
             return AX_all, n_prod
 
     def generate_guess(self, nguess):
-        """Generate a set of guess vectors based on orbital energy differences
-        """
+        """Generate a set of guess vectors based on orbital energy differences"""
         guess_vectors = []
         deltas = []
         for ho in range(self.wfn.nirrep()):
@@ -568,15 +556,14 @@ class TDUSCFEngine(PairedMatPerVector):
         return guess_vectors
 
     def new_vector(self, name=""):
-        """Build a new object with shape symmetry like a trial vector """
+        """Build a new object with shape symmetry like a trial vector"""
         return [
-            core.Matrix(name + 'a', self.occpi[0], self.virpi[0], self.G_trans),
-            core.Matrix(name + 'b', self.occpi[1], self.virpi[1], self.G_trans)
+            core.Matrix(name + "a", self.occpi[0], self.virpi[0], self.G_trans),
+            core.Matrix(name + "b", self.occpi[1], self.virpi[1], self.G_trans),
         ]
 
     def reset_for_state_symm(self, symmetry):
-        """Reset internal quantities so the object is prepared to deal with transition to state with symmetry given
-        """
+        """Reset internal quantities so the object is prepared to deal with transition to state with symmetry given"""
         self.G_es = symmetry
         self._build_prec()
         self.product_cache.reset()
@@ -591,7 +578,7 @@ class TDUSCFEngine(PairedMatPerVector):
 
     def _combine_H1(self, Fx, Jx, Kx=None):
         """Build the combination:
-            H1 X =  [(Ea - Ei) + 2J - K - K^T]X
+        H1 X =  [(Ea - Ei) + 2J - K - K^T]X
         """
 
         H1X = []
@@ -608,10 +595,11 @@ class TDUSCFEngine(PairedMatPerVector):
                 H1X.append(self.vector_axpy(1.0, Fxi, self._so_to_mo(H1X_so)))
 
         return H1X
+
     def _combine_H1_H2(self, Fx, Jx, Kx=None):
         """Build the combinations:
-            H1 X =  [(Ea - Ei) + 2J - K - K^T]X
-            H2 X =  [(Ea - Ei) - K  + K^T]X
+        H1 X =  [(Ea - Ei) + 2J - K - K^T]X
+        H2 X =  [(Ea - Ei) - K  + K^T]X
         """
 
         H1X = []
@@ -658,8 +646,7 @@ class TDUSCFEngine(PairedMatPerVector):
         return list(zip(onel[0::2], onel[1::2]))
 
     def _split_twoel(self, twoel):
-        """Unpack J and K matrices and pair alpha/beta
-        """
+        """Unpack J and K matrices and pair alpha/beta"""
         if self.needs_K_like:
             Jx = list(zip(twoel[0::4], twoel[1::4]))
             Kx = list(zip(twoel[2::4], twoel[3::4]))
@@ -674,8 +661,7 @@ class TDUSCFEngine(PairedMatPerVector):
         return self.G_gs ^ self.G_es
 
     def _build_prec(self):
-        """Builds energy denominator
-        """
+        """Builds energy denominator"""
         self.prec = self.new_vector()
         for h in range(self.wfn.nirrep()):
             self.prec[0].nph[h][:] = self.E_vir[0].nph[h ^ self.G_trans] - self.E_occ[0].nph[h].reshape(-1, 1)

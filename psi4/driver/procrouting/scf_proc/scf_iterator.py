@@ -1,4 +1,3 @@
-
 # @BEGIN LICENSE
 #
 # Psi4: an open-source quantum chemistry software package
@@ -28,6 +27,7 @@
 """
 The SCF iteration functions
 """
+
 import numpy as np
 
 from psi4 import core
@@ -37,9 +37,9 @@ from ...constants import constants
 from ...p4util.exceptions import SCFConvergenceError, ValidationError
 from ..solvent.efp import get_qm_atoms_opts, modify_Fock_induced, modify_Fock_permanent
 
-#import logging
-#logger = logging.getLogger("scf.scf_iterator")
-#logger.setLevel(logging.DEBUG)
+# import logging
+# logger = logging.getLogger("scf.scf_iterator")
+# logger.setLevel(logging.DEBUG)
 
 # Q: I expect more local settings of options for part of SCF.
 #    For convcrit, do we want:
@@ -59,13 +59,13 @@ def scf_compute_energy(self):
     returns the SCF energy computed by finalize_energy().
 
     """
-    if core.get_option('SCF', 'DF_SCF_GUESS') and (core.get_global_option('SCF_TYPE') == 'DIRECT'):
+    if core.get_option("SCF", "DF_SCF_GUESS") and (core.get_global_option("SCF_TYPE") == "DIRECT"):
         # speed up DIRECT algorithm (recomputes full (non-DF) integrals
         #   each iter) by first converging via fast DF iterations, then
         #   fully converging in fewer slow DIRECT iterations. aka Andy trick 2.0
         core.print_out("  Starting with a DF guess...\n\n")
-        with p4util.OptionsStateCM(['SCF_TYPE']):
-            core.set_global_option('SCF_TYPE', 'DF')
+        with p4util.OptionsStateCM(["SCF_TYPE"]):
+            core.set_global_option("SCF_TYPE", "DF")
             self.initialize()
             try:
                 self.iterations()
@@ -101,15 +101,16 @@ def scf_compute_energy(self):
 
 
 def _build_jk(wfn, memory):
-    jk = core.JK.build(wfn.get_basisset("ORBITAL"),
-                       aux=wfn.get_basisset("DF_BASIS_SCF"),
-                       do_wK=wfn.functional().is_x_lrc(),
-                       memory=memory)
+    jk = core.JK.build(
+        wfn.get_basisset("ORBITAL"),
+        aux=wfn.get_basisset("DF_BASIS_SCF"),
+        do_wK=wfn.functional().is_x_lrc(),
+        memory=memory,
+    )
     return jk
 
 
 def initialize_jk(self, memory, jk=None):
-
     functional = self.functional()
     if jk is None:
         jk = _build_jk(self, memory)
@@ -173,7 +174,7 @@ def scf_initialize(self):
         core.print_out("  ==> Integral Setup <==\n\n")
 
     # Initialize EFP
-    efp_enabled = hasattr(self.molecule(), 'EFP')
+    efp_enabled = hasattr(self.molecule(), "EFP")
     if efp_enabled:
         # EFP: Set QM system, options, and callback. Display efp geom in [A]
         efpobj = self.molecule().EFP
@@ -182,7 +183,7 @@ def scf_initialize(self):
 
         efpptc, efpcoords, efpopts = get_qm_atoms_opts(self.molecule())
         efpobj.set_point_charges(efpptc, efpcoords)
-        efpobj.set_opts(efpopts, label='psi', append='psi')
+        efpobj.set_opts(efpopts, label="psi", append="psi")
 
         efpobj.set_electron_density_field_fn(efp_field_fn)
 
@@ -200,7 +201,7 @@ def scf_initialize(self):
         if efp_enabled:
             # EFP: Add in permanent moment contribution and cache
             core.timer_on("HF: Form Vefp")
-            verbose = core.get_option('SCF', "PRINT")
+            verbose = core.get_option("SCF", "PRINT")
             Vefp = modify_Fock_permanent(self.molecule(), mints, verbose=verbose - 1)
             Vefp = core.Matrix.from_array(Vefp)
             self.H().add(Vefp)
@@ -227,9 +228,9 @@ def scf_initialize(self):
 
         # Print out initial docc/socc/etc data
         if self.get_print():
-            lack_occupancy = core.get_local_option('SCF', 'GUESS') in ['SAD']
-            if core.get_global_option('GUESS') in ['SAD']:
-                lack_occupancy = core.get_local_option('SCF', 'GUESS') in ['AUTO']
+            lack_occupancy = core.get_local_option("SCF", "GUESS") in ["SAD"]
+            if core.get_global_option("GUESS") in ["SAD"]:
+                lack_occupancy = core.get_local_option("SCF", "GUESS") in ["AUTO"]
                 self.print_preiterations(small=lack_occupancy)
             else:
                 self.print_preiterations(small=lack_occupancy)
@@ -240,35 +241,36 @@ def scf_initialize(self):
         self.set_energies("Total Energy", self.compute_initial_E())
 
     # turn off VV10 for iterations
-    if core.get_option('SCF', "DFT_VV10_POSTSCF") and self.functional().vv10_b() > 0.0:
+    if core.get_option("SCF", "DFT_VV10_POSTSCF") and self.functional().vv10_b() > 0.0:
         core.print_out("  VV10: post-SCF option active \n \n")
         self.functional().set_lock(False)
         self.functional().set_do_vv10(False)
         self.functional().set_lock(True)
 
     # Print iteration header
-    is_dfjk = core.get_global_option('SCF_TYPE').endswith('DF')
-    diis_rms = core.get_option('SCF', 'DIIS_RMS_ERROR')
+    is_dfjk = core.get_global_option("SCF_TYPE").endswith("DF")
+    diis_rms = core.get_option("SCF", "DIIS_RMS_ERROR")
     core.print_out("  ==> Iterations <==\n\n")
-    core.print_out("%s                        Total Energy        Delta E     %s |[F,P]|\n\n" %
-                   ("   " if is_dfjk else "", "RMS" if diis_rms else "MAX"))
+    core.print_out(
+        "%s                        Total Energy        Delta E     %s |[F,P]|\n\n"
+        % ("   " if is_dfjk else "", "RMS" if diis_rms else "MAX")
+    )
 
 
 def scf_iterate(self, e_conv=None, d_conv=None):
-
-    is_dfjk = core.get_global_option('SCF_TYPE').endswith('DF')
-    verbose = core.get_option('SCF', "PRINT")
-    reference = core.get_option('SCF', "REFERENCE")
+    is_dfjk = core.get_global_option("SCF_TYPE").endswith("DF")
+    verbose = core.get_option("SCF", "PRINT")
+    reference = core.get_option("SCF", "REFERENCE")
 
     # self.member_data_ signals are non-local, used internally by c-side fns
     self.diis_enabled_ = self.validate_diis()
     self.MOM_excited_ = _validate_MOM()
-    self.diis_start_ = core.get_option('SCF', 'DIIS_START')
+    self.diis_start_ = core.get_option("SCF", "DIIS_START")
     damping_enabled = _validate_damping()
     soscf_enabled = _validate_soscf()
     frac_enabled = _validate_frac()
-    efp_enabled = hasattr(self.molecule(), 'EFP')
-    cosx_enabled = "COSX" in core.get_option('SCF', 'SCF_TYPE')
+    efp_enabled = hasattr(self.molecule(), "EFP")
+    cosx_enabled = "COSX" in core.get_option("SCF", "SCF_TYPE")
 
     # does the JK algorithm use severe screening approximations for early SCF iterations?
     early_screening = False
@@ -277,10 +279,14 @@ def scf_iterate(self, e_conv=None, d_conv=None):
         self.jk().set_COSX_grid("Initial")
 
     # maximum number of scf iterations to run after early screening is disabled
-    scf_maxiter_post_screening = core.get_option('SCF', 'COSX_MAXITER_FINAL')
+    scf_maxiter_post_screening = core.get_option("SCF", "COSX_MAXITER_FINAL")
 
     if scf_maxiter_post_screening < -1:
-        raise ValidationError('COSX_MAXITER_FINAL ({}) must be -1 or above. If you wish to attempt full SCF converge on the final COSX grid, set COSX_MAXITER_FINAL to -1.'.format(scf_maxiter_post_screening))
+        raise ValidationError(
+            "COSX_MAXITER_FINAL ({}) must be -1 or above. If you wish to attempt full SCF converge on the final COSX grid, set COSX_MAXITER_FINAL to -1.".format(
+                scf_maxiter_post_screening
+            )
+        )
 
     # has early_screening changed from True to False?
     early_screening_disabled = False
@@ -295,7 +301,7 @@ def scf_iterate(self, e_conv=None, d_conv=None):
         diis_performed = False
         soscf_performed = False
         self.frac_performed_ = False
-        #self.MOM_performed_ = False  # redundant from common_init()
+        # self.MOM_performed_ = False  # redundant from common_init()
 
         self.save_density_and_energy()
 
@@ -319,7 +325,7 @@ def scf_iterate(self, e_conv=None, d_conv=None):
         # Check if special J/K construction algorithms were used
         incfock_performed = hasattr(self.jk(), "do_incfock_iter") and self.jk().do_incfock_iter()
         upcm = 0.0
-        if core.get_option('SCF', 'PCM'):
+        if core.get_option("SCF", "PCM"):
             calc_type = core.PCM.CalcType.Total
             if core.get_option("PCM", "PCM_SCF_TYPE") == "SEPARATE":
                 calc_type = core.PCM.CalcType.NucAndEle
@@ -332,7 +338,7 @@ def scf_iterate(self, e_conv=None, d_conv=None):
         self.set_energies("PCM Polarization", upcm)
 
         uddx = 0.0
-        if core.get_option('SCF', 'DDX'):
+        if core.get_option("SCF", "DDX"):
             Dt = self.Da().clone()
             Dt.add(self.Db())
             uddx, Vddx, self.ddx_state = self.ddx.get_solvation_contributions(Dt, self.ddx_state)
@@ -342,12 +348,10 @@ def scf_iterate(self, e_conv=None, d_conv=None):
         self.set_energies("DD Solvation Energy", uddx)
 
         upe = 0.0
-        if core.get_option('SCF', 'PE'):
+        if core.get_option("SCF", "PE"):
             Dt = self.Da().clone()
             Dt.add(self.Db())
-            upe, Vpe = self.pe_state.get_pe_contribution(
-                Dt, elec_only=False
-            )
+            upe, Vpe = self.pe_state.get_pe_contribution(Dt, elec_only=False)
             SCFE += upe
             self.push_back_external_potential(Vpe)
         self.set_variable("PE ENERGY", upe)  # P::e PE
@@ -385,8 +389,8 @@ def scf_iterate(self, e_conv=None, d_conv=None):
         status = []
 
         # Check if we are doing SOSCF
-        if (soscf_enabled and (self.iteration_ >= 3) and (Dnorm < core.get_option('SCF', 'SOSCF_START_CONVERGENCE'))):
-            Dnorm = self.compute_orbital_gradient(False, core.get_option('SCF', 'DIIS_MAX_VECS'))
+        if soscf_enabled and (self.iteration_ >= 3) and (Dnorm < core.get_option("SCF", "SOSCF_START_CONVERGENCE")):
+            Dnorm = self.compute_orbital_gradient(False, core.get_option("SCF", "DIIS_MAX_VECS"))
             diis_performed = False
             if self.functional().needs_xc():
                 base_name = "SOKS, nmicro="
@@ -394,12 +398,14 @@ def scf_iterate(self, e_conv=None, d_conv=None):
                 base_name = "SOSCF, nmicro="
 
             if not _converged(Ediff, Dnorm, e_conv=e_conv, d_conv=d_conv):
-                nmicro = self.soscf_update(core.get_option('SCF', 'SOSCF_CONV'),
-                                           core.get_option('SCF', 'SOSCF_MIN_ITER'),
-                                           core.get_option('SCF', 'SOSCF_MAX_ITER'),
-                                           core.get_option('SCF', 'SOSCF_PRINT'))
+                nmicro = self.soscf_update(
+                    core.get_option("SCF", "SOSCF_CONV"),
+                    core.get_option("SCF", "SOSCF_MIN_ITER"),
+                    core.get_option("SCF", "SOSCF_MAX_ITER"),
+                    core.get_option("SCF", "SOSCF_PRINT"),
+                )
                 # if zero, the soscf call bounced for some reason
-                soscf_performed = (nmicro > 0)
+                soscf_performed = nmicro > 0
 
                 if soscf_performed:
                     self.find_occupation()
@@ -434,7 +440,7 @@ def scf_iterate(self, e_conv=None, d_conv=None):
                 diis_performed = False
                 add_to_diis_subspace = self.diis_enabled_ and self.iteration_ >= self.diis_start_
 
-                Dnorm = self.compute_orbital_gradient(add_to_diis_subspace, core.get_option('SCF', 'DIIS_MAX_VECS'))
+                Dnorm = self.compute_orbital_gradient(add_to_diis_subspace, core.get_option("SCF", "DIIS_MAX_VECS"))
 
                 if add_to_diis_subspace:
                     for engine_used in self.diis(Dnorm):
@@ -450,7 +456,7 @@ def scf_iterate(self, e_conv=None, d_conv=None):
                 # frac, MOM invoked here from Wfn::HF::find_occupation
                 core.timer_on("HF: Form C")
                 level_shift = core.get_option("SCF", "LEVEL_SHIFT")
-                if level_shift > 0 and Dnorm > core.get_option('SCF', 'LEVEL_SHIFT_CUTOFF'):
+                if level_shift > 0 and Dnorm > core.get_option("SCF", "LEVEL_SHIFT_CUTOFF"):
                     status.append("SHIFT")
                     self.form_C(level_shift)
                 else:
@@ -480,8 +486,8 @@ def scf_iterate(self, e_conv=None, d_conv=None):
         core.set_variable("SCF D NORM", Dnorm)
 
         # After we've built the new D, damp the update
-        if (damping_enabled and self.iteration_ > 1 and Dnorm > core.get_option('SCF', 'DAMPING_CONVERGENCE')):
-            damping_percentage = core.get_option('SCF', "DAMPING_PERCENTAGE")
+        if damping_enabled and self.iteration_ > 1 and Dnorm > core.get_option("SCF", "DAMPING_CONVERGENCE"):
+            damping_percentage = core.get_option("SCF", "DAMPING_PERCENTAGE")
             self.damping_update(damping_percentage * 0.01)
             status.append("DAMP={}%".format(round(damping_percentage)))
 
@@ -497,13 +503,21 @@ def scf_iterate(self, e_conv=None, d_conv=None):
 
         # Print out the iteration
         core.print_out(
-            "   @%s%s iter %3s: %20.14f   %12.5e   %-11.5e %s\n" %
-            ("DF-" if is_dfjk else "", reference, "SAD" if
-             ((self.iteration_ == 0) and self.sad_) else self.iteration_, SCFE, Ediff, Dnorm, '/'.join(status)))
+            "   @%s%s iter %3s: %20.14f   %12.5e   %-11.5e %s\n"
+            % (
+                "DF-" if is_dfjk else "",
+                reference,
+                "SAD" if ((self.iteration_ == 0) and self.sad_) else self.iteration_,
+                SCFE,
+                Ediff,
+                Dnorm,
+                "/".join(status),
+            )
+        )
 
         # if a an excited MOM is requested but not started, don't stop yet
         # Note that MOM_performed_ just checks initialization, and our convergence measures used the pre-MOM orbitals
-        if self.MOM_excited_ and ((not self.MOM_performed_) or self.iteration_ == core.get_option('SCF', "MOM_START")):
+        if self.MOM_excited_ and ((not self.MOM_performed_) or self.iteration_ == core.get_option("SCF", "MOM_START")):
             continue
 
         # if a fractional occupation is requested but not started, don't stop yet
@@ -518,9 +532,7 @@ def scf_iterate(self, e_conv=None, d_conv=None):
 
         # Call any postiteration callbacks
         if not ((self.iteration_ == 0) and self.sad_) and _converged(Ediff, Dnorm, e_conv=e_conv, d_conv=d_conv):
-
             if early_screening:
-
                 # we've reached convergence with early screning enabled; disable it
                 early_screening = False
 
@@ -533,7 +545,7 @@ def scf_iterate(self, e_conv=None, d_conv=None):
 
                 # clear any cached matrices associated with incremental fock construction
                 # the change in the screening spoils the linearity in the density matrix
-                if hasattr(self.jk(), 'clear_D_prev'):
+                if hasattr(self.jk(), "clear_D_prev"):
                     self.jk().clear_D_prev()
 
                 if scf_maxiter_post_screening == 0:
@@ -544,7 +556,7 @@ def scf_iterate(self, e_conv=None, d_conv=None):
             else:
                 break
 
-        if self.iteration_ >= core.get_option('SCF', 'MAXITER'):
+        if self.iteration_ >= core.get_option("SCF", "MAXITER"):
             raise SCFConvergenceError("""SCF iterations""", self.iteration_, self, Ediff, Dnorm)
 
 
@@ -557,7 +569,7 @@ def scf_finalize_energy(self):
     """
 
     # post-scf vv10 correlation
-    if core.get_option('SCF', "DFT_VV10_POSTSCF") and self.functional().vv10_b() > 0.0:
+    if core.get_option("SCF", "DFT_VV10_POSTSCF") and self.functional().vv10_b() > 0.0:
         self.functional().set_lock(False)
         self.functional().set_do_vv10(True)
         self.functional().set_lock(True)
@@ -569,23 +581,22 @@ def scf_finalize_energy(self):
 
     # Perform wavefunction stability analysis before doing
     # anything on a wavefunction that may not be truly converged.
-    if core.get_option('SCF', 'STABILITY_ANALYSIS') != "NONE":
-
+    if core.get_option("SCF", "STABILITY_ANALYSIS") != "NONE":
         # We need the integral file, make sure it is written and
         # compute it if needed
-        if core.get_option('SCF', 'REFERENCE') not in {"UHF", "UKS"}:
+        if core.get_option("SCF", "REFERENCE") not in {"UHF", "UKS"}:
             # Don't bother computing needed integrals if we can't do anything with them.
             if self.functional().needs_xc():
                 raise ValidationError("Stability analysis not yet supported for XC functionals.")
 
-            #psio = core.IO.shared_object()
-            #psio.open(constants.PSIF_SO_TEI, 1)  # PSIO_OPEN_OLD
-            #try:
+            # psio = core.IO.shared_object()
+            # psio.open(constants.PSIF_SO_TEI, 1)  # PSIO_OPEN_OLD
+            # try:
             #    psio.tocscan(constants.PSIF_SO_TEI, "IWL Buffers")
-            #except TypeError:
+            # except TypeError:
             #    # "IWL Buffers" actually found but psio_tocentry can't be returned to Py
             #    psio.close(constants.PSIF_SO_TEI, 1)
-            #else:
+            # else:
             #    # tocscan returned None
             #    psio.close(constants.PSIF_SO_TEI, 1)
 
@@ -601,7 +612,7 @@ def scf_finalize_energy(self):
 
         follow = self.stability_analysis()
 
-        while follow and self.attempt_number_ <= core.get_option('SCF', 'MAX_ATTEMPTS'):
+        while follow and self.attempt_number_ <= core.get_option("SCF", "MAX_ATTEMPTS"):
             self.attempt_number_ += 1
             core.print_out("    Running SCF again with the rotated orbitals.\n")
 
@@ -613,43 +624,46 @@ def scf_finalize_energy(self):
             self.iterations()
             follow = self.stability_analysis()
 
-        if follow and self.attempt_number_ > core.get_option('SCF', 'MAX_ATTEMPTS'):
+        if follow and self.attempt_number_ > core.get_option("SCF", "MAX_ATTEMPTS"):
             core.print_out("    There's still a negative eigenvalue. Try modifying FOLLOW_STEP_SCALE\n")
             core.print_out("    or increasing MAX_ATTEMPTS (not available for PK integrals).\n")
 
     # At this point, we are not doing any more SCF cycles
     #   and we can compute and print final quantities.
 
-    if hasattr(self.molecule(), 'EFP'):
+    if hasattr(self.molecule(), "EFP"):
         efpobj = self.molecule().EFP
 
         efpobj.compute()  # do_gradient=do_gradient)
-        efpene = efpobj.get_energy(label='psi')
-        efp_wfn_independent_energy = efpene['total'] - efpene['ind']
-        self.set_energies("EFP", efpene['total'])
+        efpene = efpobj.get_energy(label="psi")
+        efp_wfn_independent_energy = efpene["total"] - efpene["ind"]
+        self.set_energies("EFP", efpene["total"])
 
         SCFE = self.get_energies("Total Energy")
         SCFE += efp_wfn_independent_energy
         self.set_energies("Total Energy", SCFE)
-        core.print_out(efpobj.energy_summary(scfefp=SCFE, label='psi'))
+        core.print_out(efpobj.energy_summary(scfefp=SCFE, label="psi"))
 
-        self.set_variable("EFP ELST ENERGY", efpene['electrostatic'] + efpene['charge_penetration'] + efpene['electrostatic_point_charges'])  # P::e EFP
-        self.set_variable("EFP IND ENERGY", efpene['polarization'])  # P::e EFP
-        self.set_variable("EFP DISP ENERGY", efpene['dispersion'])  # P::e EFP
-        self.set_variable("EFP EXCH ENERGY", efpene['exchange_repulsion'])  # P::e EFP
-        self.set_variable("EFP TOTAL ENERGY", efpene['total'])  # P::e EFP
-        self.set_variable("CURRENT ENERGY", efpene['total'])  # P::e EFP
+        self.set_variable(
+            "EFP ELST ENERGY",
+            efpene["electrostatic"] + efpene["charge_penetration"] + efpene["electrostatic_point_charges"],
+        )  # P::e EFP
+        self.set_variable("EFP IND ENERGY", efpene["polarization"])  # P::e EFP
+        self.set_variable("EFP DISP ENERGY", efpene["dispersion"])  # P::e EFP
+        self.set_variable("EFP EXCH ENERGY", efpene["exchange_repulsion"])  # P::e EFP
+        self.set_variable("EFP TOTAL ENERGY", efpene["total"])  # P::e EFP
+        self.set_variable("CURRENT ENERGY", efpene["total"])  # P::e EFP
 
     core.print_out("\n  ==> Post-Iterations <==\n\n")
 
     if self.V_potential():
         quad = self.V_potential().quadrature_values()
-        rho_a = quad['RHO_A']/2 if self.same_a_b_dens() else quad['RHO_A']
-        rho_b = quad['RHO_B']/2 if self.same_a_b_dens() else quad['RHO_B']
-        rho_ab = (rho_a + rho_b)
-        self.set_variable("GRID ELECTRONS TOTAL",rho_ab)  # P::e SCF
-        self.set_variable("GRID ELECTRONS ALPHA",rho_a)  # P::e SCF
-        self.set_variable("GRID ELECTRONS BETA",rho_b)  # P::e SCF
+        rho_a = quad["RHO_A"] / 2 if self.same_a_b_dens() else quad["RHO_A"]
+        rho_b = quad["RHO_B"] / 2 if self.same_a_b_dens() else quad["RHO_B"]
+        rho_ab = rho_a + rho_b
+        self.set_variable("GRID ELECTRONS TOTAL", rho_ab)  # P::e SCF
+        self.set_variable("GRID ELECTRONS ALPHA", rho_a)  # P::e SCF
+        self.set_variable("GRID ELECTRONS BETA", rho_b)  # P::e SCF
         dev_a = rho_a - self.nalpha()
         dev_b = rho_b - self.nbeta()
         core.print_out(f"   Electrons on quadrature grid:\n")
@@ -659,7 +673,7 @@ def scf_finalize_energy(self):
             core.print_out(f"      Nalpha   = {rho_a:15.10f} ; deviation = {dev_a:.3e}\n")
             core.print_out(f"      Nbeta    = {rho_b:15.10f} ; deviation = {dev_b:.3e}\n")
             core.print_out(f"      Ntotal   = {rho_ab:15.10f} ; deviation = {dev_b+dev_a:.3e} \n\n")
-        if ((dev_b+dev_a) > 0.1):
+        if (dev_b + dev_a) > 0.1:
             core.print_out("   WARNING: large deviation in the electron count on grid detected. Check grid size!")
     self.check_phases()
     self.compute_spin_contamination()
@@ -679,11 +693,11 @@ def scf_finalize_energy(self):
     #        else:
     #            core.print_out("  Energy did not converge, but proceeding anyway.\n\n")
 
-    if core.get_option('SCF', 'PRINT') > 0:
+    if core.get_option("SCF", "PRINT") > 0:
         self.print_orbitals()
 
-    is_dfjk = core.get_global_option('SCF_TYPE').endswith('DF')
-    core.print_out("  @%s%s Final Energy: %20.14f" % ('DF-' if is_dfjk else '', reference, energy))
+    is_dfjk = core.get_global_option("SCF_TYPE").endswith("DF")
+    core.print_out("  @%s%s Final Energy: %20.14f" % ("DF-" if is_dfjk else "", reference, energy))
     # if (perturb_h_) {
     #     core.print_out(" with %f %f %f perturbation" %
     #                    (dipole_field_strength_[0], dipole_field_strength_[1], dipole_field_strength_[2]))
@@ -698,7 +712,7 @@ def scf_finalize_energy(self):
     self.set_variable("SCF TOTAL ENERGIES", core.Matrix.from_array(iteration_energies))
 
     self.clear_external_potentials()
-    if core.get_option('SCF', 'PCM'):
+    if core.get_option("SCF", "PCM"):
         calc_type = core.PCM.CalcType.Total
         if core.get_option("PCM", "PCM_SCF_TYPE") == "SEPARATE":
             calc_type = core.PCM.CalcType.NucAndEle
@@ -707,26 +721,28 @@ def scf_finalize_energy(self):
         _, Vpcm = self.get_PCM().compute_PCM_terms(Dt, calc_type)
         self.push_back_external_potential(Vpcm)
         # Set callback function for CPSCF
-        self.set_external_cpscf_perturbation("PCM", lambda pert_dm : self.get_PCM().compute_V(pert_dm))
+        self.set_external_cpscf_perturbation("PCM", lambda pert_dm: self.get_PCM().compute_V(pert_dm))
 
-    if core.get_option('SCF', 'PE'):
+    if core.get_option("SCF", "PE"):
         Dt = self.Da().clone()
         Dt.add(self.Db())
-        _, Vpe = self.pe_state.get_pe_contribution(
-            Dt, elec_only=False
-        )
+        _, Vpe = self.pe_state.get_pe_contribution(Dt, elec_only=False)
         self.push_back_external_potential(Vpe)
         # Set callback function for CPSCF
-        self.set_external_cpscf_perturbation("PE", lambda pert_dm : self.pe_state.get_pe_contribution(pert_dm, elec_only=True)[1])
+        self.set_external_cpscf_perturbation(
+            "PE", lambda pert_dm: self.pe_state.get_pe_contribution(pert_dm, elec_only=True)[1]
+        )
 
-    if core.get_option('SCF', 'DDX'):
+    if core.get_option("SCF", "DDX"):
         Dt = self.Da().clone()
         Dt.add(self.Db())
         Vddx = self.ddx.get_solvation_contributions(Dt)[1]
         self.push_back_external_potential(Vddx)
         # Set callback function for CPSCF
         self.set_external_cpscf_perturbation(
-            "DDX", lambda pert_dm : self.ddx.get_solvation_contributions(pert_dm, elec_only=True, nonequilibrium=True)[1])
+            "DDX",
+            lambda pert_dm: self.ddx.get_solvation_contributions(pert_dm, elec_only=True, nonequilibrium=True)[1],
+        )
 
     # Orbitals are always saved, in case an MO guess is requested later
     # save_orbitals()
@@ -747,24 +763,28 @@ def scf_finalize_energy(self):
 
 
 def scf_print_energies(self):
-    enuc = self.get_energies('Nuclear')
-    e1 = self.get_energies('One-Electron')
-    e2 = self.get_energies('Two-Electron')
-    exc = self.get_energies('XC')
-    ed = self.get_energies('-D')
-    self.del_variable('-D Energy')
-    evv10 = self.get_energies('VV10')
-    eefp = self.get_energies('EFP')
-    epcm = self.get_energies('PCM Polarization')
-    edd = self.get_energies('DD Solvation Energy')
-    epe = self.get_energies('PE Energy')
-    ke = self.get_energies('Kinetic')
+    enuc = self.get_energies("Nuclear")
+    e1 = self.get_energies("One-Electron")
+    e2 = self.get_energies("Two-Electron")
+    exc = self.get_energies("XC")
+    ed = self.get_energies("-D")
+    self.del_variable("-D Energy")
+    evv10 = self.get_energies("VV10")
+    eefp = self.get_energies("EFP")
+    epcm = self.get_energies("PCM Polarization")
+    edd = self.get_energies("DD Solvation Energy")
+    epe = self.get_energies("PE Energy")
+    ke = self.get_energies("Kinetic")
 
     hf_energy = enuc + e1 + e2
     dft_energy = hf_energy + exc + ed + evv10
     total_energy = dft_energy + eefp + epcm + edd + epe
-    full_qm = (not core.get_option('SCF', 'PCM') and not core.get_option('SCF', 'DDX') and not core.get_option('SCF', 'PE')
-               and not hasattr(self.molecule(), 'EFP'))
+    full_qm = (
+        not core.get_option("SCF", "PCM")
+        and not core.get_option("SCF", "DDX")
+        and not core.get_option("SCF", "PE")
+        and not hasattr(self.molecule(), "EFP")
+    )
 
     core.print_out("   => Energetics <=\n\n")
     core.print_out("    Nuclear Repulsion Energy =        {:24.16f}\n".format(enuc))
@@ -774,17 +794,17 @@ def scf_print_energies(self):
         core.print_out("    DFT Exchange-Correlation Energy = {:24.16f}\n".format(exc))
         core.print_out("    Empirical Dispersion Energy =     {:24.16f}\n".format(ed))
         core.print_out("    VV10 Nonlocal Energy =            {:24.16f}\n".format(evv10))
-    if core.get_option('SCF', 'PCM'):
+    if core.get_option("SCF", "PCM"):
         core.print_out("    PCM Polarization Energy =         {:24.16f}\n".format(epcm))
-    if core.get_option('SCF', 'DDX'):
+    if core.get_option("SCF", "DDX"):
         core.print_out("    DD Solvation Energy =            {:24.16f}\n".format(edd))
-    if core.get_option('SCF', 'PE'):
+    if core.get_option("SCF", "PE"):
         core.print_out("    PE Energy =                       {:24.16f}\n".format(epe))
-    if hasattr(self.molecule(), 'EFP'):
+    if hasattr(self.molecule(), "EFP"):
         core.print_out("    EFP Energy =                      {:24.16f}\n".format(eefp))
     core.print_out("    Total Energy =                    {:24.16f}\n".format(total_energy))
 
-    if core.get_option('SCF', 'PE'):
+    if core.get_option("SCF", "PE"):
         core.print_out(self.pe_state.cppe_state.summary_string)
 
     self.set_variable("NUCLEAR REPULSION ENERGY", enuc)  # P::e SCF
@@ -794,30 +814,30 @@ def scf_print_energies(self):
         self.set_variable("DFT XC ENERGY", exc)  # P::e SCF
         self.set_variable("DFT VV10 ENERGY", evv10)  # P::e SCF
         self.set_variable("DFT FUNCTIONAL TOTAL ENERGY", hf_energy + exc + evv10)  # P::e SCF
-        #self.set_variable(self.functional().name() + ' FUNCTIONAL TOTAL ENERGY', hf_energy + exc + evv10)
+        # self.set_variable(self.functional().name() + ' FUNCTIONAL TOTAL ENERGY', hf_energy + exc + evv10)
         self.set_variable("DFT TOTAL ENERGY", dft_energy)  # overwritten later for DH  # P::e SCF
     else:
         potential = total_energy - ke
         self.set_variable("HF KINETIC ENERGY", ke)  # P::e SCF
         self.set_variable("HF POTENTIAL ENERGY", potential)  # P::e SCF
         if full_qm:
-            self.set_variable("HF VIRIAL RATIO", - potential / ke)  # P::e SCF
+            self.set_variable("HF VIRIAL RATIO", -potential / ke)  # P::e SCF
         self.set_variable("HF TOTAL ENERGY", hf_energy)  # P::e SCF
     if hasattr(self, "_disp_functor"):
         self.set_variable("DISPERSION CORRECTION ENERGY", ed)  # P::e SCF
-    #if abs(ed) > 1.0e-14:
+    # if abs(ed) > 1.0e-14:
     #    for pv, pvv in self.variables().items():
     #        if abs(pvv - ed) < 1.0e-14:
     #            if pv.endswith('DISPERSION CORRECTION ENERGY') and pv.startswith(self.functional().name()):
     #                fctl_plus_disp_name = pv.split()[0]
     #                self.set_variable(fctl_plus_disp_name + ' TOTAL ENERGY', dft_energy)  # overwritten later for DH
-    #else:
+    # else:
     #    self.set_variable(self.functional().name() + ' TOTAL ENERGY', dft_energy)  # overwritten later for DH
 
     self.set_variable("SCF ITERATIONS", self.iteration_)  # P::e SCF
 
 
-def scf_print_preiterations(self,small=False):
+def scf_print_preiterations(self, small=False):
     # small version does not print Nalpha,Nbeta,Ndocc,Nsocc, e.g. for SAD guess where they are not
     # available
     ct = self.molecule().point_group().char_table()
@@ -843,14 +863,10 @@ def scf_print_preiterations(self,small=False):
         core.print_out("   -------------------------\n")
 
         for h in range(self.nirrep()):
-            core.print_out(
-                f"     {ct.gamma(h).symbol():<3s}   {self.nsopi()[h]:6d}  {self.nmopi()[h]:6d} \n"
-            )
+            core.print_out(f"     {ct.gamma(h).symbol():<3s}   {self.nsopi()[h]:6d}  {self.nmopi()[h]:6d} \n")
 
         core.print_out("   -------------------------\n")
-        core.print_out(
-            f"    Total  {self.nso():6d}  {self.nmo():6d}\n"
-        )
+        core.print_out(f"    Total  {self.nso():6d}  {self.nmo():6d}\n")
         core.print_out("   -------------------------\n\n")
 
 
@@ -871,7 +887,7 @@ def _converged(e_delta, d_rms, e_conv=None, d_conv=None):
     if d_conv is None:
         d_conv = core.get_option("SCF", "D_CONVERGENCE")
 
-    return (abs(e_delta) < e_conv and d_rms < d_conv)
+    return abs(e_delta) < e_conv and d_rms < d_conv
 
 
 def _validate_damping():
@@ -890,15 +906,15 @@ def _validate_damping():
 
     """
     # Q: I changed the enabled criterion get_option <-- has_option_changed
-    enabled = (core.get_option('SCF', 'DAMPING_PERCENTAGE') > 0.0)
+    enabled = core.get_option("SCF", "DAMPING_PERCENTAGE") > 0.0
     if enabled:
-        parameter = core.get_option('SCF', "DAMPING_PERCENTAGE")
+        parameter = core.get_option("SCF", "DAMPING_PERCENTAGE")
         if parameter < 0.0 or parameter > 100.0:
-            raise ValidationError('SCF DAMPING_PERCENTAGE ({}) must be between 0 and 100'.format(parameter))
+            raise ValidationError("SCF DAMPING_PERCENTAGE ({}) must be between 0 and 100".format(parameter))
 
-        stop = core.get_option('SCF', 'DAMPING_CONVERGENCE')
+        stop = core.get_option("SCF", "DAMPING_CONVERGENCE")
         if stop < 0.0:
-            raise ValidationError('SCF DAMPING_CONVERGENCE ({}) must be > 0'.format(stop))
+            raise ValidationError("SCF DAMPING_CONVERGENCE ({}) must be > 0".format(stop))
 
     return enabled
 
@@ -919,23 +935,25 @@ def _validate_diis(self):
     """
 
     restricted_open = self.same_a_b_orbs() and not self.same_a_b_dens()
-    aediis_active = core.get_option('SCF', 'SCF_INITIAL_ACCELERATOR') != "NONE" and not restricted_open
+    aediis_active = core.get_option("SCF", "SCF_INITIAL_ACCELERATOR") != "NONE" and not restricted_open
 
     if aediis_active:
-        start = core.get_option('SCF', 'SCF_INITIAL_START_DIIS_TRANSITION')
-        stop = core.get_option('SCF', 'SCF_INITIAL_FINISH_DIIS_TRANSITION')
+        start = core.get_option("SCF", "SCF_INITIAL_START_DIIS_TRANSITION")
+        stop = core.get_option("SCF", "SCF_INITIAL_FINISH_DIIS_TRANSITION")
         if start < stop:
-            raise ValidationError('SCF_INITIAL_START_DIIS_TRANSITION error magnitude cannot be less than SCF_INITIAL_FINISH_DIIS_TRANSITION.')
+            raise ValidationError(
+                "SCF_INITIAL_START_DIIS_TRANSITION error magnitude cannot be less than SCF_INITIAL_FINISH_DIIS_TRANSITION."
+            )
         elif start < 0:
-            raise ValidationError('SCF_INITIAL_START_DIIS_TRANSITION cannot be negative.')
+            raise ValidationError("SCF_INITIAL_START_DIIS_TRANSITION cannot be negative.")
         elif stop < 0:
-            raise ValidationError('SCF_INITIAL_FINISH_DIIS_TRANSITION cannot be negative.')
+            raise ValidationError("SCF_INITIAL_FINISH_DIIS_TRANSITION cannot be negative.")
 
-    enabled = bool(core.get_option('SCF', 'DIIS')) or aediis_active
+    enabled = bool(core.get_option("SCF", "DIIS")) or aediis_active
     if enabled:
-        start = core.get_option('SCF', 'DIIS_START')
+        start = core.get_option("SCF", "DIIS_START")
         if start < 1:
-            raise ValidationError('SCF DIIS_START ({}) must be at least 1'.format(start))
+            raise ValidationError("SCF DIIS_START ({}) must be at least 1".format(start))
 
     return enabled
 
@@ -954,10 +972,10 @@ def _validate_frac():
         Whether FRAC is enabled during scf.
 
     """
-    enabled = (core.get_option('SCF', 'FRAC_START') != 0)
+    enabled = core.get_option("SCF", "FRAC_START") != 0
     if enabled:
         if enabled < 0:
-            raise ValidationError('SCF FRAC_START ({}) must be at least 1'.format(enabled))
+            raise ValidationError("SCF FRAC_START ({}) must be at least 1".format(enabled))
 
     return enabled
 
@@ -976,11 +994,11 @@ def _validate_MOM():
         Whether excited-state MOM (not just the plain stabilizing MOM) is enabled during scf.
 
     """
-    enabled = (core.get_option('SCF', "MOM_START") != 0 and len(core.get_option('SCF', "MOM_OCC")) > 0)
+    enabled = core.get_option("SCF", "MOM_START") != 0 and len(core.get_option("SCF", "MOM_OCC")) > 0
     if enabled:
-        start = core.get_option('SCF', "MOM_START")
+        start = core.get_option("SCF", "MOM_START")
         if enabled < 0:
-            raise ValidationError('SCF MOM_START ({}) must be at least 1'.format(start))
+            raise ValidationError("SCF MOM_START ({}) must be at least 1".format(start))
 
     return enabled
 
@@ -1000,28 +1018,31 @@ def _validate_soscf():
         Whether SOSCF is enabled during scf.
 
     """
-    enabled = core.get_option('SCF', 'SOSCF')
+    enabled = core.get_option("SCF", "SOSCF")
     if enabled:
-        start = core.get_option('SCF', 'SOSCF_START_CONVERGENCE')
+        start = core.get_option("SCF", "SOSCF_START_CONVERGENCE")
         if start < 0.0:
-            raise ValidationError('SCF SOSCF_START_CONVERGENCE ({}) must be positive'.format(start))
+            raise ValidationError("SCF SOSCF_START_CONVERGENCE ({}) must be positive".format(start))
 
-        miniter = core.get_option('SCF', 'SOSCF_MIN_ITER')
+        miniter = core.get_option("SCF", "SOSCF_MIN_ITER")
         if miniter < 1:
-            raise ValidationError('SCF SOSCF_MIN_ITER ({}) must be at least 1'.format(miniter))
+            raise ValidationError("SCF SOSCF_MIN_ITER ({}) must be at least 1".format(miniter))
 
-        maxiter = core.get_option('SCF', 'SOSCF_MAX_ITER')
+        maxiter = core.get_option("SCF", "SOSCF_MAX_ITER")
         if maxiter < miniter:
-            raise ValidationError('SCF SOSCF_MAX_ITER ({}) must be at least SOSCF_MIN_ITER ({})'.format(
-                maxiter, miniter))
+            raise ValidationError(
+                "SCF SOSCF_MAX_ITER ({}) must be at least SOSCF_MIN_ITER ({})".format(maxiter, miniter)
+            )
 
-        conv = core.get_option('SCF', 'SOSCF_CONV')
-        if conv < 1.e-10:
-            raise ValidationError('SCF SOSCF_CONV ({}) must be achievable'.format(conv))
+        conv = core.get_option("SCF", "SOSCF_CONV")
+        if conv < 1.0e-10:
+            raise ValidationError("SCF SOSCF_CONV ({}) must be achievable".format(conv))
 
     return enabled
 
+
 core.HF.validate_diis = _validate_diis
+
 
 def efp_field_fn(xyz):
     """Callback function for PylibEFP to compute electric field from electrons

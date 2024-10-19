@@ -155,10 +155,16 @@ if args["inplace"]:
         raise ImportError("Cannot run inplace from an installed directory.")
 
     import sysconfig
-    core_location = os.path.dirname(os.path.abspath(__file__)) + os.path.sep + "core" + sysconfig.get_config_var("EXT_SUFFIX")
+
+    core_location = (
+        os.path.dirname(os.path.abspath(__file__)) + os.path.sep + "core" + sysconfig.get_config_var("EXT_SUFFIX")
+    )
     if not os.path.isfile(core_location):
-        raise ImportError("A compiled Psi4 core{} needs to be symlinked to the {} folder".format(
-            sysconfig.get_config_var("EXT_SUFFIX"), os.path.dirname(__file__)))
+        raise ImportError(
+            "A compiled Psi4 core{} needs to be symlinked to the {} folder".format(
+                sysconfig.get_config_var("EXT_SUFFIX"), os.path.dirname(__file__)
+            )
+        )
 
     lib_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     if ("PSIDATADIR" not in os.environ.keys()) and (not args["psidatadir"]):
@@ -186,21 +192,23 @@ if (args["output"] is None) and (args["qcschema"] is False):
         args["output"] = str(pinput.with_suffix(presuffix + ".out"))
 
 # Plugin compile line
-if args['plugin_compile']:
-    plugincachealongside = os.path.isfile(share_cmake_dir + os.path.sep + 'psi4PluginCache.cmake')
+if args["plugin_compile"]:
+    plugincachealongside = os.path.isfile(share_cmake_dir + os.path.sep + "psi4PluginCache.cmake")
     if plugincachealongside:
         print(f"""cmake -C {share_cmake_dir}/psi4PluginCache.cmake -DCMAKE_PREFIX_PATH={cmake_install_prefix} .""")
         sys.exit()
     else:
         print("""Install "psi4-dev" via `conda install psi4-dev -c psi4[/label/dev]`, then reissue command.""")
 
-if args['psiapi_path']:
+if args["psiapi_path"]:
     pyexe_dir = os.path.dirname(r"@Python_EXECUTABLE@")
-    print(f"""export PATH={pyexe_dir}:$PATH  # python interpreter\nexport PATH={bin_dir}:$PATH  # psi4 executable\nexport PYTHONPATH={lib_dir}:$PYTHONPATH  # psi4 pymodule""")
+    print(
+        f"""export PATH={pyexe_dir}:$PATH  # python interpreter\nexport PATH={bin_dir}:$PATH  # psi4 executable\nexport PYTHONPATH={lib_dir}:$PYTHONPATH  # psi4 pymodule"""
+    )
     # TODO Py not quite right on conda Windows and Psi include %PREFIX$. but maybe not appropriate for Win anyways
     sys.exit()
 
-if args['psiapi']:
+if args["psiapi"]:
     print(f"""export PATH={bin_dir}:$PATH PYTHONPATH={lib_dir}:$PYTHONPATH""")
     sys.exit()
 
@@ -214,16 +222,19 @@ if args["psidatadir"] is not None:
     os.environ["PSIDATADIR"] = data_dir
 
 if args["version"]:
-    with (psi4_module_loc / "metadata.py").open() as fp: verline = fp.readline()
+    with (psi4_module_loc / "metadata.py").open() as fp:
+        verline = fp.readline()
     __version__ = re.match(r"__version__ = ['\"](?P<ver>.*)['\"]", verline).group("ver")
     print(__version__)
     sys.exit()
 
 ### Actually import psi4 and apply setup ###
 
+
 # Arrange for warnings to ignore everything except the message
 def custom_formatwarning(msg, *args, **kwargs):
-    return str(msg) + '\n'
+    return str(msg) + "\n"
+
 
 warnings.formatwarning = custom_formatwarning
 
@@ -232,29 +243,28 @@ sys.path.insert(1, lib_dir)
 import psi4  # isort:skip
 
 # Prevents a poor option combination
-if args['plugin_template'] and (not args['plugin_name']):
+if args["plugin_template"] and (not args["plugin_name"]):
     raise KeyError("Please specify a '--plugin-name' for your plugin template!")
 
-if args['plugin_name']:
-
+if args["plugin_name"]:
     # Set the flag
-    if not args['plugin_template']:
-        args['plugin_template'] = 'basic'
+    if not args["plugin_template"]:
+        args["plugin_template"] = "basic"
 
     # This call does not return.
-    psi4.pluginutil.create_plugin(args['plugin_name'], args['plugin_template'])
+    psi4.pluginutil.create_plugin(args["plugin_name"], args["plugin_template"])
 
     sys.exit()
 
 if args["test"] is not None:
-    if args["test"] not in ['smoke', 'quick', 'full', 'long', 'smoke_not_d2ints', 'quick_not_d2ints']:
+    if args["test"] not in ["smoke", "quick", "full", "long", "smoke_not_d2ints", "quick_not_d2ints"]:
         raise KeyError("The test category {} does not exist.".format(args["test"]))
 
     nthread = int(args["nthread"])
     if nthread == 1:
         extras = []
     else:
-        extras = ['-n', str(nthread)]
+        extras = ["-n", str(nthread)]
     if args["test"] == "smoke_not_d2ints":
         extras.extend(["-m", "smoke and not d2ints"])
     elif args["test"] == "quick_not_d2ints":
@@ -281,10 +291,8 @@ if args["inherit_loglevel"] is None:
     args["inherit_loglevel"] = False
 if args["qcschema"] is False:
     psi4.set_output_file(
-        args["output"],
-        args["append"],
-        loglevel=int(args["loglevel"]),
-        inherit_loglevel=args["inherit_loglevel"])
+        args["output"], args["append"], loglevel=int(args["loglevel"]), inherit_loglevel=args["inherit_loglevel"]
+    )
 
 start_time = datetime.datetime.now()
 
@@ -306,12 +314,12 @@ if args["qcschema"]:
     filename = args["input"]
     if filename.endswith("json"):
         encoding = "json"
-        with open(filename, 'r') as handle:
+        with open(filename, "r") as handle:
             # No harm in attempting to read json-ext over json
             data = qcel.util.deserialize(handle.read(), "json-ext")
     elif filename.endswith("msgpack"):
         encoding = "msgpack-ext"
-        with open(filename, 'rb') as handle:
+        with open(filename, "rb") as handle:
             data = qcel.util.deserialize(handle.read(), "msgpack-ext")
     else:
         raise Exception("qcschema files must either end in '.json' or '.msgpack'.")
@@ -334,24 +342,23 @@ if args["qcschema"]:
         # Else write with whatever encoding came in
 
     if encoding == "json":
-        with open(filename, 'w') as handle:
+        with open(filename, "w") as handle:
             handle.write(ret.serialize(encoding))
     elif encoding == "msgpack-ext":
-        with open(filename, 'wb') as handle:
+        with open(filename, "wb") as handle:
             handle.write(ret.serialize(encoding))
 
     sys.exit()
 
 if args["json"]:
-
-    with open(args["input"], 'r') as f:
+    with open(args["input"], "r") as f:
         json_data = json.load(f)
 
     psi4.extras._success_flag_ = True
     psi4.extras.exit_printing(start_time)
     json_data = psi4.schema_wrapper.run_json(json_data)
 
-    with open(args["input"], 'w') as f:
+    with open(args["input"], "w") as f:
         json.dump(json_data, f)
 
     if args["output"] != "stdout":
@@ -370,9 +377,9 @@ if not args["skip_preprocessor"]:
 
 # Handle Verbose
 if args["verbose"]:
-    psi4.core.print_out('\nParsed Psithon:')
+    psi4.core.print_out("\nParsed Psithon:")
     psi4.core.print_out(content)
-    psi4.core.print_out('-' * 75)
+    psi4.core.print_out("-" * 75)
 
 # Handle Messy
 if args["messy"]:
@@ -390,11 +397,12 @@ try:
 # Capture _any_ python error message
 except Exception as exception:
     import traceback
+
     exc_type, exc_value, exc_traceback = sys.exc_info()
     tb_str = "Traceback (most recent call last):\n"
-    tb_str += ''.join(traceback.format_tb(exc_traceback))
-    tb_str += '\n'
-    tb_str += ''.join(traceback.format_exception_only(type(exception), exception))
+    tb_str += "".join(traceback.format_tb(exc_traceback))
+    tb_str += "\n"
+    tb_str += "".join(traceback.format_exception_only(type(exception), exception))
     psi4.core.print_out("\n")
     psi4.core.print_out(tb_str)
     psi4.core.print_out("\n\n")
@@ -415,9 +423,9 @@ except Exception as exception:
         psi4.core.print_out(in_str)
 
     # extract exception message and print it in a box for attention.
-    ex = ','.join(traceback.format_exception_only(type(exception), exception))
+    ex = ",".join(traceback.format_exception_only(type(exception), exception))
     ex_list = ex.split(":", 1)[-1]
-    error = ''.join(ex_list)
+    error = "".join(ex_list)
     psi4.core.print_out(psi4.driver.p4util.text.message_box(error))
     if psi4.core.get_output_file() != "stdout":
         print(tb_str)

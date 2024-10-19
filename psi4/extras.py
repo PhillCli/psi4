@@ -43,7 +43,8 @@ numpy_files = []
 
 
 def register_numpy_file(filename):
-    if not filename.endswith('.npy'): filename += '.npy'
+    if not filename.endswith(".npy"):
+        filename += ".npy"
     if filename not in numpy_files:
         numpy_files.append(filename)
 
@@ -80,13 +81,14 @@ def exit_printing(start_time: datetime.datetime = None, success: bool = None) ->
 
     """
     end_time = datetime.datetime.now()
-    core.print_out("\n    Psi4 stopped on: {}".format(end_time.strftime('%A, %d %B %Y %I:%M%p')))
+    core.print_out("\n    Psi4 stopped on: {}".format(end_time.strftime("%A, %d %B %Y %I:%M%p")))
     if start_time is not None:
         run_time = end_time - start_time
-        run_time = str(run_time).split('.')
+        run_time = str(run_time).split(".")
         # python "helpfully" truncates microseconds if zero. Undo that.
-        if len(run_time) == 1: run_time.append("000000")
-        run_time = run_time[0] + '.' + run_time[1][:2]
+        if len(run_time) == 1:
+            run_time.append("000000")
+        run_time = run_time[0] + "." + run_time[1][:2]
         core.print_out("\n    Psi4 wall time for execution: {}\n".format(run_time))
 
     if success is None:
@@ -117,8 +119,9 @@ def _CMake_to_Py_boolean(cmakevar):
         return False
 
 
-def psi4_which(command, *, return_bool: bool = False, raise_error: bool = False,
-               raise_msg: str = None) -> Union[bool, None, str]:
+def psi4_which(
+    command, *, return_bool: bool = False, raise_error: bool = False, raise_msg: str = None
+) -> Union[bool, None, str]:
     """Test to see if a command is available in Psi4 search path.
 
     Returns
@@ -135,8 +138,11 @@ def psi4_which(command, *, return_bool: bool = False, raise_error: bool = False,
         When `raises_error=True` and command not found.
 
     """
-    lenv = (os.pathsep.join([os.path.abspath(x) for x in os.environ.get('PSIPATH', '').split(os.pathsep) if x != '']) +
-            os.pathsep + os.environ.get('PATH', ''))
+    lenv = (
+        os.pathsep.join([os.path.abspath(x) for x in os.environ.get("PSIPATH", "").split(os.pathsep) if x != ""])
+        + os.pathsep
+        + os.environ.get("PATH", "")
+    )
 
     return which(command=command, return_bool=return_bool, raise_error=raise_error, raise_msg=raise_msg, env=lenv)
 
@@ -170,9 +176,9 @@ _addons_ = {
     "mp2d": psi4_which("mp2d", return_bool=True),
     "openfermionpsi4": which_import("openfermionpsi4", return_bool=True),
     "geometric": which_import("geometric", return_bool=True),
-    #"optking": which_import("optking", return_bool=True),
+    # "optking": which_import("optking", return_bool=True),
     "psixas": which_import("psixas", return_bool=True),
-    #"mctc-gcp": psi4_which("mctc-gcp", return_bool=True),
+    # "mctc-gcp": psi4_which("mctc-gcp", return_bool=True),
     "bse": which_import("basis_set_exchange", return_bool=True),
     "einsums": _CMake_to_Py_boolean("@ENABLE_Einsums@"),
     "gauxc": _CMake_to_Py_boolean("@ENABLE_gauxc@"),
@@ -185,13 +191,14 @@ def addons(request: str = None) -> Union[bool, List[str]]:
     *request* not passed, returns list of available Add-Ons: `['adcc', 'ambit', 'c̶c̶t̶3̶', ...` .
 
     """
+
     def strike(text):
         if os.name == "nt":
             # Windows has a probably correctable problem with unicode, but I can't iterate it quickly, so use tilde for strike.
             #   UnicodeEncodeError: 'charmap' codec can't encode character '\u0336' in position 3: character maps to <undefined>
             return "~" + text + "~"
         else:
-            return ''.join(itertools.chain.from_iterable(zip(text, itertools.repeat('\u0336'))))
+            return "".join(itertools.chain.from_iterable(zip(text, itertools.repeat("\u0336"))))
 
     if request is None:
         return [(k if v else strike(k)) for k, v in sorted(_addons_.items())]
@@ -224,21 +231,21 @@ def test(extent: str = "full", extras: List = None) -> int:
     try:
         import pytest
     except ImportError:
-        raise RuntimeError('Testing module `pytest` is not installed. Run `conda install pytest`')
+        raise RuntimeError("Testing module `pytest` is not installed. Run `conda install pytest`")
     abs_test_dir = os.path.sep.join([os.path.abspath(os.path.dirname(__file__)), "tests"])
 
-    command = ['-rws', '-v', '--color', 'yes']
-    if extent.lower() == 'smoke':
-        command.extend(['-m', 'smoke'])
-    elif extent.lower() == 'quick':
-        command.extend(['-m', 'quick or smoke'])
-    elif extent.lower() == 'full':
-        command.extend(['-m', 'not long'])
-    elif extent.lower() == 'long':
+    command = ["-rws", "-v", "--color", "yes"]
+    if extent.lower() == "smoke":
+        command.extend(["-m", "smoke"])
+    elif extent.lower() == "quick":
+        command.extend(["-m", "quick or smoke"])
+    elif extent.lower() == "full":
+        command.extend(["-m", "not long"])
+    elif extent.lower() == "long":
         pass
     if extras is not None:
         command.extend(extras)
-    command.extend(['--capture=sys', abs_test_dir])
+    command.extend(["--capture=sys", abs_test_dir])
 
     retcode = pytest.main(command)
     return retcode
@@ -251,7 +258,8 @@ def set_output_file(
     loglevel: int = 20,
     execute: bool = True,
     print_header: Optional[bool] = None,
-    inherit_loglevel: bool = False) -> Path:
+    inherit_loglevel: bool = False,
+) -> Path:
     """Set the name for output and logging files.
 
     Parameters
@@ -288,12 +296,15 @@ def set_output_file(
     import logging
 
     from psi4 import logger
+
     if not inherit_loglevel:
         logger.setLevel(loglevel)
 
     # Create formatters
     # * detailed:  example: 2019-11-20:01:13:46,811 DEBUG    [psi4.driver.task_base:156]
-    f_format_detailed = logging.Formatter("%(asctime)s,%(msecs)d %(levelname)-8s [%(name)s:%(lineno)d] %(message)s", datefmt="%Y-%m-%d:%H:%M:%S")
+    f_format_detailed = logging.Formatter(
+        "%(asctime)s,%(msecs)d %(levelname)-8s [%(name)s:%(lineno)d] %(message)s", datefmt="%Y-%m-%d:%H:%M:%S"
+    )
     # * light:     example: 2019-11-20:10:45:21 FINDIFREC CLASS INIT DATA
     f_format_light = logging.Formatter("%(asctime)s %(message)s", datefmt="%Y-%m-%d:%H:%M:%S")
 

@@ -11,14 +11,15 @@ from ..response.scf_products import TDUSCFEngine
 
 def diis_engine_helper(self):
     engines = set()
-    if core.get_option('SCF', 'DIIS'):
-        engines.add('diis')
+    if core.get_option("SCF", "DIIS"):
+        engines.add("diis")
     restricted_open = self.same_a_b_orbs() and not self.same_a_b_dens()
     if not restricted_open:
-        aediis = core.get_option('SCF', 'SCF_INITIAL_ACCELERATOR')
+        aediis = core.get_option("SCF", "SCF_INITIAL_ACCELERATOR")
         if aediis != "NONE":
             engines.add(aediis.lower())
     return engines
+
 
 def _RHF_orbital_gradient(self, save_fock: bool, max_diis_vectors: int) -> float:
     gradient = self.form_FDSmSDF(self.Fa(), self.Da())
@@ -26,13 +27,19 @@ def _RHF_orbital_gradient(self, save_fock: bool, max_diis_vectors: int) -> float
     if save_fock:
         if not self.initialized_diis_manager_:
             storage_policy = StoragePolicy.InCore if self.scf_type() == "DIRECT" else StoragePolicy.OnDisk
-            self.diis_manager_ = DIIS(max_diis_vectors, "HF DIIS vector", RemovalPolicy.LargestError, storage_policy, engines=diis_engine_helper(self))
+            self.diis_manager_ = DIIS(
+                max_diis_vectors,
+                "HF DIIS vector",
+                RemovalPolicy.LargestError,
+                storage_policy,
+                engines=diis_engine_helper(self),
+            )
             self.initialized_diis_manager_ = True
 
         entry = {"target": [self.Fa()]}
-        if core.get_option('SCF', 'DIIS'):
+        if core.get_option("SCF", "DIIS"):
             entry["error"] = [gradient]
-        aediis = core.get_option('SCF', 'SCF_INITIAL_ACCELERATOR')
+        aediis = core.get_option("SCF", "SCF_INITIAL_ACCELERATOR")
         if aediis != "NONE":
             entry["densities"] = [self.Da()]
             if aediis == "EDIIS":
@@ -44,20 +51,27 @@ def _RHF_orbital_gradient(self, save_fock: bool, max_diis_vectors: int) -> float
     else:
         return gradient.absmax()
 
+
 def _UHF_orbital_gradient(self, save_fock: bool, max_diis_vectors: int) -> float:
     gradient_a = self.form_FDSmSDF(self.Fa(), self.Da())
     gradient_b = self.form_FDSmSDF(self.Fb(), self.Db())
 
     if save_fock:
         if not self.initialized_diis_manager_:
-            self.diis_manager_ = DIIS(max_diis_vectors, "HF DIIS vector", RemovalPolicy.LargestError,
-                                                          StoragePolicy.OnDisk, False, engines=diis_engine_helper(self))
+            self.diis_manager_ = DIIS(
+                max_diis_vectors,
+                "HF DIIS vector",
+                RemovalPolicy.LargestError,
+                StoragePolicy.OnDisk,
+                False,
+                engines=diis_engine_helper(self),
+            )
             self.initialized_diis_manager_ = True
 
         entry = {"target": [self.Fa(), self.Fb()]}
-        if core.get_option('SCF', 'DIIS'):
+        if core.get_option("SCF", "DIIS"):
             entry["error"] = [gradient_a, gradient_b]
-        aediis = core.get_option('SCF', 'SCF_INITIAL_ACCELERATOR')
+        aediis = core.get_option("SCF", "SCF_INITIAL_ACCELERATOR")
         if aediis != "NONE":
             entry["densities"] = [self.Da(), self.Db()]
             if aediis == "EDIIS":
@@ -68,6 +82,7 @@ def _UHF_orbital_gradient(self, save_fock: bool, max_diis_vectors: int) -> float
         return math.sqrt(0.5 * (gradient_a.rms() ** 2 + gradient_b.rms() ** 2))
     else:
         return max(gradient_a.absmax(), gradient_b.absmax())
+
 
 def _ROHF_orbital_gradient(self, save_fock: bool, max_diis_vectors: int) -> float:
     # Only the inact-act, inact-vir, and act-vir rotations are non-redundant
@@ -82,7 +97,7 @@ def _ROHF_orbital_gradient(self, save_fock: bool, max_diis_vectors: int) -> floa
         socc = self.soccpi()[h]
         docc = self.doccpi()[h]
 
-        MOgradient.nph[h][docc:docc+socc, 0:socc] = 0
+        MOgradient.nph[h][docc : docc + socc, 0:socc] = 0
 
     # Grab inact-act and act-vir orbs
     # Ct is (nmo x nmo), not the (nso x nmo) you would expect
@@ -97,7 +112,13 @@ def _ROHF_orbital_gradient(self, save_fock: bool, max_diis_vectors: int) -> floa
 
     if save_fock:
         if not self.initialized_diis_manager_:
-            self.diis_manager_ = DIIS(max_diis_vectors, "HF DIIS vector", RemovalPolicy.LargestError, StoragePolicy.OnDisk, engines=diis_engine_helper(self))
+            self.diis_manager_ = DIIS(
+                max_diis_vectors,
+                "HF DIIS vector",
+                RemovalPolicy.LargestError,
+                StoragePolicy.OnDisk,
+                engines=diis_engine_helper(self),
+            )
             self.diis_manager_.set_error_vector_size(gradient)
             self.diis_manager_.set_vector_size(self.soFeff())
             self.initialized_diis_manager_ = True
@@ -109,22 +130,28 @@ def _ROHF_orbital_gradient(self, save_fock: bool, max_diis_vectors: int) -> floa
     else:
         return gradient.absmax()
 
+
 core.RHF.compute_orbital_gradient = _RHF_orbital_gradient
 core.UHF.compute_orbital_gradient = core.CUHF.compute_orbital_gradient = _UHF_orbital_gradient
 core.ROHF.compute_orbital_gradient = _ROHF_orbital_gradient
 
+
 def _RHF_diis(self, Dnorm):
     return self.diis_manager_.extrapolate(self.Fa(), Dnorm=Dnorm)
+
 
 def _UHF_diis(self, Dnorm):
     return self.diis_manager_.extrapolate(self.Fa(), self.Fb(), Dnorm=Dnorm)
 
+
 def _ROHF_diis(self, Dnorm):
     return self.diis_manager_.extrapolate(self.soFeff(), Dnorm=Dnorm)
+
 
 core.RHF.diis = _RHF_diis
 core.UHF.diis = core.CUHF.diis = _UHF_diis
 core.ROHF.diis = _ROHF_diis
+
 
 def _UHF_stability_analysis(self):
     # => Validate options <=
@@ -135,7 +162,9 @@ def _UHF_stability_analysis(self):
     # vector products so we can lift it further.
     # TODO: It should be up to the SolverEngine to validate whether it can do Hx products for the input wfn.
     if self.functional().is_meta() or self.functional().needs_vv10():
-        raise ValidationError("Stability Analysis: Unrestricted Kohn-Sham Vx kernel does not support meta or VV10 functionals.")
+        raise ValidationError(
+            "Stability Analysis: Unrestricted Kohn-Sham Vx kernel does not support meta or VV10 functionals."
+        )
 
     # => Prep options for eigenvector solver <=
     if not core.has_option_changed("SCF", "SOLVER_ROOTS_PER_IRREP"):
@@ -143,7 +172,9 @@ def _UHF_stability_analysis(self):
     else:
         roots = core.get_option("SCF", "SOLVER_ROOTS_PER_IRREP")
         if len(roots) != wfn.nirrep():
-            raise ValidationError(f"SOLVER_ROOTS_PER_IRREP specified {wfn.nirrep()} irreps, but there are {len(roots)} irreps.")
+            raise ValidationError(
+                f"SOLVER_ROOTS_PER_IRREP specified {wfn.nirrep()} irreps, but there are {len(roots)} irreps."
+            )
     r_convergence = core.get_option("SCF", "SOLVER_CONVERGENCE")
     # Below formula borrowed from TDSCF code.
     max_vecs_per_root = int(-np.log10(r_convergence) * 50)
@@ -154,7 +185,8 @@ def _UHF_stability_analysis(self):
     current_eigenvalue = None
     unstable = False
     for h, nroot in enumerate(roots):
-        if not nroot: continue
+        if not nroot:
+            continue
         if not core.has_option_changed("SCF", "SOLVER_N_GUESS"):
             nguess = nroot * 4
         else:
@@ -162,12 +194,14 @@ def _UHF_stability_analysis(self):
         # The below line changes the guess the engine generates, which controls the final states.
         # This selects for eigenvectors of irrep h.
         engine.reset_for_state_symm(engine.G_gs ^ h)
-        ret = solvers.davidson_solver(engine=engine,
-                                      nroot=nroot,
-                                      guess=engine.generate_guess(nguess),
-                                      r_convergence=r_convergence,
-                                      max_ss_size=max_vecs_per_root * nroot,
-                                      verbose=0)
+        ret = solvers.davidson_solver(
+            engine=engine,
+            nroot=nroot,
+            guess=engine.generate_guess(nguess),
+            r_convergence=r_convergence,
+            max_ss_size=max_vecs_per_root * nroot,
+            verbose=0,
+        )
         if not ret["stats"][-1]["done"]:
             raise SCFConvergenceError(maxiter, self, f"hessian eigenvectors in irrep {irrep_ES}", ret["stats"][-1])
         if h == 0:
@@ -187,14 +221,13 @@ def _UHF_stability_analysis(self):
         core.print_out(f"    Lowest totally symmetric eigenvalue: {current_eigenvalue:.6f} \n")
 
     # => Print out and save stability eigenvalues <=
-    core.print_out("    Lowest UHF->UHF stability eigenvalues: \n");
+    core.print_out("    Lowest UHF->UHF stability eigenvalues: \n")
     eval_sym_pairs = []
     for h in range(eval_sym.nirrep()):
         for i in range(eval_sym.rows(h)):
             eval_sym_pairs.append((eval_sym.get(h, i, 0), h))
     self.print_stability_analysis(eval_sym_pairs)
     self.set_variable("SCF STABILITY EIGENVALUES", eval_sym)
-
 
     # => Follow instability or print out that there's nothing left to do <=
     # Legacy instability took orbital steps based on the following algorithm:
@@ -217,7 +250,7 @@ def _UHF_stability_analysis(self):
             self.last_hess_eigval = current_eigenvalue
         # ==> Perform the orbital rotation! <==
         # The current eigenvector is normalized to 1/2.
-        core.print_out(f"    Rotating orbitals by {self.step_scale} * pi / 2 radians along unstable eigenvector.\n");
+        core.print_out(f"    Rotating orbitals by {self.step_scale} * pi / 2 radians along unstable eigenvector.\n")
         current_eigenvector[0].scale(self.step_scale * np.pi)
         self.rotate_orbitals(self.Ca(), current_eigenvector[0])
         current_eigenvector[1].scale(self.step_scale * np.pi)

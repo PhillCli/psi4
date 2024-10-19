@@ -50,42 +50,135 @@ def sanitize_name(name: str) -> str:
     """
     if name[0].isalpha():
         temp = name.lower()
-        temp = temp.replace('+', 'p')
-        temp = temp.replace('*', 's')
-        temp = temp.replace('(', '_')
-        temp = temp.replace(')', '_')
-        temp = temp.replace(',', '_')
-        temp = temp.replace('-', '_')
+        temp = temp.replace("+", "p")
+        temp = temp.replace("*", "s")
+        temp = temp.replace("(", "_")
+        temp = temp.replace(")", "_")
+        temp = temp.replace(",", "_")
+        temp = temp.replace("-", "_")
 
         # Taken from http://en.cppreference.com/w/cpp/keyword
         cpp_keywords = [
-            "alignas", "alignof", "and", "and_eq", "asm", "atomic_cancel",
-            "atomic_commit", "atomic_noexcept", "auto", "bitand", "bitor",
-            "bool", "break", "case", "catch", "char", "char16_t", "char32_t",
-            "class", "compl", "concept", "const", "constexpr", "const_cast",
-            "continue", "decltype", "default", "delete", "do", "double",
-            "dynamic_cast", "else", "enum", "explicit", "export", "extern",
-            "false", "float", "for", "friend", "goto", "if", "import", "inline",
-            "int", "long", "module", "mutable", "namespace", "new", "noexcept",
-            "not", "not_eq", "nullptr", "operator", "or", "or_eq", "private",
-            "protected", "public", "register", "reinterpret_cast", "requires",
-            "return", "short", "signed", "sizeof", "static", "static_assert",
-            "static_cast", "struct", "switch", "synchronized", "template",
-            "this", "thread_local", "throw", "true", "try", "typedef", "typeid",
-            "typename", "union", "unsigned", "using", "virtual", "void",
-            "volatile", "wchar_t", "while", "xor", "xor_eq",
-
+            "alignas",
+            "alignof",
+            "and",
+            "and_eq",
+            "asm",
+            "atomic_cancel",
+            "atomic_commit",
+            "atomic_noexcept",
+            "auto",
+            "bitand",
+            "bitor",
+            "bool",
+            "break",
+            "case",
+            "catch",
+            "char",
+            "char16_t",
+            "char32_t",
+            "class",
+            "compl",
+            "concept",
+            "const",
+            "constexpr",
+            "const_cast",
+            "continue",
+            "decltype",
+            "default",
+            "delete",
+            "do",
+            "double",
+            "dynamic_cast",
+            "else",
+            "enum",
+            "explicit",
+            "export",
+            "extern",
+            "false",
+            "float",
+            "for",
+            "friend",
+            "goto",
+            "if",
+            "import",
+            "inline",
+            "int",
+            "long",
+            "module",
+            "mutable",
+            "namespace",
+            "new",
+            "noexcept",
+            "not",
+            "not_eq",
+            "nullptr",
+            "operator",
+            "or",
+            "or_eq",
+            "private",
+            "protected",
+            "public",
+            "register",
+            "reinterpret_cast",
+            "requires",
+            "return",
+            "short",
+            "signed",
+            "sizeof",
+            "static",
+            "static_assert",
+            "static_cast",
+            "struct",
+            "switch",
+            "synchronized",
+            "template",
+            "this",
+            "thread_local",
+            "throw",
+            "true",
+            "try",
+            "typedef",
+            "typeid",
+            "typename",
+            "union",
+            "unsigned",
+            "using",
+            "virtual",
+            "void",
+            "volatile",
+            "wchar_t",
+            "while",
+            "xor",
+            "xor_eq",
             # Identifiers with special meanings"
-            "override", "final", "transaction_safe", "transaction_safe_dynamic",
-
+            "override",
+            "final",
+            "transaction_safe",
+            "transaction_safe_dynamic",
             # Preprocessor tokens
-            "if", "elif", "else", "endif", "defined", "ifdef", "ifndef",
-            "define", "undef", "include", "line", "error", "pragma",
+            "if",
+            "elif",
+            "else",
+            "endif",
+            "defined",
+            "ifdef",
+            "ifndef",
+            "define",
+            "undef",
+            "include",
+            "line",
+            "error",
+            "pragma",
             "_pragma",
-
             # C++20
-            "char8_t", "consteval", "constinit", "co_await", "co_return",
-            "co_yield", "reflexpr",
+            "char8_t",
+            "consteval",
+            "constinit",
+            "co_await",
+            "co_return",
+            "co_yield",
+            "reflexpr",
         ]
 
         if temp in cpp_keywords:
@@ -130,10 +223,10 @@ def create_plugin(name: str, template: str) -> None:
     for temp_file in template_files:
         target_file = temp_file
 
-        if temp_file.endswith('.template'):
+        if temp_file.endswith(".template"):
             target_file = temp_file[0:-9]
 
-        if temp_file.endswith('.cc.template'):
+        if temp_file.endswith(".cc.template"):
             source_files.append(target_file)
 
     tty.hline("""Creating "{}" with "{}" template.""".format(name, template))
@@ -141,14 +234,13 @@ def create_plugin(name: str, template: str) -> None:
     os.mkdir(name)
     created_files = []
     for source_file in template_files:
-
         # Skip swp files
         if source_file.endswith(".swp"):
             continue
 
         target_file = source_file
 
-        if source_file.endswith('.template'):
+        if source_file.endswith(".template"):
             target_file = source_file[0:-9]
 
         try:
@@ -159,10 +251,10 @@ def create_plugin(name: str, template: str) -> None:
             tty.error(err)
             sys.exit(1)
 
-        contents = contents.replace('@plugin@', name)
-        contents = contents.replace('@Plugin@', name.capitalize())
-        contents = contents.replace('@PLUGIN@', name.upper())
-        contents = contents.replace('@sources@', ' '.join(source_files))
+        contents = contents.replace("@plugin@", name)
+        contents = contents.replace("@Plugin@", name.capitalize())
+        contents = contents.replace("@PLUGIN@", name.upper())
+        contents = contents.replace("@sources@", " ".join(source_files))
 
         try:
             (Path(name) / target_file).write_text(contents)

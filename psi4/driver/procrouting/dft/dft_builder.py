@@ -101,6 +101,7 @@ dict_functionals.update(dh_functionals.functional_list)
 if new_d4_api is False:
     dict_functionals.pop("r2scan3c")
 
+
 def get_functional_aliases(functional_dict):
     if "alias" in functional_dict:
         aliases = [each.lower() for each in functional_dict["alias"]]
@@ -124,20 +125,20 @@ for functional_name in dict_functionals:
 
     # if the parent functional is already dispersion corrected:
     if "dispersion" in dict_functionals[functional_name]:
-        disp = dict_functionals[functional_name]['dispersion']
+        disp = dict_functionals[functional_name]["dispersion"]
         for formal in functional_aliases:
             # "bless" the original functional dft/*_functionals dispersion definition including aliases
-            dashcoeff_supplement[disp['type']]['definitions'][formal] = disp
+            dashcoeff_supplement[disp["type"]]["definitions"][formal] = disp
             # add omitted default parameters of the dispersion correction
-            for p,val in dashcoeff[disp['type']]['default'].items():
-                if p not in dashcoeff_supplement[disp['type']]['definitions'][formal]['params'].keys():
-                    dashcoeff_supplement[disp['type']]['definitions'][formal]['params'][p]=val
+            for p, val in dashcoeff[disp["type"]]["default"].items():
+                if p not in dashcoeff_supplement[disp["type"]]["definitions"][formal]["params"].keys():
+                    dashcoeff_supplement[disp["type"]]["definitions"][formal]["params"][p] = val
             # generate dispersion aliases for every functional alias
             for nominal_dispersion_level, resolved_dispersion_level in _dispersion_aliases.items():
                 if resolved_dispersion_level == disp["type"]:
                     alias = formal.replace(disp["type"], nominal_dispersion_level.lower())
                     if alias not in functionals:
-                        dashcoeff_supplement[disp['type']]['definitions'][formal] = disp
+                        dashcoeff_supplement[disp["type"]]["definitions"][formal] = disp
                         functionals[alias] = dict_functionals[functional_name]
         continue
 
@@ -154,12 +155,13 @@ for functional_name in dict_functionals:
                     functionals[alias] = dict_functionals[formal]
         # if not, build it from dashparam logic if possible
         else:
-            for dispersion_functional in dashcoeff[resolved_dispersion_level]['definitions']:
+            for dispersion_functional in dashcoeff[resolved_dispersion_level]["definitions"]:
                 if dispersion_functional.lower() in functional_aliases:
                     func = copy.deepcopy(dict_functionals[functional_name])
                     func["name"] += "-" + resolved_dispersion_level
                     func["dispersion"] = copy.deepcopy(
-                        dashcoeff[resolved_dispersion_level]['definitions'][dispersion_functional])
+                        dashcoeff[resolved_dispersion_level]["definitions"][dispersion_functional]
+                    )
                     func["dispersion"]["type"] = resolved_dispersion_level
 
                     # this ensures that M06-2X-D3, M06-2X-D3ZERO, M062X-D3 or M062X-D3ZERO
@@ -184,7 +186,8 @@ def check_consistency(func_dictionary):
         # 0b) make sure provided name is unique:
         if (name.lower() in functionals.keys()) and (func_dictionary not in functionals.values()):
             raise ValidationError(
-                "SCF: Provided name for a custom dft_functional matches an already defined one: %s." % (name))
+                "SCF: Provided name for a custom dft_functional matches an already defined one: %s." % (name)
+            )
 
     # 1a) sanity checks definition of xc_functionals
     if "xc_functionals" in func_dictionary:
@@ -205,8 +208,10 @@ def check_consistency(func_dictionary):
     use_libxc = 0
     if "x_functionals" in func_dictionary:
         for item in func_dictionary["x_functionals"]:
-            if "use_libxc" in func_dictionary["x_functionals"][item] and \
-            func_dictionary["x_functionals"][item]["use_libxc"]:
+            if (
+                "use_libxc" in func_dictionary["x_functionals"][item]
+                and func_dictionary["x_functionals"][item]["use_libxc"]
+            ):
                 use_libxc += 1
 
     # 2a) only 1 component in x_functionals can have "use_libxc": True to prevent libxc conflicts
@@ -218,17 +223,21 @@ def check_consistency(func_dictionary):
         raise ValidationError("SCF: Inconsistent definition of exchange in functional %s." % (name))
 
     # 2c) ensure libxc params requested in "x_hf" are for a functional that is included in "x_functionals"
-    elif "x_hf" in func_dictionary and "use_libxc" in func_dictionary["x_hf"] \
-    and func_dictionary["x_hf"]["use_libxc"] not in func_dictionary["x_functionals"]:
+    elif (
+        "x_hf" in func_dictionary
+        and "use_libxc" in func_dictionary["x_hf"]
+        and func_dictionary["x_hf"]["use_libxc"] not in func_dictionary["x_functionals"]
+    ):
         raise ValidationError(
-            "SCF: Libxc parameters requested for an exchange functional not defined as a component of %s." % (name))
+            "SCF: Libxc parameters requested for an exchange functional not defined as a component of %s." % (name)
+        )
 
     # 3) checks would be caught at runtime or involve only formatting.
     #    included here to preempt driver definition problems, if specific fctl not in tests.
     # 3a) check formatting for citation
     if "citation" in func_dictionary:
         cit = func_dictionary["citation"]
-        if cit and not (cit.startswith('    ') and cit.endswith('\n')):
+        if cit and not (cit.startswith("    ") and cit.endswith("\n")):
             raise ValidationError(
                 f"SCF: All citations should have the form '    A. Student, B. Prof, J. Goodstuff Vol, Page, Year\n', not : {cit}"
             )
@@ -237,16 +246,20 @@ def check_consistency(func_dictionary):
         # 3b) check dispersion type present and known
         if "type" not in disp or disp["type"] not in _dispersion_aliases:
             raise ValidationError(
-                f"SCF: Dispersion type ({disp['type']}) should be among ({_dispersion_aliases.keys()})")
-    # 3c) check dispersion params complete
+                f"SCF: Dispersion type ({disp['type']}) should be among ({_dispersion_aliases.keys()})"
+            )
+        # 3c) check dispersion params complete
         allowed_params = sorted(dashcoeff[_dispersion_aliases[disp["type"]]]["default"].keys())
         if "params" not in disp or sorted(disp["params"].keys()) != allowed_params:
             raise ValidationError(
-                f"SCF: Dispersion params for {name} ({list(disp['params'].keys())}) must include all ({allowed_params})")
-    # 3d) check formatting for dispersion citation
+                f"SCF: Dispersion params for {name} ({list(disp['params'].keys())}) must include all ({allowed_params})"
+            )
+        # 3d) check formatting for dispersion citation
         if "citation" in disp:
             cit = disp["citation"]
-            if cit and not ((cit.startswith('    ') and cit.endswith('\n')) or re.match(r"^10.\d{4,9}/[-._;()/:A-Z0-9]+$", cit)):
+            if cit and not (
+                (cit.startswith("    ") and cit.endswith("\n")) or re.match(r"^10.\d{4,9}/[-._;()/:A-Z0-9]+$", cit)
+            ):
                 raise ValidationError(
                     f"SCF: All citations should have the form '    A. Student, B. Prof, J. Goodstuff Vol, Page, Year\n', not : {cit}"
                 )
@@ -291,7 +304,6 @@ def build_superfunctional_from_dictionary(func_dictionary, npoints, deriv, restr
         if "x_functionals" in func_dictionary:
             x_funcs = func_dictionary["x_functionals"]
             for x_key in x_funcs:
-
                 # Lookup the functional in LibXC
                 x_name = ("XC_" + x_key).upper()
                 x_func = core.LibXCFunctional(x_name, restricted)
@@ -393,7 +405,9 @@ def build_superfunctional_from_dictionary(func_dictionary, npoints, deriv, restr
         sup.set_citation(func_dictionary["citation"])
     if "description" in func_dictionary:
         if "doi" in func_dictionary:
-            sup.set_description(func_dictionary["description"].replace("\n", "") + "  (" + func_dictionary["doi"].lstrip() + ")")
+            sup.set_description(
+                func_dictionary["description"].replace("\n", "") + "  (" + func_dictionary["doi"].lstrip() + ")"
+            )
         else:
             sup.set_description(func_dictionary["description"])
 
@@ -406,7 +420,7 @@ def build_superfunctional_from_dictionary(func_dictionary, npoints, deriv, restr
         if "nlc" in d_params:
             sup.set_vv10_b(-1.0)
             sup.set_do_vv10(d_params["nlc"])
-        if d_params["type"] == 'nl':
+        if d_params["type"] == "nl":
             sup.set_vv10_b(d_params["params"]["b"])
             sup.set_vv10_c(d_params["params"]["c"])
         dispersion = d_params

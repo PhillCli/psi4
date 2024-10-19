@@ -29,6 +29,7 @@
 Module to provide lightweight definitions of functionals and
 SuperFunctionals
 """
+
 import os
 import re
 
@@ -44,7 +45,7 @@ def build_superfunctional(name, restricted, npoints=None, deriv=1):
 
     # We are a XC generating function
 
-    if hasattr(name, '__call__'):
+    if hasattr(name, "__call__"):
         custom_error = "SCF: Custom functional type must either be a SuperFunctional or a tuple of (SuperFunctional, (base_name, dashparam))."
         sfunc = name("name", npoints, deriv, restricted)
 
@@ -68,8 +69,9 @@ def build_superfunctional(name, restricted, npoints=None, deriv=1):
         sup = dft_builder.build_superfunctional_from_dictionary(name, npoints, deriv, restricted)
     # Check for pre-defined dict-based functionals
     elif name.lower() in dft_builder.functionals:
-        sup = dft_builder.build_superfunctional_from_dictionary(dft_builder.functionals[name.lower()], npoints, deriv,
-                                                                restricted)
+        sup = dft_builder.build_superfunctional_from_dictionary(
+            dft_builder.functionals[name.lower()], npoints, deriv, restricted
+        )
     else:
         raise ValidationError("SCF: Functional (%s) not found!" % name)
 
@@ -78,7 +80,7 @@ def build_superfunctional(name, restricted, npoints=None, deriv=1):
 
     # set LibXC density screening
     dens_tol = core.get_option("SCF", "DFT_DENSITY_TOLERANCE")
-    if (dens_tol > 0.0):
+    if dens_tol > 0.0:
         sup[0].set_density_tolerance(dens_tol)
 
     # Set options
@@ -103,9 +105,9 @@ def build_superfunctional(name, restricted, npoints=None, deriv=1):
 
     # add VV10 correlation to any functional or modify existing
     # custom procedures using name 'scf' without any quadrature grid like HF will fail and are not detected
-    if (core.has_option_changed("SCF", "NL_DISPERSION_PARAMETERS") and sup[0].vv10_b() > 0.0):
+    if core.has_option_changed("SCF", "NL_DISPERSION_PARAMETERS") and sup[0].vv10_b() > 0.0:
         if not isinstance(name, dict):
-            if (name.lower() == 'hf'):
+            if name.lower() == "hf":
                 raise ValidationError("SCF: HF with -NL not implemented")
         nl_tuple = core.get_option("SCF", "NL_DISPERSION_PARAMETERS")
         sup[0].set_vv10_b(nl_tuple[0])
@@ -115,26 +117,28 @@ def build_superfunctional(name, restricted, npoints=None, deriv=1):
             raise ValidationError("too many entries in NL_DISPERSION_PARAMETERS for DFT-NL")
     elif core.has_option_changed("SCF", "DFT_VV10_B"):
         if not isinstance(name, dict):
-            if (name.lower() == 'hf'):
+            if name.lower() == "hf":
                 raise ValidationError("SCF: HF with -NL not implemented")
         vv10_b = core.get_option("SCF", "DFT_VV10_B")
         sup[0].set_vv10_b(vv10_b)
         if core.has_option_changed("SCF", "DFT_VV10_C"):
             vv10_c = core.get_option("SCF", "DFT_VV10_C")
             sup[0].set_vv10_c(vv10_c)
-        if (abs(sup[0].vv10_c() - 0.0) <= 1e-8):
+        if abs(sup[0].vv10_c() - 0.0) <= 1e-8:
             core.print_out("SCF: VV10_C not specified. Using default (C=0.0093)!")
             sup[0].set_vv10_c(0.0093)
 
-    if (core.has_option_changed("SCF", "NL_DISPERSION_PARAMETERS") and core.has_option_changed("SCF", "DFT_VV10_B")):
+    if core.has_option_changed("SCF", "NL_DISPERSION_PARAMETERS") and core.has_option_changed("SCF", "DFT_VV10_B"):
         raise ValidationError("SCF: Decide between NL_DISPERSION_PARAMETERS and DFT_VV10_B !!")
 
     # Check SCF_TYPE
-    if sup[0].is_x_lrc() and (core.get_global_option("SCF_TYPE")
-                              not in ["DISK_DF", "MEM_DF", "DIRECT", "DF", "OUT_OF_CORE", "PK"]):
+    if sup[0].is_x_lrc() and (
+        core.get_global_option("SCF_TYPE") not in ["DISK_DF", "MEM_DF", "DIRECT", "DF", "OUT_OF_CORE", "PK"]
+    ):
         raise ValidationError(
             "SCF: SCF_TYPE (%s) not supported for range-separated functionals, plese use SCF_TYPE = 'DF' to automatically select the correct JK build."
-            % core.get_global_option("SCF_TYPE"))
+            % core.get_global_option("SCF_TYPE")
+        )
 
     sup[0].set_lock(True)
 
@@ -142,12 +146,11 @@ def build_superfunctional(name, restricted, npoints=None, deriv=1):
 
 
 def test_ccl_functional(functional, ccl_functional):
-
     check = True
 
-    if (not os.path.exists('data_pt_%s.html' % (ccl_functional))):
-        os.system('wget ftp://ftp.dl.ac.uk/qcg/dft_library/data_pt_%s.html' % ccl_functional)
-    fh = open('data_pt_%s.html' % (ccl_functional))
+    if not os.path.exists("data_pt_%s.html" % (ccl_functional)):
+        os.system("wget ftp://ftp.dl.ac.uk/qcg/dft_library/data_pt_%s.html" % ccl_functional)
+    fh = open("data_pt_%s.html" % (ccl_functional))
     lines = fh.readlines()
     fh.close()
 
@@ -155,53 +158,51 @@ def test_ccl_functional(functional, ccl_functional):
     point = {}
 
     rho_line = re.compile(
-        r'^\s*rhoa=\s*(-?\d+\.\d+E[+-]\d+)\s*rhob=\s*(-?\d+\.\d+E[+-]\d+)\s*sigmaaa=\s*(-?\d+\.\d+E[+-]\d+)\s*sigmaab=\s*(-?\d+\.\d+E[+-]\d+)\s*sigmabb=\s*(-?\d+\.\d+E[+-]\d+)\s*'
+        r"^\s*rhoa=\s*(-?\d+\.\d+E[+-]\d+)\s*rhob=\s*(-?\d+\.\d+E[+-]\d+)\s*sigmaaa=\s*(-?\d+\.\d+E[+-]\d+)\s*sigmaab=\s*(-?\d+\.\d+E[+-]\d+)\s*sigmabb=\s*(-?\d+\.\d+E[+-]\d+)\s*"
     )
-    val_line = re.compile(r'^\s*(\w*)\s*=\s*(-?\d+\.\d+E[+-]\d+)')
+    val_line = re.compile(r"^\s*(\w*)\s*=\s*(-?\d+\.\d+E[+-]\d+)")
 
     aliases = {
-        'zk': 'v',
-        'vrhoa': 'v_rho_a',
-        'vrhob': 'v_rho_b',
-        'vsigmaaa': 'v_gamma_aa',
-        'vsigmaab': 'v_gamma_ab',
-        'vsigmabb': 'v_gamma_bb',
-        'v2rhoa2': 'v_rho_a_rho_a',
-        'v2rhoab': 'v_rho_a_rho_b',
-        'v2rhob2': 'v_rho_b_rho_b',
-        'v2rhoasigmaaa': 'v_rho_a_gamma_aa',
-        'v2rhoasigmaab': 'v_rho_a_gamma_ab',
-        'v2rhoasigmabb': 'v_rho_a_gamma_bb',
-        'v2rhobsigmaaa': 'v_rho_b_gamma_aa',
-        'v2rhobsigmaab': 'v_rho_b_gamma_ab',
-        'v2rhobsigmabb': 'v_rho_b_gamma_bb',
-        'v2sigmaaa2': 'v_gamma_aa_gamma_aa',
-        'v2sigmaaaab': 'v_gamma_aa_gamma_ab',
-        'v2sigmaaabb': 'v_gamma_aa_gamma_bb',
-        'v2sigmaab2': 'v_gamma_ab_gamma_ab',
-        'v2sigmaabbb': 'v_gamma_ab_gamma_bb',
-        'v2sigmabb2': 'v_gamma_bb_gamma_bb',
+        "zk": "v",
+        "vrhoa": "v_rho_a",
+        "vrhob": "v_rho_b",
+        "vsigmaaa": "v_gamma_aa",
+        "vsigmaab": "v_gamma_ab",
+        "vsigmabb": "v_gamma_bb",
+        "v2rhoa2": "v_rho_a_rho_a",
+        "v2rhoab": "v_rho_a_rho_b",
+        "v2rhob2": "v_rho_b_rho_b",
+        "v2rhoasigmaaa": "v_rho_a_gamma_aa",
+        "v2rhoasigmaab": "v_rho_a_gamma_ab",
+        "v2rhoasigmabb": "v_rho_a_gamma_bb",
+        "v2rhobsigmaaa": "v_rho_b_gamma_aa",
+        "v2rhobsigmaab": "v_rho_b_gamma_ab",
+        "v2rhobsigmabb": "v_rho_b_gamma_bb",
+        "v2sigmaaa2": "v_gamma_aa_gamma_aa",
+        "v2sigmaaaab": "v_gamma_aa_gamma_ab",
+        "v2sigmaaabb": "v_gamma_aa_gamma_bb",
+        "v2sigmaab2": "v_gamma_ab_gamma_ab",
+        "v2sigmaabbb": "v_gamma_ab_gamma_bb",
+        "v2sigmabb2": "v_gamma_bb_gamma_bb",
     }
 
     for line in lines:
-
         mobj = re.match(rho_line, line)
-        if (mobj):
-
+        if mobj:
             if len(point):
                 points.append(point)
                 point = {}
 
-            point['rho_a'] = float(mobj.group(1))
-            point['rho_b'] = float(mobj.group(2))
-            point['gamma_aa'] = float(mobj.group(3))
-            point['gamma_ab'] = float(mobj.group(4))
-            point['gamma_bb'] = float(mobj.group(5))
+            point["rho_a"] = float(mobj.group(1))
+            point["rho_b"] = float(mobj.group(2))
+            point["gamma_aa"] = float(mobj.group(3))
+            point["gamma_ab"] = float(mobj.group(4))
+            point["gamma_bb"] = float(mobj.group(5))
 
             continue
 
         mobj = re.match(val_line, line)
-        if (mobj):
+        if mobj:
             point[aliases[mobj.group(1)]] = float(mobj.group(2))
 
     points.append(point)
@@ -217,62 +218,65 @@ def test_ccl_functional(functional, ccl_functional):
 
     index = 0
     for point in points:
-        rho_a[index] = point['rho_a']
-        rho_b[index] = point['rho_b']
-        gamma_aa[index] = point['gamma_aa']
-        gamma_ab[index] = point['gamma_ab']
-        gamma_bb[index] = point['gamma_bb']
+        rho_a[index] = point["rho_a"]
+        rho_b[index] = point["rho_b"]
+        gamma_aa[index] = point["gamma_aa"]
+        gamma_ab[index] = point["gamma_ab"]
+        gamma_bb[index] = point["gamma_bb"]
         index = index + 1
 
     super = build_superfunctional(functional, True, npoints=N, deriv=1)
     super.test_functional(rho_a, rho_b, gamma_aa, gamma_ab, gamma_bb, tau_a, tau_b)
 
-    v = super.value('V')
-    v_rho_a = super.value('V_RHO_A')
-    v_rho_b = super.value('V_RHO_B')
-    v_gamma_aa = super.value('V_GAMMA_AA')
-    v_gamma_ab = super.value('V_GAMMA_AB')
-    v_gamma_bb = super.value('V_GAMMA_BB')
+    v = super.value("V")
+    v_rho_a = super.value("V_RHO_A")
+    v_rho_b = super.value("V_RHO_B")
+    v_gamma_aa = super.value("V_GAMMA_AA")
+    v_gamma_ab = super.value("V_GAMMA_AB")
+    v_gamma_bb = super.value("V_GAMMA_BB")
 
     if not v_gamma_aa:
         v_gamma_aa = tau_a
         v_gamma_ab = tau_a
         v_gamma_bb = tau_a
 
-    tasks = ['v', 'v_rho_a', 'v_rho_b', 'v_gamma_aa', 'v_gamma_ab', 'v_gamma_bb']
+    tasks = ["v", "v_rho_a", "v_rho_b", "v_gamma_aa", "v_gamma_ab", "v_gamma_bb"]
     mapping = {
-        'v': v,
-        'v_rho_a': v_rho_a,
-        'v_rho_b': v_rho_b,
-        'v_gamma_aa': v_gamma_aa,
-        'v_gamma_ab': v_gamma_ab,
-        'v_gamma_bb': v_gamma_bb,
+        "v": v,
+        "v_rho_a": v_rho_a,
+        "v_rho_b": v_rho_b,
+        "v_gamma_aa": v_gamma_aa,
+        "v_gamma_ab": v_gamma_ab,
+        "v_gamma_bb": v_gamma_bb,
     }
 
     super.print_detail(3)
     index = 0
     for point in points:
-        core.print_out('rho_a= %11.3E, rho_b= %11.3E, gamma_aa= %11.3E, gamma_ab= %11.3E, gamma_bb= %11.3E\n' %
-                       (rho_a[index], rho_b[index], gamma_aa[index], gamma_ab[index], gamma_bb[index]))
+        core.print_out(
+            "rho_a= %11.3E, rho_b= %11.3E, gamma_aa= %11.3E, gamma_ab= %11.3E, gamma_bb= %11.3E\n"
+            % (rho_a[index], rho_b[index], gamma_aa[index], gamma_ab[index], gamma_bb[index])
+        )
 
         for task in tasks:
             v_ref = point[task]
             v_obs = mapping[task][index]
             delta = v_obs - v_ref
-            if (v_ref == 0.0):
+            if v_ref == 0.0:
                 epsilon = 0.0
             else:
                 epsilon = abs(delta / v_ref)
-            if (epsilon < 1.0E-11):
-                passed = 'PASSED'
+            if epsilon < 1.0e-11:
+                passed = "PASSED"
             else:
-                passed = 'FAILED'
+                passed = "FAILED"
                 check = False
 
-            core.print_out('\t%-15s %24.16E %24.16E %24.16E %24.16E %6s\n' %
-                           (task, v_ref, v_obs, delta, epsilon, passed))
+            core.print_out(
+                "\t%-15s %24.16E %24.16E %24.16E %24.16E %6s\n" % (task, v_ref, v_obs, delta, epsilon, passed)
+            )
 
         index = index + 1
 
-    core.print_out('\n')
+    core.print_out("\n")
     return check

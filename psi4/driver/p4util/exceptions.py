@@ -51,6 +51,7 @@ from psi4 import core, extras
 
 class PsiException(Exception):
     """Error class for |PSIfour|. Flags success as False (triggering coffee)."""
+
     extras._success_flag_ = False
 
 
@@ -70,11 +71,12 @@ class ValidationError(PsiException):
         Human readable string describing the exception.
 
     """
+
     message: str
 
     def __init__(self, msg: str):
         PsiException.__init__(self, msg)
-        self.message = '\nPsiException: %s\n\n' % repr(msg)
+        self.message = "\nPsiException: %s\n\n" % repr(msg)
 
 
 class ParsingError(PsiException):
@@ -87,7 +89,7 @@ class ParsingError(PsiException):
 
     def __init__(self, msg):
         PsiException.__init__(self, msg)
-        self.message = '\nPsiException: %s\n\n' % msg
+        self.message = "\nPsiException: %s\n\n" % msg
 
 
 # PsiImportError ceased to be used by v1.1. Class removed by v1.7
@@ -123,11 +125,12 @@ class TestComparisonError(PsiException):
     !----------------------------------------------------------------------------------!
 
     """
+
     message: str
 
     def __init__(self, msg: str):
         PsiException.__init__(self, msg)
-        self.message = '\nPsiException: %s\n\n' % msg
+        self.message = "\nPsiException: %s\n\n" % msg
 
 
 class UpgradeHelper(PsiException):
@@ -157,10 +160,11 @@ class UpgradeHelper(PsiException):
         Any additional message to convey. Should start with a space.
 
     """
+
     def __init__(self, old: str, new: str, version: str, elaboration: str):
         msg = "Using `{}` instead of `{}` is obsolete as of {}.{}".format(old, new, version, elaboration)
         PsiException.__init__(self, msg)
-        core.print_out('\nPsiException: %s\n\n' % (msg))
+        core.print_out("\nPsiException: %s\n\n" % (msg))
 
 
 class ConvergenceError(PsiException):
@@ -183,6 +187,7 @@ class ConvergenceError(PsiException):
         Iteration number on which routine failed.
 
     """
+
     message: str
     iteration: int
 
@@ -193,7 +198,7 @@ class ConvergenceError(PsiException):
         PsiException.__init__(self, msg)
         self.iteration = iteration
         self.message = msg
-        core.print_out(f'\nPsiException: {msg:s}\n\n')
+        core.print_out(f"\nPsiException: {msg:s}\n\n")
 
 
 class OptimizationConvergenceError(ConvergenceError):
@@ -218,6 +223,7 @@ class OptimizationConvergenceError(ConvergenceError):
         Wavefunction at time of exception.
 
     """
+
     message: str
     iteration: int
     wfn: core.Wavefunction
@@ -257,6 +263,7 @@ class SCFConvergenceError(ConvergenceError):
         RMS change in density for last iteration.
 
     """
+
     message: str
     iteration: int
     wfn: core.Wavefunction
@@ -313,6 +320,7 @@ class TDSCFConvergenceError(ConvergenceError):
         Dictionary of convergence statistics of last iteration. See keys above.
 
     """
+
     message: str
     iteration: int
     wfn: core.Wavefunction
@@ -326,10 +334,9 @@ class TDSCFConvergenceError(ConvergenceError):
         conv_info += f"{'-':->20} {'-':->15} {'-':->15}\n"
         for e, diff, r_norm in zip(stats["val"], stats["delta_val"], stats["res_norm"]):
             conv_info += f"      {e:.6f}         {diff:-11.5e}    {r_norm:12.5e}\n"
-        ConvergenceError.__init__(self,
-                                  eqn_description=f"""TDSCF solver ({what})""",
-                                  iteration=iteration,
-                                  additional_info=conv_info)
+        ConvergenceError.__init__(
+            self, eqn_description=f"""TDSCF solver ({what})""", iteration=iteration, additional_info=conv_info
+        )
         self.wfn = wfn
         self.what = what
         self.stats = stats
@@ -354,11 +361,12 @@ class MissingMethodError(ValidationError):
         Human readable string describing the exception.
 
     """
+
     message: str
 
     def __init__(self, msg: str):
         ValidationError.__init__(self, msg)
-        self.message = '\nMissingMethodError: %s\n\n' % msg
+        self.message = "\nMissingMethodError: %s\n\n" % msg
 
 
 class ManagedMethodError(PsiException):
@@ -390,11 +398,11 @@ class ManagedMethodError(PsiException):
           - fcae : (str, str), raw value and str repr of all-electron/frozen-core status
 
     """
+
     message: str
     stats: Dict[str, Any]
 
     def __init__(self, circs: List[str]):
-
         if circs[0].endswith("_property"):
             driver = "properties"
             derivative_int = "prop"  # differs from QCSchema Driver.derivative_int that uses `0` here
@@ -442,6 +450,7 @@ class PastureRequiredError(PsiException):
     """Error called when the specified value of *option* requires some
     module(s) from Psi4Pasture, but could not be imported.
     """
+
     msg_tmpl = """Psi4Pasture module(s) [{modlist}] are required to change the default value of {opt}
 
     """
@@ -476,9 +485,10 @@ class PastureRequiredError(PsiException):
         msg = PastureRequiredError.msg_tmpl.format(opt=option, modlist=mods_str)
         PsiException.__init__(self, msg)
         module_cmake_args = " ".join(
-            ["-DENABLE_{}=ON".format(module) for module in PastureRequiredError.pasture_required_modules[option]])
+            ["-DENABLE_{}=ON".format(module) for module in PastureRequiredError.pasture_required_modules[option]]
+        )
         msg += PastureRequiredError.install_instructions.format(module_args=module_cmake_args)
-        self.message = '\nPsiException: {}\n\n'.format(msg)
+        self.message = "\nPsiException: {}\n\n".format(msg)
         core.print_out(self.message)
 
 
@@ -487,13 +497,26 @@ def sanitize_method(name: str) -> str:
     (both as-is) or HTML table link (replace underscore in returned string by dash).
 
     """
-    return name.lower(
-        ).replace("(", "_pr"  # ccsd(t)
-        ).replace(")", "_pr"
-        ).replace(".", "p"    # mp2.5
-        ).replace("+", "p"    # ccsd+t(ccsd)
-        ).replace("-", ""     # ccsdt-1a
+    return (
+        name.lower()
+        .replace(
+            "(",
+            "_pr",  # ccsd(t)
         )
+        .replace(")", "_pr")
+        .replace(
+            ".",
+            "p",  # mp2.5
+        )
+        .replace(
+            "+",
+            "p",  # ccsd+t(ccsd)
+        )
+        .replace(
+            "-",
+            "",  # ccsdt-1a
+        )
+    )
 
 
 def docs_table_link(name: str, mode: str) -> str:

@@ -31,23 +31,23 @@ import psi4
 
 from . import optproc
 
-__all__ = ['free_atom_volumes']
+__all__ = ["free_atom_volumes"]
 
 
 def free_atom_volumes(wfn: psi4.core.Wavefunction, **kwargs):
-    """ 
+    """
     Computes free-atom volumes using MBIS density partitioning.
     The free-atom volumes are computed for all unique (inc. basis set)
     atoms in a molecule and stored as wavefunction variables, :psivar:`MBIS FREE ATOM n VOLUME`.
-    Free-atom densities are computed at the same level of theory as the molecule, 
-    and we use unrestricted references as needed in computing the ground-state. 
+    Free-atom densities are computed at the same level of theory as the molecule,
+    and we use unrestricted references as needed in computing the ground-state.
 
     The free-atom volumes are used to compute volume ratios in routine MBIS computations
 
     Parameters
     ----------
     wfn
-        The wave function associated with the molecule, method, and basis for 
+        The wave function associated with the molecule, method, and basis for
         atomic computations
     """
 
@@ -56,19 +56,18 @@ def free_atom_volumes(wfn: psi4.core.Wavefunction, **kwargs):
     # are by definition 1.0
     natom = wfn.molecule().natom()
     if natom == 1:
-        return 0 
-    
+        return 0
 
     # the level of theory
-    current_en = wfn.scalar_variable('CURRENT ENERGY')
+    current_en = wfn.scalar_variable("CURRENT ENERGY")
     total_energies = [k for k, v in wfn.scalar_variables().items() if abs(v - current_en) <= 1e-12]
     theory = ""
     for var in total_energies:
-        if 'TOTAL ENERGY' in var:
+        if "TOTAL ENERGY" in var:
             var = var.split()
-            if var[0] == 'SCF':
+            if var[0] == "SCF":
                 continue
-            elif var[0] == 'DFT':
+            elif var[0] == "DFT":
                 theory = wfn.functional().name()
             else:
                 theory = var[0]
@@ -77,9 +76,93 @@ def free_atom_volumes(wfn: psi4.core.Wavefunction, **kwargs):
     # Note that this is not the same as the
     # total spin of the ground state atom
     reference_S = [
-        0, 1, 0, 1, 0, 1, 2, 3, 2, 1, 0, 1, 0, 1, 2, 3, 2, 1, 0, 1, 0, 1, 2, 3, 6, 5, 4, 3, 2, 1, 0, 1, 2, 3, 2, 1, 0,
-        1, 0, 1, 2, 5, 6, 5, 4, 3, 0, 1, 0, 1, 2, 3, 2, 1, 0, 1, 0, 1, 0, 3, 4, 5, 6, 7, 8, 5, 4, 3, 2, 1, 0, 1, 2, 3,
-        4, 5, 4, 3, 2, 1, 0, 1, 2, 3, 2, 1, 0
+        0,
+        1,
+        0,
+        1,
+        0,
+        1,
+        2,
+        3,
+        2,
+        1,
+        0,
+        1,
+        0,
+        1,
+        2,
+        3,
+        2,
+        1,
+        0,
+        1,
+        0,
+        1,
+        2,
+        3,
+        6,
+        5,
+        4,
+        3,
+        2,
+        1,
+        0,
+        1,
+        2,
+        3,
+        2,
+        1,
+        0,
+        1,
+        0,
+        1,
+        2,
+        5,
+        6,
+        5,
+        4,
+        3,
+        0,
+        1,
+        0,
+        1,
+        2,
+        3,
+        2,
+        1,
+        0,
+        1,
+        0,
+        1,
+        0,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        5,
+        4,
+        3,
+        2,
+        1,
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        4,
+        3,
+        2,
+        1,
+        0,
+        1,
+        2,
+        3,
+        2,
+        1,
+        0,
     ]
 
     # the parent molecule and reference type
@@ -96,9 +179,8 @@ def free_atom_volumes(wfn: psi4.core.Wavefunction, **kwargs):
 
     psi4.core.print_out(f"  Running {len(unq_atoms)} free-atom UHF computations")
 
-    optstash = optproc.OptionsState(["SCF", 'REFERENCE'])
+    optstash = optproc.OptionsState(["SCF", "REFERENCE"])
     for a_sym, a_z, basis in unq_atoms:
-
         # make sure we do UHF/UKS if we're not a singlet
         if reference_S[a_z] != 0:
             psi4.core.set_local_option("SCF", "REFERENCE", "UHF")
@@ -106,10 +188,9 @@ def free_atom_volumes(wfn: psi4.core.Wavefunction, **kwargs):
             psi4.core.set_local_option("SCF", "REFERENCE", "RHF")
 
         # Set the molecule, here just an atom
-        a_mol = psi4.core.Molecule.from_arrays(geom=[0, 0, 0],
-                                          elem=[a_sym],
-                                          molecular_charge=0,
-                                          molecular_multiplicity=int(1 + reference_S[a_z]))
+        a_mol = psi4.core.Molecule.from_arrays(
+            geom=[0, 0, 0], elem=[a_sym], molecular_charge=0, molecular_multiplicity=int(1 + reference_S[a_z])
+        )
         a_mol.update_geometry()
         psi4.molutil.activate(a_mol)
 
@@ -119,15 +200,15 @@ def free_atom_volumes(wfn: psi4.core.Wavefunction, **kwargs):
         at_e, at_wfn = psi4.energy(method, return_wfn=True)
 
         # Now, re-run mbis for the atomic density, grabbing only the volume
-        psi4.oeprop(at_wfn, 'MBIS_CHARGES', title=a_sym + " " + method, free_atom=True)
+        psi4.oeprop(at_wfn, "MBIS_CHARGES", title=a_sym + " " + method, free_atom=True)
 
-        vw = at_wfn.array_variable('MBIS RADIAL MOMENTS <R^3>')  # P::e OEPROP
+        vw = at_wfn.array_variable("MBIS RADIAL MOMENTS <R^3>")  # P::e OEPROP
         vw = vw.get(0, 0)
 
         # set the atomic widths as wfn variables
         wfn.set_variable("MBIS FREE ATOM " + a_sym.upper() + " VOLUME", vw)
         # set_variable("MBIS FREE ATOM n VOLUME")  # P::e OEPROP
-        
+
         psi4.core.clean()
         psi4.core.clean_variables()
 
