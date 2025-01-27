@@ -72,6 +72,7 @@ quadrupole.cc
 rel_potential.cc
 tracelessquadrupole.cc
 3coverlap.cc
+4coverlap.cc
   )
 set_property(TARGET l2intf PROPERTY CXX_STANDARD "${psi4_CXX_STANDARD_Libint2}")
 set_property(TARGET l2intf PROPERTY POSITION_INDEPENDENT_CODE ON)

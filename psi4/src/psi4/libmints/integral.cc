@@ -42,6 +42,7 @@
 #include "psi4/libmints/potential_erf.h"
 #include "psi4/libmints/kinetic.h"
 #include "psi4/libmints/3coverlap.h"
+#include "psi4/libmints/4coverlap.h"
 #include "psi4/libmints/overlap.h"
 #include "psi4/psi4-dec.h"
 #include "psi4/libpsi4util/process.h"
@@ -96,6 +97,8 @@ std::unique_ptr<OneBodySOInt> IntegralFactory::so_overlap(int deriv) {
 }
 
 std::unique_ptr<ThreeCenterOverlapInt> IntegralFactory::overlap_3c() { return std::make_unique<ThreeCenterOverlapInt>(bs1_, bs2_, bs3_); }
+
+std::unique_ptr<FourCenterOverlapInt> IntegralFactory::overlap_4c() { return std::make_unique<FourCenterOverlapInt>(bs1_, bs2_, bs3_, bs4_); }
 
 std::unique_ptr<OneBodyAOInt> IntegralFactory::ao_kinetic(int deriv) {
     return std::make_unique<KineticInt>(spherical_transforms_, bs1_, bs2_, deriv);

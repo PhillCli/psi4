@@ -44,6 +44,7 @@
 #include "psi4/libmints/potential.h"
 #include "psi4/libmints/factory.h"
 #include "psi4/libmints/3coverlap.h"
+#include "psi4/libmints/4coverlap.h"
 #include "psi4/libmints/potentialint.h"
 #include "psi4/libqt/qt.h"
 #include "psi4/libmints/sointegral_onebody.h"
@@ -990,6 +991,109 @@ SharedMatrix MintsHelper::ao_3coverlap(std::shared_ptr<BasisSet> bs1, std::share
     return ao_3coverlap_helper("AO 3-Center Overlap Tensor", ints);
 }
 
+SharedMatrix MintsHelper::ao_4coverlap_helper(const std::string &label, std::shared_ptr<FourCenterOverlapInt> ints) {
+    std::shared_ptr<BasisSet> bs1 = ints->basis1();
+    std::shared_ptr<BasisSet> bs2 = ints->basis2();
+    std::shared_ptr<BasisSet> bs3 = ints->basis3();
+    std::shared_ptr<BasisSet> bs4 = ints->basis4();
+
+    int nbf1 = bs1->nbf();
+    int nbf2 = bs2->nbf();
+    int nbf3 = bs3->nbf();
+    int nbf4 = bs4->nbf();
+
+    auto I = std::make_shared<Matrix>(label, nbf1 * nbf2 * nbf3, nbf4);
+    double **Ip = I->pointer();
+
+    for (int M = 0; M < bs1->nshell(); M++) {
+        for (int N = 0; N < bs2->nshell(); N++) {
+            for (int P = 0; P < bs3->nshell(); P++) {
+                for (int Q = 0; Q < bs4->nshell(); Q++) {
+                    ints->compute_shell(M, N, P, Q);
+                    const double *buffer = ints->buffers()[0];
+
+                    int Mfi = bs1->shell(M).function_index();
+                    int Nfi = bs2->shell(N).function_index();
+                    int Pfi = bs3->shell(P).function_index();
+                    int Qfi = bs4->shell(Q).function_index();
+
+                    for (int m = Mfi, index = 0; m < (Mfi + bs1->shell(M).nfunction()); m++) {
+                        for (int n = Nfi; n < (Nfi + bs2->shell(N).nfunction()); n++) {
+                            for (int p = Pfi; p < (Pfi + bs3->shell(P).nfunction()); p++) {
+                                for (int q = Qfi; q < (Qfi + bs4->shell(Q).nfunction()); q++) {
+                                    Ip[(m * nbf2 * nbf3) + (n * nbf3) + p][q] = buffer[index++];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    std::vector<int> nshape{nbf1, nbf2, nbf3, nbf4};
+    I->set_numpy_shape(nshape);
+
+    return I;
+}
+
+SharedMatrix MintsHelper::ao_4coverlap_diag_helper(const std::string &label,
+                                                   std::shared_ptr<FourCenterOverlapInt> ints) {
+    std::shared_ptr<BasisSet> bs1 = ints->basis1();
+    std::shared_ptr<BasisSet> bs2 = ints->basis2();
+
+    int nbf1 = bs1->nbf();
+    int nbf2 = bs2->nbf();
+
+    auto I = std::make_shared<Matrix>(label, nbf1, nbf2);
+    double **Ip = I->pointer();
+
+    for (int P = 0; P < bs1->nshell(); P++) {
+        int Pfi = bs1->shell(P).function_index();
+        int Pnf = bs1->shell(P).nfunction();
+
+        for (int Q = 0; Q < bs2->nshell(); Q++) {
+            int Qfi = bs2->shell(Q).function_index();
+            int Qnf = bs2->shell(Q).nfunction();
+
+            ints->compute_shell(P, Q, P, Q);
+            const double *buffer = ints->buffers()[0];
+
+            for (int p = 0; p < Pnf; p++) {
+                for (int q = 0; q < Qnf; q++) {
+                    int index = p * (Qnf * Pnf * Qnf) + q * (Pnf * Qnf) + p * Qnf + q;
+                    Ip[p + Pfi][q + Qfi] = buffer[index];
+                }
+            }
+        }
+    }
+
+    std::vector<int> nshape{nbf1, nbf2};
+    I->set_numpy_shape(nshape);
+
+    return I;
+}
+
+SharedMatrix MintsHelper::ao_4coverlap() {
+    auto ints = std::make_shared<FourCenterOverlapInt>(basisset_, basisset_, basisset_, basisset_);
+    return ao_4coverlap_helper("AO 4-Center Overlap Tensor", ints);
+}
+
+SharedMatrix MintsHelper::ao_4coverlap(std::shared_ptr<BasisSet> bs1, std::shared_ptr<BasisSet> bs2,
+                                       std::shared_ptr<BasisSet> bs3, std::shared_ptr<BasisSet> bs4) {
+    auto ints = std::make_shared<FourCenterOverlapInt>(bs1, bs2, bs3, bs4);
+    return ao_4coverlap_helper("AO 4-Center Overlap Tensor", ints);
+}
+
+SharedMatrix MintsHelper::ao_4coverlap_diag() {
+    auto ints = std::make_shared<FourCenterOverlapInt>(basisset_, basisset_, basisset_, basisset_);
+    return ao_4coverlap_diag_helper("AO Diagonal of 4-Center Overlap Tensor", ints);
+}
+
+SharedMatrix MintsHelper::ao_4coverlap_diag(std::shared_ptr<BasisSet> bs1, std::shared_ptr<BasisSet> bs2) {
+    auto ints = std::make_shared<FourCenterOverlapInt>(bs1, bs2, bs1, bs2);
+    return ao_4coverlap_diag_helper("AO Diagonal of 4-Center Overlap Tensor", ints);
+}
 SharedMatrix MintsHelper::ao_f12g12(std::vector<std::pair<double, double>> exp_coeff) {
     std::shared_ptr<TwoBodyAOInt> ints(integral_->f12g12(exp_coeff));
     return ao_helper("AO F12G12 Tensor", ints);

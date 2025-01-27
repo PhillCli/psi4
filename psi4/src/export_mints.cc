@@ -56,6 +56,7 @@
 #include "psi4/libmints/eri.h"
 #include "psi4/libmints/molecule.h"
 #include "psi4/libmints/3coverlap.h"
+#include "psi4/libmints/4coverlap.h"
 #include "psi4/libmints/potential_erf.h"
 #include "psi4/libmints/oeprop.h"
 #include "psi4/libmints/nabla.h"
@@ -1345,6 +1346,10 @@ void export_mints(py::module& m) {
                                                                               "Three center overlap integrals")
         .def("compute_shell", &ThreeCenterOverlapInt::compute_shell, "Compute the integrals of the form (a|b|c)");
 
+    py::class_<FourCenterOverlapInt, std::shared_ptr<FourCenterOverlapInt>>(m, "FourCenterOverlapInt",
+                                                                            "Four center overlap integrals")
+        .def("compute_shell", &FourCenterOverlapInt::compute_shell, "Compute the integrals of the form (a|b|c|d)");
+
     py::class_<IntegralFactory, std::shared_ptr<IntegralFactory>>(m, "IntegralFactory", "Computes integrals")
         .def(py::init<std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>,
                       std::shared_ptr<BasisSet>>())
@@ -1424,6 +1429,9 @@ void export_mints(py::module& m) {
                                                      std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>);
     typedef SharedMatrix (MintsHelper::*normal_3c)(std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>,
                                                    std::shared_ptr<BasisSet>);
+    typedef SharedMatrix (MintsHelper::*normal_4c)(std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>,
+                                                   std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>);
+    typedef SharedMatrix (MintsHelper::*normal_4c_diag)(std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>);
 
     typedef SharedMatrix (MintsHelper::*normal_f12)(std::vector<std::pair<double, double>>);
     typedef SharedMatrix (MintsHelper::*normal_f122)(std::vector<std::pair<double, double>>, std::shared_ptr<BasisSet>,
@@ -1545,6 +1553,9 @@ void export_mints(py::module& m) {
         .def("ao_3coverlap", normal_eri(&MintsHelper::ao_3coverlap), "3 Center overlap integrals")
         .def("ao_3coverlap", normal_3c(&MintsHelper::ao_3coverlap), "3 Center overlap integrals", "bs1"_a, "bs2"_a,
              "bs3"_a)
+        .def("ao_4coverlap", normal_4c(&MintsHelper::ao_4coverlap), "4 Center overlap integrals", "bs1"_a, "bs2"_a,
+             "bs3"_a, "bs4"_a)
+        .def("ao_4coverlap_diag", normal_4c_diag(&MintsHelper::ao_4coverlap_diag), "Diagonal 4 Center overlap integrals", "bs1"_a, "bs2"_a)
 
         // Two-electron MO and transformers
         .def("mo_eri", eri(&MintsHelper::mo_eri), "MO ERI Integrals. Pass appropriate MO coefficients in the AO basis.",

@@ -42,6 +42,7 @@ class CorrelationFactor;
 class TwoBodyAOInt;
 class PetiteList;
 class ThreeCenterOverlapInt;
+class FourCenterOverlapInt;
 class OneBodyAOInt;
 
 /**
@@ -86,6 +87,8 @@ class PSI_API MintsHelper {
                                  int Q);
 
     SharedMatrix ao_3coverlap_helper(const std::string& label, std::shared_ptr<ThreeCenterOverlapInt> ints);
+    SharedMatrix ao_4coverlap_helper(const std::string& label, std::shared_ptr<FourCenterOverlapInt> ints);
+    SharedMatrix ao_4coverlap_diag_helper(const std::string& label, std::shared_ptr<FourCenterOverlapInt> ints);
 
     void common_init();
 
@@ -248,6 +251,14 @@ class PSI_API MintsHelper {
     SharedMatrix ao_3coverlap();
     SharedMatrix ao_3coverlap(std::shared_ptr<BasisSet> bs1, std::shared_ptr<BasisSet> bs2,
                               std::shared_ptr<BasisSet> bs3);
+
+    /// 4Center overlap integrals
+    SharedMatrix ao_4coverlap();
+    SharedMatrix ao_4coverlap(std::shared_ptr<BasisSet> bs1, std::shared_ptr<BasisSet> bs2,
+                              std::shared_ptr<BasisSet> bs3, std::shared_ptr<BasisSet> bs4);
+
+    SharedMatrix ao_4coverlap_diag();
+    SharedMatrix ao_4coverlap_diag(std::shared_ptr<BasisSet> bs1, std::shared_ptr<BasisSet> bs2);
 
     /// Erf-attenuated Coulomb potential on origin
     SharedMatrix ao_potential_erf(const std::vector<double> &origin, double omega = 0.0, int deriv = 0);

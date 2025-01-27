@@ -88,6 +88,7 @@ class OneBodyAOInt;
 class OneBodySOInt;
 class TwoBodyAOInt;
 class ThreeCenterOverlapInt;
+class FourCenterOverlapInt;
 class CartesianIter;
 class RedundantCartesianIter;
 class RedundantCartesianSubIter;
@@ -433,6 +434,9 @@ class PSI_API IntegralFactory {
 
     /// Returns a ThreeCenterOverlapINt that computes the overlap between three centers
     virtual std::unique_ptr<ThreeCenterOverlapInt> overlap_3c();
+
+    /// Returns a FourCenterOverlapINt that computes the overlap between four centers
+    virtual std::unique_ptr<FourCenterOverlapInt> overlap_4c();
 
     /// Returns an OneBodyInt that computes the kinetic energy integral.
     virtual std::unique_ptr<OneBodyAOInt> ao_kinetic(int deriv = 0);
