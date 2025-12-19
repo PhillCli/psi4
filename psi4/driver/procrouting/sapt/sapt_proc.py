@@ -25,6 +25,9 @@
 #
 # @END LICENSE
 #
+from __future__ import annotations
+
+from typing import Dict, Tuple
 
 import numpy as np
 import qcelemental as qcel
@@ -66,15 +69,9 @@ def run_sapt_dft(name, **kwargs):
     mon_b_shift = core.get_option("SAPT", "SAPT_DFT_GRAC_SHIFT_B")
     grac_compute = core.get_option("SAPT", "SAPT_DFT_GRAC_COMPUTE")
 
-    if (
-        not core.has_option_changed("SAPT", "SAPT_DFT_GRAC_SHIFT_A")
-        and grac_compute.upper() != "NONE"
-    ):
+    if not core.has_option_changed("SAPT", "SAPT_DFT_GRAC_SHIFT_A") and grac_compute.upper() != "NONE":
         do_mon_grac_shift_A = True
-    if (
-        not core.has_option_changed("SAPT", "SAPT_DFT_GRAC_SHIFT_B")
-        and grac_compute.upper() != "NONE"
-    ):
+    if not core.has_option_changed("SAPT", "SAPT_DFT_GRAC_SHIFT_B") and grac_compute.upper() != "NONE":
         do_mon_grac_shift_B = True
 
     do_delta_hf = core.get_option("SAPT", "SAPT_DFT_DO_DHF")
@@ -153,14 +150,7 @@ def run_sapt_dft(name, **kwargs):
     core.set_variable("SAPT DFT GRAC SHIFT B", mon_b_shift)  # P::e SAPT
     core.print_out("\n")
 
-    if (
-        do_dft
-        and (
-            (not core.has_option_changed("SAPT", "SAPT_DFT_GRAC_SHIFT_A"))
-            or (not core.has_option_changed("SAPT", "SAPT_DFT_GRAC_SHIFT_B"))
-        )
-        and grac_compute == "NONE"
-    ):
+    if do_dft and ((not core.has_option_changed("SAPT", "SAPT_DFT_GRAC_SHIFT_A")) or (not core.has_option_changed("SAPT", "SAPT_DFT_GRAC_SHIFT_B"))) and grac_compute == "NONE":
         raise ValidationError(
             'SAPT(DFT): User must set both "SAPT_DFT_GRAC_SHIFT_A" and "_B".  Or, to automatically compute the GRAC shift, set SAPT_DFT_GRAC_COMPUTE to "ITERATIVE" or "SINGLE".'
         )
@@ -188,9 +178,7 @@ def run_sapt_dft(name, **kwargs):
         hf_data = {}
 
         core.set_local_option("SCF", "SAVE_JK", True)
-        hf_wfn_dimer = scf_helper(
-            "SCF", molecule=sapt_dimer, banner="SAPT(DFT): delta HF Dimer", **kwargs
-        )
+        hf_wfn_dimer = scf_helper("SCF", molecule=sapt_dimer, banner="SAPT(DFT): delta HF Dimer", **kwargs)
         hf_data["HF DIMER"] = core.variable("CURRENT ENERGY")
         core.timer_off("SAPT(DFT):Dimer SCF")
 
@@ -198,26 +186,14 @@ def run_sapt_dft(name, **kwargs):
         core.IO.change_file_namespace(97, "dimer", "monomerA")
 
         jk_obj = hf_wfn_dimer.jk()
-        hf_wfn_A = scf_helper(
-            "SCF",
-            molecule=monomerA,
-            banner="SAPT(DFT): delta HF Monomer A",
-            jk=jk_obj,
-            **kwargs,
-        )
+        hf_wfn_A = scf_helper("SCF", molecule=monomerA, banner="SAPT(DFT): delta HF Monomer A", jk=jk_obj, **kwargs)
         hf_data["HF MONOMER A"] = core.variable("CURRENT ENERGY")
         core.timer_off("SAPT(DFT):Monomer A SCF")
 
         core.timer_on("SAPT(DFT):Monomer B SCF")
         core.IO.change_file_namespace(97, "monomerA", "monomerB")
 
-        hf_wfn_B = scf_helper(
-            "SCF",
-            molecule=monomerB,
-            banner="SAPT(DFT): delta HF Monomer B",
-            jk=jk_obj,
-            **kwargs,
-        )
+        hf_wfn_B = scf_helper("SCF", molecule=monomerB, banner="SAPT(DFT): delta HF Monomer B", jk=jk_obj, **kwargs)
         hf_data["HF MONOMER B"] = core.variable("CURRENT ENERGY")
         core.set_global_option("SAVE_JK", False)
         core.timer_off("SAPT(DFT):Monomer B SCF")
@@ -435,9 +411,7 @@ def compute_GRAC_shift(molecule, sapt_dft_grac_convergence_tier, label):
     if grac_basis != "AUTO":
         core.set_global_option("BASIS", grac_basis)
 
-    core.print_out(
-        f"Computing GRAC shift for {label} using {sapt_dft_grac_convergence_tier}..."
-    )
+    core.print_out(f"Computing GRAC shift for {label} using {sapt_dft_grac_convergence_tier}...")
     grac_options = sapt_dft_grac_convergence_tier_options[
         sapt_dft_grac_convergence_tier
     ]
@@ -827,10 +801,9 @@ def run_sf_sapt(name, **kwargs):
             "Spin-Flip SAPT currently only supports restricted open-shell references."
         )
 
-    # Run the two monomer computations
-    data = {}
-
+    # Run the two monomer computations (and allow for wavefunction reuse, i.e. from Psi4Numpy)
     core.IO.set_default_namespace("dimer")
+
     if core.get_global_option("SCF_TYPE") == "DF":
         core.set_global_option("DF_INTS_IO", "SAVE")
 
@@ -878,6 +851,11 @@ def run_sf_sapt(name, **kwargs):
     )
     core.print_out("\n")
 
+    # TODO: re-thinkg ENV variable control flow here, i.e.
+    # SAPT_SF_DO_CPHF
+    # SAPT_SF_DO_FIRST_ORDER
+    # SAPT_SF_DO_SECOND_ORDER_INDUCTION
+    # SAPT_SF_DO_SECOND_ORDER_DISPERSION
     sf_data = {}
     if not core.get_option("SAPT", "SF_SAPT_DO_ONLY_CPHF"):
         sf_first_order = sapt_sf_terms.compute_first_order_sapt_sf(
@@ -885,6 +863,7 @@ def run_sf_sapt(name, **kwargs):
         )
         sf_data.update(sf_first_order)
 
+    # TODO: move it into sapt_rohf_utils
     def form_omega_potentials(
         cache: Dict[str, str], sapt_jk: core.JK
     ) -> Tuple[core.Matrix, core.Matrix]:
@@ -896,8 +875,8 @@ def run_sf_sapt(name, **kwargs):
         sapt_jk.print_header()
         sapt_jk.C_clear()
 
-        wfn_A = cache["wfn_A"]
-        wfn_B = cache["wfn_B"]
+        wfn_A: core.Wavefunction = cache["wfn_A"]
+        wfn_B: core.Wavefunction = cache["wfn_B"]
         # compute J[D_A_alpha] + J[D_A_beta]
         # alpha
         sapt_jk.C_left_add(wfn_A.Ca_subset("AO", "OCC"))
@@ -944,8 +923,9 @@ def run_sf_sapt(name, **kwargs):
         core.print_out("... Done\n")
         return omega_A, omega_B
 
-    def build_cache(cache: dict = None) -> dict:
-        """build cache object for cphf_induction"""
+    # TODO: move it into sapt_rohf_utils
+    def build_cache(cache: dict | None = None) -> dict:
+        """build python cache object for cphf_induction"""
         if cache is None:
             cache = {}
 
@@ -1004,8 +984,9 @@ def run_sf_sapt(name, **kwargs):
     )
     core.set_variable("SAPT IND20,R ENERGY", data_ind["Ind20,r"])
     core.timer_off("SF-SAPT:SAPT(CP-ROHF):ind")
-    # TODO: that's just a short-cut to get amplitudes out, for integration with
+    # FIXME: that's just a short-cut to get amplitudes out, for integration with
     # Psi4NumPy script for exchange part, should be clean-up before final merge happens
+    # re-think how to return those amplitudes, without breaking existing API too much
     return data_ind, amplitudes_ind
     sf_data.update(data_ind)
 
