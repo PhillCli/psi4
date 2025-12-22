@@ -32,6 +32,19 @@ codedeps_yaml = Path(__file__).resolve().parent.parent / "codedeps.yaml"
 cmake_S = os.path.relpath(codedeps_yaml.parent, start=Path.cwd())
 
 
+def get_conda_exe() -> str:
+    if os.name == "nt":
+        return "conda.bat"
+    if shutil.which("conda"):
+        return "conda"
+    elif shutil.which("mamba"):
+        return "mamba"
+    elif shutil.which("micromamba"):
+        return "micromamba"
+    return "micromamba"
+
+condaexe = get_conda_exe()
+
 def native_platform() -> str:
     """Return conda platform code.
     This can't distinguish the metal chip for osx, so prefer to use platform from conda info directly.
@@ -62,7 +75,6 @@ def conda_list(*, name: str = None, prefix: str = None) -> Dict:
     #env_list_dict = json.loads(env_list_json)
 
     """
-    condaexe = "conda.bat" if (os.name == "nt") else "conda"
     if name:
         proc = run([condaexe, "list", "--json", "--name", name], text=True, capture_output=True)
     elif prefix:
@@ -74,7 +86,6 @@ def conda_list(*, name: str = None, prefix: str = None) -> Dict:
 
 
 def conda_info() -> Dict:
-    condaexe = "conda.bat" if (os.name == "nt") else "conda"
     proc = run([condaexe, "info", "--json"], text=True, capture_output=True)
     return json.loads(proc.stdout)
 
@@ -100,17 +111,23 @@ re_pkgline = re.compile("(?P<suppress>//)?(?P<chnl>.*::)?(?P<pkg>[A-Za-z0-9_-]+)
 
 conda_available = shutil.which("conda")
 mamba_available = shutil.which("mamba")
-pm_available = (conda_available or mamba_available)
+micromamba_available = shutil.which("micromamba")
+pm_available = (conda_available or mamba_available or micromamba_available)
 
 if pm_available:
     conda_info_dict = conda_info()
-    conda_platform_native = conda_info_dict["platform"]
-    conda_prefix = conda_info_dict["active_prefix"]
-    conda_prefix_short = conda_info_dict["active_prefix_name"]
-    conda_host = conda_info_dict["env_vars"].get("CONDA_TOOLCHAIN_HOST", None)  # None if no compilers in env
+    conda_platform_native = conda_info_dict.get("platform", native_platform())
+    conda_prefix = conda_info_dict.get("active_prefix") or conda_info_dict.get("env location")  # micromamba uses "env location"
+    conda_prefix_short = conda_info_dict.get("active_prefix_name")
+    if not conda_prefix_short and conda_prefix:
+        conda_prefix_short = Path(conda_prefix).name
+    conda_host = conda_info_dict.get("env_vars", {}).get("CONDA_TOOLCHAIN_HOST") or os.environ.get("CONDA_TOOLCHAIN_HOST")  # None if no compilers in env
     conda_list_struct = conda_list()
-    base_prefix = conda_info_dict["conda_prefix"]  # env with conda cmd
-    base_list_struct = conda_list(prefix=base_prefix)
+    base_prefix = conda_info_dict.get("conda_prefix") or conda_info_dict.get("base environment")  # env with conda cmd; micromamba uses "base environment"
+    if base_prefix:
+        base_list_struct = conda_list(prefix=base_prefix)
+    else:
+        base_list_struct = {}
 else:
     conda_platform_native = native_platform()
     conda_prefix = "(no prefix)"
@@ -118,6 +135,7 @@ else:
     conda_host = None
     conda_list_struct = {}
     base_list_struct = {}
+
 if conda_prefix:  # None if base env not activated
     conda_prefix = Path(conda_prefix).as_posix()
 
@@ -164,6 +182,15 @@ else:
     solver_help.append(f"""{strike('mamba')}
     Can't use `mamba` to solve environments
     because packages (mamba?) not installed in base env.""")
+if micromamba_available:
+    solver_choices.append("micromamba")
+    solver_help.append("""micromamba:
+    Use `micromamba` to solve environments. UNTESTED""")
+else:
+    solver_choices.append(strike("micromamba"))
+    solver_help.append(f"""{strike('micromamba')}
+    Can't use `micromamba` to solve environments
+    because packages (micromamba?) not installed in base env.""")
 if conda_libmamba_available:
     solver_choices.append("conda-libmamba")
     solver_help.append("""conda-libmamba:
@@ -605,6 +632,8 @@ if args.subparser_name in ["conda", "env"]:
             solver = "conda"
         elif mamba_available:
             solver = "mamba"
+        elif micromamba_available:
+            solver = "micromamba"
         elif args.offline_conda:
             solver = "(no pm)"
     else:
@@ -795,7 +824,9 @@ if args.subparser_name in ["conda", "env"]:
         print("\n".join(text))
 
     subdircmd = "" if conda_platform == conda_platform_native else f"CONDA_SUBDIR={conda_platform} "
-    env_create_and_activate_cmd = f"""{subdircmd}{solver[0]} env create -n {args.name} -f {condaenvspec} {solver[1]} && conda activate {args.name}"""
+    activator = solver[0]
+    create_cmd = "create" if (solver[0] == "micromamba") else "env create"
+    env_create_and_activate_cmd = f"""{subdircmd}{solver[0]} {create_cmd} -n {args.name} -f {condaenvspec} {solver[1]} && {activator} activate {args.name}"""
     print(env_create_and_activate_cmd)
 
 
