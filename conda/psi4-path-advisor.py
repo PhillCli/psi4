@@ -32,16 +32,22 @@ codedeps_yaml = Path(__file__).resolve().parent.parent / "codedeps.yaml"
 cmake_S = os.path.relpath(codedeps_yaml.parent, start=Path.cwd())
 
 
-def get_conda_exe() -> str:
+def get_conda_exe():
     if os.name == "nt":
-        return "conda.bat"
+        if shutil.which("conda.bat") or shutil.which("conda"):
+            return "conda.bat"
+        elif shutil.which("mamba.bat") or shutil.which("mamba"):
+            return "mamba.bat"
+        elif shutil.which("micromamba.exe") or shutil.which("micromamba"):
+            return "micromamba.exe"
+        return None
     if shutil.which("conda"):
         return "conda"
     elif shutil.which("mamba"):
         return "mamba"
     elif shutil.which("micromamba"):
         return "micromamba"
-    return "micromamba"
+    return None
 
 condaexe = get_conda_exe()
 
@@ -75,6 +81,8 @@ def conda_list(*, name: str = None, prefix: str = None) -> Dict:
     #env_list_dict = json.loads(env_list_json)
 
     """
+    if condaexe is None:
+        raise RuntimeError("No package manager (conda, mamba, or micromamba) found in PATH.")
     if name:
         proc = run([condaexe, "list", "--json", "--name", name], text=True, capture_output=True)
     elif prefix:
@@ -86,6 +94,8 @@ def conda_list(*, name: str = None, prefix: str = None) -> Dict:
 
 
 def conda_info() -> Dict:
+    if condaexe is None:
+        raise RuntimeError("No package manager (conda, mamba, or micromamba) found in PATH.")
     proc = run([condaexe, "info", "--json"], text=True, capture_output=True)
     return json.loads(proc.stdout)
 
@@ -121,16 +131,18 @@ if pm_available:
     conda_prefix_short = conda_info_dict.get("active_prefix_name")
     if not conda_prefix_short and conda_prefix:
         conda_prefix_short = Path(conda_prefix).name
-    conda_host = conda_info_dict.get("env_vars", {}).get("CONDA_TOOLCHAIN_HOST") or os.environ.get("CONDA_TOOLCHAIN_HOST")  # None if no compilers in env
+    _conda_host = conda_info_dict.get("env_vars", {}).get("CONDA_TOOLCHAIN_HOST")
+    conda_host = _conda_host if _conda_host is not None else os.environ.get("CONDA_TOOLCHAIN_HOST")  # None if no compilers in env
     conda_list_struct = conda_list()
-    base_prefix = conda_info_dict.get("conda_prefix") or conda_info_dict.get("base environment")  # env with conda cmd; micromamba uses "base environment"
+    _base_prefix = conda_info_dict.get("conda_prefix")
+    base_prefix = _base_prefix if _base_prefix is not None else conda_info_dict.get("base environment")  # env with conda cmd; micromamba uses "base environment"
     if base_prefix:
         base_list_struct = conda_list(prefix=base_prefix)
     else:
         base_list_struct = {}
 else:
     conda_platform_native = native_platform()
-    conda_prefix = "(no prefix)"
+    conda_prefix = None
     conda_prefix_short = "(no prefix)"
     conda_host = None
     conda_list_struct = {}
@@ -181,7 +193,7 @@ else:
     solver_choices.append(strike("mamba"))
     solver_help.append(f"""{strike('mamba')}
     Can't use `mamba` to solve environments
-    because packages (mamba?) not installed in base env.""")
+    because package (mamba) not installed in base env.""")
 if micromamba_available:
     solver_choices.append("micromamba")
     solver_help.append("""micromamba:
@@ -190,7 +202,7 @@ else:
     solver_choices.append(strike("micromamba"))
     solver_help.append(f"""{strike('micromamba')}
     Can't use `micromamba` to solve environments
-    because packages (micromamba?) not installed in base env.""")
+    because package (micromamba) not installed.""")
 if conda_libmamba_available:
     solver_choices.append("conda-libmamba")
     solver_help.append("""conda-libmamba:
