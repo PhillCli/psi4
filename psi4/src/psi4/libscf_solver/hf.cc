@@ -877,7 +877,7 @@ void HF::print_orbitals() {
         print_orbital_pairs("Doubly Occupied:", occ);
         print_orbital_pairs("Virtual:", vir);
 
-    } else if ((reference == "UHF") || (reference == "UKS") || (reference == "CUHF")) {
+    } else if ((reference == "UHF") || (reference == "UKS") || (reference == "CUHF") || (reference == "CUKS")) {
         std::vector<std::pair<double, std::pair<std::string, int> > > occA;
         std::vector<std::pair<double, std::pair<std::string, int> > > virA;
         std::vector<std::pair<double, std::pair<std::string, int> > > occB;

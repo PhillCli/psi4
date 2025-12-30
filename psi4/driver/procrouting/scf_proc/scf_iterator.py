@@ -284,7 +284,7 @@ def scf_iterate(self, e_conv=None, d_conv=None):
         level_shift_enabled = core.get_option("SCF", "LEVEL_SHIFT") != 0.0
         autograc_enabled = core.get_option("SAPT", "SAPT_DFT_GRAC_COMPUTE") != "NONE"
         guessmix_enabled = core.get_option("SCF", "GUESS_MIX")
-        if (reference in ["ROHF", "CUHF"] or soscf_enabled or self.MOM_excited_ or frac_enabled or
+        if (reference in ["ROHF", "CUHF", "CUKS"] or soscf_enabled or self.MOM_excited_ or frac_enabled or
             efp_enabled or pcm_enabled or ddx_enabled or pe_enabled or autograc_enabled or
             level_shift_enabled or guessmix_enabled):
             core.print_out(f"    Note: OpenOrbitalOptimizer not compatible with at least one of the following. Falling back to orbital_optimizer_package=internal\n")

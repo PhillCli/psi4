@@ -31,6 +31,7 @@
 
 #include "hf.h"
 #include "psi4/libpsio/psio.hpp"
+#include "psi4/libfock/v.h"
 
 namespace psi {
 class VBase;
@@ -73,12 +74,16 @@ class CUHF final : public HF {
     SharedMatrix Dt_, Dt_old_;
     SharedMatrix Da_old_, Db_old_;
     SharedMatrix J_, Ka_, Kb_;
+    // Long-range exchange matrices for range-separated functionals
+    SharedMatrix wKa_, wKb_;
     // Contributions to the Fock matrix from charge and spin density
     SharedMatrix Fp_, Fm_;
     // Charge density and natural orbitals (eigenvectors of charge density)
     SharedMatrix Dp_, Cno_, Cno_temp_;
     // Natural orbital occupations
     SharedVector No_;
+    // DFT potential object for XC contributions
+    std::shared_ptr<UV> potential_;
 
     void form_initial_F() override;
     double compute_initial_E() override;
@@ -87,6 +92,7 @@ class CUHF final : public HF {
 
     void common_init();
     void setup_potential() override;
+    void form_V() override;
 
    public:
     CUHF(SharedWavefunction ref_wfn, std::shared_ptr<SuperFunctional> functional);
@@ -106,7 +112,7 @@ class CUHF final : public HF {
     void damping_update(double) override;
     bool stability_analysis() override;
 
-    std::shared_ptr<VBase> V_potential() const override { return nullptr; };
+    std::shared_ptr<VBase> V_potential() const override { return potential_; };
 
     std::shared_ptr<CUHF> c1_deep_copy(std::shared_ptr<BasisSet> basis);
 
