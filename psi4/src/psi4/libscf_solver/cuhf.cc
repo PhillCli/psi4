@@ -87,6 +87,12 @@ void CUHF::common_init() {
     J_ = SharedMatrix(factory_->create_matrix("J total"));
     Ka_ = SharedMatrix(factory_->create_matrix("K alpha"));
     Kb_ = SharedMatrix(factory_->create_matrix("K beta"));
+    // Long-range exchange matrices for range-separated functionals
+    wKa_ = SharedMatrix(factory_->create_matrix("wK alpha"));
+    wKb_ = SharedMatrix(factory_->create_matrix("wK beta"));
+    // XC potential matrices
+    Va_ = SharedMatrix(factory_->create_matrix("V alpha"));
+    Vb_ = SharedMatrix(factory_->create_matrix("V beta"));
 
     epsilon_a_ = SharedVector(factory_->create_vector());
     epsilon_b_ = SharedVector(factory_->create_vector());
@@ -133,6 +139,8 @@ void CUHF::finalize() {
     Cno_.reset();
     Cno_temp_.reset();
     No_.reset();
+    wKa_.reset();
+    wKb_.reset();
 
     HF::finalize();
 }
@@ -156,10 +164,34 @@ void CUHF::form_G() {
     // Pull the J and K matrices off
     const std::vector<SharedMatrix>& J = jk_->J();
     const std::vector<SharedMatrix>& K = jk_->K();
+    const std::vector<SharedMatrix>& wK = jk_->wK();
     J_->copy(J[0]);
     J_->add(J[1]);
-    Ka_ = K[0];
-    Kb_ = K[1];
+
+    if (functional_->is_x_hybrid()) {
+        Ka_ = K[0];
+        Kb_ = K[1];
+    } else {
+        Ka_->zero();
+        Kb_->zero();
+    }
+
+    if (functional_->is_x_lrc()) {
+        wKa_ = wK[0];
+        wKb_ = wK[1];
+    } else {
+        wKa_->zero();
+        wKb_->zero();
+    }
+
+    if (functional_->needs_xc()) {
+        form_V();
+    }
+}
+
+void CUHF::form_V() {
+    potential_->set_D({Da_, Db_});
+    potential_->compute_V({Va_, Vb_});
 }
 
 void CUHF::compute_spin_contamination() {
@@ -195,6 +227,10 @@ void CUHF::compute_spin_contamination() {
     outfile->Printf("\n  @Spin Contamination Metric: %8.5F\n", dS);
     outfile->Printf("  @S^2 Expected:              %8.5F\n", S2);
     outfile->Printf("  @S^2 Observed:              %8.5F\n", S2 + dS);
+
+    set_scalar_variable("SCF S2 OBSERVED", S2 + dS);
+    set_scalar_variable("SCF S2 EXPECTED", S2);
+    set_scalar_variable("SCF SPIN CONTAMINATION METRIC", dS);
 }
 
 void CUHF::form_initial_F() {
@@ -248,17 +284,52 @@ void CUHF::form_F() {
     }
     Cno_->gemm(false, false, 1.0, X_, Cno_temp_, 0.0);
 
-    // Now we form the contributions to the Fock matrix from
-    // the charge and spin densities
-    Fp_->copy(J_);
-    Fp_->scale(2.0);
-    Fp_->subtract(Ka_);
-    Fp_->subtract(Kb_);
-    Fp_->scale(0.5);
+    double alpha = functional_->x_alpha();
+    double beta = functional_->x_beta();
 
-    Fm_->copy(Ka_);
-    Fm_->subtract(Kb_);
-    Fm_->scale(-0.5);
+    // CUHF:  Fp = J - 0.5*(Ka + Kb)
+    // CUKS:  Fp = J - 0.5*alpha*(Ka + Kb) - 0.5*beta*(wKa + wKb) + 0.5*(Va + Vb)
+    Fp_->copy(J_);
+
+    if (functional_->is_x_hybrid()) {
+        Fp_->axpy(-0.5 * alpha, Ka_);
+        Fp_->axpy(-0.5 * alpha, Kb_);
+    } else if (!functional_->needs_xc()) {
+        Fp_->axpy(-0.5, Ka_);
+        Fp_->axpy(-0.5, Kb_);
+    }
+
+    if (functional_->is_x_lrc()) {
+        Fp_->axpy(-0.5 * beta, wKa_);
+        Fp_->axpy(-0.5 * beta, wKb_);
+    }
+
+    if (functional_->needs_xc()) {
+        Fp_->axpy(0.5, Va_);
+        Fp_->axpy(0.5, Vb_);
+    }
+
+    // CUHF:  Fm = -0.5*(Ka - Kb)
+    // CUKS:  Fm = -0.5*alpha*(Ka - Kb) - 0.5*beta*(wKa - wKb) + 0.5*(Va - Vb)
+    Fm_->zero();
+
+    if (functional_->is_x_hybrid()) {
+        Fm_->axpy(-0.5 * alpha, Ka_);
+        Fm_->axpy(0.5 * alpha, Kb_);
+    } else if (!functional_->needs_xc()) {
+        Fm_->axpy(-0.5, Ka_);
+        Fm_->axpy(0.5, Kb_);
+    }
+
+    if (functional_->is_x_lrc()) {
+        Fm_->axpy(-0.5 * beta, wKa_);
+        Fm_->axpy(0.5 * beta, wKb_);
+    }
+
+    if (functional_->needs_xc()) {
+        Fm_->axpy(0.5, Va_);
+        Fm_->axpy(-0.5, Vb_);
+    }
 
     // Transform the spin density contributions to the NO basis
     Fm_->transform(Cno_);
@@ -365,25 +436,47 @@ void CUHF::form_D() {
 double CUHF::compute_initial_E() { return nuclearrep_ + Dt_->vector_dot(H_); }
 
 double CUHF::compute_E() {
-    double DH = Dt_->vector_dot(H_);
-    double DT = Dt_->vector_dot(T_);
-    double DFa = Da_->vector_dot(Fa_);
-    double DFb = Db_->vector_dot(Fb_);
+    double one_electron_E = Dt_->vector_dot(H_);
+    double kinetic_E = Dt_->vector_dot(T_);
+    double coulomb_E = Da_->vector_dot(J_) + Db_->vector_dot(J_);
 
-    double one_electron_E = DH;
-    double two_electron_E = 0.5 * (DFa + DFb - one_electron_E);
-    double Eelec = 0.5 * (DH + DFa + DFb);
+    double alpha = functional_->x_alpha();
+    double beta = functional_->x_beta();
+
+    double exchange_E = 0.0;
+    if (functional_->is_x_hybrid()) {
+        exchange_E -= alpha * Da_->vector_dot(Ka_);
+        exchange_E -= alpha * Db_->vector_dot(Kb_);
+    } else if (!functional_->needs_xc()) {
+        // Pure HF case
+        exchange_E -= Da_->vector_dot(Ka_);
+        exchange_E -= Db_->vector_dot(Kb_);
+    }
+
+    if (functional_->is_x_lrc()) {
+        exchange_E -= beta * Da_->vector_dot(wKa_);
+        exchange_E -= beta * Db_->vector_dot(wKb_);
+    }
+
+    double XC_E = 0.0;
+    double VV10_E = 0.0;
+    if (functional_->needs_xc()) {
+        XC_E = potential_->quadrature_values()["FUNCTIONAL"];
+    }
+    if (functional_->needs_vv10()) {
+        VV10_E = potential_->quadrature_values()["VV10"];
+    }
 
     energies_["Nuclear"] = nuclearrep_;
-    energies_["Kinetic"] = DT;
+    energies_["Kinetic"] = kinetic_E;
     energies_["One-Electron"] = one_electron_E;
-    energies_["Two-Electron"] = two_electron_E;
-    energies_["XC"] = 0.0;
-    energies_["VV10_E"] = 0.0;
-    energies_["-D"] = 0.0;
+    energies_["Two-Electron"] = 0.5 * (coulomb_E + exchange_E);
+    energies_["XC"] = XC_E;
+    energies_["VV10"] = VV10_E;
+    energies_["-D"] = scalar_variable("-D Energy");
 
-    // outfile->Printf( "electronic energy = %20.14f\n", Eelec);
-    double Etotal = nuclearrep_ + Eelec;
+    double Etotal = nuclearrep_ + one_electron_E + 0.5 * coulomb_E +
+                   0.5 * exchange_E + XC_E + VV10_E + energies_["-D"];
     return Etotal;
 }
 
@@ -426,7 +519,10 @@ void CUHF::compute_SAD_guess(bool natorb) {
 
 void CUHF::setup_potential() {
     if (functional_->needs_xc()) {
-        throw PSIEXCEPTION("CUHF: Cannot compute XC components!");
+        potential_ = std::make_shared<UV>(functional_, basisset_, options_);
+        potential_->initialize();
+    } else {
+        potential_ = nullptr;
     }
 }
 }  // namespace scf

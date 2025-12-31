@@ -1440,7 +1440,7 @@ def scf_wavefunction_factory(name, ref_wfn, reference, **kwargs):
         wfn = core.ROHF(ref_wfn, superfunc)
     elif reference in ["UHF", "UKS"]:
         wfn = core.UHF(ref_wfn, superfunc)
-    elif reference == "CUHF":
+    elif reference in ["CUHF", "CUKS"]:
         wfn = core.CUHF(ref_wfn, superfunc)
     else:
         raise ValidationError("SCF: Unknown reference (%s) when building the Wavefunction." % reference)

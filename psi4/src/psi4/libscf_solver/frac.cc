@@ -211,7 +211,7 @@ void HF::frac_helper() {
 
 void HF::compute_spin_contamination() {
     if (!(options_.get_str("REFERENCE") == "UHF" || options_.get_str("REFERENCE") == "UKS" ||
-          options_.get_str("REFERENCE") == "CUHF"))
+          options_.get_str("REFERENCE") == "CUHF" || options_.get_str("REFERENCE") == "CUKS"))
         return;
 
     auto nalpha = (double)nalpha_;
@@ -270,6 +270,10 @@ void HF::compute_spin_contamination() {
     outfile->Printf("   @S^2 Observed:              %17.9E\n", S2 + dS);
     outfile->Printf("   @S   Expected:              %17.9E\n", nm);
     outfile->Printf("   @S   Observed:              %17.9E\n", nm);
+
+    set_scalar_variable("SCF S2 OBSERVED", S2 + dS);
+    set_scalar_variable("SCF S2 EXPECTED", S2);
+    set_scalar_variable("SCF SPIN CONTAMINATION METRIC", dS);
 
     if (frac_performed_) {
         outfile->Printf("   @Nalpha:                    %17.9E\n", nalpha);

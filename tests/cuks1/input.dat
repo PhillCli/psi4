@@ -1,0 +1,63 @@
+#! CUKS (Constrained Unrestricted Kohn-Sham) Test
+#! Tests CUKS on CN-H2 dimer from O24 dataset (system 17)
+#! CN radical (doublet, S=1/2) has known high spin contamination
+#! Expected S^2 = 0.75 for doublet; UHF/UKS will show S^2 >> 0.75
+
+molecule cn_h2 {
+    0 2
+    C        -1.772500000    -0.607751490     0.000000000
+    N        -1.772500000     0.562848510     0.000000000
+    --
+    0 1
+    H         1.772500000    -0.022451490     0.371400000
+    H         1.772500000    -0.022451490    -0.371400000
+    units angstrom
+}
+
+set {
+    basis cc-pvdz
+    scf_type df
+    e_convergence 1.e-8
+    d_convergence 1.e-8
+}
+
+# uhf
+set reference uhf
+E_uhf, wfn_uhf = energy('hf', return_wfn=True)
+S2_uhf = wfn_uhf.variable("SCF S2 OBSERVED")
+
+# cuhf
+set reference cuhf
+E_cuhf, wfn_cuhf = energy('hf', return_wfn=True)
+S2_cuhf = wfn_cuhf.variable("SCF S2 OBSERVED")
+
+# uks
+set reference uks
+E_uks, wfn_uks = energy('b3lyp', return_wfn=True)
+S2_uks = wfn_uks.variable("SCF S2 OBSERVED")
+
+# cuks
+set reference cuks
+E_cuks, wfn_cuks = energy('b3lyp', return_wfn=True)
+S2_cuks = wfn_cuks.variable("SCF S2 OBSERVED")
+
+S2_expected = 0.75  # Doublet: S=1/2, S^2 = S(S+1) = 0.75
+S2_uhf_contamination = 0.39622127
+S2_uks_contamination = 0.00720174
+
+print(f'\n  CN-H2 Dimer (doublet, expected S^2 = {S2_expected})')
+print(f'\n  HF Methods:')
+print(f'    UHF:   E = {E_uhf:16.10f} Eh,  S^2 = {S2_uhf:.5f}  (contamination: {S2_uhf - S2_expected:+.5f})')
+print(f'    CUHF:  E = {E_cuhf:16.10f} Eh,  S^2 = {S2_cuhf:.5f}  (contamination: {S2_cuhf - S2_expected:+.5f})')
+print(f'    dE = {(E_cuhf - E_uhf)*1000:8.4f} mEh')
+print(f'\n  DFT Methods (B3LYP):')
+print(f'    UKS:   E = {E_uks:16.10f} Eh,  S^2 = {S2_uks:.5f}  (contamination: {S2_uks - S2_expected:+.5f})')
+print(f'    CUKS:  E = {E_cuks:16.10f} Eh,  S^2 = {S2_cuks:.5f}  (contamination: {S2_cuks - S2_expected:+.5f})')
+print(f'    dE = {(E_cuks - E_uks)*1000:8.4f} mEh')
+
+# === Validation ===
+print('\n  ====== Validation ======')
+compare_values(S2_expected, S2_cuhf, 5, "CUHF S^2 should be exact")  #TEST
+compare_values(S2_expected, S2_cuks, 5, "CUKS S^2 should be exact")  #TEST
+compare_values(S2_expected, S2_uhf - S2_uhf_contamination, "Spin contamination was expected in UHF", atol=1e-6)  #TEST
+compare_values(S2_expected, S2_uks - S2_uks_contamination, "Spin contamination was expected in UKS", atol=1e-6)  #TEST
