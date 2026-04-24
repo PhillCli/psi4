@@ -1421,6 +1421,9 @@ void export_mints(py::module& m) {
     typedef SharedMatrix (MintsHelper::*normal_eri_factory)(std::shared_ptr<IntegralFactory>);
     typedef SharedMatrix (MintsHelper::*normal_eri2)(std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>,
                                                      std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>);
+    typedef SharedMatrix (MintsHelper::*normal_erf_eri_factory)(double, std::shared_ptr<IntegralFactory>);
+    typedef SharedMatrix (MintsHelper::*normal_erf_eri2)(double, std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>,
+                                                         std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>);
     typedef SharedMatrix (MintsHelper::*normal_3c)(std::shared_ptr<BasisSet>, std::shared_ptr<BasisSet>,
                                                    std::shared_ptr<BasisSet>);
 
@@ -1526,7 +1529,12 @@ void export_mints(py::module& m) {
         .def("ao_eri", normal_eri_factory(&MintsHelper::ao_eri), "AO ERI integrals", "factory"_a = nullptr)
         .def("ao_eri", normal_eri2(&MintsHelper::ao_eri), "AO ERI integrals", "bs1"_a, "bs2"_a, "bs3"_a, "bs4"_a)
         .def("ao_eri_shell", &MintsHelper::ao_eri_shell, "AO ERI Shell", "M"_a, "N"_a, "P"_a, "Q"_a)
-        .def("ao_erf_eri", &MintsHelper::ao_erf_eri, "AO ERF integrals", "omega"_a, "factory"_a = nullptr)
+        .def("ao_erf_eri", normal_erf_eri_factory(&MintsHelper::ao_erf_eri), "AO ERF integrals", "omega"_a,
+             "factory"_a = nullptr)
+        .def("ao_erf_eri", normal_erf_eri2(&MintsHelper::ao_erf_eri), "AO ERF integrals", "omega"_a, "bs1"_a, "bs2"_a,
+             "bs3"_a, "bs4"_a)
+        .def("ao_eri_omega", normal_erf_eri2(&MintsHelper::ao_erf_eri), "AO ERI omega integrals", "omega"_a, "bs1"_a,
+             "bs2"_a, "bs3"_a, "bs4"_a)
         .def("ao_f12", normal_f12(&MintsHelper::ao_f12), "AO F12 integrals", "corr"_a)
         .def("ao_f12", normal_f122(&MintsHelper::ao_f12), "AO F12 integrals", "corr"_a, "bs1"_a, "bs2"_a, "bs3"_a,
              "bs4"_a)

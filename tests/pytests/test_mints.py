@@ -127,3 +127,42 @@ def test_export_ao_overlap_half_deriv():
 
             # Test (S_ij)^x = < i^x | j > + < i | j^x >
             assert compare_arrays(deriv1_np[map_key1] + deriv1_np[map_key2], deriv1_np[map_key3])
+
+def test_ao_erf_eri_mixed_basis():
+    he = psi4.geometry("""
+        He 0 0 0
+        symmetry c1
+    """)
+
+    psi4.set_options({'basis': '3-21G'})
+    orb = psi4.core.BasisSet.build(he, 'BASIS', psi4.core.get_global_option('BASIS'))
+    aux = psi4.core.BasisSet.build(he, 'DF_BASIS_MP2', '', 'RIFIT', psi4.core.get_global_option('BASIS'))
+    zero = psi4.core.BasisSet.zero_ao_basis_set()
+    mints = psi4.core.MintsHelper(orb)
+
+    # Theory-reduction: omega=0 -> erf(0)/r = 0, NOT 1/r.
+    # The erf attenuation at omega=0 is 0, so LR ERIs should be zero.
+    erf_0 = np.array(mints.ao_erf_eri(0.0, aux, zero, orb, orb))
+    assert np.allclose(erf_0, 0.0, atol=1e-14)
+
+    # Mixed-basis consistency: ao_erf_eri vs ao_eri_omega alias
+    erf_02 = np.array(mints.ao_erf_eri(0.2, aux, zero, orb, orb))
+    omega_02 = np.array(mints.ao_eri_omega(0.2, aux, zero, orb, orb))
+    assert np.allclose(erf_02, omega_02, rtol=1e-14, atol=1e-14)
+
+    # Shape check for squeezed 3-index object (naux, nbf, nbf)
+    assert erf_02.shape == (aux.nbf(), 1, orb.nbf(), orb.nbf())
+
+    # Physical attenuation: omega>0 should suppress long-range contributions
+    # relative to standard Coulomb (which is much larger for diffuse functions).
+    # Compare diagonal metric element: (P|0|P)^{LR} < (P|0|P)^{Coulomb}
+    coulomb_metric = np.array(mints.ao_eri(aux, zero, aux, zero))
+    lr_metric = np.array(mints.ao_erf_eri(0.2, aux, zero, aux, zero))
+    diag_coulomb = np.diag(coulomb_metric[:, 0, :, 0].reshape(aux.nbf(), aux.nbf()))
+    diag_lr = np.diag(lr_metric[:, 0, :, 0].reshape(aux.nbf(), aux.nbf()))
+    assert np.all(diag_lr < diag_coulomb)
+
+    # Mixed-basis vs default-basis consistency for same basis
+    erf_default = np.array(mints.ao_erf_eri(0.2))
+    erf_mixed = np.array(mints.ao_erf_eri(0.2, orb, orb, orb, orb))
+    assert np.allclose(erf_default, erf_mixed, rtol=1e-10, atol=1e-10)

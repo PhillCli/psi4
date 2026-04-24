@@ -871,6 +871,13 @@ SharedMatrix MintsHelper::ao_erf_eri(double omega, std::shared_ptr<IntegralFacto
     return ao_helper("AO ERF ERI Integrals", std::shared_ptr<TwoBodyAOInt>(factory->erf_eri(omega)));
 }
 
+SharedMatrix MintsHelper::ao_erf_eri(double omega, std::shared_ptr<BasisSet> bs1, std::shared_ptr<BasisSet> bs2,
+                                     std::shared_ptr<BasisSet> bs3, std::shared_ptr<BasisSet> bs4) {
+    IntegralFactory intf(bs1, bs2, bs3, bs4);
+    std::shared_ptr<TwoBodyAOInt> ints(intf.erf_eri(omega));
+    return ao_helper("AO ERF ERI Tensor", ints);
+}
+
 SharedMatrix MintsHelper::ao_eri(std::shared_ptr<IntegralFactory> input_factory) {
     std::shared_ptr<IntegralFactory> factory;
     if (input_factory) {
