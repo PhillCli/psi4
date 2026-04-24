@@ -127,3 +127,32 @@ def test_export_ao_overlap_half_deriv():
 
             # Test (S_ij)^x = < i^x | j > + < i | j^x >
             assert compare_arrays(deriv1_np[map_key1] + deriv1_np[map_key2], deriv1_np[map_key3])
+
+def test_ao_erf_eri_mixed_basis():
+    he = psi4.geometry("""
+        He 0 0 0
+        symmetry c1
+    """)
+
+    psi4.set_options({'basis': '3-21G'})
+    orb = psi4.core.BasisSet.build(he, 'BASIS', psi4.core.get_global_option('BASIS'))
+    aux = psi4.core.BasisSet.build(he, 'DF_BASIS_MP2', '', 'RIFIT', psi4.core.get_global_option('BASIS'))
+    zero = psi4.core.BasisSet.zero_ao_basis_set()
+    mints = psi4.core.MintsHelper(orb)
+
+    erf_0 = np.array(mints.ao_erf_eri(0.0, aux, zero, orb, orb))
+    assert np.allclose(erf_0, 0.0, atol=1e-14)
+
+    erf_02 = np.array(mints.ao_erf_eri(0.2, aux, zero, orb, orb))
+    assert erf_02.shape == (aux.nbf(), 1, orb.nbf(), orb.nbf())
+
+    coulomb_metric = np.array(mints.ao_eri(aux, zero, aux, zero))
+    erf_metric = np.array(mints.ao_erf_eri(0.2, aux, zero, aux, zero))
+    diag_coulomb = np.diag(coulomb_metric[:, 0, :, 0].reshape(aux.nbf(), aux.nbf()))
+    diag_erf = np.diag(erf_metric[:, 0, :, 0].reshape(aux.nbf(), aux.nbf()))
+    assert np.all(diag_erf < diag_coulomb)
+
+    erf_default = np.array(mints.ao_erf_eri(0.2))
+    erf_mixed = np.array(mints.ao_erf_eri(0.2, orb, orb, orb, orb))
+    assert np.allclose(erf_default, erf_mixed, rtol=1e-10, atol=1e-10)
+

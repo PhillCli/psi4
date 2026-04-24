@@ -219,6 +219,8 @@ class PSI_API MintsHelper {
 
     /// AO ERF Integrals
     SharedMatrix ao_erf_eri(double omega, std::shared_ptr<IntegralFactory> = nullptr);
+    SharedMatrix ao_erf_eri(double omega, std::shared_ptr<BasisSet> bs1, std::shared_ptr<BasisSet> bs2,
+                            std::shared_ptr<BasisSet> bs3, std::shared_ptr<BasisSet> bs4);
     /// AO ERFC Omega Integrals
     SharedMatrix ao_erfc_eri(double omega);
     /// AO F12 Integrals
